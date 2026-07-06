@@ -6,8 +6,14 @@ from unittest.mock import call
 
 import pytest
 
-from py_rhapsody.models._core import RPCollection, RPModelElement, RPUnit, call_com, register_wrapper
 from py_rhapsody.exceptions import RhapsodyRuntimeException
+from py_rhapsody.models._core import (
+    RPCollection,
+    RPModelElement,
+    RPUnit,
+    call_com,
+    register_wrapper,
+)
 from tests.fakes import make_com_error, make_fake_collection, make_fake_element
 
 

@@ -6,9 +6,9 @@ from typing import Any
 
 import win32com.client
 
+from py_rhapsody.exceptions import RhapsodyConnectionError, RhapsodyRuntimeException
 from py_rhapsody.models._core import RPCollection, call_com
 from py_rhapsody.models.elements.project import RPProject
-from py_rhapsody.exceptions import RhapsodyConnectionError, RhapsodyRuntimeException
 
 _PROG_ID = "Rhapsody.Application"
 

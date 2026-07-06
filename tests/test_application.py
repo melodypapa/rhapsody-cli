@@ -7,8 +7,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from py_rhapsody.application import RhapsodyApplication
-from py_rhapsody.models.elements.project import RPProject
 from py_rhapsody.exceptions import RhapsodyConnectionError
+from py_rhapsody.models.elements.project import RPProject
 from tests.fakes import make_com_error, make_fake_collection, make_fake_element
 
 
