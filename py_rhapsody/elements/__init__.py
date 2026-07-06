@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from py_rhapsody.elements import attribute as attribute  # noqa: F401
 from py_rhapsody.elements import class_ as class_  # noqa: F401
 from py_rhapsody.elements import classifier as classifier  # noqa: F401
 from py_rhapsody.elements import package as package  # noqa: F401
