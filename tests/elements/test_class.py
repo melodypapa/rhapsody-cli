@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from py_rhapsody._core import wrap
-from py_rhapsody.elements.class_ import RPClass
-from py_rhapsody.elements.classifier import RPClassifier
+from py_rhapsody.models._core import wrap
+from py_rhapsody.models.elements.class_ import RPClass
+from py_rhapsody.models.elements.classifier import RPClassifier
 from tests.fakes import make_fake_element
 
 

@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from py_rhapsody._core import RPUnit
-from py_rhapsody.elements.project import RPProject
+from py_rhapsody.models._core import RPUnit
+from py_rhapsody.models.elements.project import RPProject
 from tests.fakes import make_fake_collection, make_fake_element
 
 
@@ -58,7 +58,7 @@ def test_project_find_component_wraps_result() -> None:
 
 
 def test_project_get_packages_returns_collection() -> None:
-    from py_rhapsody._core import RPCollection
+    from py_rhapsody.models._core import RPCollection
 
     fake = make_fake_element("Project")
     fake.getPackages.return_value = make_fake_collection(
@@ -74,7 +74,7 @@ def test_project_get_packages_returns_collection() -> None:
 
 
 def test_project_is_registered_for_meta_class_project() -> None:
-    from py_rhapsody._core import wrap
+    from py_rhapsody.models._core import wrap
 
     fake = make_fake_element("Project", getName="MyProject")
 

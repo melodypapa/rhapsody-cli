@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import py_rhapsody
-from py_rhapsody._core import wrap
+from py_rhapsody.models._core import wrap
 from tests.fakes import make_fake_element
 
 

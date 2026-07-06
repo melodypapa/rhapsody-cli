@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from py_rhapsody._core import RPModelElement, RPUnit, wrap
-from py_rhapsody.elements.statechart import RPStatechart
+from py_rhapsody.models._core import RPModelElement, RPUnit, wrap
+from py_rhapsody.models.elements.statechart import RPStatechart
 from tests.fakes import make_fake_element
 
 

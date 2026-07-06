@@ -6,7 +6,7 @@ from unittest.mock import call
 
 import pytest
 
-from py_rhapsody._core import RPCollection, RPModelElement, RPUnit, call_com, register_wrapper
+from py_rhapsody.models._core import RPCollection, RPModelElement, RPUnit, call_com, register_wrapper
 from py_rhapsody.exceptions import RhapsodyRuntimeException
 from tests.fakes import make_com_error, make_fake_collection, make_fake_element
 
@@ -201,7 +201,7 @@ def test_wrap_dispatches_to_registered_wrapper() -> None:
     register_wrapper("FakeMetaType", _FakeClassWrapper)
     fake = make_fake_element("FakeMetaType", getName="Thing")
 
-    from py_rhapsody._core import wrap
+    from py_rhapsody.models._core import wrap
 
     wrapped = wrap(fake)
 
@@ -212,7 +212,7 @@ def test_wrap_dispatches_to_registered_wrapper() -> None:
 def test_wrap_falls_back_to_model_element_for_unregistered_type() -> None:
     fake = make_fake_element("SomeUnmappedType", getName="Mystery")
 
-    from py_rhapsody._core import wrap
+    from py_rhapsody.models._core import wrap
 
     wrapped = wrap(fake)
 
