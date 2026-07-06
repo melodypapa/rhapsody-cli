@@ -4,9 +4,13 @@ from __future__ import annotations
 
 import pytest
 
-from py_rhapsody._core import RPCollection, RPModelElement, RPUnit, call_com
+from py_rhapsody._core import RPCollection, RPModelElement, RPUnit, call_com, register_wrapper
 from py_rhapsody.exceptions import RhapsodyRuntimeException
 from tests.fakes import make_com_error, make_fake_collection, make_fake_element
+
+
+class _FakeClassWrapper(RPModelElement):
+    pass
 
 
 def test_call_com_returns_value_on_success() -> None:
@@ -179,3 +183,26 @@ def test_collection_get_count_delegates_to_com() -> None:
     collection = RPCollection(fake)
 
     assert collection.getCount() == 2
+
+
+def test_wrap_dispatches_to_registered_wrapper() -> None:
+    register_wrapper("FakeMetaType", _FakeClassWrapper)
+    fake = make_fake_element("FakeMetaType", getName="Thing")
+
+    from py_rhapsody._core import wrap
+
+    wrapped = wrap(fake)
+
+    assert isinstance(wrapped, _FakeClassWrapper)
+    assert wrapped.getName() == "Thing"
+
+
+def test_wrap_falls_back_to_model_element_for_unregistered_type() -> None:
+    fake = make_fake_element("SomeUnmappedType", getName="Mystery")
+
+    from py_rhapsody._core import wrap
+
+    wrapped = wrap(fake)
+
+    assert type(wrapped) is RPModelElement
+    assert wrapped.getName() == "Mystery"
