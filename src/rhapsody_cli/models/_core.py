@@ -37,8 +37,9 @@ def call_com(func: Callable[[], T]) -> T:
     try:
         return func()
     except Exception as exc:
-        # On Windows, pywintypes.com_error; on other platforms, re-raise
-        if type(exc).__name__ == "com_error":
+        # pywintypes is Windows-only; on other platforms there is no live COM
+        # connection so a com_error cannot occur here.
+        if pywintypes is not None and isinstance(exc, pywintypes.com_error):
             raise RhapsodyRuntimeException(str(exc)) from exc
         raise
 
