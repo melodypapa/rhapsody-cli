@@ -14,19 +14,11 @@ from typing import Any, Callable, Iterator, TypeVar
 
 from py_rhapsody.exceptions import RhapsodyRuntimeException
 
+# Import pywintypes on Windows only; on Linux it's unavailable
 if sys.platform == "win32":
     import pywintypes
 else:
-    # pywintypes is Windows-only; provide a stub for non-Windows platforms
-    # to allow imports on Linux CI runners. See: tests/fakes.py for test mocks.
-    class pywintypes:  # type: ignore[no-redef]
-        """Stub for pywintypes on non-Windows platforms."""
-
-        @staticmethod
-        def com_error(*args: Any, **kwargs: Any) -> Exception:
-            """Stub that never matches in runtime (sys.platform != 'win32')."""
-            raise RuntimeError("pywintypes unavailable on non-Windows platforms")
-
+    pywintypes = None  # type: ignore[assignment]
 
 T = TypeVar("T")
 
@@ -47,7 +39,8 @@ def call_com(func: Callable[[], T]) -> T:
     try:
         return func()
     except Exception as exc:
-        if isinstance(exc, pywintypes.com_error):
+        # On Windows, pywintypes.com_error; on other platforms, re-raise
+        if type(exc).__name__ == "com_error":
             raise RhapsodyRuntimeException(str(exc)) from exc
         raise
 
