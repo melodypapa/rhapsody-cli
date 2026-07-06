@@ -2,4 +2,5 @@
 
 from __future__ import annotations
 
+from py_rhapsody.elements import package as package  # noqa: F401
 from py_rhapsody.elements import project as project  # noqa: F401
