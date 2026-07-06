@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import pytest
 
-from py_rhapsody._core import RPModelElement, RPUnit, call_com
+from py_rhapsody._core import RPCollection, RPModelElement, RPUnit, call_com
 from py_rhapsody.exceptions import RhapsodyRuntimeException
-from tests.fakes import make_com_error, make_fake_element
+from tests.fakes import make_com_error, make_fake_collection, make_fake_element
 
 
 def test_call_com_returns_value_on_success() -> None:
@@ -125,3 +125,57 @@ def test_unit_is_a_model_element() -> None:
 
     assert isinstance(unit, RPModelElement)
     assert unit.getName() == "MyPkg"
+
+
+def test_collection_len_delegates_to_get_count() -> None:
+    fake = make_fake_collection([make_fake_element("Class")])
+    collection = RPCollection(fake)
+
+    assert len(collection) == 1
+
+
+def test_collection_getitem_wraps_model_elements() -> None:
+    inner = make_fake_element("Class", getName="Widget")
+    fake = make_fake_collection([inner])
+    collection = RPCollection(fake)
+
+    item = collection[0]
+
+    assert isinstance(item, RPModelElement)
+    assert item.getName() == "Widget"
+
+
+def test_collection_getitem_passes_through_non_element_values() -> None:
+    fake = make_fake_collection(["a plain string", 42])
+    collection = RPCollection(fake)
+
+    assert collection[0] == "a plain string"
+    assert collection[1] == 42
+
+
+def test_collection_iter_yields_all_items() -> None:
+    inner_a = make_fake_element("Class", getName="A")
+    inner_b = make_fake_element("Class", getName="B")
+    fake = make_fake_collection([inner_a, inner_b])
+    collection = RPCollection(fake)
+
+    names = [item.getName() for item in collection]
+
+    assert names == ["A", "B"]
+
+
+def test_collection_add_item_delegates_to_com() -> None:
+    fake = make_fake_collection([])
+    collection = RPCollection(fake)
+    new_element = make_fake_element("Class")
+
+    collection.addItem(RPModelElement(new_element))
+
+    fake.addItem.assert_called_once_with(new_element)
+
+
+def test_collection_get_count_delegates_to_com() -> None:
+    fake = make_fake_collection([make_fake_element("Class"), make_fake_element("Class")])
+    collection = RPCollection(fake)
+
+    assert collection.getCount() == 2

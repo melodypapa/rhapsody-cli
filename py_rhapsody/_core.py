@@ -9,7 +9,7 @@ wrapper class using a registry populated by each element module.
 
 from __future__ import annotations
 
-from typing import Any, Callable, TypeVar
+from typing import Any, Callable, Iterator, TypeVar
 
 import pywintypes
 
@@ -35,6 +35,20 @@ def call_com(func: Callable[[], T]) -> T:
         return func()
     except pywintypes.com_error as exc:
         raise RhapsodyRuntimeException(str(exc)) from exc
+
+
+def _wrap_if_element(value: Any) -> Any:
+    """Wrap ``value`` if it looks like a Rhapsody model element."""
+    if hasattr(value, "getMetaClass"):
+        return wrap(value)
+    return value
+
+
+def wrap(com_obj: Any) -> RPModelElement:
+    """Wrap a raw Rhapsody COM model element in its matching wrapper class."""
+    meta_class = call_com(lambda: str(com_obj.getMetaClass()))
+    wrapper_cls = _WRAPPER_REGISTRY.get(meta_class, RPModelElement)
+    return wrapper_cls(com_obj)
 
 
 class RPModelElement:
@@ -88,3 +102,29 @@ class RPUnit(RPModelElement):
 
     def setReadOnly(self, read_only: bool) -> None:
         call_com(lambda: self._com.setReadOnly(1 if read_only else 0))
+
+
+class RPCollection:
+    """Wraps ``IRPCollection``: an iterable/indexable container of elements."""
+
+    def __init__(self, com_obj: Any) -> None:
+        self._com = com_obj
+
+    def getCount(self) -> int:
+        return call_com(lambda: int(self._com.getCount()))
+
+    def getItem(self, index: int) -> Any:
+        return _wrap_if_element(call_com(lambda: self._com.getItem(index)))
+
+    def addItem(self, element: RPModelElement) -> None:
+        call_com(lambda: self._com.addItem(element._com))
+
+    def __len__(self) -> int:
+        return self.getCount()
+
+    def __getitem__(self, index: int) -> Any:
+        return self.getItem(index)
+
+    def __iter__(self) -> Iterator[Any]:
+        for index in range(len(self)):
+            yield self[index]
