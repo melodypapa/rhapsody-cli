@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from unittest.mock import call
+
 import pytest
 
 from py_rhapsody._core import RPCollection, RPModelElement, RPUnit, call_com, register_wrapper
@@ -147,6 +149,7 @@ def test_collection_getitem_wraps_model_elements() -> None:
 
     assert isinstance(item, RPModelElement)
     assert item.getName() == "Widget"
+    fake.getItem.assert_called_once_with(1)
 
 
 def test_collection_getitem_passes_through_non_element_values() -> None:
@@ -155,6 +158,14 @@ def test_collection_getitem_passes_through_non_element_values() -> None:
 
     assert collection[0] == "a plain string"
     assert collection[1] == 42
+
+
+def test_collection_negative_index_raises_index_error() -> None:
+    fake = make_fake_collection(["a plain string"])
+    collection = RPCollection(fake)
+
+    with pytest.raises(IndexError, match="negative indices are not supported"):
+        _ = collection[-1]
 
 
 def test_collection_iter_yields_all_items() -> None:
@@ -166,6 +177,7 @@ def test_collection_iter_yields_all_items() -> None:
     names = [item.getName() for item in collection]
 
     assert names == ["A", "B"]
+    assert fake.getItem.call_args_list == [call(1), call(2)]
 
 
 def test_collection_add_item_delegates_to_com() -> None:

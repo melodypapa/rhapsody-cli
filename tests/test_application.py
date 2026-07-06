@@ -45,6 +45,16 @@ def test_launch_wraps_new_com_object(mock_dispatch: MagicMock) -> None:
 
 
 @patch("py_rhapsody.application.win32com.client.Dispatch")
+def test_launch_raises_connection_error_when_dispatch_fails(
+    mock_dispatch: MagicMock,
+) -> None:
+    mock_dispatch.side_effect = make_com_error("launch failed")
+
+    with pytest.raises(RhapsodyConnectionError):
+        RhapsodyApplication.launch()
+
+
+@patch("py_rhapsody.application.win32com.client.Dispatch")
 @patch("py_rhapsody.application.win32com.client.GetActiveObject")
 def test_connect_prefers_attach_when_available(
     mock_get_active_object: MagicMock, mock_dispatch: MagicMock
@@ -72,6 +82,18 @@ def test_connect_falls_back_to_launch_when_attach_fails(
 
     mock_dispatch.assert_called_once_with("Rhapsody.Application")
     assert app._com is fake_app
+
+
+@patch("py_rhapsody.application.win32com.client.Dispatch")
+@patch("py_rhapsody.application.win32com.client.GetActiveObject")
+def test_connect_raises_connection_error_when_launch_fails(
+    mock_get_active_object: MagicMock, mock_dispatch: MagicMock
+) -> None:
+    mock_get_active_object.side_effect = make_com_error("no running instance")
+    mock_dispatch.side_effect = make_com_error("launch failed")
+
+    with pytest.raises(RhapsodyConnectionError):
+        RhapsodyApplication.connect()
 
 
 def test_open_project_wraps_result_as_rpproject() -> None:

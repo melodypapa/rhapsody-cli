@@ -32,9 +32,15 @@ def make_fake_element(meta_class: str, **method_returns: Any) -> MagicMock:
 
 def make_fake_collection(items: list[Any]) -> MagicMock:
     """Build a fake COM object representing an IRPCollection."""
+
+    def get_item(index: int) -> Any:
+        if index <= 0:
+            raise IndexError("IRPCollection indices are 1-based")
+        return items[index - 1]
+
     fake = MagicMock(name="FakeCollection")
     fake.getCount.return_value = len(items)
-    fake.getItem.side_effect = lambda index: items[index]
+    fake.getItem.side_effect = get_item
     return fake
 
 

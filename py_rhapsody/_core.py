@@ -123,8 +123,10 @@ class RPCollection:
         return self.getCount()
 
     def __getitem__(self, index: int) -> Any:
-        return self.getItem(index)
+        if index < 0:
+            raise IndexError("negative indices are not supported")
+        return self.getItem(index + 1)
 
     def __iter__(self) -> Iterator[Any]:
-        for index in range(len(self)):
-            yield self[index]
+        for index in range(1, len(self) + 1):
+            yield self.getItem(index)
