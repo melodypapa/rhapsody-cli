@@ -50,6 +50,74 @@ ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ && pytes
 
 ---
 
+## Git Workflow
+
+### Mandatory Rules
+
+**1. Do NOT add Copilot as co-author**
+
+Never include `Co-authored-by: Copilot` in commits. Each commit must be authored by the human developer only:
+
+```bash
+# ✅ CORRECT: Human-authored only
+git commit -m "feat: add new model element"
+
+# ❌ WRONG: Do not add Copilot trailer
+git commit -m "feat: add new model element
+
+Co-authored-by: Copilot <...@users.noreply.github.com>"
+```
+
+**2. All changes go to feature branches, NEVER directly to main**
+
+Always work on a feature branch. Main is reserved for tested, production-ready code:
+
+```bash
+# ✅ CORRECT: Work on feature branch
+git checkout -b feature/add-new-element
+# ... make changes ...
+git commit -m "feat: add element wrapper for MyClass"
+git push -u origin feature/add-new-element
+
+# ❌ WRONG: Never commit directly to main
+git checkout main
+git commit -m "..."  # ✗ FORBIDDEN
+git push origin main
+```
+
+### Feature Branch Workflow
+
+```bash
+# 1. Create and switch to feature branch
+git checkout -b feature/<type>-<short-description>
+
+# 2. Make changes, test, commit (locally on feature branch)
+git add src/py_rhapsody/models/elements/myclass.py tests/elements/test_myclass.py
+git commit -m "feat: add RPMyClass element wrapper"
+
+# 3. Push to origin
+git push -u origin feature/<type>-<short-description>
+
+# 4. Create pull request on GitHub for review
+# (via gh pr create or GitHub web UI)
+
+# 5. After PR approval and merge, delete local branch
+git checkout main
+git pull origin main
+git branch -d feature/<type>-<short-description>
+```
+
+### Branch Naming Convention
+
+Use kebab-case with a type prefix:
+
+- `feature/add-element-wrapper` — New functionality
+- `fix/connection-error-handling` — Bug fix
+- `refactor/class-based-element` — Code reorganization
+- `docs/update-guidelines` — Documentation only
+
+---
+
 ## Architecture
 
 ### High-Level Overview
