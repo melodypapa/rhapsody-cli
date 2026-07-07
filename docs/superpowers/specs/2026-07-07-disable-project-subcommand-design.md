@@ -61,28 +61,40 @@ This also introduces basic logging for the CLI.
 
 ### 3. CLI logging
 
-- New module `src/rhapsody_cli/cli/logging_config.py`:
+- New module `src/rhapsody_cli/cli/logging_config.py`, following the project's
+  class-based architecture convention:
 
   ```python
-  def configure_logging(verbose: bool) -> None:
-      """Configure console + file logging for the rhapsody_cli package logger."""
+  class CliLoggingConfigurator:
+      """Configures console + file logging for the rhapsody_cli package logger."""
+
+      LOG_FILE_NAME = "rhapsody-cli.log"
+      LOG_FORMAT = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+
+      def __init__(self, verbose: bool = False) -> None:
+          self.verbose = verbose
+
+      def configure(self) -> None:
+          """Apply the logging configuration to the rhapsody_cli package logger."""
+          ...
   ```
 
   - Configures the `rhapsody_cli` logger (parent of all module loggers via
     `logging.getLogger(__name__)` in each module).
   - Level: `logging.INFO` by default, `logging.DEBUG` when `verbose=True`.
-  - Two handlers:
+  - Two handlers, built via small private helper methods on the class
+    (`_build_stream_handler()`, `_build_file_handler()`) rather than free functions:
     - `logging.StreamHandler()` → stderr.
     - `logging.FileHandler("rhapsody-cli.log", mode="a")` → append to a file in the
       current working directory.
   - Both handlers use the same formatter:
     `"%(asctime)s [%(levelname)s] %(name)s: %(message)s"`.
-  - Guards against duplicate handlers being added if `configure_logging` is called more
-    than once (e.g., in tests) by clearing existing handlers on the target logger first.
+  - Guards against duplicate handlers being added if `configure()` is called more than
+    once (e.g., in tests) by clearing existing handlers on the target logger first.
 
 - `src/rhapsody_cli/cli/main.py`: add a `--verbose` / `-v` boolean flag (default
-  `False`) to the root `cli` group. In the group callback, call
-  `configure_logging(verbose)` before dispatching to subcommands.
+  `False`) to the root `cli` group. In the group callback, instantiate
+  `CliLoggingConfigurator(verbose).configure()` before dispatching to subcommands.
 
 - Command modules (`element.py`, and any others touched) obtain a module-level
   `logger = logging.getLogger(__name__)` and log:
@@ -129,10 +141,10 @@ log INFO "Created {type}: {name}"; click.echo(...)
     fake `RhapsodyApplication.attach()` + `activeProject()`.
   - Failure path: `RhapsodyConnectionError` raised by `connect("attach")` results in the
     expected error message and `click.Abort()`.
-- New `tests/cli/test_logging_config.py`: verify `configure_logging` sets the expected
-  level for `verbose=True/False`, attaches exactly one `StreamHandler` and one
-  `FileHandler` (no duplicates on repeated calls), and that a log record written after
-  configuration appears in the log file.
+- New `tests/cli/test_logging_config.py`: verify `CliLoggingConfigurator(verbose).configure()`
+  sets the expected level for `verbose=True/False`, attaches exactly one `StreamHandler`
+  and one `FileHandler` (no duplicates on repeated `configure()` calls), and that a log
+  record written after configuration appears in the log file.
 - Run full quality gate: `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ && pytest`.
 
 ## Files Touched
