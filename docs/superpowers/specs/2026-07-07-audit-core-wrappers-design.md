@@ -73,50 +73,35 @@ separately, not part of this spec) will add: State Machine elements
 
 ### Package reorganization
 
-`src/rhapsody_cli/models/elements/` is split into subpackages by
-inheritance family. Each subpackage has an `__init__.py` re-exporting its
-wrapper classes (for `register_wrapper` side effects); the top-level
-`elements/__init__.py` imports each subpackage.
+`src/rhapsody_cli/models/elements/` is reorganized into one module per
+inheritance family (not one class per file). Each module contains every
+wrapper class in that family, ordered base-class-first; the top-level
+`elements/__init__.py` imports each module (for `register_wrapper`
+side effects).
 
 ```
 models/
   _core.py                 # RPModelElement, RPUnit, RPCollection (unchanged location)
   elements/
-    __init__.py            # imports every subpackage below
-    classifiers/
-      __init__.py
-      classifier.py         # RPClassifier(RPUnit)
-      class_.py             # RPClass(RPClassifier)
-      actor.py               # RPActor(RPClassifier)
-      usecase.py             # RPUseCase(RPClassifier)
-      interface_item.py      # RPInterfaceItem(RPClassifier)  [NEW]
-      operation.py           # RPOperation(RPInterfaceItem)
-      statechart.py           # RPStatechart(RPClass)
-    variables/
-      __init__.py
-      variable.py             # RPVariable(RPUnit)  [NEW]
-      attribute.py             # RPAttribute(RPVariable)
-    containment/
-      __init__.py
-      package.py               # RPPackage(RPUnit)
-      project.py               # RPProject(RPPackage)
-    requirements/
-      __init__.py
-      annotation.py             # RPAnnotation(RPUnit)  [NEW]
-      requirement.py             # RPRequirement(RPAnnotation)
-    relations/
-      __init__.py
-      relation.py                 # RPRelation(RPUnit)  [NEW]
-      instance.py                  # RPInstance(RPRelation)
-    diagrams/
-      __init__.py
-      diagram.py                   # RPDiagram(RPUnit)
+    __init__.py            # imports every module below
+    classifiers.py          # RPClassifier(RPUnit), RPClass(RPClassifier),
+                             # RPActor(RPClassifier), RPUseCase(RPClassifier),
+                             # RPInterfaceItem(RPClassifier) [NEW],
+                             # RPOperation(RPInterfaceItem),
+                             # RPStatechart(RPClass)
+    variables.py             # RPVariable(RPUnit) [NEW], RPAttribute(RPVariable)
+    containment.py            # RPPackage(RPUnit), RPProject(RPPackage)
+    requirements.py             # RPAnnotation(RPUnit) [NEW], RPRequirement(RPAnnotation)
+    relations.py                 # RPRelation(RPUnit) [NEW], RPInstance(RPRelation)
+    diagrams.py                   # RPDiagram(RPUnit)
 ```
 
-Future sub-projects add new files into these same subpackages (e.g.
-`classifiers/` gains state-machine-adjacent types) or introduce new ones
-(`statemachine/`, `structure/`, `relationships/` for the broader
-relationship set beyond `RPRelation`/`RPInstance`).
+Future sub-projects add new classes into these same modules (e.g.
+`classifiers.py` gains state-machine-adjacent types) or introduce new
+modules (`statemachine.py`, `structure.py`, `relationships.py` for the
+broader relationship set beyond `RPRelation`/`RPInstance`). If a module
+grows too large to hold in context comfortably, it can be split at that
+point — not preemptively.
 
 ### Hierarchy corrections
 
@@ -160,10 +145,12 @@ rather than attempted as one single change.
 - TDD as usual: write/extend fake COM objects in `tests/fakes.py` and
   failing unit tests before implementing each method.
 - Existing tests for the 12 wrappers are updated for new import paths
-  (subpackage moves) and extended for new methods/hierarchy.
+  (module moves/renames) and extended for new methods/hierarchy. Test
+  files remain per-class (e.g. `test_class.py`, `test_actor.py`) even
+  though the corresponding implementation classes now share a module —
+  test granularity doesn't need to match implementation file grouping.
 - New test modules for the 4 new intermediate wrapper classes
-  (`RPVariable`, `RPInterfaceItem`, `RPAnnotation`, `RPRelation`), mirroring
-  the existing per-class test file convention.
+  (`RPVariable`, `RPInterfaceItem`, `RPAnnotation`, `RPRelation`).
 - `wrap()` registry/dispatch tests extended to cover the new classes.
 
 ## Deliverables
@@ -171,7 +158,8 @@ rather than attempted as one single change.
 - 4 new wrapper classes: `RPVariable`, `RPInterfaceItem`, `RPAnnotation`,
   `RPRelation`.
 - 12 existing wrappers corrected (hierarchy + full method parity).
-- `elements/` reorganized into 6 subpackages as above.
+- `elements/` reorganized into 6 modules (one per inheritance family) as
+  above.
 - All existing tests passing; new tests for new classes/methods.
 - `ruff`, `black`, `mypy`, `pytest` all clean.
 
