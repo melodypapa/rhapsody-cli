@@ -134,6 +134,12 @@ docs) is implemented, following the existing conventions:
 - Only methods *declared on that specific interface* are added to that
   wrapper (inherited methods are provided by the corrected base class,
   not duplicated).
+- Docstrings are sourced from the java_api HTML docs: each method's
+  docstring is the corresponding method's description text from its
+  `IRPxxx.html` page (cleaned of HTML markup), not a freely-invented
+  summary. This keeps the Python API's documentation traceable to the
+  authoritative Java API reference. Class-level docstrings likewise draw
+  from each interface's top-of-page description where one exists.
 
 Given the volume (~590 declared methods across the 16 interfaces
 involved), implementation is split into multiple phases in the
