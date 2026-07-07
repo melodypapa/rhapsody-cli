@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Iterator
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -15,7 +16,7 @@ from rhapsody_cli.exceptions import RhapsodyConnectionError
 
 
 @pytest.fixture(autouse=True)
-def _reset_logger() -> None:
+def _reset_logger() -> Iterator[None]:
     """Reset the rhapsody_cli logger before and after each test."""
     logger = logging.getLogger("rhapsody_cli")
     logger.handlers.clear()
@@ -60,15 +61,15 @@ def test_cli_help_does_not_list_project_command() -> None:
 def test_cli_verbose_flag_configures_debug_logging() -> None:
     """Test --verbose flag configures the rhapsody_cli logger at DEBUG level."""
     logger = logging.getLogger("rhapsody_cli")
-    
+
     def check_logger_level() -> None:
         """Helper to check logger level during invocation."""
         logger.info("test message")
-    
+
     runner = CliRunner()
     with patch.object(logging.getLogger("rhapsody_cli"), "info", side_effect=check_logger_level):
         result = runner.invoke(cli, ["--verbose", "--help"])
-    
+
     # Check that --verbose was accepted (exit code 0)
     assert result.exit_code == 0
 
@@ -195,8 +196,6 @@ def test_context_get_active_project_attaches_and_returns_active_project() -> Non
 def test_context_get_active_project_propagates_connection_error() -> None:
     """Test get_active_project() lets RhapsodyConnectionError from connect() propagate."""
     ctx = RhapsodyContext()
-    with patch.object(
-        ctx, "connect", side_effect=RhapsodyConnectionError("no running instance")
-    ):
+    with patch.object(ctx, "connect", side_effect=RhapsodyConnectionError("no running instance")):
         with pytest.raises(RhapsodyConnectionError):
             ctx.get_active_project()

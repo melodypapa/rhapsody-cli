@@ -41,11 +41,8 @@ class AddElementCommand(BaseElementCommand):
             ],
         )
 
-    def execute(self, **kwargs: object) -> None:
+    def execute(self, element_type: str, name: str) -> None:
         """Execute the add command."""
-        element_type = str(kwargs.get("element_type", ""))
-        name = str(kwargs.get("name", ""))
-
         ctx = RhapsodyContext()
         try:
             project = ctx.get_active_project()
@@ -89,10 +86,8 @@ class ViewElementCommand(BaseElementCommand):
             ],
         )
 
-    def execute(self, **kwargs: object) -> None:
+    def execute(self, path: str) -> None:
         """Execute the view command."""
-        path = str(kwargs.get("path", ""))
-
         ctx = RhapsodyContext()
         try:
             ctx.get_active_project()
@@ -136,12 +131,8 @@ class QueryElementCommand(BaseElementCommand):
             ],
         )
 
-    def execute(self, **kwargs: object) -> None:
+    def execute(self, filter: str) -> None:
         """Execute the query command."""
-        filter_str = kwargs.get("filter")
-        if filter_str is not None:
-            filter_str = str(filter_str)
-
         ctx = RhapsodyContext()
         try:
             project = ctx.get_active_project()

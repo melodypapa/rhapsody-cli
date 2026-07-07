@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 import logging
+from pathlib import Path
+
+import pytest
 
 from rhapsody_cli.cli.logging_config import CliLoggingConfigurator
 
@@ -52,7 +55,9 @@ class TestCliLoggingConfigurator:
 
         assert len(logger.handlers) == 2
 
-    def test_file_handler_targets_expected_log_file(self, tmp_path, monkeypatch) -> None:
+    def test_file_handler_targets_expected_log_file(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Test: FileHandler writes to rhapsody-cli.log in the current working directory."""
         monkeypatch.chdir(tmp_path)
         logger = _reset_logger()
