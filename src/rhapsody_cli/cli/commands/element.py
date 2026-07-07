@@ -2,10 +2,19 @@
 
 from __future__ import annotations
 
+import logging
+
 import click
 
 from rhapsody_cli.cli.context import RhapsodyContext
 from rhapsody_cli.cli.formatters import OutputFormatter
+from rhapsody_cli.exceptions import RhapsodyConnectionError
+
+logger = logging.getLogger(__name__)
+
+_NO_ACTIVE_INSTANCE_MESSAGE = (
+    "No running Rhapsody instance found. Please open Rhapsody and a project first."
+)
 
 
 class BaseElementCommand(click.Command):
@@ -24,8 +33,7 @@ class AddElementCommand(BaseElementCommand):
             callback=self.execute,
             params=[
                 click.Option(
-                    ["--type"],
-                    "element_type",
+                    ["--type", "element_type"],
                     required=True,
                     help="Element type (class, actor, etc)",
                 ),
@@ -36,12 +44,15 @@ class AddElementCommand(BaseElementCommand):
     def execute(self, element_type: str, name: str) -> None:
         """Execute the add command."""
         ctx = RhapsodyContext()
-        if ctx.project is None:
-            click.echo("Error: No active project. Use 'project open' first.", err=True)
-            raise click.Abort()
+        try:
+            project = ctx.get_active_project()
+        except RhapsodyConnectionError as e:
+            logger.error("Failed to attach to Rhapsody: %s", e)
+            click.echo(_NO_ACTIVE_INSTANCE_MESSAGE, err=True)
+            raise click.Abort() from e
 
         try:
-            root = ctx.project.getRoot()  # type: ignore[attr-defined]
+            root = project.getRoot()  # type: ignore[attr-defined]
             if element_type.lower() == "class":
                 root.createClass(name)
             elif element_type.lower() == "actor":
@@ -52,10 +63,12 @@ class AddElementCommand(BaseElementCommand):
                 click.echo(f"Error: Unknown element type '{element_type}'", err=True)
                 raise click.Abort()
 
+            logger.info("Created %s: %s", element_type, name)
             click.echo(f"Created {element_type}: {name}")
         except click.Abort:
             raise
         except Exception as e:
+            logger.error("Failed to create %s '%s': %s", element_type, name, e)
             click.echo(f"Error: {e}", err=True)
             raise click.Abort() from e
 
@@ -76,9 +89,12 @@ class ViewElementCommand(BaseElementCommand):
     def execute(self, path: str) -> None:
         """Execute the view command."""
         ctx = RhapsodyContext()
-        if ctx.project is None:
-            click.echo("Error: No active project", err=True)
-            raise click.Abort()
+        try:
+            ctx.get_active_project()
+        except RhapsodyConnectionError as e:
+            logger.error("Failed to attach to Rhapsody: %s", e)
+            click.echo(_NO_ACTIVE_INSTANCE_MESSAGE, err=True)
+            raise click.Abort() from e
 
         try:
             data = {
@@ -97,6 +113,7 @@ class ViewElementCommand(BaseElementCommand):
         except click.Abort:
             raise
         except Exception as e:
+            logger.error("Failed to view element '%s': %s", path, e)
             click.echo(f"Error: {e}", err=True)
             raise click.Abort() from e
 
@@ -117,12 +134,15 @@ class QueryElementCommand(BaseElementCommand):
     def execute(self, filter: str) -> None:
         """Execute the query command."""
         ctx = RhapsodyContext()
-        if ctx.project is None:
-            click.echo("Error: No active project", err=True)
-            raise click.Abort()
+        try:
+            project = ctx.get_active_project()
+        except RhapsodyConnectionError as e:
+            logger.error("Failed to attach to Rhapsody: %s", e)
+            click.echo(_NO_ACTIVE_INSTANCE_MESSAGE, err=True)
+            raise click.Abort() from e
 
         try:
-            root = ctx.project.getRoot()  # type: ignore[attr-defined]
+            root = project.getRoot()  # type: ignore[attr-defined]
             elements = root.getNestedElements()
 
             if ctx.output_format == "json":
@@ -144,6 +164,7 @@ class QueryElementCommand(BaseElementCommand):
         except click.Abort:
             raise
         except Exception as e:
+            logger.error("Failed to query elements: %s", e)
             click.echo(f"Error: {e}", err=True)
             raise click.Abort() from e
 

@@ -31,6 +31,18 @@ class RhapsodyContext:
         self.project = self.app.openProject(project_path)
         return self.project
 
+    def get_active_project(self) -> RPProject:
+        """Attach to the running Rhapsody instance and return its active project.
+
+        Raises:
+            RhapsodyConnectionError: if no running Rhapsody instance can be
+                attached to (propagated from connect()).
+        """
+        self.connect("attach")
+        assert self.app is not None  # For mypy type narrowing
+        self.project = self.app.activeProject()
+        return self.project
+
     def create_project(self, project_location: str, project_name: str) -> RPProject:
         """Create a new empty Rhapsody project."""
         if self.app is None:
