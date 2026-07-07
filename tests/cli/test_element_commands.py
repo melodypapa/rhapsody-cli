@@ -182,3 +182,91 @@ class TestQueryElementCommandAttachBehavior:
             "No running Rhapsody instance found. Please open Rhapsody and a project first."
             in result.output
         )
+
+
+class TestDeleteElementCommand:
+    """Tests for DeleteElementCommand."""
+
+    def test_delete_command_name_is_delete(self) -> None:
+        """Test: delete command name is 'delete'."""
+        group = ElementCommandGroup()
+        delete_cmd = group.commands["delete"]
+        assert delete_cmd.name == "delete"
+
+    def test_delete_command_has_help(self) -> None:
+        """Test: delete command has help text."""
+        group = ElementCommandGroup()
+        delete_cmd = group.commands["delete"]
+        assert delete_cmd.help is not None
+        assert "delete" in delete_cmd.help.lower()
+
+
+class TestDeleteElementCommandAttachBehavior:
+    """Tests for DeleteElementCommand attaching to the live Rhapsody instance."""
+
+    def test_delete_command_deletes_class_from_active_project(self) -> None:
+        """Test: delete command removes a class from the active project's root."""
+        runner = CliRunner()
+        group = ElementCommandGroup()
+
+        fake_element_com = MagicMock(name="FakeElementCOM")
+        fake_element_to_delete = MagicMock(name="FakeElement")
+        fake_element_to_delete.getMetaClass.return_value = "Class"
+        fake_element_to_delete.getName.return_value = "TestClass"
+        fake_element_to_delete._com = fake_element_com
+
+        fake_root = MagicMock(name="FakeRoot")
+        fake_root.getNestedElements.return_value = [fake_element_to_delete]
+        fake_root._com = MagicMock(name="FakeRootCOM")
+
+        fake_project = MagicMock(name="FakeProject")
+        fake_project.getRoot.return_value = fake_root
+
+        def fake_get_active_project(self: RhapsodyContext) -> MagicMock:
+            self.project = fake_project
+            return fake_project
+
+        with patch.object(RhapsodyContext, "get_active_project", fake_get_active_project):
+            result = runner.invoke(group, ["delete", "--path", "Root::TestClass"])
+
+        assert result.exit_code == 0
+        assert "Deleted class: TestClass" in result.output
+
+    def test_delete_command_reports_no_running_instance(self) -> None:
+        """Test: delete command reports a clear message when no Rhapsody is running."""
+        runner = CliRunner()
+        group = ElementCommandGroup()
+
+        with patch.object(
+            RhapsodyContext,
+            "get_active_project",
+            side_effect=RhapsodyConnectionError("No running Rhapsody instance found"),
+        ):
+            result = runner.invoke(group, ["delete", "--path", "Root::TestClass"])
+
+        assert result.exit_code != 0
+        assert (
+            "No running Rhapsody instance found. Please open Rhapsody and a project first."
+            in result.output
+        )
+
+    def test_delete_command_reports_element_not_found(self) -> None:
+        """Test: delete command reports when element doesn't exist."""
+        runner = CliRunner()
+        group = ElementCommandGroup()
+
+        fake_root = MagicMock(name="FakeRoot")
+        fake_root.getNestedElements.return_value = []
+
+        fake_project = MagicMock(name="FakeProject")
+        fake_project.getRoot.return_value = fake_root
+
+        def fake_get_active_project(self: RhapsodyContext) -> MagicMock:
+            self.project = fake_project
+            return fake_project
+
+        with patch.object(RhapsodyContext, "get_active_project", fake_get_active_project):
+            result = runner.invoke(group, ["delete", "--path", "Root::NonExistentClass"])
+
+        assert result.exit_code != 0
+        assert "not found" in result.output
