@@ -4,7 +4,14 @@ from __future__ import annotations
 
 from typing import Any
 
-import win32com.client
+try:
+    import win32com.client
+except ImportError:  # pragma: no cover - pywin32 is Windows-only
+    # pywin32 is only installed on Windows (see pyproject.toml). Importing
+    # this module must still succeed on other platforms (e.g. Sphinx
+    # autodoc running on Read the Docs' Linux build image); the COM calls
+    # themselves will simply fail at runtime with a clear error instead.
+    win32com = None
 
 from rhapsody_cli.exceptions import RhapsodyConnectionError, RhapsodyRuntimeException
 from rhapsody_cli.models._core import RPCollection, call_com
@@ -21,6 +28,10 @@ class RhapsodyApplication:
 
     @classmethod
     def attach(cls) -> RhapsodyApplication:
+        if win32com is None:
+            raise RhapsodyConnectionError(
+                "pywin32 is not available; Rhapsody automation requires Windows."
+            )
         try:
             com_obj = call_com(lambda: win32com.client.GetActiveObject(_PROG_ID))
         except RhapsodyRuntimeException as exc:
@@ -29,6 +40,10 @@ class RhapsodyApplication:
 
     @classmethod
     def launch(cls) -> RhapsodyApplication:
+        if win32com is None:
+            raise RhapsodyConnectionError(
+                "pywin32 is not available; Rhapsody automation requires Windows."
+            )
         try:
             com_obj = call_com(lambda: win32com.client.Dispatch(_PROG_ID))
         except RhapsodyRuntimeException as exc:
