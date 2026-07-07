@@ -1,7 +1,7 @@
 #!/bin/bash
-# End-to-end test script for element CLI operations
+# Manual test script for element CLI operations
 # Prerequisites: Rhapsody must be running with an open project
-# Usage: ./scripts/test_element_cli_e2e.sh
+# Usage: ./scripts/manual_test.sh
 
 set -e  # Exit on first error
 
@@ -9,7 +9,7 @@ CLI="python -m rhapsody_cli.cli.main"
 CLASS_NAME="TestClass_$(date +%s)"  # Use timestamp for uniqueness
 
 echo "========================================"
-echo "Element CLI E2E Test"
+echo "Element CLI Manual Test"
 echo "========================================"
 echo ""
 
@@ -52,5 +52,5 @@ fi
 echo ""
 
 echo "========================================"
-echo "✓ All E2E tests PASSED!"
+echo "✓ All manual tests PASSED!"
 echo "========================================"
