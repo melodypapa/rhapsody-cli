@@ -110,7 +110,7 @@ class RPVariable(RPUnit):
 
 
 class RPAttribute(RPVariable):
-    """Wraps ``IRPAttribute``."""
+    """Wraps ``IRPAttribute``: represents an attribute in a classifier."""
 
     def getMultiplicity(self) -> str:
         """Gets the multiplicity specified for the attribute.

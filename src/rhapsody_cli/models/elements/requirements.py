@@ -101,12 +101,22 @@ class RPAnnotation(RPUnit):
 
 
 class RPRequirement(RPAnnotation):
-    """Wraps ``IRPRequirement``."""
+    """Wraps ``IRPRequirement``: represents a requirement in the model."""
 
     def getRequirementID(self) -> str:
+        """Gets the unique identifier for the requirement.
+
+        Returns:
+            The requirement ID string.
+        """
         return call_com(lambda: str(self._com.getRequirementID()))
 
     def setRequirementID(self, requirement_id: str) -> None:
+        """Sets the unique identifier for the requirement.
+
+        Args:
+            requirement_id: The new requirement ID to set.
+        """
         call_com(lambda: self._com.setRequirementID(requirement_id))
 
 
