@@ -185,8 +185,11 @@ epub_exclude_files = ['search.html']
 # Autosummary generate stub pages
 autosummary_generate = True
 
-# Suppress autodoc import errors
-suppress_warnings = ['autodoc.import_object']
+# Note: we intentionally do NOT suppress 'autodoc.import_object' warnings.
+# All rhapsody_cli modules must be importable on any platform (Windows-only
+# dependencies like pywin32 are guarded with try/except in the source), so a
+# genuine import failure here indicates a real bug that should fail the
+# build loudly rather than silently producing incomplete API docs.
 
 # -- Options for intersphinx extension ---------------------------------------
 
