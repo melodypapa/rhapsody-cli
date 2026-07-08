@@ -189,6 +189,6 @@ All constants use `SCREAMING_SNAKE_CASE` (module-level and class-level). See `do
 - `docs/requirements/` — requirements specifications; `docs/tests/` — test specifications.
 - `docs/traceability_matrix.md` — requirements-to-code traceability.
 
-## Note on Stale Documentation
+## Documentation Status
 
-`.github/copilot-instructions.md` is **outdated**: it references Click as the CLI framework and lists old test paths (`tests/cli/`, `tests/elements/`). The project has since migrated to argparse (see git history for the `click-to-argparse-migration` feature branch). Current test layout is `tests/unit/`, `tests/integration/`, `tests/system/`. Prefer the information in this file over the copilot instructions. Note also that `docs/CODE_GUIDELINES.md` forbids `from __future__ import annotations`, but `commands/abstract_command.py` still uses it — follow the guideline (do not introduce new uses).
+All developer documentation (`.github/copilot-instructions.md`, `docs/CODE_GUIDELINES.md`, and the user/requirements `.rst`/`.md` files) has been updated to reflect the argparse-based CLI architecture. Historical plan docs under `docs/superpowers/plans/` are dated records and are intentionally not updated.
