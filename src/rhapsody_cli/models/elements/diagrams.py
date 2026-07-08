@@ -1,7 +1,5 @@
 """Diagram-family wrappers: mirrors IRPDiagram from com.telelogic.rhapsody.core."""
 
-from __future__ import annotations
-
 from typing import Any
 
 from rhapsody_cli.models._core import (

@@ -1,62 +1,35 @@
-"""Project-related CLI commands using class-based architecture."""
+"""Project-related CLI commands using argparse architecture."""
 
-from __future__ import annotations
+import sys
 
-import click
-
+from rhapsody_cli.cli.abstract_command import AbstractCommand
 from rhapsody_cli.cli.context import RhapsodyContext
 from rhapsody_cli.cli.formatters import OutputFormatter
 from rhapsody_cli.exceptions import RhapsodyConnectionError
 
 
-class BaseProjectCommand(click.Command):
-    """Base class for project commands."""
-
-    pass
-
-
-class OpenProjectCommand(BaseProjectCommand):
+class OpenProjectCommand(AbstractCommand):
     """Command: Open a Rhapsody project file."""
 
-    def __init__(self) -> None:
-        super().__init__(
-            name="open",
-            help="Open a Rhapsody project file.",
-            callback=self.execute,
-            params=[
-                click.Argument(["project_path"], type=click.Path(exists=True)),
-            ],
-        )
-
-    def execute(self, project_path: str) -> None:
+    def execute(self, project_path: str) -> None:  # type: ignore[override]
         """Execute the open command."""
         try:
             ctx = RhapsodyContext()
             ctx.connect("attach")
             ctx.open_project(project_path)
-            click.echo(f"Opened project: {project_path}")
-        except click.Abort:
-            raise
+            print(f"Opened project: {project_path}")
         except RhapsodyConnectionError as e:
-            click.echo(f"Connection error: {e}", err=True)
-            raise click.Abort() from e
+            print(f"Connection error: {e}", file=sys.stderr)
+            sys.exit(1)
         except Exception as e:
-            click.echo(f"Error: {e}", err=True)
-            raise click.Abort() from e
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
 
 
-class ListProjectsCommand(BaseProjectCommand):
+class ListProjectsCommand(AbstractCommand):
     """Command: List open projects."""
 
-    def __init__(self) -> None:
-        super().__init__(
-            name="list",
-            help="List open projects.",
-            callback=self.execute,
-            params=[],
-        )
-
-    def execute(self) -> None:
+    def execute(self) -> None:  # type: ignore[override]
         """Execute the list command."""
         try:
             ctx = RhapsodyContext()
@@ -65,7 +38,7 @@ class ListProjectsCommand(BaseProjectCommand):
             projects = ctx.app.getProjects()
 
             if not projects or len(projects) == 0:
-                click.echo("No open projects")
+                print("No open projects")
                 return
 
             rows = []
@@ -73,85 +46,42 @@ class ListProjectsCommand(BaseProjectCommand):
                 rows.append([proj.getName(), proj.getFilename()])
 
             output = OutputFormatter.table(["Name", "Path"], rows)
-            click.echo(output)
-        except click.Abort:
-            raise
+            print(output)
         except Exception as e:
-            click.echo(f"Error: {e}", err=True)
-            raise click.Abort() from e
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
 
 
-class CloseProjectCommand(BaseProjectCommand):
+class CloseProjectCommand(AbstractCommand):
     """Command: Close active project."""
 
-    def __init__(self) -> None:
-        super().__init__(
-            name="close",
-            help="Close active project.",
-            callback=self.execute,
-            params=[],
-        )
-
-    def execute(self) -> None:
+    def execute(self) -> None:  # type: ignore[override]
         """Execute the close command."""
         try:
             ctx = RhapsodyContext()
             if ctx.project is None:
-                click.echo("No active project")
+                print("No active project")
                 return
             ctx.close_project()
-            click.echo("Project closed")
-        except click.Abort:
-            raise
+            print("Project closed")
         except Exception as e:
-            click.echo(f"Error: {e}", err=True)
-            raise click.Abort() from e
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
 
 
-class NewProjectCommand(BaseProjectCommand):
+class NewProjectCommand(AbstractCommand):
     """Command: Create a new empty Rhapsody project."""
 
-    def __init__(self) -> None:
-        super().__init__(
-            name="new",
-            help="Create a new empty Rhapsody project.",
-            callback=self.execute,
-            params=[
-                click.Argument(["project_location"], type=click.Path()),
-                click.Argument(["project_name"]),
-            ],
-        )
-
-    def execute(self, project_location: str, project_name: str) -> None:
+    def execute(self, project_location: str, project_name: str) -> None:  # type: ignore[override]
         """Execute the new command."""
         try:
             ctx = RhapsodyContext()
             ctx.connect("attach")
             ctx.create_project(project_location, project_name)
-            click.echo(f"Created project: {project_name} at {project_location}")
-        except click.Abort:
-            raise
+            print(f"Created project: {project_name} at {project_location}")
         except RhapsodyConnectionError as e:
-            click.echo(f"Connection error: {e}", err=True)
-            raise click.Abort() from e
+            print(f"Connection error: {e}", file=sys.stderr)
+            sys.exit(1)
         except Exception as e:
-            click.echo(f"Error: {e}", err=True)
-            raise click.Abort() from e
-
-
-class ProjectCommandGroup(click.Group):
-    """Command group for project operations."""
-
-    def __init__(self) -> None:
-        super().__init__(
-            name="project",
-            help="Manage Rhapsody projects.",
-            invoke_without_command=False,
-        )
-        self.add_command(OpenProjectCommand())
-        self.add_command(ListProjectsCommand())
-        self.add_command(CloseProjectCommand())
-        self.add_command(NewProjectCommand())
-
-
-project = ProjectCommandGroup()
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)

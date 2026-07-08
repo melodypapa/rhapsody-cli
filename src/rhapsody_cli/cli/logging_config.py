@@ -1,7 +1,5 @@
 """Class-based logging configuration for the rhapsody_cli CLI."""
 
-from __future__ import annotations
-
 import logging
 
 _LOGGER_NAME = "rhapsody_cli"

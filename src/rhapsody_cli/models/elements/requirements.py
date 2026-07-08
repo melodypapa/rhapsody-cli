@@ -2,8 +2,6 @@
 from com.telelogic.rhapsody.core.
 """
 
-from __future__ import annotations
-
 from rhapsody_cli.models._core import (
     RPCollection,
     RPModelElement,

@@ -2,8 +2,6 @@
 com.telelogic.rhapsody.core.
 """
 
-from __future__ import annotations
-
 from typing import Any
 
 from rhapsody_cli.models._core import RPCollection, RPUnit, call_com, register_wrapper, wrap
@@ -97,6 +95,14 @@ class RPProject(RPPackage):
             An ``RPCollection`` of ``IRPPackage`` objects.
         """
         return RPCollection(call_com(lambda: self._com.getPackages()))
+
+    def getRoot(self) -> "RPProject":
+        """Returns the root project element.
+
+        Returns:
+            The project itself, which acts as the root container.
+        """
+        return self
 
 
 register_wrapper("Package", RPPackage)

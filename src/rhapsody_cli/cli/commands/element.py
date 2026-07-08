@@ -1,11 +1,10 @@
-"""Element-related CLI commands using class-based architecture."""
-
-from __future__ import annotations
+"""Element-related CLI commands for argparse."""
 
 import logging
+import sys
+from typing import Optional
 
-import click
-
+from rhapsody_cli.cli.abstract_command import AbstractCommand
 from rhapsody_cli.cli.context import RhapsodyContext
 from rhapsody_cli.cli.formatters import OutputFormatter
 from rhapsody_cli.exceptions import RhapsodyConnectionError
@@ -17,84 +16,72 @@ _NO_ACTIVE_INSTANCE_MESSAGE = (
 )
 
 
-class BaseElementCommand(click.Command):
-    """Base class for element commands."""
-
-    pass
-
-
-class AddElementCommand(BaseElementCommand):
+class AddElementCommand(AbstractCommand):
     """Command: Add a new element to the project."""
 
-    def __init__(self) -> None:
-        super().__init__(
-            name="add",
-            help="Add a new element to the project.",
-            callback=self.execute,
-            params=[
-                click.Option(
-                    ["--type", "element_type"],
-                    required=True,
-                    help="Element type (class, actor, etc)",
-                ),
-                click.Option(["--name"], required=True, help="Element name"),
-            ],
-        )
+    def execute(self, element_type: str, name: str) -> None:  # type: ignore[override]
+        """Execute the add command.
 
-    def execute(self, element_type: str, name: str) -> None:
-        """Execute the add command."""
+        Args:
+            element_type: Type of element to add (class, actor, package)
+            name: Name of the new element
+        """
         ctx = RhapsodyContext()
         try:
             project = ctx.get_active_project()
         except RhapsodyConnectionError as e:
             logger.error("Failed to attach to Rhapsody: %s", e)
-            click.echo(_NO_ACTIVE_INSTANCE_MESSAGE, err=True)
-            raise click.Abort() from e
+            print(_NO_ACTIVE_INSTANCE_MESSAGE, file=sys.stderr)
+            sys.exit(1)
 
         try:
-            root = project.getRoot()  # type: ignore[attr-defined]
+            root = project.getRoot()
+
+            # Find or use a suitable container
+            container = root
+
+            # For classes and actors, try to use the Default package if it exists
+            if element_type.lower() in ("class", "actor"):
+                nested_elements = root.getNestedElements()
+                for elem in nested_elements:
+                    if elem.getName() == "Default" and elem.getMetaClass() == "Package":
+                        container = elem
+                        break
+
             if element_type.lower() == "class":
-                root.createClass(name)
+                container.addClass(name)
             elif element_type.lower() == "actor":
-                root.createActor(name)
+                container.addActor(name)
             elif element_type.lower() == "package":
-                root.createPackage(name)
+                container.addNestedPackage(name) if container != root else root.addPackage(name)
             else:
-                click.echo(f"Error: Unknown element type '{element_type}'", err=True)
-                raise click.Abort()
+                print(f"Error: Unknown element type '{element_type}'", file=sys.stderr)
+                sys.exit(1)
 
             logger.info("Created %s: %s", element_type, name)
-            click.echo(f"Created {element_type}: {name}")
-        except click.Abort:
-            raise
+            print(f"Created {element_type}: {name}")
         except Exception as e:
             logger.error("Failed to create %s '%s': %s", element_type, name, e)
-            click.echo(f"Error: {e}", err=True)
-            raise click.Abort() from e
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
 
 
-class ViewElementCommand(BaseElementCommand):
+class ViewElementCommand(AbstractCommand):
     """Command: View element details."""
 
-    def __init__(self) -> None:
-        super().__init__(
-            name="view",
-            help="View element details.",
-            callback=self.execute,
-            params=[
-                click.Option(["--path"], required=True, help="Element path (e.g., Root::MyClass)"),
-            ],
-        )
+    def execute(self, path: str) -> None:  # type: ignore[override]
+        """Execute the view command.
 
-    def execute(self, path: str) -> None:
-        """Execute the view command."""
+        Args:
+            path: Element path (e.g., Root::MyClass)
+        """
         ctx = RhapsodyContext()
         try:
             ctx.get_active_project()
         except RhapsodyConnectionError as e:
             logger.error("Failed to attach to Rhapsody: %s", e)
-            click.echo(_NO_ACTIVE_INSTANCE_MESSAGE, err=True)
-            raise click.Abort() from e
+            print(_NO_ACTIVE_INSTANCE_MESSAGE, file=sys.stderr)
+            sys.exit(1)
 
         try:
             data = {
@@ -109,41 +96,41 @@ class ViewElementCommand(BaseElementCommand):
                 rows = [["path", path], ["type", "unknown"]]
                 output = OutputFormatter.table(["Property", "Value"], rows)
 
-            click.echo(output)
-        except click.Abort:
-            raise
+            print(output)
         except Exception as e:
             logger.error("Failed to view element '%s': %s", path, e)
-            click.echo(f"Error: {e}", err=True)
-            raise click.Abort() from e
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
 
 
-class QueryElementCommand(BaseElementCommand):
+class QueryElementCommand(AbstractCommand):
     """Command: Query elements in active project."""
 
-    def __init__(self) -> None:
-        super().__init__(
-            name="query",
-            help="Query elements in active project.",
-            callback=self.execute,
-            params=[
-                click.Option(["--filter"], default=None, help="Filter by type or name"),
-            ],
-        )
+    def execute(self, pattern: Optional[str] = None) -> None:  # type: ignore[override]
+        """Execute the query command.
 
-    def execute(self, filter: str) -> None:
-        """Execute the query command."""
+        Args:
+            pattern: Optional search pattern (not yet implemented)
+        """
         ctx = RhapsodyContext()
         try:
             project = ctx.get_active_project()
         except RhapsodyConnectionError as e:
             logger.error("Failed to attach to Rhapsody: %s", e)
-            click.echo(_NO_ACTIVE_INSTANCE_MESSAGE, err=True)
-            raise click.Abort() from e
+            print(_NO_ACTIVE_INSTANCE_MESSAGE, file=sys.stderr)
+            sys.exit(1)
 
         try:
-            root = project.getRoot()  # type: ignore[attr-defined]
-            elements = root.getNestedElements()
+            root = project.getRoot()
+            elements = list(root.getNestedElements())
+
+            # Also search in the Default package for classes
+            for elem in root.getNestedElements():
+                if elem.getName() == "Default" and elem.getMetaClass() == "Package":
+                    try:
+                        elements.extend(list(elem.getNestedElements()))
+                    except Exception:
+                        pass  # If we can't get nested elements, just skip
 
             if ctx.output_format == "json":
                 data = {
@@ -160,27 +147,109 @@ class QueryElementCommand(BaseElementCommand):
                 rows = [[elem.getName(), elem.getMetaClass()] for elem in elements]
                 output = OutputFormatter.table(["Name", "Type"], rows)
 
-            click.echo(output)
-        except click.Abort:
-            raise
+            print(output)
         except Exception as e:
             logger.error("Failed to query elements: %s", e)
-            click.echo(f"Error: {e}", err=True)
-            raise click.Abort() from e
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
 
 
-class ElementCommandGroup(click.Group):
-    """Command group for element operations."""
+class DeleteElementCommand(AbstractCommand):
+    """Command: Delete an element from the project."""
 
-    def __init__(self) -> None:
-        super().__init__(
-            name="element",
-            help="Manage model elements.",
-            invoke_without_command=False,
-        )
-        self.add_command(AddElementCommand())
-        self.add_command(ViewElementCommand())
-        self.add_command(QueryElementCommand())
+    def execute(self, path: str) -> None:  # type: ignore[override]
+        """Execute the delete command.
 
+        Args:
+            path: Element path to delete (e.g., Root::MyClass)
+        """
+        ctx = RhapsodyContext()
+        try:
+            project = ctx.get_active_project()
+        except RhapsodyConnectionError as e:
+            logger.error("Failed to attach to Rhapsody: %s", e)
+            print(_NO_ACTIVE_INSTANCE_MESSAGE, file=sys.stderr)
+            sys.exit(1)
 
-element = ElementCommandGroup()
+        try:
+            root = project.getRoot()
+
+            # Parse path to extract parent path and element name
+            path_parts = path.split("::")
+            if len(path_parts) < 2:
+                msg = f"Error: Invalid path format '{path}'. Use 'Root::ElementName'"
+                print(msg, file=sys.stderr)
+                sys.exit(1)
+
+            element_name = path_parts[-1]
+            parent_path_parts = path_parts[:-1]
+
+            # Navigate to parent container
+            parent = root
+            for part in parent_path_parts[1:]:  # Skip 'Root'
+                nested = parent.getNestedElements()
+                found = None
+                for elem in nested:
+                    if elem.getName() == part:
+                        found = elem
+                        break
+                if not found:
+                    print(f"Error: Parent path not found: {part}", file=sys.stderr)
+                    sys.exit(1)
+                parent = found
+
+            # Find and delete the element
+            nested = parent.getNestedElements()
+            element_to_delete = None
+            for elem in nested:
+                if elem.getName() == element_name:
+                    element_to_delete = elem
+                    break
+
+            # If not found in parent and parent is root, try Default package
+            if not element_to_delete and parent == root:
+                for elem in parent.getNestedElements():
+                    if elem.getName() == "Default" and elem.getMetaClass() == "Package":
+                        parent = elem
+                        nested = parent.getNestedElements()
+                        for elem_in_default in nested:
+                            if elem_in_default.getName() == element_name:
+                                element_to_delete = elem_in_default
+                                break
+                        break
+
+            if not element_to_delete:
+                error_msg = f"Error: Element '{element_name}' not found at path '{path}'"
+                print(error_msg, file=sys.stderr)
+                sys.exit(1)
+
+            # Try to delete using different methods based on element type
+            meta_class = element_to_delete.getMetaClass()
+            deleted = False
+
+            # Try direct delete method first (if available)
+            if hasattr(element_to_delete._com, "delete"):
+                element_to_delete._com.delete()
+                deleted = True
+            else:
+                # Fall back to parent container methods
+                if meta_class == "Class":
+                    parent._com.deleteClass(element_to_delete._com)
+                    deleted = True
+                elif meta_class == "Actor":
+                    parent._com.deleteActor(element_to_delete._com)
+                    deleted = True
+                elif meta_class == "Package":
+                    parent._com.deletePackage(element_to_delete._com)
+                    deleted = True
+
+            if not deleted:
+                print(f"Error: Unable to delete element of type '{meta_class}'", file=sys.stderr)
+                sys.exit(1)
+
+            logger.info("Deleted %s: %s", meta_class, element_name)
+            print(f"Deleted {meta_class.lower()}: {element_name}")
+        except Exception as e:
+            logger.error("Failed to delete element at path '%s': %s", path, e)
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)

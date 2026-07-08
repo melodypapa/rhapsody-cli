@@ -3,8 +3,6 @@
 com.telelogic.rhapsody.core.
 """
 
-from __future__ import annotations
-
 from typing import Any
 
 from rhapsody_cli.models._core import (
@@ -58,7 +56,7 @@ class RPClassifier(RPUnit):
         """
         return RPCollection(call_com(lambda: self._com.getOperations()))
 
-    def addGeneralization(self, base_classifier: RPClassifier) -> None:
+    def addGeneralization(self, base_classifier: "RPClassifier") -> None:
         """Adds a generalization relationship from this classifier to another.
 
         Args:
@@ -78,7 +76,7 @@ class RPClassifier(RPUnit):
 class RPClass(RPClassifier):
     """Wraps ``IRPClass``: represents a class in the model."""
 
-    def addSuperclass(self, super_class: RPClass) -> None:
+    def addSuperclass(self, super_class: "RPClass") -> None:
         """Adds a superclass to this class.
 
         Args:
@@ -254,7 +252,7 @@ class RPInterfaceItem(RPClassifier):
         """
         return call_com(lambda: str(self._com.getSignatureNoArgTypes()))
 
-    def matchOnSignature(self, item: RPInterfaceItem) -> bool:
+    def matchOnSignature(self, item: "RPInterfaceItem") -> bool:
         """Compares the signature of this operation with another operation's signature.
 
         Args:
