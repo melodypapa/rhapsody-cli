@@ -6,6 +6,7 @@ import sys
 
 from rhapsody_cli.cli.context import RhapsodyContext
 from rhapsody_cli.exceptions import RhapsodyConnectionError
+from rhapsody_cli.models.elements.containment import RPProject
 
 
 class AbstractAction:
@@ -102,7 +103,7 @@ class ElementManagementAction(RhapsodyContextAction):
     Provides shared element-specific utilities.
     """
 
-    def _get_active_project(self) -> object:
+    def _get_active_project(self) -> RPProject:
         """Get the active project, handling errors appropriately.
 
         Returns:

@@ -4,7 +4,6 @@ import argparse
 import sys
 
 from rhapsody_cli.actions.abstract_action import ElementManagementAction
-from rhapsody_cli.cli.context import RhapsodyContext
 
 
 class IOImportAction(ElementManagementAction):
