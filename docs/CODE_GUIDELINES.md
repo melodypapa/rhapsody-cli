@@ -110,19 +110,19 @@ class MyAction:
 
 ```python
 # 1. Standard library
-import sys
 import argparse
 import logging
+import sys
 from pathlib import Path
+from typing import List, Optional
 
 # 2. Third-party
-import click
 from tabulate import tabulate
 
 # 3. Local application
 from rhapsody_cli.cli.context import RhapsodyContext
 from rhapsody_cli.exceptions import RhapsodyConnectionError
-from rhapsody_cli.models.elements.class_ import RPClass
+from rhapsody_cli.models.elements.classifiers import RPClass
 ```
 
 ---
@@ -154,15 +154,19 @@ All code must follow strict Test-Driven Development (TDD):
 
 ```
 tests/
-├── cli/
-│   ├── __init__.py
-│   ├── test_commands.py       # Command class tests
-│   ├── test_formatters.py     # Formatter tests
-│   ├── test_context.py        # Context management tests
-│   └── test_integration.py    # End-to-end CLI tests
-├── test_application.py        # Application tests
-├── test_core.py               # Core infrastructure tests
-└── test_elements_*.py         # Element wrapper tests
+├── unit/                      # Unit tests (mocked COM, no Rhapsody needed)
+│   ├── conftest.py
+│   ├── test_application.py    # Application tests
+│   ├── test_public_api.py     # Public API tests
+│   ├── cli/                   # CLI support tests (formatters, context, logging)
+│   ├── commands/              # Command-group tests
+│   ├── models/                # Core infrastructure + element wrapper tests
+│   │   ├── test_core.py
+│   │   ├── fakes.py           # Fake COM objects
+│   │   └── elements/
+│   └── exceptions/            # Exception tests
+├── integration/               # Integration tests (require live Rhapsody)
+└── system/                    # End-to-end subprocess tests
 ```
 
 ### Test Naming Convention
@@ -176,77 +180,79 @@ tests/
 #### Step 1: Write Tests FIRST
 
 ```python
-# tests/cli/test_commands.py
+# tests/unit/commands/test_element_command.py
+import argparse
 import pytest
-from click.testing import CliRunner
-from rhapsody_cli.cli.commands.project import OpenProjectCommand
-from rhapsody_cli.cli.context import RhapsodyContext
+from unittest.mock import MagicMock
 
-class TestOpenProjectCommand:
-    def test_open_project_with_valid_path_succeeds(self):
-        """Test: OpenProjectCommand opens project with valid path."""
-        runner = CliRunner()
-        cmd = OpenProjectCommand()
-        
-        # Mock context
-        ctx = RhapsodyContext()
-        
-        result = runner.invoke(cmd, ["valid_project.rpy"])
-        assert result.exit_code == 0
-        assert "Opened project" in result.output
-    
-    def test_open_project_with_invalid_path_fails(self):
-        """Test: OpenProjectCommand fails with non-existent path."""
-        runner = CliRunner()
-        cmd = OpenProjectCommand()
-        
-        result = runner.invoke(cmd, ["nonexistent.rpy"])
-        assert result.exit_code != 0
-        assert "Error" in result.output
-    
-    def test_open_project_with_connection_error_shows_message(self):
-        """Test: OpenProjectCommand displays connection error gracefully."""
-        runner = CliRunner()
-        cmd = OpenProjectCommand()
-        
-        # Test error handling
-        result = runner.invoke(cmd, ["project.rpy"])
-        # Should show helpful error, not traceback
-        assert "Connection error" not in result.output or "traceback" not in result.output.lower()
+from rhapsody_cli.commands.element_command import ElementCommand
+from rhapsody_cli.actions.abstract_action import AbstractAction
+
+
+class FakeAction(AbstractAction):
+    def __init__(self) -> None:
+        super().__init__(command_id="fake")
+
+    def init_arguments(self, sub_parser) -> None:
+        p = sub_parser.add_parser("fake", help="A fake action")
+        p.add_argument("--name", required=True)
+
+    def execute(self, args: argparse.Namespace) -> None:
+        # Called by the command during dispatch in a real test
+        ...
+
+
+class TestElementCommandDispatch:
+    def test_element_command_dispatches_to_selected_action(self) -> None:
+        """Test: ElementCommand parses argv and dispatches to the matching action."""
+        # ARRANGE
+        action = FakeAction()
+        # ACT / ASSERT via constructing the command and invoking execute
+        # (Use a fake action that records its calls in a real test.)
+        ...
+
+    def test_element_command_with_unknown_subcommand_exits(self) -> None:
+        """Test: ElementCommand exits with code 2 for an unknown subcommand."""
+        with pytest.raises(SystemExit) as exc_info:
+            ElementCommand(["nonexistent"])
+        assert exc_info.value.code == 2
 ```
 
 #### Step 2: Implement Minimal Code
 
 ```python
-# src/rhapsody_cli/cli/commands/project.py
-class OpenProjectCommand(click.Command):
-    def __init__(self):
-        super().__init__(
-            name="open",
-            help="Open a Rhapsody project file.",
-            callback=self.execute,
-            params=[
-                click.Argument(["project_path"], type=click.Path(exists=True)),
-            ],
-        )
-    
-    def execute(self, project_path: str) -> None:
-        try:
-            ctx = RhapsodyContext()
-            ctx.connect("attach")
-            ctx.open_project(project_path)
-            click.echo(f"Opened project: {project_path}")
-        except click.Abort:
-            raise
-        except Exception as e:
-            click.echo(f"Error: {e}", err=True)
-            raise click.Abort() from e
+# src/rhapsody_cli/commands/element_command.py
+from typing import List
+
+from rhapsody_cli.actions.abstract_action import AbstractAction
+from rhapsody_cli.actions.element_action import (
+    ElementAddAction,
+    ElementDeleteAction,
+    ElementQueryAction,
+    ElementViewAction,
+)
+from rhapsody_cli.commands.abstract_command import AbstractCommand
+
+
+class ElementCommand(AbstractCommand):
+    """Element command group - handles element subcommands (add, view, query, delete)."""
+
+    def __init__(self, args: List[str]) -> None:
+        super().__init__("element", args)
+
+    def get_actions(self) -> List[AbstractAction]:
+        return [
+            ElementAddAction(),
+            ElementViewAction(),
+            ElementQueryAction(),
+            ElementDeleteAction(),
+        ]
 ```
 
 #### Step 3: Run Tests
 
 ```bash
-pytest tests/cli/test_commands.py::TestOpenProjectCommand -v
+pytest tests/unit/commands/test_element_command.py::TestElementCommandDispatch -v
 ```
 
 ---
@@ -257,7 +263,7 @@ pytest tests/cli/test_commands.py::TestOpenProjectCommand -v
 
 All code should be organized as classes, not module-level functions:
 
-- **CLI commands** → Command classes (inherit from `click.Command`)
+- **CLI commands** → Command groups (inherit from `AbstractCommand`) and actions (inherit from `AbstractAction`)
 - **Utilities** → Utility classes with methods (not static functions)
 - **Formatters** → Formatter instances (not static methods)
 - **Managers** → Manager classes (not helper functions)
@@ -313,7 +319,7 @@ Benefits:
 ### When to Use Functions
 
 Functions are acceptable only for:
-- **Decorators** (e.g., `@pytest.fixture`, `@click.pass_context`)
+- **Decorators** (e.g., `@pytest.fixture`)
 - **Lambdas** in comprehensions (e.g., `map(lambda x: x * 2, items)`)
 - **Module-level helpers** (private functions prefixed with `_`) used only within one file
 
@@ -333,19 +339,21 @@ class OutputFormatter:
 
 ✅ **Prefer:**
 ```python
+from typing import Any, List
+
 class OutputFormatter:
     def __init__(self, format_type: str = "table"):
         self.format_type = format_type
-    
-    def format(self, headers: list[str], rows: list[list[Any]]) -> str:
+
+    def format(self, headers: List[str], rows: List[List[Any]]) -> str:
         if self.format_type == "table":
             return self._format_table(headers, rows)
         elif self.format_type == "json":
             return self._format_json(headers, rows)
-    
+
     def _format_table(self, headers, rows):
         ...
-    
+
     def _format_json(self, headers, rows):
         ...
 ```
@@ -354,99 +362,75 @@ class OutputFormatter:
 
 ## CLI Commands
 
-### Command Class Pattern
+### Action Class Pattern
 
-All Click commands must use command classes, not decorators:
+All CLI subcommands use class-based actions, not Click decorators:
 
 #### Structure
 
 ```python
-class BaseCommand(click.Command):
-    """Base class for all CLI commands."""
-    
-    def __init__(self, name: str, help: str, callback, params):
-        super().__init__(name=name, help=help, callback=callback, params=params)
-    
-    def execute(self, **kwargs) -> None:
-        """Override in subclasses to implement command logic."""
+class AbstractAction:
+    """Base class for a single subcommand action."""
+
+    def __init__(self, command_id: str = "") -> None:
+        self.command_id = command_id
+        self.logger = logging.getLogger(self.__class__.__name__)
+
+    def init_arguments(self, sub_parser) -> None:
+        raise NotImplementedError
+
+    def execute(self, args: argparse.Namespace) -> None:
         raise NotImplementedError
 
 
-class MyCommand(BaseCommand):
-    def __init__(self):
-        super().__init__(
-            name="mycommand",
-            help="Description of my command.",
-            callback=self.execute,
-            params=[
-                click.Argument(["arg_name"], type=str),
-                click.Option(["--option"], type=str, default="default"),
-            ],
-        )
-    
-    def execute(self, arg_name: str, option: str) -> None:
-        """Execute the command."""
-        try:
-            # Implementation
-            click.echo(f"Executed with {arg_name} and {option}")
-        except click.Abort:
-            raise
-        except Exception as e:
-            click.echo(f"Error: {e}", err=True)
-            raise click.Abort() from e
+class ElementAddAction(ElementManagementAction):
+    def __init__(self) -> None:
+        super().__init__(command_id="add")
+
+    def init_arguments(self, sub_parser) -> None:
+        add_parser = sub_parser.add_parser("add", help="Add a new element")
+        add_parser.add_argument("--type", required=True)
+        add_parser.add_argument("--name", required=True)
+        self.add_verbose_argument(add_parser)
+
+    def execute(self, args: argparse.Namespace) -> None:
+        # Implementation
+        ...
 ```
 
 #### Command Group Pattern
 
 ```python
-class ProjectCommandGroup(click.Group):
-    """Command group for project operations."""
-    
-    def __init__(self):
-        super().__init__(
-            name="project",
-            help="Manage Rhapsody projects.",
-            invoke_without_command=False,
-        )
-        self.add_command(OpenProjectCommand())
-        self.add_command(ListProjectsCommand())
-        self.add_command(CloseProjectCommand())
+class ElementCommand(AbstractCommand):
+    """Command group for element operations."""
 
+    def __init__(self, args: List[str]) -> None:
+        super().__init__("element", args)
 
-class OpenProjectCommand(click.Command):
-    def __init__(self):
-        super().__init__(
-            name="open",
-            help="Open a Rhapsody project file.",
-            callback=self.execute,
-            params=[
-                click.Argument(["project_path"], type=click.Path(exists=True)),
-            ],
-        )
-    
-    def execute(self, project_path: str) -> None:
-        # Implementation
-        ...
+    def get_actions(self) -> List[AbstractAction]:
+        return [
+            ElementAddAction(),
+            ElementViewAction(),
+            ElementQueryAction(),
+            ElementDeleteAction(),
+        ]
 ```
 
-#### Error Handling in Commands
+#### Error Handling in Actions
 
 ```python
-def execute(self) -> None:
+def execute(self, args: argparse.Namespace) -> None:
     try:
         # Implementation
         ...
-    except click.Abort:
-        # User cancelled, don't re-wrap
+    except SystemExit:
         raise
-    except SpecificError as e:
-        # Catch specific errors first
-        click.echo(f"Specific error: {e}", err=True)
-        raise click.Abort() from e
+    except RhapsodyConnectionError as e:
+        self._handle_connection_error(e)
+        sys.exit(1)
     except Exception as e:
-        # Generic error handler last
-        click.echo(f"Unexpected error: {e}", err=True)
-        raise click.Abort() from e
+        self._handle_execution_error(e, "Operation")
+        sys.exit(1)
 ```
 
 ---
@@ -495,17 +479,19 @@ class MyAction(AbstractAction):
 ### OutputFormatter Pattern
 
 ```python
+from typing import Any, List
+
 class OutputFormatter:
     """Formats output data for CLI display."""
-    
+
     SUPPORTED_FORMATS = ("table", "json", "csv")
-    
+
     def __init__(self, format_type: str = "table"):
         if format_type not in self.SUPPORTED_FORMATS:
             raise ValueError(f"Unsupported format: {format_type}")
         self.format_type = format_type
-    
-    def format(self, headers: list[str], rows: list[list[Any]]) -> str:
+
+    def format(self, headers: List[str], rows: List[List[Any]]) -> str:
         """Format data according to configured format type."""
         if self.format_type == "table":
             return self._format_table(headers, rows)
@@ -515,19 +501,19 @@ class OutputFormatter:
             return self._format_csv(headers, rows)
         else:
             raise ValueError(f"Unknown format: {self.format_type}")
-    
-    def _format_table(self, headers: list[str], rows: list[list[Any]]) -> str:
+
+    def _format_table(self, headers: List[str], rows: List[List[Any]]) -> str:
         """Format as ASCII table."""
         if not rows:
             return "(no data)"
         return str(tabulate(rows, headers=headers, tablefmt="grid"))
-    
-    def _format_json(self, headers: list[str], rows: list[list[Any]]) -> str:
+
+    def _format_json(self, headers: List[str], rows: List[List[Any]]) -> str:
         """Format as JSON."""
         data = [dict(zip(headers, row)) for row in rows]
         return json.dumps(data, indent=2, default=str)
-    
-    def _format_csv(self, headers: list[str], rows: list[list[Any]]) -> str:
+
+    def _format_csv(self, headers: List[str], rows: List[List[Any]]) -> str:
         """Format as CSV."""
         output = io.StringIO()
         writer = csv.writer(output)
@@ -539,32 +525,34 @@ class OutputFormatter:
 ### Context Manager Pattern
 
 ```python
+from typing import Optional
+
 class RhapsodyContext:
     """Manages session state for CLI commands."""
-    
+
     def __init__(self):
-        self._app: RhapsodyApplication | None = None
-        self._project: RPProject | None = None
+        self._app: Optional[RhapsodyApplication] = None
+        self._project: Optional[RPProject] = None
         self._output_format: str = "table"
-    
+
     @property
-    def app(self) -> RhapsodyApplication | None:
+    def app(self) -> Optional[RhapsodyApplication]:
         return self._app
-    
+
     @property
-    def project(self) -> RPProject | None:
+    def project(self) -> Optional[RPProject]:
         return self._project
-    
+
     @property
     def output_format(self) -> str:
         return self._output_format
-    
+
     @output_format.setter
     def output_format(self, value: str) -> None:
         if value not in ("table", "json", "csv"):
             raise ValueError(f"Unknown format: {value}")
         self._output_format = value
-    
+
     def connect(self, method: str = "attach") -> RhapsodyApplication:
         """Connect to Rhapsody instance."""
         if self._app is None:
@@ -573,7 +561,7 @@ class RhapsodyContext:
             else:
                 self._app = RhapsodyApplication.launch()
         return self._app
-    
+
     def open_project(self, project_path: str) -> RPProject:
         """Open a project file."""
         if self._app is None:
@@ -581,13 +569,13 @@ class RhapsodyContext:
         assert self._app is not None
         self._project = self._app.openProject(project_path)
         return self._project
-    
+
     def close_project(self) -> None:
         """Close active project."""
         if self._project:
             self._project.close()
             self._project = None
-    
+
     def disconnect(self) -> None:
         """Disconnect from Rhapsody."""
         self.close_project()
@@ -605,16 +593,18 @@ class RhapsodyContext:
 All tests follow AAA structure:
 
 ```python
+from typing import Any, List
+
 def test_formatter_handles_empty_rows():
     """Test: Formatter handles empty rows gracefully."""
     # ARRANGE
     formatter = OutputFormatter("table")
     headers = ["Name", "Value"]
-    rows: list[list[Any]] = []
-    
+    rows: List[List[Any]] = []
+
     # ACT
     result = formatter.format(headers, rows)
-    
+
     # ASSERT
     assert result == "(no data)"
 ```
@@ -645,22 +635,22 @@ def test_context_open_project_calls_app_open_project():
 
 ```python
 def test_project_open_command_end_to_end():
-    """Test: 'project open' command works end-to-end."""
-    from click.testing import CliRunner
-    from rhapsody_cli.cli.commands.project import ProjectCommandGroup
-    
-    runner = CliRunner()
-    group = ProjectCommandGroup()
-    
-    with runner.isolated_filesystem():
-        # Create a test project file
-        Path("test.rpy").write_text("mock project content")
-        
-        # Run command
-        result = runner.invoke(group, ["open", "test.rpy"])
-        
-        # Assert
-        assert result.exit_code == 0
+    """Test: 'rhapsody-cli project open' works end-to-end via subprocess."""
+    import subprocess
+    import sys
+
+    # Create a test project file (mock)
+    Path("test.rpy").write_text("mock project content")
+
+    # Run the CLI as a subprocess
+    result = subprocess.run(
+        [sys.executable, "-m", "rhapsody_cli.cli.main", "project", "open", "test.rpy"],
+        capture_output=True,
+        text=True,
+    )
+
+    # Assert (exact assertions depend on the mocked environment)
+    assert result.returncode == 0
 ```
 
 ### Parameterized Tests
@@ -743,11 +733,11 @@ All code reviews must verify:
 - [ ] No camelCase outside of dunder methods?
 
 ### Specific to CLI Commands
-- [ ] Command inherits from `click.Command` or group?
-- [ ] Parameters defined in `__init__`?
-- [ ] Logic in `execute()` method?
-- [ ] Error handling includes `click.Abort`?
-- [ ] User-facing messages in `click.echo()`?
+- [ ] Action inherits from `AbstractAction` (or `RhapsodyContextAction` / `ElementManagementAction`)?
+- [ ] Arguments registered in `init_arguments()` via `sub_parser.add_parser(...)`?
+- [ ] Logic in `execute(args: argparse.Namespace)` method?
+- [ ] Error handling uses `_handle_connection_error` / `_handle_execution_error` and `sys.exit(1)`?
+- [ ] User-facing messages use `print(..., file=sys.stderr)` for errors?
 
 ### Specific to Tests
 - [ ] Uses Arrange-Act-Assert pattern?
@@ -764,10 +754,11 @@ All code reviews must verify:
 
 See the following for before/after refactoring:
 
-- **CLI commands:** `src/rhapsody_cli/cli/commands/`
+- **CLI commands:** `src/rhapsody_cli/commands/`
+- **CLI actions:** `src/rhapsody_cli/actions/`
 - **Formatters:** `src/rhapsody_cli/cli/formatters.py`
 - **Context:** `src/rhapsody_cli/cli/context.py`
-- **Tests:** `tests/test_cli.py`
+- **Tests:** `tests/unit/`
 
 ### Future Examples
 
@@ -779,7 +770,7 @@ After refactoring completes, this directory will contain exemplary class-based, 
 
 For clarification on these guidelines, refer to:
 - **TDD Resources:** [pytest documentation](https://pytest.org)
-- **Click Commands:** [Click documentation](https://click.palletsprojects.com)
+- **argparse:** [argparse documentation](https://docs.python.org/3/library/argparse.html)
 - **Python OOP:** [Real Python OOP Guide](https://realpython.com/python3-object-oriented-programming/)
 
 ---

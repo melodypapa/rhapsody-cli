@@ -10,16 +10,16 @@
 ## SWR_CLI_00001: CLI Entry Point
 
 **ID:** SWR_CLI_00001
-**Title: cli group is the main Click entry point for the rhapsody-cli tool
+**Title: main() is the main argparse entry point for the rhapsody-cli tool
 **Status:** Implemented
 **Priority:** High
 **Description:**
-The `cli` Click group shall be the main entry point for the command-line tool. It shall
-provide a `--output` option with choices `table`, `json`, `csv` (default `table`) that
-sets the output format on the `RhapsodyContext`. If no context object exists, a new
-`RhapsodyContext` shall be created. The group shall register the `project`, `element`,
-and `io` command subgroups.
-**Implementation:** src/rhapsody_cli/cli/main.py:cli
+The `main()` function in `src/rhapsody_cli/cli/cli.py` shall be the main entry point for
+the command-line tool. It shall read a `--output` option with choices `table`, `json`,
+`csv` (default `table`) and set the output format on a `RhapsodyContext`. It shall
+dispatch the first positional argument to one of the `AbstractCommand` subclasses:
+`ElementCommand`, `ProjectCommand`, or `IOCommand`.
+**Implementation:** src/rhapsody_cli/cli/cli.py:main
 **Last Changed:** 2026-07-07
 
 ---
@@ -31,9 +31,9 @@ and `io` command subgroups.
 **Status:** Implemented
 **Priority:** Medium
 **Description:**
-The `--output` option on the `cli` group shall accept one of `table`, `json`, or `csv`
-(default `table`) and store the selected format string on `ctx.obj.output_format`.
-**Implementation:** src/rhapsody_cli/cli/main.py:cli
+The `--output` option shall accept one of `table`, `json`, or `csv` (default `table`) and
+store the selected format string on `ctx.output_format` (where `ctx` is the `RhapsodyContext`).
+**Implementation:** src/rhapsody_cli/cli/cli.py:main
 **Last Changed:** 2026-07-07
 
 ---
@@ -64,11 +64,11 @@ quits app).
 **Priority:** High
 **Description:**
 The `project open` command shall accept a `project_path` argument (validated to exist on
-disk) and execute `OpenProjectCommand.execute`. It shall create a `RhapsodyContext`,
-connect via `"attach"`, open the project, and echo `"Opened project: {path}"`. On
-`RhapsodyConnectionError` or other exceptions, it shall echo the error to stderr and
-raise `click.Abort`.
-**Implementation:** src/rhapsody_cli/cli/commands/project.py:OpenProjectCommand
+disk) and execute the `ProjectOpenAction.execute` method. It shall create a `RhapsodyContext`,
+connect via `"attach"`, open the project, and print `"Opened project: {path}"`. On
+`RhapsodyConnectionError` or other exceptions, it shall print the error to stderr and
+call `sys.exit(1)`.
+**Implementation:** src/rhapsody_cli/actions/project_action.py:ProjectOpenAction
 **Last Changed:** 2026-07-07
 
 ---
@@ -80,12 +80,12 @@ raise `click.Abort`.
 **Status:** Implemented
 **Priority:** Medium
 **Description:**
-The `project list` command shall execute `ListProjectsCommand.execute`. It shall create a
+The `project list` command shall execute the `ProjectListAction.execute` method. It shall create a
 `RhapsodyContext`, connect via `"attach"`, and retrieve all open projects. If no projects
-are open it shall echo `"No open projects"`. Otherwise it shall format the project name
-and path as a table via `OutputFormatter.table` and echo the result. Exceptions are
-reported to stderr with `click.Abort`.
-**Implementation:** src/rhapsody_cli/cli/commands/project.py:ListProjectsCommand
+are open it shall print `"No open projects"`. Otherwise it shall format the project name
+and path as a table via `OutputFormatter.table` and print the result. Exceptions are
+reported to stderr via `sys.exit(1)`.
+**Implementation:** src/rhapsody_cli/actions/project_action.py:ProjectListAction
 **Last Changed:** 2026-07-07
 
 ---
@@ -97,11 +97,11 @@ reported to stderr with `click.Abort`.
 **Status:** Implemented
 **Priority:** Medium
 **Description:**
-The `project close` command shall execute `CloseProjectCommand.execute`. It shall create a
-`RhapsodyContext`; if no active project exists it shall echo `"No active project"`.
-Otherwise it shall close the project via `ctx.close_project()` and echo
-`"Project closed"`. Exceptions are reported to stderr with `click.Abort`.
-**Implementation:** src/rhapsody_cli/cli/commands/project.py:CloseProjectCommand
+The `project close` command shall execute the `ProjectCloseAction.execute` method. It shall create a
+`RhapsodyContext`; if no active project exists it shall print `"No active project"`.
+Otherwise it shall close the project via `ctx.close_project()` and print
+`"Project closed"`. Exceptions are reported to stderr via `sys.exit(1)`.
+**Implementation:** src/rhapsody_cli/actions/project_action.py:ProjectCloseAction
 **Last Changed:** 2026-07-07
 
 ---
@@ -114,12 +114,12 @@ Otherwise it shall close the project via `ctx.close_project()` and echo
 **Priority:** High
 **Description:**
 The `element add` command shall accept required `--type` and `--name` options and execute
-`AddElementCommand.execute`. It shall require an active project (else echo an error and
-abort). It shall fetch the project root and dispatch on `element_type.lower()`:
+the `ElementAddAction.execute` method. It shall require an active project (else print an error and
+exit). It shall fetch the project root and dispatch on `element_type.lower()`:
 `"class"` -> `root.createClass(name)`, `"actor"` -> `root.createActor(name)`,
-`"package"` -> `root.createPackage(name)`. Unknown types shall echo an error and abort.
-On success it shall echo `"Created {type}: {name}"`.
-**Implementation:** src/rhapsody_cli/cli/commands/element.py:AddElementCommand
+`"package"` -> `root.createPackage(name)`. Unknown types shall print an error and exit.
+On success it shall print `"Created {type}: {name}"`.
+**Implementation:** src/rhapsody_cli/actions/element_action.py:ElementAddAction
 **Last Changed:** 2026-07-07
 
 ---
@@ -132,11 +132,11 @@ On success it shall echo `"Created {type}: {name}"`.
 **Priority:** Low
 **Description:**
 The `element view` command shall accept a required `--path` option and execute
-`ViewElementCommand.execute`. It shall require an active project. It shall build a demo
+the `ElementViewAction.execute` method. It shall require an active project. It shall build a demo
 data dict (`path`, `type="unknown"`, properties) and format it as JSON (if
 `output_format == "json"`) or as a two-row table otherwise. Exceptions are reported to
-stderr with `click.Abort`.
-**Implementation:** src/rhapsody_cli/cli/commands/element.py:ViewElementCommand
+stderr via `sys.exit(1)`.
+**Implementation:** src/rhapsody_cli/actions/element_action.py:ElementViewAction
 **Last Changed:** 2026-07-07
 
 ---
@@ -149,12 +149,12 @@ stderr with `click.Abort`.
 **Priority:** Medium
 **Description:**
 The `element query` command shall accept an optional `--filter` option and execute
-`QueryElementCommand.execute`. It shall require an active project, fetch the project root,
+the `ElementQueryAction.execute` method. It shall require an active project, fetch the project root,
 and retrieve nested elements. When `output_format == "json"` it shall emit a JSON object
 with an `elements` array (each element having `name` and `type`). Otherwise it shall emit
-a table with columns `Name` and `Type`. Exceptions are reported to stderr with
-`click.Abort`.
-**Implementation:** src/rhapsody_cli/cli/commands/element.py:QueryElementCommand
+a table with columns `Name` and `Type`. Exceptions are reported to stderr via
+`sys.exit(1)`.
+**Implementation:** src/rhapsody_cli/actions/element_action.py:ElementQueryAction
 **Last Changed:** 2026-07-07
 
 ---
@@ -167,11 +167,11 @@ a table with columns `Name` and `Type`. Exceptions are reported to stderr with
 **Priority:** Low
 **Description:**
 The `io import` command shall accept a `source` argument (validated to exist) and a
-`--target` option (default `"Root"`) and execute `ImportCommand.execute`. It shall
-require an active project. It shall echo progress messages
+`--target` option (default `"Root"`) and execute the `IOImportAction.execute` method. It shall
+require an active project. It shall print progress messages
 (`"Importing from {source} into {target}..."`, a note about format dependency, and
-`"✓ Import completed"`). Exceptions are reported to stderr with `click.Abort`.
-**Implementation:** src/rhapsody_cli/cli/commands/io.py:ImportCommand
+`"✓ Import completed"`). Exceptions are reported to stderr via `sys.exit(1)`.
+**Implementation:** src/rhapsody_cli/actions/io_action.py:IOImportAction
 **Last Changed:** 2026-07-07
 
 ---
@@ -184,11 +184,11 @@ require an active project. It shall echo progress messages
 **Priority:** Low
 **Description:**
 The `io export` command shall accept an `output` argument (path) and a `--format` option
-(default `"xmi"`, help mentions `xmi, json`) and execute `ExportCommand.execute`. It
-shall require an active project. It shall echo progress messages
+(default `"xmi"`, help mentions `xmi, json`) and execute the `IOExportAction.execute` method. It
+shall require an active project. It shall print progress messages
 (`"Exporting to {output} as {format}..."`, a note about format dependency, and
-`"✓ Export completed: {output}"`). Exceptions are reported to stderr with `click.Abort`.
-**Implementation:** src/rhapsody_cli/cli/commands/io.py:ExportCommand
+`"✓ Export completed: {output}"`). Exceptions are reported to stderr via `sys.exit(1)`.
+**Implementation:** src/rhapsody_cli/actions/io_action.py:IOExportAction
 **Last Changed:** 2026-07-07
 
 ---
@@ -254,15 +254,15 @@ when `format_type == "json"`, to `csv_format` (coercing `data` to a list) when
 ## SWR_CLI_00016: Class-Based Command Architecture
 
 **ID:** SWR_CLI_00016
-**Title: CLI commands use a class-based Click command architecture
+**Title: CLI uses a class-based argparse command/action architecture
 **Status:** Implemented
 **Priority:** Medium
 **Description:**
-Each CLI command shall be implemented as a class extending `click.Command` (or a
-project/element/io-specific base like `BaseProjectCommand`, `BaseElementCommand`,
-`BaseIOCommand`). The command's `__init__` shall configure name, help, callback
-(`self.execute`), and params. Commands shall be grouped under a `click.Group` subclass
-(`ProjectCommandGroup`, `ElementCommandGroup`, `IOCommandGroup`) that registers the
-commands in its own `__init__`.
-**Implementation:** src/rhapsody_cli/cli/commands/project.py:BaseProjectCommand
+Each CLI subcommand shall be implemented as a class extending `AbstractAction` (or a
+specialized base like `RhapsodyContextAction`, `ElementManagementAction`). Each action
+registers its own argparse subparser in `init_arguments()` and owns its execution in
+`execute(args)`. Actions shall be grouped under an `AbstractCommand` subclass
+(`ElementCommand`, `ProjectCommand`, `IOCommand`) that returns its actions from
+`get_actions()`.
+**Implementation:** src/rhapsody_cli/actions/abstract_action.py:AbstractAction
 **Last Changed:** 2026-07-07

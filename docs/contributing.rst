@@ -37,7 +37,7 @@ Code Style
 
 * Follow PEP 8 style guidelines
 * Use 4 spaces for indentation
-* Maximum line length: 100 characters
+* Maximum line length: 200 characters
 * Type annotations required for all functions
 
 Formatting and Linting
@@ -73,7 +73,7 @@ All changes must have tests:
    pytest --cov=src/rhapsody_cli tests/
 
    # Run specific test
-   pytest tests/test_application.py
+   pytest tests/unit/test_application.py
 
 Test-Driven Development (TDD)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
