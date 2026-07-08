@@ -1,9 +1,8 @@
 """Element-related CLI commands for argparse."""
 
-from __future__ import annotations
-
 import logging
 import sys
+from typing import Optional
 
 from rhapsody_cli.cli.abstract_command import AbstractCommand
 from rhapsody_cli.cli.context import RhapsodyContext
@@ -107,7 +106,7 @@ class ViewElementCommand(AbstractCommand):
 class QueryElementCommand(AbstractCommand):
     """Command: Query elements in active project."""
 
-    def execute(self, pattern: str | None = None) -> None:  # type: ignore[override]
+    def execute(self, pattern: Optional[str] = None) -> None:  # type: ignore[override]
         """Execute the query command.
 
         Args:

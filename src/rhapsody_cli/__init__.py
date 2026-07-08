@@ -6,8 +6,6 @@ knowledge transfers directly. Importing this package registers all core
 element wrappers with the internal ``wrap()`` dispatch factory.
 """
 
-from __future__ import annotations
-
 from rhapsody_cli import models  # noqa: F401
 from rhapsody_cli.application import RhapsodyApplication
 from rhapsody_cli.exceptions import RhapsodyConnectionError, RhapsodyRuntimeException

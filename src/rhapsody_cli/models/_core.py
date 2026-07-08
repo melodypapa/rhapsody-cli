@@ -7,9 +7,7 @@ element, mirroring ``com.telelogic.rhapsody.core.IRPModelElement``.
 wrapper class using a registry populated by each element module.
 """
 
-from __future__ import annotations
-
-from typing import Any, Callable, Iterator, TypeVar
+from typing import Any, Callable, Dict, Iterator, Type, TypeVar
 
 from rhapsody_cli.exceptions import RhapsodyRuntimeException
 
@@ -24,10 +22,10 @@ T = TypeVar("T")
 #: wrapper class that should represent it. Populated by each element module
 #: at import time via ``register_wrapper``. Unmapped meta classes fall back
 #: to ``RPModelElement`` in ``wrap()`` (Task 5).
-_WRAPPER_REGISTRY: dict[str, type[RPModelElement]] = {}
+_WRAPPER_REGISTRY: Dict[str, Type["RPModelElement"]] = {}
 
 
-def register_wrapper(meta_class: str, wrapper_cls: type[RPModelElement]) -> None:
+def register_wrapper(meta_class: str, wrapper_cls: Type["RPModelElement"]) -> None:
     """Register ``wrapper_cls`` as the wrapper for COM objects of ``meta_class``."""
     _WRAPPER_REGISTRY[meta_class] = wrapper_cls
 
@@ -51,7 +49,7 @@ def _wrap_if_element(value: Any) -> Any:
     return value
 
 
-def wrap(com_obj: Any) -> RPModelElement:
+def wrap(com_obj: Any) -> "RPModelElement":
     """Wrap a raw Rhapsody COM model element in its matching wrapper class."""
     meta_class = str(_get_method_or_property(com_obj, "getMetaClass", "metaClass"))
     wrapper_cls = _WRAPPER_REGISTRY.get(meta_class, RPModelElement)
@@ -138,7 +136,7 @@ class RPUnit(RPModelElement):
     def setReadOnly(self, read_only: bool) -> None:
         call_com(lambda: self._com.setReadOnly(1 if read_only else 0))
 
-    def getNestedElements(self) -> RPCollection:
+    def getNestedElements(self) -> "RPCollection":
         """Returns all nested elements within this unit.
 
         Returns:

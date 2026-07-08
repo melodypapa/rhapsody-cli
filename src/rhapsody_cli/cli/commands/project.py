@@ -1,7 +1,5 @@
 """Project-related CLI commands using argparse architecture."""
 
-from __future__ import annotations
-
 import sys
 
 from rhapsody_cli.cli.abstract_command import AbstractCommand

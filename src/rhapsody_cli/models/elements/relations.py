@@ -2,8 +2,6 @@
 com.telelogic.rhapsody.core.
 """
 
-from __future__ import annotations
-
 from typing import Any, cast
 
 from rhapsody_cli.models._core import (
@@ -39,7 +37,7 @@ class RPRelation(RPUnit):
         """
         return wrap(call_com(lambda: self._com.getAssociationClass()))
 
-    def getInverse(self) -> RPRelation:
+    def getInverse(self) -> "RPRelation":
         """Gets the inverse relation for this (bidirectional) relation.
 
         Returns:

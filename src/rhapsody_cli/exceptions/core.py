@@ -6,8 +6,6 @@ into Rhapsody fails; ``RhapsodyConnectionError`` is specific to rhapsody_cli
 and covers failures to attach to or launch a Rhapsody instance.
 """
 
-from __future__ import annotations
-
 
 class RhapsodyRuntimeException(Exception):
     """Raised when a call into the Rhapsody COM API fails.

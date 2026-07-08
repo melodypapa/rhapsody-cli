@@ -1,10 +1,9 @@
 """Main CLI entry point using argparse."""
 
-from __future__ import annotations
-
 import argparse
 import logging
 import sys
+from typing import Optional
 
 from rhapsody_cli.cli.context import RhapsodyContext
 from rhapsody_cli.cli.logging_config import CliLoggingConfigurator
@@ -117,7 +116,7 @@ def main() -> None:
         )
         from rhapsody_cli.cli.commands.io import ExportCommand, ImportCommand
 
-        cmd: AbstractCommand | None = None
+        cmd: Optional[AbstractCommand] = None
 
         # Dispatch to element commands
         if args.command == "element":

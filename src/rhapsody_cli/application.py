@@ -1,7 +1,5 @@
 """RhapsodyApplication: the entry point for connecting to IBM Rhapsody."""
 
-from __future__ import annotations
-
 from typing import Any
 
 try:
@@ -27,7 +25,7 @@ class RhapsodyApplication:
         self._com = com_obj
 
     @classmethod
-    def attach(cls) -> RhapsodyApplication:
+    def attach(cls) -> "RhapsodyApplication":
         if win32com is None:
             raise RhapsodyConnectionError(
                 "pywin32 is not available; Rhapsody automation requires Windows."
@@ -39,7 +37,7 @@ class RhapsodyApplication:
         return cls(com_obj)
 
     @classmethod
-    def launch(cls) -> RhapsodyApplication:
+    def launch(cls) -> "RhapsodyApplication":
         if win32com is None:
             raise RhapsodyConnectionError(
                 "pywin32 is not available; Rhapsody automation requires Windows."
@@ -51,7 +49,7 @@ class RhapsodyApplication:
         return cls(com_obj)
 
     @classmethod
-    def connect(cls, prefer_attach: bool = True) -> RhapsodyApplication:
+    def connect(cls, prefer_attach: bool = True) -> "RhapsodyApplication":
         if prefer_attach:
             try:
                 return cls.attach()

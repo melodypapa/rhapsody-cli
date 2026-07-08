@@ -1,6 +1,6 @@
 """CLI session context management."""
 
-from __future__ import annotations
+from typing import Optional
 
 from rhapsody_cli import RhapsodyApplication
 from rhapsody_cli.models.elements.containment import RPProject
@@ -10,8 +10,8 @@ class RhapsodyContext:
     """Manages CLI session state: active project, output format, etc."""
 
     def __init__(self) -> None:
-        self.app: RhapsodyApplication | None = None
-        self.project: RPProject | None = None
+        self.app: Optional[RhapsodyApplication] = None
+        self.project: Optional[RPProject] = None
         self.output_format: str = "table"  # table, json, csv
 
     def connect(self, method: str = "attach") -> RhapsodyApplication:

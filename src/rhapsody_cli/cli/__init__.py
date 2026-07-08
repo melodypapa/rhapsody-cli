@@ -1,5 +1,5 @@
 """rhapsody_cli CLI - command-line interface for Rhapsody models."""
 
-from __future__ import annotations
+from typing import List
 
-__all__: list[str] = []
+__all__: List[str] = []

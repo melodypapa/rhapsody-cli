@@ -1,14 +1,13 @@
 """Abstract base class for all CLI commands."""
 
-from __future__ import annotations
-
 import sys
+from typing import List
 
 
 class AbstractCommand:
     """Base class for all CLI commands."""
 
-    def __init__(self, args: list[str]) -> None:
+    def __init__(self, args: List[str]) -> None:
         """Initialize command with raw arguments.
 
         Args:
