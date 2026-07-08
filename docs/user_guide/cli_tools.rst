@@ -4,7 +4,7 @@ CLI Tools
 Overview
 --------
 
-rhapsody-cli provides a command-line interface for common Rhapsody operations. The CLI is built using Click and supports multiple output formats.
+rhapsody-cli provides a command-line interface for common Rhapsody operations. The CLI is built using Python's standard-library argparse and supports multiple output formats.
 
 Getting Started
 ---------------

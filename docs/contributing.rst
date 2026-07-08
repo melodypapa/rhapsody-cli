@@ -73,7 +73,7 @@ All changes must have tests:
    pytest --cov=src/rhapsody_cli tests/
 
    # Run specific test
-   pytest tests/test_application.py
+   pytest tests/unit/test_application.py
 
 Test-Driven Development (TDD)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

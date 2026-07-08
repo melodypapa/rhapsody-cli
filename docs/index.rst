@@ -63,7 +63,7 @@ rhapsody-cli is organized in three layers:
    - Supports three connection modes: attach, launch, and connect
 
 3. **CLI Layer** (``rhapsody_cli.cli``)
-   - Click-based command-line interface
+   - argparse-based command-line interface
    - Command groups: project, element, io
    - Multiple output formats: table, JSON, CSV
 
@@ -219,15 +219,24 @@ Project Structure
    │       ├── package.py            # RPPackage
    │       ├── project.py            # RPProject
    │       └── ...                   # Other element types
-   └── cli/                           # CLI commands (class-based)
-       ├── main.py                   # CLI root group
+   ├── commands/                      # CLI command groups (argparse, class-based)
+   │   ├── __init__.py
+   │   ├── abstract_command.py       # AbstractCommand base class
+   │   ├── element_command.py        # ElementCommand
+   │   ├── project_command.py        # ProjectCommand
+   │   └── io_command.py             # IOCommand
+   ├── actions/                       # CLI subcommand actions (argparse, class-based)
+   │   ├── __init__.py
+   │   ├── abstract_action.py        # AbstractAction, RhapsodyContextAction, ElementManagementAction
+   │   ├── element_action.py         # ElementAddAction, ElementViewAction, ElementQueryAction, ElementDeleteAction
+   │   ├── project_action.py         # Project subcommand actions
+   │   └── io_action.py              # Import/export actions
+   └── cli/                           # CLI entry point and support
+       ├── main.py                   # Entry point (re-exports cli.main)
+       ├── cli.py                    # main() dispatcher
        ├── context.py                # RhapsodyContext (state management)
        ├── formatters.py             # OutputFormatter (table/JSON/CSV)
-       └── commands/
-           ├── __init__.py
-           ├── project.py            # ProjectCommandGroup
-           ├── element.py            # ElementCommandGroup
-           └── io.py                 # IOCommandGroup
+       └── logging_config.py         # CliLoggingConfigurator
 
 Supported Element Types
 -----------------------

@@ -33,7 +33,6 @@ To use the command-line interface, install with the ``cli`` extra:
 
 This adds:
 
-* **click** - CLI framework
 * **tabulate** - Table formatting
 * **rich** - Rich terminal output
 
@@ -62,7 +61,7 @@ For development, install the package in editable mode with all dependencies:
 This installs:
 
 * Development tools: pytest, ruff, black, mypy
-* CLI tools: click, tabulate, rich
+* CLI tools: tabulate, rich
 * Core dependencies: pywin32
 
 This allows you to modify the code without reinstalling.
