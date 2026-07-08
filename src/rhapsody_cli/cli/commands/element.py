@@ -53,12 +53,24 @@ class AddElementCommand(BaseElementCommand):
 
         try:
             root = project.getRoot()  # type: ignore[attr-defined]
+            
+            # Find or use a suitable container
+            container = root
+            
+            # For classes and actors, try to use the Default package if it exists
+            if element_type.lower() in ("class", "actor"):
+                nested_elements = root.getNestedElements()
+                for elem in nested_elements:
+                    if elem.getName() == "Default" and elem.getMetaClass() == "Package":
+                        container = elem
+                        break
+            
             if element_type.lower() == "class":
-                root.createClass(name)
+                container.addClass(name)
             elif element_type.lower() == "actor":
-                root.createActor(name)
+                container.addActor(name)
             elif element_type.lower() == "package":
-                root.createPackage(name)
+                container.addNestedPackage(name) if container != root else root.addPackage(name)
             else:
                 click.echo(f"Error: Unknown element type '{element_type}'", err=True)
                 raise click.Abort()
@@ -147,7 +159,15 @@ class QueryElementCommand(BaseElementCommand):
 
         try:
             root = project.getRoot()  # type: ignore[attr-defined]
-            elements = root.getNestedElements()
+            elements = list(root.getNestedElements())
+            
+            # Also search in the Default package for classes
+            for elem in root.getNestedElements():
+                if elem.getName() == "Default" and elem.getMetaClass() == "Package":
+                    try:
+                        elements.extend(list(elem.getNestedElements()))
+                    except Exception:
+                        pass  # If we can't get nested elements, just skip
 
             if ctx.output_format == "json":
                 data = {
@@ -236,6 +256,18 @@ class DeleteElementCommand(BaseElementCommand):
                 if elem.getName() == element_name:
                     element_to_delete = elem
                     break
+            
+            # If not found in parent and parent is root, try Default package
+            if not element_to_delete and parent == root:
+                for elem in parent.getNestedElements():
+                    if elem.getName() == "Default" and elem.getMetaClass() == "Package":
+                        parent = elem
+                        nested = parent.getNestedElements()
+                        for elem_in_default in nested:
+                            if elem_in_default.getName() == element_name:
+                                element_to_delete = elem_in_default
+                                break
+                        break
 
             if not element_to_delete:
                 click.echo(f"Error: Element '{element_name}' not found at path '{path}'", err=True)
@@ -283,11 +315,27 @@ class ElementCommandGroup(click.Group):
             name="element",
             help="Manage model elements.",
             invoke_without_command=False,
+            params=[
+                click.Option(
+                    ["--verbose", "-v"],
+                    is_flag=True,
+                    default=False,
+                    help="Enable DEBUG-level logging (default: INFO).",
+                ),
+            ],
         )
         self.add_command(AddElementCommand())
         self.add_command(ViewElementCommand())
         self.add_command(QueryElementCommand())
         self.add_command(DeleteElementCommand())
+
+    def invoke(self, ctx: click.Context) -> object:
+        """Override invoke to configure logging based on verbose flag."""
+        from rhapsody_cli.cli.logging_config import CliLoggingConfigurator
+        
+        verbose = ctx.params.get("verbose", False)
+        CliLoggingConfigurator(verbose=verbose).configure()
+        return super().invoke(ctx)
 
 
 element = ElementCommandGroup()

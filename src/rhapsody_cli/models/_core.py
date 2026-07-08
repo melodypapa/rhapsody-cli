@@ -138,6 +138,14 @@ class RPUnit(RPModelElement):
     def setReadOnly(self, read_only: bool) -> None:
         call_com(lambda: self._com.setReadOnly(1 if read_only else 0))
 
+    def getNestedElements(self) -> RPCollection:
+        """Returns all nested elements within this unit.
+
+        Returns:
+            An ``RPCollection`` of nested model elements.
+        """
+        return RPCollection(call_com(lambda: self._com.getNestedElements()))
+
 
 class RPCollection:
     """Wraps ``IRPCollection``: an iterable/indexable container of elements."""

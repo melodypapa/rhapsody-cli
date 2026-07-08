@@ -99,11 +99,20 @@ class TestAddElementCommandAttachBehavior:
     """Tests for AddElementCommand attaching to the live Rhapsody instance."""
 
     def test_add_command_creates_class_on_active_project(self) -> None:
-        """Test: add --type class calls createClass on the active project's root."""
+        """Test: add --type class calls addClass on the Default package."""
         runner = CliRunner()
         group = ElementCommandGroup()
 
+        # Create a mock Default package
+        fake_default_package = MagicMock(name="FakeDefaultPackage")
+        fake_default_package.getName.return_value = "Default"
+        fake_default_package.getMetaClass.return_value = "Package"
+
+        # Create a mock root with nested elements
         fake_root = MagicMock(name="FakeRoot")
+        fake_nested_elements = [fake_default_package]
+        fake_root.getNestedElements.return_value = fake_nested_elements
+
         fake_project = MagicMock(name="FakeProject")
         fake_project.getRoot.return_value = fake_root
 
@@ -115,7 +124,7 @@ class TestAddElementCommandAttachBehavior:
             result = runner.invoke(group, ["add", "--type", "class", "--name", "Foo"])
 
         assert result.exit_code == 0
-        fake_root.createClass.assert_called_once_with("Foo")
+        fake_default_package.addClass.assert_called_once_with("Foo")
         assert "Created class: Foo" in result.output
 
     def test_add_command_reports_no_running_instance(self) -> None:

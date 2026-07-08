@@ -98,6 +98,14 @@ class RPProject(RPPackage):
         """
         return RPCollection(call_com(lambda: self._com.getPackages()))
 
+    def getRoot(self) -> RPProject:
+        """Returns the root project element.
+
+        Returns:
+            The project itself, which acts as the root container.
+        """
+        return self
+
 
 register_wrapper("Package", RPPackage)
 register_wrapper("Project", RPProject)

@@ -59,7 +59,7 @@ def test_cli_help_does_not_list_project_command() -> None:
 
 
 def test_cli_verbose_flag_configures_debug_logging() -> None:
-    """Test --verbose flag configures the rhapsody_cli logger at DEBUG level."""
+    """Test --verbose flag on subcommand configures the rhapsody_cli logger at DEBUG level."""
     logger = logging.getLogger("rhapsody_cli")
 
     def check_logger_level() -> None:
@@ -68,7 +68,8 @@ def test_cli_verbose_flag_configures_debug_logging() -> None:
 
     runner = CliRunner()
     with patch.object(logging.getLogger("rhapsody_cli"), "info", side_effect=check_logger_level):
-        result = runner.invoke(cli, ["--verbose", "--help"])
+        # Now --verbose is on the subcommand, so test with element --verbose
+        result = runner.invoke(cli, ["element", "--verbose", "--help"])
 
     # Check that --verbose was accepted (exit code 0)
     assert result.exit_code == 0
@@ -77,7 +78,7 @@ def test_cli_verbose_flag_configures_debug_logging() -> None:
 def test_cli_without_verbose_flag_configures_info_logging() -> None:
     """Test omitting --verbose configures the rhapsody_cli logger at INFO level."""
     runner = CliRunner()
-    result = runner.invoke(cli, ["--help"])
+    result = runner.invoke(cli, ["element", "--help"])
     assert result.exit_code == 0
 
 

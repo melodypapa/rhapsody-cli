@@ -102,9 +102,25 @@ class IOCommandGroup(click.Group):
             name="io",
             help="Import and export Rhapsody models.",
             invoke_without_command=False,
+            params=[
+                click.Option(
+                    ["--verbose", "-v"],
+                    is_flag=True,
+                    default=False,
+                    help="Enable DEBUG-level logging (default: INFO).",
+                ),
+            ],
         )
         self.add_command(ImportCommand())
         self.add_command(ExportCommand())
+
+    def invoke(self, ctx: click.Context) -> object:
+        """Override invoke to configure logging based on verbose flag."""
+        from rhapsody_cli.cli.logging_config import CliLoggingConfigurator
+        
+        verbose = ctx.params.get("verbose", False)
+        CliLoggingConfigurator(verbose=verbose).configure()
+        return super().invoke(ctx)
 
 
 io = IOCommandGroup()
