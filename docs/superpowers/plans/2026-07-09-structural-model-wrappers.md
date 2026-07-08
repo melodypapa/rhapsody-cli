@@ -77,13 +77,32 @@ Test files mirror this under `tests/unit/models/elements/` with `test_*.py` per 
 
 ---
 
+## Progress
+
+| Task | Status | Commit | Summary |
+|------|--------|--------|---------|
+| 1 | DONE | `93ebd3c` | Split flat modules into packages, 467 tests pass |
+| 2 | DONE | `b1129cd` | 110 new methods on RPModelElement, 143 tests |
+| 3 | DONE | `a398907` | 24 new methods on RPUnit, 168 tests |
+| 4 | DONE | `1620485` | 40 new methods on RPClassifier, 47 tests |
+| 5 | DONE | `e637a4b` | 24 new RPClass methods, 8 new RPInstance methods, RPRelation audited |
+| 6 | TODO | — | Complete RPPackage and RPProject |
+| 7 | TODO | — | Add 7 containment wrappers |
+| 8 | TODO | — | Add leaf wrappers Group A + misc |
+| 9 | TODO | — | Add leaf wrappers Group B |
+| 10 | TODO | — | Integration tests + final audit |
+
+**Test count:** 467 passed, 2 skipped (as of Task 5).
+
+---
+
 ## Task Index
 
-- **Task 1:** Refactor flat modules into packages (pure move, no new methods)
-- **Task 2:** Complete `RPModelElement` (base layer — `_core.py`)
-- **Task 3:** Complete `RPUnit` (base layer — `_core.py`)
-- **Task 4:** Complete `RPClassifier` (mid layer)
-- **Task 5:** Complete `RPClass`, audit `RPRelation`, complete `RPInstance` (mid layer)
+- **Task 1:** ~~Refactor flat modules into packages (pure move, no new methods)~~ DONE
+- **Task 2:** ~~Complete `RPModelElement` (base layer — `_core.py`)~~ DONE
+- **Task 3:** ~~Complete `RPUnit` (base layer — `_core.py`)~~ DONE
+- **Task 4:** ~~Complete `RPClassifier` (mid layer)~~ DONE
+- **Task 5:** ~~Complete `RPClass`, audit `RPRelation`, complete `RPInstance` (mid layer)~~ DONE
 - **Task 6:** Complete `RPPackage` and `RPProject` (containment layer)
 - **Task 7:** Add containment wrappers (`RPProfile`, `RPComponent`, `RPConfiguration`, `RPModule`, `RPNode`, `RPCollaboration`, `RPComponentInstance`)
 - **Task 8:** Add leaf wrappers Group A + B relations + misc (`RPGeneralization`, `RPDependency`, `RPHyperLink`, `RPAssociationRole`, `RPComment`, `RPConstraint`, `RPEnumerationLiteral`)
