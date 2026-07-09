@@ -1,6 +1,6 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPComponentInstance``."""
 
-from rhapsody_cli.models.core import register_wrapper
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.relations.model_instance import RPInstance
 
 
@@ -10,4 +10,4 @@ class RPComponentInstance(RPInstance):
     pass
 
 
-register_wrapper("ComponentInstance", RPComponentInstance)
+AbstractRPModelElement.register_wrapper("ComponentInstance", RPComponentInstance)

@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from rhapsody_cli.models.core import RPModelElement, call_com, register_wrapper, wrap
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
 
 
@@ -19,7 +19,7 @@ class RPActor(RPClassifier):
         Returns:
             The wrapped ``IRPEventReception`` created.
         """
-        return wrap(call_com(lambda: self._com.addEventReceptionWithEvent(name, event._com)))
+        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addEventReceptionWithEvent(name, event._com)))
 
     def getIsBehaviorOverriden(self) -> bool:
         """Checks whether the behavior of the actor is overridden.
@@ -27,7 +27,7 @@ class RPActor(RPClassifier):
         Returns:
             ``True`` if the behavior is overridden, ``False`` otherwise.
         """
-        return call_com(lambda: bool(self._com.getIsBehaviorOverriden()))
+        return AbstractRPModelElement.call_com(lambda: bool(self._com.getIsBehaviorOverriden()))
 
     def setIsBehaviorOverriden(self, is_overridden: bool) -> None:
         """Sets whether the behavior of the actor is overridden.
@@ -35,7 +35,7 @@ class RPActor(RPClassifier):
         Args:
             is_overridden: ``True`` to mark the behavior as overridden, ``False`` otherwise.
         """
-        call_com(lambda: self._com.setIsBehaviorOverriden(1 if is_overridden else 0))
+        AbstractRPModelElement.call_com(lambda: self._com.setIsBehaviorOverriden(1 if is_overridden else 0))
 
 
-register_wrapper("Actor", RPActor)
+AbstractRPModelElement.register_wrapper("Actor", RPActor)

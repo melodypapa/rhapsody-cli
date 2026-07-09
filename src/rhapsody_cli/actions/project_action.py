@@ -1,7 +1,6 @@
 """Project actions - each subcommand of `project` as its own Action class."""
 
 import argparse
-import sys
 
 from rhapsody_cli.actions.abstract_action import RhapsodyContextAction
 from rhapsody_cli.cli.context import RhapsodyContext
@@ -29,13 +28,11 @@ class ProjectOpenAction(RhapsodyContextAction):
             ctx = RhapsodyContext()
             ctx.connect("attach")
             ctx.open_project(project_path)
-            print(f"Opened project: {project_path}")
+            self.logger.info("Opened project: %s", project_path)
         except RhapsodyConnectionError as e:
             self._handle_connection_error(e, "Failed to open project")
-            sys.exit(1)
         except Exception as e:
             self._handle_execution_error(e, f"Failed to open project '{project_path}'")
-            sys.exit(1)
 
 
 class ProjectListAction(RhapsodyContextAction):
@@ -59,18 +56,20 @@ class ProjectListAction(RhapsodyContextAction):
             projects = ctx.app.getProjects()
 
             if not projects or len(projects) == 0:
-                print("No open projects")
+                self.logger.info("No open projects")
                 return
 
             rows = []
             for proj in projects:
                 rows.append([proj.getName(), proj.getFilename()])
 
+            # NOTE: This is the command's result data (not a status/log
+            # message), so it is written directly to stdout via print()
+            # rather than the logger, to keep it safe for piping/redirection.
             output = OutputFormatter.table(["Name", "Path"], rows)
             print(output)
         except Exception as e:
             self._handle_execution_error(e, "Failed to list projects")
-            sys.exit(1)
 
 
 class ProjectCloseAction(RhapsodyContextAction):
@@ -90,13 +89,12 @@ class ProjectCloseAction(RhapsodyContextAction):
         try:
             ctx = RhapsodyContext()
             if ctx.project is None:
-                print("No active project")
+                self.logger.info("No active project")
                 return
             ctx.close_project()
-            print("Project closed")
+            self.logger.info("Project closed")
         except Exception as e:
             self._handle_execution_error(e, "Failed to close project")
-            sys.exit(1)
 
 
 class ProjectNewAction(RhapsodyContextAction):
@@ -121,10 +119,8 @@ class ProjectNewAction(RhapsodyContextAction):
             ctx = RhapsodyContext()
             ctx.connect("attach")
             ctx.create_project(project_location, project_name)
-            print(f"Created project: {project_name} at {project_location}")
+            self.logger.info("Created project: %s at %s", project_name, project_location)
         except RhapsodyConnectionError as e:
             self._handle_connection_error(e, "Failed to create project")
-            sys.exit(1)
         except Exception as e:
             self._handle_execution_error(e, f"Failed to create project '{project_name}'")
-            sys.exit(1)

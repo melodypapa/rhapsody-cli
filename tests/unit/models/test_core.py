@@ -1,17 +1,17 @@
-"""Tests for rhapsody_cli._core: call_com, RPModelElement, wrap()."""
+"""Tests for rhapsody_cli._core class-based wrapping utilities."""
 
 from unittest.mock import MagicMock, call
 
 import pytest
 
+import rhapsody_cli.models.core as core_module
 from rhapsody_cli.exceptions import RhapsodyRuntimeException
 from rhapsody_cli.models.core import (
+    AbstractRPModelElement,
     AddToModelMode,
     RPCollection,
     RPModelElement,
     RPUnit,
-    call_com,
-    register_wrapper,
 )
 from tests.unit.models.fakes import make_com_error, make_fake_collection, make_fake_element
 
@@ -21,7 +21,7 @@ class _FakeClassWrapper(RPModelElement):
 
 
 def test_call_com_returns_value_on_success() -> None:
-    result = call_com(lambda: 42)
+    result = AbstractRPModelElement.call_com(lambda: 42)
 
     assert result == 42
 
@@ -31,7 +31,7 @@ def test_call_com_translates_com_error() -> None:
         raise make_com_error("getName failed")
 
     with pytest.raises(RhapsodyRuntimeException, match="getName failed"):
-        call_com(failing)
+        AbstractRPModelElement.call_com(failing)
 
 
 def test_call_com_does_not_translate_other_exceptions() -> None:
@@ -39,7 +39,19 @@ def test_call_com_does_not_translate_other_exceptions() -> None:
         raise ValueError("not a COM error")
 
     with pytest.raises(ValueError, match="not a COM error"):
-        call_com(failing)
+        AbstractRPModelElement.call_com(failing)
+
+
+def test_core_module_no_longer_exports_backward_compatibility_wrappers() -> None:
+    for wrapper_name in (
+        "register_wrapper",
+        "call_com",
+        "_wrap_if_element",
+        "wrap",
+        "_get_method_or_property",
+        "_set_method_or_property",
+    ):
+        assert not hasattr(core_module, wrapper_name)
 
 
 def test_model_element_get_name_delegates_to_com() -> None:
@@ -107,9 +119,7 @@ def test_wrap_falls_back_to_meta_class_property_when_method_missing() -> None:
     fake = MagicMock(spec=["metaClass"])
     fake.metaClass = "Class"
 
-    from rhapsody_cli.models.core import wrap
-
-    element = wrap(fake)
+    element = AbstractRPModelElement.wrap(fake)
 
     assert element.getMetaClass() == "Class"
 
@@ -292,12 +302,10 @@ def test_collection_get_item_falls_back_to_item_property_when_method_missing() -
 
 
 def test_wrap_dispatches_to_registered_wrapper() -> None:
-    register_wrapper("FakeMetaType", _FakeClassWrapper)
+    AbstractRPModelElement.register_wrapper("FakeMetaType", _FakeClassWrapper)
     fake = make_fake_element("FakeMetaType", getName="Thing")
 
-    from rhapsody_cli.models.core import wrap
-
-    wrapped = wrap(fake)
+    wrapped = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, _FakeClassWrapper)
     assert wrapped.getName() == "Thing"
@@ -306,9 +314,7 @@ def test_wrap_dispatches_to_registered_wrapper() -> None:
 def test_wrap_falls_back_to_model_element_for_unregistered_type() -> None:
     fake = make_fake_element("SomeUnmappedType", getName="Mystery")
 
-    from rhapsody_cli.models.core import wrap
-
-    wrapped = wrap(fake)
+    wrapped = AbstractRPModelElement.wrap(fake)
 
     assert type(wrapped) is RPModelElement
     assert wrapped.getName() == "Mystery"

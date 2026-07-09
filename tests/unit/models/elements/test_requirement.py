@@ -1,6 +1,6 @@
 """Tests for rhapsody_cli.models.elements.requirements.RPRequirement."""
 
-from rhapsody_cli.models.core import wrap
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.model_requirements import RPAnnotation, RPRequirement
 from tests.unit.models.fakes import make_fake_element
 
@@ -32,6 +32,6 @@ def test_requirement_set_requirement_id_delegates_to_com() -> None:
 def test_requirement_is_registered_for_meta_class_requirement() -> None:
     fake = make_fake_element("Requirement", getName="REQ-1")
 
-    wrapped = wrap(fake)
+    wrapped = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, RPRequirement)

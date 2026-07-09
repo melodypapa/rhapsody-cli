@@ -1,6 +1,6 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPStereotype``."""
 
-from rhapsody_cli.models.core import register_wrapper
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
 
 
@@ -10,4 +10,4 @@ class RPStereotype(RPClassifier):
     pass
 
 
-register_wrapper("Stereotype", RPStereotype)
+AbstractRPModelElement.register_wrapper("Stereotype", RPStereotype)

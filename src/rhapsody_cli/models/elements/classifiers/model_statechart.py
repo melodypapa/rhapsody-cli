@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from rhapsody_cli.models.core import RPModelElement, call_com, register_wrapper, wrap
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 from rhapsody_cli.models.elements.classifiers.model_class import RPClass
 
 
@@ -22,15 +22,15 @@ class RPStatechart(RPClass):
         Returns:
             The wrapped node element created.
         """
-        return wrap(call_com(lambda: self._com.addNewNodeByType(meta_type, x_position, y_position, width, height)))
+        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewNodeByType(meta_type, x_position, y_position, width, height)))
 
     def createGraphics(self) -> None:
         """Creates the graphics/diagram representation for the statechart."""
-        call_com(lambda: self._com.createGraphics())
+        AbstractRPModelElement.call_com(lambda: self._com.createGraphics())
 
     def closeDiagram(self) -> None:
         """Closes the statechart diagram."""
-        call_com(lambda: self._com.closeDiagram())
+        AbstractRPModelElement.call_com(lambda: self._com.closeDiagram())
 
     def deleteState(self, state: RPModelElement) -> None:
         """Deletes a state from the statechart.
@@ -38,7 +38,7 @@ class RPStatechart(RPClass):
         Args:
             state: The state element to delete.
         """
-        call_com(lambda: self._com.deleteState(state._com))
+        AbstractRPModelElement.call_com(lambda: self._com.deleteState(state._com))
 
 
-register_wrapper("Statechart", RPStatechart)
+AbstractRPModelElement.register_wrapper("Statechart", RPStatechart)

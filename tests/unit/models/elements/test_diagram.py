@@ -1,6 +1,6 @@
 """Tests for rhapsody_cli.elements.diagram.RPDiagram."""
 
-from rhapsody_cli.models.core import RPModelElement, RPUnit, wrap
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement, RPUnit
 from rhapsody_cli.models.elements.model_diagrams import RPDiagram
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -63,6 +63,6 @@ def test_diagram_get_corresponding_graphic_elements_returns_collection() -> None
 def test_diagram_is_registered_for_meta_class_activity_diagram() -> None:
     fake = make_fake_element("ActivityDiagram", getName="MainFlow")
 
-    wrapped = wrap(fake)
+    wrapped = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, RPDiagram)

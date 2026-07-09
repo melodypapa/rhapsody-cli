@@ -1,4 +1,4 @@
-"""Concrete Rhapsody element wrappers, registered with rhapsody_cli.core.wrap()."""
+"""Concrete Rhapsody element wrappers, registered with ``AbstractRPModelElement.wrap()``."""
 
 from rhapsody_cli.models.elements import classifiers as classifiers  # noqa: F401
 from rhapsody_cli.models.elements import containment as containment  # noqa: F401

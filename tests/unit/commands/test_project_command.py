@@ -13,6 +13,7 @@ from rhapsody_cli.actions.project_action import (
 )
 from rhapsody_cli.cli.context import RhapsodyContext
 from rhapsody_cli.commands.project_command import ProjectCommand
+from rhapsody_cli.exceptions import CliExecutionError
 
 
 class TestProjectCommandDispatch:
@@ -24,8 +25,8 @@ class TestProjectCommandDispatch:
         assert cmd._subcommand == "open"
 
     def test_missing_subcommand_exits(self) -> None:
-        """Test: no subcommand causes SystemExit."""
-        with pytest.raises(SystemExit):
+        """Test: no subcommand raises CliExecutionError."""
+        with pytest.raises(CliExecutionError):
             ProjectCommand([])
 
 

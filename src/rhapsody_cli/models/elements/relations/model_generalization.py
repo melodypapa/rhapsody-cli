@@ -1,6 +1,6 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPGeneralization``."""
 
-from rhapsody_cli.models.core import RPModelElement, register_wrapper
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 
 
 class RPGeneralization(RPModelElement):
@@ -9,4 +9,4 @@ class RPGeneralization(RPModelElement):
     pass
 
 
-register_wrapper("Generalization", RPGeneralization)
+AbstractRPModelElement.register_wrapper("Generalization", RPGeneralization)

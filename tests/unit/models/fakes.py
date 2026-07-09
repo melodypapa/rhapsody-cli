@@ -14,7 +14,7 @@ def make_fake_element(meta_class: str, **method_returns: Any) -> MagicMock:
     """Build a fake COM object representing an IRPModelElement subtype.
 
     ``meta_class`` is the string returned by ``getMetaClass()`` (e.g.
-    ``"Class"``, ``"Package"``, ``"Attribute"``), used by ``wrap()`` to pick
+    ``"Class"``, ``"Package"``, ``"Attribute"``), used by ``AbstractRPModelElement.wrap()`` to pick
     the correct wrapper class.
 
     ``method_returns`` maps method names to the value that mock method

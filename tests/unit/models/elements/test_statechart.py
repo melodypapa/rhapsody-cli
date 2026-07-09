@@ -1,6 +1,6 @@
 """Tests for rhapsody_cli.elements.statechart.RPStatechart."""
 
-from rhapsody_cli.models.core import RPModelElement, wrap
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 from rhapsody_cli.models.elements.classifiers import RPClass, RPStatechart
 from tests.unit.models.fakes import make_fake_element
 
@@ -56,6 +56,6 @@ def test_statechart_delete_state_delegates_to_com() -> None:
 def test_statechart_is_registered_for_meta_class_statechart() -> None:
     fake = make_fake_element("Statechart", getName="Behavior")
 
-    wrapped = wrap(fake)
+    wrapped = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, RPStatechart)

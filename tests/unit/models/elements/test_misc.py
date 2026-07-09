@@ -1,6 +1,6 @@
 """Tests for rhapsody_cli.models.elements.misc wrappers."""
 
-from rhapsody_cli.models.core import RPModelElement, wrap
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 from rhapsody_cli.models.elements.model_misc import (
     RPComment,
     RPConstraint,
@@ -20,7 +20,7 @@ def test_enumeration_literal_is_a_model_element() -> None:
 def test_enumeration_literal_is_registered() -> None:
     fake = make_fake_element("EnumerationLiteral", getName="LITERAL1")
 
-    wrapped = wrap(fake)
+    wrapped = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, RPEnumerationLiteral)
 
@@ -36,7 +36,7 @@ def test_comment_is_a_model_element() -> None:
 def test_comment_is_registered() -> None:
     fake = make_fake_element("Comment", getName="Comment1")
 
-    wrapped = wrap(fake)
+    wrapped = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, RPComment)
 
@@ -52,6 +52,6 @@ def test_constraint_is_a_model_element() -> None:
 def test_constraint_is_registered() -> None:
     fake = make_fake_element("Constraint", getName="Constraint1")
 
-    wrapped = wrap(fake)
+    wrapped = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, RPConstraint)

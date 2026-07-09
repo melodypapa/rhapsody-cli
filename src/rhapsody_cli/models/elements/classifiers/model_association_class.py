@@ -1,6 +1,6 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPAssociationClass``."""
 
-from rhapsody_cli.models.core import register_wrapper
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.classifiers.model_class import RPClass
 
 
@@ -10,4 +10,4 @@ class RPAssociationClass(RPClass):
     pass
 
 
-register_wrapper("AssociationClass", RPAssociationClass)
+AbstractRPModelElement.register_wrapper("AssociationClass", RPAssociationClass)

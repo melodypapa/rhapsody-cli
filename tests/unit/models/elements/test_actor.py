@@ -1,6 +1,6 @@
 """Tests for rhapsody_cli.elements.actor.RPActor."""
 
-from rhapsody_cli.models.core import wrap
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.classifiers import RPActor, RPClassifier
 from tests.unit.models.fakes import make_fake_element
 
@@ -47,6 +47,6 @@ def test_actor_set_is_behavior_overridden_delegates_to_com() -> None:
 def test_actor_is_registered_for_meta_class_actor() -> None:
     fake = make_fake_element("Actor", getName="Driver")
 
-    wrapped = wrap(fake)
+    wrapped = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, RPActor)

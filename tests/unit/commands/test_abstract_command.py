@@ -7,6 +7,7 @@ import pytest
 
 from rhapsody_cli.actions.abstract_action import AbstractAction
 from rhapsody_cli.commands.abstract_command import AbstractCommand
+from rhapsody_cli.exceptions import CliExecutionError
 
 
 class FakeAction(AbstractAction):
@@ -47,9 +48,9 @@ class TestAbstractCommand:
             AbstractCommand("abstract", ["subcommand"])
 
     def test_no_subcommand_exits(self) -> None:
-        """Test that missing subcommand causes SystemExit during construction."""
+        """Test that missing subcommand raises CliExecutionError during construction."""
         action = FakeAction()
-        with pytest.raises(SystemExit):
+        with pytest.raises(CliExecutionError):
             ConcreteCommand([], action)
 
     def test_execute_dispatches_to_action(self) -> None:

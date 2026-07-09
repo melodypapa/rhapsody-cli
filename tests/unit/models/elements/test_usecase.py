@@ -1,6 +1,6 @@
 """Tests for rhapsody_cli.elements.usecase.RPUseCase."""
 
-from rhapsody_cli.models.core import wrap
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.classifiers import RPClassifier, RPUseCase
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -59,6 +59,6 @@ def test_usecase_get_describing_diagrams_returns_collection() -> None:
 def test_usecase_is_registered_for_meta_class_usecase() -> None:
     fake = make_fake_element("UseCase", getName="Login")
 
-    wrapped = wrap(fake)
+    wrapped = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, RPUseCase)

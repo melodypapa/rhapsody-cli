@@ -9,6 +9,7 @@ from rhapsody_cli.cli.logging_config import CliLoggingConfigurator
 from rhapsody_cli.commands.element_command import ElementCommand
 from rhapsody_cli.commands.io_command import IOCommand
 from rhapsody_cli.commands.project_command import ProjectCommand
+from rhapsody_cli.exceptions import CliExecutionError
 
 logger = logging.getLogger(__name__)
 
@@ -61,6 +62,12 @@ def main() -> None:
         sys.exit(130)
     except SystemExit:
         raise
+    except CliExecutionError as e:
+        # The single legitimate place sys.exit() is called for our own
+        # errors: all CLI actions/commands raise CliExecutionError instead
+        # of calling sys.exit() directly.
+        logger.error(str(e))
+        sys.exit(e.exit_code)
     except Exception as e:
         logger.error("Command failed: %s", e)
         sys.exit(1)

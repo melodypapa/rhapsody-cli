@@ -423,15 +423,14 @@ def execute(self, args: argparse.Namespace) -> None:
     try:
         # Implementation
         ...
-    except SystemExit:
-        raise
     except RhapsodyConnectionError as e:
-        self._handle_connection_error(e)
-        sys.exit(1)
+        self._handle_connection_error(e)  # logs and raises CliExecutionError
     except Exception as e:
-        self._handle_execution_error(e, "Operation")
-        sys.exit(1)
+        self._handle_execution_error(e, "Operation")  # logs and raises CliExecutionError
 ```
+
+> **Rule: No `print()` for status/error messages; no `sys.exit()` outside `cli.main()`.**
+> See "No print()/sys.exit() Rule" under Utility Classes below for the full rationale and pattern.
 
 ---
 
@@ -470,6 +469,78 @@ class MyAction(AbstractAction):
 class MyAction(AbstractAction):
     def execute(self, args: argparse.Namespace) -> None:
         self.logger.info("Action executed")  # Uses parent's logger
+```
+
+---
+
+### No `print()` / `sys.exit()` Rule
+
+**Rule:** CLI code (actions, command groups) must not use `print()` for status,
+success, or error messages, and must not call `sys.exit()` directly. Use the
+logger for messages and raise `CliExecutionError` for fatal errors instead.
+
+**Why:**
+- `print()` bypasses log level filtering, verbosity flags (`-v`/`--verbose`),
+  and any future log redirection/formatting.
+- Scattered `sys.exit()` calls make control flow hard to test and centralize;
+  every call site becomes a hard process-exit boundary that tests must trap.
+- A single, well-known exception type makes error handling composable and
+  testable with plain `pytest.raises(...)`, without needing to inspect
+  process-level `SystemExit.code`.
+
+**The pattern:**
+
+```python
+from rhapsody_cli.exceptions import CliExecutionError
+
+class MyAction(RhapsodyContextAction):
+    def execute(self, args: argparse.Namespace) -> None:
+        if not args.name:
+            self.logger.error("Missing required --name argument")
+            raise CliExecutionError("Missing required --name argument")
+
+        # Status/success messages go through the logger, not print()
+        self.logger.info("Created element '%s'", args.name)
+```
+
+`_handle_connection_error` / `_handle_execution_error` (on `RhapsodyContextAction`)
+already implement this pattern — they log the error and raise
+`CliExecutionError`, annotated `-> NoReturn`, so callers never need a
+`sys.exit()`/`except SystemExit: raise` fallback afterward.
+
+**The one sanctioned exception:** actual *result/data* output that users pipe
+or redirect (e.g. `element view`/`element query` tables or JSON, `project list`
+tables) stays on `print()` to stdout. This is deliberate — the logger's
+`StreamHandler` writes to stderr and prepends timestamps/levels, which would
+break piping (`rhapsody-cli element query --output json > elements.json`).
+Mark these call sites with a short `NOTE:` comment explaining why `print()` is
+used there.
+
+**`sys.exit()` boundary:** `rhapsody_cli.cli.cli.main()` is the *only* place
+that calls `sys.exit()` for our own errors — it catches `CliExecutionError`
+and exits with `e.exit_code`:
+
+```python
+except CliExecutionError as e:
+    logger.error(str(e))
+    sys.exit(e.exit_code)
+```
+
+Argparse's own `SystemExit` (malformed CLI args) and `KeyboardInterrupt`
+handling are framework/boundary behavior and are not subject to this rule.
+
+**DO NOT:**
+```python
+# ❌ WRONG
+print(f"Error: {e}", file=sys.stderr)
+sys.exit(1)
+```
+
+**DO:**
+```python
+# ✅ CORRECT
+self.logger.error("Error: %s", e)
+raise CliExecutionError(f"Error: {e}") from e
 ```
 
 ---
@@ -736,8 +807,8 @@ All code reviews must verify:
 - [ ] Action inherits from `AbstractAction` (or `RhapsodyContextAction` / `ElementManagementAction`)?
 - [ ] Arguments registered in `init_arguments()` via `sub_parser.add_parser(...)`?
 - [ ] Logic in `execute(args: argparse.Namespace)` method?
-- [ ] Error handling uses `_handle_connection_error` / `_handle_execution_error` and `sys.exit(1)`?
-- [ ] User-facing messages use `print(..., file=sys.stderr)` for errors?
+- [ ] Error handling uses `_handle_connection_error` / `_handle_execution_error`, which log and raise `CliExecutionError` (never `sys.exit()` directly)?
+- [ ] Status/success/error messages use `self.logger` (never `print()`)? Result/data output (tables, JSON) may still use `print()` to stdout.
 
 ### Specific to Tests
 - [ ] Uses Arrange-Act-Assert pattern?

@@ -3,12 +3,10 @@
 from typing import Any
 
 from rhapsody_cli.models.core import (
+    AbstractRPModelElement,
     RPCollection,
     RPModelElement,
     RPUnit,
-    call_com,
-    register_wrapper,
-    wrap,
 )
 
 
@@ -17,7 +15,7 @@ class RPDiagram(RPUnit):
 
     def closeDiagram(self) -> None:
         """Closes the diagram."""
-        call_com(lambda: self._com.closeDiagram())
+        AbstractRPModelElement.call_com(lambda: self._com.closeDiagram())
 
     def addTextBox(self, text: str, x_position: int, y_position: int, width: int, height: int) -> Any:
         """Adds a text box to the diagram.
@@ -32,7 +30,7 @@ class RPDiagram(RPUnit):
         Returns:
             The wrapped text box element created.
         """
-        return wrap(call_com(lambda: self._com.addTextBox(text, x_position, y_position, width, height)))
+        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addTextBox(text, x_position, y_position, width, height)))
 
     def getCustomViews(self) -> RPCollection:
         """Returns all custom views defined on the diagram.
@@ -40,7 +38,7 @@ class RPDiagram(RPUnit):
         Returns:
             An ``RPCollection`` of custom view elements.
         """
-        return RPCollection(call_com(lambda: self._com.getCustomViews()))
+        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getCustomViews()))
 
     def getCorrespondingGraphicElements(self, model_element: RPModelElement) -> RPCollection:
         """Gets the graphic elements corresponding to a model element on the diagram.
@@ -51,7 +49,7 @@ class RPDiagram(RPUnit):
         Returns:
             An ``RPCollection`` of graphic elements.
         """
-        return RPCollection(call_com(lambda: self._com.getCorrespondingGraphicElements(model_element._com)))
+        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getCorrespondingGraphicElements(model_element._com)))
 
 
-register_wrapper("ActivityDiagram", RPDiagram)
+AbstractRPModelElement.register_wrapper("ActivityDiagram", RPDiagram)

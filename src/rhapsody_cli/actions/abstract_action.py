@@ -2,10 +2,10 @@
 
 import argparse
 import logging
-import sys
+from typing import NoReturn
 
 from rhapsody_cli.cli.context import RhapsodyContext
-from rhapsody_cli.exceptions import RhapsodyConnectionError
+from rhapsody_cli.exceptions import CliExecutionError, RhapsodyConnectionError
 from rhapsody_cli.models.elements.containment import RPProject
 
 
@@ -73,28 +73,35 @@ class RhapsodyContextAction(AbstractAction):
 
     _NO_ACTIVE_INSTANCE_MESSAGE = "No running Rhapsody instance found. Please open Rhapsody and a project first."
 
-    def _handle_connection_error(self, error: RhapsodyConnectionError, context_msg: str = "") -> None:
-        """Handle connection errors with consistent logging and output.
+    def _handle_connection_error(self, error: RhapsodyConnectionError, context_msg: str = "") -> NoReturn:
+        """Log a connection error and raise CliExecutionError for the user.
 
         Args:
             error: The RhapsodyConnectionError to handle.
             context_msg: Optional context message to log.
+
+        Raises:
+            CliExecutionError: Always, with the user-facing "no active
+                instance" message.
         """
         msg = f"Failed to attach to Rhapsody: {error}"
         if context_msg:
             msg = f"{context_msg}: {msg}"
         self.logger.error(msg)
-        print(self._NO_ACTIVE_INSTANCE_MESSAGE, file=sys.stderr)
+        raise CliExecutionError(self._NO_ACTIVE_INSTANCE_MESSAGE) from error
 
-    def _handle_execution_error(self, error: Exception, operation: str = "Operation") -> None:
-        """Handle execution errors with consistent logging and output.
+    def _handle_execution_error(self, error: Exception, operation: str = "Operation") -> NoReturn:
+        """Log an execution error and raise CliExecutionError for the user.
 
         Args:
             error: The exception to handle.
             operation: Description of what operation failed.
+
+        Raises:
+            CliExecutionError: Always, wrapping `error`'s message.
         """
         self.logger.error("%s failed: %s", operation, error)
-        print(f"Error: {error}", file=sys.stderr)
+        raise CliExecutionError(f"Error: {error}") from error
 
 
 class ElementManagementAction(RhapsodyContextAction):
@@ -110,11 +117,10 @@ class ElementManagementAction(RhapsodyContextAction):
             The active project object.
 
         Raises:
-            SystemExit: If no active project or connection error occurs.
+            CliExecutionError: If no active project or connection error occurs.
         """
         ctx = RhapsodyContext()
         try:
             return ctx.get_active_project()
         except RhapsodyConnectionError as e:
             self._handle_connection_error(e)
-            sys.exit(1)
