@@ -160,7 +160,7 @@ rhapsody-cli package create --path Sensors '[{"name":"TempSensors","description"
 rhapsody-cli package create --path Sensors packages.json
 
 # Reuse exported package JSON
-rhapsody-cli package view --path Sensors/TempSensors --output json > package.json
+rhapsody-cli package view --path Sensors/TempSensors --output json --file package.json
 rhapsody-cli package create --path NewSensors package.json
 ```
 
@@ -312,17 +312,18 @@ class PackageDeleteAction(AbstractPackageAction):
 
 **Arguments:**
 - `--path <package-path>` - Package path to view (required, must be Package)
+- `--file <output-file>` - Write output to file instead of stdout (optional)
 
 **Example:**
 ```bash
-# Default table output
+# Default table output to console
 rhapsody-cli package view --path Sensors
 
-# JSON output via global flag
-rhapsody-cli package view --path Sensors --output json
+# JSON output to file
+rhapsody-cli package view --path Sensors --output json --file package.json
 
-# CSV output via global flag
-rhapsody-cli package view --path Sensors/TemperatureSensors --output csv
+# CSV output to file
+rhapsody-cli package view --path Sensors/TemperatureSensors --output csv --file package.csv
 ```
 
 **Output formats:**
@@ -333,8 +334,8 @@ rhapsody-cli package view --path Sensors/TemperatureSensors --output csv
 **Workflow: View → Create**
 The JSON output from `view` can be used as input for `create`:
 ```bash
-# Export package to JSON
-rhapsody-cli package view --path Sensors/TempSensors --output json > package.json
+# Export package to JSON file
+rhapsody-cli package view --path Sensors/TempSensors --output json --file package.json
 
 # Edit package.json (modify name, description, etc.)
 
@@ -344,7 +345,10 @@ rhapsody-cli package create --path Sensors package.json
 
 The create command ignores extra fields from view output (guid, metaClass, fullPath) and only uses validated attributes (name, description, properties, stereotypes, tags).
 
-All output goes to stdout for safe piping/redirection.
+**Output behavior:**
+- Default: Output to stdout (console)
+- With `--file`: Write to specified file (creates/overwrites)
+- All output goes to stdout or file (not logger) for safe use in scripts
 
 **Implementation:**
 ```python
@@ -352,6 +356,7 @@ class PackageViewAction(AbstractPackageAction):
     def init_arguments(self, sub_parser):
         parser = sub_parser.add_parser("view", help="View package details")
         parser.add_argument("--path", required=True, help="Package path to view")
+        parser.add_argument("--file", help="Write output to file instead of stdout")
         self.add_verbose_argument(parser)
 
     def execute(self, args):
@@ -383,14 +388,33 @@ class PackageViewAction(AbstractPackageAction):
                 ["FullPath", full_path],
             ]
 
-            # Use base class helper for formatted output (handles JSON/table/CSV)
-            self._print_formatted_output(
-                data=data,
-                headers=["Property", "Value"],
-                table_rows=table_rows,
-            )
+            # Format output
+            output = self._format_output(data, table_rows)
+
+            # Write to file or stdout
+            if args.file:
+                self._write_to_file(args.file, output)
+                self.logger.info("Wrote package details to: %s", args.file)
+            else:
+                print(output)
         except Exception as e:
             self._handle_execution_error(e, f"Failed to view package '{args.path}'")
+
+    def _format_output(self, data, table_rows):
+        """Format output based on global --output flag."""
+        ctx = self._context
+        if ctx.output_format == "json":
+            return OutputFormatter.json_format(data)
+        else:
+            return OutputFormatter.table(["Property", "Value"], table_rows)
+
+    def _write_to_file(self, file_path, content):
+        """Write content to file."""
+        try:
+            with open(file_path, "w", encoding="utf-8") as f:
+                f.write(content)
+        except OSError as e:
+            raise CliExecutionError(f"Failed to write file '{file_path}': {e}")
 ```
 
 ### 4. package items
@@ -399,17 +423,18 @@ class PackageViewAction(AbstractPackageAction):
 
 **Arguments:**
 - `--path <package-path>` - Package path (required, must be Package)
+- `--file <output-file>` - Write output to file instead of stdout (optional)
 
 **Example:**
 ```bash
-# Default table output
+# Default table output to console
 rhapsody-cli package items --path Sensors
 
-# JSON output via global flag
-rhapsody-cli package items --path Sensors --output json
+# JSON output to file
+rhapsody-cli package items --path Sensors --output json --file items.json
 
-# CSV output via global flag
-rhapsody-cli package items --path Sensors --output csv
+# CSV output to file
+rhapsody-cli package items --path Sensors --output csv --file items.csv
 ```
 
 **Output formats:**
@@ -417,7 +442,10 @@ rhapsody-cli package items --path Sensors --output csv
 - **JSON**: Array of objects with type and name fields
 - **CSV**: Type,Name columns
 
-All output goes to stdout for safe piping/redirection.
+**Output behavior:**
+- Default: Output to stdout (console)
+- With `--file`: Write to specified file (creates/overwrites)
+- All output goes to stdout or file (not logger) for safe use in scripts
 
 **Implementation:**
 ```python
@@ -425,6 +453,7 @@ class PackageItemsAction(AbstractPackageAction):
     def init_arguments(self, sub_parser):
         parser = sub_parser.add_parser("items", help="List children items in a package")
         parser.add_argument("--path", required=True, help="Package path")
+        parser.add_argument("--file", help="Write output to file instead of stdout")
         self.add_verbose_argument(parser)
 
     def execute(self, args):
@@ -448,14 +477,33 @@ class PackageItemsAction(AbstractPackageAction):
             # Prepare table rows for output
             table_rows = [[item["type"], item["name"]] for item in items]
 
-            # Use base class helper for formatted output
-            self._print_formatted_output(
-                data=items,
-                headers=["Type", "Name"],
-                table_rows=table_rows,
-            )
+            # Format output
+            output = self._format_output(items, table_rows)
+
+            # Write to file or stdout
+            if args.file:
+                self._write_to_file(args.file, output)
+                self.logger.info("Wrote %d items to: %s", len(items), args.file)
+            else:
+                print(output)
         except Exception as e:
             self._handle_execution_error(e, f"Failed to list items in package '{args.path}'")
+
+    def _format_output(self, items, table_rows):
+        """Format output based on global --output flag."""
+        ctx = self._context
+        if ctx.output_format == "json":
+            return OutputFormatter.json_format(items)
+        else:
+            return OutputFormatter.table(["Type", "Name"], table_rows)
+
+    def _write_to_file(self, file_path, content):
+        """Write content to file."""
+        try:
+            with open(file_path, "w", encoding="utf-8") as f:
+                f.write(content)
+        except OSError as e:
+            raise CliExecutionError(f"Failed to write file '{file_path}': {e}")
 ```
 
 ## Validated Attribute Whitelist
