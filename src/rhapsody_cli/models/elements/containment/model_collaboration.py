@@ -1,6 +1,6 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPCollaboration``."""
 
-from rhapsody_cli.models.core import RPUnit, register_wrapper
+from rhapsody_cli.models.core import AbstractRPModelElement, RPUnit
 
 
 class RPCollaboration(RPUnit):
@@ -9,4 +9,4 @@ class RPCollaboration(RPUnit):
     pass
 
 
-register_wrapper("Collaboration", RPCollaboration)
+AbstractRPModelElement.register_wrapper("Collaboration", RPCollaboration)

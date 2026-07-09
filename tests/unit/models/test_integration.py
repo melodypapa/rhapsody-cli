@@ -1,6 +1,6 @@
 """Cross-wrapper integration tests: factory methods return correct subclasses."""
 
-from rhapsody_cli.models.core import RPCollection, RPModelElement, wrap
+from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
 from rhapsody_cli.models.elements.classifiers import RPClass, RPClassifier, RPStereotype
 from rhapsody_cli.models.elements.containment import (
     RPComponent,
@@ -21,7 +21,7 @@ from tests.unit.models.fakes import make_fake_collection, make_fake_element
 def test_wrap_dispatches_profile_to_rpprofile() -> None:
     fake = make_fake_element("Profile", getName="SysML")
 
-    result = wrap(fake)
+    result = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(result, RPProfile)
     assert isinstance(result, RPPackage)
@@ -30,7 +30,7 @@ def test_wrap_dispatches_profile_to_rpprofile() -> None:
 def test_wrap_dispatches_component_to_rpcomponent() -> None:
     fake = make_fake_element("Component", getName="Comp1")
 
-    result = wrap(fake)
+    result = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(result, RPComponent)
 
@@ -38,7 +38,7 @@ def test_wrap_dispatches_component_to_rpcomponent() -> None:
 def test_wrap_dispatches_configuration_to_rpconfiguration() -> None:
     fake = make_fake_element("Configuration", getName="Config1")
 
-    result = wrap(fake)
+    result = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(result, RPConfiguration)
 
@@ -48,7 +48,7 @@ def test_wrap_dispatches_module_to_rpmodule() -> None:
 
     fake = make_fake_element("Module", getName="Module1")
 
-    result = wrap(fake)
+    result = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(result, RPModule)
     assert isinstance(result, RPInstance)
@@ -57,7 +57,7 @@ def test_wrap_dispatches_module_to_rpmodule() -> None:
 def test_wrap_dispatches_generalization_to_rpgeneralization() -> None:
     fake = make_fake_element("Generalization")
 
-    result = wrap(fake)
+    result = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(result, RPGeneralization)
     assert isinstance(result, RPModelElement)
@@ -66,7 +66,7 @@ def test_wrap_dispatches_generalization_to_rpgeneralization() -> None:
 def test_wrap_dispatches_dependency_to_rpdependency() -> None:
     fake = make_fake_element("Dependency")
 
-    result = wrap(fake)
+    result = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(result, RPDependency)
     assert isinstance(result, RPModelElement)
@@ -77,7 +77,7 @@ def test_wrap_dispatches_hyperlink_to_rphyperlink() -> None:
 
     fake = make_fake_element("HyperLink")
 
-    result = wrap(fake)
+    result = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(result, RPHyperLink)
     assert isinstance(result, RPDependency)
@@ -86,7 +86,7 @@ def test_wrap_dispatches_hyperlink_to_rphyperlink() -> None:
 def test_wrap_dispatches_association_role_to_rpassociation_role() -> None:
     fake = make_fake_element("AssociationRole")
 
-    result = wrap(fake)
+    result = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(result, RPAssociationRole)
     assert isinstance(result, RPInstance)
@@ -95,7 +95,7 @@ def test_wrap_dispatches_association_role_to_rpassociation_role() -> None:
 def test_wrap_dispatches_comment_to_rpcomment() -> None:
     fake = make_fake_element("Comment", getName="Comment1")
 
-    result = wrap(fake)
+    result = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(result, RPComment)
     assert isinstance(result, RPModelElement)
@@ -104,7 +104,7 @@ def test_wrap_dispatches_comment_to_rpcomment() -> None:
 def test_wrap_dispatches_constraint_to_rpconstraint() -> None:
     fake = make_fake_element("Constraint", getName="Constraint1")
 
-    result = wrap(fake)
+    result = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(result, RPConstraint)
     assert isinstance(result, RPModelElement)
@@ -113,7 +113,7 @@ def test_wrap_dispatches_constraint_to_rpconstraint() -> None:
 def test_wrap_dispatches_enumeration_literal_to_rpenumeration_literal() -> None:
     fake = make_fake_element("EnumerationLiteral", getName="LITERAL1")
 
-    result = wrap(fake)
+    result = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(result, RPEnumerationLiteral)
     assert isinstance(result, RPModelElement)
@@ -122,7 +122,7 @@ def test_wrap_dispatches_enumeration_literal_to_rpenumeration_literal() -> None:
 def test_wrap_dispatches_stereotype_to_rpstereotype() -> None:
     fake = make_fake_element("Stereotype", getName="MyStereo")
 
-    result = wrap(fake)
+    result = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(result, RPStereotype)
     assert isinstance(result, RPClassifier)
@@ -133,7 +133,7 @@ def test_wrap_dispatches_association_class_to_rpassociation_class() -> None:
 
     fake = make_fake_element("AssociationClass", getName="MyAssoc")
 
-    result = wrap(fake)
+    result = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(result, RPAssociationClass)
     assert isinstance(result, RPClass)
@@ -144,7 +144,7 @@ def test_wrap_dispatches_tag_to_rptag() -> None:
 
     fake = make_fake_element("Tag", getName="MyTag")
 
-    result = wrap(fake)
+    result = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(result, RPTag)
 

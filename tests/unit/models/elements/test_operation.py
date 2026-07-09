@@ -1,6 +1,6 @@
 """Tests for rhapsody_cli.elements.operation.RPOperation."""
 
-from rhapsody_cli.models.core import wrap
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.classifiers import RPInterfaceItem, RPOperation
 from tests.unit.models.fakes import make_fake_element
 
@@ -65,6 +65,6 @@ def test_operation_create_auto_flow_chart_delegates_to_com() -> None:
 def test_operation_is_registered_for_meta_class_operation() -> None:
     fake = make_fake_element("Operation", getName="doIt")
 
-    wrapped = wrap(fake)
+    wrapped = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, RPOperation)

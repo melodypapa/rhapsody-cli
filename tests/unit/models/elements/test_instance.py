@@ -1,6 +1,6 @@
 """Tests for rhapsody_cli.elements.instance.RPInstance."""
 
-from rhapsody_cli.models.core import RPCollection, wrap
+from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection
 from rhapsody_cli.models.elements.relations import RPInstance, RPRelation
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -70,7 +70,7 @@ def test_instance_get_out_links_returns_collection() -> None:
 def test_instance_is_registered_for_meta_class_instance() -> None:
     fake = make_fake_element("Instance", getName="driver1")
 
-    wrapped = wrap(fake)
+    wrapped = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, RPInstance)
 
@@ -144,7 +144,7 @@ def test_instance_set_instantiated_by_unwraps_arg() -> None:
     op = make_fake_element("Operation", getName="create")
     instance = RPInstance(fake)
 
-    instance.setInstantiatedBy(wrap(op))
+    instance.setInstantiatedBy(AbstractRPModelElement.wrap(op))
 
     fake.setInstantiatedBy.assert_called_once_with(op)
 

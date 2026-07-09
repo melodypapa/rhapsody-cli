@@ -1,6 +1,6 @@
 """Miscellaneous model element wrappers — RPComment, RPConstraint, RPEnumerationLiteral."""
 
-from rhapsody_cli.models.core import RPModelElement, register_wrapper
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 
 
 class RPEnumerationLiteral(RPModelElement):
@@ -9,7 +9,7 @@ class RPEnumerationLiteral(RPModelElement):
     pass
 
 
-register_wrapper("EnumerationLiteral", RPEnumerationLiteral)
+AbstractRPModelElement.register_wrapper("EnumerationLiteral", RPEnumerationLiteral)
 
 
 class RPComment(RPModelElement):
@@ -18,7 +18,7 @@ class RPComment(RPModelElement):
     pass
 
 
-register_wrapper("Comment", RPComment)
+AbstractRPModelElement.register_wrapper("Comment", RPComment)
 
 
 class RPConstraint(RPModelElement):
@@ -27,4 +27,4 @@ class RPConstraint(RPModelElement):
     pass
 
 
-register_wrapper("Constraint", RPConstraint)
+AbstractRPModelElement.register_wrapper("Constraint", RPConstraint)

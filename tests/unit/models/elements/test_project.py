@@ -69,11 +69,11 @@ def test_project_get_packages_returns_collection() -> None:
 
 
 def test_project_is_registered_for_meta_class_project() -> None:
-    from rhapsody_cli.models.core import wrap
+    from rhapsody_cli.models.core import AbstractRPModelElement
 
     fake = make_fake_element("Project", getName="MyProject")
 
-    wrapped = wrap(fake)
+    wrapped = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, RPProject)
 

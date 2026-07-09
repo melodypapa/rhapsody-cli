@@ -1,6 +1,6 @@
 """Tests for rhapsody_cli.elements.attribute.RPAttribute."""
 
-from rhapsody_cli.models.core import wrap
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.model_variables import RPAttribute, RPVariable
 from tests.unit.models.fakes import make_fake_element
 
@@ -64,6 +64,6 @@ def test_attribute_set_visibility_delegates_to_com() -> None:
 def test_attribute_is_registered_for_meta_class_attribute() -> None:
     fake = make_fake_element("Attribute", getName="count")
 
-    wrapped = wrap(fake)
+    wrapped = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, RPAttribute)

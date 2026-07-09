@@ -5,12 +5,10 @@ com.telelogic.rhapsody.core.
 from typing import Any
 
 from rhapsody_cli.models.core import (
+    AbstractRPModelElement,
     RPCollection,
     RPModelElement,
     RPUnit,
-    call_com,
-    register_wrapper,
-    wrap,
 )
 from rhapsody_cli.models.elements.classifiers import RPClassifier
 
@@ -29,7 +27,7 @@ class RPVariable(RPUnit):
         Returns:
             The wrapped ``IRPInstanceValue`` created for the new default value.
         """
-        return wrap(call_com(lambda: self._com.addElementDefaultValue(new_default_val._com)))
+        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addElementDefaultValue(new_default_val._com)))
 
     def addStringDefaultValue(self, new_default_val: str) -> Any:
         """For tags with multiplicity greater than 1, adds a string as an additional value.
@@ -40,7 +38,7 @@ class RPVariable(RPUnit):
         Returns:
             The wrapped ``IRPLiteralSpecification`` created for the new default value.
         """
-        return wrap(call_com(lambda: self._com.addStringDefaultValue(new_default_val)))
+        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addStringDefaultValue(new_default_val)))
 
     def getDeclaration(self) -> str:
         """Returns the type declaration if an on-the-fly type was used for the element.
@@ -48,7 +46,7 @@ class RPVariable(RPUnit):
         Returns:
             The on-the-fly type declaration, or an existing type's info if one was used.
         """
-        return call_com(lambda: str(self._com.getDeclaration()))
+        return AbstractRPModelElement.call_com(lambda: str(self._com.getDeclaration()))
 
     def getDefaultValue(self) -> str:
         """Returns the default value that was set for the variable.
@@ -56,7 +54,7 @@ class RPVariable(RPUnit):
         Returns:
             The default value as a string.
         """
-        return call_com(lambda: str(self._com.getDefaultValue()))
+        return AbstractRPModelElement.call_com(lambda: str(self._com.getDefaultValue()))
 
     def getType(self) -> Any:
         """Returns the type of the variable.
@@ -64,7 +62,7 @@ class RPVariable(RPUnit):
         Returns:
             The wrapped ``IRPClassifier`` that is the type of the variable.
         """
-        return wrap(call_com(lambda: self._com.getType()))
+        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.getType()))
 
     def getValueSpecifications(self) -> RPCollection:
         """Returns the initial values declared for elements with multiplicity greater than one.
@@ -72,7 +70,7 @@ class RPVariable(RPUnit):
         Returns:
             An ``RPCollection`` of the declared initial value specifications.
         """
-        return RPCollection(call_com(lambda: self._com.getValueSpecifications()))
+        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getValueSpecifications()))
 
     def setDeclaration(self, declaration: str) -> None:
         """Specifies an on-the-fly declaration for the type of the element.
@@ -80,7 +78,7 @@ class RPVariable(RPUnit):
         Args:
             declaration: The on-the-fly type declaration to use instead of an existing type.
         """
-        call_com(lambda: self._com.setDeclaration(declaration))
+        AbstractRPModelElement.call_com(lambda: self._com.setDeclaration(declaration))
 
     def setDefaultValue(self, default_value: str) -> None:
         """Sets a new default value for the variable.
@@ -88,7 +86,7 @@ class RPVariable(RPUnit):
         Args:
             default_value: The new default value.
         """
-        call_com(lambda: self._com.setDefaultValue(default_value))
+        AbstractRPModelElement.call_com(lambda: self._com.setDefaultValue(default_value))
 
     def setType(self, type_: RPClassifier) -> None:
         """Sets the type of the variable.
@@ -96,7 +94,7 @@ class RPVariable(RPUnit):
         Args:
             type_: The classifier to use as the variable's type.
         """
-        call_com(lambda: self._com.setType(type_._com))
+        AbstractRPModelElement.call_com(lambda: self._com.setType(type_._com))
 
     def setTypeDeclaration(self, new_val: str) -> None:
         """Specifies an on-the-fly type declaration, reusing a matching existing type if found.
@@ -104,7 +102,7 @@ class RPVariable(RPUnit):
         Args:
             new_val: The on-the-fly type declaration.
         """
-        call_com(lambda: self._com.setTypeDeclaration(new_val))
+        AbstractRPModelElement.call_com(lambda: self._com.setTypeDeclaration(new_val))
 
 
 class RPAttribute(RPVariable):
@@ -116,7 +114,7 @@ class RPAttribute(RPVariable):
         Returns:
             The multiplicity string (e.g. ``"1"``, ``"0..*"``).
         """
-        return call_com(lambda: str(self._com.getMultiplicity()))
+        return AbstractRPModelElement.call_com(lambda: str(self._com.getMultiplicity()))
 
     def setMultiplicity(self, multiplicity: str) -> None:
         """Specifies the multiplicity for the attribute.
@@ -124,7 +122,7 @@ class RPAttribute(RPVariable):
         Args:
             multiplicity: The multiplicity string to set (e.g. ``"1"``, ``"0..*"``).
         """
-        call_com(lambda: self._com.setMultiplicity(multiplicity))
+        AbstractRPModelElement.call_com(lambda: self._com.setMultiplicity(multiplicity))
 
     def getIsStatic(self) -> bool:
         """Checks whether the attribute was defined as static.
@@ -132,7 +130,7 @@ class RPAttribute(RPVariable):
         Returns:
             ``True`` if the attribute is static, ``False`` otherwise.
         """
-        return call_com(lambda: bool(self._com.getIsStatic()))
+        return AbstractRPModelElement.call_com(lambda: bool(self._com.getIsStatic()))
 
     def setIsStatic(self, is_static: bool) -> None:
         """Specifies whether an attribute should be defined as static.
@@ -140,7 +138,7 @@ class RPAttribute(RPVariable):
         Args:
             is_static: ``True`` to mark the attribute static, ``False`` otherwise.
         """
-        call_com(lambda: self._com.setIsStatic(1 if is_static else 0))
+        AbstractRPModelElement.call_com(lambda: self._com.setIsStatic(1 if is_static else 0))
 
     def getVisibility(self) -> str:
         """Gets the visibility specified for the attribute.
@@ -148,7 +146,7 @@ class RPAttribute(RPVariable):
         Returns:
             The visibility string (e.g. ``"public"``, ``"private"``).
         """
-        return call_com(lambda: str(self._com.getVisibility()))
+        return AbstractRPModelElement.call_com(lambda: str(self._com.getVisibility()))
 
     def setVisibility(self, visibility: str) -> None:
         """Specifies the visibility of the attribute.
@@ -156,10 +154,10 @@ class RPAttribute(RPVariable):
         Args:
             visibility: The visibility string to set (e.g. ``"public"``, ``"private"``).
         """
-        call_com(lambda: self._com.setVisibility(visibility))
+        AbstractRPModelElement.call_com(lambda: self._com.setVisibility(visibility))
 
 
-register_wrapper("Attribute", RPAttribute)
+AbstractRPModelElement.register_wrapper("Attribute", RPAttribute)
 
 
 class RPTag(RPVariable):
@@ -168,4 +166,4 @@ class RPTag(RPVariable):
     pass
 
 
-register_wrapper("Tag", RPTag)
+AbstractRPModelElement.register_wrapper("Tag", RPTag)

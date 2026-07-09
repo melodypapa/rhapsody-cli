@@ -1,6 +1,6 @@
 """Tests for rhapsody_cli.models.elements.classifiers.RPStereotype."""
 
-from rhapsody_cli.models.core import wrap
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.classifiers import RPClassifier, RPStereotype
 from tests.unit.models.fakes import make_fake_element
 
@@ -16,6 +16,6 @@ def test_stereotype_is_a_classifier() -> None:
 def test_stereotype_is_registered_for_meta_class_stereotype() -> None:
     fake = make_fake_element("Stereotype", getName="MyStereo")
 
-    wrapped = wrap(fake)
+    wrapped = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, RPStereotype)

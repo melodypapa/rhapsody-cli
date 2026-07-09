@@ -1,6 +1,6 @@
 """Tests for rhapsody_cli.models.elements.variables.RPVariable."""
 
-from rhapsody_cli.models.core import RPCollection, RPUnit, wrap
+from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPUnit
 from rhapsody_cli.models.elements.classifiers import RPClassifier
 from rhapsody_cli.models.elements.model_variables import RPVariable
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
@@ -21,7 +21,7 @@ def test_variable_add_element_default_value_wraps_result() -> None:
     fake.addElementDefaultValue.return_value = new_value
     variable = RPVariable(fake)
 
-    result = variable.addElementDefaultValue(wrap(element))
+    result = variable.addElementDefaultValue(AbstractRPModelElement.wrap(element))
 
     fake.addElementDefaultValue.assert_called_once_with(element)
     assert result.getName() == "Extra"

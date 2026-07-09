@@ -1,6 +1,6 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPNode``."""
 
-from rhapsody_cli.models.core import RPUnit, register_wrapper
+from rhapsody_cli.models.core import AbstractRPModelElement, RPUnit
 
 
 class RPNode(RPUnit):
@@ -9,4 +9,4 @@ class RPNode(RPUnit):
     pass
 
 
-register_wrapper("Node", RPNode)
+AbstractRPModelElement.register_wrapper("Node", RPNode)

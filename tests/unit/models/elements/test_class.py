@@ -1,6 +1,6 @@
 """Tests for rhapsody_cli.elements.class_.RPClass."""
 
-from rhapsody_cli.models.core import wrap
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.classifiers import RPClass, RPClassifier
 from tests.unit.models.fakes import make_fake_element
 
@@ -69,7 +69,7 @@ def test_class_add_class_nested_wraps_result() -> None:
 def test_class_is_registered_for_meta_class_class() -> None:
     fake = make_fake_element("Class", getName="Widget")
 
-    wrapped = wrap(fake)
+    wrapped = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, RPClass)
 
@@ -93,7 +93,7 @@ def test_class_add_event_reception_with_event_unwraps_and_wraps() -> None:
     fake.addEventReceptionWithEvent.return_value = reception
     klass = RPClass(fake)
 
-    result = klass.addEventReceptionWithEvent("onTick", wrap(event))
+    result = klass.addEventReceptionWithEvent("onTick", AbstractRPModelElement.wrap(event))
 
     fake.addEventReceptionWithEvent.assert_called_once_with("onTick", event)
     assert result.getName() == "onTick"
@@ -110,7 +110,9 @@ def test_class_add_link_unwraps_all_args_and_wraps_result() -> None:
     fake.addLink.return_value = link
     klass = RPClass(fake)
 
-    result = klass.addLink(wrap(from_part), wrap(to_part), wrap(assoc), wrap(from_port), wrap(to_port))
+    result = klass.addLink(
+        AbstractRPModelElement.wrap(from_part), AbstractRPModelElement.wrap(to_part), AbstractRPModelElement.wrap(assoc), AbstractRPModelElement.wrap(from_port), AbstractRPModelElement.wrap(to_port)
+    )
 
     fake.addLink.assert_called_once_with(from_part, to_part, assoc, from_port, to_port)
     assert result.getName() == "link1"
@@ -126,7 +128,7 @@ def test_class_add_link_to_part_via_port_unwraps_and_wraps() -> None:
     fake.addLinkToPartViaPort.return_value = link
     klass = RPClass(fake)
 
-    result = klass.addLinkToPartViaPort(wrap(to_part), wrap(part_port), wrap(class_port), wrap(assoc))
+    result = klass.addLinkToPartViaPort(AbstractRPModelElement.wrap(to_part), AbstractRPModelElement.wrap(part_port), AbstractRPModelElement.wrap(class_port), AbstractRPModelElement.wrap(assoc))
 
     fake.addLinkToPartViaPort.assert_called_once_with(to_part, part_port, class_port, assoc)
     assert result.getName() == "link1"
@@ -182,7 +184,7 @@ def test_class_delete_constructor_unwraps_arg() -> None:
     ctor = make_fake_element("Operation", getName="Widget")
     klass = RPClass(fake)
 
-    klass.deleteConstructor(wrap(ctor))
+    klass.deleteConstructor(AbstractRPModelElement.wrap(ctor))
 
     fake.deleteConstructor.assert_called_once_with(ctor)
 
@@ -201,7 +203,7 @@ def test_class_delete_event_reception_unwraps_arg() -> None:
     reception = make_fake_element("EventReception", getName="onEvent")
     klass = RPClass(fake)
 
-    klass.deleteEventReception(wrap(reception))
+    klass.deleteEventReception(AbstractRPModelElement.wrap(reception))
 
     fake.deleteEventReception.assert_called_once_with(reception)
 
@@ -211,7 +213,7 @@ def test_class_delete_reception_unwraps_arg() -> None:
     reception = make_fake_element("EventReception", getName="onSignal")
     klass = RPClass(fake)
 
-    klass.deleteReception(wrap(reception))
+    klass.deleteReception(AbstractRPModelElement.wrap(reception))
 
     fake.deleteReception.assert_called_once_with(reception)
 

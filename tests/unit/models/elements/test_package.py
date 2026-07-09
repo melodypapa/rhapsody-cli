@@ -1,6 +1,6 @@
 """Tests for rhapsody_cli.elements.package.RPPackage."""
 
-from rhapsody_cli.models.core import RPUnit, wrap
+from rhapsody_cli.models.core import AbstractRPModelElement, RPUnit
 from rhapsody_cli.models.elements.containment import RPPackage
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -64,7 +64,7 @@ def test_package_add_global_function_delegates_to_com() -> None:
 def test_package_is_registered_for_meta_class_package() -> None:
     fake = make_fake_element("Package", getName="MyPkg")
 
-    wrapped = wrap(fake)
+    wrapped = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, RPPackage)
 

@@ -1,6 +1,6 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPDependency``."""
 
-from rhapsody_cli.models.core import RPModelElement, register_wrapper
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 
 
 class RPDependency(RPModelElement):
@@ -9,4 +9,4 @@ class RPDependency(RPModelElement):
     pass
 
 
-register_wrapper("Dependency", RPDependency)
+AbstractRPModelElement.register_wrapper("Dependency", RPDependency)

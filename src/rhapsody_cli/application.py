@@ -12,7 +12,7 @@ except ImportError:  # pragma: no cover - pywin32 is Windows-only
     win32com = None
 
 from rhapsody_cli.exceptions import RhapsodyConnectionError, RhapsodyRuntimeException
-from rhapsody_cli.models.core import RPCollection, _get_method_or_property, call_com
+from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection
 from rhapsody_cli.models.elements.containment import RPProject
 
 _PROG_ID = "Rhapsody2.Application.1"
@@ -29,7 +29,7 @@ class RhapsodyApplication:
         if win32com is None:
             raise RhapsodyConnectionError("pywin32 is not available; Rhapsody automation requires Windows.")
         try:
-            com_obj = call_com(lambda: win32com.client.GetActiveObject(_PROG_ID))
+            com_obj = AbstractRPModelElement.call_com(lambda: win32com.client.GetActiveObject(_PROG_ID))
         except RhapsodyRuntimeException as exc:
             raise RhapsodyConnectionError(f"No running Rhapsody instance found: {exc}") from exc
         return cls(com_obj)
@@ -39,7 +39,7 @@ class RhapsodyApplication:
         if win32com is None:
             raise RhapsodyConnectionError("pywin32 is not available; Rhapsody automation requires Windows.")
         try:
-            com_obj = call_com(lambda: win32com.client.Dispatch(_PROG_ID))
+            com_obj = AbstractRPModelElement.call_com(lambda: win32com.client.Dispatch(_PROG_ID))
         except RhapsodyRuntimeException as exc:
             raise RhapsodyConnectionError(f"Failed to launch Rhapsody instance: {exc}") from exc
         return cls(com_obj)
@@ -54,17 +54,17 @@ class RhapsodyApplication:
         return cls.launch()
 
     def openProject(self, filename: str) -> RPProject:
-        return RPProject(call_com(lambda: self._com.openProject(filename)))
+        return RPProject(AbstractRPModelElement.call_com(lambda: self._com.openProject(filename)))
 
     def createNewProject(self, project_location: str, project_name: str) -> RPProject:
-        call_com(lambda: self._com.createNewProject(project_location, project_name))
+        AbstractRPModelElement.call_com(lambda: self._com.createNewProject(project_location, project_name))
         return self.activeProject()
 
     def activeProject(self) -> RPProject:
-        return RPProject(call_com(lambda: self._com.activeProject()))
+        return RPProject(AbstractRPModelElement.call_com(lambda: self._com.activeProject()))
 
     def getProjects(self) -> RPCollection:
-        return RPCollection(_get_method_or_property(self._com, "getProjects", "projects"))
+        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getProjects", "projects"))
 
     def quit(self) -> None:
-        call_com(lambda: self._com.quit())
+        AbstractRPModelElement.call_com(lambda: self._com.quit())

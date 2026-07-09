@@ -1,6 +1,6 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPUseCase``."""
 
-from rhapsody_cli.models.core import RPCollection, call_com, register_wrapper
+from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection
 from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
 
 
@@ -13,7 +13,7 @@ class RPUseCase(RPClassifier):
         Args:
             entry_point: The name of the extension point.
         """
-        call_com(lambda: self._com.addExtensionPoint(entry_point))
+        AbstractRPModelElement.call_com(lambda: self._com.addExtensionPoint(entry_point))
 
     def getExtensionPoints(self) -> RPCollection:
         """Returns all extension points defined on the use case.
@@ -21,7 +21,7 @@ class RPUseCase(RPClassifier):
         Returns:
             An ``RPCollection`` of extension point strings.
         """
-        return RPCollection(call_com(lambda: self._com.getExtensionPoints()))
+        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getExtensionPoints()))
 
     def getEntryPoints(self) -> RPCollection:
         """Returns all entry points defined on the use case.
@@ -29,7 +29,7 @@ class RPUseCase(RPClassifier):
         Returns:
             An ``RPCollection`` of entry point strings.
         """
-        return RPCollection(call_com(lambda: self._com.getEntryPoints()))
+        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getEntryPoints()))
 
     def getDescribingDiagrams(self) -> RPCollection:
         """Returns all diagrams that describe this use case.
@@ -37,7 +37,7 @@ class RPUseCase(RPClassifier):
         Returns:
             An ``RPCollection`` of ``IRPDiagram`` objects.
         """
-        return RPCollection(call_com(lambda: self._com.getDescribingDiagrams()))
+        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getDescribingDiagrams()))
 
 
-register_wrapper("UseCase", RPUseCase)
+AbstractRPModelElement.register_wrapper("UseCase", RPUseCase)

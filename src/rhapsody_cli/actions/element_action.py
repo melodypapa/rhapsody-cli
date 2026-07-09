@@ -7,7 +7,7 @@ from rhapsody_cli.actions.abstract_action import ElementManagementAction
 from rhapsody_cli.cli.formatters import OutputFormatter
 from rhapsody_cli.cli.path_resolver import PathResolver, PathResolverError
 from rhapsody_cli.exceptions import CliExecutionError
-from rhapsody_cli.models.core import call_com
+from rhapsody_cli.models.core import AbstractRPModelElement
 
 
 class ElementAddAction(ElementManagementAction):
@@ -290,7 +290,7 @@ class ElementDeleteAction(ElementManagementAction):
                     return
 
         try:
-            call_com(lambda: element._com.delete())  # type: ignore[attr-defined]
+            AbstractRPModelElement.call_com(lambda: element._com.delete())  # type: ignore[attr-defined]
         except Exception as e:
             self._handle_execution_error(e, f"Failed to delete element at path '{path}'")
 

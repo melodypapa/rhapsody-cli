@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from rhapsody_cli.models.core import RPCollection, call_com, register_wrapper, wrap
+from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection
 from rhapsody_cli.models.elements.containment.model_package import RPPackage
 
 
@@ -18,15 +18,15 @@ class RPProject(RPPackage):
         Returns:
             The wrapped ``IRPPackage`` created.
         """
-        return wrap(call_com(lambda: self._com.addPackage(name)))
+        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addPackage(name)))
 
     def close(self) -> None:
         """Closes the project."""
-        call_com(lambda: self._com.close())
+        AbstractRPModelElement.call_com(lambda: self._com.close())
 
     def becomeActiveProject(self) -> None:
         """Makes this project the active project in Rhapsody."""
-        call_com(lambda: self._com.becomeActiveProject())
+        AbstractRPModelElement.call_com(lambda: self._com.becomeActiveProject())
 
     def findComponent(self, name: str) -> Any:
         """Finds a component in the project by name.
@@ -37,7 +37,7 @@ class RPProject(RPPackage):
         Returns:
             The wrapped component element if found, otherwise empty wrapper.
         """
-        return wrap(call_com(lambda: self._com.findComponent(name)))
+        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findComponent(name)))
 
     def getPackages(self) -> RPCollection:
         """Returns all top-level packages in the project.
@@ -45,7 +45,7 @@ class RPProject(RPPackage):
         Returns:
             An ``RPCollection`` of ``IRPPackage`` objects.
         """
-        return RPCollection(call_com(lambda: self._com.getPackages()))
+        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getPackages()))
 
     def getRoot(self) -> "RPProject":
         """Returns the root project element.
@@ -64,7 +64,7 @@ class RPProject(RPPackage):
         Returns:
             The wrapped ``IRPClass`` created.
         """
-        return wrap(call_com(lambda: self._com.addClass(name)))
+        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addClass(name)))
 
     def addActor(self, name: str) -> Any:
         """Adds a new actor to the project's top level.
@@ -75,7 +75,7 @@ class RPProject(RPPackage):
         Returns:
             The wrapped ``IRPActor`` created.
         """
-        return wrap(call_com(lambda: self._com.addActor(name)))
+        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addActor(name)))
 
     def getComponents(self) -> RPCollection:
         """Returns all components in the project.
@@ -83,7 +83,7 @@ class RPProject(RPPackage):
         Returns:
             An ``RPCollection`` of component elements.
         """
-        return RPCollection(call_com(lambda: self._com.getComponents()))
+        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getComponents()))
 
     def findByName(self, name: str) -> Any:
         """Finds an element in the project by name.
@@ -94,7 +94,7 @@ class RPProject(RPPackage):
         Returns:
             The wrapped element if found.
         """
-        return wrap(call_com(lambda: self._com.findByName(name)))
+        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findByName(name)))
 
     def findByMetaClass(self, meta_class: str) -> RPCollection:
         """Finds all elements in the project with a given metaclass.
@@ -105,7 +105,7 @@ class RPProject(RPPackage):
         Returns:
             An ``RPCollection`` of matching elements.
         """
-        return RPCollection(call_com(lambda: self._com.findByMetaClass(meta_class)))
+        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.findByMetaClass(meta_class)))
 
     def findElementByGUID(self, guid: str) -> Any:
         """Finds an element in the project by GUID.
@@ -116,7 +116,7 @@ class RPProject(RPPackage):
         Returns:
             The wrapped element if found.
         """
-        return wrap(call_com(lambda: self._com.findElementByGUID(guid)))
+        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findElementByGUID(guid)))
 
     def getIsDirty(self) -> int:
         """Checks whether the project has unsaved changes.
@@ -124,7 +124,7 @@ class RPProject(RPPackage):
         Returns:
             ``1`` if the project is dirty (has unsaved changes), ``0`` otherwise.
         """
-        return int(call_com(lambda: self._com.getIsDirty()))
+        return int(AbstractRPModelElement.call_com(lambda: self._com.getIsDirty()))
 
     def setDirty(self, is_dirty: int) -> None:
         """Sets the dirty flag of the project.
@@ -132,7 +132,7 @@ class RPProject(RPPackage):
         Args:
             is_dirty: ``1`` to mark as dirty, ``0`` to mark as clean.
         """
-        call_com(lambda: self._com.setDirty(is_dirty))
+        AbstractRPModelElement.call_com(lambda: self._com.setDirty(is_dirty))
 
 
-register_wrapper("Project", RPProject)
+AbstractRPModelElement.register_wrapper("Project", RPProject)
