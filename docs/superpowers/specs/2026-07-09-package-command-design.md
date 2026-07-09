@@ -312,12 +312,22 @@ class PackageDeleteAction(AbstractPackageAction):
 
 **Example:**
 ```bash
+# Default table output
 package view --path Sensors
-package view --path Sensors/TemperatureSensors --output json
+
+# JSON output via global flag
+rhapsody-cli --output json package view --path Sensors
+
+# CSV output via global flag
+rhapsody-cli --output csv package view --path Sensors/TemperatureSensors
 ```
 
-**Output:**
-Table/JSON/CSV via global `--output` flag.
+**Output formats:**
+- **Default**: Table format (human-readable)
+- **JSON**: Via global `--output json` flag (machine-parsable)
+- **CSV**: Via global `--output csv` flag (spreadsheet-friendly)
+
+All output goes to stdout (not logger) for safe piping/redirection.
 
 **Implementation:**
 ```python
@@ -333,17 +343,35 @@ class PackageViewAction(AbstractPackageAction):
 
         # Get package details
         try:
-            details = {
-                "Name": package.getName(),
-                "GUID": package.getGUID(),
-                "Description": package.getDescription(),
-                "MetaClass": package.getMetaClass(),
-                "FullPath": package.getFullPathName(),
+            name = package.getName()
+            guid = package.getGUID()
+            description = package.getDescription()
+            meta_class = package.getMetaClass()
+            full_path = package.getFullPathName()
+
+            # Prepare data for output
+            data = {
+                "name": name,
+                "guid": guid,
+                "description": description,
+                "metaClass": meta_class,
+                "fullPath": full_path,
             }
 
-            # Format output
-            output = OutputFormatter.table(["Property", "Value"], [[k, v] for k, v in details.items()])
-            print(output)
+            table_rows = [
+                ["Name", name],
+                ["GUID", guid],
+                ["Description", description],
+                ["MetaClass", meta_class],
+                ["FullPath", full_path],
+            ]
+
+            # Use base class helper for formatted output (handles JSON/table/CSV)
+            self._print_formatted_output(
+                data=data,
+                headers=["Property", "Value"],
+                table_rows=table_rows,
+            )
         except Exception as e:
             self._handle_execution_error(e, f"Failed to view package '{args.path}'")
 ```
@@ -357,11 +385,22 @@ class PackageViewAction(AbstractPackageAction):
 
 **Example:**
 ```bash
+# Default table output
 package items --path Sensors
+
+# JSON output via global flag
+rhapsody-cli --output json package items --path Sensors
+
+# CSV output via global flag
+rhapsody-cli --output csv package items --path Sensors
 ```
 
-**Output:**
-Table showing type and name for each child element (nested packages, classes, actors, use cases, enumerations, etc.).
+**Output formats:**
+- **Default**: Table format (Type, Name columns)
+- **JSON**: Array of objects with type and name fields
+- **CSV**: Type,Name columns
+
+All output goes to stdout for safe piping/redirection.
 
 **Implementation:**
 ```python
@@ -379,19 +418,25 @@ class PackageItemsAction(AbstractPackageAction):
         try:
             items = []
             for nested_pkg in package.getNestedPackages():
-                items.append(["Package", nested_pkg.getName()])
+                items.append({"type": "Package", "name": nested_pkg.getName()})
             for cls in package.getClasses():
-                items.append(["Class", cls.getName()])
+                items.append({"type": "Class", "name": cls.getName()})
             for actor in package.getActors():
-                items.append(["Actor", actor.getName()])
+                items.append({"type": "Actor", "name": actor.getName()})
             for usecase in package.getUseCases():
-                items.append(["UseCase", usecase.getName()])
+                items.append({"type": "UseCase", "name": usecase.getName()})
             for enum in package.getEnumerations():
-                items.append(["Enumeration", enum.getName()])
+                items.append({"type": "Enumeration", "name": enum.getName()})
 
-            # Format output
-            output = OutputFormatter.table(["Type", "Name"], items)
-            print(output)
+            # Prepare table rows for output
+            table_rows = [[item["type"], item["name"]] for item in items]
+
+            # Use base class helper for formatted output
+            self._print_formatted_output(
+                data=items,
+                headers=["Type", "Name"],
+                table_rows=table_rows,
+            )
         except Exception as e:
             self._handle_execution_error(e, f"Failed to list items in package '{args.path}'")
 ```
