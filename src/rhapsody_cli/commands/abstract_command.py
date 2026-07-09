@@ -1,10 +1,13 @@
 """Abstract base class for all CLI command groups."""
 
 import argparse
-import sys
+import logging
 from typing import Dict, List, Optional
 
 from rhapsody_cli.actions.abstract_action import AbstractAction
+from rhapsody_cli.exceptions import CliExecutionError
+
+logger = logging.getLogger(__name__)
 
 
 class AbstractCommand:
@@ -49,7 +52,7 @@ class AbstractCommand:
 
         if not self._subcommand:
             parser.print_help()
-            sys.exit(2)
+            raise CliExecutionError(f"Missing subcommand for '{command}'", exit_code=2)
 
     def get_actions(self) -> List[AbstractAction]:
         """Return the list of actions (subcommands) for this command group.
@@ -62,20 +65,20 @@ class AbstractCommand:
         """Dispatch execution to the action matching the parsed subcommand."""
         action = self._sub_commands.get(self._subcommand) if self._subcommand else None
         if action is None or self._parsed_args is None:
-            print(f"Error: Unknown subcommand '{self._subcommand}'", file=sys.stderr)
-            sys.exit(2)
+            logger.error("Unknown subcommand '%s'", self._subcommand)
+            raise CliExecutionError(f"Unknown subcommand '{self._subcommand}'", exit_code=2)
         action.execute(self._parsed_args)
 
     def usage(self, error: str = "") -> None:
-        """Print usage message and exit.
+        """Raise a CliExecutionError with a usage message.
 
         Args:
-            error: Optional error message to display before usage
+            error: Optional error message to include before the usage text.
         """
-        if error:
-            print(error)
-        print(f"\nUsage: rhapsody-cli {self._command_name()} [options]")
-        sys.exit(2)
+        message = f"{error}\n" if error else ""
+        message += f"Usage: rhapsody-cli {self._command_name()} [options]"
+        logger.error(message)
+        raise CliExecutionError(message, exit_code=2)
 
     def _command_name(self) -> str:
         """Get the command name (lowercase class name)."""

@@ -1,12 +1,12 @@
 """Element actions - each subcommand of `element` as its own Action class."""
 
 import argparse
-import sys
 from typing import Any, List, Optional, Tuple
 
 from rhapsody_cli.actions.abstract_action import ElementManagementAction
 from rhapsody_cli.cli.formatters import OutputFormatter
 from rhapsody_cli.cli.path_resolver import PathResolver, PathResolverError
+from rhapsody_cli.exceptions import CliExecutionError
 from rhapsody_cli.models.core import call_com
 
 
@@ -38,24 +38,19 @@ class ElementAddAction(ElementManagementAction):
         path = args.path
 
         if not name and not bulk_file:
-            print("Error: either --name or --bulk must be provided", file=sys.stderr)
-            sys.exit(1)
+            raise CliExecutionError("either --name or --bulk must be provided")
         if name and bulk_file:
-            print("Error: --name and --bulk cannot be used together", file=sys.stderr)
-            sys.exit(1)
+            raise CliExecutionError("--name and --bulk cannot be used together")
 
         try:
             project = self._get_active_project()
             root = project.getRoot()
             container = PathResolver.resolve_container(root, path)
-        except SystemExit:
-            raise
         except PathResolverError as e:
-            print(f"Error: {e}", file=sys.stderr)
-            sys.exit(1)
+            self.logger.error("%s", e)
+            raise CliExecutionError(str(e)) from e
         except Exception as e:
             self._handle_execution_error(e, "Failed to resolve container path")
-            sys.exit(1)
 
         if bulk_file:
             self._execute_bulk(element_type, bulk_file, container, path)
@@ -66,15 +61,11 @@ class ElementAddAction(ElementManagementAction):
         """Create a single element under `container` and report the result."""
         try:
             self._create_element(element_type, name, container)
-        except SystemExit:
-            raise
         except Exception as e:
             self._handle_execution_error(e, f"Failed to create {element_type} '{name}'")
-            sys.exit(1)
 
         full_path = f"{path}/{name}" if path else name
         self.logger.info("Created %s: %s", element_type, full_path)
-        print(f"Created {element_type}: {full_path}")
 
     def _execute_bulk(self, element_type: str, bulk_file: str, container: Any, path: Optional[str]) -> None:
         """Create one element per non-empty line of `bulk_file` under `container`."""
@@ -82,8 +73,7 @@ class ElementAddAction(ElementManagementAction):
             with open(bulk_file, encoding="utf-8") as f:
                 lines = f.readlines()
         except OSError as e:
-            print(f"Error: Could not read bulk file '{bulk_file}': {e}", file=sys.stderr)
-            sys.exit(1)
+            raise CliExecutionError(f"Could not read bulk file '{bulk_file}': {e}") from e
 
         created: List[Tuple[str, str]] = []
         errors: List[Tuple[int, str, str]] = []
@@ -98,19 +88,16 @@ class ElementAddAction(ElementManagementAction):
                 self.logger.info("Created %s: %s", element_type, full_path)
             except Exception as e:
                 errors.append((line_num, item_name, str(e)))
+                self.logger.error("Line %d (%s): %s", line_num, item_name, e)
 
         total = len(created) + len(errors)
         if errors:
-            print(f"Added {len(created)}/{total} items. Errors:")
-            for line_num, item_name, reason in errors:
-                print(f"  Line {line_num} ({item_name}): {reason}")
+            self.logger.info("Added %d/%d items with %d error(s)", len(created), total, len(errors))
         else:
-            print(f"Added {len(created)} items:" if created else "Added 0 items")
-            for item_name, full_path in created:
-                print(f"  ✓ {item_name} created at {full_path}")
+            self.logger.info("Added %d item(s)", len(created))
 
         if errors and not created:
-            sys.exit(1)
+            raise CliExecutionError(f"Added 0/{total} items; all items failed")
 
     def _create_element(self, element_type: str, name: str, container: Any) -> None:
         """Dispatch element creation to the right container method by type."""
@@ -152,14 +139,11 @@ class ElementViewAction(ElementManagementAction):
             project = self._get_active_project()
             root = project.getRoot()
             element = PathResolver.resolve_element(root, path)
-        except SystemExit:
-            raise
         except PathResolverError as e:
-            print(f"Error: {e}", file=sys.stderr)
-            sys.exit(1)
+            self.logger.error("%s", e)
+            raise CliExecutionError(str(e)) from e
         except Exception as e:
             self._handle_execution_error(e, f"Failed to view element '{path}'")
-            sys.exit(1)
 
         data = {
             "path": path,
@@ -171,6 +155,9 @@ class ElementViewAction(ElementManagementAction):
 
         ctx = RhapsodyContext()
 
+        # NOTE: This is the command's result data (not a status/log message),
+        # so it is written directly to stdout via print() rather than the
+        # logger, to keep it safe for piping/redirection (e.g. `> out.json`).
         if ctx.output_format == "json":
             output = OutputFormatter.json_format(data)
         else:
@@ -212,14 +199,11 @@ class ElementQueryAction(ElementManagementAction):
             project = self._get_active_project()
             root = project.getRoot()
             container = PathResolver.resolve_container(root, path)
-        except SystemExit:
-            raise
         except PathResolverError as e:
-            print(f"Error: {e}", file=sys.stderr)
-            sys.exit(1)
+            self.logger.error("%s", e)
+            raise CliExecutionError(str(e)) from e
         except Exception as e:
             self._handle_execution_error(e, "Failed to query elements")
-            sys.exit(1)
 
         base_path = path or ""
         results = self._collect_elements(container, base_path, recursive)
@@ -228,6 +212,9 @@ class ElementQueryAction(ElementManagementAction):
 
         ctx = RhapsodyContext()
 
+        # NOTE: This is the command's result data (not a status/log message),
+        # so it is written directly to stdout via print() rather than the
+        # logger, to keep it safe for piping/redirection (e.g. `> out.json`).
         if ctx.output_format == "json":
             data = {"elements": [{"name": name, "type": meta_class, "path": elem_path} for name, meta_class, elem_path in results]}
             output = OutputFormatter.json_format(data)
@@ -286,14 +273,11 @@ class ElementDeleteAction(ElementManagementAction):
             project = self._get_active_project()
             root = project.getRoot()
             element = PathResolver.resolve_element(root, path)
-        except SystemExit:
-            raise
         except PathResolverError as e:
-            print(f"Error: {e}", file=sys.stderr)
-            sys.exit(1)
+            self.logger.error("%s", e)
+            raise CliExecutionError(str(e)) from e
         except Exception as e:
             self._handle_execution_error(e, f"Failed to delete element at path '{path}'")
-            sys.exit(1)
 
         nested_count = 0
         if recursive:
@@ -301,22 +285,19 @@ class ElementDeleteAction(ElementManagementAction):
             if not force:
                 answer = input(f"This will delete '{path}' and {nested_count} nested element(s). Continue? [y/N] ")
                 if answer.strip().lower() not in ("y", "yes"):
-                    print("Aborted.")
+                    self.logger.info("Aborted delete of '%s'", path)
                     return
 
         try:
             call_com(lambda: element._com.delete())  # type: ignore[attr-defined]
         except Exception as e:
             self._handle_execution_error(e, f"Failed to delete element at path '{path}'")
-            sys.exit(1)
 
         meta_class = element.getMetaClass()  # type: ignore[attr-defined]
         if recursive:
             self.logger.info("Deleted %s: %s (and %d nested elements)", meta_class, path, nested_count)
-            print(f"Deleted {meta_class.lower()}: {path} and {nested_count} nested element(s)")
         else:
             self.logger.info("Deleted %s: %s", meta_class, path)
-            print(f"Deleted {meta_class.lower()}: {path}")
 
     def _count_nested(self, element: Any) -> int:
         """Recursively count all elements nested within `element`."""

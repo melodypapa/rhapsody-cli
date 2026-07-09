@@ -5,6 +5,7 @@ import pytest
 from rhapsody_cli.commands.element_command import ElementCommand
 from rhapsody_cli.commands.io_command import IOCommand
 from rhapsody_cli.commands.project_command import ProjectCommand
+from rhapsody_cli.exceptions import CliExecutionError
 
 
 class TestElementCommandParsing:
@@ -47,14 +48,14 @@ class TestElementCommandParsing:
         assert cmd._parsed_args.path == "Root::MyClass"
 
     def test_element_missing_subcommand(self) -> None:
-        """Test element with no subcommand exits."""
-        with pytest.raises(SystemExit):
+        """Test element with no subcommand raises CliExecutionError."""
+        with pytest.raises(CliExecutionError):
             ElementCommand([])
 
     def test_element_add_missing_args(self) -> None:
-        """Test element add without required args exits on execute."""
+        """Test element add without required args raises CliExecutionError on execute."""
         cmd = ElementCommand(["add", "--type", "class"])
-        with pytest.raises(SystemExit):
+        with pytest.raises(CliExecutionError):
             cmd.execute()
 
 
@@ -94,8 +95,8 @@ class TestIOCommandParsing:
         assert cmd._parsed_args.format == "json"
 
     def test_io_missing_subcommand(self) -> None:
-        """Test io with no subcommand exits."""
-        with pytest.raises(SystemExit):
+        """Test io with no subcommand raises CliExecutionError."""
+        with pytest.raises(CliExecutionError):
             IOCommand([])
 
     def test_io_import_missing_source(self) -> None:
@@ -133,6 +134,6 @@ class TestProjectCommandParsing:
         assert cmd._parsed_args.project_name == "MyProject"
 
     def test_project_missing_subcommand(self) -> None:
-        """Test project with no subcommand exits."""
-        with pytest.raises(SystemExit):
+        """Test project with no subcommand raises CliExecutionError."""
+        with pytest.raises(CliExecutionError):
             ProjectCommand([])

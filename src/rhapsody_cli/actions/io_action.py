@@ -1,7 +1,6 @@
 """IO actions - each subcommand of `io` as its own Action class."""
 
 import argparse
-import sys
 
 from rhapsody_cli.actions.abstract_action import ElementManagementAction
 
@@ -28,14 +27,11 @@ class IOImportAction(ElementManagementAction):
         try:
             self._get_active_project()
 
-            print(f"Importing from {source} into {target}...")
-            print("(Import functionality depends on file format and Rhapsody API)")
-            print("✓ Import completed")
-        except SystemExit:
-            raise
+            self.logger.info("Importing from %s into %s...", source, target)
+            self.logger.info("(Import functionality depends on file format and Rhapsody API)")
+            self.logger.info("Import completed")
         except Exception as e:
             self._handle_execution_error(e, f"Failed to import from '{source}'")
-            sys.exit(1)
 
 
 class IOExportAction(ElementManagementAction):
@@ -65,11 +61,8 @@ class IOExportAction(ElementManagementAction):
         try:
             self._get_active_project()
 
-            print(f"Exporting to {output} as {export_format}...")
-            print("(Export functionality depends on file format and Rhapsody API)")
-            print(f"✓ Export completed: {output}")
-        except SystemExit:
-            raise
+            self.logger.info("Exporting to %s as %s...", output, export_format)
+            self.logger.info("(Export functionality depends on file format and Rhapsody API)")
+            self.logger.info("Export completed: %s", output)
         except Exception as e:
             self._handle_execution_error(e, f"Failed to export to '{output}'")
-            sys.exit(1)

@@ -14,7 +14,7 @@ from rhapsody_cli.actions.element_action import (
 )
 from rhapsody_cli.cli.context import RhapsodyContext
 from rhapsody_cli.commands.element_command import ElementCommand
-from rhapsody_cli.exceptions import RhapsodyConnectionError
+from rhapsody_cli.exceptions import CliExecutionError, RhapsodyConnectionError
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -29,8 +29,8 @@ class TestElementCommandDispatch:
         assert cmd._subcommand == "add"
 
     def test_missing_subcommand_exits(self) -> None:
-        """Test: no subcommand causes SystemExit."""
-        with pytest.raises(SystemExit):
+        """Test: no subcommand raises CliExecutionError."""
+        with pytest.raises(CliExecutionError):
             ElementCommand([])
 
 
@@ -101,27 +101,27 @@ class TestElementAddAction:
             return fake_project
 
         with patch.object(RhapsodyContext, "get_active_project", fake_get_active_project):
-            with pytest.raises(SystemExit) as exc_info:
+            with pytest.raises(CliExecutionError) as exc_info:
                 action.execute(args)
-            assert exc_info.value.code == 1
+            assert exc_info.value.exit_code == 1
 
     def test_add_action_requires_name_or_bulk(self) -> None:
         """Test: add action exits with an error when neither --name nor --bulk is given."""
         action = ElementAddAction()
         args = argparse.Namespace(type="class", name=None, bulk=None, path=None, verbose=False)
 
-        with pytest.raises(SystemExit) as exc_info:
+        with pytest.raises(CliExecutionError) as exc_info:
             action.execute(args)
-        assert exc_info.value.code == 1
+        assert exc_info.value.exit_code == 1
 
     def test_add_action_rejects_both_name_and_bulk(self) -> None:
         """Test: add action exits with an error when both --name and --bulk are given."""
         action = ElementAddAction()
         args = argparse.Namespace(type="class", name="Foo", bulk="items.txt", path=None, verbose=False)
 
-        with pytest.raises(SystemExit) as exc_info:
+        with pytest.raises(CliExecutionError) as exc_info:
             action.execute(args)
-        assert exc_info.value.code == 1
+        assert exc_info.value.exit_code == 1
 
     def test_add_action_bulk_creates_multiple_items(self, tmp_path: "Path") -> None:
         """Test: add action with --bulk creates every non-empty line as an element."""
@@ -183,9 +183,9 @@ class TestElementAddAction:
             "get_active_project",
             side_effect=RhapsodyConnectionError("No running Rhapsody instance found"),
         ):
-            with pytest.raises(SystemExit) as exc_info:
+            with pytest.raises(CliExecutionError) as exc_info:
                 action.execute(args)
-            assert exc_info.value.code == 1
+            assert exc_info.value.exit_code == 1
 
 
 class TestElementViewAction:
@@ -233,9 +233,9 @@ class TestElementViewAction:
             return fake_project
 
         with patch.object(RhapsodyContext, "get_active_project", fake_get_active_project):
-            with pytest.raises(SystemExit) as exc_info:
+            with pytest.raises(CliExecutionError) as exc_info:
                 action.execute(args)
-            assert exc_info.value.code == 1
+            assert exc_info.value.exit_code == 1
 
     def test_view_action_exits_on_connection_error(self) -> None:
         """Test: view action exits when no Rhapsody is running."""
@@ -247,9 +247,9 @@ class TestElementViewAction:
             "get_active_project",
             side_effect=RhapsodyConnectionError("No running Rhapsody instance found"),
         ):
-            with pytest.raises(SystemExit) as exc_info:
+            with pytest.raises(CliExecutionError) as exc_info:
                 action.execute(args)
-            assert exc_info.value.code == 1
+            assert exc_info.value.exit_code == 1
 
 
 class TestElementQueryAction:
@@ -324,9 +324,9 @@ class TestElementQueryAction:
             return fake_project
 
         with patch.object(RhapsodyContext, "get_active_project", fake_get_active_project):
-            with pytest.raises(SystemExit) as exc_info:
+            with pytest.raises(CliExecutionError) as exc_info:
                 action.execute(args)
-            assert exc_info.value.code == 1
+            assert exc_info.value.exit_code == 1
 
     def test_query_action_exits_on_connection_error(self) -> None:
         """Test: query action exits when no Rhapsody is running."""
@@ -338,9 +338,9 @@ class TestElementQueryAction:
             "get_active_project",
             side_effect=RhapsodyConnectionError("No running Rhapsody instance found"),
         ):
-            with pytest.raises(SystemExit) as exc_info:
+            with pytest.raises(CliExecutionError) as exc_info:
                 action.execute(args)
-            assert exc_info.value.code == 1
+            assert exc_info.value.exit_code == 1
 
 
 class TestElementDeleteAction:
@@ -388,9 +388,9 @@ class TestElementDeleteAction:
             return fake_project
 
         with patch.object(RhapsodyContext, "get_active_project", fake_get_active_project):
-            with pytest.raises(SystemExit) as exc_info:
+            with pytest.raises(CliExecutionError) as exc_info:
                 action.execute(args)
-            assert exc_info.value.code == 1
+            assert exc_info.value.exit_code == 1
 
     def test_delete_action_recursive_prompts_and_deletes_with_confirmation(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test: delete action with --recursive counts nested elements and deletes after 'y' confirmation."""
@@ -490,6 +490,6 @@ class TestElementDeleteAction:
             "get_active_project",
             side_effect=RhapsodyConnectionError("No running Rhapsody instance found"),
         ):
-            with pytest.raises(SystemExit) as exc_info:
+            with pytest.raises(CliExecutionError) as exc_info:
                 action.execute(args)
-            assert exc_info.value.code == 1
+            assert exc_info.value.exit_code == 1

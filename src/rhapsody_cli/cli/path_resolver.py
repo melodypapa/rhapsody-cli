@@ -10,11 +10,9 @@ class PathResolverError(Exception):
 class _Navigable(Protocol):
     """Structural type for anything PathResolver can navigate: needs a name and children."""
 
-    def getName(self) -> str:
-        ...  # pragma: no cover - structural protocol
+    def getName(self) -> str: ...  # pragma: no cover - structural protocol
 
-    def getNestedElements(self) -> object:
-        ...  # pragma: no cover - structural protocol
+    def getNestedElements(self) -> object: ...  # pragma: no cover - structural protocol
 
 
 class PathResolver:
@@ -113,10 +111,7 @@ class PathResolver:
                     break
             if found is None:
                 stopped_at = "/".join(visited) if visited else "<root>"
-                raise PathResolverError(
-                    f"Could not navigate to '{original_path}' — stopped at "
-                    f"'{stopped_at}' (not found: '{segment}')"
-                )
+                raise PathResolverError(f"Could not navigate to '{original_path}' — stopped at " f"'{stopped_at}' (not found: '{segment}')")
             current = found
             visited.append(segment)
         return current
