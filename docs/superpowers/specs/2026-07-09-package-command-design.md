@@ -37,14 +37,14 @@ package (command group)
 1. **src/rhapsody_cli/commands/package_command.py**
    - `PackageCommand` class - dispatcher for package subcommands
    - Follows `ElementCommand` pattern
-   - Registers 4 actions: PackageCreateAction, PackageDeleteAction, PackageViewAction, PackageItemsAction
+   - Registers 4 actions: PackageCreateAction, PackageDeleteAction, PackageViewAction, PackageListAction
 
 2. **src/rhapsody_cli/actions/package_action.py**
    - `AbstractPackageAction` - Base class with common functionality (path validation, logging, error handling)
    - `PackageCreateAction` - handles `package create` (extends AbstractPackageAction)
    - `PackageDeleteAction` - handles `package delete` (extends AbstractPackageAction)
    - `PackageViewAction` - handles `package view` (extends AbstractPackageAction)
-   - `PackageItemsAction` - handles `package items` (extends AbstractPackageAction)
+   - `PackageListAction` - handles `package list` (extends AbstractPackageAction)
 
 3. **Register in src/rhapsody_cli/cli/main.py**
    - Add `package` command to CLI dispatcher
@@ -431,9 +431,9 @@ class PackageViewAction(AbstractPackageAction):
             raise CliExecutionError(f"Failed to write file '{file_path}': {e}")
 ```
 
-### 4. package items
+### 4. package list
 
-**Purpose:** List all children items in a package.
+**Purpose:** List all nested packages (children packages) in a package.
 
 **Arguments:**
 - `--path <package-path>` - Package path (required, must be Package)
@@ -443,19 +443,19 @@ class PackageViewAction(AbstractPackageAction):
 **Example:**
 ```bash
 # Default table output to console
-rhapsody-cli package items --path Sensors
+rhapsody-cli package list --path Sensors
 
 # JSON output to file
-rhapsody-cli package items --path Sensors --format json --output items.json
+rhapsody-cli package list --path Sensors --format json --output packages.json
 
 # CSV output to file
-rhapsody-cli package items --path Sensors --format csv --output items.csv
+rhapsody-cli package list --path Sensors --format csv --output packages.csv
 ```
 
 **Output formats:**
-- **Default**: Table format (Type, Name columns)
-- **JSON**: Via `--format json` - Array of objects with type and name fields
-- **CSV**: Via `--format csv` - Type,Name columns
+- **Default**: Table format (Name column)
+- **JSON**: Via `--format json` - Array of package names
+- **CSV**: Via `--format csv` - Name column
 
 **Output behavior:**
 - Default: Output to stdout (console)
@@ -464,9 +464,9 @@ rhapsody-cli package items --path Sensors --format csv --output items.csv
 
 **Implementation:**
 ```python
-class PackageItemsAction(AbstractPackageAction):
+class PackageListAction(AbstractPackageAction):
     def init_arguments(self, sub_parser):
-        parser = sub_parser.add_parser("items", help="List children items in a package")
+        parser = sub_parser.add_parser("list", help="List nested packages")
         parser.add_argument("--path", required=True, help="Package path")
         parser.add_argument("--format", choices=["table", "json", "csv"], default="table", help="Output format")
         parser.add_argument("--output", help="Write output to file instead of stdout")
@@ -476,43 +476,34 @@ class PackageItemsAction(AbstractPackageAction):
         # Resolve and validate package (using base class method)
         package = self._resolve_and_validate_package(args.path)
 
-        # Get all children items
+        # Get nested packages
         try:
-            items = []
-            for nested_pkg in package.getNestedPackages():
-                items.append({"type": "Package", "name": nested_pkg.getName()})
-            for cls in package.getClasses():
-                items.append({"type": "Class", "name": cls.getName()})
-            for actor in package.getActors():
-                items.append({"type": "Actor", "name": actor.getName()})
-            for usecase in package.getUseCases():
-                items.append({"type": "UseCase", "name": usecase.getName()})
-            for enum in package.getEnumerations():
-                items.append({"type": "Enumeration", "name": enum.getName()})
+            nested_packages = package.getNestedPackages()
+            package_names = [pkg.getName() for pkg in nested_packages]
 
             # Prepare table rows for output
-            table_rows = [[item["type"], item["name"]] for item in items]
+            table_rows = [[name] for name in package_names]
 
             # Format output
-            output = self._format_output(items, table_rows, args.format)
+            output = self._format_output(package_names, table_rows, args.format)
 
             # Write to file or stdout
             if args.output:
                 self._write_to_file(args.output, output)
-                self.logger.info("Wrote %d items to: %s", len(items), args.output)
+                self.logger.info("Wrote %d packages to: %s", len(package_names), args.output)
             else:
                 print(output)
         except Exception as e:
-            self._handle_execution_error(e, f"Failed to list items in package '{args.path}'")
+            self._handle_execution_error(e, f"Failed to list packages in '{args.path}'")
 
-    def _format_output(self, items, table_rows, format_type):
+    def _format_output(self, package_names, table_rows, format_type):
         """Format output based on format parameter."""
         if format_type == "json":
-            return OutputFormatter.json_format(items)
+            return OutputFormatter.json_format(package_names)
         elif format_type == "csv":
-            return OutputFormatter.csv_format(["Type", "Name"], table_rows)
+            return OutputFormatter.csv_format(["Name"], table_rows)
         else:
-            return OutputFormatter.table(["Type", "Name"], table_rows)
+            return OutputFormatter.table(["Name"], table_rows)
 
     def _write_to_file(self, file_path, content):
         """Write content to file."""
@@ -800,7 +791,7 @@ class TestPackageViewAction:
     def test_view_output_formats(self, mock_project):
         # Test table/JSON/CSV output
 
-class TestPackageItemsAction:
+class TestPackageListAction:
     def test_list_items(self, mock_project):
         # Test listing children
 
@@ -830,7 +821,7 @@ class TestPackageItemsAction:
 - [ ] Implement PackageCreateAction (extends AbstractPackageAction) with bulk support and validation
 - [ ] Implement PackageDeleteAction (extends AbstractPackageAction) using base class validation
 - [ ] Implement PackageViewAction (extends AbstractPackageAction) with output formatting
-- [ ] Implement PackageItemsAction (extends AbstractPackageAction) with children listing
+- [ ] Implement PackageListAction (extends AbstractPackageAction) with nested package listing
 
 ### Phase 3: Testing
 - [ ] Write unit tests for all 4 actions
