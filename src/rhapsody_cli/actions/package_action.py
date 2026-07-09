@@ -113,7 +113,7 @@ class PackageCreateAction(AbstractPackageAction):
 
     def _create_single_package(self, container: Any, pkg_attrs: Dict[str, Any], parent_path: str) -> str:
         """Create a single package and set its attributes. Returns the package name."""
-        name = pkg_attrs.get("name")
+        name = str(pkg_attrs.get("name", ""))
         if not name:
             raise CliExecutionError("'name' is required in attributes")
 
