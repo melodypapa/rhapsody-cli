@@ -151,16 +151,16 @@ class PackageDeleteAction(AbstractPackageAction):
 **Examples:**
 ```bash
 # Inline JSON - single package
-package create --path Sensors '{"name":"TempSensors","description":"Temperature sensors"}'
+rhapsody-cli package create --path Sensors '{"name":"TempSensors","description":"Temperature sensors"}'
 
 # Inline JSON - multiple packages (bulk)
-package create --path Sensors '[{"name":"TempSensors","description":"Temperature"},{"name":"PressureSensors","description":"Pressure"}]'
+rhapsody-cli package create --path Sensors '[{"name":"TempSensors","description":"Temperature"},{"name":"PressureSensors","description":"Pressure"}]'
 
 # External JSON file - single package
-package create --path Sensors --file packages.json
+rhapsody-cli package create --path Sensors packages.json
 
 # External JSON file - multiple packages
-package create --path Main --file subsystems.json
+rhapsody-cli package create --path Main subsystems.json
 ```
 
 **External JSON file format:**
@@ -280,7 +280,7 @@ class PackageCreateAction(AbstractPackageAction):
 
 **Example:**
 ```bash
-package delete --path Sensors/OldPackage
+rhapsody-cli package delete --path Sensors/OldPackage
 ```
 
 **Implementation:**
@@ -313,13 +313,13 @@ class PackageDeleteAction(AbstractPackageAction):
 **Example:**
 ```bash
 # Default table output
-package view --path Sensors
+rhapsody-cli package view --path Sensors
 
 # JSON output via global flag
-rhapsody-cli --output json package view --path Sensors
+rhapsody-cli package view --path Sensors --output json
 
 # CSV output via global flag
-rhapsody-cli --output csv package view --path Sensors/TemperatureSensors
+rhapsody-cli package view --path Sensors/TemperatureSensors --output csv
 ```
 
 **Output formats:**
@@ -386,13 +386,13 @@ class PackageViewAction(AbstractPackageAction):
 **Example:**
 ```bash
 # Default table output
-package items --path Sensors
+rhapsody-cli package items --path Sensors
 
 # JSON output via global flag
-rhapsody-cli --output json package items --path Sensors
+rhapsody-cli package items --path Sensors --output json
 
 # CSV output via global flag
-rhapsody-cli --output csv package items --path Sensors
+rhapsody-cli package items --path Sensors --output csv
 ```
 
 **Output formats:**
