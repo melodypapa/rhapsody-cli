@@ -194,3 +194,162 @@ class PackageCreateAction(AbstractPackageAction):
         if "tags" in attrs:
             for key, val in attrs["tags"].items():
                 package.setPropertyValue(key, val)
+
+
+class PackageDeleteAction(AbstractPackageAction):
+    """Delete a package.
+
+    SWR_PKG_0002: Package Delete Command
+    """
+
+    def __init__(self) -> None:
+        """Initialize the 'delete' action."""
+        super().__init__(command_id="delete")
+
+    def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
+        """Register the 'delete' subcommand and its arguments."""
+        parser = sub_parser.add_parser("delete", help="Delete a package")
+        self.add_path_argument(parser, required=True, help_text="Package path to delete")
+        self.add_verbose_argument(parser)
+
+    def execute(self, args: argparse.Namespace) -> None:
+        """Execute package deletion."""
+        package = self._resolve_and_validate_package(args.path)
+
+        try:
+            package.deleteFromProject()
+            self.logger.info("Deleted package: %s", args.path)
+        except Exception as e:
+            self._handle_execution_error(e, f"Failed to delete package '{args.path}'")
+
+
+class PackageViewAction(AbstractPackageAction):
+    """View package details.
+
+    SWR_PKG_0003: Package View Command
+    SWR_PKG_0008: Multi-Format Output
+    """
+
+    _VIEW_HEADERS = ["Name", "GUID", "Description", "MetaClass", "FullPath"]
+    _VIEW_KEYS = ["name", "guid", "description", "metaClass", "fullPath"]
+
+    def __init__(self) -> None:
+        """Initialize the 'view' action."""
+        super().__init__(command_id="view")
+
+    def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
+        """Register the 'view' subcommand and its arguments."""
+        parser = sub_parser.add_parser("view", help="View package details")
+        self.add_path_argument(parser, required=True, help_text="Package path to view")
+        parser.add_argument("--format", choices=["table", "json", "csv"], default="table", help="Output format")
+        parser.add_argument("--output", default=None, help="Write output to file")
+        self.add_verbose_argument(parser)
+
+    def execute(self, args: argparse.Namespace) -> None:
+        """Execute package view."""
+        package = self._resolve_and_validate_package(args.path)
+
+        try:
+            data = self._collect_package_data(package)
+            output = self._format_output(data, args.format)
+
+            if args.output:
+                self._write_to_file(args.output, output)
+                self.logger.info("Wrote package details to: %s", args.output)
+            else:
+                print(output)
+        except CliExecutionError:
+            raise
+        except Exception as e:
+            self._handle_execution_error(e, f"Failed to view package '{args.path}'")
+
+    def _collect_package_data(self, package: Any) -> Dict[str, str]:
+        """Collect package details into a data dictionary."""
+        return {
+            "name": package.getName(),
+            "guid": package.getGUID(),
+            "description": package.getDescription(),
+            "metaClass": package.getMetaClass(),
+            "fullPath": package.getFullPathName(),
+        }
+
+    def _format_output(self, data: Dict[str, str], format_type: str) -> str:
+        """Format output based on format parameter."""
+        if format_type == "json":
+            return OutputFormatter.json_format(data)
+        elif format_type == "csv":
+            data_row = [data[key] for key in self._VIEW_KEYS]
+            return OutputFormatter.csv_format(self._VIEW_HEADERS, [data_row])
+        else:
+            table_rows = [[k, v] for k, v in data.items()]
+            return OutputFormatter.table(["Property", "Value"], table_rows)
+
+    def _write_to_file(self, file_path: str, content: str) -> None:
+        """Write content to file."""
+        try:
+            with open(file_path, "w", encoding="utf-8") as f:
+                f.write(content)
+        except OSError as e:
+            raise CliExecutionError(f"Failed to write file '{file_path}': {e}") from e
+
+
+class PackageListAction(AbstractPackageAction):
+    """List nested packages.
+
+    SWR_PKG_0004: Package List Command
+    SWR_PKG_0008: Multi-Format Output
+    """
+
+    def __init__(self) -> None:
+        """Initialize the 'list' action."""
+        super().__init__(command_id="list")
+
+    def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
+        """Register the 'list' subcommand and its arguments."""
+        parser = sub_parser.add_parser("list", help="List nested packages")
+        self.add_path_argument(parser, required=True, help_text="Package path")
+        parser.add_argument("--format", choices=["table", "json", "csv"], default="table", help="Output format")
+        parser.add_argument("--output", default=None, help="Write output to file")
+        self.add_verbose_argument(parser)
+
+    def execute(self, args: argparse.Namespace) -> None:
+        """Execute package list."""
+        package = self._resolve_and_validate_package(args.path)
+
+        try:
+            package_names = self._collect_nested_package_names(package)
+            output = self._format_output(package_names, args.format)
+
+            if args.output:
+                self._write_to_file(args.output, output)
+                self.logger.info("Wrote %d packages to: %s", len(package_names), args.output)
+            else:
+                print(output)
+        except CliExecutionError:
+            raise
+        except Exception as e:
+            self._handle_execution_error(e, f"Failed to list packages in '{args.path}'")
+
+    def _collect_nested_package_names(self, package: Any) -> List[str]:
+        """Collect names of nested packages."""
+        nested_packages = package.getNestedPackages()
+        return [pkg.getName() for pkg in nested_packages]
+
+    def _format_output(self, package_names: List[str], format_type: str) -> str:
+        """Format output based on format parameter."""
+        if format_type == "json":
+            return OutputFormatter.json_format(package_names)
+        elif format_type == "csv":
+            table_rows = [[name] for name in package_names]
+            return OutputFormatter.csv_format(["Name"], table_rows)
+        else:
+            table_rows = [[name] for name in package_names]
+            return OutputFormatter.table(["Name"], table_rows)
+
+    def _write_to_file(self, file_path: str, content: str) -> None:
+        """Write content to file."""
+        try:
+            with open(file_path, "w", encoding="utf-8") as f:
+                f.write(content)
+        except OSError as e:
+            raise CliExecutionError(f"Failed to write file '{file_path}': {e}") from e

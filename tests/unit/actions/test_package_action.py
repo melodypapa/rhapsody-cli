@@ -221,3 +221,204 @@ class TestPackageCreateAction:
             action.execute(args)
 
         assert "File not found" in str(exc_info.value)
+
+
+class TestPackageDeleteAction:
+    """Test PackageDeleteAction.
+
+    UTS_PKG_00011: Delete package successfully
+    UTS_PKG_00012: Delete handles COM error
+    """
+
+    def test_delete_package_success(self) -> None:
+        """UTS_PKG_00011: Test successful package deletion."""
+        from rhapsody_cli.actions.package_action import PackageDeleteAction
+
+        action = PackageDeleteAction()
+        mock_package = MagicMock()
+
+        with patch.object(action, "_resolve_and_validate_package", return_value=mock_package):
+            args = MagicMock()
+            args.path = "Sensors/OldPackage"
+
+            action.execute(args)
+
+            mock_package.deleteFromProject.assert_called_once()
+
+    def test_delete_package_handles_error(self) -> None:
+        """UTS_PKG_00012: Test error handling during deletion."""
+        from rhapsody_cli.actions.package_action import PackageDeleteAction
+
+        action = PackageDeleteAction()
+        mock_package = MagicMock()
+        mock_package.deleteFromProject.side_effect = Exception("COM error")
+
+        with patch.object(action, "_resolve_and_validate_package", return_value=mock_package):
+            args = MagicMock()
+            args.path = "Sensors/OldPackage"
+
+            with pytest.raises(CliExecutionError) as exc_info:
+                action.execute(args)
+
+            assert "COM error" in str(exc_info.value)
+
+
+class TestPackageViewAction:
+    """Test PackageViewAction.
+
+    UTS_PKG_00013: View table output
+    UTS_PKG_00014: View JSON output to file
+    UTS_PKG_00015: View CSV output
+    """
+
+    def test_view_table_output(self, capsys: Any) -> None:
+        """UTS_PKG_00013: Test table format output."""
+        from rhapsody_cli.actions.package_action import PackageViewAction
+
+        action = PackageViewAction()
+        mock_package = MagicMock()
+        mock_package.getName.return_value = "TempSensors"
+        mock_package.getGUID.return_value = "{12345}"
+        mock_package.getDescription.return_value = "Temperature sensors"
+        mock_package.getMetaClass.return_value = "Package"
+        mock_package.getFullPathName.return_value = "Sensors/TempSensors"
+
+        with patch.object(action, "_resolve_and_validate_package", return_value=mock_package):
+            args = MagicMock()
+            args.path = "Sensors/TempSensors"
+            args.format = "table"
+            args.output = None
+
+            action.execute(args)
+
+            captured = capsys.readouterr()
+            assert "TempSensors" in captured.out
+            assert "{12345}" in captured.out
+
+    def test_view_json_output_to_file(self, tmp_path: Any) -> None:
+        """UTS_PKG_00014: Test JSON output to file."""
+        from rhapsody_cli.actions.package_action import PackageViewAction
+
+        action = PackageViewAction()
+        mock_package = MagicMock()
+        mock_package.getName.return_value = "TempSensors"
+        mock_package.getGUID.return_value = "{12345}"
+        mock_package.getDescription.return_value = "Temperature sensors"
+        mock_package.getMetaClass.return_value = "Package"
+        mock_package.getFullPathName.return_value = "Sensors/TempSensors"
+
+        with patch.object(action, "_resolve_and_validate_package", return_value=mock_package):
+            output_file = tmp_path / "package.json"
+            args = MagicMock()
+            args.path = "Sensors/TempSensors"
+            args.format = "json"
+            args.output = str(output_file)
+
+            action.execute(args)
+
+            data = json.loads(output_file.read_text())
+            assert data["name"] == "TempSensors"
+            assert data["guid"] == "{12345}"
+
+    def test_view_csv_output(self, capsys: Any) -> None:
+        """UTS_PKG_00015: Test CSV format output."""
+        from rhapsody_cli.actions.package_action import PackageViewAction
+
+        action = PackageViewAction()
+        mock_package = MagicMock()
+        mock_package.getName.return_value = "TempSensors"
+        mock_package.getGUID.return_value = "{12345}"
+        mock_package.getDescription.return_value = "Temperature sensors"
+        mock_package.getMetaClass.return_value = "Package"
+        mock_package.getFullPathName.return_value = "Sensors/TempSensors"
+
+        with patch.object(action, "_resolve_and_validate_package", return_value=mock_package):
+            args = MagicMock()
+            args.path = "Sensors/TempSensors"
+            args.format = "csv"
+            args.output = None
+
+            action.execute(args)
+
+            captured = capsys.readouterr()
+            lines = captured.out.strip().split("\n")
+            assert len(lines) == 2
+            assert "Name" in lines[0]
+            assert "GUID" in lines[0]
+            assert "TempSensors" in lines[1]
+
+
+class TestPackageListAction:
+    """Test PackageListAction.
+
+    UTS_PKG_00016: List nested packages
+    UTS_PKG_00017: List empty package
+    UTS_PKG_00018: List JSON output
+    """
+
+    def test_list_nested_packages(self, capsys: Any) -> None:
+        """UTS_PKG_00016: Test listing nested packages."""
+        from rhapsody_cli.actions.package_action import PackageListAction
+
+        action = PackageListAction()
+        mock_parent = MagicMock()
+        pkg1 = MagicMock()
+        pkg1.getName.return_value = "TempSensors"
+        pkg2 = MagicMock()
+        pkg2.getName.return_value = "PressureSensors"
+        mock_parent.getNestedPackages.return_value = [pkg1, pkg2]
+
+        with patch.object(action, "_resolve_and_validate_package", return_value=mock_parent):
+            args = MagicMock()
+            args.path = "Sensors"
+            args.format = "table"
+            args.output = None
+
+            action.execute(args)
+
+            captured = capsys.readouterr()
+            assert "TempSensors" in captured.out
+            assert "PressureSensors" in captured.out
+
+    def test_list_empty_package(self, capsys: Any) -> None:
+        """UTS_PKG_00017: Test listing empty package."""
+        from rhapsody_cli.actions.package_action import PackageListAction
+
+        action = PackageListAction()
+        mock_parent = MagicMock()
+        mock_parent.getNestedPackages.return_value = []
+
+        with patch.object(action, "_resolve_and_validate_package", return_value=mock_parent):
+            args = MagicMock()
+            args.path = "EmptyPackage"
+            args.format = "table"
+            args.output = None
+
+            action.execute(args)
+
+            captured = capsys.readouterr()
+            assert "no data" in captured.out
+
+    def test_list_json_output(self, capsys: Any) -> None:
+        """UTS_PKG_00018: Test JSON output format."""
+        from rhapsody_cli.actions.package_action import PackageListAction
+
+        action = PackageListAction()
+        mock_parent = MagicMock()
+        pkg1 = MagicMock()
+        pkg1.getName.return_value = "TempSensors"
+        pkg2 = MagicMock()
+        pkg2.getName.return_value = "PressureSensors"
+        mock_parent.getNestedPackages.return_value = [pkg1, pkg2]
+
+        with patch.object(action, "_resolve_and_validate_package", return_value=mock_parent):
+            args = MagicMock()
+            args.path = "Sensors"
+            args.format = "json"
+            args.output = None
+
+            action.execute(args)
+
+            captured = capsys.readouterr()
+            data = json.loads(captured.out)
+            assert data == ["TempSensors", "PressureSensors"]
