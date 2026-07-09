@@ -258,10 +258,9 @@ rhapsody-cli element delete pkg/subpkg --recursive --force  # Skip confirmation
 | `src/rhapsody_cli/cli/path_resolver.py` | **Create** | PathResolver utility class |
 | `src/rhapsody_cli/actions/element_action.py` | **Modify** | Enhance all four action classes |
 | `tests/unit/cli/test_path_resolver.py` | **Create** | Unit tests for PathResolver |
-| `tests/unit/actions/test_element_action_bulk.py` | **Create** | Tests for bulk operations |
-| `docs/user-guide/element-cli.rst` | **Modify** | Add usage examples & bulk op docs |
-| `docs/api-reference/cli-actions.rst` | **Modify** | Document new flags |
-| `docs/cli-command-reference.rst` | **Modify** | Update command signatures |
+| `tests/unit/commands/test_element_commands.py` | **Modify** | Add bulk/recursive operation tests |
+| `docs/user_guide/cli_tools.rst` | **Modify** | Add usage examples & bulk op docs (Element Commands section) |
+| `docs/user_guide/working_with_elements.rst` | **Modify** | Document path syntax and traversal patterns |
 
 ### Test Coverage
 
@@ -277,15 +276,15 @@ rhapsody-cli element delete pkg/subpkg --recursive --force  # Skip confirmation
 - **Delete:** Confirm prompt, `--force` flag, recursive count verification
 - All tests use fake COM objects (no Rhapsody installation needed)
 
-### Test Files to Create
+### Test Files to Create/Modify
 
-1. **`tests/unit/cli/test_path_resolver.py`**
+1. **`tests/unit/cli/test_path_resolver.py`** (create)
    - Test path normalization (`/` vs `\` vs mixed)
    - Test path parsing (valid, invalid, edge cases)
    - Test navigation (success, not found scenarios)
    - Test error messages
 
-2. **`tests/unit/actions/test_element_action_bulk.py`**
+2. **`tests/unit/commands/test_element_commands.py`** (modify — add new test classes)
    - Test bulk add: multiple items, partial failure, error reporting
    - Test recursive query: nested structure, full paths, JSON output
    - Test recursive delete: confirmation prompt, `--force`, count verification
@@ -296,7 +295,7 @@ rhapsody-cli element delete pkg/subpkg --recursive --force  # Skip confirmation
 
 ### Sphinx Files to Update
 
-#### 1. `docs/user-guide/element-cli.rst`
+#### 1. `docs/user_guide/cli_tools.rst` (Element Commands section)
 
 **New Sections:**
 - "Path Syntax" — explain `/` and `\` formats, nesting examples
@@ -339,7 +338,7 @@ Add multiple classes from a file::
       ✓ Class3 created at pkg/Class3
 ```
 
-#### 2. `docs/api-reference/cli-actions.rst`
+#### 2. `docs/user_guide/working_with_elements.rst`
 
 **Update Command Signatures:**
 
@@ -364,7 +363,7 @@ Examples:
 - Bulk from file: ``rhapsody-cli element add --type class --bulk items.txt --path pkg``
 ```
 
-#### 3. `docs/cli-command-reference.rst`
+#### 3. `docs/user_guide/cli_tools.rst` (Common Use Cases section)
 
 **Update Summary Table:**
 
