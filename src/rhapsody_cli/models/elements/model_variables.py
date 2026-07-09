@@ -4,7 +4,7 @@ com.telelogic.rhapsody.core.
 
 from typing import Any
 
-from rhapsody_cli.models._core import (
+from rhapsody_cli.models.core import (
     RPCollection,
     RPModelElement,
     RPUnit,
@@ -160,3 +160,12 @@ class RPAttribute(RPVariable):
 
 
 register_wrapper("Attribute", RPAttribute)
+
+
+class RPTag(RPVariable):
+    """Wraps ``IRPTag``: a tag that extends ``IRPVariable``."""
+
+    pass
+
+
+register_wrapper("Tag", RPTag)
