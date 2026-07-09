@@ -55,5 +55,84 @@ class RPProject(RPPackage):
         """
         return self
 
+    def addClass(self, name: str) -> Any:
+        """Adds a new class to the project's top level.
+
+        Args:
+            name: The name of the new class.
+
+        Returns:
+            The wrapped ``IRPClass`` created.
+        """
+        return wrap(call_com(lambda: self._com.addClass(name)))
+
+    def addActor(self, name: str) -> Any:
+        """Adds a new actor to the project's top level.
+
+        Args:
+            name: The name of the new actor.
+
+        Returns:
+            The wrapped ``IRPActor`` created.
+        """
+        return wrap(call_com(lambda: self._com.addActor(name)))
+
+    def getComponents(self) -> RPCollection:
+        """Returns all components in the project.
+
+        Returns:
+            An ``RPCollection`` of component elements.
+        """
+        return RPCollection(call_com(lambda: self._com.getComponents()))
+
+    def findByName(self, name: str) -> Any:
+        """Finds an element in the project by name.
+
+        Args:
+            name: The name of the element to find.
+
+        Returns:
+            The wrapped element if found.
+        """
+        return wrap(call_com(lambda: self._com.findByName(name)))
+
+    def findByMetaClass(self, meta_class: str) -> RPCollection:
+        """Finds all elements in the project with a given metaclass.
+
+        Args:
+            meta_class: The metaclass name to search for.
+
+        Returns:
+            An ``RPCollection`` of matching elements.
+        """
+        return RPCollection(call_com(lambda: self._com.findByMetaClass(meta_class)))
+
+    def findElementByGUID(self, guid: str) -> Any:
+        """Finds an element in the project by GUID.
+
+        Args:
+            guid: The GUID of the element to find.
+
+        Returns:
+            The wrapped element if found.
+        """
+        return wrap(call_com(lambda: self._com.findElementByGUID(guid)))
+
+    def getIsDirty(self) -> int:
+        """Checks whether the project has unsaved changes.
+
+        Returns:
+            ``1`` if the project is dirty (has unsaved changes), ``0`` otherwise.
+        """
+        return int(call_com(lambda: self._com.getIsDirty()))
+
+    def setDirty(self, is_dirty: int) -> None:
+        """Sets the dirty flag of the project.
+
+        Args:
+            is_dirty: ``1`` to mark as dirty, ``0`` to mark as clean.
+        """
+        call_com(lambda: self._com.setDirty(is_dirty))
+
 
 register_wrapper("Project", RPProject)

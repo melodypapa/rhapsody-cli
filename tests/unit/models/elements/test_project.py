@@ -76,3 +76,96 @@ def test_project_is_registered_for_meta_class_project() -> None:
     wrapped = wrap(fake)
 
     assert isinstance(wrapped, RPProject)
+
+
+def test_project_add_class_returns_wrapped_element() -> None:
+    fake = make_fake_element("Project")
+    cls = make_fake_element("Class", getName="Class1")
+    fake.addClass.return_value = cls
+    project = RPProject(fake)
+
+    result = project.addClass("Class1")
+
+    fake.addClass.assert_called_once_with("Class1")
+    assert result.getName() == "Class1"
+
+
+def test_project_add_actor_returns_wrapped_element() -> None:
+    fake = make_fake_element("Project")
+    actor = make_fake_element("Actor", getName="Actor1")
+    fake.addActor.return_value = actor
+    project = RPProject(fake)
+
+    result = project.addActor("Actor1")
+
+    fake.addActor.assert_called_once_with("Actor1")
+    assert result.getName() == "Actor1"
+
+
+def test_project_get_components_returns_collection() -> None:
+    from rhapsody_cli.models._core import RPCollection
+
+    fake = make_fake_element("Project")
+    comp1 = make_fake_element("Component", getName="Comp1")
+    fake.getComponents.return_value = make_fake_collection([comp1])
+    project = RPProject(fake)
+
+    result = project.getComponents()
+
+    assert isinstance(result, RPCollection)
+
+
+def test_project_find_by_name_returns_wrapped_element() -> None:
+    fake = make_fake_element("Project")
+    found = make_fake_element("Class", getName="MyClass")
+    fake.findByName.return_value = found
+    project = RPProject(fake)
+
+    result = project.findByName("MyClass")
+
+    fake.findByName.assert_called_once_with("MyClass")
+    assert result.getName() == "MyClass"
+
+
+def test_project_find_by_meta_class_returns_collection() -> None:
+    from rhapsody_cli.models._core import RPCollection
+
+    fake = make_fake_element("Project")
+    cls1 = make_fake_element("Class", getName="Class1")
+    fake.findByMetaClass.return_value = make_fake_collection([cls1])
+    project = RPProject(fake)
+
+    result = project.findByMetaClass("Class")
+
+    assert isinstance(result, RPCollection)
+
+
+def test_project_find_element_by_guid_returns_wrapped_element() -> None:
+    fake = make_fake_element("Project")
+    found = make_fake_element("Class", getName="MyClass")
+    fake.findElementByGUID.return_value = found
+    project = RPProject(fake)
+
+    result = project.findElementByGUID("12345")
+
+    fake.findElementByGUID.assert_called_once_with("12345")
+    assert result.getName() == "MyClass"
+
+
+def test_project_is_dirty_returns_int() -> None:
+    fake = make_fake_element("Project", getIsDirty=1)
+    project = RPProject(fake)
+
+    result = project.getIsDirty()
+
+    fake.getIsDirty.assert_called_once_with()
+    assert result == 1
+
+
+def test_project_set_dirty_delegates_to_com() -> None:
+    fake = make_fake_element("Project")
+    project = RPProject(fake)
+
+    project.setDirty(1)
+
+    fake.setDirty.assert_called_once_with(1)
