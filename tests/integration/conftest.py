@@ -9,8 +9,7 @@ from rhapsody_cli import RhapsodyApplication
 from rhapsody_cli.exceptions import RhapsodyConnectionError, RhapsodyRuntimeException
 
 # Add unit directory to Python path so imports from unit tests work
-unit_dir = Path(__file__).parent.parent / "unit"
-sys.path.insert(0, str(unit_dir))
+sys.path.insert(0, str(Path(__file__).parent.parent / "unit"))
 
 
 @pytest.fixture(scope="session", autouse=True)
