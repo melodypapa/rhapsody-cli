@@ -79,7 +79,7 @@ class ElementAddAction(ElementManagementAction):
     def _execute_bulk(self, element_type: str, bulk_file: str, container: Any, path: Optional[str]) -> None:
         """Create one element per non-empty line of `bulk_file` under `container`."""
         try:
-            with open(bulk_file, "r", encoding="utf-8") as f:
+            with open(bulk_file, encoding="utf-8") as f:
                 lines = f.readlines()
         except OSError as e:
             print(f"Error: Could not read bulk file '{bulk_file}': {e}", file=sys.stderr)
@@ -229,12 +229,7 @@ class ElementQueryAction(ElementManagementAction):
         ctx = RhapsodyContext()
 
         if ctx.output_format == "json":
-            data = {
-                "elements": [
-                    {"name": name, "type": meta_class, "path": elem_path}
-                    for name, meta_class, elem_path in results
-                ]
-            }
+            data = {"elements": [{"name": name, "type": meta_class, "path": elem_path} for name, meta_class, elem_path in results]}
             output = OutputFormatter.json_format(data)
         elif recursive:
             rows = [[name, meta_class, elem_path] for name, meta_class, elem_path in results]
@@ -330,4 +325,3 @@ class ElementDeleteAction(ElementManagementAction):
             count += 1
             count += self._count_nested(child)
         return count
-

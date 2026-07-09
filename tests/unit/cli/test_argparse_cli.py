@@ -52,9 +52,10 @@ class TestElementCommandParsing:
             ElementCommand([])
 
     def test_element_add_missing_args(self) -> None:
-        """Test element add without required args exits."""
+        """Test element add without required args exits on execute."""
+        cmd = ElementCommand(["add", "--type", "class"])
         with pytest.raises(SystemExit):
-            ElementCommand(["add", "--type", "class"])
+            cmd.execute()
 
 
 class TestIOCommandParsing:
