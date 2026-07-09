@@ -22,8 +22,11 @@ The package CLI
 - SHALL support bulk creation via JSON array
 - SHALL validate parent path resolves to Package element
 - SHALL create nested packages under parent
-- SHALL set validated attributes (name, description, properties, stereotypes, tags)
+- SHALL set validated attributes: name, description, description_html, description_rtf, display_name, display_name_rtf, properties, stereotypes, tags
+- SHALL apply name via addNestedPackage(), description via setDescription(), properties via setPropertyValue(), stereotypes via addStereotype(), tags via setPropertyValue()
 - SHALL skip unknown attributes with warning log
+- SHALL detect inline JSON (starts with `{` or `[`) vs file path automatically
+- SHALL parse JSON file with UTF-8 encoding
 **Implementation:** src/rhapsody_cli/actions/package_action.py:PackageCreateAction
 **Last Changed:** 2026-07-09
 
@@ -60,10 +63,11 @@ The package CLI
 - SHALL accept `--format <format>` argument (table/json/csv, default: table)
 - SHALL accept `--output <file>` argument (optional)
 - SHALL display package properties: name, GUID, description, metaClass, fullPath
-- SHALL support table format with vertical key-value layout (Property | Value rows)
-- SHALL support JSON format as a single object with keys: name, guid, description, metaClass, fullPath
-- SHALL support CSV format with horizontal layout: header row (Name,GUID,Description,MetaClass,FullPath) followed by one data row
+- SHALL support table format with vertical key-value layout (Property | Value columns, 5 rows: Name, GUID, Description, MetaClass, FullPath)
+- SHALL support JSON format as a single object: `{"name":"...","guid":"...","description":"...","metaClass":"...","fullPath":"..."}`
+- SHALL support CSV format with horizontal layout: header row `Name,GUID,Description,MetaClass,FullPath` followed by one data row
 - SHALL write to file if `--output` specified, else stdout
+- SHALL output to stdout or file (not logger) for safe use in scripts
 **Implementation:** src/rhapsody_cli/actions/package_action.py:PackageViewAction
 **Last Changed:** 2026-07-09
 
@@ -82,10 +86,11 @@ The package CLI
 - SHALL accept `--format <format>` argument (table/json/csv, default: table)
 - SHALL accept `--output <file>` argument (optional)
 - SHALL list all nested packages under parent
-- SHALL support table format with single column (Name) and one row per package
-- SHALL support JSON format as an array of package name strings
-- SHALL support CSV format with horizontal layout: header row (Name) followed by one data row per package
+- SHALL support table format with single Name column, one row per nested package
+- SHALL support JSON format as an array of package name strings: `["TempSensors","PressureSensors","FlowSensors"]`
+- SHALL support CSV format with horizontal layout: header row `Name` followed by one data row per package
 - SHALL write to file if `--output` specified, else stdout
+- SHALL output to stdout or file (not logger) for safe use in scripts
 **Implementation:** src/rhapsody_cli/actions/package_action.py:PackageListAction
 **Last Changed:** 2026-07-09
 
@@ -138,10 +143,10 @@ Package create command
 **Description:**
 Package create command
 - SHALL support stereotypes and tags.
-- SHALL accept `stereotypes` array in JSON
-- SHALL apply stereotypes via addStereotype() method
-- SHALL accept `tags` object in JSON
-- SHALL set tags via setPropertyValue() method
+- SHALL accept `stereotypes` array in JSON (e.g. `["auto_generated","version_1_0"]`)
+- SHALL apply each stereotype via addStereotype(name, "Package") method
+- SHALL accept `tags` object in JSON (e.g. `{"status":"active","version":"1.0.0"}`)
+- SHALL set each tag via setPropertyValue(key, value) method
 **Implementation:** src/rhapsody_cli/actions/package_action.py:PackageCreateAction._set_stereotypes,_set_tags
 **Last Changed:** 2026-07-09
 
@@ -156,9 +161,11 @@ Package create command
 **Description:**
 Package view and list commands
 - SHALL support multiple output formats.
-- SHALL support table format (default, human-readable, vertical key-value layout for view, single-column for list)
-- SHALL support JSON format (machine-parsable, single object for view, array of strings for list)
-- SHALL support CSV format (spreadsheet-friendly, horizontal layout with header row + data rows)
+- SHALL support table format (default, human-readable): vertical key-value layout (Property | Value) for view, single Name column for list
+- SHALL support JSON format (machine-parsable): single object with 5 keys (name, guid, description, metaClass, fullPath) for view, array of name strings for list
+- SHALL support CSV format (spreadsheet-friendly): horizontal layout with header row + data rows
+- SHALL use 5 columns for view CSV: `Name,GUID,Description,MetaClass,FullPath`
+- SHALL use 1 column for list CSV: `Name`
 - SHALL use horizontal layout for CSV (header row + data rows, not vertical key-value pairs)
 **Implementation:** src/rhapsody_cli/actions/package_action.py:PackageViewAction._format_output,PackageListAction._format_output
 **Last Changed:** 2026-07-09
