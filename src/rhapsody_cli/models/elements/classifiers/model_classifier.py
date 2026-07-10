@@ -54,6 +54,9 @@ from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPMod
 # [inherited] IRPUnit / IRPModelElement methods (getName, setName, getOwner, getGUID,
 #              addDependency, addStereotype, getStereotypes, getNestedElements, save, load, etc.)
 # No deprecated IRPClassifier methods in deprecated-list.html.
+# [x] addPort (convenience method, not part of IRPClassifier's Java API -
+#     ports are created generically via addNewAggr("Port", name); this
+#     wraps that call for ergonomics)  [x] impl  [x] docstring  [x] test
 
 
 class RPClassifier(RPUnit):
@@ -617,6 +620,22 @@ class RPClassifier(RPUnit):
             An ``RPCollection`` of ``IRPPort`` ports.
         """
         return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getPorts()))
+
+    def addPort(self, name: str) -> Any:
+        """Adds a new port to this classifier.
+
+        Convenience method: the Rhapsody Java API has no dedicated
+        ``addPort`` factory method — ports are created generically via
+        ``addNewAggr("Port", name)``. This method encapsulates that call so
+        callers don't need to know the metaclass-string incantation.
+
+        Args:
+            name: The name to use for the new port.
+
+        Returns:
+            The wrapped ``IRPPort`` created.
+        """
+        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewAggr("Port", name)))
 
     def getRelations(self) -> RPCollection:
         """Returns all the classifier's associations.
