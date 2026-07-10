@@ -329,3 +329,94 @@ class TestClassCreateAction:
                 action.execute(args)
 
             assert "'name' is required" in str(exc_info.value)
+
+
+class TestClassDeleteAction:
+    """Test ClassDeleteAction.
+
+    UTS_CLS_00011: Delete class by path
+    UTS_CLS_00012: Delete class by GUID
+    UTS_CLS_00013: Delete handles COM error
+    UTS_CLS_00014: Delete requires path or guid
+    """
+
+    def test_delete_class_by_path_success(self) -> None:
+        """UTS_CLS_00011: Test successful class deletion by path."""
+        from rhapsody_cli.actions.class_action import ClassDeleteAction
+
+        action = ClassDeleteAction()
+        mock_class = MagicMock()
+        mock_class.getMetaClass.return_value = "Class"
+
+        with patch.object(action, "_resolve_and_validate_class", return_value=mock_class):
+            args = MagicMock()
+            args.path = "Sensors/OldClass"
+            args.guid = None
+
+            action.execute(args)
+
+            mock_class.deleteFromProject.assert_called_once()
+
+    def test_delete_class_by_guid_success(self) -> None:
+        """UTS_CLS_00012: Test successful class deletion by GUID."""
+        from rhapsody_cli.actions.class_action import ClassDeleteAction
+
+        action = ClassDeleteAction()
+        mock_class = MagicMock()
+        mock_class.getMetaClass.return_value = "Class"
+
+        with patch.object(action, "_resolve_class_by_guid", return_value=mock_class):
+            args = MagicMock()
+            args.path = None
+            args.guid = "12345678-1234-1234-1234-123456789abc"
+
+            action.execute(args)
+
+            mock_class.deleteFromProject.assert_called_once()
+
+    def test_delete_class_handles_com_error(self) -> None:
+        """UTS_CLS_00013: Test error handling during deletion."""
+        from rhapsody_cli.actions.class_action import ClassDeleteAction
+
+        action = ClassDeleteAction()
+        mock_class = MagicMock()
+        mock_class.getMetaClass.return_value = "Class"
+        mock_class.deleteFromProject.side_effect = Exception("COM error")
+
+        with patch.object(action, "_resolve_and_validate_class", return_value=mock_class):
+            args = MagicMock()
+            args.path = "Sensors/OldClass"
+            args.guid = None
+
+            with pytest.raises(CliExecutionError) as exc_info:
+                action.execute(args)
+
+            assert "COM error" in str(exc_info.value)
+
+    def test_delete_requires_path_or_guid(self) -> None:
+        """UTS_CLS_00014: Test that exactly one of path/guid is required."""
+        from rhapsody_cli.actions.class_action import ClassDeleteAction
+
+        action = ClassDeleteAction()
+        args = MagicMock()
+        args.path = None
+        args.guid = None
+
+        with pytest.raises(CliExecutionError) as exc_info:
+            action.execute(args)
+
+        assert "Either --path or --guid must be specified" in str(exc_info.value)
+
+    def test_delete_rejects_both_path_and_guid(self) -> None:
+        """Test that specifying both path and guid is rejected."""
+        from rhapsody_cli.actions.class_action import ClassDeleteAction
+
+        action = ClassDeleteAction()
+        args = MagicMock()
+        args.path = "Sensors/X"
+        args.guid = "12345678-1234-1234-1234-123456789abc"
+
+        with pytest.raises(CliExecutionError) as exc_info:
+            action.execute(args)
+
+        assert "Only one of --path or --guid" in str(exc_info.value)
