@@ -420,3 +420,226 @@ class TestClassDeleteAction:
             action.execute(args)
 
         assert "Only one of --path or --guid" in str(exc_info.value)
+
+
+class TestClassViewAction:
+    """Test ClassViewAction.
+
+    UTS_CLS_00015: View table output
+    UTS_CLS_00016: View JSON output to file
+    UTS_CLS_00017: View CSV output
+    UTS_CLS_00018: View by GUID
+    UTS_CLS_00019: View requires path or guid
+    UTS_CLS_00020: View normalizes IsAbstract to int in JSON
+    """
+
+    def _make_mock_class(self) -> MagicMock:
+        """Helper: build a fully-populated mock class."""
+        mock_class = MagicMock()
+        mock_class.getMetaClass.return_value = "Class"
+        mock_class.getName.return_value = "TemperatureSensor"
+        mock_class.getGUID.return_value = "12345678-1234-1234-1234-123456789abc"
+        mock_class.getDescription.return_value = "Temperature sensor"
+        mock_class.getIsAbstract.return_value = True  # bool
+        mock_class.getIsActive.return_value = 1
+        mock_class.getIsFinal.return_value = 0
+        mock_class.getIsComposite.return_value = 0
+        mock_class.getIsReactive.return_value = 0
+        mock_class.getFullPathName.return_value = "Sensors/TemperatureSensor"
+
+        op1 = MagicMock()
+        op1.getName.return_value = "readValue"
+        op2 = MagicMock()
+        op2.getName.return_value = "setThreshold"
+        mock_class.getOperations.return_value = [op1, op2]
+
+        attr1 = MagicMock()
+        attr1.getName.return_value = "threshold"
+        attr2 = MagicMock()
+        attr2.getName.return_value = "unit"
+        mock_class.getAttributes.return_value = [attr1, attr2]
+
+        return mock_class
+
+    def test_view_table_output(self, capsys) -> None:
+        """UTS_CLS_00015: Test table format output."""
+        from rhapsody_cli.actions.class_action import ClassViewAction
+
+        action = ClassViewAction()
+        mock_class = self._make_mock_class()
+
+        with patch.object(action, "_resolve_and_validate_class", return_value=mock_class):
+            args = MagicMock()
+            args.path = "Sensors/TemperatureSensor"
+            args.guid = None
+            args.format = "table"
+            args.output = None
+
+            action.execute(args)
+
+            captured = capsys.readouterr()
+            assert "TemperatureSensor" in captured.out
+            assert "Property" in captured.out
+            assert "readValue, setThreshold" in captured.out
+
+    def test_view_json_output_to_file(self, tmp_path) -> None:
+        """UTS_CLS_00016: Test JSON output to file with int-normalized IsAbstract."""
+        from rhapsody_cli.actions.class_action import ClassViewAction
+        import json as json_module
+
+        action = ClassViewAction()
+        mock_class = self._make_mock_class()
+
+        with patch.object(action, "_resolve_and_validate_class", return_value=mock_class):
+            output_file = tmp_path / "class.json"
+            args = MagicMock()
+            args.path = "Sensors/TemperatureSensor"
+            args.guid = None
+            args.format = "json"
+            args.output = str(output_file)
+
+            action.execute(args)
+
+            data = json_module.loads(output_file.read_text())
+            assert data["name"] == "TemperatureSensor"
+            assert data["guid"] == "12345678-1234-1234-1234-123456789abc"
+            assert data["isAbstract"] == 1  # bool True normalized to int
+            assert data["isActive"] == 1
+            assert data["isFinal"] == 0
+            assert data["operations"] == ["readValue", "setThreshold"]
+            assert data["attributes"] == ["threshold", "unit"]
+
+    def test_view_csv_output(self, capsys) -> None:
+        """UTS_CLS_00017: Test CSV format output."""
+        from rhapsody_cli.actions.class_action import ClassViewAction
+
+        action = ClassViewAction()
+        mock_class = self._make_mock_class()
+
+        with patch.object(action, "_resolve_and_validate_class", return_value=mock_class):
+            args = MagicMock()
+            args.path = "Sensors/TemperatureSensor"
+            args.guid = None
+            args.format = "csv"
+            args.output = None
+
+            action.execute(args)
+
+            captured = capsys.readouterr()
+            lines = captured.out.strip().split("\n")
+            assert len(lines) == 2
+            assert "Name,GUID" in lines[0]
+            assert "TemperatureSensor" in lines[1]
+
+    def test_view_by_guid(self, capsys) -> None:
+        """UTS_CLS_00018: Test viewing class by GUID."""
+        from rhapsody_cli.actions.class_action import ClassViewAction
+
+        action = ClassViewAction()
+        mock_class = self._make_mock_class()
+
+        with patch.object(action, "_resolve_class_by_guid", return_value=mock_class):
+            args = MagicMock()
+            args.path = None
+            args.guid = "12345678-1234-1234-1234-123456789abc"
+            args.format = "table"
+            args.output = None
+
+            action.execute(args)
+
+            captured = capsys.readouterr()
+            assert "TemperatureSensor" in captured.out
+
+    def test_view_requires_path_or_guid(self) -> None:
+        """UTS_CLS_00019: Test that exactly one of path/guid is required."""
+        from rhapsody_cli.actions.class_action import ClassViewAction
+
+        action = ClassViewAction()
+        args = MagicMock()
+        args.path = None
+        args.guid = None
+
+        with pytest.raises(CliExecutionError) as exc_info:
+            action.execute(args)
+
+        assert "Either --path or --guid must be specified" in str(exc_info.value)
+
+
+class TestClassListAction:
+    """Test ClassListAction.
+
+    UTS_CLS_00021: List classes in package
+    UTS_CLS_00022: List empty package
+    UTS_CLS_00023: List JSON output
+    """
+
+    def test_list_classes(self, capsys) -> None:
+        """UTS_CLS_00021: Test listing classes in a package."""
+        from rhapsody_cli.actions.class_action import ClassListAction
+
+        action = ClassListAction()
+        mock_package = MagicMock()
+        mock_package.getMetaClass.return_value = "Package"
+        cls1 = MagicMock()
+        cls1.getName.return_value = "TemperatureSensor"
+        cls2 = MagicMock()
+        cls2.getName.return_value = "PressureSensor"
+        mock_package.getClasses.return_value = [cls1, cls2]
+
+        with patch.object(action, "_resolve_and_validate_package", return_value=mock_package):
+            args = MagicMock()
+            args.path = "Sensors"
+            args.format = "table"
+            args.output = None
+
+            action.execute(args)
+
+            captured = capsys.readouterr()
+            assert "TemperatureSensor" in captured.out
+            assert "PressureSensor" in captured.out
+
+    def test_list_empty_package(self, capsys) -> None:
+        """UTS_CLS_00022: Test listing empty package."""
+        from rhapsody_cli.actions.class_action import ClassListAction
+
+        action = ClassListAction()
+        mock_package = MagicMock()
+        mock_package.getMetaClass.return_value = "Package"
+        mock_package.getClasses.return_value = []
+
+        with patch.object(action, "_resolve_and_validate_package", return_value=mock_package):
+            args = MagicMock()
+            args.path = "EmptyPackage"
+            args.format = "table"
+            args.output = None
+
+            action.execute(args)
+
+            captured = capsys.readouterr()
+            # Should produce empty table (no data)
+
+    def test_list_json_output(self, capsys) -> None:
+        """UTS_CLS_00023: Test JSON output format."""
+        from rhapsody_cli.actions.class_action import ClassListAction
+        import json as json_module
+
+        action = ClassListAction()
+        mock_package = MagicMock()
+        mock_package.getMetaClass.return_value = "Package"
+        cls1 = MagicMock()
+        cls1.getName.return_value = "TemperatureSensor"
+        cls2 = MagicMock()
+        cls2.getName.return_value = "PressureSensor"
+        mock_package.getClasses.return_value = [cls1, cls2]
+
+        with patch.object(action, "_resolve_and_validate_package", return_value=mock_package):
+            args = MagicMock()
+            args.path = "Sensors"
+            args.format = "json"
+            args.output = None
+
+            action.execute(args)
+
+            captured = capsys.readouterr()
+            data = json_module.loads(captured.out)
+            assert data == ["TemperatureSensor", "PressureSensor"]

@@ -22,6 +22,7 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 from rhapsody_cli.actions.abstract_action import ElementManagementAction
+from rhapsody_cli.cli.formatters import OutputFormatter
 from rhapsody_cli.exceptions import CliExecutionError
 
 logger = logging.getLogger(__name__)
@@ -336,3 +337,180 @@ class ClassDeleteAction(AbstractClassAction):
             self.logger.info("Deleted class: %s", label)
         except Exception as e:
             self._handle_execution_error(e, f"Failed to delete class '{label}'")
+
+
+class ClassListAction(AbstractClassAction):
+    """List classes in a package.
+
+    SWR_CLS_00004: Class List Command
+    SWR_CLS_00008: Multi-Format Output
+    """
+
+    def __init__(self) -> None:
+        """Initialize the 'list' action."""
+        super().__init__(command_id="list")
+
+    def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
+        """Register the 'list' subcommand and its arguments."""
+        parser = sub_parser.add_parser("list", help="List classes in a package")
+        self.add_path_argument(parser, required=True, help_text="Package path")
+        parser.add_argument("--format", choices=["table", "json", "csv"], default="table", help="Output format")
+        parser.add_argument("--output", default=None, help="Write output to file")
+        self.add_verbose_argument(parser)
+
+    def execute(self, args: argparse.Namespace) -> None:
+        """Execute class list."""
+        package = self._resolve_and_validate_package(args.path)
+
+        try:
+            class_names = self._collect_class_names(package)
+            output = self._format_output(class_names, args.format)
+
+            if args.output:
+                self._write_to_file(args.output, output)
+                self.logger.info("Wrote %d classes to: %s", len(class_names), args.output)
+            else:
+                print(output)
+        except CliExecutionError:
+            raise
+        except Exception as e:
+            self._handle_execution_error(e, f"Failed to list classes in '{args.path}'")
+
+    def _collect_class_names(self, package: Any) -> List[str]:
+        """Collect names of classes in package."""
+        classes = package.getClasses()
+        return [cls.getName() for cls in classes]
+
+    def _format_output(self, class_names: List[str], format_type: str) -> str:
+        """Format output based on format parameter."""
+        if format_type == "json":
+            return OutputFormatter.json_format(class_names)
+        elif format_type == "csv":
+            table_rows = [[name] for name in class_names]
+            return OutputFormatter.csv_format(["Name"], table_rows)
+        else:
+            table_rows = [[name] for name in class_names]
+            return OutputFormatter.table(["Name"], table_rows)
+
+    def _write_to_file(self, file_path: str, content: str) -> None:
+        """Write content to file."""
+        try:
+            with open(file_path, "w", encoding="utf-8") as f:
+                f.write(content)
+        except OSError as e:
+            raise CliExecutionError(f"Failed to write file '{file_path}': {e}") from e
+
+
+class ClassViewAction(AbstractClassAction):
+    """View class details.
+
+    SWR_CLS_00003: Class View Command
+    SWR_CLS_00008: Multi-Format Output
+    SWR_CLS_00013: GUID Lookup Support
+    """
+
+    _VIEW_HEADERS = [
+        "Name", "GUID", "Description",
+        "IsAbstract", "IsActive", "IsFinal",
+        "IsComposite", "IsReactive", "MetaClass", "FullPath",
+        "Operations", "Attributes",
+    ]
+    _VIEW_KEYS = [
+        "name", "guid", "description",
+        "isAbstract", "isActive", "isFinal",
+        "isComposite", "isReactive", "metaClass", "fullPath",
+        "operations", "attributes",
+    ]
+
+    def __init__(self) -> None:
+        """Initialize the 'view' action."""
+        super().__init__(command_id="view")
+
+    def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
+        """Register the 'view' subcommand and its arguments."""
+        parser = sub_parser.add_parser("view", help="View class details")
+        self.add_path_argument(parser, required=False, help_text="Class path to view")
+        parser.add_argument("--guid", default=None, help="Class GUID to view")
+        parser.add_argument("--format", choices=["table", "json", "csv"], default="table", help="Output format")
+        parser.add_argument("--output", default=None, help="Write output to file")
+        self.add_verbose_argument(parser)
+
+    def execute(self, args: argparse.Namespace) -> None:
+        """Execute class view."""
+        if args.path and args.guid:
+            raise CliExecutionError("Only one of --path or --guid may be specified")
+        if not args.path and not args.guid:
+            raise CliExecutionError("Either --path or --guid must be specified")
+
+        if args.guid:
+            cls = self._resolve_class_by_guid(args.guid)
+        else:
+            cls = self._resolve_and_validate_class(args.path)
+
+        try:
+            data = self._collect_class_data(cls)
+            output = self._format_output(data, args.format)
+
+            if args.output:
+                self._write_to_file(args.output, output)
+                self.logger.info("Wrote class details to: %s", args.output)
+            else:
+                print(output)
+        except CliExecutionError:
+            raise
+        except Exception as e:
+            self._handle_execution_error(e, f"Failed to view class '{args.path or args.guid}'")
+
+    def _collect_class_data(self, cls: Any) -> Dict[str, Any]:
+        """Collect class details into a data dictionary.
+
+        Normalizes IsAbstract (bool) to int for clean JSON round-trip.
+        """
+        operations = cls.getOperations()
+        attributes = cls.getAttributes()
+        return {
+            "name": cls.getName(),
+            "guid": cls.getGUID(),
+            "description": cls.getDescription(),
+            "isAbstract": int(cls.getIsAbstract()),
+            "isActive": int(cls.getIsActive()),
+            "isFinal": int(cls.getIsFinal()),
+            "isComposite": int(cls.getIsComposite()),
+            "isReactive": int(cls.getIsReactive()),
+            "metaClass": cls.getMetaClass(),
+            "fullPath": cls.getFullPathName(),
+            "operations": [op.getName() for op in operations],
+            "attributes": [attr.getName() for attr in attributes],
+        }
+
+    def _format_output(self, data: Dict[str, Any], format_type: str) -> str:
+        """Format output based on format parameter."""
+        if format_type == "json":
+            return OutputFormatter.json_format(data)
+        elif format_type == "csv":
+            data_row = [data[key] for key in self._VIEW_KEYS]
+            return OutputFormatter.csv_format(self._VIEW_HEADERS, [data_row])
+        else:
+            table_rows = [
+                ["Name", data["name"]],
+                ["GUID", data["guid"]],
+                ["Description", data["description"]],
+                ["IsAbstract", data["isAbstract"]],
+                ["IsActive", data["isActive"]],
+                ["IsFinal", data["isFinal"]],
+                ["IsComposite", data["isComposite"]],
+                ["IsReactive", data["isReactive"]],
+                ["MetaClass", data["metaClass"]],
+                ["FullPath", data["fullPath"]],
+                ["Operations", ", ".join(data["operations"])],
+                ["Attributes", ", ".join(data["attributes"])],
+            ]
+            return OutputFormatter.table(["Property", "Value"], table_rows)
+
+    def _write_to_file(self, file_path: str, content: str) -> None:
+        """Write content to file."""
+        try:
+            with open(file_path, "w", encoding="utf-8") as f:
+                f.write(content)
+        except OSError as e:
+            raise CliExecutionError(f"Failed to write file '{file_path}': {e}") from e
