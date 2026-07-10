@@ -31,7 +31,7 @@ Add `package update` subcommand to modify attributes of an existing package.
 ### `package update`
 
 **Arguments:**
-- `--path <package-path>` (required) - package to update
+- `--path <package-path>` (required) - full path to the package (including package name, e.g. `Sensors/TempSensors`)
 - `--input <json-file>` (optional) - external JSON file
 - `attributes` (positional) - inline JSON with fields to update
 
@@ -49,7 +49,7 @@ Add `package update` subcommand to modify attributes of an existing package.
 
 **Example:**
 ```bash
-rhapsody-cli package update --path Sensors '{"description":"Updated sensor package","tags":{"version":"2.0"}}'
+rhapsody-cli package update --path Sensors/TempSensors '{"description":"Updated sensor package","tags":{"version":"2.0"}}'
 ```
 
 ---
@@ -61,7 +61,7 @@ Add `class update` subcommand to modify attributes of an existing class.
 ### `class update`
 
 **Arguments:**
-- `--path <class-path>` (optional) - class to update
+- `--path <class-path>` (optional) - full path to the class (including class name, e.g. `Sensors/TemperatureSensor`)
 - `--guid <guid>` (optional) - class GUID
 - Requires exactly one of `--path` or `--guid`
 - `--input <json-file>` (optional) - external JSON file
