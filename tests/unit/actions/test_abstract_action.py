@@ -190,12 +190,12 @@ class TestElementManagementActionResolveContainer:
         def boom(root_arg: object, path: Optional[str]) -> _FakeElement:
             raise RuntimeError("boom")
 
-        PathResolver.resolve_container = staticmethod(boom)  # type: ignore[method-assign]
+        PathResolver.resolve_container = staticmethod(boom)  # type: ignore[method-assign,assignment]
         try:
             with pytest.raises(CliExecutionError):
                 action._resolve_container_or_element(root, "pkg", resolve_element=False)
         finally:
-            PathResolver.resolve_container = staticmethod(original)  # type: ignore[method-assign]
+            PathResolver.resolve_container = staticmethod(original)  # type: ignore[method-assign,assignment]
 
 
 class TestElementManagementActionResolveElement:
@@ -231,12 +231,12 @@ class TestElementManagementActionResolveElement:
         def boom(root_arg: object, path: str) -> _FakeElement:
             raise RuntimeError("boom")
 
-        PathResolver.resolve_element = staticmethod(boom)  # type: ignore[method-assign]
+        PathResolver.resolve_element = staticmethod(boom)  # type: ignore[method-assign,assignment]
         try:
             with pytest.raises(CliExecutionError):
                 action._resolve_container_or_element(root, "pkg", resolve_element=True)
         finally:
-            PathResolver.resolve_element = staticmethod(original)  # type: ignore[method-assign]
+            PathResolver.resolve_element = staticmethod(original)  # type: ignore[method-assign,assignment]
 
 
 class _FakeContextAction(RhapsodyContextAction):
@@ -278,7 +278,7 @@ class TestRhapsodyContextActionPrintFormattedOutput:
         action = _FakeContextAction(command_id="fake")
         # Force the cached context into JSON mode without touching real COM.
         action._cached_context = Mock(spec=RhapsodyContext)
-        action._cached_context.output_format = "json"  # type: ignore[attr-defined]
+        action._cached_context.output_format = "json"
 
         action._print_formatted_output(data={"a": 1}, headers=["a"], table_rows=[[1]])
 
@@ -290,7 +290,7 @@ class TestRhapsodyContextActionPrintFormattedOutput:
         """By default (non-json), the helper should render a table to stdout."""
         action = _FakeContextAction(command_id="fake")
         action._cached_context = Mock(spec=RhapsodyContext)
-        action._cached_context.output_format = "table"  # type: ignore[attr-defined]
+        action._cached_context.output_format = "table"
 
         action._print_formatted_output(data={}, headers=["Name"], table_rows=[["Foo"]])
 
@@ -302,7 +302,7 @@ class TestRhapsodyContextActionPrintFormattedOutput:
         """force_table=True should keep table output even when format is 'json'."""
         action = _FakeContextAction(command_id="fake")
         action._cached_context = Mock(spec=RhapsodyContext)
-        action._cached_context.output_format = "json"  # type: ignore[attr-defined]
+        action._cached_context.output_format = "json"
 
         action._print_formatted_output(data={"a": 1}, headers=["Name"], table_rows=[["Foo"]], force_table=True)
 

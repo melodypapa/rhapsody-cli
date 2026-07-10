@@ -351,11 +351,10 @@ class TestElementDeleteAction:
         action = ElementDeleteAction()
         args = argparse.Namespace(path="TestClass", recursive=False, force=False, verbose=False)
 
-        fake_element_com = MagicMock(name="FakeElementCOM")
         fake_element_to_delete = MagicMock(name="FakeElement")
         fake_element_to_delete.getMetaClass.return_value = "Class"
         fake_element_to_delete.getName.return_value = "TestClass"
-        fake_element_to_delete._com = fake_element_com
+        fake_element_to_delete.deleteFromProject = MagicMock()
 
         fake_root = MagicMock(name="FakeRoot")
         fake_root.getNestedElements.return_value = [fake_element_to_delete]
@@ -370,7 +369,7 @@ class TestElementDeleteAction:
         with patch.object(RhapsodyContext, "get_active_project", fake_get_active_project):
             action.execute(args)
 
-        fake_element_com.delete.assert_called_once()
+        fake_element_to_delete.deleteFromProject.assert_called_once()
 
     def test_delete_action_reports_path_not_found(self) -> None:
         """Test: delete action exits with an error when the path cannot be navigated."""
@@ -400,12 +399,11 @@ class TestElementDeleteAction:
         fake_child = MagicMock(name="FakeChild")
         fake_child.getNestedElements.return_value = []
 
-        fake_pkg_com = MagicMock(name="FakePkgCOM")
         fake_pkg = MagicMock(name="FakePkg")
         fake_pkg.getName.return_value = "pkg"
         fake_pkg.getMetaClass.return_value = "Package"
         fake_pkg.getNestedElements.return_value = [fake_child]
-        fake_pkg._com = fake_pkg_com
+        fake_pkg.deleteFromProject = MagicMock()
 
         fake_root = MagicMock(name="FakeRoot")
         fake_root.getNestedElements.return_value = [fake_pkg]
@@ -422,19 +420,18 @@ class TestElementDeleteAction:
         with patch.object(RhapsodyContext, "get_active_project", fake_get_active_project):
             action.execute(args)
 
-        fake_pkg_com.delete.assert_called_once()
+        fake_pkg.deleteFromProject.assert_called_once()
 
     def test_delete_action_recursive_aborts_without_confirmation(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test: delete action with --recursive does not delete if the user declines to confirm."""
         action = ElementDeleteAction()
         args = argparse.Namespace(path="pkg", recursive=True, force=False, verbose=False)
 
-        fake_pkg_com = MagicMock(name="FakePkgCOM")
         fake_pkg = MagicMock(name="FakePkg")
         fake_pkg.getName.return_value = "pkg"
         fake_pkg.getMetaClass.return_value = "Package"
         fake_pkg.getNestedElements.return_value = []
-        fake_pkg._com = fake_pkg_com
+        fake_pkg.deleteFromProject = MagicMock()
 
         fake_root = MagicMock(name="FakeRoot")
         fake_root.getNestedElements.return_value = [fake_pkg]
@@ -451,19 +448,18 @@ class TestElementDeleteAction:
         with patch.object(RhapsodyContext, "get_active_project", fake_get_active_project):
             action.execute(args)
 
-        fake_pkg_com.delete.assert_not_called()
+        fake_pkg.deleteFromProject.assert_not_called()
 
     def test_delete_action_recursive_force_skips_confirmation(self) -> None:
         """Test: delete action with --recursive --force deletes without prompting."""
         action = ElementDeleteAction()
         args = argparse.Namespace(path="pkg", recursive=True, force=True, verbose=False)
 
-        fake_pkg_com = MagicMock(name="FakePkgCOM")
         fake_pkg = MagicMock(name="FakePkg")
         fake_pkg.getName.return_value = "pkg"
         fake_pkg.getMetaClass.return_value = "Package"
         fake_pkg.getNestedElements.return_value = []
-        fake_pkg._com = fake_pkg_com
+        fake_pkg.deleteFromProject = MagicMock()
 
         fake_root = MagicMock(name="FakeRoot")
         fake_root.getNestedElements.return_value = [fake_pkg]
@@ -478,7 +474,7 @@ class TestElementDeleteAction:
         with patch.object(RhapsodyContext, "get_active_project", fake_get_active_project):
             action.execute(args)
 
-        fake_pkg_com.delete.assert_called_once()
+        fake_pkg.deleteFromProject.assert_called_once()
 
     def test_delete_action_exits_on_connection_error(self) -> None:
         """Test: delete action exits when no Rhapsody is running."""

@@ -238,6 +238,8 @@ class ElementManagementAction(RhapsodyContextAction):
         """
         try:
             if resolve_element:
+                if path is None:
+                    raise CliExecutionError(f"A path is required to {operation}")
                 return PathResolver.resolve_element(root, path)
             return PathResolver.resolve_container(root, path)
         except PathResolverError as e:
