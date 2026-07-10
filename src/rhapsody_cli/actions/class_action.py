@@ -54,15 +54,11 @@ class AbstractClassAction(ElementManagementAction):
             CliExecutionError: If path not found or not a Package/Project.
         """
         root = self._get_active_root()
-        container = self._resolve_container_or_element(
-            root, path, resolve_element=False, operation=f"resolve package path '{path}'"
-        )
+        container = self._resolve_container_or_element(root, path, resolve_element=False, operation=f"resolve package path '{path}'")
 
         meta_class = container.getMetaClass()
         if meta_class not in self._PACKAGE_META_CLASSES:
-            raise CliExecutionError(
-                f"Path '{path}' does not resolve to a Package or Project (found {meta_class})"
-            )
+            raise CliExecutionError(f"Path '{path}' does not resolve to a Package or Project (found {meta_class})")
 
         return container
 
@@ -81,15 +77,11 @@ class AbstractClassAction(ElementManagementAction):
             CliExecutionError: If path not found or not a Class.
         """
         root = self._get_active_root()
-        element = self._resolve_container_or_element(
-            root, path, resolve_element=True, operation=f"resolve class path '{path}'"
-        )
+        element = self._resolve_container_or_element(root, path, resolve_element=True, operation=f"resolve class path '{path}'")
 
         meta_class = element.getMetaClass()
         if meta_class != "Class":
-            raise CliExecutionError(
-                f"Path '{path}' does not resolve to a Class (found {meta_class})"
-            )
+            raise CliExecutionError(f"Path '{path}' does not resolve to a Class (found {meta_class})")
 
         return element
 
@@ -118,9 +110,7 @@ class AbstractClassAction(ElementManagementAction):
 
         meta_class = element.getMetaClass()
         if meta_class != "Class":
-            raise CliExecutionError(
-                f"GUID '{guid}' does not resolve to a Class (found {meta_class})"
-            )
+            raise CliExecutionError(f"GUID '{guid}' does not resolve to a Class (found {meta_class})")
 
         return element
 
@@ -208,9 +198,7 @@ class ClassCreateAction(AbstractClassAction):
         if errors and not created:
             raise CliExecutionError(f"Created 0/{total} classes; all failed")
         if errors:
-            self.logger.info(
-                "Created %d/%d classes with %d error(s)", len(created), total, len(errors)
-            )
+            self.logger.info("Created %d/%d classes with %d error(s)", len(created), total, len(errors))
 
     def _load_json_data(self, attributes_input: str) -> Any:
         """Load JSON data from inline string or external file.
@@ -294,9 +282,7 @@ class ClassCreateAction(AbstractClassAction):
             for name in attrs["superclasses"]:
                 target = parent.findNestedClassifierRecursive(name)
                 if target is None:
-                    raise CliExecutionError(
-                        f"Superclass '{name}' not found in package"
-                    )
+                    raise CliExecutionError(f"Superclass '{name}' not found in package")
                 cls.addGeneralization(target)
 
 
@@ -410,16 +396,32 @@ class ClassViewAction(AbstractClassAction):
     """
 
     _VIEW_HEADERS = [
-        "Name", "GUID", "Description",
-        "IsAbstract", "IsActive", "IsFinal",
-        "IsComposite", "IsReactive", "MetaClass", "FullPath",
-        "Operations", "Attributes",
+        "Name",
+        "GUID",
+        "Description",
+        "IsAbstract",
+        "IsActive",
+        "IsFinal",
+        "IsComposite",
+        "IsReactive",
+        "MetaClass",
+        "FullPath",
+        "Operations",
+        "Attributes",
     ]
     _VIEW_KEYS = [
-        "name", "guid", "description",
-        "isAbstract", "isActive", "isFinal",
-        "isComposite", "isReactive", "metaClass", "fullPath",
-        "operations", "attributes",
+        "name",
+        "guid",
+        "description",
+        "isAbstract",
+        "isActive",
+        "isFinal",
+        "isComposite",
+        "isReactive",
+        "metaClass",
+        "fullPath",
+        "operations",
+        "attributes",
     ]
 
     def __init__(self) -> None:
@@ -562,9 +564,7 @@ class ClassLinkAction(AbstractClassAction):
         target_name = args.add if args.add else args.remove
         target = source.findNestedClassifierRecursive(target_name)
         if target is None:
-            raise CliExecutionError(
-                f"Class '{target_name}' not found"
-            )
+            raise CliExecutionError(f"Class '{target_name}' not found")
 
         try:
             if args.add:
@@ -582,6 +582,4 @@ class ClassLinkAction(AbstractClassAction):
                     target_name,
                 )
         except Exception as e:
-            self._handle_execution_error(
-                e, f"Failed to modify generalization for class '{args.path or args.guid}'"
-            )
+            self._handle_execution_error(e, f"Failed to modify generalization for class '{args.path or args.guid}'")

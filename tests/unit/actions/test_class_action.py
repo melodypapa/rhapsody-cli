@@ -105,9 +105,7 @@ class TestAbstractClassAction:
         with patch.object(ElementManagementAction, "_get_active_project", return_value=mock_project):
             result = action._resolve_class_by_guid("12345678-1234-1234-1234-123456789abc")
             assert result == mock_class
-            mock_project.findElementByGUID.assert_called_once_with(
-                "12345678-1234-1234-1234-123456789abc"
-            )
+            mock_project.findElementByGUID.assert_called_once_with("12345678-1234-1234-1234-123456789abc")
 
     def test_resolve_class_by_guid_not_class(self) -> None:
         """Test GUID lookup fails for non-class element."""
@@ -174,9 +172,7 @@ class TestClassCreateAction:
         mock_parent.addClass.return_value = mock_class
 
         json_file = tmp_path / "classes.json"
-        json_file.write_text(
-            '[{"name":"TempSensor"},{"name":"PressureSensor"}]', encoding="utf-8"
-        )
+        json_file.write_text('[{"name":"TempSensor"},{"name":"PressureSensor"}]', encoding="utf-8")
 
         with patch.object(action, "_resolve_and_validate_package", return_value=mock_parent):
             args = MagicMock()
