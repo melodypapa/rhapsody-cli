@@ -643,3 +643,124 @@ class TestClassListAction:
             captured = capsys.readouterr()
             data = json_module.loads(captured.out)
             assert data == ["TemperatureSensor", "PressureSensor"]
+
+
+class TestClassLinkAction:
+    """Test ClassLinkAction.
+
+    UTS_CLS_00024: Add generalization by name
+    UTS_CLS_00025: Remove generalization by name
+    UTS_CLS_00026: Link requires add or remove
+    UTS_CLS_00027: Link target not found raises error
+    UTS_CLS_00028: Link by GUID
+    """
+
+    def test_add_generalization_by_path(self) -> None:
+        """UTS_CLS_00024: Test adding generalization by name."""
+        from rhapsody_cli.actions.class_action import ClassLinkAction
+
+        action = ClassLinkAction()
+        mock_source = MagicMock()
+        mock_source.getMetaClass.return_value = "Class"
+        mock_target = MagicMock()
+
+        with patch.object(action, "_resolve_and_validate_class", return_value=mock_source):
+            mock_source.findNestedClassifierRecursive.return_value = mock_target
+
+            args = MagicMock()
+            args.path = "Sensors/TemperatureSensor"
+            args.guid = None
+            args.add = "BaseSensor"
+            args.remove = None
+            args.type = "generalization"
+
+            action.execute(args)
+
+            mock_source.findNestedClassifierRecursive.assert_called_once_with("BaseSensor")
+            mock_source.addGeneralization.assert_called_once_with(mock_target)
+
+    def test_remove_generalization_by_path(self) -> None:
+        """UTS_CLS_00025: Test removing generalization by name."""
+        from rhapsody_cli.actions.class_action import ClassLinkAction
+
+        action = ClassLinkAction()
+        mock_source = MagicMock()
+        mock_source.getMetaClass.return_value = "Class"
+        mock_target = MagicMock()
+
+        with patch.object(action, "_resolve_and_validate_class", return_value=mock_source):
+            mock_source.findNestedClassifierRecursive.return_value = mock_target
+
+            args = MagicMock()
+            args.path = "Sensors/TemperatureSensor"
+            args.guid = None
+            args.add = None
+            args.remove = "BaseSensor"
+            args.type = "generalization"
+
+            action.execute(args)
+
+            mock_source.findNestedClassifierRecursive.assert_called_once_with("BaseSensor")
+            mock_source.deleteGeneralization.assert_called_once_with(mock_target)
+
+    def test_link_requires_add_or_remove(self) -> None:
+        """UTS_CLS_00026: Test that exactly one of add/remove is required."""
+        from rhapsody_cli.actions.class_action import ClassLinkAction
+
+        action = ClassLinkAction()
+        args = MagicMock()
+        args.path = "Sensors/X"
+        args.guid = None
+        args.add = None
+        args.remove = None
+        args.type = "generalization"
+
+        with pytest.raises(CliExecutionError) as exc_info:
+            action.execute(args)
+
+        assert "Either --add or --remove must be specified" in str(exc_info.value)
+
+    def test_link_target_not_found_raises_error(self) -> None:
+        """UTS_CLS_00027: Test that missing target raises error."""
+        from rhapsody_cli.actions.class_action import ClassLinkAction
+
+        action = ClassLinkAction()
+        mock_source = MagicMock()
+        mock_source.getMetaClass.return_value = "Class"
+        mock_source.findNestedClassifierRecursive.return_value = None
+
+        with patch.object(action, "_resolve_and_validate_class", return_value=mock_source):
+            args = MagicMock()
+            args.path = "Sensors/X"
+            args.guid = None
+            args.add = "NonExistent"
+            args.remove = None
+            args.type = "generalization"
+
+            with pytest.raises(CliExecutionError) as exc_info:
+                action.execute(args)
+
+            assert "Class 'NonExistent' not found" in str(exc_info.value)
+
+    def test_link_by_guid(self) -> None:
+        """UTS_CLS_00028: Test linking class by GUID."""
+        from rhapsody_cli.actions.class_action import ClassLinkAction
+
+        action = ClassLinkAction()
+        mock_source = MagicMock()
+        mock_source.getMetaClass.return_value = "Class"
+        mock_target = MagicMock()
+
+        with patch.object(action, "_resolve_class_by_guid", return_value=mock_source):
+            mock_source.findNestedClassifierRecursive.return_value = mock_target
+
+            args = MagicMock()
+            args.path = None
+            args.guid = "12345678-1234-1234-1234-123456789abc"
+            args.add = "BaseSensor"
+            args.remove = None
+            args.type = "generalization"
+
+            action.execute(args)
+
+            mock_source.addGeneralization.assert_called_once_with(mock_target)
