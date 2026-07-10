@@ -1,7 +1,7 @@
 # Class Command Design
 
 **Date:** 2026-07-09
-**Status:** Approved
+**Status:** Revised 2026-07-10 (COM signature corrections, scope reduced to generalization-only in `link`, requirement ID padding fix)
 **Author:** User + Assistant
 
 ## Overview
@@ -27,7 +27,7 @@ Inherits from `ElementManagementAction`.
 2. **ClassDeleteAction** - Delete a class via `deleteFromProject()`
 3. **ClassViewAction** - View class details in table/JSON/CSV formats
 4. **ClassListAction** - List classes in a package via `getClasses()`
-5. **ClassLinkAction** - Add/remove relationships between classes (generalization, association, unidirectional)
+5. **ClassLinkAction** - Add/remove generalization relationships between classes (v1 — association/unidirectional deferred to future iteration due to COM signature complexity)
 
 ## Subcommands
 
@@ -53,7 +53,7 @@ Create one or multiple classes under a parent package.
 | `tags` | dict (key-value) | `setPropertyValue(key, val)` |
 | `operations` | array of strings | `addOperation(name)` |
 | `attributes` | array of strings | `addAttribute(name)` |
-| `superclasses` | array of strings | `addGeneralization(class)` (resolved by name lookup) |
+| `superclasses` | array of strings | `addGeneralization(classifier)` — each name resolved via `findNestedClassifierRecursive(name)` on parent package, then `addGeneralization(target_classifier)` on the new class (`model_classifier.py:100`) |
 
 **Bulk creation:** Supports JSON array for creating multiple classes at once.
 
@@ -93,18 +93,29 @@ Create one or multiple classes under a parent package.
 Delete a class.
 
 **Arguments:**
-- `--path <class-path>` (required) - Class path to delete
+- `--path <class-path>` (optional) - Class path to delete
+- `--guid <guid>` (optional) - Class GUID to delete (format: `12345678-1234-1234-1234-123456789abc`)
 
-**Behavior:** Calls `deleteFromProject()` on the resolved class. Logs deletion to stderr.
+**Behavior:**
+- Exactly one of `--path` or `--guid` must be specified
+- If `--path`: Resolves class via PathResolver, validates `metaClass == "Class"`
+- If `--guid`: Locates class by GUID via `findElementByGUID()` on the project (`model_project.py:110`). Validates `metaClass == "Class"`.
+- Calls `deleteFromProject()` on the resolved class. Logs deletion to stderr.
 
 ### view
 
 View class details.
 
 **Arguments:**
-- `--path <class-path>` (required) - Class path to view
+- `--path <class-path>` (optional) - Class path to view
+- `--guid <guid>` (optional) - Class GUID to view (format: `12345678-1234-1234-1234-123456789abc`)
 - `--format <table|json|csv>` (optional, default: table) - Output format
 - `--output <file>` (optional) - Write to file instead of stdout
+
+**Lookup behavior:**
+- Exactly one of `--path` or `--guid` must be specified
+- If `--path`: Resolves class via PathResolver, validates `metaClass == "Class"`
+- If `--guid`: Locates class by GUID via `findElementByGUID()` on the project (`model_project.py:110`). Validates `metaClass == "Class"`.
 
 **View Fields:**
 
@@ -120,6 +131,10 @@ View class details.
 | IsReactive | `getIsReactive()` |
 | MetaClass | `getMetaClass()` |
 | FullPath | `getFullPathName()` |
+| Operations | `getOperations()` — returns list of operation names (collected via `op.getName()`) |
+| Attributes | `getAttributes()` — returns list of attribute names (collected via `attr.getName()`) |
+
+**Note:** `getIsAbstract()` returns `bool`, while `getIsActive/Final/Composite/Reactive()` return `int` (0/1). The formatter normalizes to `int` in JSON output (matching the majority and ensuring clean round-trip with `create`'s `isAbstract: bool` input — accepts either type on input).
 
 **Output Formats:**
 
@@ -128,7 +143,7 @@ View class details.
 Property     | Value
 -------------|---------------------
 Name         | TemperatureSensor
-GUID         | {12345678-...}
+GUID         | 12345678-1234-1234-1234-123456789abc
 Description  | Temperature sensor
 IsAbstract   | 0
 IsActive     | 1
@@ -137,13 +152,15 @@ IsComposite  | 0
 IsReactive   | 0
 MetaClass    | Class
 FullPath     | Sensors/TemperatureSensor
+Operations   | readValue, setThreshold
+Attributes   | threshold, unit
 ```
 
 **JSON format:**
 ```json
 {
   "name": "TemperatureSensor",
-  "guid": "{12345678-...}",
+  "guid": "12345678-1234-1234-1234-123456789abc",
   "description": "Temperature sensor",
   "isAbstract": 0,
   "isActive": 1,
@@ -151,17 +168,19 @@ FullPath     | Sensors/TemperatureSensor
   "isComposite": 0,
   "isReactive": 0,
   "metaClass": "Class",
-  "fullPath": "Sensors/TemperatureSensor"
+  "fullPath": "Sensors/TemperatureSensor",
+  "operations": ["readValue", "setThreshold"],
+  "attributes": ["threshold", "unit"]
 }
 ```
 
 **CSV format (horizontal):**
 ```
-Name,GUID,Description,IsAbstract,IsActive,IsFinal,IsComposite,IsReactive,MetaClass,FullPath
-TemperatureSensor,{12345678-...},Temperature sensor,0,1,0,0,0,Class,Sensors/TemperatureSensor
+Name,GUID,Description,IsAbstract,IsActive,IsFinal,IsComposite,IsReactive,MetaClass,FullPath,Operations,Attributes
+TemperatureSensor,12345678-1234-1234-1234-123456789abc,Temperature sensor,0,1,0,0,0,Class,Sensors/TemperatureSensor,"readValue,setThreshold","threshold,unit"
 ```
 
-**View-to-Create Workflow:** The JSON output from `view` can be used as input to `create`. Unknown fields (guid, isComposite, isReactive, metaClass, fullPath) are skipped during create with a warning.
+**View-to-Create Workflow:** The JSON output from `view` can be used as input to `create`. Unknown fields (`guid`, `isComposite`, `isReactive`, `metaClass`, `fullPath`) are skipped during `create` with a warning. All other fields (`name`, `description`, `isAbstract`, `isActive`, `isFinal`, `stereotypes`, `tags`, `operations`, `attributes`, `superclasses`) round-trip cleanly.
 
 ### list
 
@@ -201,36 +220,51 @@ HumiditySensor
 Manage relationships between classes on an existing class.
 
 **Arguments:**
-- `--path <class-path>` (required) - Class path to modify
-- `--add <class-name>` (optional) - Add a relationship to target class by name
-- `--remove <class-name>` (optional) - Remove a relationship to target class by name
-- `--type <generalization|association|unidirectional>` (optional, default: generalization) - Relationship type
+- `--path <class-path>` (optional) - Class path to modify
+- `--guid <guid>` (optional) - Class GUID to modify (format: `12345678-1234-1234-1234-123456789abc`)
+- `--add <class-name>` (optional) - Add a generalization to target class by name
+- `--remove <class-name>` (optional) - Remove a generalization to target class by name
+- `--type <generalization>` (optional, default: generalization) - Relationship type (v1 supports only generalization; `--type` flag reserved for future expansion)
 
-**Relationship Types:**
+**Lookup behavior (source class):**
+- Exactly one of `--path` or `--guid` must be specified
+- If `--path`: Resolves class via PathResolver, validates `metaClass == "Class"`
+- If `--guid`: Locates class by GUID via `findElementByGUID()` on the project (`model_project.py:110`). Validates `metaClass == "Class"`.
+
+**Relationship Types (v1):**
 
 | Type | COM Method (add) | COM Method (remove) |
 |------|-------------------|---------------------|
-| `generalization` | `addGeneralization(target)` | `deleteGeneralization(target)` |
-| `association` | `addRelation(target)` | `deleteRelation(target)` |
-| `unidirectional` | `addUnidirectionalRelation(target)` | `deleteRelation(target)` |
+| `generalization` | `addGeneralization(target_classifier)` — target resolved via `findNestedClassifierRecursive(name)` → `RPClassifier` object, then `addGeneralization(target)` (`model_classifier.py:100`) | `deleteGeneralization(target_classifier)` — same resolution, then `deleteGeneralization(target)` (`model_classifier.py:362`) |
 
 **Behavior:**
-- `--add`: Resolves the target class by name in the same package, calls the appropriate add method based on `--type`
-- `--remove`: Resolves the target class by name, calls the appropriate delete method based on `--type`
+- `--add`: Resolves the target class by name via `findNestedClassifierRecursive(name)` in the same package, calls `addGeneralization(target_classifier)`
+- `--remove`: Resolves the target class by name via `findNestedClassifierRecursive(name)`, calls `deleteGeneralization(target_classifier)`
 - Exactly one of `--add` or `--remove` must be specified
+- If target name is not found, raises `CliExecutionError` with descriptive message
 
 **Example:**
 ```
+# Using path
 rhapsody-cli class link --path Sensors/TemperatureSensor --add BaseSensor
-rhapsody-cli class link --path Sensors/TemperatureSensor --add SensorInterface --type association
 rhapsody-cli class link --path Sensors/TemperatureSensor --remove BaseSensor
+
+# Using GUID
+rhapsody-cli class link --guid 12345678-1234-1234-1234-123456789abc --add BaseSensor
 ```
+
+**Future work — association and unidirectional:** These relationship types are deferred to a future iteration. Their COM signatures require richer CLI surfaces:
+- `addRelation` takes 9 string parameters (`model_classifier.py:146`) — class name, package name, two role names, two link types, two multiplicities, link name.
+- `addUnidirectionalRelation` takes 6 string parameters (`model_classifier.py:260`).
+- `deleteRelation` takes an `IRPRelation` object (`model_classifier.py:379`), requiring a `findRelation(name)` lookup (`model_classifier.py:479`) to obtain the handle.
+
+Adding these would require exposing the extra parameters as CLI flags (e.g., `--role-from`, `--role-to`, `--mult-from`, `--mult-to`, `--link-name`) or defining sensible defaults.
 
 ## Path Validation
 
 All commands validate path before execution (SWR_CLS_0005):
 
-- **create, list**: Path must resolve to Package (metaClass == "Package")
+- **create, list**: Path must resolve to Package (metaClass == "Package" **or "Project"** to accept the project root, since `RPProject` inherits `addClass`/`getClasses` from `RPPackage`)
 - **delete, view, link**: Path must resolve to Class (metaClass == "Class")
 - Path resolution uses PathResolver for multi-level navigation
 - Errors raised via CliExecutionError with descriptive message
@@ -250,8 +284,7 @@ All class actions follow consistent error handling patterns (SWR_CLS_0010):
 **New files:**
 - `src/rhapsody_cli/actions/class_action.py` - 6 Action classes (AbstractClassAction + 5 concrete)
 - `src/rhapsody_cli/commands/class_command.py` - Command dispatcher
-- `tests/unit/actions/test_class_action.py` - Action tests
-- `tests/unit/commands/test_class_command.py` - Command tests
+- `tests/unit/commands/test_class_commands.py` - Action and command tests (follows `test_package_commands.py` convention)
 - `docs/requirements/swr_cls_requirements.md` - SW requirements
 - `docs/tests/unit/uts_cls_test-specs.md` - Unit test specs
 - `docs/user_guide/working_with_classes.rst` - User documentation
@@ -261,19 +294,20 @@ All class actions follow consistent error handling patterns (SWR_CLS_0010):
 
 ## SW Requirements IDs
 
-- SWR_CLS_0001: Class Create Command
-- SWR_CLS_0002: Class Delete Command
-- SWR_CLS_0003: Class View Command
-- SWR_CLS_0004: Class List Command
-- SWR_CLS_0005: Path Validation
-- SWR_CLS_0006: External JSON File Support
-- SWR_CLS_0007: Stereotype and Tag Support
-- SWR_CLS_0008: Multi-Format Output
-- SWR_CLS_0009: View-to-Create Workflow
-- SWR_CLS_0010: Error Handling and Logging
-- SWR_CLS_0011: Class Link Command
-- SWR_CLS_0012: Boolean Flag Support
+- SWR_CLS_00001: Class Create Command
+- SWR_CLS_00002: Class Delete Command
+- SWR_CLS_00003: Class View Command
+- SWR_CLS_00004: Class List Command
+- SWR_CLS_00005: Path Validation
+- SWR_CLS_00006: External JSON File Support
+- SWR_CLS_00007: Stereotype and Tag Support
+- SWR_CLS_00008: Multi-Format Output
+- SWR_CLS_00009: View-to-Create Workflow
+- SWR_CLS_00010: Error Handling and Logging
+- SWR_CLS_00011: Class Link Command (generalization only — association/unidirectional deferred)
+- SWR_CLS_00012: Boolean Flag Support
+- SWR_CLS_00013: GUID Lookup Support (view/delete/link support `--guid` as alternative to `--path`)
 
 ## Test Case IDs
 
-- UTS_CLS_00001 - UTS_CLS_00030 (estimated)
+- UTS_CLS_00001 - UTS_CLS_00025 (estimated — reduced from original 30 due to dropping association/unidirectional from `link` subcommand)
