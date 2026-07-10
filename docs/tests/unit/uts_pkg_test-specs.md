@@ -602,3 +602,254 @@ All 4 subcommands (create, delete, view, list) registered.
 - 4 actions returned
 - All subcommand names present
 **Last Changed:** 2026-07-09
+
+---
+
+## UTS_PKG_00026: Create package at project root when path is None
+
+**ID:** UTS_PKG_00026
+**Traces-To:** SWR_PKG_0013
+**Title:** Create package with no --path (None) creates at project root
+**Type:** Unit
+**Priority:** High
+**Description:**
+Test that when PackageCreateAction.execute() is called with args.path=None, the package is created at the project root using RPProject.addPackage(), not addNestedPackage().
+**Pre-conditions:**
+- Rhapsody application is mocked
+- args.path = None
+- args.input = None
+- args.attributes = '{"name":"TopLevel"}'
+**Test Steps:**
+1. Mock _get_active_root() to return a mock root with addPackage() method
+2. Call PackageCreateAction.execute(args)
+3. Verify root.addPackage("TopLevel") was called exactly once
+4. Verify root.addNestedPackage() was NOT called
+**Expected Result:**
+Package created at project root via addPackage.
+**Verification Criteria:**
+- root.addPackage called once with correct name
+- root.addNestedPackage not called
+- Logger shows INFO message with path "TopLevel" (no leading None/)
+**Last Changed:** 2026-07-10
+
+---
+
+## UTS_PKG_00027: Create package at project root when path is empty string
+
+**ID:** UTS_PKG_00027
+**Traces-To:** SWR_PKG_0013
+**Title:** Create package with empty string --path creates at project root
+**Type:** Unit
+**Priority:** High
+**Description:**
+Test that when PackageCreateAction.execute() is called with args.path="" (empty string), the package is created at the project root using RPProject.addPackage(), behaving identically to args.path=None.
+**Pre-conditions:**
+- Rhapsody application is mocked
+- args.path = ""
+- args.input = None
+- args.attributes = '{"name":"TopLevel"}'
+**Test Steps:**
+1. Mock _get_active_root() to return a mock root with addPackage() method
+2. Call PackageCreateAction.execute(args) with args.path=""
+3. Verify root.addPackage("TopLevel") was called exactly once
+4. Verify root.addNestedPackage() was NOT called
+**Expected Result:**
+Package created at project root via addPackage (same as None case).
+**Verification Criteria:**
+- root.addPackage called once with correct name
+- root.addNestedPackage not called
+- Logger shows INFO message with path "TopLevel" (no leading empty-segment artifact)
+**Last Changed:** 2026-07-10
+
+---
+
+## UTS_PKG_00028: Package create logs execution steps
+
+**ID:** UTS_PKG_00028
+**Traces-To:** SWR_PKG_0014
+**Title:** PackageCreateAction logs execution steps at INFO level
+**Type:** Unit
+**Priority:** Medium
+**Description:**
+Test that PackageCreateAction.execute() logs INFO-level messages showing operation progress at each stage.
+**Pre-conditions:**
+- Logger is captured/mocked in test
+- Creating 1 package with --path specified
+**Test Steps:**
+1. Create PackageCreateAction
+2. Mock logger to capture log calls
+3. Call execute() with args.path="Sensors" and package attributes
+4. Verify log messages in order: "Starting package creation...", "Resolving parent path 'Sensors'...", "Creating package 'X'...", "Created package: Sensors/X", "Successfully created 1 package"
+**Expected Result:**
+All execution-step messages logged at INFO level in correct sequence.
+**Verification Criteria:**
+- logger.info() called 5 times with expected messages
+- Messages appear in expected order
+- No ERROR-level logs for successful operation
+**Last Changed:** 2026-07-10
+
+---
+
+## UTS_PKG_00029: Package delete logs execution steps
+
+**ID:** UTS_PKG_00029
+**Traces-To:** SWR_PKG_0014
+**Title:** PackageDeleteAction logs execution steps at INFO level
+**Type:** Unit
+**Priority:** Medium
+**Description:**
+Test that PackageDeleteAction.execute() logs INFO-level messages at each stage: operation start, path resolution, deletion, and success.
+**Pre-conditions:**
+- Logger is captured/mocked in test
+- args.path = "Sensors/OldPackage"
+**Test Steps:**
+1. Create PackageDeleteAction
+2. Mock logger to capture log calls
+3. Call execute(args)
+4. Verify log messages: "Starting package deletion...", "Resolving package path 'Sensors/OldPackage'...", "Deleting package 'Sensors/OldPackage'...", "Successfully deleted package 'Sensors/OldPackage'"
+**Expected Result:**
+All execution-step messages logged at INFO level in correct sequence.
+**Verification Criteria:**
+- logger.info() called 4 times with expected messages
+- Messages appear in expected order
+**Last Changed:** 2026-07-10
+
+---
+
+## UTS_PKG_00030: Package view logs execution steps
+
+**ID:** UTS_PKG_00030
+**Traces-To:** SWR_PKG_0014
+**Title:** PackageViewAction logs execution steps at INFO level
+**Type:** Unit
+**Priority:** Medium
+**Description:**
+Test that PackageViewAction.execute() logs INFO-level messages for operation start, path resolution, and details retrieval.
+**Pre-conditions:**
+- Logger is captured/mocked in test
+- args.path = "Sensors"
+- args.format = "table"
+**Test Steps:**
+1. Create PackageViewAction
+2. Mock logger to capture log calls
+3. Call execute(args) with no --output (stdout only)
+4. Verify log messages: "Starting package view operation...", "Resolving package path 'Sensors'...", "Retrieving package details..."
+**Expected Result:**
+Execution-step messages logged at INFO level; no "Writing output to file" message (since no --output).
+**Verification Criteria:**
+- logger.info() called 3 times with expected messages
+- No "Writing output to file" message when args.output is None
+**Last Changed:** 2026-07-10
+
+---
+
+## UTS_PKG_00031: Package list logs execution steps and count
+
+**ID:** UTS_PKG_00031
+**Traces-To:** SWR_PKG_0014
+**Title:** PackageListAction logs execution steps and nested package count
+**Type:** Unit
+**Priority:** Medium
+**Description:**
+Test that PackageListAction.execute() logs INFO-level messages for operation start, path resolution, listing, and nested package count.
+**Pre-conditions:**
+- Logger is captured/mocked in test
+- Mock package returns 3 nested packages
+- args.path = "Sensors"
+**Test Steps:**
+1. Create PackageListAction
+2. Mock logger to capture log calls
+3. Mock getNestedPackages() to return 3 packages
+4. Call execute(args)
+5. Verify log messages: "Starting package list operation...", "Resolving package path 'Sensors'...", "Listing nested packages...", "Found 3 nested packages"
+**Expected Result:**
+Execution-step messages logged with correct package count.
+**Verification Criteria:**
+- logger.info() called 4 times with expected messages
+- Count message shows "3 nested packages" (plural form correct)
+**Last Changed:** 2026-07-10
+
+---
+
+## UTS_PKG_00032: Duplicate package detection at project root
+
+**ID:** UTS_PKG_00032
+**Traces-To:** SWR_PKG_0015
+**Title:** Duplicate package name rejected at project root
+**Type:** Unit
+**Priority:** High
+**Description:**
+Test that when PackageCreateAction attempts to create a package at the project root with a name that already exists, it detects the duplicate and raises a user-friendly error instead of allowing COM exception.
+**Pre-conditions:**
+- Mock root container with `getPackages()` returning existing package named "TopLevel"
+- args.path = None (creating at root)
+- args.attributes = '{"name":"TopLevel"}'
+**Test Steps:**
+1. Mock `_get_active_root()` to return mock root
+2. Mock root.getPackages() to return collection with package named "TopLevel"
+3. Call execute(args)
+4. Expect CliExecutionError to be raised
+**Expected Result:**
+CliExecutionError raised with message: `"Package 'TopLevel' already exists in project root"`
+**Verification Criteria:**
+- Error message contains "already exists"
+- Error message contains "project root"
+- addPackage() was NOT called (duplicate detected before creation attempt)
+**Last Changed:** 2026-07-10
+
+---
+
+## UTS_PKG_00033: Duplicate package detection in nested package
+
+**ID:** UTS_PKG_00033
+**Traces-To:** SWR_PKG_0015
+**Title:** Duplicate package name rejected in parent package
+**Type:** Unit
+**Priority:** High
+**Description:**
+Test that when PackageCreateAction attempts to create a nested package with a name that already exists in the parent, it detects the duplicate and raises a user-friendly error.
+**Pre-conditions:**
+- Mock parent package "Sensors"
+- Mock parent.getNestedPackages() returning existing package named "Temp"
+- args.path = "Sensors"
+- args.attributes = '{"name":"Temp"}'
+**Test Steps:**
+1. Mock `_resolve_and_validate_package()` to return mock parent
+2. Mock parent.getNestedPackages() to return collection with package named "Temp"
+3. Call execute(args)
+4. Expect CliExecutionError to be raised
+**Expected Result:**
+CliExecutionError raised with message: `"Package 'Temp' already exists in package 'Sensors'"`
+**Verification Criteria:**
+- Error message contains "already exists"
+- Error message contains parent package name "Sensors"
+- addNestedPackage() was NOT called
+**Last Changed:** 2026-07-10
+
+---
+
+## UTS_PKG_00034: Non-duplicate creation still works
+
+**ID:** UTS_PKG_00034
+**Traces-To:** SWR_PKG_0015
+**Title:** Package creation succeeds when name is not a duplicate
+**Type:** Unit
+**Priority:** High
+**Description:**
+Test that package creation proceeds normally when the duplicate check passes (package name does not exist in container).
+**Pre-conditions:**
+- Mock parent returns empty package collection (no duplicates)
+- args.path = "Sensors"
+- args.attributes = '{"name":"Humidity"}'
+**Test Steps:**
+1. Mock parent.getNestedPackages() to return empty collection
+2. Call execute(args)
+3. Verify addNestedPackage("Humidity") was called
+**Expected Result:**
+Package created successfully; no error raised.
+**Verification Criteria:**
+- addNestedPackage() was called with correct name
+- No CliExecutionError raised
+- Success logs present
+**Last Changed:** 2026-07-10
+

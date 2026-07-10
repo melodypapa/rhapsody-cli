@@ -16,19 +16,20 @@
 **Description:**
 The package CLI
 - SHALL provide a `package create` command to create one or multiple packages.
-- SHALL accept `--path <parent-path>` argument (required)
+- SHALL accept `--path <parent-path>` argument (optional; defaults to project root when omitted)
 - SHALL accept `--input <json-file>` argument (optional)
 - SHALL accept positional `attributes` argument (inline JSON or file path)
 - SHALL support bulk creation via JSON array
-- SHALL validate parent path resolves to Package element
-- SHALL create nested packages under parent
+- SHALL validate parent path (when given) resolves to Package element
+- SHALL create nested packages under parent (when parent path given) or at project root (when parent path omitted)
 - SHALL set validated attributes: name, description, description_html, description_rtf, display_name, display_name_rtf, properties, stereotypes, tags
-- SHALL apply name via addNestedPackage(), description via setDescription(), properties via setPropertyValue(), stereotypes via addStereotype(), tags via setPropertyValue()
+- SHALL apply name via addNestedPackage() for nested, or addPackage() for root-level
+- SHALL apply description via setDescription(), properties via setPropertyValue(), stereotypes via addStereotype(), tags via setPropertyValue()
 - SHALL skip unknown attributes with warning log
 - SHALL detect inline JSON (starts with `{` or `[`) vs file path automatically
 - SHALL parse JSON file with UTF-8 encoding
 **Implementation:** src/rhapsody_cli/actions/package_action.py:PackageCreateAction
-**Last Changed:** 2026-07-09
+**Last Changed:** 2026-07-10
 
 ---
 
@@ -319,3 +320,91 @@ FlowSensors
 
 **Implementation:** src/rhapsody_cli/actions/package_action.py:PackageListAction._format_output
 **Last Changed:** 2026-07-09
+
+---
+
+## SWR_PKG_0013: Package Create with Default Root
+
+**ID:** SWR_PKG_0013
+**Title:** package create defaults to project root when --path is omitted
+**Status:** Planned
+**Priority:** High
+**Description:**
+The package CLI
+- SHALL allow `--path` argument on `package create` to be optional
+- When `--path` is omitted (None or empty string), SHALL create the package directly under the project root
+- When creating at project root, SHALL use the `RPProject.addPackage()` method (top-level package creation)
+- When creating under an existing package, SHALL use `RPPackage.addNestedPackage()` method (nested package creation)
+- Reported/logged full paths for root-level packages SHALL not include leading `None/` or empty-segment artifacts (e.g., `"MyPackage"` not `"None/MyPackage"`)
+- All other package attributes, stereotypes, tags, and error handling remain unchanged
+**Implementation:** src/rhapsody_cli/actions/package_action.py:PackageCreateAction
+**Last Changed:** 2026-07-10
+
+---
+
+## SWR_PKG_0014: Package Command Execution Logging
+
+**ID:** SWR_PKG_0014
+**Title:** package commands log execution steps at INFO level
+**Status:** Planned
+**Priority:** Medium
+**Description:**
+The package commands SHALL emit INFO-level log messages showing execution progress, enabling end-users to understand what the CLI is doing at each stage:
+
+**Package Create Logging:**
+- SHALL log "Starting package creation..." at operation start
+- SHALL log "Creating packages at project root..." when --path is omitted
+- SHALL log "Resolving parent path 'X'..." when --path is provided
+- SHALL log "Creating package 'Y'..." for each package being created
+- SHALL log "Setting attributes for package 'Y'..." when attributes (beyond name) are being set
+- SHALL log "Created package: Z" for each successfully created package
+- SHALL log "Successfully created N package(s)" with count summary at completion
+
+**Package Delete Logging:**
+- SHALL log "Starting package deletion..." at operation start
+- SHALL log "Resolving package path 'X'..." before path resolution
+- SHALL log "Deleting package 'X'..." before deletion
+- SHALL log "Successfully deleted package 'X'" after successful deletion
+
+**Package View Logging:**
+- SHALL log "Starting package view operation..." at operation start
+- SHALL log "Resolving package path 'X'..." before path resolution
+- SHALL log "Retrieving package details..." before data collection
+- SHALL log "Writing output to file 'X'" when writing to file (when --output specified)
+
+**Package List Logging:**
+- SHALL log "Starting package list operation..." at operation start
+- SHALL log "Resolving package path 'X'..." before path resolution
+- SHALL log "Listing nested packages..." before collection
+- SHALL log "Found N nested package(s)" or "No nested packages found" with count of nested packages
+- SHALL log "Writing output to file 'X'" when writing to file (when --output specified)
+
+**Common Requirements:**
+- All execution-step logs SHALL use INFO level (visible by default, not requiring --verbose flag)
+- Error logs for operation failures SHALL use ERROR level (already in place)
+- Logs SHALL be emitted to the standard logger for the package_action module
+**Implementation:** src/rhapsody_cli/actions/package_action.py (all 4 action classes)
+**Last Changed:** 2026-07-10
+
+---
+
+## SWR_PKG_0015: Package Create Duplicate Detection
+
+**ID:** SWR_PKG_0015
+**Title:** package create detects and reports duplicate package names
+**Status:** Planned
+**Priority:** High
+**Description:**
+The package CLI
+- SHALL detect when a package with the given name already exists in the target container (project root or parent package) before attempting creation
+- SHALL report a user-friendly error message when a duplicate package name is detected
+- Error message SHALL follow the format: `"Package 'X' already exists in [project root|package 'Y']"`
+- Duplicate detection SHALL use case-sensitive name comparison (matching Rhapsody behavior)
+- Duplicate detection SHALL be performed by iterating through existing packages via `getPackages()` (for root) or `getNestedPackages()` (for nested)
+- When a duplicate is detected, SHALL raise `CliExecutionError` with the user-friendly message (not allow COM exception to bubble up)
+- Duplicate check SHALL occur before attempting the `addPackage()` or `addNestedPackage()` COM call (fail-fast approach)
+- Logging SHALL include "Checking if package 'X' already exists..." before the check
+**Implementation:** src/rhapsody_cli/actions/package_action.py:PackageCreateAction._check_package_not_exists
+**Last Changed:** 2026-07-10
+
+

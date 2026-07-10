@@ -217,6 +217,116 @@ class TestPackageCreateAction:
 
         assert "File not found" in str(exc_info.value)
 
+    def test_create_at_root_with_none_path(self) -> None:
+        """UTS_PKG_00026: Create package at root when --path is None."""
+        action = PackageCreateAction()
+        mock_root = MagicMock()
+        mock_package = MagicMock()
+        mock_root.addPackage.return_value = mock_package
+
+        with patch.object(action, "_get_active_root", return_value=mock_root):
+            args = MagicMock()
+            args.path = None
+            args.input = None
+            args.attributes = '{"name":"TopLevel"}'
+
+            action.execute(args)
+
+            # Root should call addPackage, NOT addNestedPackage
+            mock_root.addPackage.assert_called_once_with("TopLevel")
+            mock_root.addNestedPackage.assert_not_called()
+
+    def test_create_at_root_with_empty_path(self) -> None:
+        """UTS_PKG_00027: Create package at root when --path is empty string."""
+        action = PackageCreateAction()
+        mock_root = MagicMock()
+        mock_package = MagicMock()
+        mock_root.addPackage.return_value = mock_package
+
+        with patch.object(action, "_get_active_root", return_value=mock_root):
+            args = MagicMock()
+            args.path = ""
+            args.input = None
+            args.attributes = '{"name":"TopLevel"}'
+
+            action.execute(args)
+
+            # Root should call addPackage, NOT addNestedPackage
+            mock_root.addPackage.assert_called_once_with("TopLevel")
+            mock_root.addNestedPackage.assert_not_called()
+
+    def test_create_duplicate_at_root_raises_error(self) -> None:
+        """UTS_PKG_00032: Duplicate package name rejected at project root."""
+        action = PackageCreateAction()
+        mock_root = MagicMock()
+
+        # Mock getPackages() to return collection with existing package named "TopLevel"
+        existing_pkg = MagicMock()
+        existing_pkg.getName.return_value = "TopLevel"
+        mock_root.getPackages.return_value = [existing_pkg]
+
+        with patch.object(action, "_get_active_root", return_value=mock_root):
+            args = MagicMock()
+            args.path = None
+            args.input = None
+            args.attributes = '{"name":"TopLevel"}'
+
+            with pytest.raises(CliExecutionError) as exc_info:
+                action.execute(args)
+
+            assert "TopLevel" in str(exc_info.value)
+            assert "already exists" in str(exc_info.value)
+            assert "project root" in str(exc_info.value)
+            # addPackage should NOT have been called
+            mock_root.addPackage.assert_not_called()
+
+    def test_create_duplicate_nested_raises_error(self) -> None:
+        """UTS_PKG_00033: Duplicate package name rejected in parent package."""
+        action = PackageCreateAction()
+        mock_parent = MagicMock()
+        mock_parent.getName.return_value = "Sensors"
+
+        # Mock getNestedPackages() to return collection with existing package named "Temp"
+        existing_pkg = MagicMock()
+        existing_pkg.getName.return_value = "Temp"
+        mock_parent.getNestedPackages.return_value = [existing_pkg]
+
+        with patch.object(action, "_resolve_and_validate_package", return_value=mock_parent):
+            args = MagicMock()
+            args.path = "Sensors"
+            args.input = None
+            args.attributes = '{"name":"Temp"}'
+
+            with pytest.raises(CliExecutionError) as exc_info:
+                action.execute(args)
+
+            assert "Temp" in str(exc_info.value)
+            assert "already exists" in str(exc_info.value)
+            assert "Sensors" in str(exc_info.value)
+            # addNestedPackage should NOT have been called
+            mock_parent.addNestedPackage.assert_not_called()
+
+    def test_create_non_duplicate_nested_succeeds(self) -> None:
+        """UTS_PKG_00034: Non-duplicate nested package creation succeeds."""
+        action = PackageCreateAction()
+        mock_parent = MagicMock()
+        mock_package = MagicMock()
+        mock_parent.addNestedPackage.return_value = mock_package
+
+        # Mock getNestedPackages() to return empty collection (no duplicates)
+        mock_parent.getNestedPackages.return_value = []
+
+        with patch.object(action, "_resolve_and_validate_package", return_value=mock_parent):
+            args = MagicMock()
+            args.path = "Sensors"
+            args.input = None
+            args.attributes = '{"name":"Humidity"}'
+
+            action.execute(args)
+
+            # addNestedPackage should have been called
+            mock_parent.addNestedPackage.assert_called_once_with("Humidity")
+
 
 class TestPackageDeleteAction:
     """Test PackageDeleteAction.

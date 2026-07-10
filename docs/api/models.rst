@@ -1,13 +1,23 @@
 Models
 ======
 
-Element Wrappers
-----------------
+Core Infrastructure
+--------------------
 
-.. automodule:: rhapsody_cli.models.elements
+.. automodule:: rhapsody_cli.models
    :members:
    :undoc-members:
    :show-inheritance:
+
+.. automodule:: rhapsody_cli.models.core
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Element Wrappers
+----------------
+
+See :doc:`elements` for the full list of concrete element wrapper classes.
 
 Classifier Elements
 ~~~~~~~~~~~~~~~~~~~
