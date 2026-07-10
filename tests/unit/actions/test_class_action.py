@@ -484,8 +484,9 @@ class TestClassViewAction:
 
     def test_view_json_output_to_file(self, tmp_path) -> None:
         """UTS_CLS_00016: Test JSON output to file with int-normalized IsAbstract."""
-        from rhapsody_cli.actions.class_action import ClassViewAction
         import json as json_module
+
+        from rhapsody_cli.actions.class_action import ClassViewAction
 
         action = ClassViewAction()
         mock_class = self._make_mock_class()
@@ -615,13 +616,13 @@ class TestClassListAction:
 
             action.execute(args)
 
-            captured = capsys.readouterr()
-            # Should produce empty table (no data)
+            capsys.readouterr()  # Should produce empty table (no data)
 
     def test_list_json_output(self, capsys) -> None:
         """UTS_CLS_00023: Test JSON output format."""
-        from rhapsody_cli.actions.class_action import ClassListAction
         import json as json_module
+
+        from rhapsody_cli.actions.class_action import ClassListAction
 
         action = ClassListAction()
         mock_package = MagicMock()
