@@ -31,9 +31,13 @@ Add `package update` subcommand to modify attributes of an existing package.
 ### `package update`
 
 **Arguments:**
-- `--path <package-path>` (required) - full path to the package (including package name, e.g. `Sensors/TempSensors`)
+- `--path <package-path>` (optional) - full path to the package (including package name, e.g. `Sensors/TempSensors`)
+- `--guid <guid>` (optional) - package GUID
+- Requires exactly one of `--path` or `--guid`
 - `--input <json-file>` (optional) - external JSON file
 - `attributes` (positional) - inline JSON with fields to update
+
+**Type Validation:** When using `--guid`, validates that the element's `metaClass` is "Package". If type mismatch, raises `CliExecutionError` with message like `GUID '...' does not resolve to a Package (found Class)`.
 
 **JSON fields (validated, partial update):**
 | Field | Type | Setter Method |
@@ -50,6 +54,7 @@ Add `package update` subcommand to modify attributes of an existing package.
 **Example:**
 ```bash
 rhapsody-cli package update --path Sensors/TempSensors '{"description":"Updated sensor package","tags":{"version":"2.0"}}'
+rhapsody-cli package update --guid 12345678-1234-1234-1234-123456789abc '{"description":"Updated via GUID"}'
 ```
 
 ---
@@ -66,6 +71,8 @@ Add `class update` subcommand to modify attributes of an existing class.
 - Requires exactly one of `--path` or `--guid`
 - `--input <json-file>` (optional) - external JSON file
 - `attributes` (positional) - inline JSON with fields to update
+
+**Type Validation:** When using `--guid`, validates that the element's `metaClass` is "Class". If type mismatch, raises `CliExecutionError`.
 
 **JSON fields (validated, partial update):**
 | Field | Type | Setter Method |
@@ -85,6 +92,7 @@ Add `class update` subcommand to modify attributes of an existing class.
 **Example:**
 ```bash
 rhapsody-cli class update --path Sensors/TemperatureSensor '{"description":"Temperature sensor class","isAbstract":true}'
+rhapsody-cli class update --guid 12345678-1234-1234-1234-123456789abc '{"isAbstract":true}'
 ```
 
 ---
@@ -182,6 +190,8 @@ Update attributes of an existing operation.
 - `--input <json-file>` (optional)
 - `attributes` (positional) - inline JSON with fields to update
 
+**Type Validation:** When using `--guid`, validates that the element's `metaClass` is "Operation". If type mismatch, raises `CliExecutionError`.
+
 **Behavior:** Partial update - only specified fields are modified. Same validated fields as create.
 
 ---
@@ -263,6 +273,8 @@ Update attributes of an existing attribute.
 - Same as operation update
 - JSON fields: same validated fields as create (partial update)
 
+**Type Validation:** When using `--guid`, validates that the element's `metaClass` is "Attribute". If type mismatch, raises `CliExecutionError`.
+
 ---
 
 ## Port Command
@@ -338,6 +350,8 @@ Update attributes of an existing port.
 **Arguments:**
 - Same pattern as operation/attribute update
 - JSON fields: same validated fields as create (partial update)
+
+**Type Validation:** When using `--guid`, validates that the element's `metaClass` is "Port". If type mismatch, raises `CliExecutionError`.
 
 ---
 
