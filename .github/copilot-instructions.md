@@ -24,14 +24,18 @@ pip install -e .             # Install package only (pywin32 on Windows)
 ### Testing
 
 ```bash
-pytest                       # Run all tests
-pytest tests/unit/cli/               # Run only CLI unit tests
-pytest tests/unit/models/elements/   # Run only element tests
-pytest tests/test_core.py   # Run single test module
-pytest -k "test_open"       # Run tests matching pattern
-pytest -v                   # Verbose output
-pytest --co                 # List all tests without running
+pytest                                    # Run all tests (unit + integration + system)
+pytest tests/unit                         # Run only unit tests (what CI runs)
+pytest tests/unit/cli/                    # Run only CLI support unit tests
+pytest tests/unit/models/elements/        # Run only element wrapper tests
+pytest tests/unit/models/test_core.py     # Run a single test module
+pytest tests/unit/models/test_core.py::TestClassName::test_method_name  # Run one test
+pytest -k "test_open"                     # Run tests matching a name pattern
+pytest -v                                 # Verbose output
+pytest --co -q                            # List all tests without running
 ```
+
+`tests/integration/` and `tests/system/` require a running, licensed Rhapsody instance (Windows only) and are skipped/not run in CI. `tests/integration/conftest.py` auto-skips the whole session if it can't attach to Rhapsody with an open project.
 
 ### Linting & Formatting
 
@@ -46,8 +50,10 @@ mypy src/ tests/            # Type checking (strict mode, python_version 3.9)
 ### Running Everything
 
 ```bash
-ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ && pytest
+ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ && pytest tests/unit
 ```
+
+Note: CI (`.github/workflows/python-package.yml`) only runs `mypy` for Python < 3.10, and runs `pytest tests/unit -v --cov=src/rhapsody_cli --cov-report=xml` (not the integration/system suites) across Python 3.8–3.13 on `windows-latest`.
 
 ---
 
@@ -126,22 +132,23 @@ Use kebab-case with a type prefix:
 **rhapsody-cli** is a Pythonic wrapper around the IBM Rhapsody COM API. It consists of three layers:
 
 1. **Core Model Wrapping** (`src/rhapsody_cli/models/`)
-   - Base class `RPModelElement` wraps all Rhapsody COM objects
-   - Element subclasses mirror Rhapsody Java API (e.g., `RPClass`, `RPPackage`, `RPAttribute`)
-   - Wrapper registry pattern: each element module registers its wrapper class in `_WRAPPER_REGISTRY`
-   - `call_com()` translates COM failures to `RhapsodyRuntimeException`
+   - `src/rhapsody_cli/models/core.py` defines `AbstractRPModelElement` (shared utilities: `call_com()`, `wrap()`, `register_wrapper()`, the `_WRAPPER_REGISTRY`) and `RPModelElement`/`RPCollection`/`RPUnit`
+   - Element subclasses live under `src/rhapsody_cli/models/elements/` (see subpackages `classifiers/`, `containment/`, `relations/`, plus `model_diagrams.py`, `model_requirements.py`, `model_variables.py`, `model_misc.py`) and mirror the Rhapsody Java API (e.g. `RPClass`, `RPPackage`, `RPProject`, `RPActor`)
+   - Wrapper registry pattern: each element module calls `AbstractRPModelElement.register_wrapper(meta_class_str, WrapperClass)` at import time; `AbstractRPModelElement.wrap(com_obj)` dispatches a raw COM object to the correct subclass via `getMetaClass()`
+   - `AbstractRPModelElement.call_com(lambda: ...)` translates `pywintypes.com_error` into `RhapsodyRuntimeException`
 
 2. **Application Entry Point** (`src/rhapsody_cli/application.py`)
-   - `RhapsodyApplication` handles Rhapsody connection (attach/launch)
-   - Supports three connection modes: `attach()` (existing instance), `launch()` (new instance), `connect()` (try attach then launch)
+   - `RhapsodyApplication` wraps `IRPApplication` (Prog ID `Rhapsody2.Application.1`)
+   - Supports three connection modes: `attach()` (existing instance via `GetActiveObject`), `launch()` (new instance via `Dispatch`), `connect()` (try attach then launch)
 
 3. **CLI Layer** (`src/rhapsody_cli/cli/` + `src/rhapsody_cli/commands/` + `src/rhapsody_cli/actions/`)
-   - argparse-based (stdlib) CLI using a class-based command/action architecture
-   - `main()` dispatches on the first argv token to an `AbstractCommand` subclass
-   - Command groups (`ElementCommand`, `ProjectCommand`) each own a set of `AbstractAction` subcommands
-   - Each action registers its own argparse subparser (`init_arguments`) and owns its execution (`execute`)
-   - Context: `RhapsodyContext` manages the current Rhapsody state
-   - Formatters: `OutputFormatter` handles table/JSON/CSV output
+   - argparse-based (stdlib) CLI using a class-based command/action architecture — **not** Click, despite some older docs/specs mentioning Click (migration is complete)
+   - `cli/main.py` → `cli/cli.py` `main()` dispatches on the first argv token (`element` | `package` | `project`) to the matching command group class
+   - Command groups (`ElementCommand`, `ProjectCommand`, `PackageCommand`) each own a set of `AbstractAction` subcommands, returned from `get_actions()`
+   - Each action (`actions/element_action.py`, `actions/package_action.py`, `actions/project_action.py`) registers its own argparse subparser (`init_arguments`) and owns its execution (`execute`)
+   - `cli/path_resolver.py` — `PathResolver` navigates `/`- or `\`-separated element paths from a root/container
+   - `cli/context.py` — `RhapsodyContext` manages session state (`app`, `project`, `output_format`)
+   - `cli/formatters.py` — `OutputFormatter` handles table/JSON/CSV output
 
 ### Key Data Flow
 
@@ -160,7 +167,7 @@ Formatted Output (table/JSON/CSV)
 ### API Mirroring
 
 Method names and class hierarchy **exactly mirror** the Rhapsody Java API (`com.telelogic.rhapsody.core`):
-- Java: `com.telelogic.rhapsody.core.IRPClass` → Python: `rhapsody_cli.models.elements.class_.RPClass`
+- Java: `com.telelogic.rhapsody.core.IRPClass` → Python: `rhapsody_cli.models.elements.classifiers.model_class.RPClass`
 - Java: `getNestedElements()` → Python: `getNestedElements()`
 - COM errors become `RhapsodyRuntimeException` for consistent error handling
 
@@ -211,20 +218,20 @@ class ElementCommand(AbstractCommand):
 
 ### Wrapper Registry Pattern
 
-New element types must register themselves with the wrapper registry:
+New element types must register at module import time:
 
 ```python
-# In src/rhapsody_cli/models/elements/myclass.py
-from rhapsody_cli.models._core import register_wrapper, RPModelElement
+# src/rhapsody_cli/models/elements/containment/model_myclass.py
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 
 class RPMyClass(RPModelElement):
     """Wraps IRPMyClass."""
     pass
 
-register_wrapper("MyClass", RPMyClass)
+AbstractRPModelElement.register_wrapper("MyClass", RPMyClass)
 ```
 
-This enables automatic dispatch: `wrap(com_object)` returns the correct subclass.
+Then add the import to the relevant subpackage's `__init__.py` (e.g. `models/elements/containment/__init__.py`) so registration fires on package import. This enables automatic dispatch: `AbstractRPModelElement.wrap(com_object)` returns the correct subclass based on `getMetaClass()`.
 
 ### Error Handling
 
@@ -241,25 +248,27 @@ except RhapsodyConnectionError as e:
     sys.exit(1)
 ```
 
+### Deleting Elements
+
+Call the wrapped `element.deleteFromProject()` method — never call `element._com.delete()` directly. The raw COM object does not expose a `delete()` method; using `_com` directly bypasses the wrapper and raises `AttributeError`.
+
 ### Type Annotations
 
-- **Python 3.8 compatibility:** Use `from __future__ import annotations` for forward refs
-- **mypy strict mode:** All functions must have return type annotations (`-> None`, `-> int`, etc.)
-- **COM API:** Use `# type: ignore[attr-defined]` sparingly for win32com/pywintypes lacking stubs
+- **`from __future__ import annotations` is FORBIDDEN** — do not add it to any file, and remove it if found. Use string-quoted forward refs (`'RhapsodyContext'`) or `TYPE_CHECKING` imports instead. This was deliberately fixed project-wide; see `docs/CODE_GUIDELINES.md`.
+- **mypy strict mode** (config targets `python_version = "3.9"`): all functions must have return type annotations (`-> None`, `-> int`, etc.).
+- **COM API:** Use `# type: ignore[attr-defined]` sparingly for `win32com`/`pywintypes` (they lack stubs; `pyproject.toml` overrides already ignore missing imports for those modules).
 
 ```python
-from __future__ import annotations
-
 def open_project(path: str) -> None:  # ✅ Required return annotation
-    com_obj = call_com(lambda: self._com.openProject(path))  # ✅ COM call wrapped
+    com_obj = AbstractRPModelElement.call_com(lambda: self._com.openProject(path))  # ✅ COM call wrapped
 ```
 
 ### Testing with Fakes
 
-All unit tests use fake COM objects (see `tests/fakes.py`). Never use real COM calls in tests:
+All unit tests use fake COM objects from `tests/unit/models/fakes.py`. Never use real COM calls in tests:
 
 ```python
-from tests.fakes import make_fake_element, make_fake_collection
+from tests.unit.models.fakes import make_fake_element, make_fake_collection
 
 # Create fake Class element with name
 fake_class = make_fake_element("Class", getName="MyClass")
@@ -268,7 +277,7 @@ fake_class = make_fake_element("Class", getName="MyClass")
 fake_items = make_fake_collection([fake_class])
 ```
 
-No Rhapsody installation or license is required to run the full test suite.
+No Rhapsody installation or license is required to run `tests/unit/`.
 
 ### Code Layout
 
@@ -276,52 +285,36 @@ No Rhapsody installation or license is required to run the full test suite.
 src/rhapsody_cli/
 ├── __init__.py                    # Public API exports
 ├── application.py                 # RhapsodyApplication entry point
-├── exceptions/                    # Exception types
-│   ├── __init__.py
-│   └── core.py                   # RhapsodyConnectionError, RhapsodyRuntimeException
-├── models/                        # Element wrappers
-│   ├── __init__.py
-│   ├── _core.py                  # RPModelElement, wrap(), call_com(), registry
-│   └── elements/                 # Specific element types
-│       ├── __init__.py
-│       ├── classifiers.py        # RPClass, RPClassifier, RPActor
-│       ├── containment.py        # RPPackage, RPProject
-│       └── ...                   # Other element types
-├── commands/                      # CLI command groups (argparse, class-based)
-│   ├── __init__.py
-│   ├── abstract_command.py       # AbstractCommand base class
-│   ├── element_command.py        # ElementCommand
-│   └── project_command.py        # ProjectCommand
-├── actions/                       # CLI subcommand actions (argparse, class-based)
-│   ├── __init__.py
-│   ├── abstract_action.py        # AbstractAction, RhapsodyContextAction, ElementManagementAction
-│   ├── element_action.py         # ElementAddAction, ElementViewAction, ElementQueryAction, ElementDeleteAction
-│   └── project_action.py         # Project subcommand actions
-├── cli/                           # CLI entry point and support
-│   ├── main.py                   # Entry point (re-exports cli.main)
-│   ├── cli.py                    # main() dispatcher
-│   ├── context.py                # RhapsodyContext (state management)
-│   ├── formatters.py             # OutputFormatter (table/JSON/CSV)
-│   └── logging_config.py         # CliLoggingConfigurator
-└── py.typed                       # PEP 561 marker (type stubs available)
+├── exceptions/core.py             # RhapsodyConnectionError, RhapsodyRuntimeException
+├── models/
+│   ├── core.py                    # AbstractRPModelElement, RPModelElement, RPCollection, RPUnit, wrap(), call_com(), registry
+│   └── elements/
+│       ├── classifiers/           # model_class.py, model_actor.py, model_classifier.py, model_usecase.py, ...
+│       ├── containment/           # model_package.py, model_project.py, model_component.py, model_node.py, ...
+│       ├── relations/             # relation/association/dependency element wrappers
+│       ├── model_diagrams.py, model_requirements.py, model_variables.py, model_misc.py
+├── commands/                      # ElementCommand, ProjectCommand, PackageCommand (argparse, class-based)
+├── actions/                       # element_action.py, package_action.py, project_action.py (Add/View/Query/Delete actions)
+└── cli/
+    ├── main.py, cli.py            # Entry point + dispatcher
+    ├── context.py                 # RhapsodyContext (state management)
+    ├── path_resolver.py           # PathResolver (navigate "/" or "\" element paths)
+    ├── formatters.py              # OutputFormatter (table/JSON/CSV)
+    └── logging_config.py          # CliLoggingConfigurator
 
 tests/
-├── unit/                          # Unit tests (mocked COM, no Rhapsody needed)
-│   ├── conftest.py
-│   ├── models/fakes.py            # Fake COM objects for testing
-│   ├── cli/                       # CLI unit tests
-│   ├── commands/                  # Command-group unit tests
-│   ├── models/elements/           # Element wrapper tests
-│   └── exceptions/                # Exception tests
-├── integration/                   # Integration tests (require live Rhapsody)
+├── unit/                          # Mocked COM, no Rhapsody needed — this is what CI runs
+│   ├── models/fakes.py            # Fake COM objects (make_fake_element, make_fake_collection)
+│   ├── models/test_core.py, models/elements/  # Core + element wrapper tests
+│   ├── cli/, commands/, actions/, exceptions/
+├── integration/                   # Requires live, licensed Rhapsody instance (Windows); auto-skips if unavailable
 └── system/                        # End-to-end subprocess tests
 ```
 
 ### GitHub Actions CI/CD
 
-- **CI:** `python-package.yml` runs tests, linting, formatting, type checking on push/PR
-- **CD:** `python-publish.yml` auto-publishes to PyPI on GitHub release
-- Tests run across Python 3.8-3.13 matrix
+- **CI:** `.github/workflows/python-package.yml` runs on `windows-latest` across Python 3.8–3.13. Steps: `ruff check src/ tests/`, `black --check src/ tests/`, `mypy src/ tests/` (only for Python < 3.10), then `pytest tests/unit -v --cov=src/rhapsody_cli --cov-report=xml`. Integration/system tests are **not** run in CI (they need a live Rhapsody instance).
+- **CD:** `.github/workflows/python-publish.yml` auto-publishes to PyPI on GitHub release.
 
 ---
 
@@ -341,18 +334,18 @@ tests/
 
 ### Add a new element wrapper
 
-1. Create `src/rhapsody_cli/models/elements/myclass.py`
+1. Create `src/rhapsody_cli/models/elements/<subpackage>/model_myclass.py` (subpackage = `classifiers`, `containment`, `relations`, etc., based on what the element represents)
 2. Define `RPMyClass(RPModelElement)` with method mirrors
-3. Call `register_wrapper("MyClass", RPMyClass)` at module level
-4. Write tests in `tests/unit/models/elements/test_myclass.py` with fakes
-5. Add to `src/rhapsody_cli/models/elements/__init__.py` exports
+3. Call `AbstractRPModelElement.register_wrapper("MyClass", RPMyClass)` at module level
+4. Write tests in `tests/unit/models/elements/test_myclass.py` with fakes from `tests/unit/models/fakes.py`
+5. Add the import to the subpackage's `__init__.py` so registration fires on import
 
 ### Add a new CLI command
 
 1. Write tests first in appropriate tests/unit/cli/ or tests/unit/commands/ module
 2. Create an action class inheriting from AbstractAction (or RhapsodyContextAction / ElementManagementAction)
 3. Implement init_arguments() to register the subparser and execute() for business logic
-4. Register the action in the appropriate command group's get_actions() (element/project/io)
+4. Register the action in the appropriate command group's get_actions() (`ElementCommand`, `PackageCommand`, or `ProjectCommand`)
 5. Verify all unit tests pass
 
 ### Fix a type checking error

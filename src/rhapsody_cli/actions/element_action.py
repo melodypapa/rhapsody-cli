@@ -5,7 +5,6 @@ from typing import Any, List, Optional, Tuple
 
 from rhapsody_cli.actions.abstract_action import ElementManagementAction
 from rhapsody_cli.exceptions import CliExecutionError
-from rhapsody_cli.models.core import AbstractRPModelElement
 
 
 class ElementAddAction(ElementManagementAction):
@@ -122,7 +121,7 @@ class ElementViewAction(ElementManagementAction):
         element = self._resolve_container_or_element(root, path, resolve_element=True, operation=f"view element '{path}'")
 
         name = element.getName()
-        meta_class = element.getMetaClass()  # type: ignore[attr-defined]
+        meta_class = element.getMetaClass()
         data = {"path": path, "name": name, "type": meta_class}
 
         # NOTE: This is the command's result data (not a status/log message),
@@ -221,11 +220,11 @@ class ElementDeleteAction(ElementManagementAction):
                     return
 
         try:
-            AbstractRPModelElement.call_com(lambda: element._com.delete())  # type: ignore[attr-defined]
+            element.deleteFromProject()
         except Exception as e:
             self._handle_execution_error(e, f"Failed to delete element at path '{path}'")
 
-        meta_class = element.getMetaClass()  # type: ignore[attr-defined]
+        meta_class = element.getMetaClass()
         if recursive:
             self.logger.info("Deleted %s: %s (and %d nested elements)", meta_class, path, nested_count)
         else:
