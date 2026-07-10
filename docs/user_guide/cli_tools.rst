@@ -23,6 +23,7 @@ View Subcommand Help
 
    rhapsody-cli project --help
    rhapsody-cli element --help
+   rhapsody-cli package --help
 
 Output Formats
 --------------
@@ -235,6 +236,113 @@ for confirmation showing how many nested elements will be removed.
    # Same, but skip the confirmation prompt
    rhapsody-cli element delete pkg/subpkg --recursive --force
 
+Package Commands
+-----------------
+
+Packages have their own dedicated command group (``package``). All
+``package`` subcommands except ``create`` require ``--path``, which must
+resolve to an *existing* Package. The ``package create`` command has
+an optional ``--path``: when omitted, packages are created directly at
+the project root.
+
+``package create`` - Create a Package
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+   rhapsody-cli package create ATTRIBUTES
+   rhapsody-cli package create --path PARENT_PATH ATTRIBUTES
+   rhapsody-cli package create --input FILE
+   rhapsody-cli package create --path PARENT_PATH --input FILE
+
+Create one or more packages. When ``--path`` is omitted, packages are
+created at the **project root**. When ``--path`` is given, packages are
+created nested under the package at ``PARENT_PATH``.
+
+``ATTRIBUTES``/``--input`` accepts either inline JSON (an object for a
+single package, or an array for several) or the path to a JSON file.
+Recognized attribute keys: ``name`` (required), ``description``,
+``description_html``, ``description_rtf``, ``display_name``,
+``display_name_rtf``, ``properties``, ``stereotypes``, ``tags``.
+
+**Examples:**
+
+.. code-block:: bash
+
+   # Create at project root (no --path)
+   rhapsody-cli package create '{"name": "TopLevel"}'
+
+   # Create at project root with description
+   rhapsody-cli package create '{"name": "TopLevel", "description": "Top-level package"}'
+
+   # Create nested under an existing package
+   rhapsody-cli package create --path pkg '{"name": "Sensors"}'
+
+   # Create nested with extra attributes
+   rhapsody-cli package create --path pkg '{"name": "Sensors", "description": "Sensor models"}'
+
+   # Multiple packages from an inline JSON array (at project root)
+   rhapsody-cli package create '[{"name": "Sensors"}, {"name": "Actuators"}]'
+
+   # Multiple packages nested under existing package
+   rhapsody-cli package create --path pkg '[{"name": "Sensors"}, {"name": "Actuators"}]'
+
+   # From an external JSON file (at project root)
+   rhapsody-cli package create --input packages.json
+
+   # From an external JSON file (nested under existing package)
+   rhapsody-cli package create --path pkg --input packages.json
+
+``package delete`` - Delete a Package
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+   rhapsody-cli package delete --path PATH
+
+Delete the package at ``PATH`` (and everything nested within it).
+
+**Example:**
+
+.. code-block:: bash
+
+   rhapsody-cli package delete --path pkg/Sensors
+
+``package view`` - View Package Details
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+   rhapsody-cli package view --path PATH [--format table|json|csv] [--output FILE]
+
+Display a package's name, GUID, description, metaclass, and full path.
+``--format`` selects the rendering (independent of the global
+``--output`` flag); ``--output FILE`` writes the result to a file
+instead of stdout.
+
+**Example:**
+
+.. code-block:: bash
+
+   rhapsody-cli package view --path pkg/Sensors
+   rhapsody-cli package view --path pkg/Sensors --format json
+
+``package list`` - List Nested Packages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+   rhapsody-cli package list --path PATH [--format table|json|csv] [--output FILE]
+
+List the names of packages directly nested under ``PATH``.
+
+**Example:**
+
+.. code-block:: bash
+
+   rhapsody-cli package list --path pkg
+   rhapsody-cli package list --path pkg --format json --output nested.json
+
 Common Use Cases
 ----------------
 
@@ -246,14 +354,14 @@ Create a New Project with Model
    # Open project
    rhapsody-cli project open myproject.rpy
 
-   # Add package
-   rhapsody-cli element add Package --name MyPackage
+   # Add a package nested inside an existing top-level package
+   rhapsody-cli package create --path ExistingPackage '{"name": "MyPackage"}'
 
-   # Add class
-   rhapsody-cli element add Class --name MyClass
+   # Add a class inside the new package
+   rhapsody-cli element add --type class --name MyClass --path ExistingPackage/MyPackage
 
    # View what we created
-   rhapsody-cli element query
+   rhapsody-cli element query --path ExistingPackage/MyPackage
 
    # Close project
    rhapsody-cli project close
@@ -266,11 +374,8 @@ Query and Export
    # Open project
    rhapsody-cli project open myproject.rpy
 
-   # Query all elements (JSON format)
-   rhapsody-cli --output json element query > elements.json
-
-   # Export model
-   rhapsody-cli io export model_export.xml
+   # Query all elements recursively (JSON format)
+   rhapsody-cli --output json element query --recursive > elements.json
 
    # Close project
    rhapsody-cli project close

@@ -82,13 +82,14 @@ class PackageCreateAction(AbstractPackageAction):
     def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
         """Register the 'create' subcommand and its arguments."""
         parser = sub_parser.add_parser("create", help="Create a package")
-        self.add_path_argument(parser, required=True, help_text="Parent package path")
+        self.add_path_argument(parser, required=False, help_text="Parent package path (optional; defaults to project root)")
         parser.add_argument("--input", default=None, help="JSON file with package attributes")
         parser.add_argument("attributes", nargs="?", default=None, help="Inline JSON or JSON file path")
         self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute package creation."""
+        self.logger.info("Starting package creation...")
         input_data = args.input if args.input else args.attributes
         if not input_data:
             raise CliExecutionError("Either --input or attributes argument must be provided")
@@ -96,13 +97,20 @@ class PackageCreateAction(AbstractPackageAction):
         data = self._load_json_data(input_data)
         packages_data = data if isinstance(data, list) else [data]
 
-        container = self._resolve_and_validate_package(args.path)
+        # Branch on whether path is provided (falsy = use project root)
+        is_root = not args.path
+        if is_root:
+            self.logger.info("Creating packages at project root...")
+            container = self._get_active_root()
+        else:
+            self.logger.info("Resolving parent path '%s'...", args.path)
+            container = self._resolve_and_validate_package(args.path)
 
         created: List[str] = []
         errors: List[str] = []
         for pkg_attrs in packages_data:
             try:
-                name = self._create_single_package(container, pkg_attrs, args.path)
+                name = self._create_single_package(container, pkg_attrs, args.path, is_root=is_root)
                 created.append(name)
             except CliExecutionError:
                 raise
@@ -113,8 +121,15 @@ class PackageCreateAction(AbstractPackageAction):
 
         self._report_results(created, errors, len(packages_data))
 
-    def _create_single_package(self, container: Any, pkg_attrs: Dict[str, Any], parent_path: str) -> str:
-        """Create a single package and set its attributes. Returns the package name."""
+    def _create_single_package(self, container: Any, pkg_attrs: Dict[str, Any], parent_path: Any, *, is_root: bool = False) -> str:
+        """Create a single package and set its attributes. Returns the package name.
+
+        Args:
+            container: The parent container (RPProject for root, RPPackage for nested).
+            pkg_attrs: Dictionary of package attributes.
+            parent_path: The parent path (for reporting; can be None/empty for root).
+            is_root: Whether creating at project root (uses addPackage) vs nested (uses addNestedPackage).
+        """
         name = str(pkg_attrs.get("name", ""))
         if not name:
             raise CliExecutionError("'name' is required in attributes")
@@ -123,17 +138,86 @@ class PackageCreateAction(AbstractPackageAction):
         if unknown:
             self.logger.warning("Skipping unknown attributes: %s", unknown)
 
-        package = container.addNestedPackage(name)
-        self._set_attributes(package, pkg_attrs)
+        self.logger.info("Creating package '%s'...", name)
 
-        full_path = f"{parent_path}/{name}"
+        # Check for duplicates before attempting creation
+        self._check_package_not_exists(container, name, is_root)
+
+        try:
+            # Call the appropriate creation method based on location
+            if is_root:
+                package = container.addPackage(name)
+            else:
+                package = container.addNestedPackage(name)
+        except Exception as e:
+            error_str = str(e)
+            # Check if error indicates the package already exists
+            # COM error code -2147221495 (0x80040005) means "DISP_E_EXCEPTION" but typically indicates duplicate
+            # Also check for common duplicate/already exists keywords
+            if "already" in error_str.lower() or "duplicate" in error_str.lower() or "-2147221495" in error_str or "2147221495" in error_str:
+                container_desc = "project root" if is_root else "parent package"
+                raise CliExecutionError(f"Package '{name}' already exists in {container_desc}") from e
+            # Generic error
+            raise CliExecutionError(f"Failed to create package '{name}': {e}") from e
+
+        # Set attributes if any are provided
+        if len(pkg_attrs) > 1:  # More than just 'name'
+            self.logger.info("Setting attributes for package '%s'...", name)
+            try:
+                self._set_attributes(package, pkg_attrs)
+            except Exception as e:
+                # Log that attributes couldn't be set but don't fail - package was created
+                self.logger.warning("Failed to set attributes for package '%s': %s", name, e)
+
+        # Build full_path without leading artifacts for root-created packages
+        if is_root or not parent_path:
+            full_path = name
+        else:
+            full_path = f"{parent_path}/{name}"
+
         self.logger.info("Created package: %s", full_path)
         return name
+
+    def _check_package_not_exists(self, container: Any, name: str, is_root: bool) -> None:
+        """Check if a package with the given name already exists in the container.
+
+        Args:
+            container: RPProject (for root) or RPPackage (for nested)
+            name: Package name to check
+            is_root: Whether checking at project root or nested
+
+        Raises:
+            CliExecutionError: If package with name already exists
+        """
+        self.logger.info("Checking if package '%s' already exists...", name)
+
+        try:
+            if is_root:
+                existing_packages = container.getPackages()
+                container_desc = "project root"
+            else:
+                existing_packages = container.getNestedPackages()
+                parent_name = container.getName()
+                container_desc = f"package '{parent_name}'"
+
+            # Search for duplicate by name
+            for pkg in existing_packages:
+                pkg_name = pkg.getName()
+                if pkg_name == name:
+                    raise CliExecutionError(f"Package '{name}' already exists in {container_desc}")
+        except CliExecutionError:
+            raise
+        except Exception as e:
+            # If there's an error checking for duplicates, log it but continue
+            # The creation attempt itself will fail more gracefully if package exists
+            self.logger.debug("Could not enumerate existing packages to check for duplicates: %s", e)
 
     def _report_results(self, created: List[str], errors: List[str], total: int) -> None:
         """Log summary of creation results."""
         if errors and not created:
             raise CliExecutionError(f"Created 0/{total} packages; all failed")
+        if created:
+            self.logger.info("Successfully created %d package%s", len(created), "s" if len(created) != 1 else "")
         if errors:
             self.logger.info("Created %d/%d packages with %d error(s)", len(created), total, len(errors))
 
@@ -216,11 +300,14 @@ class PackageDeleteAction(AbstractPackageAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute package deletion."""
+        self.logger.info("Starting package deletion...")
+        self.logger.info("Resolving package path '%s'...", args.path)
         package = self._resolve_and_validate_package(args.path)
 
         try:
+            self.logger.info("Deleting package '%s'...", args.path)
             package.deleteFromProject()
-            self.logger.info("Deleted package: %s", args.path)
+            self.logger.info("Successfully deleted package '%s'", args.path)
         except Exception as e:
             self._handle_execution_error(e, f"Failed to delete package '{args.path}'")
 
@@ -249,15 +336,18 @@ class PackageViewAction(AbstractPackageAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute package view."""
+        self.logger.info("Starting package view operation...")
+        self.logger.info("Resolving package path '%s'...", args.path)
         package = self._resolve_and_validate_package(args.path)
 
         try:
+            self.logger.info("Retrieving package details...")
             data = self._collect_package_data(package)
             output = self._format_output(data, args.format)
 
             if args.output:
                 self._write_to_file(args.output, output)
-                self.logger.info("Wrote package details to: %s", args.output)
+                self.logger.info("Writing output to file '%s'", args.output)
             else:
                 print(output)
         except CliExecutionError:
@@ -316,15 +406,22 @@ class PackageListAction(AbstractPackageAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute package list."""
+        self.logger.info("Starting package list operation...")
+        self.logger.info("Resolving package path '%s'...", args.path)
         package = self._resolve_and_validate_package(args.path)
 
         try:
+            self.logger.info("Listing nested packages...")
             package_names = self._collect_nested_package_names(package)
+            if package_names:
+                self.logger.info("Found %d nested package%s", len(package_names), "s" if len(package_names) != 1 else "")
+            else:
+                self.logger.info("No nested packages found")
             output = self._format_output(package_names, args.format)
 
             if args.output:
                 self._write_to_file(args.output, output)
-                self.logger.info("Wrote %d packages to: %s", len(package_names), args.output)
+                self.logger.info("Writing output to file '%s'", args.output)
             else:
                 print(output)
         except CliExecutionError:

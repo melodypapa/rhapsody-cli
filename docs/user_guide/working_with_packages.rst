@@ -34,21 +34,29 @@ Create one or multiple packages with validated attributes.
 
 ::
 
-   rhapsody-cli package create --path <parent-path> [options] [attributes]
+   rhapsody-cli package create [--path <parent-path>] [options] [attributes]
 
 **Arguments:**
 
-- ``--path <parent-path>`` - Parent package path (required)
+- ``--path <parent-path>`` - Parent package path (optional; defaults to project root when omitted)
 - ``--input <json-file>`` - JSON file with package attributes (optional)
 - ``attributes`` - Inline JSON or file path (required if --input not specified)
 
 **Examples:**
 
-Create single package with inline JSON::
+Create single package at project root::
+
+   rhapsody-cli package create '{"name":"TopLevel","description":"Top-level package"}'
+
+Create nested package under existing package::
 
    rhapsody-cli package create --path Sensors '{"name":"TempSensors","description":"Temperature sensors"}'
 
-Create multiple packages from file::
+Create multiple packages at project root from file::
+
+   rhapsody-cli package create --input packages.json
+
+Create multiple packages nested under existing package::
 
    rhapsody-cli package create --path Sensors --input packages.json
 
