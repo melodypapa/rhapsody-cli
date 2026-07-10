@@ -2,6 +2,7 @@
 
 from rhapsody_cli.models.core import RPModelElement, RPUnit
 from rhapsody_cli.models.elements.classifiers import RPClassifier
+from rhapsody_cli.models.elements.relations import RPPort
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
@@ -489,6 +490,19 @@ def test_classifier_get_ports_returns_collection() -> None:
 
     assert len(result) == 1
     assert result[0].getName() == "port"
+
+
+def test_classifier_add_port_delegates_to_add_new_aggr() -> None:
+    fake = make_fake_element("Class")
+    port_fake = make_fake_element("Port", getName="clientPort")
+    fake.addNewAggr.return_value = port_fake
+    classifier = RPClassifier(fake)
+
+    result = classifier.addPort("clientPort")
+
+    fake.addNewAggr.assert_called_once_with("Port", "clientPort")
+    assert isinstance(result, RPPort)
+    assert result.getName() == "clientPort"
 
 
 def test_classifier_get_relations_returns_collection() -> None:
