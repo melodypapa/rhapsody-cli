@@ -12,7 +12,7 @@ from rhapsody_cli.actions.abstract_action import (
     RhapsodyContextAction,
 )
 from rhapsody_cli.cli.path_resolver import PathResolver, PathResolverError
-from rhapsody_cli.exceptions import CliExecutionError
+from rhapsody_cli.exceptions import CliExecutionError, RhapsodyConnectionError
 
 
 class TestAbstractActionAddVerboseArgument:
@@ -126,6 +126,35 @@ class TestElementManagementActionGetActiveRoot:
 
         assert result is fake_root
         fake_project.getRoot.assert_called_once_with()
+
+
+class TestElementManagementActionGetActiveProject:
+    """Test the _get_active_project() helper's connection wiring."""
+
+    def test_get_active_project_uses_connect_app_and_stores_project(self) -> None:
+        """_get_active_project() should call _connect_app().activeProject() and cache the result."""
+        action = _FakeElementAction(command_id="fake")
+        fake_project = Mock(name="project")
+        fake_app = MagicMock(name="FakeApplication")
+        fake_app.activeProject.return_value = fake_project
+        action._connect_app = lambda: fake_app  # type: ignore[method-assign]
+
+        result = action._get_active_project()
+
+        assert result is fake_project
+        assert action._project is fake_project
+
+    def test_get_active_project_propagates_connection_error(self) -> None:
+        """RhapsodyConnectionError from _connect_app() should surface as CliExecutionError."""
+
+        def raise_connection_error() -> None:
+            raise RhapsodyConnectionError("no running instance")
+
+        action = _FakeElementAction(command_id="fake")
+        action._connect_app = raise_connection_error  # type: ignore[method-assign]
+
+        with pytest.raises(CliExecutionError):
+            action._get_active_project()
 
 
 class _FakeElement:

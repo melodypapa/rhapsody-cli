@@ -204,7 +204,9 @@ class ElementManagementAction(RhapsodyContextAction):
             CliExecutionError: If no active project or connection error occurs.
         """
         try:
-            return self._context.get_active_project()
+            app = self._connect_app()
+            self._project = app.activeProject()
+            return self._project
         except RhapsodyConnectionError as e:
             self._handle_connection_error(e)
 
