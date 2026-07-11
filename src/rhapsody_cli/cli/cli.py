@@ -11,6 +11,7 @@ from rhapsody_cli.commands.class_command import ClassCommand
 from rhapsody_cli.commands.element_command import ElementCommand
 from rhapsody_cli.commands.operation_command import OperationCommand
 from rhapsody_cli.commands.package_command import PackageCommand
+from rhapsody_cli.commands.port_command import PortCommand
 from rhapsody_cli.commands.project_command import ProjectCommand
 from rhapsody_cli.exceptions import CliExecutionError
 
@@ -57,6 +58,8 @@ def main() -> None:
             cmd = PackageCommand(command_args)
         elif command_name == "operation":
             cmd = OperationCommand(command_args)
+        elif command_name == "port":
+            cmd = PortCommand(command_args)
         elif command_name == "project":
             cmd = ProjectCommand(command_args)
         else:
@@ -87,7 +90,7 @@ def _usage(error: str) -> None:
     commands_text = "Commands:\n  attribute  Manage attributes\n  class      Manage classes\n"
     commands_text += "  element    Manage model elements\n"
     commands_text += "  operation  Manage operations\n"
-    commands_text += "  package    Manage packages\n  project    Manage projects\n"
+    commands_text += "  package    Manage packages\n  port       Manage ports\n  project    Manage projects\n"
     options_text = "Global Options:\n  --output <format>   Output format (table, json, csv)."
     options_text += " Default: table\n  -v|--verbose        Enable debug logging\n"
     options_text += "  -h|--help          Show this help message\n"
