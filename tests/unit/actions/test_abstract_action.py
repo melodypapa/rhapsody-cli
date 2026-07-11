@@ -2,7 +2,7 @@
 
 import argparse
 from typing import Any, List, Optional
-from unittest.mock import Mock
+from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
@@ -11,7 +11,6 @@ from rhapsody_cli.actions.abstract_action import (
     ElementManagementAction,
     RhapsodyContextAction,
 )
-from rhapsody_cli.cli.context import RhapsodyContext
 from rhapsody_cli.cli.path_resolver import PathResolver, PathResolverError
 from rhapsody_cli.exceptions import CliExecutionError
 
@@ -240,7 +239,7 @@ class TestElementManagementActionResolveElement:
 
 
 class _FakeContextAction(RhapsodyContextAction):
-    """Minimal concrete subclass of RhapsodyContextAction for testing the _context property."""
+    """Minimal concrete subclass of RhapsodyContextAction for testing shared helpers."""
 
     def init_arguments(self, sub_parser: Any) -> None:  # pragma: no cover - not exercised
         """Unused: test scaffold only."""
@@ -249,36 +248,54 @@ class _FakeContextAction(RhapsodyContextAction):
         """Unused: test scaffold only."""
 
 
-class TestRhapsodyContextActionContextProperty:
-    """Test the _context lazily-cached property on RhapsodyContextAction."""
+class TestRhapsodyContextActionConnectApp:
+    """Test the _connect_app() lazily-cached helper on RhapsodyContextAction."""
 
-    def test_context_property_returns_rhapsody_context_instance(self) -> None:
-        """_context should return a RhapsodyContext instance."""
+    def test_connect_app_returns_rhapsody_application_instance(self) -> None:
+        """_connect_app() should return a RhapsodyApplication instance."""
         action = _FakeContextAction(command_id="fake")
+        fake_app = MagicMock(name="FakeApplication")
+        with patch("rhapsody_cli.actions.abstract_action.RhapsodyApplication.connect", return_value=fake_app):
+            result = action._connect_app()
 
-        ctx = action._context
+        assert result is fake_app
 
-        assert isinstance(ctx, RhapsodyContext)
-
-    def test_context_property_caches_instance_per_action(self) -> None:
-        """Repeated access should return the same cached instance."""
+    def test_connect_app_caches_instance_per_action(self) -> None:
+        """Repeated calls should reuse the same cached RhapsodyApplication (no repeat connect())."""
         action = _FakeContextAction(command_id="fake")
+        fake_app = MagicMock(name="FakeApplication")
+        with patch("rhapsody_cli.actions.abstract_action.RhapsodyApplication.connect", return_value=fake_app) as mock_connect:
+            first = action._connect_app()
+            second = action._connect_app()
 
-        first = action._context
-        second = action._context
-
+        mock_connect.assert_called_once()
         assert first is second
+
+
+class TestRhapsodyContextActionDefaults:
+    """Test the default instance state of a fresh RhapsodyContextAction."""
+
+    def test_new_action_has_no_app_or_project(self) -> None:
+        """A freshly constructed action must start with no cached app/project."""
+        action = _FakeContextAction(command_id="fake")
+
+        assert action._app is None
+        assert action._project is None
+
+    def test_new_action_defaults_output_format_to_table(self) -> None:
+        """output_format should default to 'table' until set by AbstractCommand."""
+        action = _FakeContextAction(command_id="fake")
+
+        assert action.output_format == "table"
 
 
 class TestRhapsodyContextActionPrintFormattedOutput:
     """Test the _print_formatted_output() helper."""
 
-    def test_print_formatted_output_json_when_context_format_is_json(self, capsys: pytest.CaptureFixture[str]) -> None:
+    def test_print_formatted_output_json_when_output_format_is_json(self, capsys: pytest.CaptureFixture[str]) -> None:
         """When output_format is 'json', the helper should render data as JSON to stdout."""
         action = _FakeContextAction(command_id="fake")
-        # Force the cached context into JSON mode without touching real COM.
-        action._cached_context = Mock(spec=RhapsodyContext)
-        action._cached_context.output_format = "json"
+        action.output_format = "json"
 
         action._print_formatted_output(data={"a": 1}, headers=["a"], table_rows=[[1]])
 
@@ -289,8 +306,6 @@ class TestRhapsodyContextActionPrintFormattedOutput:
     def test_print_formatted_output_table_by_default(self, capsys: pytest.CaptureFixture[str]) -> None:
         """By default (non-json), the helper should render a table to stdout."""
         action = _FakeContextAction(command_id="fake")
-        action._cached_context = Mock(spec=RhapsodyContext)
-        action._cached_context.output_format = "table"
 
         action._print_formatted_output(data={}, headers=["Name"], table_rows=[["Foo"]])
 
@@ -301,13 +316,10 @@ class TestRhapsodyContextActionPrintFormattedOutput:
     def test_print_formatted_output_force_table_skips_json_branch(self, capsys: pytest.CaptureFixture[str]) -> None:
         """force_table=True should keep table output even when format is 'json'."""
         action = _FakeContextAction(command_id="fake")
-        action._cached_context = Mock(spec=RhapsodyContext)
-        action._cached_context.output_format = "json"
+        action.output_format = "json"
 
         action._print_formatted_output(data={"a": 1}, headers=["Name"], table_rows=[["Foo"]], force_table=True)
 
         captured = capsys.readouterr()
         assert "Foo" in captured.out
-        # JSON serialization of {"a": 1} would not include the literal text "Name",
-        # so the presence of "Name" signals the table branch was taken.
         assert "Name" in captured.out

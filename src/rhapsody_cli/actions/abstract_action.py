@@ -4,7 +4,7 @@ import argparse
 import logging
 from typing import Any, List, NoReturn, Optional
 
-from rhapsody_cli.cli.context import RhapsodyContext
+from rhapsody_cli.application import RhapsodyApplication
 from rhapsody_cli.cli.formatters import OutputFormatter
 from rhapsody_cli.cli.path_resolver import PathResolver, PathResolverError
 from rhapsody_cli.exceptions import CliExecutionError, RhapsodyConnectionError
@@ -68,25 +68,34 @@ class AbstractAction:
 
 
 class RhapsodyContextAction(AbstractAction):
-    """Base class for actions that require RhapsodyContext.
+    """Base class for actions that require a live Rhapsody connection.
 
-    Provides shared error handling and context management.
+    Provides shared error handling and lazily-cached application/project
+    state, plus multi-format output rendering.
     """
 
     _NO_ACTIVE_INSTANCE_MESSAGE = "No running Rhapsody instance found. Please open Rhapsody and a project first."
 
-    _cached_context: Optional[RhapsodyContext] = None
+    def __init__(self, command_id: str = "") -> None:
+        """Initialize the action with a command identifier and empty connection state.
 
-    @property
-    def _context(self) -> RhapsodyContext:
-        """Lazily-cached RhapsodyContext for this action.
+        Args:
+            command_id: The subcommand identifier (e.g., "add", "open", "import")
+        """
+        super().__init__(command_id)
+        self._app: Optional[RhapsodyApplication] = None
+        self._project: Optional[RPProject] = None
+        self.output_format: str = "table"
+
+    def _connect_app(self) -> RhapsodyApplication:
+        """Lazily connect to Rhapsody and cache the connection for this action.
 
         Returns:
-            The cached RhapsodyContext instance, creating one on first access.
+            The cached RhapsodyApplication, connecting on first access.
         """
-        if self._cached_context is None:
-            self._cached_context = RhapsodyContext()
-        return self._cached_context
+        if self._app is None:
+            self._app = RhapsodyApplication.connect()
+        return self._app
 
     def _print_formatted_output(
         self,
@@ -96,7 +105,7 @@ class RhapsodyContextAction(AbstractAction):
         *,
         force_table: bool = False,
     ) -> None:
-        """Format `data` per the active context output_format and print to stdout.
+        """Format `data` per this action's output_format and print to stdout.
 
         Result data goes to stdout (not the logger) so it stays safe for
         piping/redirection (e.g. `> out.json`).
@@ -105,12 +114,11 @@ class RhapsodyContextAction(AbstractAction):
             data: Payload to emit when the output format is JSON.
             headers: Column headers for the table form.
             table_rows: Rows (each a list of cells) for the table form.
-            force_table: When True, always render the table form even if the
-                context's output_format is JSON. Use this to preserve an
-                existing table-only contract while sharing the helper.
+            force_table: When True, always render the table form even if
+                output_format is JSON. Use this to preserve an existing
+                table-only contract while sharing the helper.
         """
-        ctx = self._context
-        if ctx.output_format == "json" and not force_table:
+        if self.output_format == "json" and not force_table:
             output = OutputFormatter.json_format(data)
         else:
             output = OutputFormatter.table(headers, table_rows)
