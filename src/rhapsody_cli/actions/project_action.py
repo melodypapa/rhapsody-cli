@@ -23,9 +23,8 @@ class ProjectOpenAction(RhapsodyContextAction):
         """Open a project file."""
         project_path = args.project_path
         try:
-            ctx = self._context
-            ctx.connect()
-            ctx.open_project(project_path)
+            app = self._connect_app()
+            self._project = app.openProject(project_path)
             self.logger.info("Opened project: %s", project_path)
         except RhapsodyConnectionError as e:
             self._handle_connection_error(e, "Failed to open project")
@@ -48,10 +47,8 @@ class ProjectListAction(RhapsodyContextAction):
     def execute(self, args: argparse.Namespace) -> None:
         """List open projects."""
         try:
-            ctx = self._context
-            ctx.connect()
-            assert ctx.app is not None
-            projects = ctx.app.getProjects()
+            app = self._connect_app()
+            projects = app.getProjects()
 
             if not projects or len(projects) == 0:
                 self.logger.info("No open projects")
@@ -84,11 +81,11 @@ class ProjectCloseAction(RhapsodyContextAction):
     def execute(self, args: argparse.Namespace) -> None:
         """Close active project."""
         try:
-            ctx = self._context
-            if ctx.project is None:
+            if self._project is None:
                 self.logger.info("No active project")
                 return
-            ctx.close_project()
+            self._project.close()
+            self._project = None
             self.logger.info("Project closed")
         except Exception as e:
             self._handle_execution_error(e, "Failed to close project")
@@ -113,9 +110,8 @@ class ProjectNewAction(RhapsodyContextAction):
         project_location = args.project_location
         project_name = args.project_name
         try:
-            ctx = self._context
-            ctx.connect()
-            ctx.create_project(project_location, project_name)
+            app = self._connect_app()
+            self._project = app.createNewProject(project_location, project_name)
             self.logger.info("Created project: %s at %s", project_name, project_location)
         except RhapsodyConnectionError as e:
             self._handle_connection_error(e, "Failed to create project")
