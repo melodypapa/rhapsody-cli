@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from rhapsody_cli.application import RhapsodyApplication
-from rhapsody_cli.exceptions import RhapsodyConnectionError
+from rhapsody_cli.exceptions import RhapsodyConnectionError, RhapsodyRuntimeException
 from rhapsody_cli.models.core import RPCollection
 from rhapsody_cli.models.elements.containment import RPProject
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
@@ -112,6 +112,16 @@ def test_active_project_wraps_result_as_rpproject() -> None:
 
     assert isinstance(project, RPProject)
     assert project.getName() == "ActiveOne"
+
+
+def test_active_project_raises_when_no_project_open() -> None:
+    """activeProject() must not silently return an RPProject wrapping None."""
+    fake_app = MagicMock(name="FakeApplication")
+    fake_app.activeProject.return_value = None
+    app = RhapsodyApplication(fake_app)
+
+    with pytest.raises(RhapsodyRuntimeException, match="No active project is open"):
+        app.activeProject()
 
 
 def test_get_projects_returns_collection_of_rpproject() -> None:

@@ -121,8 +121,15 @@ class RhapsodyApplication:
 
         Returns:
             The active RPProject object.
+
+        Raises:
+            RhapsodyRuntimeException: If no project is currently open in
+                Rhapsody (the COM call returns None).
         """
-        return RPProject(com_utils.call_com(lambda: self._com.activeProject()))
+        result = com_utils.call_com(lambda: self._com.activeProject())
+        if result is None:
+            raise RhapsodyRuntimeException("No active project is open in Rhapsody")
+        return RPProject(result)
 
     def getProjects(self) -> RPCollection:
         """Get all open projects in Rhapsody.
