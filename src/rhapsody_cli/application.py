@@ -171,3 +171,95 @@ class RhapsodyApplication:
         to show the GUI first.
         """
         com_utils.call_com(lambda: self._com.bringWindowToTop())
+
+    def closeAllProjects(self) -> None:
+        """Close all open projects without quitting Rhapsody."""
+        com_utils.call_com(lambda: self._com.closeAllProjects())
+
+    def saveAll(self) -> None:
+        """Save all open projects."""
+        com_utils.call_com(lambda: self._com.saveAll())
+
+    def getVersion(self) -> str:
+        """Get the Rhapsody version string.
+
+        Returns:
+            The version string (e.g. ``"8.3.1"``).
+        """
+        return str(com_utils.call_com(lambda: self._com.getVersion()))
+
+    def getBuildNo(self) -> str:
+        """Get the Rhapsody build number.
+
+        Returns:
+            The build number as a string.
+        """
+        return str(com_utils.call_com(lambda: self._com.getBuildNo()))
+
+    def getRhapsodyDir(self) -> str:
+        """Get the Rhapsody installation directory.
+
+        Returns:
+            The installation directory path.
+        """
+        return str(com_utils.call_com(lambda: self._com.getRhapsodyDir()))
+
+    def getOMROOT(self) -> str:
+        """Get the OMROOT directory path.
+
+        Returns:
+            The OMROOT path.
+        """
+        return str(com_utils.call_com(lambda: self._com.getOMROOT()))
+
+    def generate(self) -> None:
+        """Generate code for the active configuration of the active project."""
+        com_utils.call_com(lambda: self._com.generate())
+
+    def generateElements(self, elements: RPCollection) -> None:
+        """Generate code for the given elements.
+
+        Args:
+            elements: An RPCollection of elements to generate code for.
+        """
+        com_utils.call_com(lambda: self._com.generateElements(elements._com))
+
+    def generateEntireProject(self) -> None:
+        """Generate code for the entire active project."""
+        com_utils.call_com(lambda: self._com.generateEntireProject())
+
+    def regenerate(self) -> None:
+        """Regenerate code for the active project (full regeneration)."""
+        com_utils.call_com(lambda: self._com.regenerate())
+
+    def addToModel(self, filename: str, withDescendant: int) -> None:
+        """Add a model element from a file.
+
+        Args:
+            filename: Path to the file to add.
+            withDescendant: 1 to add descendants, 0 otherwise.
+        """
+        com_utils.call_com(lambda: self._com.addToModel(filename, withDescendant))
+
+    def addToModelEx(self, filename: str, mode: int, addSubUnits: int, addDependents: int) -> None:
+        """Add a model element from a file with extended options.
+
+        Args:
+            filename: Path to the file to add.
+            mode: Add mode (see IRPApplication.AddToModel_Mode).
+            addSubUnits: 1 to add sub-units, 0 otherwise.
+            addDependents: 1 to add dependents, 0 otherwise.
+        """
+        com_utils.call_com(lambda: self._com.addToModelEx(filename, mode, addSubUnits, addDependents))
+
+    def setLog(self, fullPathname: str) -> None:
+        """Set the log file path.
+
+        Args:
+            fullPathname: Full path to the log file.
+        """
+        com_utils.call_com(lambda: self._com.setLog(fullPathname))
+
+    def checkModel(self) -> None:
+        """Run model checking on the active project."""
+        com_utils.call_com(lambda: self._com.checkModel())
