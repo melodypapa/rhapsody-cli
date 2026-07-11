@@ -86,7 +86,7 @@ def test_context_create_project_connects_when_not_connected() -> None:
     fake_project = MagicMock(name="FakeProject")
     fake_app.createNewProject.return_value = fake_project
 
-    def fake_connect(method: str = "attach") -> MagicMock:
+    def fake_connect() -> MagicMock:
         ctx.app = fake_app
         return fake_app
 
@@ -105,14 +105,14 @@ def test_context_get_active_project_attaches_and_returns_active_project() -> Non
     fake_project = MagicMock(name="FakeProject")
     fake_app.activeProject.return_value = fake_project
 
-    def fake_connect(method: str = "attach") -> MagicMock:
+    def fake_connect() -> MagicMock:
         ctx.app = fake_app
         return fake_app
 
     with patch.object(ctx, "connect", side_effect=fake_connect) as mock_connect:
         result = ctx.get_active_project()
 
-    mock_connect.assert_called_once_with("attach")
+    mock_connect.assert_called_once()
     fake_app.activeProject.assert_called_once_with()
     assert result is fake_project
     assert ctx.project is fake_project

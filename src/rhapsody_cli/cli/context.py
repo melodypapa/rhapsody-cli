@@ -22,13 +22,10 @@ class RhapsodyContext:
         self.project: Optional[RPProject] = None
         self.output_format: str = "table"  # table, json, csv
 
-    def connect(self, method: str = "attach") -> RhapsodyApplication:
-        """Connect to running Rhapsody or launch new instance."""
+    def connect(self) -> RhapsodyApplication:
+        """Connect to Rhapsody (try attach first, fall back to launch)."""
         if self.app is None:
-            if method == "attach":
-                self.app = RhapsodyApplication.attach()
-            else:
-                self.app = RhapsodyApplication.launch()
+            self.app = RhapsodyApplication.connect()
         return self.app
 
     def open_project(self, project_path: str) -> RPProject:
@@ -46,7 +43,7 @@ class RhapsodyContext:
             RhapsodyConnectionError: if no running Rhapsody instance can be
                 attached to (propagated from connect()).
         """
-        self.connect("attach")
+        self.connect()
         assert self.app is not None  # For mypy type narrowing
         self.project = self.app.activeProject()
         logger.info("Attached to project '%s'", self.project.getName())
@@ -70,5 +67,5 @@ class RhapsodyContext:
         """Disconnect from Rhapsody."""
         self.close_project()
         if self.app:
-            self.app.quit()
+            self.app.disconnect()
             self.app = None

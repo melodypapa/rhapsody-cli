@@ -24,7 +24,7 @@ class ProjectOpenAction(RhapsodyContextAction):
         project_path = args.project_path
         try:
             ctx = self._context
-            ctx.connect("attach")
+            ctx.connect()
             ctx.open_project(project_path)
             self.logger.info("Opened project: %s", project_path)
         except RhapsodyConnectionError as e:
@@ -49,7 +49,7 @@ class ProjectListAction(RhapsodyContextAction):
         """List open projects."""
         try:
             ctx = self._context
-            ctx.connect("attach")
+            ctx.connect()
             assert ctx.app is not None
             projects = ctx.app.getProjects()
 
@@ -114,7 +114,7 @@ class ProjectNewAction(RhapsodyContextAction):
         project_name = args.project_name
         try:
             ctx = self._context
-            ctx.connect("attach")
+            ctx.connect()
             ctx.create_project(project_location, project_name)
             self.logger.info("Created project: %s at %s", project_name, project_location)
         except RhapsodyConnectionError as e:

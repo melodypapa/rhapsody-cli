@@ -16,7 +16,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "unit"))
 def _require_rhapsody() -> None:
     """Skip the entire integration session if no Rhapsody with an open project is available."""
     try:
-        app = RhapsodyApplication.attach()
+        app = RhapsodyApplication.connect(attach_only=True)
         app.activeProject()
     except (RhapsodyConnectionError, RhapsodyRuntimeException) as exc:
         pytest.skip(f"No running Rhapsody with an open project: {exc}", allow_module_level=False)
