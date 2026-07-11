@@ -11,12 +11,7 @@ a registry populated by each element module at import time.
 from enum import IntEnum
 from typing import Any, Callable, Dict, Iterator, Type, TypeVar
 
-from rhapsody_cli.exceptions import RhapsodyRuntimeException
-
-try:
-    import pywintypes
-except ImportError:  # pragma: no cover - pywintypes is Windows-only
-    pywintypes = None
+from rhapsody_cli import com_utils
 
 T = TypeVar("T")
 
@@ -40,15 +35,11 @@ class AbstractRPModelElement:
 
     @classmethod
     def call_com(cls, func: Callable[[], T]) -> T:
-        """Invoke a COM call, translating COM errors into RhapsodyRuntimeException."""
-        try:
-            return func()
-        except Exception as exc:
-            # pywintypes is Windows-only; on other platforms there is no live COM
-            # connection so a com_error cannot occur here.
-            if pywintypes is not None and isinstance(exc, pywintypes.com_error):
-                raise RhapsodyRuntimeException(str(exc)) from exc
-            raise
+        """Invoke a COM call, translating COM errors into RhapsodyRuntimeException.
+
+        Forwards to :func:`rhapsody_cli.com_utils.call_com`.
+        """
+        return com_utils.call_com(func)
 
     @classmethod
     def _wrap_if_element(cls, value: Any) -> Any:
@@ -74,27 +65,17 @@ class AbstractRPModelElement:
     def _get_method_or_property(cls, com_obj: Any, method_name: str, prop_name: str) -> Any:
         """Read a value from ``com_obj``, preferring the Java-style method.
 
-        Some Rhapsody COM automation Prog IDs (e.g. the Java-mirroring
-        ``Rhapsody.Application``) expose model element attributes as methods
-        (``getName()``, ``getGUID()``, ...), while others (e.g.
-        ``Rhapsody2.Application.1``) expose the same data as bare COM
-        properties (``name``, ``GUID``, ...). Prefer the method when present,
-        and fall back to the bare property otherwise.
+        Forwards to :func:`rhapsody_cli.com_utils._get_method_or_property`.
         """
-        if hasattr(com_obj, method_name):
-            return cls.call_com(lambda: getattr(com_obj, method_name)())
-        return cls.call_com(lambda: getattr(com_obj, prop_name))
+        return com_utils._get_method_or_property(com_obj, method_name, prop_name)
 
     @classmethod
     def _set_method_or_property(cls, com_obj: Any, method_name: str, prop_name: str, value: Any) -> None:
         """Write a value to ``com_obj``, preferring the Java-style setter method.
 
-        See :func:`_get_method_or_property` for why both forms exist.
+        Forwards to :func:`rhapsody_cli.com_utils._set_method_or_property`.
         """
-        if hasattr(com_obj, method_name):
-            cls.call_com(lambda: getattr(com_obj, method_name)(value))
-        else:
-            cls.call_com(lambda: setattr(com_obj, prop_name, value))
+        com_utils._set_method_or_property(com_obj, method_name, prop_name, value)
 
 
 class RPModelElement(AbstractRPModelElement):
