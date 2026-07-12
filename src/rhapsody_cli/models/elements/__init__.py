@@ -10,7 +10,7 @@ from rhapsody_cli.models.elements import model_misc as misc  # noqa: F401
 from rhapsody_cli.models.elements import model_other_model as other_model  # noqa: F401
 from rhapsody_cli.models.elements import requirements as requirements  # noqa: F401
 from rhapsody_cli.models.elements import statemachine as statemachine  # noqa: F401
-from rhapsody_cli.models.elements import model_templates as templates  # noqa: F401
+from rhapsody_cli.models.elements import templates as templates  # noqa: F401
 from rhapsody_cli.models.elements import values as values  # noqa: F401
 from rhapsody_cli.models.elements import variables as variables  # noqa: F401
 from rhapsody_cli.models.elements import relations as relations  # noqa: F401
