@@ -81,9 +81,10 @@ class AbstractRPModelElement:
 class RPModelElement(AbstractRPModelElement):
     """Wraps ``IRPModelElement``: the base interface for all model elements.
 
-    Method names mirror the Rhapsody Java API exactly (``getName``,
-    ``setName``, ``getMetaClass``, ``getGUID``, ...). Some Rhapsody COM Prog
-    IDs expose these as bare properties instead of methods; see
+    Method names use snake_case (``get_name``, ``set_name``,
+    ``get_meta_class``, ``get_guid``, ...). Internal COM calls preserve
+    the camelCase API (``self._com.methodName(...)``). Some Rhapsody COM
+    Prog IDs expose these as bare properties instead of methods; see
     :func:`_get_method_or_property`.
     """
 
