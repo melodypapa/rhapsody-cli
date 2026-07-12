@@ -16,7 +16,7 @@ if TYPE_CHECKING:
         RPCallOperation,
     )
     from rhapsody_cli.models.elements.diagrams.model_diagram_types import RPActivityDiagram
-    from rhapsody_cli.models.elements.model_graphics import RPPin
+    from rhapsody_cli.models.elements.graphics.model_graphics import RPPin
     from rhapsody_cli.models.elements.model_other_model import RPSysMLPort
     from rhapsody_cli.models.elements.relations.model_instance import RPInstance
     from rhapsody_cli.models.elements.relations.model_port import RPPort

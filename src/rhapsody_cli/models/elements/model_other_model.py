@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.core import RPCollection
     from rhapsody_cli.models.elements.containment.model_package import RPPackage
     from rhapsody_cli.models.elements.diagrams.model_diagram_types import RPSequenceDiagram
-    from rhapsody_cli.models.elements.model_graphics import RPLink
+    from rhapsody_cli.models.elements.graphics.model_graphics import RPLink
     from rhapsody_cli.models.elements.model_misc import RPEnumerationLiteral
     from rhapsody_cli.models.elements.relations.model_relation import RPRelation
 
