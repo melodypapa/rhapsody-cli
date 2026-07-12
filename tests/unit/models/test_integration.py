@@ -8,7 +8,7 @@ from rhapsody_cli.models.elements.containment import (
     RPPackage,
     RPProfile,
 )
-from rhapsody_cli.models.elements.model_misc import RPComment, RPConstraint, RPEnumerationLiteral
+from rhapsody_cli.models.elements.common.model_misc import RPComment, RPConstraint, RPEnumerationLiteral
 from rhapsody_cli.models.elements.relations import (
     RPAssociationRole,
     RPDependency,
@@ -173,7 +173,7 @@ def test_all_new_wrappers_exist() -> None:
         RPModule,
         RPNode,
     )
-    from rhapsody_cli.models.elements.model_misc import (
+    from rhapsody_cli.models.elements.common.model_misc import (
         RPComment,
         RPConstraint,
         RPEnumerationLiteral,

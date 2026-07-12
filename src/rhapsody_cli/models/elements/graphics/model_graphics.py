@@ -16,7 +16,7 @@ if TYPE_CHECKING:
         RPInteractionOperator,
         RPTransition,
     )
-    from rhapsody_cli.models.elements.model_other_model import (
+    from rhapsody_cli.models.elements.common.model_other_model import (
         RPClassifierRole,
         RPSysMLPort,
     )

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.elements.classifiers.model_statechart import RPStatechart
     from rhapsody_cli.models.elements.activity.model_actions import RPAction
     from rhapsody_cli.models.elements.diagrams.model_diagram_types import RPSequenceDiagram
-    from rhapsody_cli.models.elements.model_other_model import (
+    from rhapsody_cli.models.elements.common.model_other_model import (
         RPClassifierRole,
         RPSysMLPort,
     )
