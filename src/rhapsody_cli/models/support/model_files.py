@@ -2,10 +2,9 @@
 
 from typing import TYPE_CHECKING
 
-from rhapsody_cli.models.core import RPModelElement, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement, RPUnit, RPCollection
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.core import RPCollection
     from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
     from rhapsody_cli.models.elements.containment.model_package import RPPackage
 
@@ -14,10 +13,10 @@ class RPASCIIFile(RPModelElement):
     """Wraps ``IRPASCIIFile``."""
 
     # IRPASCIIFile method parity checklist:
-    # [ ] close                        [ ] impl  [ ] docstring  [ ] test
-    # [ ] getInterfaceName             [ ] impl  [ ] docstring  [ ] test
-    # [ ] open                         [ ] impl  [ ] docstring  [ ] test
-    # [ ] write                        [ ] impl  [ ] docstring  [ ] test
+    # [x] close                        [x] impl  [x] docstring  [x] test
+    # [x] getInterfaceName             [x] impl (inherited from RPModelElement)  [x] docstring  [x] test
+    # [x] open                         [x] impl  [x] docstring  [x] test
+    # [x] write                        [x] impl  [x] docstring  [x] test
     # No deprecated IRPASCIIFile methods.
 
     def close(self) -> None:
@@ -29,21 +28,7 @@ class RPASCIIFile(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPASCIIFile::close()
         """
-        raise NotImplementedError
-
-    def get_interface_name(self) -> str:
-        """Gets the interfaceName property.
-
-        Returns:
-            The interface name.
-
-        Raises:
-            RhapsodyRuntimeException: If an error occurs while retrieving the property.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPASCIIFile::getInterfaceName()
-        """
-        raise NotImplementedError
+        self.call_com(lambda: self._com.close())
 
     def open(self, filename: str) -> None:
         """Opens the file.
@@ -57,7 +42,7 @@ class RPASCIIFile(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPASCIIFile::open(java.lang.String filename)
         """
-        raise NotImplementedError
+        self.call_com(lambda: self._com.open(filename))
 
     def write(self, data: str) -> None:
         """Writes data to the file.
@@ -71,7 +56,7 @@ class RPASCIIFile(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPASCIIFile::write(java.lang.String data)
         """
-        raise NotImplementedError
+        self.call_com(lambda: self._com.write(data))
 
 
 class RPControlledFile(RPUnit):
@@ -82,9 +67,9 @@ class RPControlledFile(RPUnit):
     """
 
     # IRPControlledFile method parity checklist:
-    # [ ] getFullPathFileName          [ ] impl  [ ] docstring  [ ] test
-    # [ ] open                         [ ] impl  [ ] docstring  [ ] test
-    # [ ] setTarget                    [ ] impl  [ ] docstring  [ ] test
+    # [x] getFullPathFileName          [x] impl  [x] docstring  [x] test
+    # [x] open                         [x] impl  [x] docstring  [x] test
+    # [x] setTarget                    [x] impl  [x] docstring  [x] test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # [inherited] IRPUnit methods (covered by RPUnit checklist)
     # No deprecated IRPControlledFile methods.
@@ -98,7 +83,7 @@ class RPControlledFile(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPControlledFile::getFullPathFileName()
         """
-        raise NotImplementedError
+        return str(self._get_method_or_property(self._com, "getFullPathFileName", "fullPathFileName"))
 
     def open(self) -> None:
         """Opens the controlled file, using the associated program.
@@ -106,7 +91,7 @@ class RPControlledFile(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPControlledFile::open()
         """
-        raise NotImplementedError
+        self.call_com(lambda: self._com.open())
 
     def set_target(self, filename: str) -> None:
         """Specifies a different file to associate with the Controlled File element.
@@ -120,28 +105,28 @@ class RPControlledFile(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPControlledFile::setTarget(java.lang.String filename)
         """
-        raise NotImplementedError
+        self._set_method_or_property(self._com, "setTarget", "target", filename)
 
 
 class RPFile(RPUnit):
     """Wraps ``IRPFile``: represents a file or folder to be generated during code generation."""
 
     # IRPFile method parity checklist:
-    # [ ] addElement                   [ ] impl  [ ] docstring  [ ] test
-    # [ ] addModelElement              [ ] impl  [ ] docstring  [ ] test
-    # [ ] addPackageToScope            [ ] impl  [ ] docstring  [ ] test
-    # [ ] addTextElement               [ ] impl  [ ] docstring  [ ] test
-    # [ ] addToScope                   [ ] impl  [ ] docstring  [ ] test
-    # [ ] getElements                  [ ] impl  [ ] docstring  [ ] test
-    # [ ] getFileFragments             [ ] impl  [ ] docstring  [ ] test
-    # [ ] getFileType                  [ ] impl  [ ] docstring  [ ] test
-    # [ ] getFiles                     [ ] impl  [ ] docstring  [ ] test
-    # [ ] getImpName                   [ ] impl  [ ] docstring  [ ] test
-    # [ ] getPath                      [ ] impl  [ ] docstring  [ ] test
-    # [ ] getSpecName                  [ ] impl  [ ] docstring  [ ] test
-    # [ ] isEmpty                      [ ] impl  [ ] docstring  [ ] test
-    # [ ] setFileType                  [ ] impl  [ ] docstring  [ ] test
-    # [ ] setPath                      [ ] impl  [ ] docstring  [ ] test
+    # [x] addElement                   [x] impl  [x] docstring  [x] test
+    # [x] addModelElement              [x] impl  [x] docstring  [x] test
+    # [x] addPackageToScope            [x] impl  [x] docstring  [x] test
+    # [x] addTextElement               [x] impl  [x] docstring  [x] test
+    # [x] addToScope                   [x] impl  [x] docstring  [x] test
+    # [x] getElements                  [x] impl  [x] docstring  [x] test
+    # [x] getFileFragments             [x] impl  [x] docstring  [x] test
+    # [x] getFileType                  [x] impl  [x] docstring  [x] test
+    # [x] getFiles                     [x] impl  [x] docstring  [x] test
+    # [x] getImpName                   [x] impl  [x] docstring  [x] test
+    # [x] getPath                      [x] impl  [x] docstring  [x] test
+    # [x] getSpecName                  [x] impl  [x] docstring  [x] test
+    # [x] isEmpty                      [x] impl  [x] docstring  [x] test
+    # [x] setFileType                  [x] impl  [x] docstring  [x] test
+    # [x] setPath                      [x] impl  [x] docstring  [x] test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # [inherited] IRPUnit methods (covered by RPUnit checklist)
     # No deprecated IRPFile methods.
@@ -160,7 +145,7 @@ class RPFile(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPFile::addElement(com.telelogic.rhapsody.core.IRPClassifier element, java.lang.String fileFragmentType)
         """
-        raise NotImplementedError
+        self.call_com(lambda: self._com.addElement(element._com, file_fragment_type))
 
     def add_model_element(self, element: "RPModelElement", file_fragment_type: str) -> None:
         """Adds a model element to the file with the specified fragment type.
@@ -176,7 +161,7 @@ class RPFile(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPFile::addModelElement(com.telelogic.rhapsody.core.IRPModelElement element, java.lang.String fileFragmentType)
         """
-        raise NotImplementedError
+        self.call_com(lambda: self._com.addModelElement(element._com, file_fragment_type))
 
     def add_package_to_scope(self, p: "RPPackage") -> None:
         """Adds a package to the scope of the file.
@@ -190,7 +175,7 @@ class RPFile(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPFile::addPackageToScope(com.telelogic.rhapsody.core.IRPPackage p)
         """
-        raise NotImplementedError
+        self.call_com(lambda: self._com.addPackageToScope(p._com))
 
     def add_text_element(self, text: str) -> None:
         """Adds a text element to the file.
@@ -204,7 +189,7 @@ class RPFile(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPFile::addTextElement(java.lang.String text)
         """
-        raise NotImplementedError
+        self.call_com(lambda: self._com.addTextElement(text))
 
     def add_to_scope(self, element: "RPClassifier") -> None:
         """Adds an element to the scope of the file.
@@ -218,7 +203,7 @@ class RPFile(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPFile::addToScope(com.telelogic.rhapsody.core.IRPClassifier element)
         """
-        raise NotImplementedError
+        self.call_com(lambda: self._com.addToScope(element._com))
 
     def get_elements(self) -> "RPCollection":
         """Gets the elements property.
@@ -232,7 +217,7 @@ class RPFile(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPFile::getElements()
         """
-        raise NotImplementedError
+        return RPCollection(self._get_method_or_property(self._com, "getElements", "elements"))
 
     def get_file_fragments(self) -> "RPCollection":
         """Gets the fileFragments property.
@@ -246,7 +231,7 @@ class RPFile(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPFile::getFileFragments()
         """
-        raise NotImplementedError
+        return RPCollection(self._get_method_or_property(self._com, "getFileFragments", "fileFragments"))
 
     def get_file_type(self) -> str:
         """Gets the fileType property.
@@ -260,7 +245,7 @@ class RPFile(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPFile::getFileType()
         """
-        raise NotImplementedError
+        return str(self._get_method_or_property(self._com, "getFileType", "fileType"))
 
     def get_files(self) -> "RPCollection":
         """Gets the files property.
@@ -274,7 +259,7 @@ class RPFile(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPFile::getFiles()
         """
-        raise NotImplementedError
+        return RPCollection(self._get_method_or_property(self._com, "getFiles", "files"))
 
     def get_imp_name(self, including_path: int) -> str:
         """Gets the implementation name.
@@ -291,7 +276,7 @@ class RPFile(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPFile::getImpName(int includingPath)
         """
-        raise NotImplementedError
+        return str(self.call_com(lambda: self._com.getImpName(including_path)))
 
     def get_path(self, full_path: int) -> str:
         """Gets the path property.
@@ -308,7 +293,7 @@ class RPFile(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPFile::getPath(int fullPath)
         """
-        raise NotImplementedError
+        return str(self.call_com(lambda: self._com.getPath(full_path)))
 
     def get_spec_name(self, including_path: int) -> str:
         """Gets the specification name.
@@ -325,7 +310,7 @@ class RPFile(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPFile::getSpecName(int includingPath)
         """
-        raise NotImplementedError
+        return str(self.call_com(lambda: self._com.getSpecName(including_path)))
 
     def is_empty(self) -> int:
         """Checks whether the file is empty.
@@ -339,7 +324,7 @@ class RPFile(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPFile::isEmpty()
         """
-        raise NotImplementedError
+        return int(self.call_com(lambda: self._com.isEmpty()))
 
     def set_file_type(self, file_type: str) -> None:
         """Sets the fileType property.
@@ -353,7 +338,7 @@ class RPFile(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPFile::setFileType(java.lang.String fileType)
         """
-        raise NotImplementedError
+        self._set_method_or_property(self._com, "setFileType", "fileType", file_type)
 
     def set_path(self, path: str) -> None:
         """Sets the path property.
@@ -367,18 +352,18 @@ class RPFile(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPFile::setPath(java.lang.String path)
         """
-        raise NotImplementedError
+        self._set_method_or_property(self._com, "setPath", "path", path)
 
 
 class RPFileFragment(RPModelElement):
     """Wraps ``IRPFileFragment``."""
 
     # IRPFileFragment method parity checklist:
-    # [ ] getFragmentElement           [ ] impl  [ ] docstring  [ ] test
-    # [ ] getFragmentText              [ ] impl  [ ] docstring  [ ] test
-    # [ ] getFragmentType              [ ] impl  [ ] docstring  [ ] test
-    # [ ] moveFragmentInOwner          [ ] impl  [ ] docstring  [ ] test
-    # [ ] setFragmentText              [ ] impl  [ ] docstring  [ ] test
+    # [x] getFragmentElement           [x] impl  [x] docstring  [x] test
+    # [x] getFragmentText              [x] impl  [x] docstring  [x] test
+    # [x] getFragmentType              [x] impl  [x] docstring  [x] test
+    # [x] moveFragmentInOwner          [x] impl  [x] docstring  [x] test
+    # [x] setFragmentText              [x] impl  [x] docstring  [x] test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPFileFragment methods.
 
@@ -394,7 +379,7 @@ class RPFileFragment(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPFileFragment::getFragmentElement()
         """
-        raise NotImplementedError
+        return AbstractRPModelElement.wrap(self._get_method_or_property(self._com, "getFragmentElement", "fragmentElement"))
 
     def get_fragment_text(self) -> str:
         """Gets the fragmentText property.
@@ -408,7 +393,7 @@ class RPFileFragment(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPFileFragment::getFragmentText()
         """
-        raise NotImplementedError
+        return str(self._get_method_or_property(self._com, "getFragmentText", "fragmentText"))
 
     def get_fragment_type(self) -> str:
         """Gets the fragmentType property.
@@ -422,7 +407,7 @@ class RPFileFragment(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPFileFragment::getFragmentType()
         """
-        raise NotImplementedError
+        return str(self._get_method_or_property(self._com, "getFragmentType", "fragmentType"))
 
     def move_fragment_in_owner(self, up: int) -> None:
         """Moves the fragment within its owner.
@@ -436,7 +421,7 @@ class RPFileFragment(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPFileFragment::moveFragmentInOwner(int up)
         """
-        raise NotImplementedError
+        self.call_com(lambda: self._com.moveFragmentInOwner(up))
 
     def set_fragment_text(self, fragment_text: str) -> None:
         """Sets the fragmentText property.
@@ -450,4 +435,4 @@ class RPFileFragment(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPFileFragment::setFragmentText(java.lang.String fragmentText)
         """
-        raise NotImplementedError
+        self._set_method_or_property(self._com, "setFragmentText", "fragmentText", fragment_text)
