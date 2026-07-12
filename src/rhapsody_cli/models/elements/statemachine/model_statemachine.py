@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.elements.activity.model_actions import RPAction, RPSendAction
     from rhapsody_cli.models.elements.activity.model_activity import RPSwimlane
     from rhapsody_cli.models.elements.graphics.model_graphics import RPConnector
-    from rhapsody_cli.models.elements.model_interactions import RPTransition
+    from rhapsody_cli.models.elements.interactions.model_interactions import RPTransition
 
 
 class RPStateVertex(RPModelElement):

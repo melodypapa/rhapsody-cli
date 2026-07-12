@@ -5,7 +5,7 @@ from rhapsody_cli.models.elements import containment as containment  # noqa: F40
 from rhapsody_cli.models.elements import activity as activity  # noqa: F401
 from rhapsody_cli.models.elements import diagrams as diagrams  # noqa: F401
 from rhapsody_cli.models.elements import graphics as graphics  # noqa: F401
-from rhapsody_cli.models.elements import model_interactions as interactions  # noqa: F401
+from rhapsody_cli.models.elements import interactions as interactions  # noqa: F401
 from rhapsody_cli.models.elements import model_misc as misc  # noqa: F401
 from rhapsody_cli.models.elements import model_other_model as other_model  # noqa: F401
 from rhapsody_cli.models.elements import model_requirements as requirements  # noqa: F401
