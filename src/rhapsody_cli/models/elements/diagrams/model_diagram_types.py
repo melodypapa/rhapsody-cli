@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING
 
-from rhapsody_cli.models.elements.model_diagrams import RPDiagram
+from rhapsody_cli.models.elements.diagrams.model_diagrams import RPDiagram
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.core import RPCollection

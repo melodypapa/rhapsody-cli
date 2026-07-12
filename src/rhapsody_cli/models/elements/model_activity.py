@@ -15,7 +15,7 @@ if TYPE_CHECKING:
         RPAcceptTimeEvent,
         RPCallOperation,
     )
-    from rhapsody_cli.models.elements.model_diagram_types import RPActivityDiagram
+    from rhapsody_cli.models.elements.diagrams.model_diagram_types import RPActivityDiagram
     from rhapsody_cli.models.elements.model_graphics import RPPin
     from rhapsody_cli.models.elements.model_other_model import RPSysMLPort
     from rhapsody_cli.models.elements.relations.model_instance import RPInstance

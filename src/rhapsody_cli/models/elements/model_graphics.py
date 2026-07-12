@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.core import RPCollection
     from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
     from rhapsody_cli.models.elements.model_activity import RPFlow, RPSwimlane
-    from rhapsody_cli.models.elements.model_diagrams import RPDiagram
+    from rhapsody_cli.models.elements.diagrams.model_diagrams import RPDiagram
     from rhapsody_cli.models.elements.model_interactions import (
         RPInteractionOccurrence,
         RPInteractionOperator,
