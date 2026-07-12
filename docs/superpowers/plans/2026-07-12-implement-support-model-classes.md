@@ -2275,7 +2275,7 @@ git commit -m "feat(support): implement RPowTextListener methods with tests"
 ```
 
 
-## Task 15: Implement `RPBaseExternalCodeGeneratorTool` (codegen)
+## Task 15: Implement `RPBaseExternalCodeGeneratorTool` (codegen)  `[x]`
 
 
 **Files:**
@@ -4784,3 +4784,12 @@ git commit -m "feat(support): implement RPExternalCodeGeneratorInvoker methods w
 4. **Green-state rule:** Each Task is independently testable (red test → green impl → checklist flip → commit). `get_interface_name` is handled once as an inherited duplicate (deleted + checklist marked inherited), not re-implemented.
 
 5. **Registry safety:** No `register_wrapper` calls are added or removed; the support `__init__.py` and `elements/__init__.py` are untouched, so the wrapper registry stays exactly as-is.
+
+## Commit Log
+
+| Commit | Date | Description |
+|--------|------|-------------|
+| `b664e95` | 2026-07-12 | Base commit — stub files read, `tests/unit/models/support/__init__.py` created, pre-flight |
+| `cfe079f` | 2026-07-12 | Tasks 1-4 — `RPASCIIFile`, `RPControlledFile`, `RPFile`, `RPFileFragment` (26 tests) |
+| `9ea1b76` | 2026-07-12 | Tasks 5-14 — `RPAXViewCtrl`, `RPExternalIDERegistry`, `RPInternalOEMPlugin`, `RPJavaPlugins`, `RPPlugInWindow`, `RPProgressBar`, `RPSelection`, `RPowListListener`, `RPowPaneMgr`, `RPowTextListener` (45 tests) |
+| `010a065` | 2026-07-12 | Tasks 15-27 — all 13 codegen classes (96 tests) |
