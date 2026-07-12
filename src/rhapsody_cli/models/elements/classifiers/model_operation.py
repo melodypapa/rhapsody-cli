@@ -1,9 +1,12 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPOperation``."""
 
-from typing import Any
+from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.classifiers.model_interface_item import RPInterfaceItem
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
 
 
 class RPOperation(RPInterfaceItem):
@@ -89,7 +92,7 @@ class RPOperation(RPInterfaceItem):
         """
         return bool(AbstractRPModelElement._get_method_or_property(self._com, "getIsVirtual", "isVirtual"))
 
-    def getReturns(self) -> Any:
+    def getReturns(self) -> "RPClassifier":
         """Returns the type specification for the operation's return value.
 
         Returns:
@@ -98,7 +101,7 @@ class RPOperation(RPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::getReturns()
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getReturns", "returns"))
+        return cast("RPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getReturns", "returns")))
 
     def getReturnTypeDeclaration(self) -> str:
         """Returns the on-the-fly return type declaration for the operation.
@@ -119,7 +122,7 @@ class RPOperation(RPInterfaceItem):
         """
         AbstractRPModelElement.call_com(lambda: self._com.createAutoFlowChart())
 
-    def setReturns(self, returns: Any) -> None:
+    def setReturns(self, returns: "RPClassifier") -> None:
         """Sets the return type of the operation to an existing classifier.
 
         Args:

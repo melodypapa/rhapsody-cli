@@ -1,8 +1,12 @@
 """Values model-element wrappers (auto-generated stubs)."""
 
-from typing import Any
+from typing import TYPE_CHECKING
 
 from rhapsody_cli.models.core import RPModelElement
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
 
 
 class RPInstanceSlot(RPModelElement):
@@ -17,7 +21,7 @@ class RPInstanceSlot(RPModelElement):
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPInstanceSlot methods.
 
-    def add_element_value(self, val: "RPModelElement") -> Any:
+    def add_element_value(self, val: "RPModelElement") -> "RPInstanceValue":
         """Adds an element value to this instance slot.
 
         Args:
@@ -34,7 +38,7 @@ class RPInstanceSlot(RPModelElement):
         """
         raise NotImplementedError
 
-    def add_string_value(self, val: str) -> Any:
+    def add_string_value(self, val: str) -> "RPLiteralSpecification":
         """Adds a string value to this instance slot.
 
         Args:
@@ -51,7 +55,7 @@ class RPInstanceSlot(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_slot_property(self) -> Any:
+    def get_slot_property(self) -> "RPModelElement":
         """Returns the slot property of this instance slot.
 
         Returns:
@@ -107,7 +111,7 @@ class RPInstanceSpecification(RPModelElement):
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPInstanceSpecification methods.
 
-    def add_instance_slot(self, name: str, slot_property: "RPModelElement") -> Any:
+    def add_instance_slot(self, name: str, slot_property: "RPModelElement") -> "RPInstanceSlot":
         """Adds a new instance slot for the specified property of the classifier.
 
         Args:
@@ -126,7 +130,7 @@ class RPInstanceSpecification(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_classifier(self) -> Any:
+    def get_classifier(self) -> "RPClassifier":
         """Returns the classifier of this instance specification.
 
         Returns:
@@ -199,7 +203,11 @@ class RPInstanceSpecification(RPModelElement):
 
 
 class RPValueSpecification(RPModelElement):
-    """Wraps ``IRPValueSpecification``: represents the UML concept of "value specification" and serves as the base interface for IRPContextSpecification, IRPInstanceValue, and IRPLiteralSpecification."""
+    """Wraps ``IRPValueSpecification``: represents the UML concept of "value specification".
+
+    Serves as the base interface for IRPContextSpecification,
+    IRPInstanceValue, and IRPLiteralSpecification.
+    """
 
     # IRPValueSpecification method parity checklist:
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
@@ -218,7 +226,7 @@ class RPInstanceValue(RPValueSpecification):
     # [inherited] IRPValueSpecification methods (covered by RPValueSpecification checklist)
     # No deprecated IRPInstanceValue methods.
 
-    def get_value(self) -> Any:
+    def get_value(self) -> "RPModelElement":
         """Returns the stored value.
 
         Returns:

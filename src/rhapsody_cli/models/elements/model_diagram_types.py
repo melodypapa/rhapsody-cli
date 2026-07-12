@@ -1,8 +1,15 @@
 """Diagram Types model-element wrappers (auto-generated stubs)."""
 
-from typing import Any
+from typing import TYPE_CHECKING
 
 from rhapsody_cli.models.elements.model_diagrams import RPDiagram
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.elements.classifiers.model_statechart import RPStatechart
+    from rhapsody_cli.models.elements.containment.model_collaboration import RPCollaboration
+    from rhapsody_cli.models.elements.model_activity import RPFlowchart
+    from rhapsody_cli.models.elements.model_graphics import RPGraphElement, RPGraphNode
 
 
 class RPCollaborationDiagram(RPDiagram):
@@ -15,7 +22,7 @@ class RPCollaborationDiagram(RPDiagram):
     # [inherited] IRPUnit methods (covered by RPUnit checklist)
     # No deprecated IRPCollaborationDiagram methods.
 
-    def get_logical_collaboration(self) -> Any:
+    def get_logical_collaboration(self) -> "RPCollaboration":
         """Returns the collaboration object underlying the collaboration diagram.
 
         Returns:
@@ -86,7 +93,7 @@ class RPSequenceDiagram(RPDiagram):
     # [inherited] IRPUnit methods (covered by RPUnit checklist)
     # No deprecated IRPSequenceDiagram methods.
 
-    def get_logical_collaboration(self) -> Any:
+    def get_logical_collaboration(self) -> "RPCollaboration":
         """Returns the collaboration object underlying the sequence diagram.
 
         Returns:
@@ -138,7 +145,10 @@ class RPStatechartDiagram(RPDiagram):
             A collection of the new orthogonal states created.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPStatechartDiagram::addAndLine(com.telelogic.rhapsody.core.IRPGraphNode sourceState, int xStartPosition, int yStartPosition, int xEndPosition, int yEndPosition)
+            com.telelogic.rhapsody.core.IRPStatechartDiagram::addAndLine(
+                com.telelogic.rhapsody.core.IRPGraphNode sourceState,
+                int xStartPosition, int yStartPosition,
+                int xEndPosition, int yEndPosition)
         """
         raise NotImplementedError
 
@@ -156,7 +166,7 @@ class RPStatechartDiagram(RPDiagram):
         """
         raise NotImplementedError
 
-    def get_statechart(self) -> Any:
+    def get_statechart(self) -> "RPStatechart":
         """Returns the statechart object underlying the statechart diagram.
 
         Returns:
@@ -263,7 +273,7 @@ class RPActivityDiagram(RPStatechartDiagram):
         """
         raise NotImplementedError
 
-    def get_flowchart(self) -> Any:
+    def get_flowchart(self) -> "RPFlowchart":
         """Returns the flowchart object underlying the activity diagram.
 
         Returns:

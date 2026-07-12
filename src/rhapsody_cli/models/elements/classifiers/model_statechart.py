@@ -1,9 +1,12 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPStatechart``."""
 
-from typing import Any
+from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 from rhapsody_cli.models.elements.classifiers.model_class import RPClass
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.elements.model_graphics import RPGraphNode
 
 
 class RPStatechart(RPClass):
@@ -45,7 +48,7 @@ class RPStatechart(RPClass):
     # [inherited] IRPClass / IRPClassifier / IRPUnit / IRPModelElement methods (covered by RPClass / RPClassifier / RPUnit / RPModelElement checklists)
     # No deprecated IRPStatechart methods.
 
-    def addNewNodeByType(self, meta_type: str, x_position: int, y_position: int, width: int, height: int) -> Any:
+    def addNewNodeByType(self, meta_type: str, x_position: int, y_position: int, width: int, height: int) -> "RPGraphNode":
         """Adds a statechart element of the specified type to the statechart.
 
         The element is placed at the given position with the given dimensions.
@@ -67,7 +70,7 @@ class RPStatechart(RPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::addNewNodeByType(java.lang.String metaType, int xPosition, int yPosition, int nWidth, int nHeight)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewNodeByType(meta_type, x_position, y_position, width, height)))
+        return cast("RPGraphNode", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewNodeByType(meta_type, x_position, y_position, width, height))))
 
     def createGraphics(self) -> None:
         """Creates the graphical representation of the statechart's elements.

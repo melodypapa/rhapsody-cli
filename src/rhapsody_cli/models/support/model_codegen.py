@@ -1,8 +1,17 @@
 """Codegen model-element wrappers (auto-generated stubs)."""
 
-from typing import Any
+from typing import TYPE_CHECKING
 
 from rhapsody_cli.models.core import RPModelElement
+
+if TYPE_CHECKING:
+    from rhapsody_cli.application import RhapsodyApplication
+    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.elements.classifiers.model_stereotype import RPStereotype
+    from rhapsody_cli.models.elements.containment.model_package import RPPackage
+    from rhapsody_cli.models.elements.model_diagram_types import RPSequenceDiagram
+    from rhapsody_cli.models.elements.model_diagrams import RPDiagram
+    from rhapsody_cli.models.elements.model_graphics import RPMatrixView, RPTableLayout, RPTableView
 
 
 class RPBaseExternalCodeGeneratorTool(RPModelElement):
@@ -253,7 +262,10 @@ class RPDiagSynthAPI(RPModelElement):
             RhapsodyRuntimeException: If an error occurs in the Rhapsody API.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPDiagSynthAPI::sendMessage(long pTestedSD, java.lang.String source, java.lang.String target, java.lang.String event, java.lang.String operation, java.lang.String type)
+            com.telelogic.rhapsody.core.IRPDiagSynthAPI::sendMessage(
+                long pTestedSD, java.lang.String source,
+                java.lang.String target, java.lang.String event,
+                java.lang.String operation, java.lang.String type)
         """
         raise NotImplementedError
 
@@ -379,7 +391,7 @@ class RPRhapsodyServer(RPModelElement):
     # [ ] initializeApplication        [ ] impl  [ ] docstring  [ ] test
     # No deprecated IRPRhapsodyServer methods.
 
-    def get_application(self) -> Any:
+    def get_application(self) -> "RhapsodyApplication":
         """Returns the Rhapsody application.
 
         Returns:
@@ -393,7 +405,7 @@ class RPRhapsodyServer(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_hidden_application(self) -> Any:
+    def get_hidden_application(self) -> "RhapsodyApplication":
         """Returns a hidden Rhapsody application instance.
 
         Returns:
@@ -421,7 +433,7 @@ class RPRhapsodyServer(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_uninitialized_application(self) -> Any:
+    def get_uninitialized_application(self) -> "RhapsodyApplication":
         """Returns an uninitialized Rhapsody application instance.
 
         Returns:
@@ -435,7 +447,7 @@ class RPRhapsodyServer(RPModelElement):
         """
         raise NotImplementedError
 
-    def initialize_application(self, p_val: "RPApplication") -> None:
+    def initialize_application(self, p_val: "RhapsodyApplication") -> None:
         """Initializes the Rhapsody application.
 
         Args:
@@ -502,7 +514,7 @@ class RPSearchManager(RPModelElement):
     # [ ] getInterfaceName             [ ] impl  [ ] docstring  [ ] test
     # No deprecated IRPSearchManager methods.
 
-    def create_search_query(self) -> Any:
+    def create_search_query(self) -> "RPSearchQuery":
         """Creates a search query object.
 
         Returns:
@@ -1070,7 +1082,7 @@ class RPSearchQuery(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_view(self, index: int) -> Any:
+    def get_view(self, index: int) -> "RPModelElement":
         """Retrieves the specified item from the list of tables, matrices, and
         diagrams that are to be searched.
 
@@ -1254,7 +1266,7 @@ class RPSearchQuery(RPModelElement):
         """
         raise NotImplementedError
 
-    def save_as_query(self, query_owner: "RPPackage") -> Any:
+    def save_as_query(self, query_owner: "RPPackage") -> "RPTableLayout":
         """Saves the search query object that you defined as a query in your
         model.
 
@@ -1273,7 +1285,16 @@ class RPSearchQuery(RPModelElement):
         """
         raise NotImplementedError
 
-    def set_filter_reference(self, quantity_operator: str, number_of_references: int, relation_kind: str, type_of_referenced_elements: str, stereotype_of_referenced_elements: str, name_of_referenced_elements: str, include_referenced_elements_in_search_results: int) -> None:
+    def set_filter_reference(
+        self,
+        quantity_operator: str,
+        number_of_references: int,
+        relation_kind: str,
+        type_of_referenced_elements: str,
+        stereotype_of_referenced_elements: str,
+        name_of_referenced_elements: str,
+        include_referenced_elements_in_search_results: int,
+    ) -> None:
         """Sets criteria for the search based on an element's references.
 
         Args:
@@ -1293,7 +1314,13 @@ class RPSearchQuery(RPModelElement):
                 referenced elements in search results, 0 otherwise.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPSearchQuery::setFilterReference(java.lang.String quantityOperator, int numberOfReferences, java.lang.String relationKind, java.lang.String typeOfReferencedElements, java.lang.String stereotypeOfReferencedElements, java.lang.String nameOfReferencedElements, int includeReferencedElementsInSearchResults)
+            com.telelogic.rhapsody.core.IRPSearchQuery::setFilterReference(
+                java.lang.String quantityOperator, int numberOfReferences,
+                java.lang.String relationKind,
+                java.lang.String typeOfReferencedElements,
+                java.lang.String stereotypeOfReferencedElements,
+                java.lang.String nameOfReferencedElements,
+                int includeReferencedElementsInSearchResults)
         """
         raise NotImplementedError
 
@@ -1467,7 +1494,7 @@ class RPSearchQuery(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_search_scope_object(self) -> Any:
+    def get_search_scope_object(self) -> "RPModelElement":
         """Returns the scope specified for the search.
 
         Deprecated. Use get_search_scope_elements instead, as Rhapsody now
@@ -1783,7 +1810,7 @@ class RPSearchResult(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_matched_object(self) -> Any:
+    def get_matched_object(self) -> "RPModelElement":
         """Returns the property matchedObject.
 
         Returns:

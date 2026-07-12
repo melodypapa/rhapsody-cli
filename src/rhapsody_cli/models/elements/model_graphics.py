@@ -1,10 +1,29 @@
 """Graphics model-element wrappers (auto-generated stubs)."""
 
-from typing import Any
+from typing import TYPE_CHECKING
 
 from rhapsody_cli.models.core import RPModelElement, RPUnit
 from rhapsody_cli.models.elements.model_interactions import RPMessage
 from rhapsody_cli.models.elements.model_statemachine import RPStateVertex
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
+    from rhapsody_cli.models.elements.model_activity import RPFlow, RPSwimlane
+    from rhapsody_cli.models.elements.model_diagrams import RPDiagram
+    from rhapsody_cli.models.elements.model_interactions import (
+        RPInteractionOccurrence,
+        RPInteractionOperator,
+        RPTransition,
+    )
+    from rhapsody_cli.models.elements.model_other_model import (
+        RPClassifierRole,
+        RPSysMLPort,
+    )
+    from rhapsody_cli.models.elements.model_statemachine import RPState
+    from rhapsody_cli.models.elements.relations.model_instance import RPInstance
+    from rhapsody_cli.models.elements.relations.model_port import RPPort
+    from rhapsody_cli.models.elements.relations.model_relation import RPRelation
 
 
 class RPConditionMark(RPMessage):
@@ -19,7 +38,11 @@ class RPConditionMark(RPMessage):
 
 
 class RPConnector(RPStateVertex):
-    """Wraps ``IRPConnector``: represents the characteristics shared by the various types of connector elements that can be included in a statechart, such as condition connectors, history connectors, join sync bar connectors, and fork sync bar connectors."""
+    """Wraps ``IRPConnector``: represents connector elements in a statechart.
+
+    Includes condition connectors, history connectors, join sync bar connectors,
+    and fork sync bar connectors.
+    """
 
     # IRPConnector method parity checklist:
     # [ ] createDefaultTransition      [ ] impl  [ ] docstring  [ ] test
@@ -42,7 +65,7 @@ class RPConnector(RPStateVertex):
     # [inherited] IRPStateVertex methods (covered by RPStateVertex checklist)
     # No deprecated IRPConnector methods.
 
-    def create_default_transition(self, from_: "RPState") -> Any:
+    def create_default_transition(self, from_: "RPState") -> "RPTransition":
         """Creates a default transition leading to this connector, within the state specified.
 
         Args:
@@ -80,7 +103,7 @@ class RPConnector(RPStateVertex):
         """
         raise NotImplementedError
 
-    def get_derived_out_edge(self) -> Any:
+    def get_derived_out_edge(self) -> "RPTransition":
         """Returns the transition exiting the connector.
 
         Returns:
@@ -91,7 +114,7 @@ class RPConnector(RPStateVertex):
         """
         raise NotImplementedError
 
-    def get_its_swimlane(self) -> Any:
+    def get_its_swimlane(self) -> "RPSwimlane":
         """For connectors in a swimlane, returns the swimlane that contains the connector.
 
         Returns:
@@ -102,7 +125,7 @@ class RPConnector(RPStateVertex):
         """
         raise NotImplementedError
 
-    def get_of_state(self) -> Any:
+    def get_of_state(self) -> "RPState":
         """For history connectors, returns the state that the history connector belongs to.
 
         Returns:
@@ -322,7 +345,7 @@ class RPGraphElement(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_diagram(self) -> Any:
+    def get_diagram(self) -> "RPDiagram":
         """Returns the diagram that contains this graph element.
 
         Returns:
@@ -336,7 +359,7 @@ class RPGraphElement(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_graphical_parent(self) -> Any:
+    def get_graphical_parent(self) -> "RPGraphElement":
         """Returns the graphical parent of this graph element.
 
         Returns:
@@ -350,7 +373,7 @@ class RPGraphElement(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_graphical_property(self, name: str) -> Any:
+    def get_graphical_property(self, name: str) -> "RPGraphicalProperty":
         """Returns the specified graphical property of this graph element.
 
         Args:
@@ -367,7 +390,7 @@ class RPGraphElement(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_graphical_property_of_text(self, text_name: str, name: str) -> Any:
+    def get_graphical_property_of_text(self, text_name: str, name: str) -> "RPGraphicalProperty":
         """Returns the specified graphical property for a textual element associated with the graphic element.
 
         Args:
@@ -425,7 +448,7 @@ class RPGraphElement(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_model_object(self) -> Any:
+    def get_model_object(self) -> "RPModelElement":
         """Returns the model object associated with this graph element.
 
         Returns:
@@ -808,7 +831,7 @@ class RPLink(RPUnit):
         """
         raise NotImplementedError
 
-    def get_from(self) -> Any:
+    def get_from(self) -> "RPInstance":
         """Returns the source instance of this link.
 
         Returns:
@@ -822,7 +845,7 @@ class RPLink(RPUnit):
         """
         raise NotImplementedError
 
-    def get_from_element(self) -> Any:
+    def get_from_element(self) -> "RPModelElement":
         """Returns the source element of this link.
 
         Returns:
@@ -836,7 +859,7 @@ class RPLink(RPUnit):
         """
         raise NotImplementedError
 
-    def get_from_port(self) -> Any:
+    def get_from_port(self) -> "RPPort":
         """Returns the source port of this link.
 
         Returns:
@@ -850,7 +873,7 @@ class RPLink(RPUnit):
         """
         raise NotImplementedError
 
-    def get_from_sys_m_l_port(self) -> Any:
+    def get_from_sys_m_l_port(self) -> "RPSysMLPort":
         """Returns the source SysML port of this link.
 
         Returns:
@@ -864,7 +887,7 @@ class RPLink(RPUnit):
         """
         raise NotImplementedError
 
-    def get_instantiates(self) -> Any:
+    def get_instantiates(self) -> "RPRelation":
         """Returns the relation that this link instantiates.
 
         Returns:
@@ -878,7 +901,7 @@ class RPLink(RPUnit):
         """
         raise NotImplementedError
 
-    def get_other(self) -> Any:
+    def get_other(self) -> "RPLink":
         """Returns the other link in a bidirectional relationship.
 
         Returns:
@@ -892,7 +915,7 @@ class RPLink(RPUnit):
         """
         raise NotImplementedError
 
-    def get_to(self) -> Any:
+    def get_to(self) -> "RPInstance":
         """Returns the target of a link.
 
         Returns:
@@ -903,7 +926,7 @@ class RPLink(RPUnit):
         """
         raise NotImplementedError
 
-    def get_to_element(self) -> Any:
+    def get_to_element(self) -> "RPModelElement":
         """Returns the target element of this link.
 
         Returns:
@@ -917,7 +940,7 @@ class RPLink(RPUnit):
         """
         raise NotImplementedError
 
-    def get_to_port(self) -> Any:
+    def get_to_port(self) -> "RPPort":
         """Returns the port through which a link reaches a target object.
 
         Returns:
@@ -928,7 +951,7 @@ class RPLink(RPUnit):
         """
         raise NotImplementedError
 
-    def get_to_sys_m_l_port(self) -> Any:
+    def get_to_sys_m_l_port(self) -> "RPSysMLPort":
         """Returns the target SysML port of this link.
 
         Returns:
@@ -1058,7 +1081,7 @@ class RPMatrixLayout(RPUnit):
         """
         raise NotImplementedError
 
-    def get_from_element_types_query_to_use(self) -> Any:
+    def get_from_element_types_query_to_use(self) -> "RPTableLayout":
         """Returns the query that was specified to determine the "from" element types.
 
         Returns:
@@ -1094,7 +1117,7 @@ class RPMatrixLayout(RPUnit):
         """
         raise NotImplementedError
 
-    def get_to_element_types_query_to_use(self) -> Any:
+    def get_to_element_types_query_to_use(self) -> "RPTableLayout":
         """Returns the query that was specified to determine the "to" element types.
 
         Returns:
@@ -1348,7 +1371,7 @@ class RPMatrixView(RPUnit):
         """
         raise NotImplementedError
 
-    def get_its_matrix_layout(self) -> Any:
+    def get_its_matrix_layout(self) -> "RPMatrixLayout":
         """Returns the matrix layout used by this matrix view.
 
         Returns:
@@ -1529,7 +1552,7 @@ class RPMessagePoint(RPModelElement):
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPMessagePoint methods.
 
-    def get_classifier_role(self) -> Any:
+    def get_classifier_role(self) -> "RPClassifierRole":
         """Returns the classifier role associated with this message point.
 
         Returns:
@@ -1543,7 +1566,7 @@ class RPMessagePoint(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_interaction_occurrence(self) -> Any:
+    def get_interaction_occurrence(self) -> "RPInteractionOccurrence":
         """Returns the interaction occurrence associated with this message point.
 
         Returns:
@@ -1557,7 +1580,7 @@ class RPMessagePoint(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_interaction_operator(self) -> Any:
+    def get_interaction_operator(self) -> "RPInteractionOperator":
         """Returns the interaction operator associated with this message point.
 
         Returns:
@@ -1571,7 +1594,7 @@ class RPMessagePoint(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_message(self) -> Any:
+    def get_message(self) -> "RPMessage":
         """Returns the message associated with this message point.
 
         Returns:
@@ -1997,7 +2020,7 @@ class RPTableLayout(RPUnit):
         """
         raise NotImplementedError
 
-    def get_from_element_types_query_to_use(self) -> Any:
+    def get_from_element_types_query_to_use(self) -> "RPTableLayout":
         """Returns the query used to determine the "from" element types for "relation tables".
 
         Returns:
@@ -2063,7 +2086,7 @@ class RPTableLayout(RPUnit):
         """
         raise NotImplementedError
 
-    def get_to_element_types_query_to_use(self) -> Any:
+    def get_to_element_types_query_to_use(self) -> "RPTableLayout":
         """Returns the query used to determine the "to" element types for "relation tables".
 
         Returns:
@@ -2599,7 +2622,7 @@ class RPTableView(RPUnit):
         """
         raise NotImplementedError
 
-    def get_its_table_layout(self) -> Any:
+    def get_its_table_layout(self) -> "RPTableLayout":
         """Returns the table layout used by this table view.
 
         Returns:
@@ -2795,7 +2818,7 @@ class RPPin(RPConnector):
         """
         raise NotImplementedError
 
-    def get_pin_type(self) -> Any:
+    def get_pin_type(self) -> "RPClassifier":
         """Returns the type of the value held by the pin/parameter.
 
         Returns:
@@ -2855,7 +2878,7 @@ class RPGraphEdge(RPGraphElement):
     # [inherited] IRPGraphElement methods (covered by RPGraphElement checklist)
     # No deprecated IRPGraphEdge methods.
 
-    def embed_flow(self, flow: "RPFlow") -> Any:
+    def embed_flow(self, flow: "RPFlow") -> "RPGraphEdge":
         """Embeds the specified flow in this graph edge.
 
         Args:
@@ -2872,7 +2895,7 @@ class RPGraphEdge(RPGraphElement):
         """
         raise NotImplementedError
 
-    def embed_new_flow(self) -> Any:
+    def embed_new_flow(self) -> "RPGraphEdge":
         """Embeds a new flow in this graph edge.
 
         Returns:
@@ -2886,7 +2909,7 @@ class RPGraphEdge(RPGraphElement):
         """
         raise NotImplementedError
 
-    def get_containing_arrow(self) -> Any:
+    def get_containing_arrow(self) -> "RPGraphEdge":
         """Returns the containing arrow of this graph edge.
 
         Returns:
@@ -2900,7 +2923,7 @@ class RPGraphEdge(RPGraphElement):
         """
         raise NotImplementedError
 
-    def get_source(self) -> Any:
+    def get_source(self) -> "RPGraphElement":
         """Returns the source graph element of this graph edge.
 
         Returns:
@@ -2914,7 +2937,7 @@ class RPGraphEdge(RPGraphElement):
         """
         raise NotImplementedError
 
-    def get_target(self) -> Any:
+    def get_target(self) -> "RPGraphElement":
         """Returns the target graph element of this graph edge.
 
         Returns:

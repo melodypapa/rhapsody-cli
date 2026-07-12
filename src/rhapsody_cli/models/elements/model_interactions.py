@@ -1,10 +1,25 @@
 """Interactions model-element wrappers (auto-generated stubs)."""
 
-from typing import Any
+from typing import TYPE_CHECKING
 
 from rhapsody_cli.models.core import RPModelElement
 from rhapsody_cli.models.elements.classifiers.model_interface_item import RPInterfaceItem
 from rhapsody_cli.models.elements.containment.model_collaboration import RPCollaboration
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.elements.classifiers.model_statechart import RPStatechart
+    from rhapsody_cli.models.elements.model_actions import RPAction
+    from rhapsody_cli.models.elements.model_diagram_types import RPSequenceDiagram
+    from rhapsody_cli.models.elements.model_other_model import (
+        RPClassifierRole,
+        RPSysMLPort,
+    )
+    from rhapsody_cli.models.elements.model_statemachine import RPState, RPStateVertex
+    from rhapsody_cli.models.elements.relations.model_association_role import (
+        RPAssociationRole,
+    )
+    from rhapsody_cli.models.elements.relations.model_port import RPPort
 
 
 class RPEvent(RPInterfaceItem):
@@ -21,7 +36,7 @@ class RPEvent(RPInterfaceItem):
     # [inherited] IRPUnit methods (covered by RPUnit checklist)
     # No deprecated IRPEvent methods.
 
-    def get_base_event(self) -> Any:
+    def get_base_event(self) -> "RPEvent":
         """Returns the base event of this event.
 
         Returns:
@@ -35,7 +50,7 @@ class RPEvent(RPInterfaceItem):
         """
         raise NotImplementedError
 
-    def get_super_event(self) -> Any:
+    def get_super_event(self) -> "RPEvent":
         """Returns the super event of this event.
 
         Returns:
@@ -90,7 +105,7 @@ class RPEventReception(RPInterfaceItem):
     # [inherited] IRPUnit methods (covered by RPUnit checklist)
     # No deprecated IRPEventReception methods.
 
-    def get_event(self) -> Any:
+    def get_event(self) -> "RPEvent":
         """Returns the event associated with this event reception.
 
         Returns:
@@ -127,7 +142,7 @@ class RPExecutionOccurrence(RPModelElement):
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPExecutionOccurrence methods.
 
-    def get_message(self) -> Any:
+    def get_message(self) -> "RPMessage":
         """Returns the message associated with this execution occurrence.
 
         Returns:
@@ -204,7 +219,7 @@ class RPInteractionOccurrence(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_reference_sequence_diagram(self) -> Any:
+    def get_reference_sequence_diagram(self) -> "RPSequenceDiagram":
         """Returns the reference sequence diagram of this interaction occurrence.
 
         Returns:
@@ -374,7 +389,7 @@ class RPMessage(RPModelElement):
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPMessage methods.
 
-    def add_source_execution_occurrence(self) -> Any:
+    def add_source_execution_occurrence(self) -> "RPExecutionOccurrence":
         """Adds a source execution occurrence to this message.
 
         Returns:
@@ -388,7 +403,7 @@ class RPMessage(RPModelElement):
         """
         raise NotImplementedError
 
-    def add_target_execution_occurrence(self) -> Any:
+    def add_target_execution_occurrence(self) -> "RPExecutionOccurrence":
         """Adds a target execution occurrence to this message.
 
         Returns:
@@ -416,7 +431,7 @@ class RPMessage(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_communication_connection(self) -> Any:
+    def get_communication_connection(self) -> "RPAssociationRole":
         """Returns the communication connection of this message.
 
         Returns:
@@ -466,7 +481,7 @@ class RPMessage(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_flow_port(self) -> Any:
+    def get_flow_port(self) -> "RPSysMLPort":
         """Returns the flow port of this message.
 
         Returns:
@@ -480,7 +495,7 @@ class RPMessage(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_formal_interface_item(self) -> Any:
+    def get_formal_interface_item(self) -> "RPInterfaceItem":
         """Returns the formal interface item of this message.
 
         Returns:
@@ -494,7 +509,7 @@ class RPMessage(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_formal_type(self) -> Any:
+    def get_formal_type(self) -> "RPModelElement":
         """Returns the model element associated with an action block, condition
         mark, timeout, or canceled timeout, in a sequence diagram.
 
@@ -531,7 +546,7 @@ class RPMessage(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_port(self) -> Any:
+    def get_port(self) -> "RPPort":
         """Returns the port of this message.
 
         Returns:
@@ -587,7 +602,7 @@ class RPMessage(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_source(self) -> Any:
+    def get_source(self) -> "RPClassifierRole":
         """Returns the source classifier role of this message.
 
         Returns:
@@ -601,7 +616,7 @@ class RPMessage(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_source_execution_occurrence(self) -> Any:
+    def get_source_execution_occurrence(self) -> "RPExecutionOccurrence":
         """Returns the source execution occurrence of this message.
 
         Returns:
@@ -615,7 +630,7 @@ class RPMessage(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_target(self) -> Any:
+    def get_target(self) -> "RPClassifierRole":
         """Returns the target classifier role of this message.
 
         Returns:
@@ -629,7 +644,7 @@ class RPMessage(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_target_execution_occurrence(self) -> Any:
+    def get_target_execution_occurrence(self) -> "RPExecutionOccurrence":
         """Returns the target execution occurrence of this message.
 
         Returns:
@@ -876,7 +891,7 @@ class RPTransition(RPModelElement):
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPTransition methods.
 
-    def get_inherits_from(self) -> Any:
+    def get_inherits_from(self) -> "RPTransition":
         """For transitions inherited from a base statechart, returns the base
         transition from which this transition is derived.
 
@@ -907,7 +922,7 @@ class RPTransition(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_its_action(self) -> Any:
+    def get_its_action(self) -> "RPAction":
         """Returns the action that was set for the transition.
 
         Returns:
@@ -921,7 +936,7 @@ class RPTransition(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_its_guard(self) -> Any:
+    def get_its_guard(self) -> "RPGuard":
         """Returns the guard that was set for the transition.
 
         Returns:
@@ -952,7 +967,7 @@ class RPTransition(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_its_source(self) -> Any:
+    def get_its_source(self) -> "RPStateVertex":
         """Returns the state that is the source of the transition.
 
         Returns:
@@ -966,7 +981,7 @@ class RPTransition(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_its_statechart(self) -> Any:
+    def get_its_statechart(self) -> "RPStatechart":
         """Returns the statechart that the transition belongs to.
 
         Returns:
@@ -980,7 +995,7 @@ class RPTransition(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_its_target(self) -> Any:
+    def get_its_target(self) -> "RPStateVertex":
         """Returns the state that is the target of the transition.
 
         Returns:
@@ -994,7 +1009,7 @@ class RPTransition(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_its_trigger(self) -> Any:
+    def get_its_trigger(self) -> "RPTrigger":
         """Returns the trigger that was set for the transition.
 
         Returns:
@@ -1008,7 +1023,7 @@ class RPTransition(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_of_state(self) -> Any:
+    def get_of_state(self) -> "RPState":
         """For default transitions, returns the state where the transition
         originates. If called on a non-default transition, returns null.
 
@@ -1075,7 +1090,7 @@ class RPTransition(RPModelElement):
         """
         raise NotImplementedError
 
-    def reset_label_inheritance(self) -> Any:
+    def reset_label_inheritance(self) -> "RPTransition":
         """Restores inheritance from the base statechart for the three components
         that make up the transition label: trigger, guard, and action.
 
@@ -1090,7 +1105,7 @@ class RPTransition(RPModelElement):
         """
         raise NotImplementedError
 
-    def set_its_action(self, action: str) -> Any:
+    def set_its_action(self, action: str) -> "RPAction":
         """Sets the action for the transition.
 
         Args:
@@ -1108,7 +1123,7 @@ class RPTransition(RPModelElement):
         """
         raise NotImplementedError
 
-    def set_its_guard(self, guard: str) -> Any:
+    def set_its_guard(self, guard: str) -> "RPGuard":
         """Sets the guard for the transition.
 
         Args:
@@ -1196,7 +1211,7 @@ class RPTransition(RPModelElement):
         """
         raise NotImplementedError
 
-    def set_its_trigger(self, trigger: str) -> Any:
+    def set_its_trigger(self, trigger: str) -> "RPTrigger":
         """Sets the trigger for the transition.
 
         Args:
@@ -1253,7 +1268,7 @@ class RPTrigger(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_its_operation(self) -> Any:
+    def get_its_operation(self) -> "RPInterfaceItem":
         """Returns the operation associated with this trigger.
 
         Returns:

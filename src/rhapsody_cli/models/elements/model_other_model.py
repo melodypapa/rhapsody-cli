@@ -1,10 +1,18 @@
 """Other Model model-element wrappers (auto-generated stubs)."""
 
-from typing import Any
+from typing import TYPE_CHECKING
 
 from rhapsody_cli.models.core import RPModelElement
 from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
 from rhapsody_cli.models.elements.relations.model_instance import RPInstance
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.elements.containment.model_package import RPPackage
+    from rhapsody_cli.models.elements.model_diagram_types import RPSequenceDiagram
+    from rhapsody_cli.models.elements.model_graphics import RPLink
+    from rhapsody_cli.models.elements.model_misc import RPEnumerationLiteral
+    from rhapsody_cli.models.elements.relations.model_relation import RPRelation
 
 
 class RPClassifierRole(RPModelElement):
@@ -22,7 +30,7 @@ class RPClassifierRole(RPModelElement):
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPClassifierRole methods.
 
-    def get_formal_classifier(self) -> Any:
+    def get_formal_classifier(self) -> "RPClassifier":
         """Returns the classifier (for example, class or actor) that the lifeline realizes.
 
         Returns:
@@ -36,7 +44,7 @@ class RPClassifierRole(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_formal_instance(self) -> Any:
+    def get_formal_instance(self) -> "RPInstance":
         """Returns the object that is realized by the lifeline, for cases where a lifeline represents an object and not just a classifier.
 
         Returns:
@@ -50,7 +58,7 @@ class RPClassifierRole(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_referenced_sequence_diagram(self) -> Any:
+    def get_referenced_sequence_diagram(self) -> "RPSequenceDiagram":
         """Returns the sequence diagram referenced by the lifeline.
 
         Returns:
@@ -158,7 +166,7 @@ class RPSysMLPort(RPInstance):
     # [inherited] IRPUnit methods (covered by RPUnit checklist)
     # No deprecated IRPSysMLPort methods.
 
-    def add_link(self, from_part: "RPInstance", to_part: "RPInstance", assoc: "RPRelation", to_port: "RPSysMLPort", new_owner: "RPPackage") -> Any:
+    def add_link(self, from_part: "RPInstance", to_part: "RPInstance", assoc: "RPRelation", to_port: "RPSysMLPort", new_owner: "RPPackage") -> "RPLink":
         """Creates a link between flowports on two parts.
 
         Args:
@@ -176,7 +184,12 @@ class RPSysMLPort(RPInstance):
             RhapsodyRuntimeException: If an error occurs during the operation.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPSysMLPort::addLink(com.telelogic.rhapsody.core.IRPInstance fromPart, com.telelogic.rhapsody.core.IRPInstance toPart, com.telelogic.rhapsody.core.IRPRelation assoc, com.telelogic.rhapsody.core.IRPSysMLPort toPort, com.telelogic.rhapsody.core.IRPPackage newOwner)
+            com.telelogic.rhapsody.core.IRPSysMLPort::addLink(
+                com.telelogic.rhapsody.core.IRPInstance fromPart,
+                com.telelogic.rhapsody.core.IRPInstance toPart,
+                com.telelogic.rhapsody.core.IRPRelation assoc,
+                com.telelogic.rhapsody.core.IRPSysMLPort toPort,
+                com.telelogic.rhapsody.core.IRPPackage newOwner)
         """
         raise NotImplementedError
 
@@ -209,7 +222,7 @@ class RPSysMLPort(RPInstance):
         """
         raise NotImplementedError
 
-    def get_type(self) -> Any:
+    def get_type(self) -> "RPClassifier":
         """Returns the type that was specified for the flowport.
 
         Returns:
@@ -312,7 +325,7 @@ class RPType(RPClassifier):
     # [inherited] IRPUnit methods (covered by RPUnit checklist)
     # No deprecated IRPType methods.
 
-    def add_enumeration_literal(self, name: str) -> Any:
+    def add_enumeration_literal(self, name: str) -> "RPEnumerationLiteral":
         """Adds an enumeration literal with the specified name to this type.
 
         Args:
@@ -455,7 +468,7 @@ class RPType(RPClassifier):
         """
         raise NotImplementedError
 
-    def get_typedef_base_type(self) -> Any:
+    def get_typedef_base_type(self) -> "RPClassifier":
         """Returns the base type of the typedef.
 
         Returns:

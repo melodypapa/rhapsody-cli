@@ -1,11 +1,17 @@
 """Actions model-element wrappers (auto-generated stubs)."""
 
-from typing import Any
+from typing import TYPE_CHECKING
 
 from rhapsody_cli.models.core import RPModelElement
 from rhapsody_cli.models.elements.model_interactions import RPMessage
 from rhapsody_cli.models.elements.model_statemachine import RPState
 from rhapsody_cli.models.elements.model_values import RPValueSpecification
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.elements.classifiers.model_interface_item import RPInterfaceItem
+    from rhapsody_cli.models.elements.model_interactions import RPEvent
+    from rhapsody_cli.models.elements.relations.model_relation import RPRelation
 
 
 class RPAcceptEventAction(RPState):
@@ -19,7 +25,7 @@ class RPAcceptEventAction(RPState):
     # [inherited] IRPStateVertex methods (covered by RPStateVertex checklist)
     # No deprecated IRPAcceptEventAction methods.
 
-    def get_event(self) -> Any:
+    def get_event(self) -> "RPEvent":
         """Returns the event that the action waits for.
 
         Returns:
@@ -132,7 +138,7 @@ class RPCallOperation(RPState):
     # [inherited] IRPStateVertex methods (covered by RPStateVertex checklist)
     # No deprecated IRPCallOperation methods.
 
-    def get_operation(self) -> Any:
+    def get_operation(self) -> "RPInterfaceItem":
         """Returns the operation specified for this call operation element.
 
         Returns:
@@ -143,7 +149,7 @@ class RPCallOperation(RPState):
         """
         raise NotImplementedError
 
-    def get_target(self) -> Any:
+    def get_target(self) -> "RPRelation":
         """Returns the target specified for this call operation element.
 
         Returns:
@@ -178,7 +184,11 @@ class RPCallOperation(RPState):
 
 
 class RPContextSpecification(RPValueSpecification):
-    """Wraps ``IRPContextSpecification``: represents the exact context of an object in a hierarchy, using a collection of strings for the full path to the element and a collection of indices to disambiguate when multiplicity is greater than one."""
+    """Wraps ``IRPContextSpecification``: represents the exact context of an object in a hierarchy.
+
+    Uses a collection of strings for the full path to the element and a collection
+    of indices to disambiguate when multiplicity is greater than one.
+    """
 
     # IRPContextSpecification method parity checklist:
     # [ ] getMultiplicities            [ ] impl  [ ] docstring  [ ] test
@@ -277,7 +287,7 @@ class RPSendAction(RPAction):
         """
         raise NotImplementedError
 
-    def get_event(self) -> Any:
+    def get_event(self) -> "RPEvent":
         """Gets the event sent by the Send Action element.
 
         Returns:
@@ -288,7 +298,7 @@ class RPSendAction(RPAction):
         """
         raise NotImplementedError
 
-    def get_invoked_operation(self) -> Any:
+    def get_invoked_operation(self) -> "RPInterfaceItem":
         """Returns the interface item element that is invoked by the Send Action element.
 
         Returns:
@@ -299,7 +309,7 @@ class RPSendAction(RPAction):
         """
         raise NotImplementedError
 
-    def get_target(self) -> Any:
+    def get_target(self) -> "RPModelElement":
         """Gets the event target of the Send Action element.
 
         Returns:

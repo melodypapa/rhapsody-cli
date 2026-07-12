@@ -1,8 +1,17 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPClassifier``."""
 
-from typing import Any
+from typing import TYPE_CHECKING, Any, cast
 
 from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement, RPUnit
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.elements.classifiers.model_interface_item import RPInterfaceItem
+    from rhapsody_cli.models.elements.classifiers.model_operation import RPOperation
+    from rhapsody_cli.models.elements.classifiers.model_statechart import RPStatechart
+    from rhapsody_cli.models.elements.model_activity import RPFlow, RPFlowchart, RPFlowItem
+    from rhapsody_cli.models.elements.model_variables import RPAttribute
+    from rhapsody_cli.models.elements.relations.model_generalization import RPGeneralization
+    from rhapsody_cli.models.elements.relations.model_relation import RPRelation
 
 
 class RPClassifier(RPUnit):
@@ -62,7 +71,7 @@ class RPClassifier(RPUnit):
     #     ports are created generically via addNewAggr("Port", name); this
     #     wraps that call for ergonomics)  [x] impl  [x] docstring  [x] test
 
-    def addAttribute(self, name: str) -> Any:
+    def addAttribute(self, name: str) -> "RPAttribute":
         """Adds a new attribute to the classifier.
 
         Args:
@@ -74,9 +83,9 @@ class RPClassifier(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::addAttribute(java.lang.String name)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addAttribute(name)))
+        return cast("RPAttribute", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addAttribute(name))))
 
-    def addOperation(self, name: str) -> Any:
+    def addOperation(self, name: str) -> "RPOperation":
         """Adds a new operation to the classifier.
 
         Args:
@@ -88,7 +97,7 @@ class RPClassifier(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::addOperation(java.lang.String name)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addOperation(name)))
+        return cast("RPOperation", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addOperation(name))))
 
     def getAttributes(self) -> RPCollection:
         """Returns all attributes defined on the classifier.
@@ -123,7 +132,7 @@ class RPClassifier(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.addGeneralization(base_classifier._com))
 
-    def addStatechart(self) -> Any:
+    def addStatechart(self) -> "RPStatechart":
         """Adds a statechart behavior to this classifier.
 
         Returns:
@@ -132,9 +141,9 @@ class RPClassifier(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::addStatechart()
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addStatechart()))
+        return cast("RPStatechart", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addStatechart())))
 
-    def addActivityDiagram(self) -> Any:
+    def addActivityDiagram(self) -> "RPFlowchart":
         """Creates a new activity diagram.
 
         Returns:
@@ -143,9 +152,9 @@ class RPClassifier(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::addActivityDiagram()
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addActivityDiagram()))
+        return cast("RPFlowchart", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addActivityDiagram())))
 
-    def addFlowItems(self, name: str) -> Any:
+    def addFlowItems(self, name: str) -> "RPFlowItem":
         """Adds a new item flow to the classifier.
 
         Args:
@@ -157,9 +166,9 @@ class RPClassifier(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::addFlowItems(java.lang.String name)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addFlowItems(name)))
+        return cast("RPFlowItem", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addFlowItems(name))))
 
-    def addFlows(self, name: str) -> Any:
+    def addFlows(self, name: str) -> "RPFlow":
         """Adds a new flow to the classifier.
 
         Args:
@@ -171,7 +180,7 @@ class RPClassifier(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::addFlows(java.lang.String name)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addFlows(name)))
+        return cast("RPFlow", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addFlows(name))))
 
     def addRelation(
         self,
@@ -184,7 +193,7 @@ class RPClassifier(RPUnit):
         link_type2: str,
         multiplicity2: str,
         link_name: str,
-    ) -> Any:
+    ) -> "RPRelation":
         """Adds a new association to the classifier.
 
         Args:
@@ -228,20 +237,23 @@ class RPClassifier(RPUnit):
                 java.lang.String multiplicity2,
                 java.lang.String linkName)
         """
-        return AbstractRPModelElement.wrap(
-            AbstractRPModelElement.call_com(
-                lambda: self._com.addRelation(
-                    other_class_name,
-                    other_class_package_name,
-                    role_name1,
-                    link_type1,
-                    multiplicity1,
-                    role_name2,
-                    link_type2,
-                    multiplicity2,
-                    link_name,
+        return cast(
+            "RPRelation",
+            AbstractRPModelElement.wrap(
+                AbstractRPModelElement.call_com(
+                    lambda: self._com.addRelation(
+                        other_class_name,
+                        other_class_package_name,
+                        role_name1,
+                        link_type1,
+                        multiplicity1,
+                        role_name2,
+                        link_type2,
+                        multiplicity2,
+                        link_name,
+                    )
                 )
-            )
+            ),
         )
 
     def addRelationTo(
@@ -254,7 +266,7 @@ class RPClassifier(RPUnit):
         link_type2: str,
         multiplicity2: str,
         link_name: str,
-    ) -> Any:
+    ) -> "RPRelation":
         """Adds a new association to the classifier.
 
         Args:
@@ -295,19 +307,22 @@ class RPClassifier(RPUnit):
                 java.lang.String multiplicity2,
                 java.lang.String linkName)
         """
-        return AbstractRPModelElement.wrap(
-            AbstractRPModelElement.call_com(
-                lambda: self._com.addRelationTo(
-                    other_classifier._com,
-                    role_name1,
-                    link_type1,
-                    multiplicity1,
-                    role_name2,
-                    link_type2,
-                    multiplicity2,
-                    link_name,
+        return cast(
+            "RPRelation",
+            AbstractRPModelElement.wrap(
+                AbstractRPModelElement.call_com(
+                    lambda: self._com.addRelationTo(
+                        other_classifier._com,
+                        role_name1,
+                        link_type1,
+                        multiplicity1,
+                        role_name2,
+                        link_type2,
+                        multiplicity2,
+                        link_name,
+                    )
                 )
-            )
+            ),
         )
 
     def addUnidirectionalRelation(
@@ -318,7 +333,7 @@ class RPClassifier(RPUnit):
         link_type: str,
         multiplicity: str,
         link_name: str,
-    ) -> Any:
+    ) -> "RPRelation":
         """Adds a new directed association to the classifier.
 
         Args:
@@ -347,17 +362,20 @@ class RPClassifier(RPUnit):
                 java.lang.String multiplicity,
                 java.lang.String linkName)
         """
-        return AbstractRPModelElement.wrap(
-            AbstractRPModelElement.call_com(
-                lambda: self._com.addUnidirectionalRelation(
-                    other_class_name,
-                    other_class_package_name,
-                    role_name,
-                    link_type,
-                    multiplicity,
-                    link_name,
+        return cast(
+            "RPRelation",
+            AbstractRPModelElement.wrap(
+                AbstractRPModelElement.call_com(
+                    lambda: self._com.addUnidirectionalRelation(
+                        other_class_name,
+                        other_class_package_name,
+                        role_name,
+                        link_type,
+                        multiplicity,
+                        link_name,
+                    )
                 )
-            )
+            ),
         )
 
     def addUnidirectionalRelationTo(
@@ -367,7 +385,7 @@ class RPClassifier(RPUnit):
         link_type: str,
         multiplicity: str,
         link_name: str,
-    ) -> Any:
+    ) -> "RPRelation":
         """Adds a new directed association to the classifier.
 
         Args:
@@ -393,16 +411,19 @@ class RPClassifier(RPUnit):
                 java.lang.String multiplicity,
                 java.lang.String linkName)
         """
-        return AbstractRPModelElement.wrap(
-            AbstractRPModelElement.call_com(
-                lambda: self._com.addUnidirectionalRelationTo(
-                    other_classifier._com,
-                    role_name,
-                    link_type,
-                    multiplicity,
-                    link_name,
+        return cast(
+            "RPRelation",
+            AbstractRPModelElement.wrap(
+                AbstractRPModelElement.call_com(
+                    lambda: self._com.addUnidirectionalRelationTo(
+                        other_classifier._com,
+                        role_name,
+                        link_type,
+                        multiplicity,
+                        link_name,
+                    )
                 )
-            )
+            ),
         )
 
     def deleteAttribute(self, attribute: "RPModelElement") -> None:
@@ -472,7 +493,7 @@ class RPClassifier(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteRelation(relation._com))
 
-    def findAttribute(self, new_val: str) -> Any:
+    def findAttribute(self, new_val: str) -> "RPAttribute":
         """Returns the attribute with the name specified.
 
         Args:
@@ -484,9 +505,9 @@ class RPClassifier(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::findAttribute(java.lang.String newVal)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findAttribute(new_val)))
+        return cast("RPAttribute", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findAttribute(new_val))))
 
-    def findBaseClassifier(self, new_val: str) -> Any:
+    def findBaseClassifier(self, new_val: str) -> "RPClassifier":
         """Returns the base classifier with the specified name.
 
         Args:
@@ -498,9 +519,9 @@ class RPClassifier(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::findBaseClassifier(java.lang.String newVal)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findBaseClassifier(new_val)))
+        return cast("RPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findBaseClassifier(new_val))))
 
-    def findDerivedClassifier(self, new_val: str) -> Any:
+    def findDerivedClassifier(self, new_val: str) -> "RPClassifier":
         """Returns the derived classifier with the specified name.
 
         Args:
@@ -512,9 +533,9 @@ class RPClassifier(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::findDerivedClassifier(java.lang.String newVal)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findDerivedClassifier(new_val)))
+        return cast("RPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findDerivedClassifier(new_val))))
 
-    def findGeneralization(self, new_val: str) -> Any:
+    def findGeneralization(self, new_val: str) -> "RPGeneralization":
         """Returns the generalization relationship between this classifier and the named classifier.
 
         Args:
@@ -529,9 +550,9 @@ class RPClassifier(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::findGeneralization(java.lang.String newVal)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findGeneralization(new_val)))
+        return cast("RPGeneralization", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findGeneralization(new_val))))
 
-    def findInterfaceItem(self, signature: str) -> Any:
+    def findInterfaceItem(self, signature: str) -> "RPInterfaceItem":
         """Gets the operation or event reception that matches the signature provided.
 
         Args:
@@ -546,9 +567,9 @@ class RPClassifier(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::findInterfaceItem(java.lang.String signature)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findInterfaceItem(signature)))
+        return cast("RPInterfaceItem", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findInterfaceItem(signature))))
 
-    def findNestedClassifier(self, new_val: str) -> Any:
+    def findNestedClassifier(self, new_val: str) -> "RPClassifier":
         """Searches for the nested classifier with the name specified.
 
         This method only searches the first level of elements below the current
@@ -564,9 +585,9 @@ class RPClassifier(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::findNestedClassifier(java.lang.String newVal)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findNestedClassifier(new_val)))
+        return cast("RPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findNestedClassifier(new_val))))
 
-    def findNestedClassifierRecursive(self, new_val: str) -> Any:
+    def findNestedClassifierRecursive(self, new_val: str) -> "RPModelElement":
         """Searches recursively for the classifier with the name specified.
 
         This method searches all of the levels below the current classifier. To
@@ -585,7 +606,7 @@ class RPClassifier(RPUnit):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findNestedClassifierRecursive(new_val)))
 
-    def findRelation(self, new_val: str) -> Any:
+    def findRelation(self, new_val: str) -> "RPRelation":
         """Returns the association whose name was specified as a parameter.
 
         Args:
@@ -597,9 +618,9 @@ class RPClassifier(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::findRelation(java.lang.String newVal)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findRelation(new_val)))
+        return cast("RPRelation", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findRelation(new_val))))
 
-    def findTrigger(self, name: str) -> Any:
+    def findTrigger(self, name: str) -> "RPInterfaceItem":
         """Returns the trigger with the specified name in the classifier's statechart.
 
         Args:
@@ -611,9 +632,9 @@ class RPClassifier(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::findTrigger(java.lang.String name)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findTrigger(name)))
+        return cast("RPInterfaceItem", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findTrigger(name))))
 
-    def getActivityDiagram(self) -> Any:
+    def getActivityDiagram(self) -> "RPFlowchart":
         """Returns the activity diagram defined for the classifier.
 
         Note: the Java API recommends using :meth:`getBehavioralDiagrams`
@@ -626,7 +647,7 @@ class RPClassifier(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getActivityDiagram()
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getActivityDiagram", "activityDiagram"))
+        return cast("RPFlowchart", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getActivityDiagram", "activityDiagram")))
 
     def getAttributesIncludingBases(self) -> RPCollection:
         """Returns all the classifier's attributes, including inherited ones.
@@ -833,7 +854,7 @@ class RPClassifier(RPUnit):
         """
         return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getSourceArtifacts", "sourceArtifacts"))
 
-    def getStatechart(self) -> Any:
+    def getStatechart(self) -> "RPStatechart":
         """Returns the statechart defined for the classifier.
 
         Note: the Java API recommends using :meth:`getBehavioralDiagrams`
@@ -846,4 +867,4 @@ class RPClassifier(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getStatechart()
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getStatechart", "statechart"))
+        return cast("RPStatechart", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getStatechart", "statechart")))

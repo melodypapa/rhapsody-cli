@@ -1,9 +1,13 @@
 """Templates model-element wrappers (auto-generated stubs)."""
 
-from typing import Any
+from typing import TYPE_CHECKING
 
 from rhapsody_cli.models.core import RPModelElement
 from rhapsody_cli.models.elements.model_variables import RPVariable
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
 
 
 class RPTemplateInstantiation(RPModelElement):
@@ -54,7 +58,7 @@ class RPTemplateInstantiationParameter(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_type(self) -> Any:
+    def get_type(self) -> "RPClassifier":
         """Returns the type of this template instantiation parameter.
 
         Returns:
@@ -122,7 +126,7 @@ class RPTemplateParameter(RPVariable):
         """
         raise NotImplementedError
 
-    def get_representative(self) -> Any:
+    def get_representative(self) -> "RPModelElement":
         """Returns the representative of this template parameter.
 
         For internal use only.

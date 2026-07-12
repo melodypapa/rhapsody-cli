@@ -1,11 +1,25 @@
 """Activity model-element wrappers (auto-generated stubs)."""
 
-from typing import Any
+from typing import TYPE_CHECKING
 
 from rhapsody_cli.models.core import RPModelElement
 from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
 from rhapsody_cli.models.elements.classifiers.model_statechart import RPStatechart
 from rhapsody_cli.models.elements.model_statemachine import RPState
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.elements.classifiers.model_operation import RPOperation
+    from rhapsody_cli.models.elements.model_actions import (
+        RPAcceptEventAction,
+        RPAcceptTimeEvent,
+        RPCallOperation,
+    )
+    from rhapsody_cli.models.elements.model_diagram_types import RPActivityDiagram
+    from rhapsody_cli.models.elements.model_graphics import RPPin
+    from rhapsody_cli.models.elements.model_other_model import RPSysMLPort
+    from rhapsody_cli.models.elements.relations.model_instance import RPInstance
+    from rhapsody_cli.models.elements.relations.model_port import RPPort
 
 
 class RPFlow(RPModelElement):
@@ -74,7 +88,7 @@ class RPFlow(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_end1(self) -> Any:
+    def get_end1(self) -> "RPModelElement":
         """Returns the first end of the flow.
 
         Returns:
@@ -88,7 +102,7 @@ class RPFlow(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_end1_port(self) -> Any:
+    def get_end1_port(self) -> "RPPort":
         """Returns the port at the first end of the flow.
 
         Returns:
@@ -102,7 +116,7 @@ class RPFlow(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_end1_sys_m_l_port(self) -> Any:
+    def get_end1_sys_m_l_port(self) -> "RPSysMLPort":
         """Returns the SysML port at the first end of the flow.
 
         Returns:
@@ -116,7 +130,7 @@ class RPFlow(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_end2(self) -> Any:
+    def get_end2(self) -> "RPModelElement":
         """Returns the second end of the flow.
 
         Returns:
@@ -130,7 +144,7 @@ class RPFlow(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_end2_port(self) -> Any:
+    def get_end2_port(self) -> "RPPort":
         """Returns the port at the second end of the flow.
 
         Returns:
@@ -144,7 +158,7 @@ class RPFlow(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_end2_sys_m_l_port(self) -> Any:
+    def get_end2_sys_m_l_port(self) -> "RPSysMLPort":
         """Returns the SysML port at the second end of the flow.
 
         Returns:
@@ -349,7 +363,7 @@ class RPFlowchart(RPStatechart):
     # [deprecated] setItsOwner  - skipped (deprecated in Rhapsody Java API)
     # No non-deprecated IRPFlowchart methods.
 
-    def add_accept_event_action(self, name: str, parent: "RPState") -> Any:
+    def add_accept_event_action(self, name: str, parent: "RPState") -> "RPAcceptEventAction":
         """Adds a new Accept Event Action element to the activity.
 
         Args:
@@ -369,7 +383,7 @@ class RPFlowchart(RPStatechart):
         """
         raise NotImplementedError
 
-    def add_accept_time_event(self, name: str, parent: "RPState") -> Any:
+    def add_accept_time_event(self, name: str, parent: "RPState") -> "RPAcceptTimeEvent":
         """Adds a new Accept Time Event element to the activity.
 
         Args:
@@ -389,7 +403,7 @@ class RPFlowchart(RPStatechart):
         """
         raise NotImplementedError
 
-    def add_activity_parameter(self, name: str) -> Any:
+    def add_activity_parameter(self, name: str) -> "RPPin":
         """Adds an activity parameter to the frame of the activity.
 
         Args:
@@ -403,7 +417,7 @@ class RPFlowchart(RPStatechart):
         """
         raise NotImplementedError
 
-    def add_call_behavior(self, referenced: "RPModelElement") -> Any:
+    def add_call_behavior(self, referenced: "RPModelElement") -> "RPState":
         """Adds a new Call Behavior element to the activity.
 
         Args:
@@ -418,7 +432,7 @@ class RPFlowchart(RPStatechart):
         """
         raise NotImplementedError
 
-    def add_call_operation(self, name: str, parent: "RPState") -> Any:
+    def add_call_operation(self, name: str, parent: "RPState") -> "RPCallOperation":
         """Adds a new Call Operation element to the activity.
 
         Args:
@@ -437,7 +451,7 @@ class RPFlowchart(RPStatechart):
         """
         raise NotImplementedError
 
-    def add_object_node(self, name: str, parent: "RPState") -> Any:
+    def add_object_node(self, name: str, parent: "RPState") -> "RPObjectNode":
         """Adds a new Object Node element to the activity.
 
         Args:
@@ -456,7 +470,7 @@ class RPFlowchart(RPStatechart):
         """
         raise NotImplementedError
 
-    def add_reference_activity(self, referenced: "RPModelElement") -> Any:
+    def add_reference_activity(self, referenced: "RPModelElement") -> "RPState":
         """Adds a new Call Behavior element to the activity. Performs same action as the addCallBehavior method.
 
         Args:
@@ -471,7 +485,7 @@ class RPFlowchart(RPStatechart):
         """
         raise NotImplementedError
 
-    def add_swimlane(self, name: str) -> Any:
+    def add_swimlane(self, name: str) -> "RPSwimlane":
         """Adds a new swimlane to the activity.
 
         Args:
@@ -485,7 +499,7 @@ class RPFlowchart(RPStatechart):
         """
         raise NotImplementedError
 
-    def get_flowchart_diagram(self) -> Any:
+    def get_flowchart_diagram(self) -> "RPActivityDiagram":
         """Returns the IRPActivityDiagram object associated with the activity.
 
         Returns:
@@ -507,7 +521,7 @@ class RPFlowchart(RPStatechart):
         """
         raise NotImplementedError
 
-    def get_its_owner(self) -> Any:
+    def get_its_owner(self) -> "RPOperation":
         """Returns the operation that owns the activity. Deprecated: use IRPModelElement.getOwner instead.
 
         Returns:
@@ -605,7 +619,7 @@ class RPObjectNode(RPState):
         """
         raise NotImplementedError
 
-    def get_represents(self) -> Any:
+    def get_represents(self) -> "RPModelElement":
         """Returns the class/type that this object node represents.
 
         Returns:
@@ -662,7 +676,7 @@ class RPSwimlane(RPModelElement):
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPSwimlane methods.
 
-    def add_swimlane(self, name: str) -> Any:
+    def add_swimlane(self, name: str) -> "RPSwimlane":
         """For internal use only.
 
         Args:
@@ -690,7 +704,7 @@ class RPSwimlane(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_represents(self) -> Any:
+    def get_represents(self) -> "RPModelElement":
         """Returns the model element that the swimlane represents.
 
         Returns:

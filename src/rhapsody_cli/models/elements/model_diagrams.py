@@ -1,6 +1,6 @@
 """Diagram-family wrappers: mirrors IRPDiagram from com.telelogic.rhapsody.core."""
 
-from typing import Any
+from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.core import (
     AbstractRPModelElement,
@@ -8,6 +8,9 @@ from rhapsody_cli.models.core import (
     RPModelElement,
     RPUnit,
 )
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.elements.model_graphics import RPGraphElement
 
 
 class RPDiagram(RPUnit):
@@ -58,7 +61,7 @@ class RPDiagram(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.closeDiagram())
 
-    def addTextBox(self, text: str, x_position: int, y_position: int, width: int, height: int) -> Any:
+    def addTextBox(self, text: str, x_position: int, y_position: int, width: int, height: int) -> "RPGraphElement":
         """Adds a text box using the specified text, starting point, width, and height.
 
         Args:
@@ -74,7 +77,7 @@ class RPDiagram(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::addTextBox(java.lang.String text, int xPosition, int yPosition, int nWidth, int nHeight)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addTextBox(text, x_position, y_position, width, height)))
+        return cast("RPGraphElement", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addTextBox(text, x_position, y_position, width, height))))
 
     def getCustomViews(self) -> RPCollection:
         """Gets the custom views that were applied to this diagram view.

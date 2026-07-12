@@ -1,8 +1,12 @@
 """Ide model-element wrappers (auto-generated stubs)."""
 
-from typing import Any
+from typing import TYPE_CHECKING
 
 from rhapsody_cli.models.core import RPModelElement
+
+if TYPE_CHECKING:
+    from rhapsody_cli.application import RhapsodyApplication
+    from rhapsody_cli.models.core import RPCollection
 
 
 class RPAXViewCtrl(RPModelElement):
@@ -40,7 +44,10 @@ class RPAXViewCtrl(RPModelElement):
             RhapsodyRuntimeException: If the operation fails.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPAXViewCtrl::executeCommand(java.lang.String commandType, com.telelogic.rhapsody.core.IRPCollection pCommandInitialization, com.telelogic.rhapsody.core.IRPCollection pCommandResult)
+            com.telelogic.rhapsody.core.IRPAXViewCtrl::executeCommand(
+                java.lang.String commandType,
+                com.telelogic.rhapsody.core.IRPCollection pCommandInitialization,
+                com.telelogic.rhapsody.core.IRPCollection pCommandResult)
         """
         raise NotImplementedError
 
@@ -320,7 +327,7 @@ class RPInternalOEMPlugin(RPModelElement):
         """
         raise NotImplementedError
 
-    def rhp_plugin_set_application(self, p_r_p_app: "RPApplication") -> int:
+    def rhp_plugin_set_application(self, p_r_p_app: "RhapsodyApplication") -> int:
         """Set the IRPApplication of the plugin.
 
         Args:
@@ -814,7 +821,7 @@ class RPowPaneMgr(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_o_w_list_listener(self, s_obj_i_d: str) -> Any:
+    def get_o_w_list_listener(self, s_obj_i_d: str) -> "RPowListListener":
         """Get the list listener for the given object ID.
 
         Args:
@@ -831,7 +838,7 @@ class RPowPaneMgr(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_o_w_text_listener(self, s_obj_i_d: str) -> Any:
+    def get_o_w_text_listener(self, s_obj_i_d: str) -> "RPowTextListener":
         """Get the text listener for the given object ID.
 
         Args:

@@ -1,9 +1,12 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPInterfaceItem``."""
 
-from typing import Any
+from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection
 from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.elements.model_variables import RPArgument
 
 
 class RPInterfaceItem(RPClassifier):
@@ -23,7 +26,7 @@ class RPInterfaceItem(RPClassifier):
     # [inherited] IRPClassifier / IRPUnit / IRPModelElement methods (covered by RPClassifier / RPUnit / RPModelElement checklists)
     # No deprecated IRPInterfaceItem methods.
 
-    def addArgument(self, new_val: str) -> Any:
+    def addArgument(self, new_val: str) -> "RPArgument":
         """Adds a new argument to the end of the argument list.
 
         Only the name is taken from the supplied string; the argument's type
@@ -39,9 +42,9 @@ class RPInterfaceItem(RPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPInterfaceItem::addArgument(java.lang.String newVal)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addArgument(new_val)))
+        return cast("RPArgument", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addArgument(new_val))))
 
-    def addArgumentBeforePosition(self, new_val: str, pos: int) -> Any:
+    def addArgumentBeforePosition(self, new_val: str, pos: int) -> "RPArgument":
         """Adds a new argument at the specified position in the argument list.
 
         As with :meth:`addArgument`, only the name is taken from the supplied
@@ -58,7 +61,7 @@ class RPInterfaceItem(RPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPInterfaceItem::addArgumentBeforePosition(java.lang.String newVal, int pos)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addArgumentBeforePosition(new_val, pos)))
+        return cast("RPArgument", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addArgumentBeforePosition(new_val, pos))))
 
     def getArguments(self) -> RPCollection:
         """Returns all the arguments for the operation.

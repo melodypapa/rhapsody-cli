@@ -1,8 +1,17 @@
 """Statemachine model-element wrappers (auto-generated stubs)."""
 
-from typing import Any
+from typing import TYPE_CHECKING
 
 from rhapsody_cli.models.core import RPModelElement
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.elements.classifiers.model_interface_item import RPInterfaceItem
+    from rhapsody_cli.models.elements.classifiers.model_statechart import RPStatechart
+    from rhapsody_cli.models.elements.model_actions import RPAction, RPSendAction
+    from rhapsody_cli.models.elements.model_activity import RPSwimlane
+    from rhapsody_cli.models.elements.model_graphics import RPConnector
+    from rhapsody_cli.models.elements.model_interactions import RPTransition
 
 
 class RPStateVertex(RPModelElement):
@@ -19,7 +28,7 @@ class RPStateVertex(RPModelElement):
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPStateVertex methods.
 
-    def add_flow(self, type_: str, to: "RPStateVertex") -> Any:
+    def add_flow(self, type_: str, to: "RPStateVertex") -> "RPTransition":
         """Adds a control flow or object flow from this element to the specified element.
 
         Args:
@@ -35,7 +44,7 @@ class RPStateVertex(RPModelElement):
         """
         raise NotImplementedError
 
-    def add_transition(self, to: "RPStateVertex") -> Any:
+    def add_transition(self, to: "RPStateVertex") -> "RPTransition":
         """Adds a transition from this element to the specified element.
 
         Args:
@@ -92,7 +101,7 @@ class RPStateVertex(RPModelElement):
         """
         raise NotImplementedError
 
-    def get_parent(self) -> Any:
+    def get_parent(self) -> "RPState":
         """Returns the element's parent.
 
         If the element is not contained in a specific state, the root state of
@@ -176,7 +185,7 @@ class RPState(RPStateVertex):
     # [deprecated] createSubStatechart  - skipped (deprecated in Rhapsody Java API)
     # No non-deprecated IRPState methods.
 
-    def add_activity_final(self) -> Any:
+    def add_activity_final(self) -> "RPState":
         """Adds an ActivityFinal element to an Activity.
 
         This method should be called on the root state of the diagram, which you
@@ -190,7 +199,7 @@ class RPState(RPStateVertex):
         """
         raise NotImplementedError
 
-    def add_connector(self, type_: str) -> Any:
+    def add_connector(self, type_: str) -> "RPConnector":
         """Adds a connector element of the specified type to the state.
 
         Args:
@@ -206,7 +215,7 @@ class RPState(RPStateVertex):
         """
         raise NotImplementedError
 
-    def add_internal_transition(self, trigger: "RPInterfaceItem") -> Any:
+    def add_internal_transition(self, trigger: "RPInterfaceItem") -> "RPTransition":
         """Adds an internal transition to the state.
 
         Args:
@@ -223,7 +232,7 @@ class RPState(RPStateVertex):
         """
         raise NotImplementedError
 
-    def add_state(self, name: str) -> Any:
+    def add_state(self, name: str) -> "RPState":
         """Adds a new substate to this state.
 
         To add a new top-level state to a statechart, call this method on the
@@ -241,7 +250,7 @@ class RPState(RPStateVertex):
         """
         raise NotImplementedError
 
-    def add_static_reaction(self, trigger: "RPInterfaceItem") -> Any:
+    def add_static_reaction(self, trigger: "RPInterfaceItem") -> "RPTransition":
         """Adds an internal transition to the state.
 
         Args:
@@ -255,7 +264,7 @@ class RPState(RPStateVertex):
         """
         raise NotImplementedError
 
-    def add_termination_state(self) -> Any:
+    def add_termination_state(self) -> "RPState":
         """Adds a termination state to a statechart.
 
         This method should be called on the root state of the statechart, which
@@ -269,7 +278,7 @@ class RPState(RPStateVertex):
         """
         raise NotImplementedError
 
-    def create_default_transition(self, from_: "RPState") -> Any:
+    def create_default_transition(self, from_: "RPState") -> "RPTransition":
         """Creates a default transition to this state from the state specified with the parameter.
 
         Args:
@@ -284,7 +293,7 @@ class RPState(RPStateVertex):
         """
         raise NotImplementedError
 
-    def create_nested_statechart(self) -> Any:
+    def create_nested_statechart(self) -> "RPStatechart":
         """Deprecated. Use ``create_sub_statechart()`` instead.
 
         Reference:
@@ -292,7 +301,7 @@ class RPState(RPStateVertex):
         """
         raise NotImplementedError
 
-    def create_sub_statechart(self) -> Any:
+    def create_sub_statechart(self) -> "RPStatechart":
         """Creates a sub-statechart for the state.
 
         Returns:
@@ -342,7 +351,7 @@ class RPState(RPStateVertex):
         """
         raise NotImplementedError
 
-    def get_default_transition(self) -> Any:
+    def get_default_transition(self) -> "RPTransition":
         """Returns the default transition within the state.
 
         Returns:
@@ -390,7 +399,7 @@ class RPState(RPStateVertex):
         """
         raise NotImplementedError
 
-    def get_inherits_from(self) -> Any:
+    def get_inherits_from(self) -> "RPState":
         """Returns the corresponding state from the statechart of the class that this class is derived from.
 
         Returns:
@@ -441,7 +450,7 @@ class RPState(RPStateVertex):
         """
         raise NotImplementedError
 
-    def get_its_statechart(self) -> Any:
+    def get_its_statechart(self) -> "RPStatechart":
         """Returns the statechart that this state belongs to.
 
         Returns:
@@ -452,7 +461,7 @@ class RPState(RPStateVertex):
         """
         raise NotImplementedError
 
-    def get_its_swimlane(self) -> Any:
+    def get_its_swimlane(self) -> "RPSwimlane":
         """Returns the swimlane that the action is located in.
 
         Returns:
@@ -475,7 +484,7 @@ class RPState(RPStateVertex):
         """
         raise NotImplementedError
 
-    def get_nested_statechart(self) -> Any:
+    def get_nested_statechart(self) -> "RPStatechart":
         """Returns the state's sub-statechart.
 
         Returns:
@@ -486,7 +495,7 @@ class RPState(RPStateVertex):
         """
         raise NotImplementedError
 
-    def get_reference_to_activity(self) -> Any:
+    def get_reference_to_activity(self) -> "RPModelElement":
         """For call behavior elements, returns the activity that is referenced.
 
         Returns:
@@ -497,7 +506,7 @@ class RPState(RPStateVertex):
         """
         raise NotImplementedError
 
-    def get_send_action(self) -> Any:
+    def get_send_action(self) -> "RPSendAction":
         """Returns the Send Action element associated with the state.
 
         A Send Action element is an object of type ``IRPState`` for which the
@@ -569,7 +578,7 @@ class RPState(RPStateVertex):
         """
         raise NotImplementedError
 
-    def get_the_entry_action(self) -> Any:
+    def get_the_entry_action(self) -> "RPAction":
         """Returns the entry action element of the state.
 
         Returns:
@@ -583,7 +592,7 @@ class RPState(RPStateVertex):
         """
         raise NotImplementedError
 
-    def get_the_exit_action(self) -> Any:
+    def get_the_exit_action(self) -> "RPAction":
         """Returns the exit action element of the state.
 
         Returns:
@@ -661,7 +670,7 @@ class RPState(RPStateVertex):
         """
         raise NotImplementedError
 
-    def reset_entry_action_inheritance(self) -> Any:
+    def reset_entry_action_inheritance(self) -> "RPState":
         """Restores the inheritance relationship between this state and the corresponding state from the statechart of the class that this class is derived from, for the entry action.
 
         Returns:
@@ -672,7 +681,7 @@ class RPState(RPStateVertex):
         """
         raise NotImplementedError
 
-    def reset_exit_action_inheritance(self) -> Any:
+    def reset_exit_action_inheritance(self) -> "RPState":
         """Restores the inheritance relationship between this state and the corresponding state from the statechart of the class that this class is derived from, for the exit action.
 
         Returns:

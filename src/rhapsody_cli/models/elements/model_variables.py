@@ -2,7 +2,7 @@
 com.telelogic.rhapsody.core.
 """
 
-from typing import Any
+from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.core import (
     AbstractRPModelElement,
@@ -11,6 +11,12 @@ from rhapsody_cli.models.core import (
     RPUnit,
 )
 from rhapsody_cli.models.elements.classifiers import RPClassifier
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.elements.model_values import (
+        RPInstanceValue,
+        RPLiteralSpecification,
+    )
 
 
 class RPVariable(RPUnit):
@@ -32,7 +38,7 @@ class RPVariable(RPUnit):
     # [inherited] IRPUnit / IRPModelElement methods (covered by RPUnit / RPModelElement checklists)
     # No deprecated IRPVariable methods.
 
-    def addElementDefaultValue(self, new_default_val: RPModelElement) -> Any:
+    def addElementDefaultValue(self, new_default_val: RPModelElement) -> "RPInstanceValue":
         """For tags with multiplicity greater than 1, adds a model element as an additional value.
 
         Args:
@@ -44,9 +50,9 @@ class RPVariable(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPVariable::addElementDefaultValue(com.telelogic.rhapsody.core.IRPModelElement newDefaultVal)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addElementDefaultValue(new_default_val._com)))
+        return cast("RPInstanceValue", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addElementDefaultValue(new_default_val._com))))
 
-    def addStringDefaultValue(self, new_default_val: str) -> Any:
+    def addStringDefaultValue(self, new_default_val: str) -> "RPLiteralSpecification":
         """For tags with multiplicity greater than 1, adds a string as an additional value.
 
         Args:
@@ -58,7 +64,7 @@ class RPVariable(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPVariable::addStringDefaultValue(java.lang.String newDefaultVal)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addStringDefaultValue(new_default_val)))
+        return cast("RPLiteralSpecification", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addStringDefaultValue(new_default_val))))
 
     def getDeclaration(self) -> str:
         """Returns the type declaration if an on-the-fly type was used for the element.
@@ -82,7 +88,7 @@ class RPVariable(RPUnit):
         """
         return str(AbstractRPModelElement._get_method_or_property(self._com, "getDefaultValue", "defaultValue"))
 
-    def getType(self) -> Any:
+    def getType(self) -> "RPClassifier":
         """Returns the type of the variable.
 
         Returns:
@@ -91,7 +97,7 @@ class RPVariable(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPVariable::getType()
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getType", "type"))
+        return cast("RPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getType", "type")))
 
     def getValueSpecifications(self) -> RPCollection:
         """Returns the initial values declared for elements with multiplicity greater than one.

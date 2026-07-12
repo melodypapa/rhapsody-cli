@@ -1,9 +1,12 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPActor``."""
 
-from typing import Any
+from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.elements.model_interactions import RPEventReception
 
 
 class RPActor(RPClassifier):
@@ -17,7 +20,7 @@ class RPActor(RPClassifier):
     # [inherited] IRPClassifier / IRPUnit / IRPModelElement methods (covered by RPClassifier / RPUnit / RPModelElement checklists)
     # No deprecated IRPActor methods.
 
-    def addEventReceptionWithEvent(self, name: str, event: RPModelElement) -> Any:
+    def addEventReceptionWithEvent(self, name: str, event: RPModelElement) -> "RPEventReception":
         """Adds a new event reception to the actor, using the specified event.
 
         Args:
@@ -34,7 +37,7 @@ class RPActor(RPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPActor::addEventReceptionWithEvent(java.lang.String name, com.telelogic.rhapsody.core.IRPEvent event)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addEventReceptionWithEvent(name, event._com)))
+        return cast("RPEventReception", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addEventReceptionWithEvent(name, event._com))))
 
     def getIsBehaviorOverriden(self) -> bool:
         """Checks whether the actor overrides the behavior defined in its base class's statechart.

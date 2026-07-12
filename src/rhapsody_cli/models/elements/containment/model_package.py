@@ -1,8 +1,14 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPPackage``."""
 
-from typing import Any
+from typing import TYPE_CHECKING, Any, cast
 
 from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPUnit
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.elements.classifiers.model_actor import RPActor
+    from rhapsody_cli.models.elements.classifiers.model_class import RPClass
+    from rhapsody_cli.models.elements.classifiers.model_operation import RPOperation
+    from rhapsody_cli.models.elements.classifiers.model_usecase import RPUseCase
 
 
 class RPPackage(RPUnit):
@@ -112,7 +118,7 @@ class RPPackage(RPUnit):
     # [inherited] IRPUnit / IRPModelElement methods (covered by RPUnit / RPModelElement checklists)
     # No deprecated IRPPackage methods.
 
-    def addClass(self, name: str) -> Any:
+    def addClass(self, name: str) -> "RPClass":
         """Adds a new class to the package.
 
         Args:
@@ -124,9 +130,9 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addClass(java.lang.String name)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addClass(name)))
+        return cast("RPClass", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addClass(name))))
 
-    def addNestedPackage(self, name: str) -> Any:
+    def addNestedPackage(self, name: str) -> "RPPackage":
         """Adds a nested package to this package.
 
         Args:
@@ -138,9 +144,9 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addNestedPackage(java.lang.String name)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNestedPackage(name)))
+        return cast("RPPackage", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNestedPackage(name))))
 
-    def addActor(self, name: str) -> Any:
+    def addActor(self, name: str) -> "RPActor":
         """Adds a new actor to the package.
 
         Args:
@@ -152,9 +158,9 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addActor(java.lang.String name)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addActor(name)))
+        return cast("RPActor", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addActor(name))))
 
-    def addGlobalFunction(self, name: str) -> Any:
+    def addGlobalFunction(self, name: str) -> "RPOperation":
         """Adds a new global function to the package.
 
         Args:
@@ -166,7 +172,7 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addGlobalFunction(java.lang.String name)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addGlobalFunction(name)))
+        return cast("RPOperation", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addGlobalFunction(name))))
 
     def getNestedPackages(self) -> "RPCollection":
         """Returns all nested packages in this package.
@@ -209,7 +215,7 @@ class RPPackage(RPUnit):
         """
         return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getUseCases", "useCases"))
 
-    def addUseCase(self, name: str) -> Any:
+    def addUseCase(self, name: str) -> "RPUseCase":
         """Adds a new use case to the package.
 
         Args:
@@ -221,7 +227,7 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addUseCase(java.lang.String name)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addUseCase(name)))
+        return cast("RPUseCase", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addUseCase(name))))
 
     def addInterface(self, name: str) -> Any:
         """Adds a new interface to the package.

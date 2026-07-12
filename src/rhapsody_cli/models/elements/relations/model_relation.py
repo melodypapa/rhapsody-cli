@@ -1,9 +1,13 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPRelation``."""
 
-from typing import Any, cast
+from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement, RPUnit
 from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.elements.classifiers.model_association_class import RPAssociationClass
+    from rhapsody_cli.models.elements.classifiers.model_class import RPClass
 
 
 class RPRelation(RPUnit):
@@ -60,7 +64,7 @@ class RPRelation(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.addQualifier(p_val._com))
 
-    def getAssociationClass(self) -> Any:
+    def getAssociationClass(self) -> "RPAssociationClass":
         """Returns the association class linked to this relation, if any.
 
         Returns:
@@ -72,7 +76,7 @@ class RPRelation(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getAssociationClass()
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getAssociationClass", "associationClass"))
+        return cast("RPAssociationClass", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getAssociationClass", "associationClass")))
 
     def getInverse(self) -> "RPRelation":
         """Gets the inverse relation for this (bidirectional) relation.
@@ -130,7 +134,7 @@ class RPRelation(RPUnit):
         """
         return str(AbstractRPModelElement._get_method_or_property(self._com, "getMultiplicity", "multiplicity"))
 
-    def getObjectAsObjectType(self) -> Any:
+    def getObjectAsObjectType(self) -> "RPClass":
         """Gets the object's class, treated as the object's type.
 
         Returns:
@@ -142,9 +146,9 @@ class RPRelation(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getObjectAsObjectType()
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getObjectAsObjectType", "objectAsObjectType"))
+        return cast("RPClass", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getObjectAsObjectType", "objectAsObjectType")))
 
-    def getOfClass(self) -> Any:
+    def getOfClass(self) -> "RPClassifier":
         """Gets the classifier that owns this relation.
 
         Returns:
@@ -156,9 +160,9 @@ class RPRelation(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getOfClass()
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getOfClass", "ofClass"))
+        return cast("RPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getOfClass", "ofClass")))
 
-    def getOtherClass(self) -> Any:
+    def getOtherClass(self) -> "RPClassifier":
         """Gets the class that this class is related to via this relation.
 
         Returns:
@@ -167,7 +171,7 @@ class RPRelation(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getOtherClass()
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getOtherClass", "otherClass"))
+        return cast("RPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getOtherClass", "otherClass")))
 
     def getQualifier(self) -> str:
         """Gets the qualifier text for the association.
@@ -197,7 +201,7 @@ class RPRelation(RPUnit):
         """
         return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getQualifiers", "qualifiers"))
 
-    def getQualifierType(self) -> Any:
+    def getQualifierType(self) -> "RPClassifier":
         """For associations that use qualifiers, returns the type of the qualifier.
 
         Returns:
@@ -206,7 +210,7 @@ class RPRelation(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getQualifierType()
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getQualifierType", "qualifierType"))
+        return cast("RPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getQualifierType", "qualifierType")))
 
     def getRelationLabel(self) -> str:
         """Gets the label of the relation.
