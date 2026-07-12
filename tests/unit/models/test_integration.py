@@ -140,7 +140,7 @@ def test_wrap_dispatches_association_class_to_rpassociation_class() -> None:
 
 
 def test_wrap_dispatches_tag_to_rptag() -> None:
-    from rhapsody_cli.models.elements.model_variables import RPTag
+    from rhapsody_cli.models.elements.variables.model_variables import RPTag
 
     fake = make_fake_element("Tag", getName="MyTag")
 
@@ -178,7 +178,7 @@ def test_all_new_wrappers_exist() -> None:
         RPConstraint,
         RPEnumerationLiteral,
     )
-    from rhapsody_cli.models.elements.model_variables import RPTag
+    from rhapsody_cli.models.elements.variables.model_variables import RPTag
     from rhapsody_cli.models.elements.relations import (
         RPAssociationRole,
         RPDependency,
