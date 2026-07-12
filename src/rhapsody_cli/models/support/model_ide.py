@@ -2,20 +2,19 @@
 
 from typing import TYPE_CHECKING
 
-from rhapsody_cli.models.core import RPModelElement
+from rhapsody_cli.models.core import RPCollection, RPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.application import RhapsodyApplication
-    from rhapsody_cli.models.core import RPCollection
 
 
 class RPAXViewCtrl(RPModelElement):
     """Wraps ``IRPAXViewCtrl``."""
 
     # IRPAXViewCtrl method parity checklist:
-    # [ ] doCommand                    [ ] impl  [ ] docstring  [ ] test
-    # [ ] executeCommand               [ ] impl  [ ] docstring  [ ] test
-    # [ ] getInterfaceName             [ ] impl  [ ] docstring  [ ] test
+    # [x] doCommand                    [x] impl  [x] docstring  [x] test
+    # [x] executeCommand               [x] impl  [x] docstring  [x] test
+    # [x] getInterfaceName             [x] impl (inherited from RPModelElement)  [x] docstring  [x] test
     # No deprecated IRPAXViewCtrl methods.
 
     def do_command(self, command_i_d: int) -> None:
@@ -30,7 +29,7 @@ class RPAXViewCtrl(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPAXViewCtrl::doCommand(long commandID)
         """
-        raise NotImplementedError
+        self.call_com(lambda: self._com.doCommand(command_i_d))
 
     def execute_command(self, command_type: str, p_command_initialization: "RPCollection", p_command_result: "RPCollection") -> None:
         """Execute command.
@@ -49,31 +48,17 @@ class RPAXViewCtrl(RPModelElement):
                 com.telelogic.rhapsody.core.IRPCollection pCommandInitialization,
                 com.telelogic.rhapsody.core.IRPCollection pCommandResult)
         """
-        raise NotImplementedError
-
-    def get_interface_name(self) -> str:
-        """Get the interfaceName property.
-
-        Returns:
-            The name of the interface.
-
-        Raises:
-            RhapsodyRuntimeException: If the operation fails.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPAXViewCtrl::getInterfaceName()
-        """
-        raise NotImplementedError
+        self.call_com(lambda: self._com.executeCommand(command_type, p_command_initialization._com, p_command_result._com))
 
 
 class RPExternalIDERegistry(RPModelElement):
     """Wraps ``IRPExternalIDERegistry``."""
 
     # IRPExternalIDERegistry method parity checklist:
-    # [ ] progressTaskAsynchCallback   [ ] impl  [ ] docstring  [ ] test
-    # [ ] progressTaskAsynchEliminate  [ ] impl  [ ] docstring  [ ] test
-    # [ ] sendIDETextMessage           [ ] impl  [ ] docstring  [ ] test
-    # [ ] getInterfaceName             [ ] impl  [ ] docstring  [ ] test
+    # [x] progressTaskAsynchCallback   [x] impl  [x] docstring  [x] test
+    # [x] progressTaskAsynchEliminate  [x] impl  [x] docstring  [x] test
+    # [x] sendIDETextMessage           [x] impl  [x] docstring  [x] test
+    # [x] getInterfaceName             [x] impl (inherited from RPModelElement)  [x] docstring  [x] test
     # No deprecated IRPExternalIDERegistry methods.
 
     def progress_task_asynch_callback(self, n_group_number: int, n_task_number: int) -> None:
@@ -89,7 +74,7 @@ class RPExternalIDERegistry(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPExternalIDERegistry::progressTaskAsynchCallback(int nGroupNumber, int nTaskNumber)
         """
-        raise NotImplementedError
+        self.call_com(lambda: self._com.progressTaskAsynchCallback(n_group_number, n_task_number))
 
     def progress_task_asynch_eliminate(self, n_group_number: int, n_task_number: int) -> None:
         """Initiate progress task execution.
@@ -104,7 +89,7 @@ class RPExternalIDERegistry(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPExternalIDERegistry::progressTaskAsynchEliminate(int nGroupNumber, int nTaskNumber)
         """
-        raise NotImplementedError
+        self.call_com(lambda: self._com.progressTaskAsynchEliminate(n_group_number, n_task_number))
 
     def send_i_d_e_text_message(self, message: str) -> None:
         """Send an IDE text message.
@@ -118,41 +103,27 @@ class RPExternalIDERegistry(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPExternalIDERegistry::sendIDETextMessage(java.lang.String message)
         """
-        raise NotImplementedError
-
-    def get_interface_name(self) -> str:
-        """Get the interfaceName property.
-
-        Returns:
-            The name of the interface.
-
-        Raises:
-            RhapsodyRuntimeException: If the operation fails.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPExternalIDERegistry::getInterfaceName()
-        """
-        raise NotImplementedError
+        self.call_com(lambda: self._com.sendIDETextMessage(message))
 
 
 class RPInternalOEMPlugin(RPModelElement):
     """Wraps ``IRPInternalOEMPlugin``."""
 
     # IRPInternalOEMPlugin method parity checklist:
-    # [ ] activeProjectAboutToChange   [ ] impl  [ ] docstring  [ ] test
-    # [ ] activeProjectHasChanged      [ ] impl  [ ] docstring  [ ] test
-    # [ ] onMenuItemSelect             [ ] impl  [ ] docstring  [ ] test
-    # [ ] onMenuItemSelectWithParameters [ ] impl  [ ] docstring  [ ] test
-    # [ ] rhapPluginAnimationStopped   [ ] impl  [ ] docstring  [ ] test
-    # [ ] rhpPluginAnimationStarted    [ ] impl  [ ] docstring  [ ] test
-    # [ ] rhpPluginCleanup             [ ] impl  [ ] docstring  [ ] test
-    # [ ] rhpPluginDoCommand           [ ] impl  [ ] docstring  [ ] test
-    # [ ] rhpPluginFinalCleanup        [ ] impl  [ ] docstring  [ ] test
-    # [ ] rhpPluginInit                [ ] impl  [ ] docstring  [ ] test
-    # [ ] rhpPluginInvokeItem          [ ] impl  [ ] docstring  [ ] test
-    # [ ] rhpPluginOnIDEBuildDone      [ ] impl  [ ] docstring  [ ] test
-    # [ ] rhpPluginSetApplication      [ ] impl  [ ] docstring  [ ] test
-    # [ ] rhpSavingProject             [ ] impl  [ ] docstring  [ ] test
+    # [x] activeProjectAboutToChange   [x] impl  [x] docstring  [x] test
+    # [x] activeProjectHasChanged      [x] impl  [x] docstring  [x] test
+    # [x] onMenuItemSelect             [x] impl  [x] docstring  [x] test
+    # [x] onMenuItemSelectWithParameters [x] impl  [x] docstring  [x] test
+    # [x] rhapPluginAnimationStopped   [x] impl  [x] docstring  [x] test
+    # [x] rhpPluginAnimationStarted    [x] impl  [x] docstring  [x] test
+    # [x] rhpPluginCleanup             [x] impl  [x] docstring  [x] test
+    # [x] rhpPluginDoCommand           [x] impl  [x] docstring  [x] test
+    # [x] rhpPluginFinalCleanup        [x] impl  [x] docstring  [x] test
+    # [x] rhpPluginInit                [x] impl  [x] docstring  [x] test
+    # [x] rhpPluginInvokeItem          [x] impl  [x] docstring  [x] test
+    # [x] rhpPluginOnIDEBuildDone      [x] impl  [x] docstring  [x] test
+    # [x] rhpPluginSetApplication      [x] impl  [x] docstring  [x] test
+    # [x] rhpSavingProject             [x] impl  [x] docstring  [x] test
     # No deprecated IRPInternalOEMPlugin methods.
 
     def active_project_about_to_change(self) -> int:
@@ -167,7 +138,7 @@ class RPInternalOEMPlugin(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPInternalOEMPlugin::activeProjectAboutToChange()
         """
-        raise NotImplementedError
+        return int(self.call_com(lambda: self._com.activeProjectAboutToChange()))
 
     def active_project_has_changed(self) -> int:
         """Notify the plugin that the active project has changed.
@@ -181,7 +152,7 @@ class RPInternalOEMPlugin(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPInternalOEMPlugin::activeProjectHasChanged()
         """
-        raise NotImplementedError
+        return int(self.call_com(lambda: self._com.activeProjectHasChanged()))
 
     def on_menu_item_select(self, menu_item: str) -> str:
         """Select a given menu item.
@@ -198,7 +169,7 @@ class RPInternalOEMPlugin(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPInternalOEMPlugin::onMenuItemSelect(java.lang.String menuItem)
         """
-        raise NotImplementedError
+        return str(self.call_com(lambda: self._com.onMenuItemSelect(menu_item)))
 
     def on_menu_item_select_with_parameters(self, menu_item: str, parameters: str) -> str:
         """For internal use only.
@@ -213,7 +184,7 @@ class RPInternalOEMPlugin(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPInternalOEMPlugin::onMenuItemSelectWithParameters(java.lang.String menuItem, java.lang.String parameters)
         """
-        raise NotImplementedError
+        return str(self.call_com(lambda: self._com.onMenuItemSelectWithParameters(menu_item, parameters)))
 
     def rhap_plugin_animation_stopped(self) -> int:
         """Notify the plugin that animation has stopped.
@@ -227,7 +198,7 @@ class RPInternalOEMPlugin(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPInternalOEMPlugin::rhapPluginAnimationStopped()
         """
-        raise NotImplementedError
+        return int(self.call_com(lambda: self._com.rhapPluginAnimationStopped()))
 
     def rhp_plugin_animation_started(self) -> int:
         """Notify the plugin that animation has started.
@@ -241,7 +212,7 @@ class RPInternalOEMPlugin(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPInternalOEMPlugin::rhpPluginAnimationStarted()
         """
-        raise NotImplementedError
+        return int(self.call_com(lambda: self._com.rhpPluginAnimationStarted()))
 
     def rhp_plugin_cleanup(self) -> int:
         """Perform cleanup of the plugin.
@@ -255,7 +226,7 @@ class RPInternalOEMPlugin(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPInternalOEMPlugin::rhpPluginCleanup()
         """
-        raise NotImplementedError
+        return int(self.call_com(lambda: self._com.rhpPluginCleanup()))
 
     def rhp_plugin_do_command(self, the_command: str) -> None:
         """Notify the plugin to execute a command.
@@ -269,7 +240,7 @@ class RPInternalOEMPlugin(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPInternalOEMPlugin::rhpPluginDoCommand(java.lang.String theCommand)
         """
-        raise NotImplementedError
+        self.call_com(lambda: self._com.rhpPluginDoCommand(the_command))
 
     def rhp_plugin_final_cleanup(self) -> int:
         """Perform final cleanup of the plugin.
@@ -283,7 +254,7 @@ class RPInternalOEMPlugin(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPInternalOEMPlugin::rhpPluginFinalCleanup()
         """
-        raise NotImplementedError
+        return int(self.call_com(lambda: self._com.rhpPluginFinalCleanup()))
 
     def rhp_plugin_init(self) -> int:
         """Initialize the plugin.
@@ -297,7 +268,7 @@ class RPInternalOEMPlugin(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPInternalOEMPlugin::rhpPluginInit()
         """
-        raise NotImplementedError
+        return int(self.call_com(lambda: self._com.rhpPluginInit()))
 
     def rhp_plugin_invoke_item(self) -> int:
         """Invoke an item of the plugin.
@@ -311,7 +282,7 @@ class RPInternalOEMPlugin(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPInternalOEMPlugin::rhpPluginInvokeItem()
         """
-        raise NotImplementedError
+        return int(self.call_com(lambda: self._com.rhpPluginInvokeItem()))
 
     def rhp_plugin_on_i_d_e_build_done(self, build_status: str) -> None:
         """Notify the plugin that an IDE build is done.
@@ -325,7 +296,7 @@ class RPInternalOEMPlugin(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPInternalOEMPlugin::rhpPluginOnIDEBuildDone(java.lang.String buildStatus)
         """
-        raise NotImplementedError
+        self.call_com(lambda: self._com.rhpPluginOnIDEBuildDone(build_status))
 
     def rhp_plugin_set_application(self, p_r_p_app: "RhapsodyApplication") -> int:
         """Set the IRPApplication of the plugin.
@@ -342,7 +313,7 @@ class RPInternalOEMPlugin(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPInternalOEMPlugin::rhpPluginSetApplication(com.telelogic.rhapsody.core.IRPApplication pRPApp)
         """
-        raise NotImplementedError
+        return int(self.call_com(lambda: self._com.rhpPluginSetApplication(p_r_p_app._com)))
 
     def rhp_saving_project(self) -> int:
         """Notify the plugin that a Rhapsody save is occurring.
@@ -356,44 +327,30 @@ class RPInternalOEMPlugin(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPInternalOEMPlugin::rhpSavingProject()
         """
-        raise NotImplementedError
+        return int(self.call_com(lambda: self._com.rhpSavingProject()))
 
 
 class RPJavaPlugins(RPModelElement):
     """Wraps ``IRPJavaPlugins``."""
 
     # IRPJavaPlugins method parity checklist:
-    # [ ] getInterfaceName             [ ] impl  [ ] docstring  [ ] test
+    # [x] getInterfaceName             [x] impl (inherited from RPModelElement)  [x] docstring  [x] test
     # No deprecated IRPJavaPlugins methods.
-
-    def get_interface_name(self) -> str:
-        """Get the interfaceName property.
-
-        Returns:
-            The name of the interface.
-
-        Raises:
-            RhapsodyRuntimeException: If the operation fails.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPJavaPlugins::getInterfaceName()
-        """
-        raise NotImplementedError
 
 
 class RPPlugInWindow(RPModelElement):
     """Wraps ``IRPPlugInWindow``."""
 
     # IRPPlugInWindow method parity checklist:
-    # [ ] destroyWindow                [ ] impl  [ ] docstring  [ ] test
-    # [ ] getDocking                   [ ] impl  [ ] docstring  [ ] test
-    # [ ] getPosString                 [ ] impl  [ ] docstring  [ ] test
-    # [ ] getWindowHandle              [ ] impl  [ ] docstring  [ ] test
-    # [ ] setDocking                   [ ] impl  [ ] docstring  [ ] test
-    # [ ] setPosString                 [ ] impl  [ ] docstring  [ ] test
-    # [ ] setTitle                     [ ] impl  [ ] docstring  [ ] test
-    # [ ] showWindow                   [ ] impl  [ ] docstring  [ ] test
-    # [ ] getInterfaceName             [ ] impl  [ ] docstring  [ ] test
+    # [x] destroyWindow                [x] impl  [x] docstring  [x] test
+    # [x] getDocking                   [x] impl  [x] docstring  [x] test
+    # [x] getPosString                 [x] impl  [x] docstring  [x] test
+    # [x] getWindowHandle              [x] impl  [x] docstring  [x] test
+    # [x] setDocking                   [x] impl  [x] docstring  [x] test
+    # [x] setPosString                 [x] impl  [x] docstring  [x] test
+    # [x] setTitle                     [x] impl  [x] docstring  [x] test
+    # [x] showWindow                   [x] impl  [x] docstring  [x] test
+    # [x] getInterfaceName             [x] impl (inherited from RPModelElement)  [x] docstring  [x] test
     # No deprecated IRPPlugInWindow methods.
 
     def destroy_window(self) -> None:
@@ -405,7 +362,7 @@ class RPPlugInWindow(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPPlugInWindow::destroyWindow()
         """
-        raise NotImplementedError
+        self.call_com(lambda: self._com.destroyWindow())
 
     def get_docking(self) -> int:
         """Get the docking mode.
@@ -419,7 +376,7 @@ class RPPlugInWindow(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPPlugInWindow::getDocking()
         """
-        raise NotImplementedError
+        return int(self._get_method_or_property(self._com, "getDocking", "docking"))
 
     def get_pos_string(self) -> str:
         """Get the position string.
@@ -433,7 +390,7 @@ class RPPlugInWindow(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPPlugInWindow::getPosString()
         """
-        raise NotImplementedError
+        return str(self._get_method_or_property(self._com, "getPosString", "posString"))
 
     def get_window_handle(self) -> int:
         """Get the window handle.
@@ -447,7 +404,7 @@ class RPPlugInWindow(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPPlugInWindow::getWindowHandle()
         """
-        raise NotImplementedError
+        return int(self._get_method_or_property(self._com, "getWindowHandle", "windowHandle"))
 
     def set_docking(self, n_dock_pos: int) -> None:
         """Set the docking mode.
@@ -461,7 +418,7 @@ class RPPlugInWindow(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPPlugInWindow::setDocking(int nDockPos)
         """
-        raise NotImplementedError
+        self._set_method_or_property(self._com, "setDocking", "docking", n_dock_pos)
 
     def set_pos_string(self, s_pos: str) -> None:
         """Set the position string.
@@ -475,7 +432,7 @@ class RPPlugInWindow(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPPlugInWindow::setPosString(java.lang.String sPos)
         """
-        raise NotImplementedError
+        self._set_method_or_property(self._com, "setPosString", "posString", s_pos)
 
     def set_title(self, s_title: str) -> None:
         """Set the window title.
@@ -489,7 +446,7 @@ class RPPlugInWindow(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPPlugInWindow::setTitle(java.lang.String sTitle)
         """
-        raise NotImplementedError
+        self._set_method_or_property(self._com, "setTitle", "title", s_title)
 
     def show_window(self, n_show: int) -> None:
         """Show or hide the window.
@@ -503,45 +460,17 @@ class RPPlugInWindow(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPPlugInWindow::showWindow(int nShow)
         """
-        raise NotImplementedError
-
-    def get_interface_name(self) -> str:
-        """Get the interfaceName property.
-
-        Returns:
-            The name of the interface.
-
-        Raises:
-            RhapsodyRuntimeException: If the operation fails.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPPlugInWindow::getInterfaceName()
-        """
-        raise NotImplementedError
+        self.call_com(lambda: self._com.showWindow(n_show))
 
 
 class RPProgressBar(RPModelElement):
     """Wraps ``IRPProgressBar``."""
 
     # IRPProgressBar method parity checklist:
-    # [ ] getInterfaceName             [ ] impl  [ ] docstring  [ ] test
-    # [ ] reset                        [ ] impl  [ ] docstring  [ ] test
-    # [ ] tick                         [ ] impl  [ ] docstring  [ ] test
+    # [x] getInterfaceName             [x] impl (inherited from RPModelElement)  [x] docstring  [x] test
+    # [x] reset                        [x] impl  [x] docstring  [x] test
+    # [x] tick                         [x] impl  [x] docstring  [x] test
     # No deprecated IRPProgressBar methods.
-
-    def get_interface_name(self) -> str:
-        """Get the interfaceName property.
-
-        Returns:
-            The name of the interface.
-
-        Raises:
-            RhapsodyRuntimeException: If the operation fails.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPProgressBar::getInterfaceName()
-        """
-        raise NotImplementedError
 
     def reset(self) -> None:
         """Reset the progress bar.
@@ -552,7 +481,7 @@ class RPProgressBar(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPProgressBar::reset()
         """
-        raise NotImplementedError
+        self.call_com(lambda: self._com.reset())
 
     def tick(self, amount: int) -> None:
         """Advance the progress bar by a given amount.
@@ -566,22 +495,22 @@ class RPProgressBar(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPProgressBar::tick(int amount)
         """
-        raise NotImplementedError
+        self.call_com(lambda: self._com.tick(amount))
 
 
 class RPSelection(RPModelElement):
     """Wraps ``IRPSelection``: contains methods for cutting, copying, pasting, and deleting graphic elements on diagrams."""
 
     # IRPSelection method parity checklist:
-    # [ ] canCopy                      [ ] impl  [ ] docstring  [ ] test
-    # [ ] canCut                       [ ] impl  [ ] docstring  [ ] test
-    # [ ] canDelete                    [ ] impl  [ ] docstring  [ ] test
-    # [ ] canPaste                     [ ] impl  [ ] docstring  [ ] test
-    # [ ] copySelected                 [ ] impl  [ ] docstring  [ ] test
-    # [ ] cutSelected                  [ ] impl  [ ] docstring  [ ] test
-    # [ ] deleteSelected               [ ] impl  [ ] docstring  [ ] test
-    # [ ] getInterfaceName             [ ] impl  [ ] docstring  [ ] test
-    # [ ] pasteSelected                [ ] impl  [ ] docstring  [ ] test
+    # [x] canCopy                      [x] impl  [x] docstring  [x] test
+    # [x] canCut                       [x] impl  [x] docstring  [x] test
+    # [x] canDelete                    [x] impl  [x] docstring  [x] test
+    # [x] canPaste                     [x] impl  [x] docstring  [x] test
+    # [x] copySelected                 [x] impl  [x] docstring  [x] test
+    # [x] cutSelected                  [x] impl  [x] docstring  [x] test
+    # [x] deleteSelected               [x] impl  [x] docstring  [x] test
+    # [x] getInterfaceName             [x] impl (inherited from RPModelElement)  [x] docstring  [x] test
+    # [x] pasteSelected                [x] impl  [x] docstring  [x] test
     # No deprecated IRPSelection methods.
 
     def can_copy(self) -> int:
@@ -596,7 +525,7 @@ class RPSelection(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPSelection::canCopy()
         """
-        raise NotImplementedError
+        return int(self.call_com(lambda: self._com.canCopy()))
 
     def can_cut(self) -> int:
         """Check whether the current selection can be cut.
@@ -610,7 +539,7 @@ class RPSelection(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPSelection::canCut()
         """
-        raise NotImplementedError
+        return int(self.call_com(lambda: self._com.canCut()))
 
     def can_delete(self) -> int:
         """Check whether the current selection can be deleted.
@@ -624,7 +553,7 @@ class RPSelection(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPSelection::canDelete()
         """
-        raise NotImplementedError
+        return int(self.call_com(lambda: self._com.canDelete()))
 
     def can_paste(self) -> int:
         """Check whether the item in the clipboard can be pasted to the diagram that has the focus.
@@ -638,7 +567,7 @@ class RPSelection(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPSelection::canPaste()
         """
-        raise NotImplementedError
+        return int(self.call_com(lambda: self._com.canPaste()))
 
     def copy_selected(self) -> int:
         """Copy the currently selected graphic element.
@@ -652,7 +581,7 @@ class RPSelection(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPSelection::copySelected()
         """
-        raise NotImplementedError
+        return int(self.call_com(lambda: self._com.copySelected()))
 
     def cut_selected(self) -> int:
         """Cut the currently selected graphic element.
@@ -666,7 +595,7 @@ class RPSelection(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPSelection::cutSelected()
         """
-        raise NotImplementedError
+        return int(self.call_com(lambda: self._com.cutSelected()))
 
     def delete_selected(self) -> int:
         """Delete the currently selected graphic element.
@@ -680,21 +609,7 @@ class RPSelection(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPSelection::deleteSelected()
         """
-        raise NotImplementedError
-
-    def get_interface_name(self) -> str:
-        """Return the name of the API interface corresponding to the object it is called on.
-
-        Returns:
-            The name of the API interface corresponding to the object.
-
-        Raises:
-            RhapsodyRuntimeException: If the operation fails.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPSelection::getInterfaceName()
-        """
-        raise NotImplementedError
+        return int(self.call_com(lambda: self._com.deleteSelected()))
 
     def paste_selected(self) -> int:
         """Paste the item in the clipboard to the diagram that has the focus.
@@ -708,16 +623,16 @@ class RPSelection(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPSelection::pasteSelected()
         """
-        raise NotImplementedError
+        return int(self.call_com(lambda: self._com.pasteSelected()))
 
 
 class RPowListListener(RPModelElement):
     """Wraps ``IRPowListListener``."""
 
     # IRPowListListener method parity checklist:
-    # [ ] dblClickNotify               [ ] impl  [ ] docstring  [ ] test
-    # [ ] setObjID                     [ ] impl  [ ] docstring  [ ] test
-    # [ ] getInterfaceName             [ ] impl  [ ] docstring  [ ] test
+    # [x] dblClickNotify               [x] impl  [x] docstring  [x] test
+    # [x] setObjID                     [x] impl  [x] docstring  [x] test
+    # [x] getInterfaceName             [x] impl (inherited from RPModelElement)  [x] docstring  [x] test
     # No deprecated IRPowListListener methods.
 
     def dbl_click_notify(self, n_row: int, n_col: int, s_content: str) -> None:
@@ -734,7 +649,7 @@ class RPowListListener(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPowListListener::dblClickNotify(int nRow, int nCol, java.lang.String sContent)
         """
-        raise NotImplementedError
+        self.call_com(lambda: self._com.dblClickNotify(n_row, n_col, s_content))
 
     def set_obj_i_d(self, bstr_obj_i_d: str) -> None:
         """Set the object ID.
@@ -748,32 +663,18 @@ class RPowListListener(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPowListListener::setObjID(java.lang.String bstrObjID)
         """
-        raise NotImplementedError
-
-    def get_interface_name(self) -> str:
-        """Get the interfaceName property.
-
-        Returns:
-            The name of the interface.
-
-        Raises:
-            RhapsodyRuntimeException: If the operation fails.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPowListListener::getInterfaceName()
-        """
-        raise NotImplementedError
+        self._set_method_or_property(self._com, "setObjID", "objID", bstr_obj_i_d)
 
 
 class RPowPaneMgr(RPModelElement):
     """Wraps ``IRPowPaneMgr``."""
 
     # IRPowPaneMgr method parity checklist:
-    # [ ] addTabNotify                 [ ] impl  [ ] docstring  [ ] test
-    # [ ] closeTabNotify               [ ] impl  [ ] docstring  [ ] test
-    # [ ] getInterfaceName             [ ] impl  [ ] docstring  [ ] test
-    # [ ] getOWListListener            [ ] impl  [ ] docstring  [ ] test
-    # [ ] getOWTextListener            [ ] impl  [ ] docstring  [ ] test
+    # [x] addTabNotify                 [x] impl  [x] docstring  [x] test
+    # [x] closeTabNotify               [x] impl  [x] docstring  [x] test
+    # [x] getInterfaceName             [x] impl (inherited from RPModelElement)  [x] docstring  [x] test
+    # [x] getOWListListener            [x] impl  [x] docstring  [x] test
+    # [x] getOWTextListener            [x] impl  [x] docstring  [x] test
     # No deprecated IRPowPaneMgr methods.
 
     def add_tab_notify(self, n_type: int, n_sub_type: int, s_obj_i_d: str, s_title: str) -> None:
@@ -791,7 +692,7 @@ class RPowPaneMgr(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPowPaneMgr::addTabNotify(int nType, int nSubType, java.lang.String sObjID, java.lang.String sTitle)
         """
-        raise NotImplementedError
+        self.call_com(lambda: self._com.addTabNotify(n_type, n_sub_type, s_obj_i_d, s_title))
 
     def close_tab_notify(self, s_obj_i_d: str) -> None:
         """Notify when a tab is closed.
@@ -805,21 +706,7 @@ class RPowPaneMgr(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPowPaneMgr::closeTabNotify(java.lang.String sObjID)
         """
-        raise NotImplementedError
-
-    def get_interface_name(self) -> str:
-        """Get the interfaceName property.
-
-        Returns:
-            The name of the interface.
-
-        Raises:
-            RhapsodyRuntimeException: If the operation fails.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPowPaneMgr::getInterfaceName()
-        """
-        raise NotImplementedError
+        self.call_com(lambda: self._com.closeTabNotify(s_obj_i_d))
 
     def get_o_w_list_listener(self, s_obj_i_d: str) -> "RPowListListener":
         """Get the list listener for the given object ID.
@@ -836,7 +723,7 @@ class RPowPaneMgr(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPowPaneMgr::getOWListListener(java.lang.String sObjID)
         """
-        raise NotImplementedError
+        return RPowListListener(self.call_com(lambda: self._com.getOWListListener(s_obj_i_d)))
 
     def get_o_w_text_listener(self, s_obj_i_d: str) -> "RPowTextListener":
         """Get the text listener for the given object ID.
@@ -853,16 +740,16 @@ class RPowPaneMgr(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPowPaneMgr::getOWTextListener(java.lang.String sObjID)
         """
-        raise NotImplementedError
+        return RPowTextListener(self.call_com(lambda: self._com.getOWTextListener(s_obj_i_d)))
 
 
 class RPowTextListener(RPModelElement):
     """Wraps ``IRPowTextListener``."""
 
     # IRPowTextListener method parity checklist:
-    # [ ] dblClickNotify               [ ] impl  [ ] docstring  [ ] test
-    # [ ] setObjID                     [ ] impl  [ ] docstring  [ ] test
-    # [ ] getInterfaceName             [ ] impl  [ ] docstring  [ ] test
+    # [x] dblClickNotify               [x] impl  [x] docstring  [x] test
+    # [x] setObjID                     [x] impl  [x] docstring  [x] test
+    # [x] getInterfaceName             [x] impl (inherited from RPModelElement)  [x] docstring  [x] test
     # No deprecated IRPowTextListener methods.
 
     def dbl_click_notify(self, n_line: int, sz_line: str) -> None:
@@ -878,7 +765,7 @@ class RPowTextListener(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPowTextListener::dblClickNotify(int nLine, java.lang.String szLine)
         """
-        raise NotImplementedError
+        self.call_com(lambda: self._com.dblClickNotify(n_line, sz_line))
 
     def set_obj_i_d(self, bstr_obj_i_d: str) -> None:
         """Set the object ID.
@@ -892,18 +779,4 @@ class RPowTextListener(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPowTextListener::setObjID(java.lang.String bstrObjID)
         """
-        raise NotImplementedError
-
-    def get_interface_name(self) -> str:
-        """Get the interfaceName property.
-
-        Returns:
-            The name of the interface.
-
-        Raises:
-            RhapsodyRuntimeException: If the operation fails.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPowTextListener::getInterfaceName()
-        """
-        raise NotImplementedError
+        self._set_method_or_property(self._com, "setObjID", "objID", bstr_obj_i_d)
