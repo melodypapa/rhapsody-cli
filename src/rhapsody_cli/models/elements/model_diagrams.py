@@ -1,6 +1,6 @@
 """Diagram-family wrappers: mirrors IRPDiagram from com.telelogic.rhapsody.core."""
 
-from typing import Any
+from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.core import (
     AbstractRPModelElement,
@@ -9,9 +9,49 @@ from rhapsody_cli.models.core import (
     RPUnit,
 )
 
+if TYPE_CHECKING:
+    from rhapsody_cli.models.elements.model_graphics import RPGraphElement
+
 
 class RPDiagram(RPUnit):
     """Wraps ``IRPDiagram``: represents a diagram in the model."""
+
+    # IRPDiagram method parity checklist:
+    # [ ] addFreeShapeByType  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addImage  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addNewEdgeByType  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addNewEdgeForElement  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addNewNodeByType  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addNewNodeForElement  [ ] impl  [ ] docstring  [ ] test
+    # [x] addTextBox  [x] impl  [x] docstring  [x] test
+    # [ ] createDiagramView  [ ] impl  [ ] docstring  [ ] test
+    # [x] getCustomViews  [x] impl  [x] docstring  [x] test
+    # [ ] getDiagramViewOf  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getDiagramViews  [ ] impl  [ ] docstring  [ ] test
+    # [ ] isDiagramView  [ ] impl  [ ] docstring  [ ] test
+    # [ ] openDiagramView  [ ] impl  [ ] docstring  [ ] test
+    # [ ] rearrangePorts  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setCustomViews  [ ] impl  [ ] docstring  [ ] test
+    # [ ] updateViewOnServer  [ ] impl  [ ] docstring  [ ] test
+    # [x] closeDiagram  [x] impl  [x] docstring  [x] test
+    # [ ] completeRelations  [ ] impl  [ ] docstring  [ ] test
+    # [x] getCorrespondingGraphicElements  [x] impl  [x] docstring  [x] test
+    # [ ] getElementsInDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getGraphicalElements  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getLastVisualizationModifiedTime  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getPicture  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getPictureAs  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getPictureAsDividedMetafiles  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getPictureEx  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getPicturesWithImageMap  [ ] impl  [ ] docstring  [ ] test
+    # [ ] isOpen  [ ] impl  [ ] docstring  [ ] test
+    # [ ] isShowDiagramFrame  [ ] impl  [ ] docstring  [ ] test
+    # [ ] openDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [ ] populateDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [ ] removeGraphElements  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setShowDiagramFrame  [ ] impl  [ ] docstring  [ ] test
+    # [inherited] IRPUnit / IRPModelElement methods (covered by RPUnit / RPModelElement checklists)
+    # No deprecated IRPDiagram methods.
 
     def closeDiagram(self) -> None:
         """Closes the diagram.
@@ -21,7 +61,7 @@ class RPDiagram(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.closeDiagram())
 
-    def addTextBox(self, text: str, x_position: int, y_position: int, width: int, height: int) -> Any:
+    def addTextBox(self, text: str, x_position: int, y_position: int, width: int, height: int) -> "RPGraphElement":
         """Adds a text box using the specified text, starting point, width, and height.
 
         Args:
@@ -37,7 +77,7 @@ class RPDiagram(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::addTextBox(java.lang.String text, int xPosition, int yPosition, int nWidth, int nHeight)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addTextBox(text, x_position, y_position, width, height)))
+        return cast("RPGraphElement", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addTextBox(text, x_position, y_position, width, height))))
 
     def getCustomViews(self) -> RPCollection:
         """Gets the custom views that were applied to this diagram view.

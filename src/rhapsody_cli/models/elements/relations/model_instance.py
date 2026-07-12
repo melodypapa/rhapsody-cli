@@ -1,29 +1,32 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPInstance``."""
 
-from typing import Any
+from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
 from rhapsody_cli.models.elements.relations.model_relation import RPRelation
 
-# IRPInstance method parity checklist:
-# [x] addRelationToTheWhole        [x] impl  [x] docstring  [x] test
-# [x] getAllNestedElements         [x] impl  [x] docstring  [x] test   (already implemented)
-# [x] getAttributeValue            [x] impl  [x] docstring  [x] test   (already implemented)
-# [x] getInLinks                   [x] impl  [x] docstring  [x] test   (already implemented)
-# [x] getInstantiatedBy            [x] impl  [x] docstring  [x] test
-# [x] getListOfInitializerArguments [x] impl [x] docstring  [x] test
-# [x] getOutLinks                  [x] impl  [x] docstring  [x] test   (already implemented)
-# [x] setAttributeValue            [x] impl  [x] docstring  [x] test   (already implemented)
-# [x] setExplicit                  [x] impl  [x] docstring  [x] test
-# [x] setImplicit                  [x] impl  [x] docstring  [x] test
-# [x] setInitializerArgumentValue  [x] impl  [x] docstring  [x] test
-# [x] setInstantiatedBy            [x] impl  [x] docstring  [x] test
-# [x] updateContainedDiagramsOnServer [x] impl [x] docstring [x] test
-# No deprecated methods in IRPInstance.
+if TYPE_CHECKING:
+    from rhapsody_cli.models.elements.classifiers.model_operation import RPOperation
 
 
 class RPInstance(RPRelation):
     """Wraps ``IRPInstance``: represents an instance in the model."""
+
+    # IRPInstance method parity checklist:
+    # [x] addRelationToTheWhole        [x] impl  [x] docstring  [x] test
+    # [x] getAllNestedElements         [x] impl  [x] docstring  [x] test   (already implemented)
+    # [x] getAttributeValue            [x] impl  [x] docstring  [x] test   (already implemented)
+    # [x] getInLinks                   [x] impl  [x] docstring  [x] test   (already implemented)
+    # [x] getInstantiatedBy            [x] impl  [x] docstring  [x] test
+    # [x] getListOfInitializerArguments [x] impl [x] docstring  [x] test
+    # [x] getOutLinks                  [x] impl  [x] docstring  [x] test   (already implemented)
+    # [x] setAttributeValue            [x] impl  [x] docstring  [x] test   (already implemented)
+    # [x] setExplicit                  [x] impl  [x] docstring  [x] test
+    # [x] setImplicit                  [x] impl  [x] docstring  [x] test
+    # [x] setInitializerArgumentValue  [x] impl  [x] docstring  [x] test
+    # [x] setInstantiatedBy            [x] impl  [x] docstring  [x] test
+    # [x] updateContainedDiagramsOnServer [x] impl [x] docstring [x] test
+    # No deprecated methods in IRPInstance.
 
     def getAllNestedElements(self) -> RPCollection:
         """Returns a collection of all the model elements that are directly under the object.
@@ -103,7 +106,7 @@ class RPInstance(RPRelation):
         """
         return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getOutLinks", "outLinks"))
 
-    def addRelationToTheWhole(self, rel_name: str) -> Any:
+    def addRelationToTheWhole(self, rel_name: str) -> "RPRelation":
         """Adds a relation to the whole for this instance.
 
         Args:
@@ -118,9 +121,9 @@ class RPInstance(RPRelation):
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::addRelationToTheWhole(java.lang.String relName)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addRelationToTheWhole(rel_name)))
+        return cast("RPRelation", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addRelationToTheWhole(rel_name))))
 
-    def getInstantiatedBy(self) -> Any:
+    def getInstantiatedBy(self) -> "RPOperation":
         """Returns the operation that instantiates this instance.
 
         Returns:
@@ -132,7 +135,7 @@ class RPInstance(RPRelation):
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::getInstantiatedBy()
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getInstantiatedBy", "instantiatedBy"))
+        return cast("RPOperation", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getInstantiatedBy", "instantiatedBy")))
 
     def getListOfInitializerArguments(self) -> RPCollection:
         """Returns the list of initializer arguments for this instance.

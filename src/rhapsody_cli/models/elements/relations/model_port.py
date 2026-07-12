@@ -1,29 +1,32 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPPort``."""
 
-from typing import Any
+from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
 from rhapsody_cli.models.elements.relations.model_instance import RPInstance
 
-# IRPPort method parity checklist:
-# [x] addProvidedInterface      [x] impl  [x] docstring  [x] test
-# [x] addRequiredInterface      [x] impl  [x] docstring  [x] test
-# [x] getIsBehavioral           [x] impl  [x] docstring  [x] test
-# [x] getIsReversed             [x] impl  [x] docstring  [x] test
-# [x] getPortContract           [x] impl  [x] docstring  [x] test
-# [x] getProvidedInterfaces     [x] impl  [x] docstring  [x] test
-# [x] getRequiredInterfaces     [x] impl  [x] docstring  [x] test
-# [x] removeProvidedInterface   [x] impl  [x] docstring  [x] test
-# [x] removeRequiredInterface   [x] impl  [x] docstring  [x] test
-# [x] setIsBehavioral           [x] impl  [x] docstring  [x] test
-# [x] setIsReversed             [x] impl  [x] docstring  [x] test
-# [x] setPortContract           [x] impl  [x] docstring  [x] test
-# [x] getContract (deprecated, use getPortContract) [x] impl [x] docstring [x] test
-# [x] setContract (deprecated, use setPortContract) [x] impl [x] docstring [x] test
+if TYPE_CHECKING:
+    from rhapsody_cli.models.elements.classifiers.model_class import RPClass
 
 
 class RPPort(RPInstance):
     """Wraps ``IRPPort``: represents a port on a classifier in the model."""
+
+    # IRPPort method parity checklist:
+    # [x] addProvidedInterface      [x] impl  [x] docstring  [x] test
+    # [x] addRequiredInterface      [x] impl  [x] docstring  [x] test
+    # [x] getIsBehavioral           [x] impl  [x] docstring  [x] test
+    # [x] getIsReversed             [x] impl  [x] docstring  [x] test
+    # [x] getPortContract           [x] impl  [x] docstring  [x] test
+    # [x] getProvidedInterfaces     [x] impl  [x] docstring  [x] test
+    # [x] getRequiredInterfaces     [x] impl  [x] docstring  [x] test
+    # [x] removeProvidedInterface   [x] impl  [x] docstring  [x] test
+    # [x] removeRequiredInterface   [x] impl  [x] docstring  [x] test
+    # [x] setIsBehavioral           [x] impl  [x] docstring  [x] test
+    # [x] setIsReversed             [x] impl  [x] docstring  [x] test
+    # [x] setPortContract           [x] impl  [x] docstring  [x] test
+    # [x] getContract (deprecated, use getPortContract) [x] impl [x] docstring [x] test
+    # [x] setContract (deprecated, use setPortContract) [x] impl [x] docstring [x] test
 
     def getIsBehavioral(self) -> int:
         """Checks whether the port is a behavioral port.
@@ -81,7 +84,7 @@ class RPPort(RPInstance):
         """
         AbstractRPModelElement._set_method_or_property(self._com, "setIsReversed", "isReversed", is_reversed)
 
-    def getPortContract(self) -> Any:
+    def getPortContract(self) -> "RPClass":
         """Returns the contract defined for the port.
 
         Returns:
@@ -93,7 +96,7 @@ class RPPort(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPPort::getPortContract()
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getPortContract", "portContract"))
+        return cast("RPClass", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getPortContract", "portContract")))
 
     def setPortContract(self, port_contract: RPModelElement) -> None:
         """Specifies the contract to use for the port.
@@ -190,7 +193,7 @@ class RPPort(RPInstance):
         """
         AbstractRPModelElement.call_com(lambda: self._com.removeRequiredInterface(new_val._com))
 
-    def getContract(self) -> Any:
+    def getContract(self) -> "RPClass":
         """Returns the contract defined for the port.
 
         Deprecated:
@@ -203,7 +206,7 @@ class RPPort(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPPort::getContract()
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getContract", "contract"))
+        return cast("RPClass", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getContract", "contract")))
 
     def setContract(self, contract: RPModelElement) -> None:
         """Specifies the contract to use for the port.

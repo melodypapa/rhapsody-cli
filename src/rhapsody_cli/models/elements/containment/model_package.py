@@ -1,14 +1,124 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPPackage``."""
 
-from typing import Any
+from typing import TYPE_CHECKING, Any, cast
 
 from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPUnit
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.elements.classifiers.model_actor import RPActor
+    from rhapsody_cli.models.elements.classifiers.model_class import RPClass
+    from rhapsody_cli.models.elements.classifiers.model_operation import RPOperation
+    from rhapsody_cli.models.elements.classifiers.model_usecase import RPUseCase
 
 
 class RPPackage(RPUnit):
     """Wraps ``IRPPackage``: represents a package that contains model elements."""
 
-    def addClass(self, name: str) -> Any:
+    # IRPPackage method parity checklist:
+    # [ ] addActivityDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [x] addActor  [x] impl  [x] docstring  [x] test
+    # [x] addClass  [x] impl  [x] docstring  [x] test
+    # [ ] addCollaborationDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addComponentDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addDeploymentDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addEvent  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addFlowItems  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addFlows  [ ] impl  [ ] docstring  [ ] test
+    # [x] addGlobalFunction  [x] impl  [x] docstring  [x] test
+    # [ ] addGlobalObject  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addGlobalVariable  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addImplicitObject  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addInstanceSpecification  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addLink  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addLinkBetweenSYSMLPorts  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addModule  [ ] impl  [ ] docstring  [ ] test
+    # [x] addNestedPackage  [x] impl  [x] docstring  [x] test
+    # [ ] addNode  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addObjectModelDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addPanelDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addSequenceDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addStatechart  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addTimingDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addType  [ ] impl  [ ] docstring  [ ] test
+    # [x] addUseCase  [x] impl  [x] docstring  [x] test
+    # [ ] addUseCaseDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [ ] deleteActor  [ ] impl  [ ] docstring  [ ] test
+    # [ ] deleteClass  [ ] impl  [ ] docstring  [ ] test
+    # [ ] deleteCollaborationDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [ ] deleteComponentDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [ ] deleteDeploymentDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [ ] deleteEvent  [ ] impl  [ ] docstring  [ ] test
+    # [ ] deleteFlowItems  [ ] impl  [ ] docstring  [ ] test
+    # [ ] deleteFlows  [ ] impl  [ ] docstring  [ ] test
+    # [ ] deleteGlobalFunction  [ ] impl  [ ] docstring  [ ] test
+    # [ ] deleteGlobalObject  [ ] impl  [ ] docstring  [ ] test
+    # [ ] deleteGlobalVariable  [ ] impl  [ ] docstring  [ ] test
+    # [ ] deleteNode  [ ] impl  [ ] docstring  [ ] test
+    # [ ] deleteObjectModelDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [ ] deletePackage  [ ] impl  [ ] docstring  [ ] test
+    # [ ] deletePanelDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [ ] deleteSequenceDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [ ] deleteTimingDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [ ] deleteType  [ ] impl  [ ] docstring  [ ] test
+    # [ ] deleteUseCase  [ ] impl  [ ] docstring  [ ] test
+    # [ ] deleteUseCaseDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [ ] findActor  [ ] impl  [ ] docstring  [ ] test
+    # [ ] findAllByName  [ ] impl  [ ] docstring  [ ] test
+    # [ ] findClass  [ ] impl  [ ] docstring  [ ] test
+    # [ ] findEvent  [ ] impl  [ ] docstring  [ ] test
+    # [ ] findGlobalFunction  [ ] impl  [ ] docstring  [ ] test
+    # [ ] findGlobalObject  [ ] impl  [ ] docstring  [ ] test
+    # [ ] findGlobalVariable  [ ] impl  [ ] docstring  [ ] test
+    # [ ] findNode  [ ] impl  [ ] docstring  [ ] test
+    # [ ] findType  [ ] impl  [ ] docstring  [ ] test
+    # [ ] findUsage  [ ] impl  [ ] docstring  [ ] test
+    # [ ] findUseCase  [ ] impl  [ ] docstring  [ ] test
+    # [x] getActors  [x] impl  [x] docstring  [x] test
+    # [ ] getAllNestedElements  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getBehavioralDiagrams  [ ] impl  [ ] docstring  [ ] test
+    # [x] getClasses  [x] impl  [x] docstring  [x] test
+    # [ ] getCollaborationDiagrams  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getComponentDiagrams  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getDeploymentDiagrams  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getEvents  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getEventsBaseId  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getFlowItems  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getFlows  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getGlobalFunctions  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getGlobalObjects  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getGlobalVariables  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getInstanceSpecifications  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getLinks  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getModules  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getNamespace  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getNestedClassifiers  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getNestedComponents  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getNodes  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getObjectModelDiagrams  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getPackages  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getPanelDiagrams  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getRemoteRequirementsPopulateMode  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getRootInstanceSpecifications  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getSavedInSeperateDirectory  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getSequenceDiagrams  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getSourceArtifacts  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getTimingDiagrams  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getTypes  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getUseCaseDiagrams  [ ] impl  [ ] docstring  [ ] test
+    # [x] getUseCases  [x] impl  [x] docstring  [x] test
+    # [ ] getUserDefinedStereotypes  [ ] impl  [ ] docstring  [ ] test
+    # [ ] loginToRemoteArtifactServer  [ ] impl  [ ] docstring  [ ] test
+    # [ ] populateRemoteRequirements  [ ] impl  [ ] docstring  [ ] test
+    # [ ] reCalculateEventsBaseId  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setRemoteRequirementsPopulateMode  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setSavedInSeperateDirectory  [ ] impl  [ ] docstring  [ ] test
+    # [ ] updateContainedDiagramsOnServer  [ ] impl  [ ] docstring  [ ] test
+    # [ ] updateContainedMatricesOnServer  [ ] impl  [ ] docstring  [ ] test
+    # [ ] updateContainedTablesOnServer  [ ] impl  [ ] docstring  [ ] test
+    # [inherited] IRPUnit / IRPModelElement methods (covered by RPUnit / RPModelElement checklists)
+    # No deprecated IRPPackage methods.
+
+    def addClass(self, name: str) -> "RPClass":
         """Adds a new class to the package.
 
         Args:
@@ -20,9 +130,9 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addClass(java.lang.String name)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addClass(name)))
+        return cast("RPClass", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addClass(name))))
 
-    def addNestedPackage(self, name: str) -> Any:
+    def addNestedPackage(self, name: str) -> "RPPackage":
         """Adds a nested package to this package.
 
         Args:
@@ -34,9 +144,9 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addNestedPackage(java.lang.String name)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNestedPackage(name)))
+        return cast("RPPackage", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNestedPackage(name))))
 
-    def addActor(self, name: str) -> Any:
+    def addActor(self, name: str) -> "RPActor":
         """Adds a new actor to the package.
 
         Args:
@@ -48,9 +158,9 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addActor(java.lang.String name)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addActor(name)))
+        return cast("RPActor", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addActor(name))))
 
-    def addGlobalFunction(self, name: str) -> Any:
+    def addGlobalFunction(self, name: str) -> "RPOperation":
         """Adds a new global function to the package.
 
         Args:
@@ -62,7 +172,7 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addGlobalFunction(java.lang.String name)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addGlobalFunction(name)))
+        return cast("RPOperation", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addGlobalFunction(name))))
 
     def getNestedPackages(self) -> "RPCollection":
         """Returns all nested packages in this package.
@@ -105,7 +215,7 @@ class RPPackage(RPUnit):
         """
         return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getUseCases", "useCases"))
 
-    def addUseCase(self, name: str) -> Any:
+    def addUseCase(self, name: str) -> "RPUseCase":
         """Adds a new use case to the package.
 
         Args:
@@ -117,7 +227,7 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addUseCase(java.lang.String name)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addUseCase(name)))
+        return cast("RPUseCase", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addUseCase(name))))
 
     def addInterface(self, name: str) -> Any:
         """Adds a new interface to the package.

@@ -1,15 +1,54 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPStatechart``."""
 
-from typing import Any
+from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 from rhapsody_cli.models.elements.classifiers.model_class import RPClass
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.elements.model_graphics import RPGraphNode
 
 
 class RPStatechart(RPClass):
     """Wraps ``IRPStatechart``: represents a statechart behavior."""
 
-    def addNewNodeByType(self, meta_type: str, x_position: int, y_position: int, width: int, height: int) -> Any:
+    # IRPStatechart method parity checklist:
+    # [ ] addFreeShapeByType  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addImage  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addNewEdgeByType  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addNewEdgeForElement  [ ] impl  [ ] docstring  [ ] test
+    # [x] addNewNodeByType  [x] impl  [x] docstring  [x] test
+    # [ ] addNewNodeForElement  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addTextBox  [ ] impl  [ ] docstring  [ ] test
+    # [ ] openDiagramView  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addNewAcceptEventAction  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addNewAcceptTimeEvent  [ ] impl  [ ] docstring  [ ] test
+    # [x] closeDiagram  [x] impl  [x] docstring  [x] test
+    # [x] createGraphics  [x] impl  [x] docstring  [x] test
+    # [x] deleteState  [x] impl  [x] docstring  [x] test
+    # [x] findTrigger  [x] impl  [x] docstring  [x] test   (inherited from RPClassifier)
+    # [ ] getAllTriggers  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getElementsInDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getGraphicalElements  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getInheritsFrom  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getIsMainBehavior  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getIsOverridden  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getItsClass  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getPicture  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getPictureAs  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getPictureAsDividedMetafiles  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getPicturesWithImageMap  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getRootState  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getStatechartDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [ ] overrideInheritance  [ ] impl  [ ] docstring  [ ] test
+    # [ ] populateDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setAsMainBehavior  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setShowDiagramFrame  [ ] impl  [ ] docstring  [ ] test
+    # [ ] unoverrideInheritance  [ ] impl  [ ] docstring  [ ] test
+    # [inherited] IRPClass / IRPClassifier / IRPUnit / IRPModelElement methods (covered by RPClass / RPClassifier / RPUnit / RPModelElement checklists)
+    # No deprecated IRPStatechart methods.
+
+    def addNewNodeByType(self, meta_type: str, x_position: int, y_position: int, width: int, height: int) -> "RPGraphNode":
         """Adds a statechart element of the specified type to the statechart.
 
         The element is placed at the given position with the given dimensions.
@@ -31,7 +70,7 @@ class RPStatechart(RPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::addNewNodeByType(java.lang.String metaType, int xPosition, int yPosition, int nWidth, int nHeight)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewNodeByType(meta_type, x_position, y_position, width, height)))
+        return cast("RPGraphNode", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewNodeByType(meta_type, x_position, y_position, width, height))))
 
     def createGraphics(self) -> None:
         """Creates the graphical representation of the statechart's elements.

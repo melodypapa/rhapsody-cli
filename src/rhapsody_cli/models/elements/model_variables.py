@@ -2,7 +2,7 @@
 com.telelogic.rhapsody.core.
 """
 
-from typing import Any
+from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.core import (
     AbstractRPModelElement,
@@ -12,13 +12,33 @@ from rhapsody_cli.models.core import (
 )
 from rhapsody_cli.models.elements.classifiers import RPClassifier
 
+if TYPE_CHECKING:
+    from rhapsody_cli.models.elements.model_values import (
+        RPInstanceValue,
+        RPLiteralSpecification,
+    )
+
 
 class RPVariable(RPUnit):
     """Wraps ``IRPVariable``: the base interface for typed elements (such as
     attributes and parameters) that carry a type and default value.
     """
 
-    def addElementDefaultValue(self, new_default_val: RPModelElement) -> Any:
+    # IRPVariable method parity checklist:
+    # [x] addElementDefaultValue  [x] impl  [x] docstring  [x] test
+    # [x] addStringDefaultValue  [x] impl  [x] docstring  [x] test
+    # [x] getDeclaration  [x] impl  [x] docstring  [x] test
+    # [x] getDefaultValue  [x] impl  [x] docstring  [x] test
+    # [x] getType  [x] impl  [x] docstring  [x] test
+    # [x] getValueSpecifications  [x] impl  [x] docstring  [x] test
+    # [x] setDeclaration  [x] impl  [x] docstring  [x] test
+    # [x] setDefaultValue  [x] impl  [x] docstring  [x] test
+    # [x] setType  [x] impl  [x] docstring  [x] test
+    # [x] setTypeDeclaration  [x] impl  [x] docstring  [x] test
+    # [inherited] IRPUnit / IRPModelElement methods (covered by RPUnit / RPModelElement checklists)
+    # No deprecated IRPVariable methods.
+
+    def addElementDefaultValue(self, new_default_val: RPModelElement) -> "RPInstanceValue":
         """For tags with multiplicity greater than 1, adds a model element as an additional value.
 
         Args:
@@ -30,9 +50,9 @@ class RPVariable(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPVariable::addElementDefaultValue(com.telelogic.rhapsody.core.IRPModelElement newDefaultVal)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addElementDefaultValue(new_default_val._com)))
+        return cast("RPInstanceValue", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addElementDefaultValue(new_default_val._com))))
 
-    def addStringDefaultValue(self, new_default_val: str) -> Any:
+    def addStringDefaultValue(self, new_default_val: str) -> "RPLiteralSpecification":
         """For tags with multiplicity greater than 1, adds a string as an additional value.
 
         Args:
@@ -44,7 +64,7 @@ class RPVariable(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPVariable::addStringDefaultValue(java.lang.String newDefaultVal)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addStringDefaultValue(new_default_val)))
+        return cast("RPLiteralSpecification", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addStringDefaultValue(new_default_val))))
 
     def getDeclaration(self) -> str:
         """Returns the type declaration if an on-the-fly type was used for the element.
@@ -68,7 +88,7 @@ class RPVariable(RPUnit):
         """
         return str(AbstractRPModelElement._get_method_or_property(self._com, "getDefaultValue", "defaultValue"))
 
-    def getType(self) -> Any:
+    def getType(self) -> "RPClassifier":
         """Returns the type of the variable.
 
         Returns:
@@ -77,7 +97,7 @@ class RPVariable(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPVariable::getType()
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getType", "type"))
+        return cast("RPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getType", "type")))
 
     def getValueSpecifications(self) -> RPCollection:
         """Returns the initial values declared for elements with multiplicity greater than one.
@@ -137,6 +157,22 @@ class RPVariable(RPUnit):
 
 class RPAttribute(RPVariable):
     """Wraps ``IRPAttribute``: represents an attribute in a classifier."""
+
+    # IRPAttribute method parity checklist:
+    # [ ] getIsConstant  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getIsOrdered  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getIsReference  [ ] impl  [ ] docstring  [ ] test
+    # [x] getIsStatic  [x] impl  [x] docstring  [x] test
+    # [x] getMultiplicity  [x] impl  [x] docstring  [x] test
+    # [x] getVisibility  [x] impl  [x] docstring  [x] test
+    # [ ] setIsConstant  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setIsOrdered  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setIsReference  [ ] impl  [ ] docstring  [ ] test
+    # [x] setIsStatic  [x] impl  [x] docstring  [x] test
+    # [x] setMultiplicity  [x] impl  [x] docstring  [x] test
+    # [x] setVisibility  [x] impl  [x] docstring  [x] test
+    # [inherited] IRPVariable / IRPUnit / IRPModelElement methods (covered by RPVariable / RPUnit / RPModelElement checklists)
+    # No deprecated IRPAttribute methods.
 
     def getMultiplicity(self) -> str:
         """Gets the multiplicity specified for the attribute.
@@ -211,6 +247,19 @@ AbstractRPModelElement.register_wrapper("Attribute", RPAttribute)
 class RPTag(RPVariable):
     """Wraps ``IRPTag``: a tag that extends ``IRPVariable``."""
 
+    # IRPTag method parity checklist:
+    # [ ] getBase  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getFromProfile  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getMultiplicity  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getTagMetaClass  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getValue  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setMultiplicity  [ ] impl  [ ] docstring  [ ] test
+    # [x] setTagContextValue  [x] impl  [x] docstring  [x] test   (inherited from RPModelElement)
+    # [ ] setTagMetaClass  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setValue  [ ] impl  [ ] docstring  [ ] test
+    # [inherited] IRPVariable / IRPUnit / IRPModelElement methods (covered by RPVariable / RPUnit / RPModelElement checklists)
+    # No deprecated IRPTag methods.
+
     pass
 
 
@@ -219,6 +268,12 @@ AbstractRPModelElement.register_wrapper("Tag", RPTag)
 
 class RPArgument(RPVariable):
     """Wraps ``IRPArgument``: an argument/parameter of an operation."""
+
+    # IRPArgument method parity checklist:
+    # [x] getArgumentDirection  [x] impl  [x] docstring  [x] test
+    # [x] setArgumentDirection  [x] impl  [x] docstring  [x] test
+    # [inherited] IRPVariable / IRPUnit / IRPModelElement methods (covered by RPVariable / RPUnit / RPModelElement checklists)
+    # No deprecated IRPArgument methods.
 
     def getArgumentDirection(self) -> str:
         """Returns the direction of the argument (e.g. ``"in"``, ``"out"``, ``"inout"``).

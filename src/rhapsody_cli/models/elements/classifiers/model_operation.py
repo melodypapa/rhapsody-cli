@@ -1,13 +1,52 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPOperation``."""
 
-from typing import Any
+from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.classifiers.model_interface_item import RPInterfaceItem
 
+if TYPE_CHECKING:
+    from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
+
 
 class RPOperation(RPInterfaceItem):
     """Wraps ``IRPOperation``: represents an operation or method in a classifier."""
+
+    # IRPOperation method parity checklist:
+    # [x] createAutoFlowChart  [x] impl  [x] docstring  [x] test
+    # [ ] deleteArgument  [ ] impl  [ ] docstring  [ ] test
+    # [ ] deleteFlowchart  [ ] impl  [ ] docstring  [ ] test
+    # [x] getBody  [x] impl  [x] docstring  [x] test
+    # [ ] getFlowchart  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getImplementationSignature  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getInitializer  [ ] impl  [ ] docstring  [ ] test
+    # [x] getIsAbstract  [x] impl  [x] docstring  [x] test
+    # [ ] getIsCgDerived  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getIsConst  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getIsCtor  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getIsDtor  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getIsFinal  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getIsInline  [ ] impl  [ ] docstring  [ ] test
+    # [x] getIsStatic  [x] impl  [x] docstring  [x] test
+    # [ ] getIsTrigger  [ ] impl  [ ] docstring  [ ] test
+    # [x] getIsVirtual  [x] impl  [x] docstring  [x] test
+    # [x] getReturnTypeDeclaration  [x] impl  [x] docstring  [x] test
+    # [x] getReturns  [x] impl  [x] docstring  [x] test
+    # [ ] getVisibility  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setBody  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setFlowchart  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setInitializer  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setIsAbstract  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setIsConst  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setIsFinal  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setIsStatic  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setIsVirtual  [ ] impl  [ ] docstring  [ ] test
+    # [x] setReturnTypeDeclaration  [x] impl  [x] docstring  [x] test
+    # [x] setReturns  [x] impl  [x] docstring  [x] test
+    # [ ] setVisibility  [ ] impl  [ ] docstring  [ ] test
+    # [ ] updateContainedDiagramsOnServer  [ ] impl  [ ] docstring  [ ] test
+    # [inherited] IRPInterfaceItem / IRPClassifier / IRPUnit / IRPModelElement methods (covered by RPInterfaceItem / RPClassifier / RPUnit / RPModelElement checklists)
+    # No deprecated IRPOperation methods.
 
     def getBody(self) -> str:
         """Returns the body/implementation of the operation.
@@ -53,7 +92,7 @@ class RPOperation(RPInterfaceItem):
         """
         return bool(AbstractRPModelElement._get_method_or_property(self._com, "getIsVirtual", "isVirtual"))
 
-    def getReturns(self) -> Any:
+    def getReturns(self) -> "RPClassifier":
         """Returns the type specification for the operation's return value.
 
         Returns:
@@ -62,7 +101,7 @@ class RPOperation(RPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::getReturns()
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getReturns", "returns"))
+        return cast("RPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getReturns", "returns")))
 
     def getReturnTypeDeclaration(self) -> str:
         """Returns the on-the-fly return type declaration for the operation.
@@ -83,7 +122,7 @@ class RPOperation(RPInterfaceItem):
         """
         AbstractRPModelElement.call_com(lambda: self._com.createAutoFlowChart())
 
-    def setReturns(self, returns: Any) -> None:
+    def setReturns(self, returns: "RPClassifier") -> None:
         """Sets the return type of the operation to an existing classifier.
 
         Args:

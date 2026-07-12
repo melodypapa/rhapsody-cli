@@ -1,15 +1,94 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPProject``."""
 
-from typing import Any
+from typing import TYPE_CHECKING, Any, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
 from rhapsody_cli.models.elements.containment.model_package import RPPackage
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.elements.classifiers.model_actor import RPActor
+    from rhapsody_cli.models.elements.classifiers.model_class import RPClass
+    from rhapsody_cli.models.elements.containment.model_component import RPComponent
 
 
 class RPProject(RPPackage):
     """Wraps ``IRPProject``: represents the top-level project container."""
 
-    def addPackage(self, name: str) -> Any:
+    # IRPProject method parity checklist:
+    # [ ] gatewayExportToXML  [ ] impl  [ ] docstring  [ ] test
+    # [ ] gatewayExportToXML2  [ ] impl  [ ] docstring  [ ] test
+    # [ ] generateReport  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addComponent  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addCustomViewOnBrowser  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addCustomViewOnDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [x] addPackage  [x] impl  [x] docstring  [x] test
+    # [ ] addProfile  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addSpellCheckerResult  [ ] impl  [ ] docstring  [ ] test
+    # [ ] allowAutoSave  [ ] impl  [ ] docstring  [ ] test
+    # [ ] allowNonUniqueNames  [ ] impl  [ ] docstring  [ ] test
+    # [ ] applyBrowserCustomViewsOnDiagrams  [ ] impl  [ ] docstring  [ ] test
+    # [ ] applyRoundtripDiffMerge  [ ] impl  [ ] docstring  [ ] test
+    # [x] becomeActiveProject  [x] impl  [x] docstring  [x] test
+    # [ ] checkEventsBaseIdsSolveCollisions  [ ] impl  [ ] docstring  [ ] test
+    # [ ] cleanUnresolvedElements  [ ] impl  [ ] docstring  [ ] test
+    # [x] close  [x] impl  [x] docstring  [x] test
+    # [ ] closeCSVFile  [ ] impl  [ ] docstring  [ ] test
+    # [ ] deleteComponent  [ ] impl  [ ] docstring  [ ] test
+    # [ ] enableRhapsodyModelManager  [ ] impl  [ ] docstring  [ ] test
+    # [ ] endTransactionOfNoCGInterest  [ ] impl  [ ] docstring  [ ] test
+    # [x] findComponent  [x] impl  [x] docstring  [x] test
+    # [ ] findElementByBinaryID  [ ] impl  [ ] docstring  [ ] test
+    # [ ] findElementByFileName  [ ] impl  [ ] docstring  [ ] test
+    # [x] findElementByGUID  [x] impl  [x] docstring  [x] test
+    # [ ] findElementsWithOSLCLink  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getActiveComponent  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getActiveConfiguration  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getActiveCustomViewsOnBrowser  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getActiveCustomViewsOnDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getAllStereotypes  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getCgSimplifiedModelPackage  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getCodeGeneratedFiles  [ ] impl  [ ] docstring  [ ] test
+    # [x] getComponents  [x] impl  [x] docstring  [x] test
+    # [ ] getDefaultDirectoryScheme  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getNewCollaboration  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getNewProgressBar  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getNotifyPluginOnElementsChanged  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getProfiles  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getRemoteResourcePackages  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getRequirementsByID  [ ] impl  [ ] docstring  [ ] test
+    # [ ] getRoundtripShadowModel  [ ] impl  [ ] docstring  [ ] test
+    # [ ] highlightFromCode  [ ] impl  [ ] docstring  [ ] test
+    # [ ] importPackageFromRose  [ ] impl  [ ] docstring  [ ] test
+    # [ ] importProjectFromRose  [ ] impl  [ ] docstring  [ ] test
+    # [ ] isActivelyManaged  [ ] impl  [ ] docstring  [ ] test
+    # [ ] isModifiedRecursive  [ ] impl  [ ] docstring  [ ] test
+    # [ ] locateInIDE  [ ] impl  [ ] docstring  [ ] test
+    # [ ] migrateDesignManagerLinks  [ ] impl  [ ] docstring  [ ] test
+    # [deprecated] moveToDesignManager  - skipped (deprecated in Rhapsody Java API; see deprecated-list.html)
+    # [deprecated] moveToDesignManagerAfterLogin  - skipped (deprecated in Rhapsody Java API; see deprecated-list.html)
+    # [ ] openCSVFile  [ ] impl  [ ] docstring  [ ] test
+    # [ ] recalculateEventsBaseIds  [ ] impl  [ ] docstring  [ ] test
+    # [ ] reloadCSVFile  [ ] impl  [ ] docstring  [ ] test
+    # [ ] remove  [ ] impl  [ ] docstring  [ ] test
+    # [ ] removeCustomViewOnBrowser  [ ] impl  [ ] docstring  [ ] test
+    # [ ] removeCustomViewOnDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [x] save  [x] impl  [x] docstring  [x] test   (inherited from RPUnit)
+    # [ ] saveAs  [ ] impl  [ ] docstring  [ ] test
+    # [ ] saveAsPrevVersion  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setActiveComponent  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setActiveConfiguration  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setDefaultDirectoryScheme  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setGlobalConfiguration  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setNotifyPluginOnElementsChanged  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setObjectExplicit  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setObjectImplicit  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setUseUniqueStereotypeAndRefCache  [ ] impl  [ ] docstring  [ ] test
+    # [ ] setWaitDialogWatchdogValue  [ ] impl  [ ] docstring  [ ] test
+    # [ ] startTransactionOfNoCGInterest  [ ] impl  [ ] docstring  [ ] test
+    # [inherited] IRPPackage / IRPUnit / IRPModelElement methods (covered by RPPackage / RPUnit / RPModelElement checklists)
+    # Deprecated IRPProject methods listed above.
+
+    def addPackage(self, name: str) -> "RPPackage":
         """Adds a new package to the project.
 
         Args:
@@ -21,7 +100,7 @@ class RPProject(RPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::addPackage(java.lang.String name)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addPackage(name)))
+        return cast("RPPackage", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addPackage(name))))
 
     def close(self) -> None:
         """Closes the project.
@@ -41,7 +120,7 @@ class RPProject(RPPackage):
         """
         AbstractRPModelElement.call_com(lambda: self._com.becomeActiveProject())
 
-    def findComponent(self, name: str) -> Any:
+    def findComponent(self, name: str) -> "RPComponent":
         """Finds a component in the project by name.
 
         Args:
@@ -53,7 +132,7 @@ class RPProject(RPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::findComponent(java.lang.String name)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findComponent(name)))
+        return cast("RPComponent", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findComponent(name))))
 
     def getPackages(self) -> RPCollection:
         """Returns all top-level packages in the project.
@@ -74,7 +153,7 @@ class RPProject(RPPackage):
         """
         return self
 
-    def addClass(self, name: str) -> Any:
+    def addClass(self, name: str) -> "RPClass":
         """Adds a new class to the project's top level.
 
         Args:
@@ -86,9 +165,9 @@ class RPProject(RPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addClass(java.lang.String name)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addClass(name)))
+        return cast("RPClass", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addClass(name))))
 
-    def addActor(self, name: str) -> Any:
+    def addActor(self, name: str) -> "RPActor":
         """Adds a new actor to the project's top level.
 
         Args:
@@ -100,7 +179,7 @@ class RPProject(RPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addActor(java.lang.String name)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addActor(name)))
+        return cast("RPActor", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addActor(name))))
 
     def getComponents(self) -> RPCollection:
         """Returns all components in the project.
@@ -135,7 +214,7 @@ class RPProject(RPPackage):
         """
         return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.findByMetaClass(meta_class)))
 
-    def findElementByGUID(self, guid: str) -> Any:
+    def findElementByGUID(self, guid: str) -> "RPModelElement":
         """Finds an element in the project by GUID.
 
         Args:
