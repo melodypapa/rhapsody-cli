@@ -27,7 +27,7 @@ Or run directly:
     python src/rhapsody_cli/demos/demo_01_basic_connection.py
 """
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 # Export main demo functions for programmatic use
 from .demo_01_basic_connection import main as demo_connection

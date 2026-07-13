@@ -1,6 +1,6 @@
 # rhapsody-cli
 
-[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/user/rhapsody-cli)
+[![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/user/rhapsody-cli)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Platform](https://img.shields.io/badge/platform-Windows-lightgrey.svg)](https://www.microsoft.com/windows)
@@ -12,12 +12,12 @@ knowledge and documentation transfer directly.
 
 ## Features
 
-- **Complete API Mirroring**: Method names and signatures match the Rhapsody Java API exactly
+- **Complete API Mirroring**: Method names and signatures match the Rhapsody Java API exactly (converted to snake_case)
 - **Object-Oriented Design**: Clean Python classes wrapping COM objects with proper type hints
 - **Comprehensive Element Support**: 50+ Rhapsody element types wrapped with full method coverage
-- **CLI Tools**: Command-line utilities for element management, I/O operations, and project handling
+- **CLI Tools**: Command-line utilities for project, package, class, operation, attribute, and port management
 - **Multi-Level Path Navigation**: Navigate hierarchical model structures using `/` or `\` separators
-- **Bulk Operations**: Add multiple elements, query recursively, and delete with safety confirmations
+- **Bulk Operations**: Create multiple elements, list recursively, and delete with safety confirmations
 - **Robust Error Handling**: Automatic COM error translation with user-friendly exception messages
 - **Mocked Testing**: Full test suite runs without Rhapsody installation or license
 - **Type Safety**: Strict mypy checking with comprehensive type annotations
@@ -64,12 +64,12 @@ app = RhapsodyApplication.connect()
 project = app.open_project(r"C:\Models\MyProject.rpy")
 
 # Create a new package
-package = project.addPackage("Sensors")
+package = project.add_package("Sensors")
 
 # Add classes with attributes and operations
-sensor_class = package.addClass("TemperatureSensor")
-sensor_class.addAttribute("currentTemperature")
-sensor_class.addOperation("readTemperature")
+sensor_class = package.add_class("TemperatureSensor")
+sensor_class.add_attribute("currentTemperature")
+sensor_class.add_operation("readTemperature")
 
 # Navigate existing elements
 for cls in project.get_nested_elements_by_meta_class("Class", 1):  # recursive
@@ -84,57 +84,72 @@ app.quit()
 
 ### Command-Line Interface
 
-The CLI provides three main command groups:
-
-#### Element Management
-
-```bash
-# Add elements with multi-level paths
-rhapsody-cli element add --type class --path "Sensors/TemperatureSensor"
-rhapsody-cli element add --type actor --path "System/User" --name "AdminUser"
-
-# View element details (supports JSON, CSV, table output)
-rhapsody-cli element view --path "Sensors/TemperatureSensor" --output json
-
-# Query elements with pattern matching
-rhapsody-cli element query "Sensor*" --output table
-rhapsody-cli element query --path "Sensors" --recursive
-
-# Delete elements with safety confirmation
-rhapsody-cli element delete "Sensors/OldSensor"
-```
+The CLI provides six command groups: `project`, `package`, `class`, `attribute`, `operation`, and `port`.
 
 #### Project Management
 
 ```bash
 # Create a new project
-rhapsody-cli project create --location "C:\Models" --name "NewProject"
+rhapsody-cli project new "C:\Models" NewProject
 
-# Open existing project
-rhapsody-cli project open --file "C:\Models\MyProject.rpy"
+# Open an existing project
+rhapsody-cli project open "C:\Models\MyProject.rpy"
 
-# Attach to active project in running Rhapsody
-rhapsody-cli project attach
+# List open projects / close the active project
+rhapsody-cli project list
+rhapsody-cli project close
 ```
 
-#### I/O Operations
+#### Package Management
 
 ```bash
-# Export model to various formats
-rhapsody-cli io export --format json --output model.json
+# Create a package (omit --path for a root package)
+rhapsody-cli package create --path Sensors '{"name":"Actuators"}'
 
-# Import model data
-rhapsody-cli io import --file import_data.json
+# View / list packages (supports table, json, csv output)
+rhapsody-cli package view --path Sensors/Actuators --format json
+rhapsody-cli package list --path Sensors --format table
+
+# Update or delete a package
+rhapsody-cli package update --path Sensors/Actuators '{"description":"Updated"}'
+rhapsody-cli package delete --path Sensors/Actuators
+```
+
+#### Class Management
+
+```bash
+rhapsody-cli class create --path Sensors '{"name":"TemperatureSensor"}'
+rhapsody-cli class view --path Sensors/TemperatureSensor --format json
+rhapsody-cli class list --path Sensors
+rhapsody-cli class link --path Sensors/TemperatureSensor --add BaseSensor
+rhapsody-cli class update --path Sensors/TemperatureSensor '{"isAbstract":true}'
+rhapsody-cli class delete --path Sensors/TemperatureSensor
+```
+
+#### Attribute, Operation, and Port Management
+
+`attribute`, `operation`, and `port` share the same argument shape (`--path` to the owning classifier, `--name` or `--guid` to identify the member, and an inline/`--input` JSON payload):
+
+```bash
+rhapsody-cli attribute create --path Sensors/TemperatureSensor '{"name":"threshold","type":"int"}'
+rhapsody-cli operation create --path Sensors/TemperatureSensor '{"name":"readValue"}'
+rhapsody-cli port create --path Sensors/TemperatureSensor '{"name":"clientPort"}'
+
+rhapsody-cli attribute list --path Sensors/TemperatureSensor
+rhapsody-cli attribute update --path Sensors/TemperatureSensor --name threshold '{"isStatic":true}'
+rhapsody-cli attribute delete --path Sensors/TemperatureSensor --name threshold
 ```
 
 ### Global Options
 
+`--verbose`/`-v` and `--format {table,json,csv}` are specified **after** the command group name (most subcommands also accept a per-action `--output <file>`):
+
 ```bash
 # Enable verbose logging
-rhapsody-cli --verbose element query
+rhapsody-cli class list --path Sensors --verbose
 
 # Specify output format
-rhapsody-cli --output json element view --path " MyClass"
+rhapsody-cli package view --path Sensors --format json
 ```
 
 ### Multi-Instance Support
@@ -142,9 +157,10 @@ rhapsody-cli --output json element view --path " MyClass"
 ```python
 from rhapsody_cli import RhapsodyApplication
 
-# Manage multiple simultaneous Rhapsody instances
-app1 = RhapsodyApplication.attach()  # Attach to first instance
-app2 = RhapsodyApplication.launch()  # Launch second instance
+# Manage multiple simultaneous Rhapsody instances via connect()
+# (attach()/launch() are internal; connect() is the public entry point)
+app1 = RhapsodyApplication.connect(attach_only=True)  # Attach to a running instance
+app2 = RhapsodyApplication.connect()                  # Attach, or launch a new one if none running
 
 project1 = app1.open_project("project1.rpy")
 project2 = app2.open_project("project2.rpy")
@@ -157,7 +173,7 @@ project2 = app2.open_project("project2.rpy")
 ### Running Tests
 
 ```bash
-# Run all unit tests (554 tests, no Rhapsody installation required)
+# Run all unit tests (936 tests, no Rhapsody installation required)
 pytest tests/unit
 
 # Run with coverage
@@ -185,8 +201,8 @@ pytest && ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests
 
 ### Test Coverage
 
-- **554 unit tests** covering all wrapped methods and edge cases
-- **Mocked COM objects** (`tests/fakes.py`) - no Rhapsody installation required
+- **936 unit tests** covering all wrapped methods and edge cases
+- **Mocked COM objects** (`tests/unit/models/fakes.py`) - no Rhapsody installation required
 - **Integration tests** for real COM automation verification
 - **Branch coverage** tracking with 80% minimum threshold
 
@@ -340,6 +356,16 @@ See [Contributing Guide](docs/contributing.rst) for:
 MIT License - see [LICENSE](LICENSE) file for details.
 
 ## Changelog
+
+### v0.2.0 (2026-07-13)
+
+- **Breaking**: Renamed all wrapper methods from camelCase to snake_case (`addClass` → `add_class`, `getName` → `get_name`, etc.) for consistent Pythonic naming
+- **Breaking**: Removed the generic `element` and `io` command groups in favor of dedicated per-type commands
+- Added `package`, `class`, `operation`, `attribute`, and `port` command groups, each with `create`/`list`/`view`/`delete` subcommands (plus `update` for `package` and `class`, and `link` for `class` generalization)
+- Added `RPPort` wrapper and `RPClassifier.add_port()` convenience method
+- Enhanced package duplicate detection with clearer, user-friendly error messages
+- Refactored CLI error handling to use logger + `CliExecutionError` instead of `print()`/`sys.exit()`
+- Various Sphinx documentation and build-warning fixes
 
 ### v0.1.0 (2026-07-09)
 
