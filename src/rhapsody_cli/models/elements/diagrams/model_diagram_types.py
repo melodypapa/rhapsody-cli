@@ -1,7 +1,8 @@
 """Diagram Types model-element wrappers (auto-generated stubs)."""
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.diagrams.model_diagrams import RPDiagram
 
 if TYPE_CHECKING:
@@ -31,7 +32,8 @@ class RPCollaborationDiagram(RPDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPCollaborationDiagram::getLogicalCollaboration()
         """
-        raise NotImplementedError
+        result = AbstractRPModelElement.call_com(lambda: self._com.getLogicalCollaboration())
+        return cast("RPCollaboration", AbstractRPModelElement.wrap(result))
 
 
 class RPComponentDiagram(RPDiagram):
@@ -102,7 +104,8 @@ class RPSequenceDiagram(RPDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPSequenceDiagram::getLogicalCollaboration()
         """
-        raise NotImplementedError
+        result = AbstractRPModelElement.call_com(lambda: self._com.getLogicalCollaboration())
+        return cast("RPCollaboration", AbstractRPModelElement.wrap(result))
 
     def get_related_use_cases(self) -> "RPCollection":
         """Returns use cases related to this sequence diagram.
@@ -115,7 +118,9 @@ class RPSequenceDiagram(RPDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPSequenceDiagram::getRelatedUseCases()
         """
-        raise NotImplementedError
+        from rhapsody_cli.models.core import RPCollection
+
+        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getRelatedUseCases()))
 
 
 class RPStatechartDiagram(RPDiagram):
@@ -150,7 +155,9 @@ class RPStatechartDiagram(RPDiagram):
                 int xStartPosition, int yStartPosition,
                 int xEndPosition, int yEndPosition)
         """
-        raise NotImplementedError
+        from rhapsody_cli.models.core import RPCollection
+
+        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.addAndLine(source_state._com, x_start_position, y_start_position, x_end_position, y_end_position)))
 
     def create_graphics(self) -> None:
         """Creates the graphical representation of the elements in the statechart.
@@ -164,7 +171,7 @@ class RPStatechartDiagram(RPDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechartDiagram::createGraphics()
         """
-        raise NotImplementedError
+        AbstractRPModelElement.call_com(lambda: self._com.createGraphics())
 
     def get_statechart(self) -> "RPStatechart":
         """Returns the statechart object underlying the statechart diagram.
@@ -175,7 +182,8 @@ class RPStatechartDiagram(RPDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechartDiagram::getStatechart()
         """
-        raise NotImplementedError
+        result = AbstractRPModelElement.call_com(lambda: self._com.getStatechart())
+        return cast("RPStatechart", AbstractRPModelElement.wrap(result))
 
 
 class RPStructureDiagram(RPDiagram):
