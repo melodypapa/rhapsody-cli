@@ -206,7 +206,7 @@ pytest -m integration --cov=rhapsody_cli --cov-report=html
 
 - **Default behavior:** Clean up `demos/test_project/` after successful test run
 - **Debug mode:** Leave artifacts for inspection if tests fail
-- Controlled via pytest flag or environment variable
+- Controlled via `--keep-test-artifacts` pytest flag or `RHAPSODY_KEEP_ARTIFACTS=1` environment variable
 
 ### Element Creation Helpers
 
