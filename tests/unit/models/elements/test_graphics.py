@@ -1,6 +1,6 @@
 """Tests for graphics package — RPGraphElement, RPGraphEdge, and 12 other classes (Task 15)."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection
 from rhapsody_cli.models.elements.graphics import (
     RPConditionMark,
     RPConnector,
