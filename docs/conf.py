@@ -22,7 +22,7 @@ try:
     from rhapsody_cli import __version__
     release = __version__
 except ImportError:
-    release = "0.1.0"
+    release = "0.2.0"
 
 # The short X.Y version
 version = release.rsplit(".", 1)[0] if "." in release else release

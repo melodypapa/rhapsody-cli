@@ -31,7 +31,7 @@ pytest -k "test_foo"           # pattern match
 ```
 
 - All unit tests use fakes from `tests/unit/models/fakes.py` (`make_fake_element`, `make_fake_collection`). **Never real COM in tests.**
-- Integration/system tests require live Rhapsody instance — auto-skip in CI.
+- `tests/integration/` (live Rhapsody instance) and `tests/system/` (end-to-end subprocess) require Windows + Rhapsody — auto-skip in CI, not run by default `pytest`.
 
 ## TDD Requirement
 
