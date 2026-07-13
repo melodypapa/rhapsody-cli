@@ -156,6 +156,19 @@ def test_package_add_interface_returns_wrapped_element() -> None:
     assert result.get_name() == "IFoo"
 
 
+def test_package_add_interface_returns_registered_wrapper() -> None:
+    from rhapsody_cli.models.elements.classifiers import RPInterface
+
+    fake = make_fake_element("Package")
+    iface = make_fake_element("Interface", getName="IFoo")
+    fake.addInterface.return_value = iface
+    package = RPPackage(fake)
+
+    result = package.add_interface("IFoo")
+
+    assert isinstance(result, RPInterface)
+
+
 def test_package_add_signal_returns_wrapped_element() -> None:
     fake = make_fake_element("Package")
     sig = make_fake_element("Classifier", getName="Signal1")
@@ -165,6 +178,19 @@ def test_package_add_signal_returns_wrapped_element() -> None:
     package.add_signal("Signal1")
 
     fake.addSignal.assert_called_once_with("Signal1")
+
+
+def test_package_add_signal_returns_registered_wrapper() -> None:
+    from rhapsody_cli.models.elements.classifiers import RPSignal
+
+    fake = make_fake_element("Package")
+    sig = make_fake_element("Signal", getName="Signal1")
+    fake.addSignal.return_value = sig
+    package = RPPackage(fake)
+
+    result = package.add_signal("Signal1")
+
+    assert isinstance(result, RPSignal)
 
 
 def test_package_add_exception_returns_wrapped_element() -> None:
@@ -178,6 +204,19 @@ def test_package_add_exception_returns_wrapped_element() -> None:
     fake.addException.assert_called_once_with("Exception1")
 
 
+def test_package_add_exception_returns_registered_wrapper() -> None:
+    from rhapsody_cli.models.elements.classifiers import RPException
+
+    fake = make_fake_element("Package")
+    exc = make_fake_element("Exception", getName="Exception1")
+    fake.addException.return_value = exc
+    package = RPPackage(fake)
+
+    result = package.add_exception("Exception1")
+
+    assert isinstance(result, RPException)
+
+
 def test_package_add_enumeration_returns_wrapped_element() -> None:
     fake = make_fake_element("Package")
     enum = make_fake_element("Classifier", getName="Enum1")
@@ -187,6 +226,19 @@ def test_package_add_enumeration_returns_wrapped_element() -> None:
     package.add_enumeration("Enum1")
 
     fake.addEnumeration.assert_called_once_with("Enum1")
+
+
+def test_package_add_enumeration_returns_registered_wrapper() -> None:
+    from rhapsody_cli.models.elements.classifiers import RPEnumeration
+
+    fake = make_fake_element("Package")
+    enum = make_fake_element("Enumeration", getName="Enum1")
+    fake.addEnumeration.return_value = enum
+    package = RPPackage(fake)
+
+    result = package.add_enumeration("Enum1")
+
+    assert isinstance(result, RPEnumeration)
 
 
 def test_package_get_enumerations_returns_collection() -> None:
