@@ -241,7 +241,7 @@ git commit -m "test: add integration test fixtures for Rhapsody lifecycle"
 - Consumes: `test_project` fixture from conftest
 - Consumes: `rhapsody_app` fixture from conftest
 
-- [ ] **Step 1: Write failing test for RPModelElement basic methods**
+- [x] **Step 1: Write failing test for RPModelElement basic methods**
 
 ```python
 # tests/integration/models/test_core.py
@@ -300,14 +300,14 @@ class TestRPModelElementIntegration:
         assert len(guid) > 0  # GUIDs should not be empty
 ```
 
-- [ ] **Step 2: Run tests to verify they fail (no implementation yet)**
+- [x] **Step 2: Run tests to verify basic RPModelElement methods**
 
 ```bash
 pytest tests/integration/models/test_core.py::TestRPModelElementIntegration::test_get_name -v
 ```
 Expected: Tests should run (if Rhapsody available) and validate basic RPModelElement methods
 
-- [ ] **Step 3: Commit core model tests**
+- [x] **Step 3: Commit core model tests**
 
 ```bash
 git add tests/integration/models/test_core.py
@@ -325,7 +325,7 @@ git commit -m "test: add RPModelElement integration tests"
 - Consumes: `test_project` fixture from conftest
 - Consumes: Existing RPModelElement integration test structure
 
-- [ ] **Step 1: Add failing tests for RPCollection wrapper**
+- [x] **Step 1: Add failing tests for RPCollection wrapper**
 
 ```python
 # Add to tests/integration/models/test_core.py
@@ -359,14 +359,14 @@ class TestRPCollectionIntegration:
         assert len(package_list) <= len(all_list)
 ```
 
-- [ ] **Step 2: Run tests to verify collection functionality**
+- [x] **Step 2: Run tests to verify collection functionality**
 
 ```bash
 pytest tests/integration/models/test_core.py::TestRPCollectionIntegration -v
 ```
 Expected: Tests validate RPCollection iteration and filtering
 
-- [ ] **Step 3: Commit RPCollection tests**
+- [x] **Step 3: Commit RPCollection tests**
 
 ```bash
 git add tests/integration/models/test_core.py
