@@ -12,11 +12,11 @@ class RPInstanceSlot(RPModelElement):
     """Wraps ``IRPInstanceSlot``."""
 
     # IRPInstanceSlot method parity checklist:
-    # [ ] addElementValue              [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] addStringValue               [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getSlotProperty              [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getValues                    [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setSlotProperty              [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [x] addElementValue              [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] addStringValue               [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] getSlotProperty              [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] getValues                    [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] setSlotProperty              [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPInstanceSlot methods.
 
@@ -101,12 +101,12 @@ class RPInstanceSpecification(RPModelElement):
     """Wraps ``IRPInstanceSpecification``."""
 
     # IRPInstanceSpecification method parity checklist:
-    # [ ] addInstanceSlot              [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getClassifier                [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getInstanceSlots             [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] isRootInstanceSpecification  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] populateSlots                [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setClassifier                [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [x] addInstanceSlot              [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] getClassifier                [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] getInstanceSlots             [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] isRootInstanceSpecification  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] populateSlots                [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] setClassifier                [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPInstanceSpecification methods.
 
@@ -219,8 +219,8 @@ class RPInstanceValue(RPValueSpecification):
     """Wraps ``IRPInstanceValue``: used in contexts where a single model element must be stored."""
 
     # IRPInstanceValue method parity checklist:
-    # [ ] getValue                     [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setValue                     [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [x] getValue                     [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] setValue                     [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # [inherited] IRPValueSpecification methods (covered by RPValueSpecification checklist)
     # No deprecated IRPInstanceValue methods.
@@ -252,8 +252,8 @@ class RPLiteralSpecification(RPValueSpecification):
     """Wraps ``IRPLiteralSpecification``: used in contexts where a single value must be stored."""
 
     # IRPLiteralSpecification method parity checklist:
-    # [ ] getValue                     [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setValue                     [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [x] getValue                     [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] setValue                     [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # [inherited] IRPValueSpecification methods (covered by RPValueSpecification checklist)
     # No deprecated IRPLiteralSpecification methods.

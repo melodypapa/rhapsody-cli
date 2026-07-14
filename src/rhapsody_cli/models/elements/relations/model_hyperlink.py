@@ -16,11 +16,11 @@ class RPHyperLink(RPDependency):
     # [deprecated] getTextToDisplay  - skipped (deprecated in Rhapsody Java API; see deprecated-list.html)
     # [deprecated] getTextToDisplayType  - skipped (deprecated in Rhapsody Java API; see deprecated-list.html)
     # [deprecated] getDisplayOption  - skipped (deprecated in Rhapsody Java API; see deprecated-list.html)
-    # [x] getTarget  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] getURL  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] setDisplayOption  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] setTarget  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] setURL  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getTarget  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getURL  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setDisplayOption  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setTarget  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setURL  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [inherited] IRPDependency / IRPModelElement methods (covered by RPDependency / RPModelElement checklists)
     # Deprecated IRPHyperLink methods listed above.
 

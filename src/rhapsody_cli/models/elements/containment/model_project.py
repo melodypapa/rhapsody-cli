@@ -21,14 +21,14 @@ class RPProject(RPPackage):
     # [ ] gatewayExportToXML  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [ ] gatewayExportToXML2  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [ ] generateReport  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [x] addComponent  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] addComponent  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [ ] addCustomViewOnBrowser  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [ ] addCustomViewOnDiagram  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [x] add_package  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] addProfile  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] add_package  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [ ] addProfile  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] addSpellCheckerResult  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] allowAutoSave  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [x] allowNonUniqueNames  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] allowAutoSave  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] allowNonUniqueNames  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] applyBrowserCustomViewsOnDiagrams  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [ ] applyRoundtripDiffMerge  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [x] become_active_project  [x] impl  [x] docstring  [x] unit test  [ ] integration test
@@ -36,36 +36,36 @@ class RPProject(RPPackage):
     # [ ] cleanUnresolvedElements  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [x] close  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [ ] closeCSVFile  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [x] deleteComponent  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] deleteComponent  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [ ] enableRhapsodyModelManager  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [ ] endTransactionOfNoCGInterest  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [x] find_component  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] findElementByBinaryID  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] findElementByFileName  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] findElementByBinaryID  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] findElementByFileName  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [x] find_element_by_guid  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [ ] findElementsWithOSLCLink  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [x] getActiveComponent  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] getActiveConfiguration  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getActiveComponent  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getActiveConfiguration  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] getActiveCustomViewsOnBrowser  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [ ] getActiveCustomViewsOnDiagram  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [x] getAllStereotypes  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] getCgSimplifiedModelPackage  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] getCodeGeneratedFiles  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getAllStereotypes  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getCgSimplifiedModelPackage  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getCodeGeneratedFiles  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [x] get_components  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [ ] getDefaultDirectoryScheme  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getNewCollaboration  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [ ] getNewCollaboration  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] getNewProgressBar  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [ ] getNotifyPluginOnElementsChanged  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [x] getProfiles  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getProfiles  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] getRemoteResourcePackages  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [ ] getRequirementsByID  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [ ] getRoundtripShadowModel  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [x] highlightFromCode  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] highlightFromCode  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] importPackageFromRose  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [ ] importProjectFromRose  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [ ] isActivelyManaged  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [x] isModifiedRecursive  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] locateInIDE  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [ ] isModifiedRecursive  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] locateInIDE  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] migrateDesignManagerLinks  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [deprecated] moveToDesignManager  - skipped (deprecated in Rhapsody Java API; see deprecated-list.html)
     # [deprecated] moveToDesignManagerAfterLogin  - skipped (deprecated in Rhapsody Java API; see deprecated-list.html)
@@ -75,11 +75,11 @@ class RPProject(RPPackage):
     # [ ] remove  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [ ] removeCustomViewOnBrowser  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [ ] removeCustomViewOnDiagram  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [x] save  [x] impl  [x] docstring  [x] unit test  [ ] integration test   (inherited from RPUnit)
-    # [x] saveAs  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] save  [x] impl  [x] docstring  [ ] unit test  [ ] integration test   (inherited from RPUnit)
+    # [x] saveAs  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [ ] saveAsPrevVersion  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setActiveComponent  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [x] setActiveConfiguration  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setActiveComponent  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setActiveConfiguration  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] setDefaultDirectoryScheme  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [ ] setGlobalConfiguration  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [ ] setNotifyPluginOnElementsChanged  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test

@@ -12,13 +12,13 @@ class RPDependency(RPModelElement):
     """Wraps ``IRPDependency``: a dependency relationship."""
 
     # IRPDependency method parity checklist:
-    # [x] getDependent  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] getDependsOn  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] isNeedToMigrate  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] setDependent  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] setDependsOn  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] setLinkType  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] setOwnerWithoutChangingDependent  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getDependent  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getDependsOn  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] isNeedToMigrate  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setDependent  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setDependsOn  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setLinkType  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setOwnerWithoutChangingDependent  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklists)
     # No deprecated IRPDependency methods.
 

@@ -522,7 +522,7 @@ class RPSearchQuery(RPModelElement):
     # [x] remove_view                   [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] reset_search_scope             [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] save_as_query                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_filter_reference           [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] set_filter_reference           [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [x] set_filter_tag                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] get_filter_sub_queries_operator  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] get_filter_tag_local_only        [x] impl  [x] docstring  [x] unit test  [ ] integration test

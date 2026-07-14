@@ -23,7 +23,7 @@ class RPInterfaceItem(RPClassifier):
     # [x] get_signature_no_arg_names  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] get_signature_no_arg_types  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] match_on_signature  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_arguments  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] set_arguments  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [inherited] IRPClassifier / IRPUnit / IRPModelElement methods (covered by RPClassifier / RPUnit / RPModelElement checklists)
     # No deprecated IRPInterfaceItem methods.
 

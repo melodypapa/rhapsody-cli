@@ -44,22 +44,22 @@ class RPConnector(RPStateVertex):
     """
 
     # IRPConnector method parity checklist:
-    # [ ] createDefaultTransition      [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getConnectorType             [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getDerivedInEdges            [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getDerivedOutEdge            [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getItsSwimlane               [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getOfState                   [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] isConditionConnector         [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] isDiagramConnector           [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] isForkConnector              [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] isHistoryConnector           [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] isJoinConnector              [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] isJunctionConnector          [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] isStubConnector              [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] isTerminationConnector       [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setItsSwimlane               [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setOfState                   [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [ ] createDefaultTransition      [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getConnectorType             [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] getDerivedInEdges            [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getDerivedOutEdge            [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getItsSwimlane               [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getOfState                   [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] isConditionConnector         [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] isDiagramConnector           [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] isForkConnector              [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] isHistoryConnector           [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] isJoinConnector              [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] isJunctionConnector          [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] isStubConnector              [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] isTerminationConnector       [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setItsSwimlane               [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] setOfState                   [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # [inherited] IRPStateVertex methods (covered by RPStateVertex checklist)
     # No deprecated IRPConnector methods.
@@ -251,28 +251,28 @@ class RPGraphElement(RPModelElement):
     """Wraps ``IRPGraphElement``."""
 
     # IRPGraphElement method parity checklist:
-    # [ ] addProperty                  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] applyDefaultFormat           [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getAllGraphicalProperties    [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getAllProperties             [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getAssociatedImage           [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getDiagram                   [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getGraphicalParent           [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getGraphicalProperty         [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getGraphicalPropertyOfText   [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getImageLayout               [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getInterfaceName             [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getLocalProperties           [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getModelObject               [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getPropertyValue             [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getSelectedImage             [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] removeProperty               [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setAssociatedImage           [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setGraphicalProperty         [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setGraphicalPropertyOfText   [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setImageLayout               [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setPropertyValue             [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setSelectedImage             [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [x] addProperty                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] applyDefaultFormat           [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getAllGraphicalProperties    [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getAllProperties             [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getAssociatedImage           [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getDiagram                   [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] getGraphicalParent           [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] getGraphicalProperty         [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getGraphicalPropertyOfText   [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getImageLayout               [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getInterfaceName             [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getLocalProperties           [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getModelObject               [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] getPropertyValue             [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getSelectedImage             [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] removeProperty               [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] setAssociatedImage           [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] setGraphicalProperty         [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setGraphicalPropertyOfText   [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setImageLayout               [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] setPropertyValue             [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] setSelectedImage             [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # No deprecated IRPGraphElement methods.
 
     def add_property(self, property_key: str, property_type: str, property_value: str) -> None:
@@ -587,9 +587,9 @@ class RPGraphicalProperty(RPModelElement):
     """Wraps ``IRPGraphicalProperty``."""
 
     # IRPGraphicalProperty method parity checklist:
-    # [ ] getInterfaceName             [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getKey                       [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getValue                     [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [ ] getInterfaceName             [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getKey                       [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] getValue                     [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # No deprecated IRPGraphicalProperty methods.
 
     def get_interface_name(self) -> str:
@@ -639,13 +639,13 @@ class RPImageMap(RPModelElement):
     """Wraps ``IRPImageMap``."""
 
     # IRPImageMap method parity checklist:
-    # [ ] getInterfaceName             [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getIsGUID                    [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getName                      [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getPictureFileName           [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getPoints                    [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getShape                     [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getTarget                    [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [ ] getInterfaceName             [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getIsGUID                    [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] getName                      [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getPictureFileName           [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getPoints                    [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getShape                     [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getTarget                    [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # No deprecated IRPImageMap methods.
 
     def get_interface_name(self) -> str:
@@ -751,25 +751,25 @@ class RPLink(RPUnit):
     """Wraps ``IRPLink``: represents links in Rhapsody models."""
 
     # IRPLink method parity checklist:
-    # [ ] getEnd1Multiplicity          [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getEnd1Name                  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getEnd2Multiplicity          [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getEnd2Name                  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getFrom                      [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getFromElement               [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getFromPort                  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getFromSysMLPort             [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getInstantiates              [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getOther                     [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getTo                        [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getToElement                 [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getToPort                    [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getToSysMLPort               [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setEnd1Multiplicity          [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setEnd1Name                  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setEnd2Multiplicity          [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setEnd2Name                  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setInstantiates              [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [ ] getEnd1Multiplicity          [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getEnd1Name                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getEnd2Multiplicity          [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getEnd2Name                  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getFrom                      [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getFromElement               [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getFromPort                  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getFromSysMLPort             [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getInstantiates              [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getOther                     [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getTo                        [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getToElement                 [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getToPort                    [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getToSysMLPort               [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setEnd1Multiplicity          [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] setEnd1Name                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] setEnd2Multiplicity          [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setEnd2Name                  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setInstantiates              [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # [inherited] IRPUnit methods (covered by RPUnit checklist)
     # No deprecated IRPLink methods.
@@ -1039,20 +1039,20 @@ class RPMatrixLayout(RPUnit):
     """Wraps ``IRPMatrixLayout``."""
 
     # IRPMatrixLayout method parity checklist:
-    # [ ] getCellElementTypes          [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getFromElementTypes          [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getFromElementTypesQueryToUse [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getFromElementTypesUseQueryOrElementsList [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getToElementTypes            [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getToElementTypesQueryToUse  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getToElementTypesUseQueryOrElementsList [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setCellElementTypes          [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setFromElementTypes          [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setFromElementTypesQueryToUse [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setFromElementTypesUseQueryOrElementsList [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setToElementTypes            [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setToElementTypesQueryToUse  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setToElementTypesUseQueryOrElementsList [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [ ] getCellElementTypes          [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getFromElementTypes          [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getFromElementTypesQueryToUse [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getFromElementTypesUseQueryOrElementsList [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getToElementTypes            [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getToElementTypesQueryToUse  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getToElementTypesUseQueryOrElementsList [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setCellElementTypes          [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setFromElementTypes          [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setFromElementTypesQueryToUse [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setFromElementTypesUseQueryOrElementsList [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setToElementTypes            [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setToElementTypesQueryToUse  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setToElementTypesUseQueryOrElementsList [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # [inherited] IRPUnit methods (covered by RPUnit checklist)
     # No deprecated IRPMatrixLayout methods.
@@ -1233,25 +1233,25 @@ class RPMatrixView(RPUnit):
     """Wraps ``IRPMatrixView``: represents Matrix View elements in Rhapsody models."""
 
     # IRPMatrixView method parity checklist:
-    # [ ] getCellElements              [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getCellString                [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getColumnCount               [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getContent                   [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getFromScope                 [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getHTMLContent               [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getImageCollection           [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getItsMatrixLayout           [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getRowCount                  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getToScope                   [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setFromScope                 [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setItsMatrixLayout           [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setToScope                   [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] updateViewOnServer           [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getIncludeDescendantsFromScope [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getIncludeDescendantsToScope [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] open                         [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setIncludeDescendantsFromScope [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setIncludeDescendantsToScope [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [x] getCellElements              [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getCellString                [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getColumnCount               [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getContent                   [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getFromScope                 [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getHTMLContent               [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getImageCollection           [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getItsMatrixLayout           [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getRowCount                  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getToScope                   [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setFromScope                 [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setItsMatrixLayout           [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setToScope                   [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] updateViewOnServer           [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getIncludeDescendantsFromScope [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getIncludeDescendantsToScope [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] open                         [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] setIncludeDescendantsFromScope [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setIncludeDescendantsToScope [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # [inherited] IRPUnit methods (covered by RPUnit checklist)
     # No deprecated IRPMatrixView methods.
@@ -1543,11 +1543,11 @@ class RPMessagePoint(RPModelElement):
     """Wraps ``IRPMessagePoint``."""
 
     # IRPMessagePoint method parity checklist:
-    # [ ] getClassifierRole            [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getInteractionOccurrence     [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getInteractionOperator       [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getMessage                   [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getType                      [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [ ] getClassifierRole            [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getInteractionOccurrence     [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getInteractionOperator       [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getMessage                   [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] getType                      [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPMessagePoint methods.
 
@@ -1626,56 +1626,56 @@ class RPTableLayout(RPUnit):
     """Wraps ``IRPTableLayout``."""
 
     # IRPTableLayout method parity checklist:
-    # [ ] addColumn                    [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] addColumnEx                  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getCollapseFirstColumn       [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getColumnContext             [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getColumnDefaultWidth        [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getColumnImplementationAllowNew [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getColumnImplementationAllowSelect [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getColumnImplementationCellType [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getColumnImplementationDisplayProperty [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getColumnImplementationGetterCode [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getColumnImplementationImports [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getColumnImplementationPickerCode [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getColumnImplementationSetterCode [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getColumnName                [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getColumnProperty            [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getColumnType                [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getColumns                   [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getElementTypes              [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getFromElementTypes          [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getFromElementTypesQueryToUse [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getFromElementTypesUseQueryOrElementsList [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getRelationTable             [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getResultList                [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getToElementTypes            [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getToElementTypesQueryToUse  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getToElementTypesUseQueryOrElementsList [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] removeColumn                 [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setCollapseFirstColumn       [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setColumnContext             [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setColumnDefaultWidth        [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setColumnImplementationAllowNew [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setColumnImplementationAllowSelect [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setColumnImplementationCellType [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setColumnImplementationDisplayProperty [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setColumnImplementationGetterCode [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setColumnImplementationImports [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setColumnImplementationPickerCode [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setColumnImplementationSetterCode [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setColumnName                [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setColumnProperty            [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setColumnType                [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setElementTypes              [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setFromElementTypes          [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setFromElementTypesQueryToUse [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setFromElementTypesUseQueryOrElementsList [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setRelationTable             [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setToElementTypes            [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setToElementTypesQueryToUse  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setToElementTypesUseQueryOrElementsList [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getColumnCount               [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [x] addColumn                    [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] addColumnEx                  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getCollapseFirstColumn       [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getColumnContext             [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getColumnDefaultWidth        [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getColumnImplementationAllowNew [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getColumnImplementationAllowSelect [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getColumnImplementationCellType [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getColumnImplementationDisplayProperty [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getColumnImplementationGetterCode [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getColumnImplementationImports [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getColumnImplementationPickerCode [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getColumnImplementationSetterCode [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getColumnName                [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getColumnProperty            [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getColumnType                [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getColumns                   [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getElementTypes              [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getFromElementTypes          [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getFromElementTypesQueryToUse [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getFromElementTypesUseQueryOrElementsList [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getRelationTable             [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getResultList                [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getToElementTypes            [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getToElementTypesQueryToUse  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getToElementTypesUseQueryOrElementsList [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] removeColumn                 [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setCollapseFirstColumn       [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setColumnContext             [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setColumnDefaultWidth        [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setColumnImplementationAllowNew [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setColumnImplementationAllowSelect [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setColumnImplementationCellType [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setColumnImplementationDisplayProperty [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setColumnImplementationGetterCode [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setColumnImplementationImports [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setColumnImplementationPickerCode [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setColumnImplementationSetterCode [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setColumnName                [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setColumnProperty            [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setColumnType                [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setElementTypes              [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setFromElementTypes          [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setFromElementTypesQueryToUse [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setFromElementTypesUseQueryOrElementsList [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setRelationTable             [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setToElementTypes            [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setToElementTypesQueryToUse  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setToElementTypesUseQueryOrElementsList [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getColumnCount               [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # [inherited] IRPUnit methods (covered by RPUnit checklist)
     # No deprecated IRPTableLayout methods.
@@ -2500,23 +2500,23 @@ class RPTableView(RPUnit):
     """Wraps ``IRPTableView``: represents Table View elements in Rhapsody models."""
 
     # IRPTableView method parity checklist:
-    # [ ] getCellElements              [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getCellString                [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getColumnCount               [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getContent                   [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getHTMLContent               [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getImageCollection           [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getItsTableLayout            [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getRowCount                  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getScope                     [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getUseOwnerScope             [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setItsTableLayout            [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setScope                     [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setUseOwnerScope             [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] updateViewOnServer           [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getIncludeDescendants        [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] open                         [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setIncludeDescendants        [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [ ] getCellElements              [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getCellString                [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getColumnCount               [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getContent                   [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getHTMLContent               [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getImageCollection           [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getItsTableLayout            [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] getRowCount                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getScope                     [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getUseOwnerScope             [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setItsTableLayout            [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setScope                     [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setUseOwnerScope             [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] updateViewOnServer           [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getIncludeDescendants        [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] open                         [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] setIncludeDescendants        [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # [inherited] IRPUnit methods (covered by RPUnit checklist)
     # No deprecated IRPTableView methods.
@@ -2783,12 +2783,12 @@ class RPPin(RPConnector):
     """Wraps ``IRPPin``: represents action pins added to actions, or activity parameters added to action blocks, in an activity diagram."""
 
     # IRPPin method parity checklist:
-    # [ ] getIsParameter               [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getPinDirection              [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getPinType                   [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setIsParameter               [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setPinDirection              [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setPinType                   [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [ ] getIsParameter               [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getPinDirection              [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] getPinType                   [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] setIsParameter               [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setPinDirection              [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] setPinType                   [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [inherited] IRPConnector methods (covered by RPConnector checklist)
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # [inherited] IRPStateVertex methods (covered by RPStateVertex checklist)
@@ -2869,11 +2869,11 @@ class RPGraphEdge(RPGraphElement):
     """Wraps ``IRPGraphEdge``."""
 
     # IRPGraphEdge method parity checklist:
-    # [ ] embedFlow                    [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] embedNewFlow                 [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getContainingArrow           [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getSource                    [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getTarget                    [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [ ] embedFlow                    [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] embedNewFlow                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] getContainingArrow           [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] getSource                    [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] getTarget                    [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [inherited] IRPGraphElement methods (covered by RPGraphElement checklist)
     # No deprecated IRPGraphEdge methods.
 
@@ -2955,13 +2955,13 @@ class RPGraphNode(RPGraphElement):
     """Wraps ``IRPGraphNode``."""
 
     # IRPGraphNode method parity checklist:
-    # [ ] bringToFront                 [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getIsPanelWidget             [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getPanelWidgetInstancePath   [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] hideAllPorts                 [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] sendToBack                   [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setPanelWidgetInstancePath   [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] showAllPorts                 [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [x] bringToFront                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] getIsPanelWidget             [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getPanelWidgetInstancePath   [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] hideAllPorts                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] sendToBack                   [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] setPanelWidgetInstancePath   [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] showAllPorts                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [inherited] IRPGraphElement methods (covered by RPGraphElement checklist)
     # No deprecated IRPGraphNode methods.
 

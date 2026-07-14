@@ -25,10 +25,10 @@ class RPEvent(RPInterfaceItem):
     """Wraps ``IRPEvent``: represents events in Rhapsody models."""
 
     # IRPEvent method parity checklist:
-    # [x] getBaseEvent                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getSuperEvent                [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setBaseEvent                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setSuperEvent                [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getBaseEvent                 [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getSuperEvent                [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setBaseEvent                 [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setSuperEvent                [x] impl  [ ] docstring  [x] unit test  [ ] integration test
     # [inherited] IRPClassifier methods (covered by RPClassifier checklist)
     # [inherited] IRPInterfaceItem methods (covered by RPInterfaceItem checklist)
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
@@ -52,8 +52,8 @@ class RPEventReception(RPInterfaceItem):
     """Wraps ``IRPEventReception``."""
 
     # IRPEventReception method parity checklist:
-    # [x] getEvent                     [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setEvent                     [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getEvent                     [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setEvent                     [x] impl  [ ] docstring  [x] unit test  [ ] integration test
     # [inherited] IRPClassifier methods (covered by RPClassifier checklist)
     # [inherited] IRPInterfaceItem methods (covered by RPInterfaceItem checklist)
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
@@ -71,7 +71,7 @@ class RPExecutionOccurrence(RPModelElement):
     """Wraps ``IRPExecutionOccurrence``."""
 
     # IRPExecutionOccurrence method parity checklist:
-    # [x] getMessage                   [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getMessage                   [x] impl  [ ] docstring  [x] unit test  [ ] integration test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPExecutionOccurrence methods.
 
@@ -83,8 +83,8 @@ class RPGuard(RPModelElement):
     """Wraps ``IRPGuard``."""
 
     # IRPGuard method parity checklist:
-    # [x] getBody                      [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setBody                      [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getBody                      [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setBody                      [x] impl  [ ] docstring  [x] unit test  [ ] integration test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPGuard methods.
 
@@ -99,9 +99,9 @@ class RPInteractionOccurrence(RPModelElement):
     """Wraps ``IRPInteractionOccurrence``."""
 
     # IRPInteractionOccurrence method parity checklist:
-    # [x] getMessagePoints             [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getReferenceSequenceDiagram  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setReferenceSequenceDiagram  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getMessagePoints             [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getReferenceSequenceDiagram  [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setReferenceSequenceDiagram  [x] impl  [ ] docstring  [x] unit test  [ ] integration test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPInteractionOccurrence methods.
 
@@ -119,9 +119,9 @@ class RPInteractionOperand(RPCollaboration):
     """Wraps ``IRPInteractionOperand``: represents interaction operands in Rhapsody models."""
 
     # IRPInteractionOperand method parity checklist:
-    # [x] getContainedMessages         [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getInteractionConstraint     [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setInteractionConstraint     [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getContainedMessages         [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getInteractionConstraint     [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setInteractionConstraint     [x] impl  [ ] docstring  [x] unit test  [ ] integration test
     # [inherited] IRPCollaboration methods (covered by RPCollaboration checklist)
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPInteractionOperand methods.
@@ -140,9 +140,9 @@ class RPInteractionOperator(RPModelElement):
     """Wraps ``IRPInteractionOperator``."""
 
     # IRPInteractionOperator method parity checklist:
-    # [x] getInteractionOperands       [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getInteractionType           [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setInteractionType           [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getInteractionOperands       [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getInteractionType           [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setInteractionType           [x] impl  [ ] docstring  [x] unit test  [ ] integration test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPInteractionOperator methods.
 
@@ -160,42 +160,42 @@ class RPMessage(RPModelElement):
     """Wraps ``IRPMessage``."""
 
     # IRPMessage method parity checklist:
-    # [x] addSourceExecutionOccurrence [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] addTargetExecutionOccurrence [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getActualParameterList       [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getCommunicationConnection   [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getCondition                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getDurationConstraint        [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getDurationObservation       [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getFlowPort                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getFormalInterfaceItem       [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getFormalType                [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getInvariant                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getMessageType               [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getPort                      [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getReturnValue               [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getSequenceNumber            [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getSignature                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getSource                    [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getSourceExecutionOccurrence [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getTarget                    [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getTargetExecutionOccurrence [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getTimeConstraint            [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getTimeObservation           [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getTimerValue                [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] reroute                      [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setActualParameterList       [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setDurationConstraint        [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setDurationObservation       [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setFlowPort                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setFormalInterfaceItem       [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setFormalType                [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setInvariant                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setPort                      [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setReturnValue               [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setTimeConstraint            [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setTimeObservation           [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setTimerValue                [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] addSourceExecutionOccurrence [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] addTargetExecutionOccurrence [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getActualParameterList       [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getCommunicationConnection   [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getCondition                 [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getDurationConstraint        [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getDurationObservation       [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getFlowPort                  [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getFormalInterfaceItem       [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getFormalType                [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getInvariant                 [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getMessageType               [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getPort                      [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getReturnValue               [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getSequenceNumber            [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getSignature                 [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getSource                    [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getSourceExecutionOccurrence [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getTarget                    [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getTargetExecutionOccurrence [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getTimeConstraint            [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getTimeObservation           [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getTimerValue                [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] reroute                      [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setActualParameterList       [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setDurationConstraint        [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setDurationObservation       [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setFlowPort                  [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setFormalInterfaceItem       [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setFormalType                [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setInvariant                 [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setPort                      [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setReturnValue               [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setTimeConstraint            [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setTimeObservation           [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setTimerValue                [x] impl  [ ] docstring  [x] unit test  [ ] integration test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPMessage methods.
 
@@ -312,29 +312,29 @@ class RPTransition(RPModelElement):
     """Wraps ``IRPTransition``: represents transitions in a statechart."""
 
     # IRPTransition method parity checklist:
-    # [x] getInheritsFrom              [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getIsOverridden              [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getItsAction                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getItsGuard                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getItsLabel                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getItsSource                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getItsStatechart             [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getItsTarget                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getItsTrigger                [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getOfState                   [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] isDefaultTransition          [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] isStaticReaction             [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] itsCompoundSource            [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] overrideInheritance          [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] resetLabelInheritance        [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setItsAction                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setItsGuard                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setItsLabel                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setItsSource                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setItsStatechart             [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setItsTarget                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setItsTrigger                [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] unoverrideInheritance        [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getInheritsFrom              [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getIsOverridden              [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getItsAction                 [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getItsGuard                  [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getItsLabel                  [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getItsSource                 [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getItsStatechart             [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getItsTarget                 [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getItsTrigger                [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getOfState                   [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] isDefaultTransition          [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] isStaticReaction             [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] itsCompoundSource            [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] overrideInheritance          [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] resetLabelInheritance        [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setItsAction                 [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setItsGuard                  [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setItsLabel                  [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setItsSource                 [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setItsStatechart             [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setItsTarget                 [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setItsTrigger                [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] unoverrideInheritance        [x] impl  [ ] docstring  [x] unit test  [ ] integration test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPTransition methods.
 
@@ -412,11 +412,11 @@ class RPTrigger(RPModelElement):
     """Wraps ``IRPTrigger``: represents the trigger of a transition in a statechart."""
 
     # IRPTrigger method parity checklist:
-    # [x] getBody                      [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] getItsOperation              [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] isOperation                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] isTimeout                    [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] setBody                      [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getBody                      [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] getItsOperation              [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] isOperation                  [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] isTimeout                    [x] impl  [ ] docstring  [x] unit test  [ ] integration test
+    # [ ] setBody                      [x] impl  [ ] docstring  [x] unit test  [ ] integration test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPTrigger methods.
 

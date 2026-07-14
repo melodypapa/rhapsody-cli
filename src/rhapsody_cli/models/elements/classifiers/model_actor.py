@@ -14,8 +14,8 @@ class RPActor(RPClassifier):
 
     # IRPActor method parity checklist:
     # [x] add_event_reception_with_event  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_is_behavior_overriden  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_is_behavior_overriden  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_is_behavior_overriden  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] set_is_behavior_overriden  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [ ] updateContainedDiagramsOnServer  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [inherited] IRPClassifier / IRPUnit / IRPModelElement methods (covered by RPClassifier / RPUnit / RPModelElement checklists)
     # No deprecated IRPActor methods.

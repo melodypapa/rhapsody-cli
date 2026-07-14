@@ -27,96 +27,96 @@ class RPPackage(RPUnit):
     """Wraps ``IRPPackage``: represents a package that contains model elements."""
 
     # IRPPackage method parity checklist:
-    # [ ] addActivityDiagram  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [x] addActivityDiagram  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] add_actor  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] add_class  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] addCollaborationDiagram  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] addComponentDiagram  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] addDeploymentDiagram  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] addEvent  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [ ] addCollaborationDiagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] addComponentDiagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] addDeploymentDiagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] addEvent  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] addFlowItems  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [ ] addFlows  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [x] add_global_function  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] addGlobalObject  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] addGlobalVariable  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [ ] addGlobalObject  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] addGlobalVariable  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] addImplicitObject  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] addInstanceSpecification  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] addLink  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [ ] addInstanceSpecification  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] addLink  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] addLinkBetweenSYSMLPorts  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] addModule  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [x] add_nested_package  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] addNode  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] addObjectModelDiagram  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] addPanelDiagram  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] addSequenceDiagram  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] addStatechart  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] addTimingDiagram  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] addType  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [x] add_use_case  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] addUseCaseDiagram  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] deleteActor  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] deleteClass  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] deleteCollaborationDiagram  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] deleteComponentDiagram  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] deleteDeploymentDiagram  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] deleteEvent  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [ ] addModule  [x] impl  [x] docstring  [ ] unit test  [x] integration test
+    # [x] add_nested_package  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [ ] addNode  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] addObjectModelDiagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] addPanelDiagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] addSequenceDiagram  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] addStatechart  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] addTimingDiagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] addType  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] add_use_case  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [ ] addUseCaseDiagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] deleteActor  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] deleteClass  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] deleteCollaborationDiagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] deleteComponentDiagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] deleteDeploymentDiagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] deleteEvent  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] deleteFlowItems  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [ ] deleteFlows  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] deleteGlobalFunction  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] deleteGlobalObject  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] deleteGlobalVariable  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] deleteNode  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] deleteObjectModelDiagram  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] deletePackage  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] deletePanelDiagram  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] deleteSequenceDiagram  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] deleteTimingDiagram  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] deleteType  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] deleteUseCase  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] deleteUseCaseDiagram  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] findActor  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] findAllByName  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] findClass  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] findEvent  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] findGlobalFunction  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] findGlobalObject  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] findGlobalVariable  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] findNode  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] findType  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] findUsage  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] findUseCase  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [x] get_actors  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] deleteGlobalFunction  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] deleteGlobalObject  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] deleteGlobalVariable  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] deleteNode  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] deleteObjectModelDiagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] deletePackage  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] deletePanelDiagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] deleteSequenceDiagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] deleteTimingDiagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] deleteType  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] deleteUseCase  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] deleteUseCaseDiagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] findActor  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] findAllByName  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] findClass  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] findEvent  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] findGlobalFunction  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] findGlobalObject  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] findGlobalVariable  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] findNode  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] findType  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] findUsage  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] findUseCase  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] get_actors  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [ ] getAllNestedElements  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getBehavioralDiagrams  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [x] get_classes  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] getCollaborationDiagrams  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getComponentDiagrams  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getDeploymentDiagrams  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getEvents  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [ ] getBehavioralDiagrams  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] get_classes  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [ ] getCollaborationDiagrams  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getComponentDiagrams  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getDeploymentDiagrams  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getEvents  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [ ] getEventsBaseId  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [ ] getFlowItems  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [ ] getFlows  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getGlobalFunctions  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getGlobalObjects  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getGlobalVariables  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getInstanceSpecifications  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getLinks  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getModules  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [ ] getGlobalFunctions  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getGlobalObjects  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getGlobalVariables  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getInstanceSpecifications  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getLinks  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getModules  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] getNamespace  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getNestedClassifiers  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getNestedComponents  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getNodes  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getObjectModelDiagrams  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getPackages  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getPanelDiagrams  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [ ] getNestedClassifiers  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getNestedComponents  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getNodes  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getObjectModelDiagrams  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getPackages  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [ ] getPanelDiagrams  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] getRemoteRequirementsPopulateMode  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [ ] getRootInstanceSpecifications  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [ ] getSavedInSeperateDirectory  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getSequenceDiagrams  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getSourceArtifacts  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getTimingDiagrams  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getTypes  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getUseCaseDiagrams  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [x] getSequenceDiagrams  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getSourceArtifacts  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getTimingDiagrams  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getTypes  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getUseCaseDiagrams  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [x] get_use_cases  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [ ] getUserDefinedStereotypes  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
     # [ ] loginToRemoteArtifactServer  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test

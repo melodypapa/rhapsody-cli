@@ -15,37 +15,37 @@ class RPOperation(RPInterfaceItem):
 
     # IRPOperation method parity checklist:
     # [x] create_auto_flow_chart  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] deleteArgument  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] deleteFlowchart  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [x] get_body  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] getFlowchart  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getImplementationSignature  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getInitializer  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [x] get_is_abstract  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] getIsCgDerived  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getIsConst  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getIsCtor  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getIsDtor  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getIsFinal  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getIsInline  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [x] get_is_static  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] getIsTrigger  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [x] get_is_virtual  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_return_type_declaration  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] deleteArgument  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] deleteFlowchart  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] get_body  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [ ] getFlowchart  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getImplementationSignature  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getInitializer  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] get_is_abstract  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [ ] getIsCgDerived  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getIsConst  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getIsCtor  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getIsDtor  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getIsFinal  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getIsInline  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] get_is_static  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [ ] getIsTrigger  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] get_is_virtual  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] get_return_type_declaration  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_returns  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] getVisibility  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setBody  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setFlowchart  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setInitializer  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [x] set_is_abstract  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] setIsConst  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] setIsFinal  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [x] set_is_static  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] set_is_virtual  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] set_return_type_declaration  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getVisibility  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setBody  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setFlowchart  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setInitializer  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] set_is_abstract  [x] impl  [x] docstring  [ ] unit test  [x] integration test
+    # [ ] setIsConst  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setIsFinal  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] set_is_static  [x] impl  [x] docstring  [ ] unit test  [x] integration test
+    # [ ] set_is_virtual  [x] impl  [x] docstring  [ ] unit test  [x] integration test
+    # [x] set_return_type_declaration  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] set_returns  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] setVisibility  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] updateContainedDiagramsOnServer  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [ ] setVisibility  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] updateContainedDiagramsOnServer  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [inherited] IRPInterfaceItem / IRPClassifier / IRPUnit / IRPModelElement methods (covered by RPInterfaceItem / RPClassifier / RPUnit / RPModelElement checklists)
     # No deprecated IRPOperation methods.
 
