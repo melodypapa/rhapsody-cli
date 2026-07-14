@@ -60,6 +60,7 @@ class TestRPTemplateInstantiationParameter:
 
     def test_set_type_delegates(self) -> None:
         from rhapsody_cli.models.elements.classifiers import RPClassifier
+
         fake = make_fake_element("TemplateInstantiationParameter")
         clf = make_fake_element("Class", getName="C1")
         param = RPTemplateInstantiationParameter(fake)
@@ -103,6 +104,7 @@ class TestRPTemplateParameter:
 
     def test_set_class_type_delegates(self) -> None:
         from rhapsody_cli.models.elements.classifiers import RPClassifier
+
         fake = make_fake_element("TemplateParameter")
         clf = make_fake_element("Class", getName="C1")
         tp = RPTemplateParameter(fake)

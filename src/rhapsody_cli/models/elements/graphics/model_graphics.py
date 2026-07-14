@@ -1522,9 +1522,7 @@ class RPMatrixView(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPMatrixView::setIncludeDescendantsFromScope(int includeDescendantsFromScope)
         """
-        self._set_method_or_property(
-            self._com, "setIncludeDescendantsFromScope", "includeDescendantsFromScope", include_descendants_from_scope
-        )
+        self._set_method_or_property(self._com, "setIncludeDescendantsFromScope", "includeDescendantsFromScope", include_descendants_from_scope)
 
     def set_include_descendants_to_scope(self, include_descendants_to_scope: int) -> None:
         """Sets whether descendants are included in the "to" scope.
@@ -1538,9 +1536,7 @@ class RPMatrixView(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPMatrixView::setIncludeDescendantsToScope(int includeDescendantsToScope)
         """
-        self._set_method_or_property(
-            self._com, "setIncludeDescendantsToScope", "includeDescendantsToScope", include_descendants_to_scope
-        )
+        self._set_method_or_property(self._com, "setIncludeDescendantsToScope", "includeDescendantsToScope", include_descendants_to_scope)
 
 
 class RPMessagePoint(RPModelElement):

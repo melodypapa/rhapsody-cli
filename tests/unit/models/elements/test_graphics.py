@@ -294,6 +294,7 @@ class TestRPConnectorTask15:
         state = make_fake_element("State", getName="S1")
         fake.setOfState.return_value = None
         from rhapsody_cli.models.elements.statemachine.model_statemachine import RPState
+
         conn = RPConnector(fake)
         conn.set_of_state(RPState(state))
         fake.setOfState.assert_called_once_with(state)
@@ -334,6 +335,7 @@ class TestRPPinTask15:
         classifier = make_fake_element("Class", getName="DataType")
         fake.setPinType.return_value = None
         from rhapsody_cli.models.elements.classifiers.model_class import RPClass
+
         pin = RPPin(fake)
         pin.set_pin_type(RPClass(classifier))
         fake.setPinType.assert_called_once_with(classifier)
@@ -349,6 +351,7 @@ class TestRPConditionMarkTask15:
         fake = make_fake_element("ConditionMark", getName="cm1")
         cm = RPConditionMark(fake)
         from rhapsody_cli.models.elements.interactions.model_interactions import RPMessage
+
         assert isinstance(cm, RPMessage)
 
 
