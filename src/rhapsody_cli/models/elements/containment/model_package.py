@@ -261,6 +261,9 @@ class RPPackage(RPUnit):
         Returns:
             The wrapped signal element created.
         """
+        # TODO: Under Rhapsody2.Application.1 neither the 'addSignal' COM method nor
+        # addNewAggr('Signal') is supported on a package; this raises. Use the correct
+        # metaclass/owner when Rhapsody exposes Signal creation.
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addSignal(name)))
 
     def add_exception(self, name: str) -> Any:
@@ -283,6 +286,9 @@ class RPPackage(RPUnit):
         Returns:
             The wrapped enumeration element created.
         """
+        # TODO: Under Rhapsody2.Application.1 neither the 'addEnumeration' COM method nor
+        # addNewAggr('Enumeration') is supported on a package; this raises. Use the correct
+        # metaclass/owner when Rhapsody exposes Enumeration creation.
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addEnumeration(name)))
 
     def get_enumerations(self) -> "RPCollection":
