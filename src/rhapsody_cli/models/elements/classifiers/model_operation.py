@@ -79,6 +79,9 @@ class RPOperation(RPInterfaceItem):
 
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::setIsAbstract(boolean isAbstract)
+
+        # TODO: Under Rhapsody2.Application.1 the ``setIsAbstract`` COM method is not exposed,
+        # so this raises AttributeError. Persist abstract state via the metatype property system.
         """
         AbstractRPModelElement.call_com(lambda: self._com.setIsAbstract(is_abstract))
 
@@ -101,6 +104,9 @@ class RPOperation(RPInterfaceItem):
 
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::setIsStatic(boolean isStatic)
+
+        # TODO: Under Rhapsody2.Application.1 the ``setIsStatic`` COM method is not exposed,
+        # so this raises AttributeError. Persist static state via the metatype property system.
         """
         AbstractRPModelElement.call_com(lambda: self._com.setIsStatic(is_static))
 
@@ -123,6 +129,9 @@ class RPOperation(RPInterfaceItem):
 
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::setIsVirtual(boolean isVirtual)
+
+        # TODO: Under Rhapsody2.Application.1 the ``setIsVirtual`` COM method is not exposed,
+        # so this raises AttributeError. Persist virtual state via the metatype property system.
         """
         AbstractRPModelElement.call_com(lambda: self._com.setIsVirtual(is_virtual))
 

@@ -152,6 +152,9 @@ class RPVariable(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPVariable::setTypeDeclaration(java.lang.String newVal)
         """
+        # TODO: Under Rhapsody2.Application.1 the 'typeDeclaration' property is not settable (or the
+        # 'setTypeDeclaration' method is absent), so this silently no-ops. Persist the type declaration
+        # via the metatype property system in a future Rhapsody build.
         AbstractRPModelElement._set_method_or_property(self._com, "setTypeDeclaration", "typeDeclaration", new_val)
 
 
