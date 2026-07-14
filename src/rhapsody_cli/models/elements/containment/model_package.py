@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, cast
 from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPUnit
 
 if TYPE_CHECKING:
+    from rhapsody_cli.models.elements.activity.model_activity import RPFlow, RPFlowItem
     from rhapsody_cli.models.elements.classifiers.model_actor import RPActor
     from rhapsody_cli.models.elements.classifiers.model_class import RPClass
     from rhapsody_cli.models.elements.classifiers.model_operation import RPOperation
@@ -34,8 +35,8 @@ class RPPackage(RPUnit):
     # [ ] addComponentDiagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] addDeploymentDiagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] addEvent  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] addFlowItems  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] addFlows  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [x] addFlowItems  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] addFlows  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] add_global_function  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [ ] addGlobalObject  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] addGlobalVariable  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
@@ -60,8 +61,8 @@ class RPPackage(RPUnit):
     # [ ] deleteComponentDiagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] deleteDeploymentDiagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] deleteEvent  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] deleteFlowItems  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] deleteFlows  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [x] deleteFlowItems  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] deleteFlows  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [ ] deleteGlobalFunction  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] deleteGlobalObject  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] deleteGlobalVariable  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
@@ -94,8 +95,8 @@ class RPPackage(RPUnit):
     # [ ] getDeploymentDiagrams  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [x] getEvents  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [ ] getEventsBaseId  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getFlowItems  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
-    # [ ] getFlows  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test
+    # [x] getFlowItems  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] getFlows  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [ ] getGlobalFunctions  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] getGlobalObjects  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] getGlobalVariables  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
@@ -185,6 +186,34 @@ class RPPackage(RPUnit):
             com.telelogic.rhapsody.core.IRPPackage::addGlobalFunction(java.lang.String name)
         """
         return cast("RPOperation", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addGlobalFunction(name))))
+
+    def add_flow_items(self, name: str) -> "RPFlowItem":
+        """Adds a new flow item to the package.
+
+        Args:
+            name: The name of the new flow item.
+
+        Returns:
+            The wrapped flow item element created.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPPackage::addFlowItems(java.lang.String name)
+        """
+        return cast("RPFlowItem", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addFlowItems(name))))
+
+    def add_flows(self, name: str) -> "RPFlow":
+        """Adds a new flow to the package.
+
+        Args:
+            name: The name of the new flow.
+
+        Returns:
+            The wrapped flow element created.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPPackage::addFlows(java.lang.String name)
+        """
+        return cast("RPFlow", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addFlows(name))))
 
     def get_nested_packages(self) -> "RPCollection":
         """Returns all nested packages in this package.
@@ -677,6 +706,28 @@ class RPPackage(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteUseCase(use_case._com))
 
+    def delete_flow_items(self, flow_item: "RPFlowItem") -> None:
+        """Deletes a flow item from the package.
+
+        Args:
+            flow_item: The flow item to delete.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPPackage::deleteFlowItems(com.telelogic.rhapsody.core.IRPFlowItem flowItem)
+        """
+        AbstractRPModelElement.call_com(lambda: self._com.deleteFlowItems(flow_item._com))
+
+    def delete_flows(self, flow: "RPFlow") -> None:
+        """Deletes a flow from the package.
+
+        Args:
+            flow: The flow to delete.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPPackage::deleteFlows(com.telelogic.rhapsody.core.IRPFlow flow)
+        """
+        AbstractRPModelElement.call_com(lambda: self._com.deleteFlows(flow._com))
+
     def delete_package(self, package: Any) -> None:
         """Deletes a nested package from this package.
 
@@ -807,6 +858,28 @@ class RPPackage(RPUnit):
             com.telelogic.rhapsody.core.IRPPackage::getEvents()
         """
         return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getEvents", "events"))
+
+    def get_flow_items(self) -> "RPCollection":
+        """Returns all flow items contained in this package.
+
+        Returns:
+            An ``RPCollection`` of flow item elements.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPPackage::getFlowItems()
+        """
+        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getFlowItems", "flowItems"))
+
+    def get_flows(self) -> "RPCollection":
+        """Returns all flows contained in this package.
+
+        Returns:
+            An ``RPCollection`` of flow elements.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPPackage::getFlows()
+        """
+        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getFlows", "flows"))
 
     def find_event(self, name: str) -> Any:
         """Finds an event in the package by name.

@@ -386,3 +386,79 @@ def test_package_get_nodes_returns_collection() -> None:
     result = package.get_nodes()
 
     assert isinstance(result, RPCollection)
+
+
+def test_package_add_flow_items_delegates_to_com() -> None:
+    fake = make_fake_element("Package")
+    flow_item = make_fake_element("FlowItem", getName="MyFlowItem")
+    fake.addFlowItems.return_value = flow_item
+    package = RPPackage(fake)
+
+    result = package.add_flow_items("MyFlowItem")
+
+    fake.addFlowItems.assert_called_once_with("MyFlowItem")
+    assert result.get_name() == "MyFlowItem"
+
+
+def test_package_add_flows_delegates_to_com() -> None:
+    fake = make_fake_element("Package")
+    flow = make_fake_element("Flow", getName="MyFlow")
+    fake.addFlows.return_value = flow
+    package = RPPackage(fake)
+
+    result = package.add_flows("MyFlow")
+
+    fake.addFlows.assert_called_once_with("MyFlow")
+    assert result.get_name() == "MyFlow"
+
+
+def test_package_delete_flow_items_delegates_to_com() -> None:
+    from rhapsody_cli.models.core import RPModelElement
+
+    fake = make_fake_element("Package")
+    package = RPPackage(fake)
+    flow_item_fake = make_fake_element("FlowItem", getName="ToDelete")
+
+    package.delete_flow_items(RPModelElement(flow_item_fake))
+
+    fake.deleteFlowItems.assert_called_once_with(flow_item_fake)
+
+
+def test_package_delete_flows_delegates_to_com() -> None:
+    from rhapsody_cli.models.core import RPModelElement
+
+    fake = make_fake_element("Package")
+    package = RPPackage(fake)
+    flow_fake = make_fake_element("Flow", getName="ToDelete")
+
+    package.delete_flows(RPModelElement(flow_fake))
+
+    fake.deleteFlows.assert_called_once_with(flow_fake)
+
+
+def test_package_get_flow_items_returns_collection() -> None:
+    from rhapsody_cli.models.core import RPCollection
+
+    fake = make_fake_element("Package")
+    flow_item = make_fake_element("FlowItem", getName="FlowItem1")
+    fake.getFlowItems.return_value = make_fake_collection([flow_item])
+    package = RPPackage(fake)
+
+    result = package.get_flow_items()
+
+    fake.getFlowItems.assert_called_once_with()
+    assert isinstance(result, RPCollection)
+
+
+def test_package_get_flows_returns_collection() -> None:
+    from rhapsody_cli.models.core import RPCollection
+
+    fake = make_fake_element("Package")
+    flow = make_fake_element("Flow", getName="Flow1")
+    fake.getFlows.return_value = make_fake_collection([flow])
+    package = RPPackage(fake)
+
+    result = package.get_flows()
+
+    fake.getFlows.assert_called_once_with()
+    assert isinstance(result, RPCollection)
