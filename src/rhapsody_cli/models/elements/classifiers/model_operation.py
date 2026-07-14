@@ -14,38 +14,38 @@ class RPOperation(RPInterfaceItem):
     """Wraps ``IRPOperation``: represents an operation or method in a classifier."""
 
     # IRPOperation method parity checklist:
-    # [x] create_auto_flow_chart  [x] impl  [x] docstring  [x] test
-    # [ ] deleteArgument  [ ] impl  [ ] docstring  [ ] test
-    # [ ] deleteFlowchart  [ ] impl  [ ] docstring  [ ] test
-    # [x] get_body  [x] impl  [x] docstring  [x] test
-    # [ ] getFlowchart  [ ] impl  [ ] docstring  [ ] test
-    # [ ] getImplementationSignature  [ ] impl  [ ] docstring  [ ] test
-    # [ ] getInitializer  [ ] impl  [ ] docstring  [ ] test
-    # [x] get_is_abstract  [x] impl  [x] docstring  [x] test
-    # [ ] getIsCgDerived  [ ] impl  [ ] docstring  [ ] test
-    # [ ] getIsConst  [ ] impl  [ ] docstring  [ ] test
-    # [ ] getIsCtor  [ ] impl  [ ] docstring  [ ] test
-    # [ ] getIsDtor  [ ] impl  [ ] docstring  [ ] test
-    # [ ] getIsFinal  [ ] impl  [ ] docstring  [ ] test
-    # [ ] getIsInline  [ ] impl  [ ] docstring  [ ] test
-    # [x] get_is_static  [x] impl  [x] docstring  [x] test
-    # [ ] getIsTrigger  [ ] impl  [ ] docstring  [ ] test
-    # [x] get_is_virtual  [x] impl  [x] docstring  [x] test
-    # [x] get_return_type_declaration  [x] impl  [x] docstring  [x] test
-    # [x] get_returns  [x] impl  [x] docstring  [x] test
-    # [ ] getVisibility  [ ] impl  [ ] docstring  [ ] test
-    # [ ] setBody  [ ] impl  [ ] docstring  [ ] test
-    # [ ] setFlowchart  [ ] impl  [ ] docstring  [ ] test
-    # [ ] setInitializer  [ ] impl  [ ] docstring  [ ] test
-    # [x] set_is_abstract  [x] impl  [x] docstring  [ ] test
-    # [ ] setIsConst  [ ] impl  [ ] docstring  [ ] test
-    # [ ] setIsFinal  [ ] impl  [ ] docstring  [ ] test
-    # [x] set_is_static  [x] impl  [x] docstring  [ ] test
-    # [x] set_is_virtual  [x] impl  [x] docstring  [ ] test
-    # [x] set_return_type_declaration  [x] impl  [x] docstring  [x] test
-    # [x] set_returns  [x] impl  [x] docstring  [x] test
-    # [ ] setVisibility  [ ] impl  [ ] docstring  [ ] test
-    # [ ] updateContainedDiagramsOnServer  [ ] impl  [ ] docstring  [ ] test
+    # [x] create_auto_flow_chart  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] deleteArgument  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] deleteFlowchart  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] get_body  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [ ] getFlowchart  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getImplementationSignature  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getInitializer  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] get_is_abstract  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [ ] getIsCgDerived  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getIsConst  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getIsCtor  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getIsDtor  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getIsFinal  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getIsInline  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] get_is_static  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [ ] getIsTrigger  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] get_is_virtual  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] get_return_type_declaration  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] get_returns  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getVisibility  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setBody  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setFlowchart  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setInitializer  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] set_is_abstract  [x] impl  [x] docstring  [ ] unit test  [x] integration test
+    # [ ] setIsConst  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setIsFinal  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] set_is_static  [x] impl  [x] docstring  [ ] unit test  [x] integration test
+    # [ ] set_is_virtual  [x] impl  [x] docstring  [ ] unit test  [x] integration test
+    # [x] set_return_type_declaration  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] set_returns  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] setVisibility  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] updateContainedDiagramsOnServer  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [inherited] IRPInterfaceItem / IRPClassifier / IRPUnit / IRPModelElement methods (covered by RPInterfaceItem / RPClassifier / RPUnit / RPModelElement checklists)
     # No deprecated IRPOperation methods.
 

@@ -12,49 +12,49 @@ class RPComponent(RPUnit):
     """Wraps ``IRPComponent``: a component that extends ``IRPUnit``."""
 
     # IRPComponent method parity checklist:
-    # [x] addConfiguration  [x] impl  [x] docstring  [x] test
-    # [x] addFile  [x] impl  [x] docstring  [x] test
-    # [x] addFolder  [x] impl  [x] docstring  [x] test
-    # [x] addNestedComponent  [x] impl  [x] docstring  [x] test
-    # [x] addScopeElement  [x] impl  [x] docstring  [x] test
-    # [x] addScopeElementWithoutAggregates  [x] impl  [x] docstring  [x] test
-    # [x] addToScope  [x] impl  [x] docstring  [x] test
-    # [x] allElementsInScope  [x] impl  [x] docstring  [x] test
-    # [x] deleteConfiguration  [x] impl  [x] docstring  [x] test
-    # [x] deleteFile  [x] impl  [x] docstring  [x] test
-    # [x] findConfiguration  [x] impl  [x] docstring  [x] test
-    # [x] getAdditionalSources  [x] impl  [x] docstring  [x] test
-    # [x] getBuildType  [x] impl  [x] docstring  [x] test
-    # [x] getConfigByDependency  [x] impl  [x] docstring  [x] test
-    # [x] getConfigurations  [x] impl  [x] docstring  [x] test
-    # [x] getFile  [x] impl  [x] docstring  [x] test
-    # [x] getFileName  [x] impl  [x] docstring  [x] test
-    # [x] getFiles  [x] impl  [x] docstring  [x] test
-    # [x] getIncludePath  [x] impl  [x] docstring  [x] test
-    # [x] getLibraries  [x] impl  [x] docstring  [x] test
-    # [x] getModelElementFileName  [x] impl  [x] docstring  [x] test
-    # [x] getNestedComponents  [x] impl  [x] docstring  [x] test
-    # [x] getPackageFile  [x] impl  [x] docstring  [x] test
-    # [x] getPanelDiagrams  [x] impl  [x] docstring  [x] test
-    # [x] getPath  [x] impl  [x] docstring  [x] test
-    # [x] getPossibleVariants  [x] impl  [x] docstring  [x] test
-    # [x] getScopeBySelectedElements  [x] impl  [x] docstring  [x] test
-    # [x] getScopeElements  [x] impl  [x] docstring  [x] test
-    # [x] getScopeElementsByCategory  [x] impl  [x] docstring  [x] test
-    # [x] getStandardHeaders  [x] impl  [x] docstring  [x] test
-    # [x] getVariant  [x] impl  [x] docstring  [x] test
-    # [x] getVariationPoints  [x] impl  [x] docstring  [x] test
-    # [x] isDirectoryPerModelComponent  [x] impl  [x] docstring  [x] test
-    # [x] removeScopeElement  [x] impl  [x] docstring  [x] test
-    # [x] setAdditionalSources  [x] impl  [x] docstring  [x] test
-    # [x] setBuildType  [x] impl  [x] docstring  [x] test
-    # [x] setIncludePath  [x] impl  [x] docstring  [x] test
-    # [x] setLibraries  [x] impl  [x] docstring  [x] test
-    # [x] setPath  [x] impl  [x] docstring  [x] test
-    # [x] setScopeBySelectedElements  [x] impl  [x] docstring  [x] test
-    # [x] setStandardHeaders  [x] impl  [x] docstring  [x] test
-    # [x] setVariant  [x] impl  [x] docstring  [x] test
-    # [x] updateContainedDiagramsOnServer  [x] impl  [x] docstring  [x] test
+    # [x] addConfiguration  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] addFile  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] addFolder  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] addNestedComponent  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] addScopeElement  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] addScopeElementWithoutAggregates  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] addToScope  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] allElementsInScope  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] deleteConfiguration  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] deleteFile  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] findConfiguration  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getAdditionalSources  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getBuildType  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getConfigByDependency  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getConfigurations  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getFile  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getFileName  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getFiles  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getIncludePath  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getLibraries  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getModelElementFileName  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getNestedComponents  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getPackageFile  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getPanelDiagrams  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getPath  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getPossibleVariants  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getScopeBySelectedElements  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getScopeElements  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getScopeElementsByCategory  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getStandardHeaders  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getVariant  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getVariationPoints  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] isDirectoryPerModelComponent  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] removeScopeElement  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setAdditionalSources  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setBuildType  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setIncludePath  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setLibraries  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] setPath  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] setScopeBySelectedElements  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setStandardHeaders  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setVariant  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] updateContainedDiagramsOnServer  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [inherited] IRPUnit / IRPModelElement methods (covered by RPUnit / RPModelElement checklists)
     # No deprecated IRPComponent methods.
 

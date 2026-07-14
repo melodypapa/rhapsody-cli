@@ -17,39 +17,39 @@ class RPDiagram(RPUnit):
     """Wraps ``IRPDiagram``: represents a diagram in the model."""
 
     # IRPDiagram method parity checklist:
-    # [ ] addFreeShapeByType  [ ] impl  [ ] docstring  [ ] test
-    # [ ] addImage  [ ] impl  [ ] docstring  [ ] test
-    # [ ] addNewEdgeByType  [ ] impl  [ ] docstring  [ ] test
-    # [ ] addNewEdgeForElement  [ ] impl  [ ] docstring  [ ] test
-    # [ ] addNewNodeByType  [ ] impl  [ ] docstring  [ ] test
-    # [ ] addNewNodeForElement  [ ] impl  [ ] docstring  [ ] test
-    # [x] add_text_box  [x] impl  [x] docstring  [x] test
-    # [ ] createDiagramView  [ ] impl  [ ] docstring  [ ] test
-    # [x] get_custom_views  [x] impl  [x] docstring  [x] test
-    # [ ] getDiagramViewOf  [ ] impl  [ ] docstring  [ ] test
-    # [ ] getDiagramViews  [ ] impl  [ ] docstring  [ ] test
-    # [ ] isDiagramView  [ ] impl  [ ] docstring  [ ] test
-    # [ ] openDiagramView  [ ] impl  [ ] docstring  [ ] test
-    # [ ] rearrangePorts  [ ] impl  [ ] docstring  [ ] test
-    # [ ] setCustomViews  [ ] impl  [ ] docstring  [ ] test
-    # [ ] updateViewOnServer  [ ] impl  [ ] docstring  [ ] test
-    # [x] close_diagram  [x] impl  [x] docstring  [x] test
-    # [ ] completeRelations  [ ] impl  [ ] docstring  [ ] test
-    # [x] get_corresponding_graphic_elements  [x] impl  [x] docstring  [x] test
-    # [ ] getElementsInDiagram  [ ] impl  [ ] docstring  [ ] test
-    # [ ] getGraphicalElements  [ ] impl  [ ] docstring  [ ] test
-    # [ ] getLastVisualizationModifiedTime  [ ] impl  [ ] docstring  [ ] test
-    # [ ] getPicture  [ ] impl  [ ] docstring  [ ] test
-    # [ ] getPictureAs  [ ] impl  [ ] docstring  [ ] test
-    # [ ] getPictureAsDividedMetafiles  [ ] impl  [ ] docstring  [ ] test
-    # [ ] getPictureEx  [ ] impl  [ ] docstring  [ ] test
-    # [ ] getPicturesWithImageMap  [ ] impl  [ ] docstring  [ ] test
-    # [ ] isOpen  [ ] impl  [ ] docstring  [ ] test
-    # [ ] isShowDiagramFrame  [ ] impl  [ ] docstring  [ ] test
-    # [ ] openDiagram  [ ] impl  [ ] docstring  [ ] test
-    # [ ] populateDiagram  [ ] impl  [ ] docstring  [ ] test
-    # [ ] removeGraphElements  [ ] impl  [ ] docstring  [ ] test
-    # [ ] setShowDiagramFrame  [ ] impl  [ ] docstring  [ ] test
+    # [ ] addFreeShapeByType  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] addImage  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] addNewEdgeByType  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] addNewEdgeForElement  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] addNewNodeByType  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] addNewNodeForElement  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] add_text_box  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] createDiagramView  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] get_custom_views  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getDiagramViewOf  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getDiagramViews  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] isDiagramView  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] openDiagramView  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] rearrangePorts  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setCustomViews  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] updateViewOnServer  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] close_diagram  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] completeRelations  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] get_corresponding_graphic_elements  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getElementsInDiagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getGraphicalElements  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getLastVisualizationModifiedTime  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getPicture  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getPictureAs  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getPictureAsDividedMetafiles  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getPictureEx  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getPicturesWithImageMap  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] isOpen  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] isShowDiagramFrame  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] openDiagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] populateDiagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] removeGraphElements  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setShowDiagramFrame  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [inherited] IRPUnit / IRPModelElement methods (covered by RPUnit / RPModelElement checklists)
     # No deprecated IRPDiagram methods.
 

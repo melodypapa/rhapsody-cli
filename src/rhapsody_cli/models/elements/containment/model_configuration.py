@@ -13,52 +13,52 @@ class RPConfiguration(RPUnit):
     """Wraps ``IRPConfiguration``: a configuration that extends ``IRPUnit``."""
 
     # IRPConfiguration method parity checklist:
-    # [x] addInitialInstance  [x] impl  [x] docstring  [x] test
-    # [x] addPackageToInstrumentationScope  [x] impl  [x] docstring  [x] test
-    # [x] addToInstrumentationScope  [x] impl  [x] docstring  [x] test
-    # [x] deleteInitialInstance  [x] impl  [x] docstring  [x] test
-    # [x] getAdditionalSources  [x] impl  [x] docstring  [x] test
-    # [x] getAllElementsInInstrumentationScope  [x] impl  [x] docstring  [x] test
-    # [x] getBuildSet  [x] impl  [x] docstring  [x] test
-    # [x] getCompilerSwitches  [x] impl  [x] docstring  [x] test
-    # [x] getDirectory  [x] impl  [x] docstring  [x] test
-    # [x] getExecutableName  [x] impl  [x] docstring  [x] test
-    # [x] getGenerateCodeForActors  [x] impl  [x] docstring  [x] test
-    # [x] getIncludePath  [x] impl  [x] docstring  [x] test
-    # [x] getInitialInstances  [x] impl  [x] docstring  [x] test
-    # [x] getInitializationCode  [x] impl  [x] docstring  [x] test
-    # [x] getInstrumentationScope  [x] impl  [x] docstring  [x] test
-    # [x] getInstrumentationType  [x] impl  [x] docstring  [x] test
-    # [x] getItsComponent  [x] impl  [x] docstring  [x] test
-    # [x] getLibraries  [x] impl  [x] docstring  [x] test
-    # [x] getLinkSwitches  [x] impl  [x] docstring  [x] test
-    # [x] getMainName  [x] impl  [x] docstring  [x] test
-    # [x] getMakefileName  [x] impl  [x] docstring  [x] test
-    # [x] getPath  [x] impl  [x] docstring  [x] test
-    # [x] getScopeType  [x] impl  [x] docstring  [x] test
-    # [x] getStandardHeaders  [x] impl  [x] docstring  [x] test
-    # [x] getStatechartImplementation  [x] impl  [x] docstring  [x] test
-    # [x] getTargetName  [x] impl  [x] docstring  [x] test
-    # [x] getTimeModel  [x] impl  [x] docstring  [x] test
-    # [x] needsCodeGeneration  [x] impl  [x] docstring  [x] test
-    # [x] removeFromInstrumentationScope  [x] impl  [x] docstring  [x] test
-    # [x] removePackageFromInstrumentationScope  [x] impl  [x] docstring  [x] test
-    # [x] setAdditionalSources  [x] impl  [x] docstring  [x] test
-    # [x] setAllElementsInInstrumentationScope  [x] impl  [x] docstring  [x] test
-    # [x] setBuildSet  [x] impl  [x] docstring  [x] test
-    # [x] setCompilerSwitches  [x] impl  [x] docstring  [x] test
-    # [x] setDirectory  [x] impl  [x] docstring  [x] test
-    # [x] setGenerateCodeForActors  [x] impl  [x] docstring  [x] test
-    # [x] setIncludePath  [x] impl  [x] docstring  [x] test
-    # [x] setInitializationCode  [x] impl  [x] docstring  [x] test
-    # [x] setInstrumentationType  [x] impl  [x] docstring  [x] test
-    # [x] setItsComponent  [x] impl  [x] docstring  [x] test
-    # [x] setLibraries  [x] impl  [x] docstring  [x] test
-    # [x] setLinkSwitches  [x] impl  [x] docstring  [x] test
-    # [x] setScopeType  [x] impl  [x] docstring  [x] test
-    # [x] setStandardHeaders  [x] impl  [x] docstring  [x] test
-    # [x] setStatechartImplementation  [x] impl  [x] docstring  [x] test
-    # [x] setTimeModel  [x] impl  [x] docstring  [x] test
+    # [x] addInitialInstance  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] addPackageToInstrumentationScope  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] addToInstrumentationScope  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] deleteInitialInstance  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getAdditionalSources  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getAllElementsInInstrumentationScope  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getBuildSet  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getCompilerSwitches  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getDirectory  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getExecutableName  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getGenerateCodeForActors  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getIncludePath  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getInitialInstances  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getInitializationCode  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getInstrumentationScope  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getInstrumentationType  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] getItsComponent  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getLibraries  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getLinkSwitches  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getMainName  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getMakefileName  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getPath  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getScopeType  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getStandardHeaders  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getStatechartImplementation  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getTargetName  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getTimeModel  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] needsCodeGeneration  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] removeFromInstrumentationScope  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] removePackageFromInstrumentationScope  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setAdditionalSources  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setAllElementsInInstrumentationScope  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setBuildSet  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setCompilerSwitches  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] setDirectory  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] setGenerateCodeForActors  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setIncludePath  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setInitializationCode  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setInstrumentationType  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] setItsComponent  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] setLibraries  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setLinkSwitches  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setScopeType  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setStandardHeaders  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setStatechartImplementation  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setTimeModel  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [inherited] IRPUnit / IRPModelElement methods (covered by RPUnit / RPModelElement checklists)
     # No deprecated IRPConfiguration methods.
 

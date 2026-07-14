@@ -13,21 +13,21 @@ class RPUseCase(RPClassifier):
     """Wraps ``IRPUseCase``: represents a use case in the model."""
 
     # IRPUseCase method parity checklist:
-    # [x] addDescribingDiagram  [x] impl  [x] docstring  [ ] test
-    # [x] addEventReceptionWithEvent  [x] impl  [x] docstring  [ ] test
-    # [x] add_extension_point  [x] impl  [x] docstring  [x] test
-    # [x] deleteDescribingDiagram  [x] impl  [x] docstring  [ ] test
-    # [x] deleteEntryPoint  [x] impl  [x] docstring  [ ] test
-    # [x] deleteExtensionPoint  [x] impl  [x] docstring  [ ] test
-    # [x] findEntryPoint  [x] impl  [x] docstring  [ ] test
-    # [x] findExtensionPoint  [x] impl  [x] docstring  [ ] test
-    # [x] getDescribingDiagram  [x] impl  [x] docstring  [ ] test
-    # [x] get_describing_diagrams  [x] impl  [x] docstring  [x] test
-    # [x] get_entry_points  [x] impl  [x] docstring  [x] test
-    # [x] get_extension_points  [x] impl  [x] docstring  [x] test
-    # [x] getIsBehaviorOverriden  [x] impl  [x] docstring  [ ] test
-    # [x] setIsBehaviorOverriden  [x] impl  [x] docstring  [ ] test
-    # [x] updateContainedDiagramsOnServer  [x] impl  [x] docstring  [ ] test
+    # [ ] addDescribingDiagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] addEventReceptionWithEvent  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] add_extension_point  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] deleteDescribingDiagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] deleteEntryPoint  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] deleteExtensionPoint  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] findEntryPoint  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] findExtensionPoint  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getDescribingDiagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] get_describing_diagrams  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_entry_points  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_extension_points  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [ ] getIsBehaviorOverriden  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setIsBehaviorOverriden  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] updateContainedDiagramsOnServer  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [inherited] IRPClassifier / IRPUnit / IRPModelElement methods (covered by RPClassifier / RPUnit / RPModelElement checklists)
     # No deprecated IRPUseCase methods.
 

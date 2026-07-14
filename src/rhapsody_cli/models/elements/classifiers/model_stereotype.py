@@ -13,12 +13,12 @@ class RPStereotype(RPClassifier):
     """Wraps ``IRPStereotype``: a stereotype that extends ``IRPClassifier``."""
 
     # IRPStereotype method parity checklist:
-    # [x] addMetaClass  [x] impl  [x] docstring  [ ] test
-    # [x] getIcon  [x] impl  [x] docstring  [ ] test
-    # [x] getIsNewTerm  [x] impl  [x] docstring  [ ] test
-    # [x] getOfMetaClass  [x] impl  [x] docstring  [ ] test
-    # [x] removeMetaClass  [x] impl  [x] docstring  [ ] test
-    # [x] setIsNewTerm  [x] impl  [x] docstring  [ ] test
+    # [ ] addMetaClass  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getIcon  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getIsNewTerm  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] getOfMetaClass  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] removeMetaClass  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] setIsNewTerm  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [inherited] IRPClassifier / IRPUnit / IRPModelElement methods (covered by RPClassifier / RPUnit / RPModelElement checklists)
     # No deprecated IRPStereotype methods.
 
