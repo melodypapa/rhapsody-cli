@@ -1,0 +1,51 @@
+# Integration Test Completion — Master Index
+
+**Status as of 2026-07-14.** Ground truth for "is method X integration-tested?" is the in-source method-parity checklist in each `src/rhapsody_cli/models/**/*.py` file (rows of the form `# [x] method_name [x] impl [x] docstring [x] unit test [ ] integration test`), **not** any markdown plan document. As of this writing: **1445 checklist rows across 40 files, 50 already `[x] integration test`, ~1395 remaining.**
+
+The original monolithic plan, `docs/superpowers/plans/2026-07-14-model-class-integration-tests.md`, is **superseded** — see the status note at the top of that file. Work is now tracked as **15 independent per-subpackage/module plans**, listed below, so each can be executed, reviewed, and merged on its own branch without blocking the others.
+
+## How to execute any single plan
+
+Each plan is self-contained and follows the `superpowers:writing-plans` task format (checkbox steps, one task = one PR-sized deliverable). Recommended execution: `superpowers:subagent-driven-development` — one fresh subagent per task, with review between tasks. Each task's last two steps are always "run the repo quality gate" and "commit," and a final task in every plan re-runs the whole subpackage's integration tests and confirms every checklist row it owns now reads `[x] integration test`.
+
+Running the live integration suite requires: Windows + a running, attached Rhapsody instance (`RhapsodyApplication.connect(attach_only=True)`; the session-scoped `_require_rhapsody` fixture in `tests/integration/conftest.py` auto-skips everything if none is attached). A single test run against live Rhapsody can be slow (minutes) — budget accordingly and avoid tight timeouts when executing tasks.
+
+## Plans, in recommended execution order
+
+Recommended order follows dependency/value: base classes and highest-reuse classes first (so patterns/helpers they establish can be reused by later plans), then breadth-first across the remaining element subpackages, then the higher-risk/lower-value graphics and support work last.
+
+| # | Plan | Methods planned | Tasks | Key classes | Notes |
+|---|------|-----------------:|------:|--------------|-------|
+| 1 | [`2026-07-14-integration-tests-core.md`](2026-07-14-integration-tests-core.md) | 142 | 16 | `RPModelElement`, `RPUnit`, `RPCollection` | Base class for every other wrapper — do first, other plans' tests indirectly exercise this file too. |
+| 2 | [`2026-07-14-integration-tests-classifiers.md`](2026-07-14-integration-tests-classifiers.md) | 148 | 17 | `RPClass`, `RPOperation`, `RPClassifier`, `RPActor`, `RPStereotype`, `RPUseCase`, `RPStatechart`, `RPAssociationClass`, `RPInterfaceItem`, +3 inheritance-only | Highest existing partial coverage; establishes class/operation patterns reused everywhere. |
+| 3 | [`2026-07-14-integration-tests-containment.md`](2026-07-14-integration-tests-containment.md) | 260 | 23 | `RPProject`, `RPPackage` (largest single-class surface), `RPComponent`, `RPComponentInstance`, `RPConfiguration`, `RPCollaboration`, `RPNode` | Largest plan by method count — `RPPackage` alone has ~82 untested methods (diagram/element factories). |
+| 4 | [`2026-07-14-integration-tests-variables.md`](2026-07-14-integration-tests-variables.md) | 31 | 8 | `RPVariable`, `RPAttribute`, `RPTag`, `RPArgument` | Small, builds on Task 1/2 patterns. |
+| 5 | [`2026-07-14-integration-tests-common.md`](2026-07-14-integration-tests-common.md) | 52 | 6 | `RPEnumerationLiteral`, `RPComment`, `RPConstraint`, `RPClassifierRole`, `RPSysMLPort`, `RPType` | Small, low risk. |
+| 6 | [`2026-07-14-integration-tests-relations.md`](2026-07-14-integration-tests-relations.md) | 81 | 12 | `RPAssociationRole`, `RPDependency`, `RPGeneralization`, `RPHyperLink`, `RPInstance`, `RPPort`, `RPRelation` | Depends on classifiers (owner classes) being available. |
+| 7 | [`2026-07-14-integration-tests-diagrams.md`](2026-07-14-integration-tests-diagrams.md) | 43 | 7 | `RPDiagram`, 10 diagram-type subclasses | `RPStructureDiagram` creation documented as `xfail` — missing factory, flagged for separate follow-up. |
+| 8 | [`2026-07-14-integration-tests-requirements.md`](2026-07-14-integration-tests-requirements.md) | 12 | 4 | `RPRequirement`, `RPAnnotation` | Small, low risk. |
+| 9 | [`2026-07-14-integration-tests-activity.md`](2026-07-14-integration-tests-activity.md) | 68 | 10 | `RPFlowchart`, `RPFlow`, `RPFlowItem`, `RPAction`+subtypes, `RPObjectNode`, `RPSwimlane`, `RPContextSpecification` | Zero prior coverage. 8 methods flagged `xfail`/no known public creation path (`RPFlow.set_end*_via_port/sys_ml_port`, `RPContextSpecification` multiplicities/value). |
+| 10 | [`2026-07-14-integration-tests-statemachine.md`](2026-07-14-integration-tests-statemachine.md) | 55 | 8 | `RPStateVertex`, `RPState` | Zero prior coverage; depends on diagrams/classifiers (`RPStatechart`) plan for creation helpers. |
+| 11 | [`2026-07-14-integration-tests-interactions.md`](2026-07-14-integration-tests-interactions.md) | 82 | 9 | `RPEvent`, `RPEventReception`, `RPExecutionOccurrence`, `RPGuard`, `RPInteractionOccurrence`, `RPInteractionOperand`, `RPInteractionOperator`, `RPMessage`, `RPTransition`, `RPTrigger`, `RPDestructionEvent` | Zero prior coverage. 3 methods on `RPInteractionOperand` need live verification of reachability (Task 8 note). |
+| 12 | [`2026-07-14-integration-tests-values.md`](2026-07-14-integration-tests-values.md) | 15 | 6 | `RPInstanceSlot`, `RPInstanceSpecification`, `RPValueSpecification`, `RPInstanceValue`, `RPLiteralSpecification` | Zero prior coverage, but all methods have a confirmed creation path. |
+| 13 | [`2026-07-14-integration-tests-templates.md`](2026-07-14-integration-tests-templates.md) | 10 | 3 | `RPTemplateInstantiation`, `RPTemplateInstantiationParameter`, `RPTemplateParameter` | Zero prior coverage; smallest scope. |
+| 14 | [`2026-07-14-integration-tests-graphics.md`](2026-07-14-integration-tests-graphics.md) | 190 | 20 | `RPGraphNode`, `RPGraphEdge`, `RPPin`, `RPConnector`, `RPTableLayout`, `RPTableView`, `RPMatrixLayout`, `RPMatrixView`, `RPImageMap`, `RPLink`, `RPMessagePoint`, `RPGraphicalProperty`, `RPGraphElement`, `RPConditionMark` | Largest single file (190 methods, zero prior coverage). All 7 `RPImageMap` methods flagged `xfail` — no confirmed public creation path for clickable image-map regions. |
+| 15 | [`2026-07-14-integration-tests-support.md`](2026-07-14-integration-tests-support.md) | 169 | 21 | `RPCodeGenerator`, `RPRhapsodyServer`, `RPSearchManager`, `RPFile`/`RPControlledFile`/`RPASCIIFile`, `RPSelection`, `RPProgressBar`, +10 more | **0 of 169 methods are currently testable** — no public factory method anywhere in `RhapsodyApplication` or any model wrapper returns an instance of any of these 17 classes. All 169 are documented as *blocked*, with the specific missing factory method named per class. This entire package also has **zero unit tests** (a pre-existing gap outside this plan's scope). Treat this plan as a research/documentation deliverable, not test-writing work, until the factory-method gap is closed in a separate change. |
+
+**Total across all 15 plans: ~1358 methods with concrete plans + 169 documented-blocked in support/ ≈ full 1395-method gap accounted for.** (Minor count differences vs. the raw 1395 figure come from a few methods classified as inherited/already-covered/deduplicated during each plan's own self-review pass — see each plan's own report for exact numbers.)
+
+## Cross-cutting risks / open items surfaced during planning
+
+- **`support/` package (Plan 15) is fully blocked.** Before any of its tests can be written, `RhapsodyApplication` (or relevant model wrappers) need new factory methods to obtain `RPCodeGenerator`, `RPSearchManager`, `RPSelection`, etc. This is a prerequisite, separate piece of work — not something to silently skip.
+- **A handful of methods across several plans have no confirmed public creation path** and are marked `xfail(strict=False)` rather than omitted: `RPStructureDiagram` (diagrams), `RPFlow.set_end*_via_port/via_sys_ml_port` + `RPContextSpecification` value/multiplicity setters (activity), `RPInteractionOperand` contained-messages/constraint (interactions), all `RPImageMap` methods (graphics). Each is called out in its own plan with the investigation already done — a human/agent executing those tasks should attempt them live against Rhapsody and either lift the `xfail` (if it turns out to work) or convert it to a permanently-documented gap.
+- **Live integration runs are slow in this environment** — a single file's suite took >2 minutes and was killed during initial reconnaissance. Executors should not assume fast feedback loops and should avoid batching too many live-Rhapsody test runs per task.
+- **The stale monolithic plan** (`2026-07-14-model-class-integration-tests.md`) and its deleted companion (`2026-07-14-checklist-integration-test-column.md`, already staged for deletion in the working tree) are historical only — do not resurrect or extend them.
+
+## Definition of done (per plan)
+
+A plan is complete when:
+1. Every method it lists (or, for `support/`, every blocked method with its documented follow-up) has its in-source checklist row showing `[x] integration test` (or an explicit blocked/TODO annotation for `support/`).
+2. `pytest tests/integration/<scope> -m integration -v` passes (or has only the pre-documented `xfail`s) against a live, attached Rhapsody instance.
+3. `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ && pytest tests/unit` passes.
+
+The overall initiative (all 15 plans) is complete when the repo-wide count `grep -rE "\[ \] integration test" src/rhapsody_cli/models --include=*.py | wc -l` is 0 (or only covers rows explicitly documented as blocked in the `support/` plan).
