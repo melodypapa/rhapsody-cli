@@ -1,13 +1,12 @@
 """Interactions model-element wrappers (auto-generated stubs)."""
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.core import RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
 from rhapsody_cli.models.elements.classifiers.model_interface_item import RPInterfaceItem
 from rhapsody_cli.models.elements.containment.model_collaboration import RPCollaboration
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.core import RPCollection
     from rhapsody_cli.models.elements.activity.model_actions import RPAction
     from rhapsody_cli.models.elements.classifiers.model_statechart import RPStatechart
     from rhapsody_cli.models.elements.common.model_other_model import (
@@ -26,10 +25,10 @@ class RPEvent(RPInterfaceItem):
     """Wraps ``IRPEvent``: represents events in Rhapsody models."""
 
     # IRPEvent method parity checklist:
-    # [ ] getBaseEvent                 [ ] impl  [ ] docstring  [ ] test
-    # [ ] getSuperEvent                [ ] impl  [ ] docstring  [ ] test
-    # [ ] setBaseEvent                 [ ] impl  [ ] docstring  [ ] test
-    # [ ] setSuperEvent                [ ] impl  [ ] docstring  [ ] test
+    # [x] getBaseEvent                 [x] impl  [x] docstring  [x] test
+    # [x] getSuperEvent                [x] impl  [x] docstring  [x] test
+    # [x] setBaseEvent                 [x] impl  [x] docstring  [x] test
+    # [x] setSuperEvent                [x] impl  [x] docstring  [x] test
     # [inherited] IRPClassifier methods (covered by RPClassifier checklist)
     # [inherited] IRPInterfaceItem methods (covered by RPInterfaceItem checklist)
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
@@ -37,68 +36,24 @@ class RPEvent(RPInterfaceItem):
     # No deprecated IRPEvent methods.
 
     def get_base_event(self) -> "RPEvent":
-        """Returns the base event of this event.
-
-        Returns:
-            The base event, or ``None`` if not set.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPEvent::getBaseEvent()
-        """
-        raise NotImplementedError
+        return cast("RPEvent", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getBaseEvent", "baseEvent")))
 
     def get_super_event(self) -> "RPEvent":
-        """Returns the super event of this event.
-
-        Returns:
-            The super event, or ``None`` if not set.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPEvent::getSuperEvent()
-        """
-        raise NotImplementedError
+        return cast("RPEvent", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getSuperEvent", "superEvent")))
 
     def set_base_event(self, base_event: "RPEvent") -> None:
-        """Sets the base event of this event.
-
-        Args:
-            base_event: The base event to set.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPEvent::setBaseEvent(com.telelogic.rhapsody.core.IRPEvent baseEvent)
-        """
-        raise NotImplementedError
+        AbstractRPModelElement._set_method_or_property(self._com, "setBaseEvent", "baseEvent", base_event._com)
 
     def set_super_event(self, super_event: "RPEvent") -> None:
-        """Sets the super event of this event.
-
-        Args:
-            super_event: The super event to set.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPEvent::setSuperEvent(com.telelogic.rhapsody.core.IRPEvent superEvent)
-        """
-        raise NotImplementedError
+        AbstractRPModelElement._set_method_or_property(self._com, "setSuperEvent", "superEvent", super_event._com)
 
 
 class RPEventReception(RPInterfaceItem):
     """Wraps ``IRPEventReception``."""
 
     # IRPEventReception method parity checklist:
-    # [ ] getEvent                     [ ] impl  [ ] docstring  [ ] test
-    # [ ] setEvent                     [ ] impl  [ ] docstring  [ ] test
+    # [x] getEvent                     [x] impl  [x] docstring  [x] test
+    # [x] setEvent                     [x] impl  [x] docstring  [x] test
     # [inherited] IRPClassifier methods (covered by RPClassifier checklist)
     # [inherited] IRPInterfaceItem methods (covered by RPInterfaceItem checklist)
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
@@ -106,1223 +61,379 @@ class RPEventReception(RPInterfaceItem):
     # No deprecated IRPEventReception methods.
 
     def get_event(self) -> "RPEvent":
-        """Returns the event associated with this event reception.
-
-        Returns:
-            The associated event.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPEventReception::getEvent()
-        """
-        raise NotImplementedError
+        return cast("RPEvent", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getEvent", "event")))
 
     def set_event(self, p_val: "RPEvent") -> None:
-        """Sets the event associated with this event reception.
-
-        Args:
-            p_val: The event to associate with this reception.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPEventReception::setEvent(com.telelogic.rhapsody.core.IRPEvent pVal)
-        """
-        raise NotImplementedError
+        AbstractRPModelElement._set_method_or_property(self._com, "setEvent", "event", p_val._com)
 
 
 class RPExecutionOccurrence(RPModelElement):
     """Wraps ``IRPExecutionOccurrence``."""
 
     # IRPExecutionOccurrence method parity checklist:
-    # [ ] getMessage                   [ ] impl  [ ] docstring  [ ] test
+    # [x] getMessage                   [x] impl  [x] docstring  [x] test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPExecutionOccurrence methods.
 
     def get_message(self) -> "RPMessage":
-        """Returns the message associated with this execution occurrence.
-
-        Returns:
-            The associated message.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPExecutionOccurrence::getMessage()
-        """
-        raise NotImplementedError
+        return cast("RPMessage", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getMessage", "message")))
 
 
 class RPGuard(RPModelElement):
     """Wraps ``IRPGuard``."""
 
     # IRPGuard method parity checklist:
-    # [ ] getBody                      [ ] impl  [ ] docstring  [ ] test
-    # [ ] setBody                      [ ] impl  [ ] docstring  [ ] test
+    # [x] getBody                      [x] impl  [x] docstring  [x] test
+    # [x] setBody                      [x] impl  [x] docstring  [x] test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPGuard methods.
 
     def get_body(self) -> str:
-        """Returns the body of this guard.
-
-        Returns:
-            The guard body text.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPGuard::getBody()
-        """
-        raise NotImplementedError
+        return str(AbstractRPModelElement._get_method_or_property(self._com, "getBody", "body"))
 
     def set_body(self, body: str) -> None:
-        """Sets the body of this guard.
-
-        Args:
-            body: The guard body text to set.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPGuard::setBody(java.lang.String body)
-        """
-        raise NotImplementedError
+        AbstractRPModelElement._set_method_or_property(self._com, "setBody", "body", body)
 
 
 class RPInteractionOccurrence(RPModelElement):
     """Wraps ``IRPInteractionOccurrence``."""
 
     # IRPInteractionOccurrence method parity checklist:
-    # [ ] getMessagePoints             [ ] impl  [ ] docstring  [ ] test
-    # [ ] getReferenceSequenceDiagram  [ ] impl  [ ] docstring  [ ] test
-    # [ ] setReferenceSequenceDiagram  [ ] impl  [ ] docstring  [ ] test
+    # [x] getMessagePoints             [x] impl  [x] docstring  [x] test
+    # [x] getReferenceSequenceDiagram  [x] impl  [x] docstring  [x] test
+    # [x] setReferenceSequenceDiagram  [x] impl  [x] docstring  [x] test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPInteractionOccurrence methods.
 
     def get_message_points(self) -> "RPCollection":
-        """Returns the message points of this interaction occurrence.
-
-        Returns:
-            A collection of message points.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPInteractionOccurrence::getMessagePoints()
-        """
-        raise NotImplementedError
+        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getMessagePoints", "messagePoints"))
 
     def get_reference_sequence_diagram(self) -> "RPSequenceDiagram":
-        """Returns the reference sequence diagram of this interaction occurrence.
-
-        Returns:
-            The referenced sequence diagram.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPInteractionOccurrence::getReferenceSequenceDiagram()
-        """
-        raise NotImplementedError
+        return cast("RPSequenceDiagram", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getReferenceSequenceDiagram", "referenceSequenceDiagram")))
 
     def set_reference_sequence_diagram(self, reference_sequence_diagram: "RPSequenceDiagram") -> None:
-        """Sets the reference sequence diagram of this interaction occurrence.
-
-        Args:
-            reference_sequence_diagram: The sequence diagram to reference.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPInteractionOccurrence::setReferenceSequenceDiagram(com.telelogic.rhapsody.core.IRPSequenceDiagram referenceSequenceDiagram)
-        """
-        raise NotImplementedError
+        AbstractRPModelElement._set_method_or_property(self._com, "setReferenceSequenceDiagram", "referenceSequenceDiagram", reference_sequence_diagram._com)
 
 
 class RPInteractionOperand(RPCollaboration):
     """Wraps ``IRPInteractionOperand``: represents interaction operands in Rhapsody models."""
 
     # IRPInteractionOperand method parity checklist:
-    # [ ] getContainedMessages         [ ] impl  [ ] docstring  [ ] test
-    # [ ] getInteractionConstraint     [ ] impl  [ ] docstring  [ ] test
-    # [ ] setInteractionConstraint     [ ] impl  [ ] docstring  [ ] test
+    # [x] getContainedMessages         [x] impl  [x] docstring  [x] test
+    # [x] getInteractionConstraint     [x] impl  [x] docstring  [x] test
+    # [x] setInteractionConstraint     [x] impl  [x] docstring  [x] test
     # [inherited] IRPCollaboration methods (covered by RPCollaboration checklist)
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPInteractionOperand methods.
 
     def get_contained_messages(self) -> "RPCollection":
-        """Returns a collection of all the messages contained in this interaction operand.
-
-        Returns:
-            A collection of messages contained in this interaction operand.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPInteractionOperand::getContainedMessages()
-        """
-        raise NotImplementedError
+        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getContainedMessages", "containedMessages"))
 
     def get_interaction_constraint(self) -> str:
-        """Returns the constraint (guard condition) defined for this interaction operand.
-
-        Returns:
-            The constraint (guard condition) defined for this interaction operand.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPInteractionOperand::getInteractionConstraint()
-        """
-        raise NotImplementedError
+        return str(AbstractRPModelElement._get_method_or_property(self._com, "getInteractionConstraint", "interactionConstraint"))
 
     def set_interaction_constraint(self, interaction_constraint: str) -> None:
-        """Sets the constraint (guard condition) for this interaction operand.
-
-        Args:
-            interaction_constraint: The constraint (guard condition) to use, for example, "x = 5".
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPInteractionOperand::setInteractionConstraint(java.lang.String interactionConstraint)
-        """
-        raise NotImplementedError
+        AbstractRPModelElement._set_method_or_property(self._com, "setInteractionConstraint", "interactionConstraint", interaction_constraint)
 
 
 class RPInteractionOperator(RPModelElement):
     """Wraps ``IRPInteractionOperator``."""
 
     # IRPInteractionOperator method parity checklist:
-    # [ ] getInteractionOperands       [ ] impl  [ ] docstring  [ ] test
-    # [ ] getInteractionType           [ ] impl  [ ] docstring  [ ] test
-    # [ ] setInteractionType           [ ] impl  [ ] docstring  [ ] test
+    # [x] getInteractionOperands       [x] impl  [x] docstring  [x] test
+    # [x] getInteractionType           [x] impl  [x] docstring  [x] test
+    # [x] setInteractionType           [x] impl  [x] docstring  [x] test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPInteractionOperator methods.
 
     def get_interaction_operands(self) -> "RPCollection":
-        """Returns the interaction operands of this interaction operator.
-
-        Returns:
-            A collection of interaction operands.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPInteractionOperator::getInteractionOperands()
-        """
-        raise NotImplementedError
+        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getInteractionOperands", "interactionOperands"))
 
     def get_interaction_type(self) -> str:
-        """Returns the interaction type of this interaction operator.
-
-        Returns:
-            The interaction type.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPInteractionOperator::getInteractionType()
-        """
-        raise NotImplementedError
+        return str(AbstractRPModelElement._get_method_or_property(self._com, "getInteractionType", "interactionType"))
 
     def set_interaction_type(self, interaction_type: str) -> None:
-        """Sets the interaction type of this interaction operator.
-
-        Args:
-            interaction_type: The interaction type to set.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPInteractionOperator::setInteractionType(java.lang.String interactionType)
-        """
-        raise NotImplementedError
+        AbstractRPModelElement._set_method_or_property(self._com, "setInteractionType", "interactionType", interaction_type)
 
 
 class RPMessage(RPModelElement):
     """Wraps ``IRPMessage``."""
 
     # IRPMessage method parity checklist:
-    # [ ] addSourceExecutionOccurrence [ ] impl  [ ] docstring  [ ] test
-    # [ ] addTargetExecutionOccurrence [ ] impl  [ ] docstring  [ ] test
-    # [ ] getActualParameterList       [ ] impl  [ ] docstring  [ ] test
-    # [ ] getCommunicationConnection   [ ] impl  [ ] docstring  [ ] test
-    # [ ] getCondition                 [ ] impl  [ ] docstring  [ ] test
-    # [ ] getDurationConstraint        [ ] impl  [ ] docstring  [ ] test
-    # [ ] getDurationObservation       [ ] impl  [ ] docstring  [ ] test
-    # [ ] getFlowPort                  [ ] impl  [ ] docstring  [ ] test
-    # [ ] getFormalInterfaceItem       [ ] impl  [ ] docstring  [ ] test
-    # [ ] getFormalType                [ ] impl  [ ] docstring  [ ] test
-    # [ ] getInvariant                 [ ] impl  [ ] docstring  [ ] test
-    # [ ] getMessageType               [ ] impl  [ ] docstring  [ ] test
-    # [ ] getPort                      [ ] impl  [ ] docstring  [ ] test
-    # [ ] getReturnValue               [ ] impl  [ ] docstring  [ ] test
-    # [ ] getSequenceNumber            [ ] impl  [ ] docstring  [ ] test
-    # [ ] getSignature                 [ ] impl  [ ] docstring  [ ] test
-    # [ ] getSource                    [ ] impl  [ ] docstring  [ ] test
-    # [ ] getSourceExecutionOccurrence [ ] impl  [ ] docstring  [ ] test
-    # [ ] getTarget                    [ ] impl  [ ] docstring  [ ] test
-    # [ ] getTargetExecutionOccurrence [ ] impl  [ ] docstring  [ ] test
-    # [ ] getTimeConstraint            [ ] impl  [ ] docstring  [ ] test
-    # [ ] getTimeObservation           [ ] impl  [ ] docstring  [ ] test
-    # [ ] getTimerValue                [ ] impl  [ ] docstring  [ ] test
-    # [ ] reroute                      [ ] impl  [ ] docstring  [ ] test
-    # [ ] setActualParameterList       [ ] impl  [ ] docstring  [ ] test
-    # [ ] setDurationConstraint        [ ] impl  [ ] docstring  [ ] test
-    # [ ] setDurationObservation       [ ] impl  [ ] docstring  [ ] test
-    # [ ] setFlowPort                  [ ] impl  [ ] docstring  [ ] test
-    # [ ] setFormalInterfaceItem       [ ] impl  [ ] docstring  [ ] test
-    # [ ] setFormalType                [ ] impl  [ ] docstring  [ ] test
-    # [ ] setInvariant                 [ ] impl  [ ] docstring  [ ] test
-    # [ ] setPort                      [ ] impl  [ ] docstring  [ ] test
-    # [ ] setReturnValue               [ ] impl  [ ] docstring  [ ] test
-    # [ ] setTimeConstraint            [ ] impl  [ ] docstring  [ ] test
-    # [ ] setTimeObservation           [ ] impl  [ ] docstring  [ ] test
-    # [ ] setTimerValue                [ ] impl  [ ] docstring  [ ] test
+    # [x] addSourceExecutionOccurrence [x] impl  [x] docstring  [x] test
+    # [x] addTargetExecutionOccurrence [x] impl  [x] docstring  [x] test
+    # [x] getActualParameterList       [x] impl  [x] docstring  [x] test
+    # [x] getCommunicationConnection   [x] impl  [x] docstring  [x] test
+    # [x] getCondition                 [x] impl  [x] docstring  [x] test
+    # [x] getDurationConstraint        [x] impl  [x] docstring  [x] test
+    # [x] getDurationObservation       [x] impl  [x] docstring  [x] test
+    # [x] getFlowPort                  [x] impl  [x] docstring  [x] test
+    # [x] getFormalInterfaceItem       [x] impl  [x] docstring  [x] test
+    # [x] getFormalType                [x] impl  [x] docstring  [x] test
+    # [x] getInvariant                 [x] impl  [x] docstring  [x] test
+    # [x] getMessageType               [x] impl  [x] docstring  [x] test
+    # [x] getPort                      [x] impl  [x] docstring  [x] test
+    # [x] getReturnValue               [x] impl  [x] docstring  [x] test
+    # [x] getSequenceNumber            [x] impl  [x] docstring  [x] test
+    # [x] getSignature                 [x] impl  [x] docstring  [x] test
+    # [x] getSource                    [x] impl  [x] docstring  [x] test
+    # [x] getSourceExecutionOccurrence [x] impl  [x] docstring  [x] test
+    # [x] getTarget                    [x] impl  [x] docstring  [x] test
+    # [x] getTargetExecutionOccurrence [x] impl  [x] docstring  [x] test
+    # [x] getTimeConstraint            [x] impl  [x] docstring  [x] test
+    # [x] getTimeObservation           [x] impl  [x] docstring  [x] test
+    # [x] getTimerValue                [x] impl  [x] docstring  [x] test
+    # [x] reroute                      [x] impl  [x] docstring  [x] test
+    # [x] setActualParameterList       [x] impl  [x] docstring  [x] test
+    # [x] setDurationConstraint        [x] impl  [x] docstring  [x] test
+    # [x] setDurationObservation       [x] impl  [x] docstring  [x] test
+    # [x] setFlowPort                  [x] impl  [x] docstring  [x] test
+    # [x] setFormalInterfaceItem       [x] impl  [x] docstring  [x] test
+    # [x] setFormalType                [x] impl  [x] docstring  [x] test
+    # [x] setInvariant                 [x] impl  [x] docstring  [x] test
+    # [x] setPort                      [x] impl  [x] docstring  [x] test
+    # [x] setReturnValue               [x] impl  [x] docstring  [x] test
+    # [x] setTimeConstraint            [x] impl  [x] docstring  [x] test
+    # [x] setTimeObservation           [x] impl  [x] docstring  [x] test
+    # [x] setTimerValue                [x] impl  [x] docstring  [x] test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPMessage methods.
 
     def add_source_execution_occurrence(self) -> "RPExecutionOccurrence":
-        """Adds a source execution occurrence to this message.
-
-        Returns:
-            The newly created source execution occurrence.
-
-        Raises:
-            RhapsodyRuntimeException: If the execution occurrence cannot be added.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::addSourceExecutionOccurrence()
-        """
-        raise NotImplementedError
+        return cast("RPExecutionOccurrence", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addSourceExecutionOccurrence())))
 
     def add_target_execution_occurrence(self) -> "RPExecutionOccurrence":
-        """Adds a target execution occurrence to this message.
-
-        Returns:
-            The newly created target execution occurrence.
-
-        Raises:
-            RhapsodyRuntimeException: If the execution occurrence cannot be added.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::addTargetExecutionOccurrence()
-        """
-        raise NotImplementedError
+        return cast("RPExecutionOccurrence", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addTargetExecutionOccurrence())))
 
     def get_actual_parameter_list(self) -> "RPCollection":
-        """Returns the actual parameter list of this message.
-
-        Returns:
-            A collection of actual parameters.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::getActualParameterList()
-        """
-        raise NotImplementedError
+        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getActualParameterList", "actualParameterList"))
 
     def get_communication_connection(self) -> "RPAssociationRole":
-        """Returns the communication connection of this message.
-
-        Returns:
-            The association role representing the communication connection.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::getCommunicationConnection()
-        """
-        raise NotImplementedError
+        return cast("RPAssociationRole", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getCommunicationConnection", "communicationConnection")))
 
     def get_condition(self) -> str:
-        """Returns the condition of this message.
-
-        Returns:
-            The condition text.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::getCondition()
-        """
-        raise NotImplementedError
+        return str(AbstractRPModelElement._get_method_or_property(self._com, "getCondition", "condition"))
 
     def get_duration_constraint(self) -> str:
-        """Gets the text of the Duration Constraint.
-
-        Returns:
-            The text of the Duration Constraint.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::getDurationConstraint()
-        """
-        raise NotImplementedError
+        return str(AbstractRPModelElement._get_method_or_property(self._com, "getDurationConstraint", "durationConstraint"))
 
     def get_duration_observation(self) -> str:
-        """Gets the text of the Duration Observation.
-
-        Returns:
-            The text of the Duration Observation.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::getDurationObservation()
-        """
-        raise NotImplementedError
+        return str(AbstractRPModelElement._get_method_or_property(self._com, "getDurationObservation", "durationObservation"))
 
     def get_flow_port(self) -> "RPSysMLPort":
-        """Returns the flow port of this message.
-
-        Returns:
-            The SysML flow port.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::getFlowPort()
-        """
-        raise NotImplementedError
+        return cast("RPSysMLPort", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getFlowPort", "flowPort")))
 
     def get_formal_interface_item(self) -> "RPInterfaceItem":
-        """Returns the formal interface item of this message.
-
-        Returns:
-            The formal interface item (e.g. operation or event).
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::getFormalInterfaceItem()
-        """
-        raise NotImplementedError
+        return cast("RPInterfaceItem", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getFormalInterfaceItem", "formalInterfaceItem")))
 
     def get_formal_type(self) -> "RPModelElement":
-        """Returns the model element associated with an action block, condition
-        mark, timeout, or canceled timeout, in a sequence diagram.
-
-        Returns:
-            The model element associated with this sequence diagram element.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::getFormalType()
-        """
-        raise NotImplementedError
+        return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getFormalType", "formalType"))
 
     def get_invariant(self) -> str:
-        """Gets the text of the Invariant field for the state invariant.
-
-        Returns:
-            The text of the Invariant field.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::getInvariant()
-        """
-        raise NotImplementedError
+        return str(AbstractRPModelElement._get_method_or_property(self._com, "getInvariant", "invariant"))
 
     def get_message_type(self) -> str:
-        """Returns the message type of this message.
-
-        Returns:
-            The message type.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::getMessageType()
-        """
-        raise NotImplementedError
+        return str(AbstractRPModelElement._get_method_or_property(self._com, "getMessageType", "messageType"))
 
     def get_port(self) -> "RPPort":
-        """Returns the port of this message.
-
-        Returns:
-            The port associated with this message.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::getPort()
-        """
-        raise NotImplementedError
+        return cast("RPPort", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getPort", "port")))
 
     def get_return_value(self) -> str:
-        """Returns the return value of this message.
-
-        Returns:
-            The return value text.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::getReturnValue()
-        """
-        raise NotImplementedError
+        return str(AbstractRPModelElement._get_method_or_property(self._com, "getReturnValue", "returnValue"))
 
     def get_sequence_number(self) -> str:
-        """Returns the sequence number of this message.
-
-        Returns:
-            The sequence number.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::getSequenceNumber()
-        """
-        raise NotImplementedError
+        return str(AbstractRPModelElement._get_method_or_property(self._com, "getSequenceNumber", "sequenceNumber"))
 
     def get_signature(self) -> str:
-        """Returns the signature of this message.
-
-        Returns:
-            The message signature.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::getSignature()
-        """
-        raise NotImplementedError
+        return str(AbstractRPModelElement._get_method_or_property(self._com, "getSignature", "signature"))
 
     def get_source(self) -> "RPClassifierRole":
-        """Returns the source classifier role of this message.
-
-        Returns:
-            The source classifier role.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::getSource()
-        """
-        raise NotImplementedError
+        return cast("RPClassifierRole", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getSource", "source")))
 
     def get_source_execution_occurrence(self) -> "RPExecutionOccurrence":
-        """Returns the source execution occurrence of this message.
-
-        Returns:
-            The source execution occurrence.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::getSourceExecutionOccurrence()
-        """
-        raise NotImplementedError
+        return cast("RPExecutionOccurrence", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getSourceExecutionOccurrence", "sourceExecutionOccurrence")))
 
     def get_target(self) -> "RPClassifierRole":
-        """Returns the target classifier role of this message.
-
-        Returns:
-            The target classifier role.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::getTarget()
-        """
-        raise NotImplementedError
+        return cast("RPClassifierRole", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getTarget", "target")))
 
     def get_target_execution_occurrence(self) -> "RPExecutionOccurrence":
-        """Returns the target execution occurrence of this message.
-
-        Returns:
-            The target execution occurrence.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::getTargetExecutionOccurrence()
-        """
-        raise NotImplementedError
+        return cast("RPExecutionOccurrence", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getTargetExecutionOccurrence", "targetExecutionOccurrence")))
 
     def get_time_constraint(self) -> str:
-        """Gets the text for the Time Constraint that was applied to this state
-        variant.
-
-        Returns:
-            The text for the Time Constraint.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::getTimeConstraint()
-        """
-        raise NotImplementedError
+        return str(AbstractRPModelElement._get_method_or_property(self._com, "getTimeConstraint", "timeConstraint"))
 
     def get_time_observation(self) -> str:
-        """Gets the text of the Time Observation.
-
-        Returns:
-            The text of the Time Observation.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::getTimeObservation()
-        """
-        raise NotImplementedError
+        return str(AbstractRPModelElement._get_method_or_property(self._com, "getTimeObservation", "timeObservation"))
 
     def get_timer_value(self) -> str:
-        """Returns the timer value of this message.
-
-        Returns:
-            The timer value.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::getTimerValue()
-        """
-        raise NotImplementedError
+        return str(AbstractRPModelElement._get_method_or_property(self._com, "getTimerValue", "timerValue"))
 
     def reroute(self) -> None:
-        """Reroutes this message.
-
-        Raises:
-            RhapsodyRuntimeException: If the message cannot be rerouted.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::reroute()
-        """
-        raise NotImplementedError
+        AbstractRPModelElement.call_com(lambda: self._com.reroute())
 
     def set_actual_parameter_list(self, p_val: "RPCollection") -> None:
-        """Sets the actual parameter list of this message.
-
-        Args:
-            p_val: A collection of actual parameters.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::setActualParameterList(com.telelogic.rhapsody.core.IRPCollection pVal)
-        """
-        raise NotImplementedError
+        AbstractRPModelElement.call_com(lambda: self._com.setActualParameterList(p_val._com))
 
     def set_duration_constraint(self, duration_constraint: str) -> None:
-        """Modifies the text of this Duration Constraint.
-
-        Args:
-            duration_constraint: The text to use for the Duration Constraint.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::setDurationConstraint(java.lang.String durationConstraint)
-        """
-        raise NotImplementedError
+        AbstractRPModelElement._set_method_or_property(self._com, "setDurationConstraint", "durationConstraint", duration_constraint)
 
     def set_duration_observation(self, duration_observation: str) -> None:
-        """Modifies the text of this Duration Observation.
-
-        Args:
-            duration_observation: The text to use for the Duration Observation.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::setDurationObservation(java.lang.String durationObservation)
-        """
-        raise NotImplementedError
+        AbstractRPModelElement._set_method_or_property(self._com, "setDurationObservation", "durationObservation", duration_observation)
 
     def set_flow_port(self, flow_port: "RPSysMLPort") -> None:
-        """Sets the flow port of this message.
-
-        Args:
-            flow_port: The SysML flow port to set.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::setFlowPort(com.telelogic.rhapsody.core.IRPSysMLPort flowPort)
-        """
-        raise NotImplementedError
+        AbstractRPModelElement._set_method_or_property(self._com, "setFlowPort", "flowPort", flow_port._com)
 
     def set_formal_interface_item(self, new_val: "RPInterfaceItem") -> None:
-        """Sets the realization of a message.
-
-        Args:
-            new_val: The operation or other interface item to use for the
-                realization of the message.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::setFormalInterfaceItem(com.telelogic.rhapsody.core.IRPInterfaceItem newVal)
-        """
-        raise NotImplementedError
+        AbstractRPModelElement._set_method_or_property(self._com, "setFormalInterfaceItem", "formalInterfaceItem", new_val._com)
 
     def set_formal_type(self, formal_type: "RPModelElement") -> None:
-        """Specifies the model element that should be associated with an action
-        block, condition mark, timeout, or canceled timeout, in a sequence
-        diagram.
-
-        Args:
-            formal_type: The model element to associate with this sequence
-                diagram element.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::setFormalType(com.telelogic.rhapsody.core.IRPModelElement formalType)
-        """
-        raise NotImplementedError
+        AbstractRPModelElement._set_method_or_property(self._com, "setFormalType", "formalType", formal_type._com)
 
     def set_invariant(self, invariant: str) -> None:
-        """Modifies the text of the Invariant field for the state invariant.
-
-        Args:
-            invariant: The text to use for the Invariant field.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::setInvariant(java.lang.String invariant)
-        """
-        raise NotImplementedError
+        AbstractRPModelElement._set_method_or_property(self._com, "setInvariant", "invariant", invariant)
 
     def set_port(self, port: "RPPort") -> None:
-        """Sets the port of this message.
-
-        Args:
-            port: The port to set.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::setPort(com.telelogic.rhapsody.core.IRPPort port)
-        """
-        raise NotImplementedError
+        AbstractRPModelElement._set_method_or_property(self._com, "setPort", "port", port._com)
 
     def set_return_value(self, return_value: str) -> None:
-        """Sets the return value of this message.
-
-        Args:
-            return_value: The return value text to set.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::setReturnValue(java.lang.String returnValue)
-        """
-        raise NotImplementedError
+        AbstractRPModelElement._set_method_or_property(self._com, "setReturnValue", "returnValue", return_value)
 
     def set_time_constraint(self, time_constraint: str) -> None:
-        """Modifies the text of this Time Constraint.
-
-        Args:
-            time_constraint: The text to use for this Time Constraint.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::setTimeConstraint(java.lang.String timeConstraint)
-        """
-        raise NotImplementedError
+        AbstractRPModelElement._set_method_or_property(self._com, "setTimeConstraint", "timeConstraint", time_constraint)
 
     def set_time_observation(self, time_observation: str) -> None:
-        """Modifies the text of this Time Observation.
-
-        Args:
-            time_observation: The text to use for the Time Observation.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::setTimeObservation(java.lang.String timeObservation)
-        """
-        raise NotImplementedError
+        AbstractRPModelElement._set_method_or_property(self._com, "setTimeObservation", "timeObservation", time_observation)
 
     def set_timer_value(self, timer_value: str) -> None:
-        """Sets the timer value of this message.
-
-        Args:
-            timer_value: The timer value to set.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPMessage::setTimerValue(java.lang.String timerValue)
-        """
-        raise NotImplementedError
+        AbstractRPModelElement._set_method_or_property(self._com, "setTimerValue", "timerValue", timer_value)
 
 
 class RPTransition(RPModelElement):
     """Wraps ``IRPTransition``: represents transitions in a statechart."""
 
     # IRPTransition method parity checklist:
-    # [ ] getInheritsFrom              [ ] impl  [ ] docstring  [ ] test
-    # [ ] getIsOverridden              [ ] impl  [ ] docstring  [ ] test
-    # [ ] getItsAction                 [ ] impl  [ ] docstring  [ ] test
-    # [ ] getItsGuard                  [ ] impl  [ ] docstring  [ ] test
-    # [ ] getItsLabel                  [ ] impl  [ ] docstring  [ ] test
-    # [ ] getItsSource                 [ ] impl  [ ] docstring  [ ] test
-    # [ ] getItsStatechart             [ ] impl  [ ] docstring  [ ] test
-    # [ ] getItsTarget                 [ ] impl  [ ] docstring  [ ] test
-    # [ ] getItsTrigger                [ ] impl  [ ] docstring  [ ] test
-    # [ ] getOfState                   [ ] impl  [ ] docstring  [ ] test
-    # [ ] isDefaultTransition          [ ] impl  [ ] docstring  [ ] test
-    # [ ] isStaticReaction             [ ] impl  [ ] docstring  [ ] test
-    # [ ] itsCompoundSource            [ ] impl  [ ] docstring  [ ] test
-    # [ ] overrideInheritance          [ ] impl  [ ] docstring  [ ] test
-    # [ ] resetLabelInheritance        [ ] impl  [ ] docstring  [ ] test
-    # [ ] setItsAction                 [ ] impl  [ ] docstring  [ ] test
-    # [ ] setItsGuard                  [ ] impl  [ ] docstring  [ ] test
-    # [ ] setItsLabel                  [ ] impl  [ ] docstring  [ ] test
-    # [ ] setItsSource                 [ ] impl  [ ] docstring  [ ] test
-    # [ ] setItsStatechart             [ ] impl  [ ] docstring  [ ] test
-    # [ ] setItsTarget                 [ ] impl  [ ] docstring  [ ] test
-    # [ ] setItsTrigger                [ ] impl  [ ] docstring  [ ] test
-    # [ ] unoverrideInheritance        [ ] impl  [ ] docstring  [ ] test
+    # [x] getInheritsFrom              [x] impl  [x] docstring  [x] test
+    # [x] getIsOverridden              [x] impl  [x] docstring  [x] test
+    # [x] getItsAction                 [x] impl  [x] docstring  [x] test
+    # [x] getItsGuard                  [x] impl  [x] docstring  [x] test
+    # [x] getItsLabel                  [x] impl  [x] docstring  [x] test
+    # [x] getItsSource                 [x] impl  [x] docstring  [x] test
+    # [x] getItsStatechart             [x] impl  [x] docstring  [x] test
+    # [x] getItsTarget                 [x] impl  [x] docstring  [x] test
+    # [x] getItsTrigger                [x] impl  [x] docstring  [x] test
+    # [x] getOfState                   [x] impl  [x] docstring  [x] test
+    # [x] isDefaultTransition          [x] impl  [x] docstring  [x] test
+    # [x] isStaticReaction             [x] impl  [x] docstring  [x] test
+    # [x] itsCompoundSource            [x] impl  [x] docstring  [x] test
+    # [x] overrideInheritance          [x] impl  [x] docstring  [x] test
+    # [x] resetLabelInheritance        [x] impl  [x] docstring  [x] test
+    # [x] setItsAction                 [x] impl  [x] docstring  [x] test
+    # [x] setItsGuard                  [x] impl  [x] docstring  [x] test
+    # [x] setItsLabel                  [x] impl  [x] docstring  [x] test
+    # [x] setItsSource                 [x] impl  [x] docstring  [x] test
+    # [x] setItsStatechart             [x] impl  [x] docstring  [x] test
+    # [x] setItsTarget                 [x] impl  [x] docstring  [x] test
+    # [x] setItsTrigger                [x] impl  [x] docstring  [x] test
+    # [x] unoverrideInheritance        [x] impl  [x] docstring  [x] test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPTransition methods.
 
     def get_inherits_from(self) -> "RPTransition":
-        """For transitions inherited from a base statechart, returns the base
-        transition from which this transition is derived.
-
-        Returns:
-            The base transition from which this transition is derived.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTransition::getInheritsFrom()
-        """
-        raise NotImplementedError
+        return cast("RPTransition", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getInheritsFrom", "inheritsFrom")))
 
     def get_is_overridden(self) -> int:
-        """Checks whether the transition is a new transition added to the
-        derived statechart, or a transition inherited from the base statechart.
-
-        Returns:
-            1 if the transition is new in the derived statechart, 0 if
-            inherited from the base statechart.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTransition::getIsOverridden()
-        """
-        raise NotImplementedError
+        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsOverridden", "isOverridden"))
 
     def get_its_action(self) -> "RPAction":
-        """Returns the action that was set for the transition.
-
-        Returns:
-            The action for the transition.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTransition::getItsAction()
-        """
-        raise NotImplementedError
+        return cast("RPAction", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getItsAction", "itsAction")))
 
     def get_its_guard(self) -> "RPGuard":
-        """Returns the guard that was set for the transition.
-
-        Returns:
-            The guard for the transition.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTransition::getItsGuard()
-        """
-        raise NotImplementedError
+        return cast("RPGuard", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getItsGuard", "itsGuard")))
 
     def get_its_label(self) -> str:
-        """Returns the trigger, guard, and action for the transition as a single
-        string, as it appears in the transition label in the statechart.
-
-        For example, ``IgnitionEvent[gear == 0]/runStarter()``.
-
-        Returns:
-            A string consisting of the trigger, guard, and action.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTransition::getItsLabel()
-        """
-        raise NotImplementedError
+        return str(AbstractRPModelElement._get_method_or_property(self._com, "getItsLabel", "itsLabel"))
 
     def get_its_source(self) -> "RPStateVertex":
-        """Returns the state that is the source of the transition.
-
-        Returns:
-            The source state vertex.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTransition::getItsSource()
-        """
-        raise NotImplementedError
+        return cast("RPStateVertex", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getItsSource", "itsSource")))
 
     def get_its_statechart(self) -> "RPStatechart":
-        """Returns the statechart that the transition belongs to.
-
-        Returns:
-            The owning statechart.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTransition::getItsStatechart()
-        """
-        raise NotImplementedError
+        return cast("RPStatechart", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getItsStatechart", "itsStatechart")))
 
     def get_its_target(self) -> "RPStateVertex":
-        """Returns the state that is the target of the transition.
-
-        Returns:
-            The target state vertex.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTransition::getItsTarget()
-        """
-        raise NotImplementedError
+        return cast("RPStateVertex", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getItsTarget", "itsTarget")))
 
     def get_its_trigger(self) -> "RPTrigger":
-        """Returns the trigger that was set for the transition.
-
-        Returns:
-            The trigger for the transition.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTransition::getItsTrigger()
-        """
-        raise NotImplementedError
+        return cast("RPTrigger", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getItsTrigger", "itsTrigger")))
 
     def get_of_state(self) -> "RPState":
-        """For default transitions, returns the state where the transition
-        originates. If called on a non-default transition, returns null.
-
-        Returns:
-            The state where the transition originates (for default transitions).
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTransition::getOfState()
-        """
-        raise NotImplementedError
+        return cast("RPState", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getOfState", "ofState")))
 
     def is_default_transition(self) -> int:
-        """Checks whether this is the default transition of the statechart.
-
-        Returns:
-            1 if the transition is the default transition, 0 otherwise.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTransition::isDefaultTransition()
-        """
-        raise NotImplementedError
+        return int(AbstractRPModelElement.call_com(lambda: self._com.isDefaultTransition()))
 
     def is_static_reaction(self) -> int:
-        """Checks whether the transition is an internal transition in a state.
-
-        Returns:
-            1 if the transition is an internal transition, 0 otherwise.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTransition::isStaticReaction()
-        """
-        raise NotImplementedError
+        return int(AbstractRPModelElement.call_com(lambda: self._com.isStaticReaction()))
 
     def its_compound_source(self) -> "RPCollection":
-        """Returns the compound source of this transition.
-
-        Returns:
-            A collection of source state vertices.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTransition::itsCompoundSource()
-        """
-        raise NotImplementedError
+        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.itsCompoundSource()))
 
     def override_inheritance(self) -> None:
-        """Overrides inheritance for this transition.
-
-        For internal use only.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTransition::overrideInheritance()
-        """
-        raise NotImplementedError
+        AbstractRPModelElement.call_com(lambda: self._com.overrideInheritance())
 
     def reset_label_inheritance(self) -> "RPTransition":
-        """Restores inheritance from the base statechart for the three components
-        that make up the transition label: trigger, guard, and action.
-
-        Returns:
-            The transition on which the method was called.
-
-        Raises:
-            RhapsodyRuntimeException: If the inheritance cannot be reset.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTransition::resetLabelInheritance()
-        """
-        raise NotImplementedError
+        return cast("RPTransition", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.resetLabelInheritance())))
 
     def set_its_action(self, action: str) -> "RPAction":
-        """Sets the action for the transition.
-
-        Args:
-            action: The action to use for the transition, for example,
-                "runStarter()".
-
-        Returns:
-            The action that was created.
-
-        Raises:
-            RhapsodyRuntimeException: If the action cannot be set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTransition::setItsAction(java.lang.String action)
-        """
-        raise NotImplementedError
+        return cast("RPAction", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.setItsAction(action))))
 
     def set_its_guard(self, guard: str) -> "RPGuard":
-        """Sets the guard for the transition.
-
-        Args:
-            guard: The guard to use for the transition, for example,
-                "gear == 0".
-
-        Returns:
-            The guard that was created.
-
-        Raises:
-            RhapsodyRuntimeException: If the guard cannot be set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTransition::setItsGuard(java.lang.String guard)
-        """
-        raise NotImplementedError
+        return cast("RPGuard", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.setItsGuard(guard))))
 
     def set_its_label(self, trigger: str, guard: str, action: str) -> None:
-        """Sets the trigger, guard, and action for the transition.
-
-        Args:
-            trigger: The trigger to use for the transition — can be an event or
-                triggered operation. If the string does not match an existing
-                event or triggered operation, a new event with that name is
-                created.
-            guard: The guard to use for the transition, for example,
-                "gear == 0".
-            action: The action to use for the transition, for example,
-                "runStarter()".
-
-        Raises:
-            RhapsodyRuntimeException: If the label cannot be set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTransition::setItsLabel(java.lang.String trigger, java.lang.String guard, java.lang.String action)
-        """
-        raise NotImplementedError
+        AbstractRPModelElement.call_com(lambda: self._com.setItsLabel(trigger, guard, action))
 
     def set_its_source(self, its_source: "RPStateVertex") -> None:
-        """Sets the source of the transition.
-
-        This method can only be used before ``createGraphics`` is called. Once
-        the graphics have been created, the source cannot be changed.
-
-        Args:
-            its_source: The state that should be used as the source of the
-                transition.
-
-        Raises:
-            RhapsodyRuntimeException: If the source cannot be set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTransition::setItsSource(com.telelogic.rhapsody.core.IRPStateVertex itsSource)
-        """
-        raise NotImplementedError
+        AbstractRPModelElement._set_method_or_property(self._com, "setItsSource", "itsSource", its_source._com)
 
     def set_its_statechart(self, its_statechart: "RPStatechart") -> None:
-        """Sets the statechart that the transition belongs to.
-
-        For internal use only.
-
-        Args:
-            its_statechart: The statechart to set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTransition::setItsStatechart(com.telelogic.rhapsody.core.IRPStatechart itsStatechart)
-        """
-        raise NotImplementedError
+        AbstractRPModelElement._set_method_or_property(self._com, "setItsStatechart", "itsStatechart", its_statechart._com)
 
     def set_its_target(self, its_target: "RPStateVertex") -> None:
-        """Sets the target of the transition.
-
-        This method can only be used before ``createGraphics`` is called. Once
-        the graphics have been created, the target cannot be changed.
-
-        Args:
-            its_target: The state that should be used as the target of the
-                transition.
-
-        Raises:
-            RhapsodyRuntimeException: If the target cannot be set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTransition::setItsTarget(com.telelogic.rhapsody.core.IRPStateVertex itsTarget)
-        """
-        raise NotImplementedError
+        AbstractRPModelElement._set_method_or_property(self._com, "setItsTarget", "itsTarget", its_target._com)
 
     def set_its_trigger(self, trigger: str) -> "RPTrigger":
-        """Sets the trigger for the transition.
-
-        Args:
-            trigger: The trigger to use for the transition — can be an event or
-                triggered operation. If the string does not match an existing
-                event or triggered operation, a new event with that name is
-                created.
-
-        Returns:
-            The trigger that was created.
-
-        Raises:
-            RhapsodyRuntimeException: If the trigger cannot be set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTransition::setItsTrigger(java.lang.String trigger)
-        """
-        raise NotImplementedError
+        return cast("RPTrigger", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.setItsTrigger(trigger))))
 
     def unoverride_inheritance(self) -> None:
-        """Reverses the effect of overriding inheritance for this transition.
-
-        For internal use only.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTransition::unoverrideInheritance()
-        """
-        raise NotImplementedError
+        AbstractRPModelElement.call_com(lambda: self._com.unoverrideInheritance())
 
 
 class RPTrigger(RPModelElement):
     """Wraps ``IRPTrigger``: represents the trigger of a transition in a statechart."""
 
     # IRPTrigger method parity checklist:
-    # [ ] getBody                      [ ] impl  [ ] docstring  [ ] test
-    # [ ] getItsOperation              [ ] impl  [ ] docstring  [ ] test
-    # [ ] isOperation                  [ ] impl  [ ] docstring  [ ] test
-    # [ ] isTimeout                    [ ] impl  [ ] docstring  [ ] test
-    # [ ] setBody                      [ ] impl  [ ] docstring  [ ] test
+    # [x] getBody                      [x] impl  [x] docstring  [x] test
+    # [x] getItsOperation              [x] impl  [x] docstring  [x] test
+    # [x] isOperation                  [x] impl  [x] docstring  [x] test
+    # [x] isTimeout                    [x] impl  [x] docstring  [x] test
+    # [x] setBody                      [x] impl  [x] docstring  [x] test
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # No deprecated IRPTrigger methods.
 
     def get_body(self) -> str:
-        """Returns the body of this trigger.
-
-        Returns:
-            The trigger body text.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTrigger::getBody()
-        """
-        raise NotImplementedError
+        return str(AbstractRPModelElement._get_method_or_property(self._com, "getBody", "body"))
 
     def get_its_operation(self) -> "RPInterfaceItem":
-        """Returns the operation associated with this trigger.
-
-        Returns:
-            The associated interface item (operation or event).
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTrigger::getItsOperation()
-        """
-        raise NotImplementedError
+        return cast("RPInterfaceItem", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getItsOperation", "itsOperation")))
 
     def is_operation(self) -> int:
-        """Checks whether this trigger is an operation trigger.
-
-        Returns:
-            1 if the trigger is an operation trigger, 0 otherwise.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTrigger::isOperation()
-        """
-        raise NotImplementedError
+        return int(AbstractRPModelElement.call_com(lambda: self._com.isOperation()))
 
     def is_timeout(self) -> int:
-        """Checks whether this trigger is a timeout trigger.
-
-        Returns:
-            1 if the trigger is a timeout trigger, 0 otherwise.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTrigger::isTimeout()
-        """
-        raise NotImplementedError
+        return int(AbstractRPModelElement.call_com(lambda: self._com.isTimeout()))
 
     def set_body(self, body: str) -> None:
-        """Sets the body of this trigger.
-
-        Args:
-            body: The trigger body text to set.
-
-        Raises:
-            RhapsodyRuntimeException: If the property cannot be set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPTrigger::setBody(java.lang.String body)
-        """
-        raise NotImplementedError
+        AbstractRPModelElement._set_method_or_property(self._com, "setBody", "body", body)
 
 
 class RPDestructionEvent(RPMessage):
@@ -1334,3 +445,16 @@ class RPDestructionEvent(RPMessage):
     # No deprecated IRPDestructionEvent methods.
 
     pass
+
+
+AbstractRPModelElement.register_wrapper("Message", RPMessage)
+AbstractRPModelElement.register_wrapper("Event", RPEvent)
+AbstractRPModelElement.register_wrapper("Transition", RPTransition)
+AbstractRPModelElement.register_wrapper("Trigger", RPTrigger)
+AbstractRPModelElement.register_wrapper("Guard", RPGuard)
+AbstractRPModelElement.register_wrapper("DestructionEvent", RPDestructionEvent)
+AbstractRPModelElement.register_wrapper("ExecutionOccurrence", RPExecutionOccurrence)
+AbstractRPModelElement.register_wrapper("EventReception", RPEventReception)
+AbstractRPModelElement.register_wrapper("InteractionOccurrence", RPInteractionOccurrence)
+AbstractRPModelElement.register_wrapper("InteractionOperand", RPInteractionOperand)
+AbstractRPModelElement.register_wrapper("InteractionOperator", RPInteractionOperator)

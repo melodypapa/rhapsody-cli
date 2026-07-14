@@ -155,24 +155,93 @@ class RPVariable(RPUnit):
         AbstractRPModelElement._set_method_or_property(self._com, "setTypeDeclaration", "typeDeclaration", new_val)
 
 
+AbstractRPModelElement.register_wrapper("Variable", RPVariable)
+
+
 class RPAttribute(RPVariable):
     """Wraps ``IRPAttribute``: represents an attribute in a classifier."""
 
     # IRPAttribute method parity checklist:
-    # [ ] getIsConstant  [ ] impl  [ ] docstring  [ ] test
-    # [ ] getIsOrdered  [ ] impl  [ ] docstring  [ ] test
-    # [ ] getIsReference  [ ] impl  [ ] docstring  [ ] test
+    # [x] getIsConstant  [x] impl  [x] docstring  [x] test
+    # [x] getIsOrdered  [x] impl  [x] docstring  [x] test
+    # [x] getIsReference  [x] impl  [x] docstring  [x] test
     # [x] get_is_static  [x] impl  [x] docstring  [x] test
     # [x] get_multiplicity  [x] impl  [x] docstring  [x] test
     # [x] get_visibility  [x] impl  [x] docstring  [x] test
-    # [ ] setIsConstant  [ ] impl  [ ] docstring  [ ] test
-    # [ ] setIsOrdered  [ ] impl  [ ] docstring  [ ] test
-    # [ ] setIsReference  [ ] impl  [ ] docstring  [ ] test
+    # [x] setIsConstant  [x] impl  [x] docstring  [x] test
+    # [x] setIsOrdered  [x] impl  [x] docstring  [x] test
+    # [x] setIsReference  [x] impl  [x] docstring  [x] test
     # [x] set_is_static  [x] impl  [x] docstring  [x] test
     # [x] set_multiplicity  [x] impl  [x] docstring  [x] test
     # [x] set_visibility  [x] impl  [x] docstring  [x] test
     # [inherited] IRPVariable / IRPUnit / IRPModelElement methods (covered by RPVariable / RPUnit / RPModelElement checklists)
     # No deprecated IRPAttribute methods.
+
+    def get_is_constant(self) -> int:
+        """Checks whether the attribute is defined as constant.
+
+        Returns:
+            ``1`` if the attribute is constant, ``0`` otherwise.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPAttribute::getIsConstant()
+        """
+        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsConstant", "isConstant"))
+
+    def get_is_ordered(self) -> int:
+        """Checks whether the attribute is ordered.
+
+        Returns:
+            ``1`` if the attribute is ordered, ``0`` otherwise.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPAttribute::getIsOrdered()
+        """
+        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsOrdered", "isOrdered"))
+
+    def get_is_reference(self) -> int:
+        """Checks whether the attribute is a reference.
+
+        Returns:
+            ``1`` if the attribute is a reference, ``0`` otherwise.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPAttribute::getIsReference()
+        """
+        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsReference", "isReference"))
+
+    def set_is_constant(self, is_constant: bool) -> None:
+        """Specifies whether the attribute should be defined as constant.
+
+        Args:
+            is_constant: ``True`` to mark the attribute constant, ``False`` otherwise.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPAttribute::setIsConstant(int isConstant)
+        """
+        AbstractRPModelElement._set_method_or_property(self._com, "setIsConstant", "isConstant", 1 if is_constant else 0)
+
+    def set_is_ordered(self, is_ordered: bool) -> None:
+        """Specifies whether the attribute should be ordered.
+
+        Args:
+            is_ordered: ``True`` to mark the attribute ordered, ``False`` otherwise.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPAttribute::setIsOrdered(int isOrdered)
+        """
+        AbstractRPModelElement._set_method_or_property(self._com, "setIsOrdered", "isOrdered", 1 if is_ordered else 0)
+
+    def set_is_reference(self, is_reference: bool) -> None:
+        """Specifies whether the attribute should be a reference.
+
+        Args:
+            is_reference: ``True`` to mark the attribute as a reference, ``False`` otherwise.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPAttribute::setIsReference(int isReference)
+        """
+        AbstractRPModelElement._set_method_or_property(self._com, "setIsReference", "isReference", 1 if is_reference else 0)
 
     def get_multiplicity(self) -> str:
         """Gets the multiplicity specified for the attribute.
@@ -248,19 +317,105 @@ class RPTag(RPVariable):
     """Wraps ``IRPTag``: a tag that extends ``IRPVariable``."""
 
     # IRPTag method parity checklist:
-    # [ ] getBase  [ ] impl  [ ] docstring  [ ] test
-    # [ ] getFromProfile  [ ] impl  [ ] docstring  [ ] test
-    # [ ] getMultiplicity  [ ] impl  [ ] docstring  [ ] test
-    # [ ] getTagMetaClass  [ ] impl  [ ] docstring  [ ] test
-    # [ ] getValue  [ ] impl  [ ] docstring  [ ] test
-    # [ ] setMultiplicity  [ ] impl  [ ] docstring  [ ] test
+    # [x] getBase  [x] impl  [x] docstring  [x] test
+    # [x] getFromProfile  [x] impl  [x] docstring  [x] test
+    # [x] getMultiplicity  [x] impl  [x] docstring  [x] test
+    # [x] getTagMetaClass  [x] impl  [x] docstring  [x] test
+    # [x] getValue  [x] impl  [x] docstring  [x] test
+    # [x] setMultiplicity  [x] impl  [x] docstring  [x] test
     # [x] set_tag_context_value  [x] impl  [x] docstring  [x] test   (inherited from RPModelElement)
-    # [ ] setTagMetaClass  [ ] impl  [ ] docstring  [ ] test
-    # [ ] setValue  [ ] impl  [ ] docstring  [ ] test
+    # [x] setTagMetaClass  [x] impl  [x] docstring  [x] test
+    # [x] setValue  [x] impl  [x] docstring  [x] test
     # [inherited] IRPVariable / IRPUnit / IRPModelElement methods (covered by RPVariable / RPUnit / RPModelElement checklists)
     # No deprecated IRPTag methods.
 
-    pass
+    def get_base(self) -> RPModelElement:
+        """Returns the base element for the tag.
+
+        Returns:
+            The wrapped ``IRPModelElement`` that is the base of the tag.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPTag::getBase()
+        """
+        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getBase", "base")))
+
+    def get_from_profile(self) -> str:
+        """Returns the profile from which the tag originates.
+
+        Returns:
+            The profile name as a string.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPTag::getFromProfile()
+        """
+        return str(AbstractRPModelElement._get_method_or_property(self._com, "getFromProfile", "fromProfile"))
+
+    def get_multiplicity(self) -> str:
+        """Gets the multiplicity specified for the tag.
+
+        Returns:
+            The multiplicity string (e.g. ``"1"``, ``"0..*"``).
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPTag::getMultiplicity()
+        """
+        return str(AbstractRPModelElement._get_method_or_property(self._com, "getMultiplicity", "multiplicity"))
+
+    def get_tag_meta_class(self) -> str:
+        """Returns the meta class of the tag.
+
+        Returns:
+            The meta class name as a string.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPTag::getTagMetaClass()
+        """
+        return str(AbstractRPModelElement._get_method_or_property(self._com, "getTagMetaClass", "tagMetaClass"))
+
+    def get_value(self) -> str:
+        """Returns the value of the tag.
+
+        Returns:
+            The tag value as a string.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPTag::getValue()
+        """
+        return str(AbstractRPModelElement._get_method_or_property(self._com, "getValue", "value"))
+
+    def set_multiplicity(self, multiplicity: str) -> None:
+        """Specifies the multiplicity for the tag.
+
+        Args:
+            multiplicity: The multiplicity string to set (e.g. ``"1"``, ``"0..*"``).
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPTag::setMultiplicity(java.lang.String multiplicity)
+        """
+        AbstractRPModelElement._set_method_or_property(self._com, "setMultiplicity", "multiplicity", multiplicity)
+
+    def set_tag_meta_class(self, tag_meta_class: str) -> None:
+        """Sets the meta class of the tag.
+
+        Args:
+            tag_meta_class: The meta class name to set.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPTag::setTagMetaClass(java.lang.String tagMetaClass)
+        """
+        AbstractRPModelElement._set_method_or_property(self._com, "setTagMetaClass", "tagMetaClass", tag_meta_class)
+
+    def set_value(self, value: str) -> None:
+        """Sets the value of the tag.
+
+        Args:
+            value: The value to set for the tag.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPTag::setValue(java.lang.String value)
+        """
+        AbstractRPModelElement._set_method_or_property(self._com, "setValue", "value", value)
 
 
 AbstractRPModelElement.register_wrapper("Tag", RPTag)
