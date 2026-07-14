@@ -1,5 +1,14 @@
 # Model Class Integration Tests Implementation Plan
 
+> **STATUS (2026-07-14): SUPERSEDED.** Tasks 1–13 of this plan (classifiers, containment, variables, common, relations, diagrams, activity, requirements — the first pass of coverage) were implemented in PRs merged through `a58ab03`/`fe5c0bc`, even though the checkboxes below were never updated to reflect that. The checkbox state in *this* document is stale and must not be trusted.
+>
+> **Ground truth for integration-test status is now the in-source method-parity checklist** in each `src/rhapsody_cli/models/**/*.py` file (the `[ ] integration test` column added in `9482552`/`b6276e8`), not this markdown file.
+>
+> Remaining and newly-scoped work (all 130 model classes, all 40 checklist-bearing files, ~1395 methods still needing integration tests as of 2026-07-14) is tracked in a set of per-subpackage plans instead of one monolithic document:
+> `docs/superpowers/plans/2026-07-14-integration-tests-index.md` is the master index — start there.
+>
+> This file is kept for historical reference only and should not be executed further.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Add comprehensive, prioritized integration tests for all model wrapper classes under `src/rhapsody_cli/models/elements/`, testing against a live Rhapsody COM API instance.
