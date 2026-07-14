@@ -1,7 +1,8 @@
 """Diagram Types model-element wrappers (auto-generated stubs)."""
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.diagrams.model_diagrams import RPDiagram
 
 if TYPE_CHECKING:
@@ -16,7 +17,7 @@ class RPCollaborationDiagram(RPDiagram):
     """Wraps ``IRPCollaborationDiagram``: represents collaboration diagrams in a Rhapsody model."""
 
     # IRPCollaborationDiagram method parity checklist:
-    # [ ] getLogicalCollaboration      [ ] impl  [ ] docstring  [ ] test
+    # [x] getLogicalCollaboration      [x] impl  [x] docstring  [ ] test
     # [inherited] IRPDiagram methods (covered by RPDiagram checklist)
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # [inherited] IRPUnit methods (covered by RPUnit checklist)
@@ -31,7 +32,8 @@ class RPCollaborationDiagram(RPDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPCollaborationDiagram::getLogicalCollaboration()
         """
-        raise NotImplementedError
+        result = AbstractRPModelElement.call_com(lambda: self._com.getLogicalCollaboration())
+        return cast("RPCollaboration", AbstractRPModelElement.wrap(result))
 
 
 class RPComponentDiagram(RPDiagram):
@@ -86,8 +88,8 @@ class RPSequenceDiagram(RPDiagram):
     """Wraps ``IRPSequenceDiagram``: represents sequence diagrams in a Rhapsody model."""
 
     # IRPSequenceDiagram method parity checklist:
-    # [ ] getLogicalCollaboration      [ ] impl  [ ] docstring  [ ] test
-    # [ ] getRelatedUseCases           [ ] impl  [ ] docstring  [ ] test
+    # [x] getLogicalCollaboration      [x] impl  [x] docstring  [ ] test
+    # [x] getRelatedUseCases           [x] impl  [x] docstring  [ ] test
     # [inherited] IRPDiagram methods (covered by RPDiagram checklist)
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # [inherited] IRPUnit methods (covered by RPUnit checklist)
@@ -102,7 +104,8 @@ class RPSequenceDiagram(RPDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPSequenceDiagram::getLogicalCollaboration()
         """
-        raise NotImplementedError
+        result = AbstractRPModelElement.call_com(lambda: self._com.getLogicalCollaboration())
+        return cast("RPCollaboration", AbstractRPModelElement.wrap(result))
 
     def get_related_use_cases(self) -> "RPCollection":
         """Returns use cases related to this sequence diagram.
@@ -115,16 +118,18 @@ class RPSequenceDiagram(RPDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPSequenceDiagram::getRelatedUseCases()
         """
-        raise NotImplementedError
+        from rhapsody_cli.models.core import RPCollection
+
+        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getRelatedUseCases()))
 
 
 class RPStatechartDiagram(RPDiagram):
     """Wraps ``IRPStatechartDiagram``: represents statecharts in a Rhapsody model."""
 
     # IRPStatechartDiagram method parity checklist:
-    # [ ] addAndLine                   [ ] impl  [ ] docstring  [ ] test
-    # [ ] createGraphics               [ ] impl  [ ] docstring  [ ] test
-    # [ ] getStatechart                [ ] impl  [ ] docstring  [ ] test
+    # [x] addAndLine                   [x] impl  [x] docstring  [ ] test
+    # [x] createGraphics               [x] impl  [x] docstring  [ ] test
+    # [x] getStatechart                [x] impl  [x] docstring  [ ] test
     # [inherited] IRPDiagram methods (covered by RPDiagram checklist)
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # [inherited] IRPUnit methods (covered by RPUnit checklist)
@@ -150,7 +155,9 @@ class RPStatechartDiagram(RPDiagram):
                 int xStartPosition, int yStartPosition,
                 int xEndPosition, int yEndPosition)
         """
-        raise NotImplementedError
+        from rhapsody_cli.models.core import RPCollection
+
+        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.addAndLine(source_state._com, x_start_position, y_start_position, x_end_position, y_end_position)))
 
     def create_graphics(self) -> None:
         """Creates the graphical representation of the elements in the statechart.
@@ -164,7 +171,7 @@ class RPStatechartDiagram(RPDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechartDiagram::createGraphics()
         """
-        raise NotImplementedError
+        AbstractRPModelElement.call_com(lambda: self._com.createGraphics())
 
     def get_statechart(self) -> "RPStatechart":
         """Returns the statechart object underlying the statechart diagram.
@@ -175,7 +182,8 @@ class RPStatechartDiagram(RPDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechartDiagram::getStatechart()
         """
-        raise NotImplementedError
+        result = AbstractRPModelElement.call_com(lambda: self._com.getStatechart())
+        return cast("RPStatechart", AbstractRPModelElement.wrap(result))
 
 
 class RPStructureDiagram(RPDiagram):
@@ -206,8 +214,8 @@ class RPTimingDiagram(RPSequenceDiagram):
     """Wraps ``IRPTimingDiagram``."""
 
     # IRPTimingDiagram method parity checklist:
-    # [ ] getIsElaborated              [ ] impl  [ ] docstring  [ ] test
-    # [ ] setIsElaborated              [ ] impl  [ ] docstring  [ ] test
+    # [x] getIsElaborated              [x] impl  [x] docstring  [ ] test
+    # [x] setIsElaborated              [x] impl  [x] docstring  [ ] test
     # [inherited] IRPDiagram methods (covered by RPDiagram checklist)
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # [inherited] IRPSequenceDiagram methods (covered by RPSequenceDiagram checklist)
@@ -225,7 +233,7 @@ class RPTimingDiagram(RPSequenceDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPTimingDiagram::getIsElaborated()
         """
-        raise NotImplementedError
+        return int(AbstractRPModelElement.call_com(lambda: self._com.getIsElaborated()))
 
     def set_is_elaborated(self, is_elaborated: int) -> None:
         """Specifies whether the diagram should be an elaborated or compact timing diagram.
@@ -240,15 +248,15 @@ class RPTimingDiagram(RPSequenceDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPTimingDiagram::setIsElaborated(int isElaborated)
         """
-        raise NotImplementedError
+        AbstractRPModelElement.call_com(lambda: self._com.setIsElaborated(is_elaborated))
 
 
 class RPActivityDiagram(RPStatechartDiagram):
     """Wraps ``IRPActivityDiagram``: represents activity diagrams in Rhapsody models."""
 
     # IRPActivityDiagram method parity checklist:
-    # [ ] decomposeSwimlane            [ ] impl  [ ] docstring  [ ] test
-    # [ ] getFlowchart                 [ ] impl  [ ] docstring  [ ] test
+    # [x] decomposeSwimlane            [x] impl  [x] docstring  [ ] test
+    # [x] getFlowchart                 [x] impl  [x] docstring  [ ] test
     # [inherited] IRPDiagram methods (covered by RPDiagram checklist)
     # [inherited] IRPModelElement methods (covered by RPModelElement checklist)
     # [inherited] IRPStatechartDiagram methods (covered by RPStatechartDiagram checklist)
@@ -271,7 +279,9 @@ class RPActivityDiagram(RPStatechartDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPActivityDiagram::decomposeSwimlane(com.telelogic.rhapsody.core.IRPGraphElement graphSwimlane)
         """
-        raise NotImplementedError
+        from rhapsody_cli.models.core import RPCollection
+
+        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.decomposeSwimlane(graph_swimlane._com)))
 
     def get_flowchart(self) -> "RPFlowchart":
         """Returns the flowchart object underlying the activity diagram.
@@ -282,4 +292,19 @@ class RPActivityDiagram(RPStatechartDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPActivityDiagram::getFlowchart()
         """
-        raise NotImplementedError
+        result = AbstractRPModelElement.call_com(lambda: self._com.getFlowchart())
+        return cast("RPFlowchart", AbstractRPModelElement.wrap(result))
+
+
+# Registration — ActivityDiagram intentionally not re-registered here
+# (existing "ActivityDiagram" -> RPDiagram mapping preserved in model_diagrams.py)
+AbstractRPModelElement.register_wrapper("CollaborationDiagram", RPCollaborationDiagram)
+AbstractRPModelElement.register_wrapper("ComponentDiagram", RPComponentDiagram)
+AbstractRPModelElement.register_wrapper("DeploymentDiagram", RPDeploymentDiagram)
+AbstractRPModelElement.register_wrapper("ObjectModelDiagram", RPObjectModelDiagram)
+AbstractRPModelElement.register_wrapper("PanelDiagram", RPPanelDiagram)
+AbstractRPModelElement.register_wrapper("SequenceDiagram", RPSequenceDiagram)
+AbstractRPModelElement.register_wrapper("StatechartDiagram", RPStatechartDiagram)
+AbstractRPModelElement.register_wrapper("StructureDiagram", RPStructureDiagram)
+AbstractRPModelElement.register_wrapper("UseCaseDiagram", RPUseCaseDiagram)
+AbstractRPModelElement.register_wrapper("TimingDiagram", RPTimingDiagram)
