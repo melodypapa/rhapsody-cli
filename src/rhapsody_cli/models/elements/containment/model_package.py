@@ -250,6 +250,9 @@ class RPPackage(RPUnit):
         Returns:
             The wrapped interface element created.
         """
+        # TODO: Under Rhapsody2.Application.1 the 'addInterface' COM method is not exposed on a
+        # package and addNewAggr('Interface') does not create an Interface; this raises. Use the
+        # correct metaclass/owner when Rhapsody exposes Interface creation.
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addInterface(name)))
 
     def add_signal(self, name: str) -> Any:
