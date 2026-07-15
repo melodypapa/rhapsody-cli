@@ -92,6 +92,14 @@ Common Elements
    :undoc-members:
    :show-inheritance:
 
+Value Elements
+~~~~~~~~~~~~~~
+
+.. automodule:: rhapsody_cli.models.elements.values
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Relation Elements
 ~~~~~~~~~~~~~~~~~
 
