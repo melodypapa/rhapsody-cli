@@ -185,6 +185,15 @@ epub_exclude_files = ['search.html']
 # Autosummary generate stub pages
 autosummary_generate = True
 
+# Autodoc configuration to avoid duplicate cross-references for re-exported members
+# When a class is imported in __init__.py and also documented in its original module,
+# Sphinx finds two targets. This configuration helps disambiguate.
+autodoc_default_options = {
+    'members': True,
+    'undoc-members': True,
+    'show-inheritance': True,
+}
+
 # Note: we intentionally do NOT suppress 'autodoc.import_object' warnings.
 # All rhapsody_cli modules must be importable on any platform (Windows-only
 # dependencies like pywin32 are guarded with try/except in the source), so a

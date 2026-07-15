@@ -8,6 +8,7 @@ Core Infrastructure
    :members:
    :undoc-members:
    :show-inheritance:
+   :noindex:
 
 .. automodule:: rhapsody_cli.models.core
    :members:
