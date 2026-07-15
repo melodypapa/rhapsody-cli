@@ -100,6 +100,14 @@ Value Elements
    :undoc-members:
    :show-inheritance:
 
+Template Elements
+~~~~~~~~~~~~~~~~~
+
+.. automodule:: rhapsody_cli.models.elements.templates
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Relation Elements
 ~~~~~~~~~~~~~~~~~
 
