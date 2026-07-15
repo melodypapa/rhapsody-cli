@@ -135,29 +135,47 @@ View available commands:
 
    rhapsody-cli --help
 
-Open a project:
+Project management:
 
 .. code-block:: bash
 
+   rhapsody-cli project new "C:\Models" NewProject
    rhapsody-cli project open "C:\path\to\project.rpy"
-
-List open projects:
-
-.. code-block:: bash
-
    rhapsody-cli project list
+   rhapsody-cli project close
 
-Query model elements:
-
-.. code-block:: bash
-
-   rhapsody-cli element query
-
-View element details:
+Package management:
 
 .. code-block:: bash
 
-   rhapsody-cli element view <element_id>
+   rhapsody-cli package create --path Sensors '{"name":"Actuators"}'
+   rhapsody-cli package view --path Sensors/Actuators --format json
+   rhapsody-cli package list --path Sensors --format table
+   rhapsody-cli package update --path Sensors/Actuators '{"description":"Updated"}'
+   rhapsody-cli package delete --path Sensors/Actuators
+
+Class management:
+
+.. code-block:: bash
+
+   rhapsody-cli class create --path Sensors '{"name":"TemperatureSensor"}'
+   rhapsody-cli class view --path Sensors/TemperatureSensor --format json
+   rhapsody-cli class list --path Sensors
+   rhapsody-cli class link --path Sensors/TemperatureSensor --add BaseSensor
+   rhapsody-cli class update --path Sensors/TemperatureSensor '{"isAbstract":true}'
+   rhapsody-cli class delete --path Sensors/TemperatureSensor
+
+Attribute, Operation, and Port management:
+
+.. code-block:: bash
+
+   rhapsody-cli attribute create --path Sensors/TemperatureSensor '{"name":"threshold","type":"int"}'
+   rhapsody-cli operation create --path Sensors/TemperatureSensor '{"name":"readValue"}'
+   rhapsody-cli port create --path Sensors/TemperatureSensor '{"name":"clientPort"}'
+
+   rhapsody-cli attribute list --path Sensors/TemperatureSensor
+   rhapsody-cli attribute update --path Sensors/TemperatureSensor --name threshold '{"isStatic":true}'
+   rhapsody-cli attribute delete --path Sensors/TemperatureSensor --name threshold
 
 Documentation Structure
 -----------------------
