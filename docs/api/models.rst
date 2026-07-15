@@ -84,6 +84,14 @@ Graphics Elements
    :undoc-members:
    :show-inheritance:
 
+Common Elements
+~~~~~~~~~~~~~~~
+
+.. automodule:: rhapsody_cli.models.elements.common
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Relation Elements
 ~~~~~~~~~~~~~~~~~
 
