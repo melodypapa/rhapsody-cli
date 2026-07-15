@@ -273,25 +273,41 @@ Project Structure
    │   └── core.py                   # RhapsodyConnectionError, RhapsodyRuntimeException
    ├── models/                        # Element wrappers
    │   ├── __init__.py
-   │   ├── _core.py                  # RPModelElement, wrap(), call_com()
+   │   ├── core.py                   # RPModelElement, RPCollection, wrap(), call_com()
+   │   ├── application.py            # RhapsodyApplication COM wrapper
    │   └── elements/                 # Specific element types
    │       ├── __init__.py
-   │       ├── class_.py             # RPClass
-   │       ├── attribute.py          # RPAttribute
-   │       ├── operation.py          # RPOperation
-   │       ├── package.py            # RPPackage
-   │       ├── project.py            # RPProject
-   │       └── ...                   # Other element types
-   ├── commands/                      # CLI command groups (argparse, class-based)
+   │       ├── classifiers/          # RPClass, RPActor, RPOperation, RPAttribute, etc.
+   │       ├── containment/          # RPPackage, RPProject, RPComponent, etc.
+   │       ├── relations/            # RPRelation, RPGeneralization, RPPort, etc.
+   │       ├── diagrams/             # RPDiagram and subclasses
+   │       ├── activity/             # RPFlowchart, RPFlow, RPFlowItem
+   │       ├── statemachine/         # RPStatechart, RPState, RPTransition
+   │       ├── interactions/         # RPCollaboration, RPMessage
+   │       ├── graphics/             # RPGraphElement, RPGraphNode
+   │       ├── common/               # RPType, RPConstraint, etc.
+   │       ├── values/               # RPEnumerationLiteral
+   │       ├── templates/            # RPTemplateParameter, RPTemplateInstantiation
+   │       ├── requirements/         # RPRequirement, RPAnnotation
+   │       └── variables/            # RPVariable, RPArgument
+   ├── commands/                      # CLI command groups
    │   ├── __init__.py
    │   ├── abstract_command.py       # AbstractCommand base class
-   │   ├── element_command.py        # ElementCommand
-   │   └── project_command.py        # ProjectCommand
-   ├── actions/                       # CLI subcommand actions (argparse, class-based)
+   │   ├── project_command.py        # ProjectCommand
+   │   ├── package_command.py        # PackageCommand
+   │   ├── class_command.py          # ClassCommand
+   │   ├── attribute_command.py      # AttributeCommand
+   │   ├── operation_command.py      # OperationCommand
+   │   └── port_command.py           # PortCommand
+   ├── actions/                       # CLI subcommand actions
    │   ├── __init__.py
-   │   ├── abstract_action.py        # AbstractAction, RhapsodyContextAction, ElementManagementAction
-   │   ├── element_action.py         # ElementAddAction, ElementViewAction, ElementQueryAction, ElementDeleteAction
-   │   └── project_action.py         # Project subcommand actions
+   │   ├── abstract_action.py        # AbstractAction, RhapsodyContextAction
+   │   ├── project_action.py         # Project subcommand actions
+   │   ├── package_action.py         # Package subcommand actions
+   │   ├── class_action.py           # Class subcommand actions
+   │   ├── attribute_action.py       # Attribute subcommand actions
+   │   ├── operation_action.py       # Operation subcommand actions
+   │   └── port_action.py            # Port subcommand actions
    └── cli/                           # CLI entry point and support
        ├── main.py                   # Entry point (re-exports cli.main)
        ├── cli.py                    # main() dispatcher
