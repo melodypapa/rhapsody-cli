@@ -402,8 +402,12 @@ class RPClass(RPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPClass::setIsAbstract(int isAbstract)
 
-        # TODO: Under Rhapsody2.Application.1 the ``isAbstract`` COM property is read-only,
-        # so this setter silently no-ops. Persist via the metatype property system instead.
+        # TODO: Under Rhapsody2.Application.1 (build 9.0.2) this write is accepted without
+        # error (the typelib declares both PROPERTYGET and PROPERTYPUT for isAbstract) but
+        # does not persist -- confirmed via immediate read-back, post-saveAll(), and a fresh
+        # re-fetch of the element. No workaround (e.g. the generic setPropertyValue metatype
+        # property system) is currently known; "Abstract" is not a defined key in
+        # Share/Properties/factory.prp. Revisit if a future Rhapsody build fixes this.
         """
         AbstractRPModelElement._set_method_or_property(self._com, "setIsAbstract", "isAbstract", is_abstract)
 

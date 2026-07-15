@@ -106,9 +106,13 @@ class TestRPClassIntegration:
             test_class.delete_from_project()
 
     @pytest.mark.xfail(
-        reason="Rhapsody2.Application.1 exposes 'isAbstract' as a read-only COM property; "
-        "set_is_abstract silently no-ops. TODO: fix RPClass.set_is_abstract to persist via "
-        "the metatype property system in a future Rhapsody build.",
+        reason="Rhapsody2.Application.1's automation server accepts a write to the 'isAbstract' "
+        "COM property without error (confirmed via typelib inspection that both PROPERTYGET and "
+        "PROPERTYPUT are declared for isAbstract under the same DISPID -- it is not read-only at "
+        "the interface level), but the write does not persist: reading it back immediately, after "
+        "saveAll(), and via a freshly re-fetched IRPClass all return the original value. This is a "
+        "genuine limitation of this Rhapsody build's IRPClass::isAbstract implementation, not a bug "
+        "in RPClass.set_is_abstract (which already correctly uses the method/property fallback).",
         strict=False,
     )
     def test_abstract_roundtrip(self, test_project: RPProject) -> None:
