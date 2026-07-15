@@ -108,6 +108,14 @@ Template Elements
    :undoc-members:
    :show-inheritance:
 
+Support Package
+~~~~~~~~~~~~~~~
+
+.. automodule:: rhapsody_cli.models.support
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Relation Elements
 ~~~~~~~~~~~~~~~~~
 
