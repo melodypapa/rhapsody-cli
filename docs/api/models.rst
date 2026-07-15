@@ -76,6 +76,14 @@ Interaction Elements
    :undoc-members:
    :show-inheritance:
 
+Graphics Elements
+~~~~~~~~~~~~~~~~~
+
+.. automodule:: rhapsody_cli.models.elements.graphics
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Relation Elements
 ~~~~~~~~~~~~~~~~~
 
