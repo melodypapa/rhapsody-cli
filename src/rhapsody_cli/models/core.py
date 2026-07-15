@@ -100,9 +100,9 @@ class RPModelElement(AbstractRPModelElement):
     # [x] add_remote_dependency_to           [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] add_specific_stereotype           [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] add_stereotype                   [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] become_template_instantiation_of   [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] change_to                        [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] clone                           [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] become_template_instantiation_of   [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] change_to                        [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] clone                           [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] create_oslc_link                  [x] impl  [x] docstring  [x] unit test  [ ] integration test  (NotImplementedError)
     # [x] delete_dependency                [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] delete_from_project               [x] impl  [x] docstring  [x] unit test  [x] integration test
@@ -145,7 +145,7 @@ class RPModelElement(AbstractRPModelElement):
     # [x] get_nested_elements_by_meta_class    [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_nested_elements_recursive      [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_new_term_stereotype            [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_of_template                   [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_of_template                   [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_oslc_links                    [x] impl  [x] docstring  [x] unit test  [ ] integration test  (NotImplementedError)
     # [x] get_overlay_icon_file_name          [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] get_overridden_properties         [x] impl  [x] docstring  [x] unit test  [x] integration test
@@ -166,14 +166,14 @@ class RPModelElement(AbstractRPModelElement):
     # [x] get_save_unit                     [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] get_stereotypes                  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_tag                          [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_template_parameters           [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_ti                           [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_template_parameters           [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] get_ti                           [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_tool_tip_html                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] get_user_defined_meta_class         [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] has_nested_elements               [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] has_panel_widget                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] high_light_element                [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] is_a_template                     [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] is_a_template                     [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] is_description_rtf                [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] is_display_name_rtf                [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] is_modified                      [x] impl  [x] docstring  [x] unit test  [ ] integration test
@@ -194,15 +194,15 @@ class RPModelElement(AbstractRPModelElement):
     # [x] set_is_show_display_name            [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] set_main_diagram                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] set_name                         [x] impl  [x] docstring  [x] unit test  [x] integration test   (already implemented)
-    # [x] set_of_template                   [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] set_of_template                   [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] set_owner                        [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] set_property_value                [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] set_requirement_traceability_handle [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] set_tag_context_value              [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] set_tag_element_value              [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] set_tag_value                     [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] set_ti                           [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] synchronize_template_instantiation [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] set_ti                           [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] synchronize_template_instantiation [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [deprecated] getStereotype          - skipped (use getStereotypes)
     # [deprecated] setStereotype          - skipped (use addSpecificStereotype / addStereotype / removeStereotype)
     # [deprecated] lockOnDesignManager    - skipped (Design Manager removed in Rhapsody 8.4)

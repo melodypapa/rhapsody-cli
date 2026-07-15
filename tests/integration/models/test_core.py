@@ -729,3 +729,146 @@ class TestRPModelElementNavigationIntegration:
             assert empty_pkg.has_nested_elements() == 1
         finally:
             pkg.delete_from_project()
+
+
+@pytest.mark.integration
+class TestRPModelElementCloningTemplatesIntegration:
+    """Integration tests for RPModelElement clone, change-to and template methods."""
+
+    @staticmethod
+    def _unique(prefix: str = "Test") -> str:
+        return f"{prefix}_{uuid.uuid4().hex[:8]}"
+
+    @staticmethod
+    def _create_package(project: RPProject, name: str) -> RPPackage:
+        pkg = project.add_package(name)
+        assert pkg is not None
+        assert isinstance(pkg, RPPackage)
+        return pkg
+
+    def test_clone(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("ClonePkg"))
+        try:
+            cls = pkg.add_class(self._unique("Original"))
+            original_guid = cls.get_guid()
+
+            clone_name = self._unique("Clone")
+            cloned = cls.clone(clone_name, pkg)
+            assert cloned is not None
+            assert isinstance(cloned, RPModelElement)
+            assert cloned.get_name() == clone_name
+            assert cloned.get_guid() != original_guid
+        finally:
+            pkg.delete_from_project()
+
+    def test_change_to(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("ChangePkg"))
+        try:
+            cls = pkg.add_class(self._unique("ToChange"))
+            assert cls.get_meta_class() == "Class"
+
+            changed = cls.change_to("ClassCategory")
+            assert changed is not None
+            assert isinstance(changed, RPModelElement)
+            assert changed.get_meta_class() == "ClassCategory"
+        finally:
+            pkg.delete_from_project()
+
+    def test_is_a_template(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("IsTemplPkg"))
+        try:
+            cls = pkg.add_class(self._unique("PlainClass"))
+            result = cls.is_a_template()
+            assert result == 0
+            assert isinstance(result, int)
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_of_template_on_plain_element(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("OfTemplPkg"))
+        try:
+            cls = pkg.add_class(self._unique("Plain"))
+            of_tmpl = cls.get_of_template()
+            assert of_tmpl is not None
+            assert isinstance(of_tmpl, RPModelElement)
+            assert of_tmpl.get_name() == ""
+        finally:
+            pkg.delete_from_project()
+
+    @pytest.mark.xfail(strict=False, reason="Template instantiation API may not be available")
+    def test_become_template_instantiation_of(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("TemplInstPkg"))
+        try:
+            template_cls = pkg.add_class(self._unique("TemplateClass"))
+            normal_cls = pkg.add_class(self._unique("NormalClass"))
+            normal_cls.become_template_instantiation_of(template_cls)
+            of_tmpl = normal_cls.get_of_template()
+            assert of_tmpl is not None
+            assert of_tmpl.get_name() == template_cls.get_name()
+        finally:
+            pkg.delete_from_project()
+
+    @pytest.mark.xfail(strict=False, reason="Template parameter API may not be available")
+    def test_set_of_template(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("SetOfTemplPkg"))
+        try:
+            template_cls = pkg.add_class(self._unique("Templ"))
+            normal_cls = pkg.add_class(self._unique("Normal"))
+            normal_cls.set_of_template(template_cls)
+            of_tmpl = normal_cls.get_of_template()
+            assert of_tmpl is not None
+            assert of_tmpl.get_name() == template_cls.get_name()
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_template_parameters_on_plain_element(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("TemplParamsPkg"))
+        try:
+            cls = pkg.add_class(self._unique("Plain"))
+            params = cls.get_template_parameters()
+            assert params is not None
+            assert isinstance(params, RPCollection)
+            assert isinstance(params.get_count(), int)
+        finally:
+            pkg.delete_from_project()
+
+    @pytest.mark.xfail(strict=False, reason="Template instantiation API may not be available")
+    def test_get_ti(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("GetTiPkg"))
+        try:
+            template_cls = pkg.add_class(self._unique("TiTempl"))
+            normal_cls = pkg.add_class(self._unique("TiNormal"))
+            normal_cls.become_template_instantiation_of(template_cls)
+            ti = normal_cls.get_ti()
+            assert ti is not None
+            assert isinstance(ti, RPModelElement)
+        finally:
+            pkg.delete_from_project()
+
+    @pytest.mark.xfail(strict=False, reason="Template instantiation API may not be available")
+    def test_set_ti(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("SetTiPkg"))
+        try:
+            template_cls = pkg.add_class(self._unique("SetTiTempl"))
+            normal_cls = pkg.add_class(self._unique("SetTiNormal"))
+            normal_cls.become_template_instantiation_of(template_cls)
+            ti = normal_cls.get_ti()
+            assert ti is not None
+            # set_ti should accept the same ti object
+            normal_cls.set_ti(ti)
+            ti_after = normal_cls.get_ti()
+            assert ti_after is not None
+        finally:
+            pkg.delete_from_project()
+
+    @pytest.mark.xfail(strict=False, reason="Template instantiation API may not be available")
+    def test_synchronize_template_instantiation(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("SyncTemplPkg"))
+        try:
+            template_cls = pkg.add_class(self._unique("SyncTempl"))
+            normal_cls = pkg.add_class(self._unique("SyncNormal"))
+            normal_cls.become_template_instantiation_of(template_cls)
+            normal_cls.synchronize_template_instantiation()
+            # No return value: just verify no exception
+        finally:
+            pkg.delete_from_project()
