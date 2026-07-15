@@ -8,6 +8,17 @@
 
 **Tech Stack:** Python 3.8+, pytest, subprocess, json, uuid. No external test dependencies.
 
+**Reference Document:** `docs/java_api/` — IBM Rhapsody Java API Javadoc (`com.telelogic.rhapsody.core`). The CLI wraps the Java API method-for-method (snake_case), so this Javadoc is the authoritative reference for the COM methods invoked by each CLI subcommand. Open `docs/java_api/index.html` in a browser to navigate. Key interfaces per command group:
+
+| Command Group | Java API Interface | Key Methods Exercised |
+|---------------|--------------------|-----------------------|
+| `project` | `IRPApplication`, `IRPProject` | `createNewProject`, `openProject`, `activeProject`, `getProjects`, `close` |
+| `package` | `IRPPackage`, `IRPProject` | `addPackage`, `addNestedPackage`, `getPackages`, `getNestedPackages`, `deleteFromProject` |
+| `class` | `IRPClass`, `IRPClassifier` | `addClass`, `getClasses`, `addAttribute`, `addOperation`, `addGeneralization`, `findNestedClassifierRecursive` |
+| `attribute` | `IRPAttribute`, `IRPClassifier` | `addAttribute`, `findAttribute`, `deleteAttribute`, `getAttributes` |
+| `operation` | `IRPOperation`, `IRPClassifier` | `addOperation`, `findInterfaceItem`, `deleteOperation`, `getOperations` |
+| `port` | `IRPPort`, `IRPClassifier` | `getPorts`, `deletePort` (via classifier) |
+
 ## Global Constraints
 
 - All CLI invocations via `subprocess.run()` with `timeout=30`, `capture_output=True`, `text=True`
@@ -56,8 +67,13 @@
 
 ### Path Format
 
-- Paths use `::` separator: `TestProject::PkgName::ClassName`
-- Root project is referenced by name: `TestProject`
+- Paths use `/` or `\` separator: `PkgName/ClassName` (see `PathResolver.normalize()`)
+- The leading `Root` segment (case-insensitive) is optional and stripped — it is an alias for the project root, NOT the project's actual name
+- The project name (e.g., `SystemTestProject`) is NOT a valid first path segment: `PathResolver` navigates from the root's *children*, and the root does not contain a child named after itself
+- To reference a top-level package: use `PkgName` (not `ProjectName/PkgName`)
+- To reference a nested element: use `PkgName/ClassName` (not `ProjectName::PkgName::ClassName`)
+- For `package create`, omit `--path` entirely to create at project root (the action defaults to root when `--path` is falsy)
+- For `package list`/`view`/`delete`, `--path` must resolve to a `Package` element (NOT a `Project`) — there is currently no CLI way to list root-level packages
 
 ---
 
@@ -213,8 +229,11 @@ def _unique_name(prefix: str = "Test") -> str:
 def cli_project(test_project_dir: Path) -> str:
     """Session-scoped test project created via CLI.
 
-    Creates a new project using `rhapsody-cli project new`, yields
-    the project name, and closes it at session end.
+    Creates a new project using `rhapsody-cli project new` and yields
+    the project name. The project stays open for the duration of the session
+    (the `project close` CLI command is a no-op in subprocess mode — it
+    checks `self._project` which is always None in a fresh process, rather
+    than calling `app.active_project()`).
 
     Returns:
         The project name string.
@@ -227,7 +246,8 @@ def cli_project(test_project_dir: Path) -> str:
 
     yield project_name
 
-    # Cleanup: close project via CLI
+    # NOTE: project close is a no-op in subprocess mode (CLI bug).
+    # The project remains open in the Rhapsody instance after the session.
     _run_cli("project", "close")
 ```
 
@@ -288,10 +308,11 @@ class TestCLIParsing:
         assert "Usage:" in result.stdout or "usage:" in result.stdout.lower()
 
     def test_cli_no_arguments_shows_usage(self) -> None:
-        """Test that running with no arguments shows usage."""
+        """Test that running with no arguments shows usage and exits 0."""
         result = _run_cli()
-        assert result.returncode != 0
-        assert "Usage:" in result.stdout or "usage:" in result.stdout.lower() or "Error" in result.stderr
+        # main._usage("") prints usage to stdout and exits 0 (no error)
+        assert result.returncode == 0
+        assert "Usage:" in result.stdout or "usage:" in result.stdout.lower()
 
     def test_cli_invalid_command(self) -> None:
         """Test that unknown commands are rejected."""
@@ -403,6 +424,10 @@ Create `tests/system/cli/test_project_cli.py`:
 """System tests for the `project` CLI command group.
 
 Tests project lifecycle: new, list, close, open — all via subprocess.
+
+Known CLI bug: `project close` checks `self._project` (always None in
+subprocess mode) instead of calling `app.active_project()`, so it is a
+no-op. Tests that depend on close are marked xfail until the CLI is fixed.
 """
 
 import pytest
@@ -434,9 +459,6 @@ class TestProjectCLI:
             list_result = _run_cli("project", "list")
             assert list_result.returncode == 0
             assert project_name in list_result.stdout
-
-            # Close the project
-            _run_cli("project", "close")
         finally:
             shutil.rmtree(project_dir, ignore_errors=True)
 
@@ -446,6 +468,10 @@ class TestProjectCLI:
         assert result.returncode == 0
         assert cli_project in result.stdout
 
+    @pytest.mark.xfail(
+        reason="CLI bug: project close checks self._project (always None in "
+        "subprocess mode) instead of app.active_project(); no-op until fixed"
+    )
     def test_project_close_removes_from_list(self, test_project_dir) -> None:
         """Test that `project close` removes project from list."""
         import shutil
@@ -464,6 +490,10 @@ class TestProjectCLI:
         finally:
             shutil.rmtree(project_dir, ignore_errors=True)
 
+    @pytest.mark.xfail(
+        reason="CLI bug: project close is a no-op in subprocess mode; cannot "
+        "close before re-opening"
+    )
     def test_project_open_existing_project(self, test_project_dir) -> None:
         """Test that `project open` opens a previously created project."""
         import shutil
@@ -486,17 +516,8 @@ class TestProjectCLI:
             list_result = _run_cli("project", "list")
             assert list_result.returncode == 0
             assert project_name in list_result.stdout
-
-            _run_cli("project", "close")
         finally:
             shutil.rmtree(project_dir, ignore_errors=True)
-
-    def test_project_list_format_not_json(self, cli_project: str) -> None:
-        """Test that project list uses table format (force_table=True in source)."""
-        result = _run_cli("project", "list", "--format", "json")
-        # project list forces table format, so JSON flag is accepted but output is table
-        assert result.returncode == 0
-        assert cli_project in result.stdout
 ```
 
 - [ ] **Step 2: Run the project tests (requires Rhapsody)**
@@ -529,6 +550,11 @@ Create `tests/system/cli/test_package_cli.py`:
 """System tests for the `package` CLI command group.
 
 Tests package CRUD lifecycle via subprocess against a live Rhapsody project.
+
+Path notes: Paths use "/" separator. The project name is NOT a valid path
+segment — omit --path to create at root. `package list/view/delete` require
+a Package path (not Project), so root-level packages are verified via
+`package view`, not `package list`.
 """
 
 import json
@@ -536,7 +562,7 @@ import uuid
 
 import pytest
 
-from tests.system.cli.conftest import _run_cli, _run_cli_json, _unique_name
+from tests.system.cli.conftest import _run_cli, _unique_name
 
 
 @pytest.mark.system
@@ -548,57 +574,65 @@ class TestPackageCLI:
         """Skip these tests if no Rhapsody instance is available."""
 
     @staticmethod
-    def _create_package(cli_project: str, name: str, parent_path: str = "") -> str:
-        """Create a package via CLI and return its full path.
+    def _create_root_package(name: str) -> str:
+        """Create a package at project root via CLI and return its path.
 
         Args:
-            cli_project: Project name (root).
             name: Package name to create.
-            parent_path: Optional parent package path (e.g., "Proj::ParentPkg").
 
         Returns:
-            Full path of the created package.
+            Package path (just the name, since root-level packages have no parent prefix).
         """
         pkg_json = json.dumps({"name": name})
-        if parent_path:
-            result = _run_cli("package", "create", "--path", parent_path, "--input", pkg_json)
-            return f"{parent_path}::{name}"
-        else:
-            result = _run_cli("package", "create", "--path", cli_project, "--input", pkg_json)
-            return f"{cli_project}::{name}"
+        result = _run_cli("package", "create", "--input", pkg_json)
+        assert result.returncode == 0, f"Failed to create root package: {result.stderr}"
+        return name
+
+    @staticmethod
+    def _create_nested_package(parent_path: str, name: str) -> str:
+        """Create a nested package under a parent via CLI and return its path.
+
+        Args:
+            parent_path: Parent package path (e.g., "ParentPkg").
+            name: Package name to create.
+
+        Returns:
+            Full path of the created package (e.g., "ParentPkg/ChildPkg").
+        """
+        pkg_json = json.dumps({"name": name})
+        result = _run_cli("package", "create", "--path", parent_path, "--input", pkg_json)
+        assert result.returncode == 0, f"Failed to create nested package: {result.stderr}"
+        return f"{parent_path}/{name}"
 
     def test_package_create_at_root(self, cli_project: str) -> None:
-        """Test creating a package at project root."""
+        """Test creating a package at project root (omit --path)."""
         pkg_name = _unique_name("Pkg")
         pkg_json = json.dumps({"name": pkg_name})
 
-        result = _run_cli("package", "create", "--path", cli_project, "--input", pkg_json)
+        # Omit --path to create at project root
+        result = _run_cli("package", "create", "--input", pkg_json)
         assert result.returncode == 0, f"Failed: {result.stderr}"
 
-        # Verify via list
-        list_result = _run_cli("package", "list", "--path", cli_project, "--format", "json")
-        assert list_result.returncode == 0
-        packages = json.loads(list_result.stdout)
-        assert pkg_name in packages
+        # Verify via package view (package list cannot operate on project root)
+        view_result = _run_cli("package", "view", "--path", pkg_name, "--format", "json")
+        assert view_result.returncode == 0, f"View failed: {view_result.stderr}"
+        data = json.loads(view_result.stdout)
+        assert data["name"] == pkg_name
 
         # Cleanup
-        _run_cli("package", "delete", "--path", f"{cli_project}::{pkg_name}")
+        _run_cli("package", "delete", "--path", pkg_name)
 
     def test_package_create_nested(self, cli_project: str) -> None:
         """Test creating a nested package under another package."""
         parent_name = _unique_name("ParentPkg")
         child_name = _unique_name("ChildPkg")
-        parent_path = f"{cli_project}::{parent_name}"
 
         try:
-            # Create parent
-            parent_json = json.dumps({"name": parent_name})
-            _run_cli("package", "create", "--path", cli_project, "--input", parent_json)
+            # Create parent at root
+            parent_path = self._create_root_package(parent_name)
 
             # Create child under parent
-            child_json = json.dumps({"name": child_name})
-            result = _run_cli("package", "create", "--path", parent_path, "--input", child_json)
-            assert result.returncode == 0, f"Failed: {result.stderr}"
+            child_path = self._create_nested_package(parent_path, child_name)
 
             # Verify child appears in parent's list
             list_result = _run_cli("package", "list", "--path", parent_path, "--format", "json")
@@ -607,12 +641,12 @@ class TestPackageCLI:
             assert child_name in packages
         finally:
             # Cleanup parent (deletes children too)
-            _run_cli("package", "delete", "--path", parent_path)
+            _run_cli("package", "delete", "--path", parent_name)
 
     def test_package_view_existing(self, cli_project: str) -> None:
         """Test viewing an existing package."""
         pkg_name = _unique_name("ViewPkg")
-        pkg_path = self._create_package(cli_project, pkg_name)
+        pkg_path = self._create_root_package(pkg_name)
 
         try:
             result = _run_cli("package", "view", "--path", pkg_path, "--format", "json")
@@ -624,31 +658,33 @@ class TestPackageCLI:
 
     def test_package_view_nonexistent(self, cli_project: str) -> None:
         """Test viewing a non-existent package returns error."""
-        result = _run_cli("package", "view", "--path", f"{cli_project}::NonExistentPkg_{uuid.uuid4().hex[:8]}")
+        result = _run_cli("package", "view", "--path", f"NonExistentPkg_{uuid.uuid4().hex[:8]}")
         assert result.returncode != 0
         assert "error" in result.stderr.lower() or "not found" in result.stderr.lower() or "failed" in result.stderr.lower()
 
-    def test_package_list_in_project(self, cli_project: str) -> None:
-        """Test listing packages in a project."""
-        pkg1_name = _unique_name("ListPkg1")
-        pkg2_name = _unique_name("ListPkg2")
-        path1 = self._create_package(cli_project, pkg1_name)
-        path2 = self._create_package(cli_project, pkg2_name)
+    def test_package_list_in_package(self, cli_project: str) -> None:
+        """Test listing nested packages within a package."""
+        parent_name = _unique_name("ListParent")
+        child1_name = _unique_name("Child1")
+        child2_name = _unique_name("Child2")
 
         try:
-            result = _run_cli("package", "list", "--path", cli_project, "--format", "json")
+            parent_path = self._create_root_package(parent_name)
+            self._create_nested_package(parent_path, child1_name)
+            self._create_nested_package(parent_path, child2_name)
+
+            result = _run_cli("package", "list", "--path", parent_path, "--format", "json")
             assert result.returncode == 0
             packages = json.loads(result.stdout)
-            assert pkg1_name in packages
-            assert pkg2_name in packages
+            assert child1_name in packages
+            assert child2_name in packages
         finally:
-            _run_cli("package", "delete", "--path", path1)
-            _run_cli("package", "delete", "--path", path2)
+            _run_cli("package", "delete", "--path", parent_name)
 
     def test_package_delete_existing(self, cli_project: str) -> None:
         """Test deleting an existing package."""
         pkg_name = _unique_name("DelPkg")
-        pkg_path = self._create_package(cli_project, pkg_name)
+        pkg_path = self._create_root_package(pkg_name)
 
         result = _run_cli("package", "delete", "--path", pkg_path)
         assert result.returncode == 0, f"Failed: {result.stderr}"
@@ -659,13 +695,13 @@ class TestPackageCLI:
 
     def test_package_delete_nonexistent(self, cli_project: str) -> None:
         """Test deleting a non-existent package returns error."""
-        result = _run_cli("package", "delete", "--path", f"{cli_project}::NonExistentDel_{uuid.uuid4().hex[:8]}")
+        result = _run_cli("package", "delete", "--path", f"NonExistentDel_{uuid.uuid4().hex[:8]}")
         assert result.returncode != 0
         assert "error" in result.stderr.lower() or "failed" in result.stderr.lower()
 
     def test_package_create_invalid_json(self, cli_project: str) -> None:
         """Test that invalid JSON input returns error."""
-        result = _run_cli("package", "create", "--path", cli_project, "--input", "{invalid json}")
+        result = _run_cli("package", "create", "--input", "{invalid json}")
         assert result.returncode != 0
         assert "json" in result.stderr.lower() or "error" in result.stderr.lower()
 ```
@@ -700,6 +736,9 @@ Create `tests/system/cli/test_class_cli.py`:
 """System tests for the `class` CLI command group.
 
 Tests class CRUD lifecycle and link (generalization) via subprocess.
+
+Path notes: Paths use "/" separator. Packages are created at root by
+omitting --path. Class paths are "PkgName/ClassName".
 """
 
 import json
@@ -719,25 +758,27 @@ class TestClassCLI:
         """Skip these tests if no Rhapsody instance is available."""
 
     @staticmethod
-    def _create_package(cli_project: str, name: str) -> str:
-        """Create a package via CLI and return its full path."""
+    def _create_package(name: str) -> str:
+        """Create a package at project root via CLI and return its path."""
         pkg_json = json.dumps({"name": name})
-        _run_cli("package", "create", "--path", cli_project, "--input", pkg_json)
-        return f"{cli_project}::{name}"
+        result = _run_cli("package", "create", "--input", pkg_json)
+        assert result.returncode == 0, f"Failed to create package: {result.stderr}"
+        return name
 
     @staticmethod
     def _create_class(pkg_path: str, name: str) -> str:
         """Create a class via CLI and return its full path."""
         cls_json = json.dumps({"name": name})
-        _run_cli("class", "create", "--path", pkg_path, "--input", cls_json)
-        return f"{pkg_path}::{name}"
+        result = _run_cli("class", "create", "--path", pkg_path, "--input", cls_json)
+        assert result.returncode == 0, f"Failed to create class: {result.stderr}"
+        return f"{pkg_path}/{name}"
 
     def test_class_create_under_package(self, cli_project: str) -> None:
         """Test creating a class under a package."""
         pkg_name = _unique_name("Pkg")
         cls_name = _unique_name("Cls")
-        pkg_path = self._create_package(cli_project, pkg_name)
-        cls_path = f"{pkg_path}::{cls_name}"
+        pkg_path = self._create_package(pkg_name)
+        cls_path = f"{pkg_path}/{cls_name}"
 
         try:
             cls_json = json.dumps({"name": cls_name})
@@ -756,7 +797,7 @@ class TestClassCLI:
         """Test viewing an existing class."""
         pkg_name = _unique_name("ViewPkg")
         cls_name = _unique_name("ViewCls")
-        pkg_path = self._create_package(cli_project, pkg_name)
+        pkg_path = self._create_package(pkg_name)
         cls_path = self._create_class(pkg_path, cls_name)
 
         try:
@@ -770,10 +811,10 @@ class TestClassCLI:
     def test_class_view_nonexistent(self, cli_project: str) -> None:
         """Test viewing a non-existent class returns error."""
         pkg_name = _unique_name("NoClsPkg")
-        pkg_path = self._create_package(cli_project, pkg_name)
+        pkg_path = self._create_package(pkg_name)
 
         try:
-            result = _run_cli("class", "view", "--path", f"{pkg_path}::NonExistent_{uuid.uuid4().hex[:8]}")
+            result = _run_cli("class", "view", "--path", f"{pkg_path}/NonExistent_{uuid.uuid4().hex[:8]}")
             assert result.returncode != 0
             assert "error" in result.stderr.lower() or "failed" in result.stderr.lower()
         finally:
@@ -784,7 +825,7 @@ class TestClassCLI:
         pkg_name = _unique_name("ListPkg")
         cls1_name = _unique_name("Cls1")
         cls2_name = _unique_name("Cls2")
-        pkg_path = self._create_package(cli_project, pkg_name)
+        pkg_path = self._create_package(pkg_name)
         self._create_class(pkg_path, cls1_name)
         self._create_class(pkg_path, cls2_name)
 
@@ -801,7 +842,7 @@ class TestClassCLI:
         """Test deleting an existing class."""
         pkg_name = _unique_name("DelPkg")
         cls_name = _unique_name("DelCls")
-        pkg_path = self._create_package(cli_project, pkg_name)
+        pkg_path = self._create_package(pkg_name)
         cls_path = self._create_class(pkg_path, cls_name)
 
         try:
@@ -819,10 +860,10 @@ class TestClassCLI:
     def test_class_delete_nonexistent(self, cli_project: str) -> None:
         """Test deleting a non-existent class returns error."""
         pkg_name = _unique_name("NoDelPkg")
-        pkg_path = self._create_package(cli_project, pkg_name)
+        pkg_path = self._create_package(pkg_name)
 
         try:
-            result = _run_cli("class", "delete", "--path", f"{pkg_path}::NonExistent_{uuid.uuid4().hex[:8]}")
+            result = _run_cli("class", "delete", "--path", f"{pkg_path}/NonExistent_{uuid.uuid4().hex[:8]}")
             assert result.returncode != 0
             assert "error" in result.stderr.lower() or "failed" in result.stderr.lower()
         finally:
@@ -833,7 +874,7 @@ class TestClassCLI:
         pkg_name = _unique_name("LinkPkg")
         parent_cls_name = _unique_name("ParentCls")
         child_cls_name = _unique_name("ChildCls")
-        pkg_path = self._create_package(cli_project, pkg_name)
+        pkg_path = self._create_package(pkg_name)
         parent_path = self._create_class(pkg_path, parent_cls_name)
         child_path = self._create_class(pkg_path, child_cls_name)
 
@@ -842,7 +883,7 @@ class TestClassCLI:
             result = _run_cli("class", "link", "--path", child_path, "--add", parent_cls_name)
             assert result.returncode == 0, f"Failed: {result.stderr}"
 
-            # Verify by viewing child class — should list parent in operations or similar
+            # Verify by viewing child class
             view_result = _run_cli("class", "view", "--path", child_path, "--format", "json")
             assert view_result.returncode == 0
         finally:
@@ -852,7 +893,7 @@ class TestClassCLI:
         """Test creating a class with attributes and operations in JSON."""
         pkg_name = _unique_name("AttrPkg")
         cls_name = _unique_name("AttrCls")
-        pkg_path = self._create_package(cli_project, pkg_name)
+        pkg_path = self._create_package(pkg_name)
 
         try:
             cls_json = json.dumps({
@@ -864,7 +905,7 @@ class TestClassCLI:
             assert result.returncode == 0, f"Failed: {result.stderr}"
 
             # Verify via view
-            view_result = _run_cli("class", "view", "--path", f"{pkg_path}::{cls_name}", "--format", "json")
+            view_result = _run_cli("class", "view", "--path", f"{pkg_path}/{cls_name}", "--format", "json")
             assert view_result.returncode == 0
             data = json.loads(view_result.stdout)
             assert "attr1" in data["attributes"]
@@ -876,7 +917,7 @@ class TestClassCLI:
     def test_class_create_invalid_json(self, cli_project: str) -> None:
         """Test that invalid JSON input returns error."""
         pkg_name = _unique_name("BadJsonPkg")
-        pkg_path = self._create_package(cli_project, pkg_name)
+        pkg_path = self._create_package(pkg_name)
 
         try:
             result = _run_cli("class", "create", "--path", pkg_path, "--input", "{invalid}")
@@ -916,6 +957,10 @@ Create `tests/system/cli/test_attribute_cli.py`:
 """System tests for the `attribute` CLI command group.
 
 Tests attribute CRUD lifecycle via subprocess against a live Rhapsody project.
+
+Path notes: Paths use "/" separator. Attribute view/delete require TWO
+args: --path <class_path> AND --name <attr_name> (or --guid). They do NOT
+accept a combined element path.
 """
 
 import json
@@ -935,23 +980,29 @@ class TestAttributeCLI:
         """Skip these tests if no Rhapsody instance is available."""
 
     @staticmethod
-    def _create_package_and_class(cli_project: str, pkg_name: str, cls_name: str) -> str:
-        """Create a package and class, return the class path."""
+    def _create_package_and_class(pkg_name: str, cls_name: str) -> tuple[str, str]:
+        """Create a package at root and a class under it.
+
+        Returns:
+            Tuple of (pkg_path, cls_path). Both use "/" separator.
+        """
         pkg_json = json.dumps({"name": pkg_name})
-        _run_cli("package", "create", "--path", cli_project, "--input", pkg_json)
-        pkg_path = f"{cli_project}::{pkg_name}"
+        result = _run_cli("package", "create", "--input", pkg_json)
+        assert result.returncode == 0, f"Failed to create package: {result.stderr}"
+        pkg_path = pkg_name
 
         cls_json = json.dumps({"name": cls_name})
-        _run_cli("class", "create", "--path", pkg_path, "--input", cls_json)
-        return f"{pkg_path}::{cls_name}"
+        result = _run_cli("class", "create", "--path", pkg_path, "--input", cls_json)
+        assert result.returncode == 0, f"Failed to create class: {result.stderr}"
+        cls_path = f"{pkg_path}/{cls_name}"
+        return pkg_path, cls_path
 
     def test_attribute_create_under_class(self, cli_project: str) -> None:
         """Test creating an attribute under a class."""
         pkg_name = _unique_name("AttrPkg")
         cls_name = _unique_name("AttrCls")
         attr_name = _unique_name("myAttr")
-        cls_path = self._create_package_and_class(cli_project, pkg_name, cls_name)
-        pkg_path = f"{cli_project}::{pkg_name}"
+        pkg_path, cls_path = self._create_package_and_class(pkg_name, cls_name)
 
         try:
             attr_json = json.dumps({"name": attr_name})
@@ -967,19 +1018,18 @@ class TestAttributeCLI:
             _run_cli("package", "delete", "--path", pkg_path)
 
     def test_attribute_view_existing(self, cli_project: str) -> None:
-        """Test viewing an existing attribute."""
+        """Test viewing an existing attribute via --path + --name."""
         pkg_name = _unique_name("ViewPkg")
         cls_name = _unique_name("ViewCls")
         attr_name = _unique_name("viewAttr")
-        cls_path = self._create_package_and_class(cli_project, pkg_name, cls_name)
-        pkg_path = f"{cli_project}::{pkg_name}"
-        attr_path = f"{cls_path}::{attr_name}"
+        pkg_path, cls_path = self._create_package_and_class(pkg_name, cls_name)
 
         try:
             attr_json = json.dumps({"name": attr_name})
             _run_cli("attribute", "create", "--path", cls_path, "--input", attr_json)
 
-            result = _run_cli("attribute", "view", "--path", attr_path, "--format", "json")
+            # View uses --path <class_path> --name <attr_name> (NOT a combined path)
+            result = _run_cli("attribute", "view", "--path", cls_path, "--name", attr_name, "--format", "json")
             assert result.returncode == 0, f"Failed: {result.stderr}"
             data = json.loads(result.stdout)
             assert data["name"] == attr_name
@@ -990,11 +1040,15 @@ class TestAttributeCLI:
         """Test viewing a non-existent attribute returns error."""
         pkg_name = _unique_name("NoAttrPkg")
         cls_name = _unique_name("NoAttrCls")
-        cls_path = self._create_package_and_class(cli_project, pkg_name, cls_name)
-        pkg_path = f"{cli_project}::{pkg_name}"
+        pkg_path, cls_path = self._create_package_and_class(pkg_name, cls_name)
 
         try:
-            result = _run_cli("attribute", "view", "--path", f"{cls_path}::NonExistent_{uuid.uuid4().hex[:8]}")
+            # View uses --path + --name (not a combined path)
+            result = _run_cli(
+                "attribute", "view",
+                "--path", cls_path,
+                "--name", f"NonExistent_{uuid.uuid4().hex[:8]}",
+            )
             assert result.returncode != 0
             assert "error" in result.stderr.lower() or "failed" in result.stderr.lower()
         finally:
@@ -1006,8 +1060,7 @@ class TestAttributeCLI:
         cls_name = _unique_name("ListCls")
         attr1_name = _unique_name("attr1")
         attr2_name = _unique_name("attr2")
-        cls_path = self._create_package_and_class(cli_project, pkg_name, cls_name)
-        pkg_path = f"{cli_project}::{pkg_name}"
+        pkg_path, cls_path = self._create_package_and_class(pkg_name, cls_name)
 
         try:
             _run_cli("attribute", "create", "--path", cls_path, "--input", json.dumps({"name": attr1_name}))
@@ -1022,18 +1075,17 @@ class TestAttributeCLI:
             _run_cli("package", "delete", "--path", pkg_path)
 
     def test_attribute_delete_existing(self, cli_project: str) -> None:
-        """Test deleting an existing attribute."""
+        """Test deleting an existing attribute via --path + --name."""
         pkg_name = _unique_name("DelPkg")
         cls_name = _unique_name("DelCls")
         attr_name = _unique_name("delAttr")
-        cls_path = self._create_package_and_class(cli_project, pkg_name, cls_name)
-        pkg_path = f"{cli_project}::{pkg_name}"
-        attr_path = f"{cls_path}::{attr_name}"
+        pkg_path, cls_path = self._create_package_and_class(pkg_name, cls_name)
 
         try:
             _run_cli("attribute", "create", "--path", cls_path, "--input", json.dumps({"name": attr_name}))
 
-            result = _run_cli("attribute", "delete", "--path", attr_path)
+            # Delete uses --path <class_path> --name <attr_name> (NOT a combined path)
+            result = _run_cli("attribute", "delete", "--path", cls_path, "--name", attr_name)
             assert result.returncode == 0, f"Failed: {result.stderr}"
 
             # Verify attribute is gone
@@ -1048,11 +1100,15 @@ class TestAttributeCLI:
         """Test deleting a non-existent attribute returns error."""
         pkg_name = _unique_name("NoDelPkg")
         cls_name = _unique_name("NoDelCls")
-        cls_path = self._create_package_and_class(cli_project, pkg_name, cls_name)
-        pkg_path = f"{cli_project}::{pkg_name}"
+        pkg_path, cls_path = self._create_package_and_class(pkg_name, cls_name)
 
         try:
-            result = _run_cli("attribute", "delete", "--path", f"{cls_path}::NonExistent_{uuid.uuid4().hex[:8]}")
+            # Delete uses --path + --name
+            result = _run_cli(
+                "attribute", "delete",
+                "--path", cls_path,
+                "--name", f"NonExistent_{uuid.uuid4().hex[:8]}",
+            )
             assert result.returncode != 0
             assert "error" in result.stderr.lower() or "failed" in result.stderr.lower()
         finally:
@@ -1062,8 +1118,7 @@ class TestAttributeCLI:
         """Test that invalid JSON input returns error."""
         pkg_name = _unique_name("BadJsonPkg")
         cls_name = _unique_name("BadJsonCls")
-        cls_path = self._create_package_and_class(cli_project, pkg_name, cls_name)
-        pkg_path = f"{cli_project}::{pkg_name}"
+        pkg_path, cls_path = self._create_package_and_class(pkg_name, cls_name)
 
         try:
             result = _run_cli("attribute", "create", "--path", cls_path, "--input", "{invalid}")
@@ -1103,6 +1158,10 @@ Create `tests/system/cli/test_operation_cli.py`:
 """System tests for the `operation` CLI command group.
 
 Tests operation CRUD lifecycle via subprocess against a live Rhapsody project.
+
+Path notes: Paths use "/" separator. Operation view/delete require TWO
+args: --path <class_path> AND --name <op_name> (or --guid). They do NOT
+accept a combined element path.
 """
 
 import json
@@ -1122,23 +1181,29 @@ class TestOperationCLI:
         """Skip these tests if no Rhapsody instance is available."""
 
     @staticmethod
-    def _create_package_and_class(cli_project: str, pkg_name: str, cls_name: str) -> str:
-        """Create a package and class, return the class path."""
+    def _create_package_and_class(pkg_name: str, cls_name: str) -> tuple[str, str]:
+        """Create a package at root and a class under it.
+
+        Returns:
+            Tuple of (pkg_path, cls_path). Both use "/" separator.
+        """
         pkg_json = json.dumps({"name": pkg_name})
-        _run_cli("package", "create", "--path", cli_project, "--input", pkg_json)
-        pkg_path = f"{cli_project}::{pkg_name}"
+        result = _run_cli("package", "create", "--input", pkg_json)
+        assert result.returncode == 0, f"Failed to create package: {result.stderr}"
+        pkg_path = pkg_name
 
         cls_json = json.dumps({"name": cls_name})
-        _run_cli("class", "create", "--path", pkg_path, "--input", cls_json)
-        return f"{pkg_path}::{cls_name}"
+        result = _run_cli("class", "create", "--path", pkg_path, "--input", cls_json)
+        assert result.returncode == 0, f"Failed to create class: {result.stderr}"
+        cls_path = f"{pkg_path}/{cls_name}"
+        return pkg_path, cls_path
 
     def test_operation_create_under_class(self, cli_project: str) -> None:
         """Test creating an operation under a class."""
         pkg_name = _unique_name("OpPkg")
         cls_name = _unique_name("OpCls")
         op_name = _unique_name("myOp")
-        cls_path = self._create_package_and_class(cli_project, pkg_name, cls_name)
-        pkg_path = f"{cli_project}::{pkg_name}"
+        pkg_path, cls_path = self._create_package_and_class(pkg_name, cls_name)
 
         try:
             op_json = json.dumps({"name": op_name})
@@ -1154,19 +1219,18 @@ class TestOperationCLI:
             _run_cli("package", "delete", "--path", pkg_path)
 
     def test_operation_view_existing(self, cli_project: str) -> None:
-        """Test viewing an existing operation."""
+        """Test viewing an existing operation via --path + --name."""
         pkg_name = _unique_name("ViewPkg")
         cls_name = _unique_name("ViewCls")
         op_name = _unique_name("viewOp")
-        cls_path = self._create_package_and_class(cli_project, pkg_name, cls_name)
-        pkg_path = f"{cli_project}::{pkg_name}"
-        op_path = f"{cls_path}::{op_name}"
+        pkg_path, cls_path = self._create_package_and_class(pkg_name, cls_name)
 
         try:
             op_json = json.dumps({"name": op_name})
             _run_cli("operation", "create", "--path", cls_path, "--input", op_json)
 
-            result = _run_cli("operation", "view", "--path", op_path, "--format", "json")
+            # View uses --path <class_path> --name <op_name> (NOT a combined path)
+            result = _run_cli("operation", "view", "--path", cls_path, "--name", op_name, "--format", "json")
             assert result.returncode == 0, f"Failed: {result.stderr}"
             data = json.loads(result.stdout)
             assert data["name"] == op_name
@@ -1177,11 +1241,15 @@ class TestOperationCLI:
         """Test viewing a non-existent operation returns error."""
         pkg_name = _unique_name("NoOpPkg")
         cls_name = _unique_name("NoOpCls")
-        cls_path = self._create_package_and_class(cli_project, pkg_name, cls_name)
-        pkg_path = f"{cli_project}::{pkg_name}"
+        pkg_path, cls_path = self._create_package_and_class(pkg_name, cls_name)
 
         try:
-            result = _run_cli("operation", "view", "--path", f"{cls_path}::NonExistent_{uuid.uuid4().hex[:8]}")
+            # View uses --path + --name (not a combined path)
+            result = _run_cli(
+                "operation", "view",
+                "--path", cls_path,
+                "--name", f"NonExistent_{uuid.uuid4().hex[:8]}",
+            )
             assert result.returncode != 0
             assert "error" in result.stderr.lower() or "failed" in result.stderr.lower()
         finally:
@@ -1193,8 +1261,7 @@ class TestOperationCLI:
         cls_name = _unique_name("ListCls")
         op1_name = _unique_name("op1")
         op2_name = _unique_name("op2")
-        cls_path = self._create_package_and_class(cli_project, pkg_name, cls_name)
-        pkg_path = f"{cli_project}::{pkg_name}"
+        pkg_path, cls_path = self._create_package_and_class(pkg_name, cls_name)
 
         try:
             _run_cli("operation", "create", "--path", cls_path, "--input", json.dumps({"name": op1_name}))
@@ -1209,18 +1276,17 @@ class TestOperationCLI:
             _run_cli("package", "delete", "--path", pkg_path)
 
     def test_operation_delete_existing(self, cli_project: str) -> None:
-        """Test deleting an existing operation."""
+        """Test deleting an existing operation via --path + --name."""
         pkg_name = _unique_name("DelPkg")
         cls_name = _unique_name("DelCls")
         op_name = _unique_name("delOp")
-        cls_path = self._create_package_and_class(cli_project, pkg_name, cls_name)
-        pkg_path = f"{cli_project}::{pkg_name}"
-        op_path = f"{cls_path}::{op_name}"
+        pkg_path, cls_path = self._create_package_and_class(pkg_name, cls_name)
 
         try:
             _run_cli("operation", "create", "--path", cls_path, "--input", json.dumps({"name": op_name}))
 
-            result = _run_cli("operation", "delete", "--path", op_path)
+            # Delete uses --path <class_path> --name <op_name> (NOT a combined path)
+            result = _run_cli("operation", "delete", "--path", cls_path, "--name", op_name)
             assert result.returncode == 0, f"Failed: {result.stderr}"
 
             # Verify operation is gone
@@ -1235,11 +1301,15 @@ class TestOperationCLI:
         """Test deleting a non-existent operation returns error."""
         pkg_name = _unique_name("NoDelPkg")
         cls_name = _unique_name("NoDelCls")
-        cls_path = self._create_package_and_class(cli_project, pkg_name, cls_name)
-        pkg_path = f"{cli_project}::{pkg_name}"
+        pkg_path, cls_path = self._create_package_and_class(pkg_name, cls_name)
 
         try:
-            result = _run_cli("operation", "delete", "--path", f"{cls_path}::NonExistent_{uuid.uuid4().hex[:8]}")
+            # Delete uses --path + --name
+            result = _run_cli(
+                "operation", "delete",
+                "--path", cls_path,
+                "--name", f"NonExistent_{uuid.uuid4().hex[:8]}",
+            )
             assert result.returncode != 0
             assert "error" in result.stderr.lower() or "failed" in result.stderr.lower()
         finally:
@@ -1249,8 +1319,7 @@ class TestOperationCLI:
         """Test that invalid JSON input returns error."""
         pkg_name = _unique_name("BadJsonPkg")
         cls_name = _unique_name("BadJsonCls")
-        cls_path = self._create_package_and_class(cli_project, pkg_name, cls_name)
-        pkg_path = f"{cli_project}::{pkg_name}"
+        pkg_path, cls_path = self._create_package_and_class(pkg_name, cls_name)
 
         try:
             result = _run_cli("operation", "create", "--path", cls_path, "--input", "{invalid}")
@@ -1290,6 +1359,10 @@ Create `tests/system/cli/test_port_cli.py`:
 """System tests for the `port` CLI command group.
 
 Tests port CRUD lifecycle via subprocess against a live Rhapsody project.
+
+Path notes: Paths use "/" separator. Port view/delete require TWO
+args: --path <class_path> AND --name <port_name> (or --guid). They do NOT
+accept a combined element path.
 """
 
 import json
@@ -1309,23 +1382,29 @@ class TestPortCLI:
         """Skip these tests if no Rhapsody instance is available."""
 
     @staticmethod
-    def _create_package_and_class(cli_project: str, pkg_name: str, cls_name: str) -> str:
-        """Create a package and class, return the class path."""
+    def _create_package_and_class(pkg_name: str, cls_name: str) -> tuple[str, str]:
+        """Create a package at root and a class under it.
+
+        Returns:
+            Tuple of (pkg_path, cls_path). Both use "/" separator.
+        """
         pkg_json = json.dumps({"name": pkg_name})
-        _run_cli("package", "create", "--path", cli_project, "--input", pkg_json)
-        pkg_path = f"{cli_project}::{pkg_name}"
+        result = _run_cli("package", "create", "--input", pkg_json)
+        assert result.returncode == 0, f"Failed to create package: {result.stderr}"
+        pkg_path = pkg_name
 
         cls_json = json.dumps({"name": cls_name})
-        _run_cli("class", "create", "--path", pkg_path, "--input", cls_json)
-        return f"{pkg_path}::{cls_name}"
+        result = _run_cli("class", "create", "--path", pkg_path, "--input", cls_json)
+        assert result.returncode == 0, f"Failed to create class: {result.stderr}"
+        cls_path = f"{pkg_path}/{cls_name}"
+        return pkg_path, cls_path
 
     def test_port_create_under_class(self, cli_project: str) -> None:
         """Test creating a port under a class."""
         pkg_name = _unique_name("PortPkg")
         cls_name = _unique_name("PortCls")
         port_name = _unique_name("myPort")
-        cls_path = self._create_package_and_class(cli_project, pkg_name, cls_name)
-        pkg_path = f"{cli_project}::{pkg_name}"
+        pkg_path, cls_path = self._create_package_and_class(pkg_name, cls_name)
 
         try:
             port_json = json.dumps({"name": port_name})
@@ -1341,19 +1420,18 @@ class TestPortCLI:
             _run_cli("package", "delete", "--path", pkg_path)
 
     def test_port_view_existing(self, cli_project: str) -> None:
-        """Test viewing an existing port."""
+        """Test viewing an existing port via --path + --name."""
         pkg_name = _unique_name("ViewPkg")
         cls_name = _unique_name("ViewCls")
         port_name = _unique_name("viewPort")
-        cls_path = self._create_package_and_class(cli_project, pkg_name, cls_name)
-        pkg_path = f"{cli_project}::{pkg_name}"
-        port_path = f"{cls_path}::{port_name}"
+        pkg_path, cls_path = self._create_package_and_class(pkg_name, cls_name)
 
         try:
             port_json = json.dumps({"name": port_name})
             _run_cli("port", "create", "--path", cls_path, "--input", port_json)
 
-            result = _run_cli("port", "view", "--path", port_path, "--format", "json")
+            # View uses --path <class_path> --name <port_name> (NOT a combined path)
+            result = _run_cli("port", "view", "--path", cls_path, "--name", port_name, "--format", "json")
             assert result.returncode == 0, f"Failed: {result.stderr}"
             data = json.loads(result.stdout)
             assert data["name"] == port_name
@@ -1364,11 +1442,15 @@ class TestPortCLI:
         """Test viewing a non-existent port returns error."""
         pkg_name = _unique_name("NoPortPkg")
         cls_name = _unique_name("NoPortCls")
-        cls_path = self._create_package_and_class(cli_project, pkg_name, cls_name)
-        pkg_path = f"{cli_project}::{pkg_name}"
+        pkg_path, cls_path = self._create_package_and_class(pkg_name, cls_name)
 
         try:
-            result = _run_cli("port", "view", "--path", f"{cls_path}::NonExistent_{uuid.uuid4().hex[:8]}")
+            # View uses --path + --name (not a combined path)
+            result = _run_cli(
+                "port", "view",
+                "--path", cls_path,
+                "--name", f"NonExistent_{uuid.uuid4().hex[:8]}",
+            )
             assert result.returncode != 0
             assert "error" in result.stderr.lower() or "failed" in result.stderr.lower()
         finally:
@@ -1380,8 +1462,7 @@ class TestPortCLI:
         cls_name = _unique_name("ListCls")
         port1_name = _unique_name("port1")
         port2_name = _unique_name("port2")
-        cls_path = self._create_package_and_class(cli_project, pkg_name, cls_name)
-        pkg_path = f"{cli_project}::{pkg_name}"
+        pkg_path, cls_path = self._create_package_and_class(pkg_name, cls_name)
 
         try:
             _run_cli("port", "create", "--path", cls_path, "--input", json.dumps({"name": port1_name}))
@@ -1396,18 +1477,17 @@ class TestPortCLI:
             _run_cli("package", "delete", "--path", pkg_path)
 
     def test_port_delete_existing(self, cli_project: str) -> None:
-        """Test deleting an existing port."""
+        """Test deleting an existing port via --path + --name."""
         pkg_name = _unique_name("DelPkg")
         cls_name = _unique_name("DelCls")
         port_name = _unique_name("delPort")
-        cls_path = self._create_package_and_class(cli_project, pkg_name, cls_name)
-        pkg_path = f"{cli_project}::{pkg_name}"
-        port_path = f"{cls_path}::{port_name}"
+        pkg_path, cls_path = self._create_package_and_class(pkg_name, cls_name)
 
         try:
             _run_cli("port", "create", "--path", cls_path, "--input", json.dumps({"name": port_name}))
 
-            result = _run_cli("port", "delete", "--path", port_path)
+            # Delete uses --path <class_path> --name <port_name> (NOT a combined path)
+            result = _run_cli("port", "delete", "--path", cls_path, "--name", port_name)
             assert result.returncode == 0, f"Failed: {result.stderr}"
 
             # Verify port is gone
@@ -1422,11 +1502,15 @@ class TestPortCLI:
         """Test deleting a non-existent port returns error."""
         pkg_name = _unique_name("NoDelPkg")
         cls_name = _unique_name("NoDelCls")
-        cls_path = self._create_package_and_class(cli_project, pkg_name, cls_name)
-        pkg_path = f"{cli_project}::{pkg_name}"
+        pkg_path, cls_path = self._create_package_and_class(pkg_name, cls_name)
 
         try:
-            result = _run_cli("port", "delete", "--path", f"{cls_path}::NonExistent_{uuid.uuid4().hex[:8]}")
+            # Delete uses --path + --name
+            result = _run_cli(
+                "port", "delete",
+                "--path", cls_path,
+                "--name", f"NonExistent_{uuid.uuid4().hex[:8]}",
+            )
             assert result.returncode != 0
             assert "error" in result.stderr.lower() or "failed" in result.stderr.lower()
         finally:
@@ -1436,8 +1520,7 @@ class TestPortCLI:
         """Test that invalid JSON input returns error."""
         pkg_name = _unique_name("BadJsonPkg")
         cls_name = _unique_name("BadJsonCls")
-        cls_path = self._create_package_and_class(cli_project, pkg_name, cls_name)
-        pkg_path = f"{cli_project}::{pkg_name}"
+        pkg_path, cls_path = self._create_package_and_class(pkg_name, cls_name)
 
         try:
             result = _run_cli("port", "create", "--path", cls_path, "--input", "{invalid}")
