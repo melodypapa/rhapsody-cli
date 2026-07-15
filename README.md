@@ -201,7 +201,7 @@ pytest && ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests
 
 ### Test Coverage
 
-- **936 unit tests** covering all wrapped methods and edge cases
+- **1519 unit tests** covering all wrapped methods and edge cases
 - **Mocked COM objects** (`tests/unit/models/fakes.py`) - no Rhapsody installation required
 - **Integration tests** for real COM automation verification
 - **Branch coverage** tracking with 80% minimum threshold

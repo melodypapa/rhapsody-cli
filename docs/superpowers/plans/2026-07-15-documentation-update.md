@@ -1,90 +1,121 @@
-.. rhapsody-cli documentation master file
+# Documentation Update Implementation Plan
 
-Welcome to rhapsody-cli's Documentation
-========================================
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-rhapsody-cli is a Pythonic wrapper around the IBM Rhapsody COM API, providing a complete Python interface to the Rhapsody modeling tool. It mirrors the Rhapsody Java API, enabling developers to programmatically interact with Rhapsody models and projects.
+**Goal:** Update README.md and docs/index.rst to reflect v0.2.0 changes including snake_case API, new CLI command structure, and current test count.
 
+**Architecture:** Documentation-only changes across two files. README.md needs test count update. docs/index.rst needs version, test count, API examples, CLI examples, and architecture diagram updates.
+
+**Tech Stack:** Markdown, reStructuredText, Sphinx documentation.
+
+## Global Constraints
+
+- All method names use snake_case (e.g., `get_name`, `add_class`, `get_packages`)
+- CLI command groups: `project`, `package`, `class`, `attribute`, `operation`, `port`
+- No `element` or `io` command groups (removed in v0.2.0)
+- Current test count: 1519 unit tests
+- Current version: 0.2.0
+- Changelog already updated in README.md
+
+---
+
+## File Structure
+
+| File | Changes |
+|------|---------|
+| `README.md` | Update test count from 936 to 1519 |
+| `docs/index.rst` | Update version, test count, API examples, CLI examples, architecture diagram |
+
+---
+
+## Task 1: Update README.md test count
+
+**Files:**
+- Modify: `README.md:175-177` (test count in Development section)
+- Modify: `README.md:204-207` (test count in Test Coverage section)
+
+- [ ] **Step 1: Update test count in Development section**
+
+In `README.md`, find line 176:
+```markdown
+# Run all unit tests (936 tests, no Rhapsody installation required)
+```
+
+Replace with:
+```markdown
+# Run all unit tests (1519 tests, no Rhapsody installation required)
+```
+
+- [ ] **Step 2: Update test count in Test Coverage section**
+
+In `README.md`, find line 204:
+```markdown
+- **936 unit tests** covering all wrapped methods and edge cases
+```
+
+Replace with:
+```markdown
+- **1519 unit tests** covering all wrapped methods and edge cases
+```
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add README.md
+git commit -m "docs: update test count from 936 to 1519"
+```
+
+---
+
+## Task 2: Update docs/index.rst version and test count
+
+**Files:**
+- Modify: `docs/index.rst:8` (version)
+- Modify: `docs/index.rst:49` (test count)
+
+- [ ] **Step 1: Update version**
+
+In `docs/index.rst`, find line 8:
+```rst
 **Current Version**: 0.1.0
-**Python Requirements**: >= 3.8
-**License**: MIT
-**Platform**: Windows (requires IBM Rhapsody installation)
+```
 
-.. image:: https://badge.fury.io/py/rhapsody-cli.svg
-   :target: https://badge.fury.io/py/rhapsody-cli
-   :alt: PyPI version
+Replace with:
+```rst
+**Current Version**: 0.2.0
+```
 
-.. image:: https://img.shields.io/badge/docs-latest-brightgreen.svg
-   :target: https://rhapsody-cli.readthedocs.io/en/latest/
-   :alt: Documentation Status
+- [ ] **Step 2: Update test count**
 
-.. contents:: Table of Contents
-   :depth: 2
-   :local:
-   :backlinks: none
+In `docs/index.rst`, find line 49:
+```rst
+* **Test-Driven**: Comprehensive test suite with 161+ tests
+```
 
-Overview
---------
-
-rhapsody-cli provides a comprehensive Python interface to the IBM Rhapsody UML/SysML modeling tool through its COM (Component Object Model) API. It enables developers to:
-
-* Programmatically create and modify Rhapsody models
-* Access model elements (classes, packages, diagrams, etc.)
-* Manage projects and resources
-* Automate modeling workflows
-* Build custom tools and integrations
-
-Key Features
-------------
-
-* **Complete API Wrapping**: Mirrors the Rhapsody Java API for familiar interface
-* **Element Management**: Create, read, update, and delete model elements (classes, attributes, operations, etc.)
-* **Project Control**: Open, close, and manage Rhapsody projects
-* **Package Organization**: Work with packages and nested model structures
-* **Diagram Support**: Access and manipulate diagrams
-* **Connection Modes**: Support for attaching to existing Rhapsody instances or launching new ones
-* **Error Handling**: Comprehensive error handling with meaningful error messages
-* **Type Annotations**: Full type hints for IDE support and static analysis
-* **CLI Tools**: Command-line interface for common tasks
+Replace with:
+```rst
 * **Test-Driven**: Comprehensive test suite with 1519 tests
+```
 
-Architecture
-------------
+- [ ] **Step 3: Commit**
 
-rhapsody-cli is organized in three layers:
+```bash
+git add docs/index.rst
+git commit -m "docs: update version to 0.2.0 and test count to 1519"
+```
 
-1. **Core Model Wrapping** (``rhapsody_cli.models``)
-   - Base class ``RPModelElement`` wraps all Rhapsody COM objects
-   - Element subclasses mirror the Rhapsody Java API
-   - Automatic wrapper registry for consistent object handling
+---
 
-2. **Application Entry Point** (``rhapsody_cli.application``)
-   - ``RhapsodyApplication`` manages connection to Rhapsody
-   - Supports three connection modes: attach, launch, and connect
+## Task 3: Update docs/index.rst API examples to snake_case
 
-3. **CLI Layer** (``rhapsody_cli.cli``)
-   - argparse-based command-line interface
-   - Command groups: project, element, io
-   - Multiple output formats: table, JSON, CSV
+**Files:**
+- Modify: `docs/index.rst:95-127` (Basic Usage section)
 
-Quick Start
------------
+- [ ] **Step 1: Update Basic Usage API examples**
 
-Installation
-~~~~~~~~~~~~
+In `docs/index.rst`, find lines 95-127. Replace the entire Basic Usage section with:
 
-Install rhapsody-cli using pip:
-
-.. code-block:: bash
-
-   pip install rhapsody-cli
-
-Or install with development dependencies:
-
-.. code-block:: bash
-
-   pip install -e ".[dev,cli]"
-
+```rst
 Basic Usage
 ~~~~~~~~~~~
 
@@ -125,7 +156,36 @@ Close the project:
 
    project.close()
    app.disconnect()
+```
 
+Key changes:
+- `openProject` → `open_project`
+- `getPackages` → `get_packages`
+- `findNestedPackageByName` → `find_nested_package_by_name`
+- `getClasses` → `get_classes`
+- `createClassElement` → `add_class`
+- `createAttribute` → `add_attribute`
+- `createOperation` → `add_operation`
+
+- [ ] **Step 2: Commit**
+
+```bash
+git add docs/index.rst
+git commit -m "docs: update API examples to snake_case naming"
+```
+
+---
+
+## Task 4: Update docs/index.rst CLI examples to new command structure
+
+**Files:**
+- Modify: `docs/index.rst:129-161` (Command-Line Usage section)
+
+- [ ] **Step 1: Update Command-Line Usage section**
+
+In `docs/index.rst`, find lines 129-161. Replace the entire Command-Line Usage section with:
+
+```rst
 Command-Line Usage
 ~~~~~~~~~~~~~~~~~~~
 
@@ -176,90 +236,32 @@ Attribute, Operation, and Port management:
    rhapsody-cli attribute list --path Sensors/TemperatureSensor
    rhapsody-cli attribute update --path Sensors/TemperatureSensor --name threshold '{"isStatic":true}'
    rhapsody-cli attribute delete --path Sensors/TemperatureSensor --name threshold
+```
 
-Documentation Structure
------------------------
+Key changes:
+- Removed `element query`, `element view` examples (deprecated)
+- Added `package`, `class`, `attribute`, `operation`, `port` command examples
+- Updated to match current CLI structure
 
-.. toctree::
-   :maxdepth: 2
-   :caption: User Guide:
+- [ ] **Step 2: Commit**
 
-   user_guide/installation
-   user_guide/quickstart
-   user_guide/connecting_to_rhapsody
-   user_guide/working_with_projects
-   user_guide/working_with_packages
-   user_guide/working_with_classes
-   user_guide/working_with_operations
-   user_guide/working_with_attributes
-   user_guide/working_with_ports
-   user_guide/working_with_elements
-   user_guide/cli_tools
+```bash
+git add docs/index.rst
+git commit -m "docs: update CLI examples to new command structure"
+```
 
-.. toctree::
-   :maxdepth: 2
-   :caption: API Reference:
+---
 
-   api/application
-   api/models
-   api/elements
-   api/exceptions
+## Task 5: Update docs/index.rst architecture diagram
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Examples:
+**Files:**
+- Modify: `docs/index.rst:246-283` (Project Structure section)
 
-   examples/basic_operations
-   examples/creating_models
-   examples/advanced_workflows
+- [ ] **Step 1: Update Project Structure diagram**
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Additional Information:
+In `docs/index.rst`, find lines 246-283. Replace the Project Structure section with:
 
-   contributing
-   license
-   CODE_GUIDELINES
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Requirements:
-
-   requirements/swr_app_requirements
-   requirements/swr_cli_requirements
-   requirements/swr_core_requirements
-   requirements/swr_exc_requirements
-   requirements/swr_pkg_requirements
-   requirements/swr_cls_requirements
-   requirements/swr_op_requirements
-   requirements/swr_attr_requirements
-   requirements/swr_port_requirements
-   requirements/swr_elem_requirements
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Test Specifications:
-   :glob:
-
-   tests/unit/*
-   tests/integration/*
-   tests/system/*
-   tests/acceptance/*
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Development:
-
-   traceability_matrix
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Design Specs & Plans:
-   :glob:
-
-   superpowers/specs/*
-   superpowers/plans/*
-
+```rst
 Project Structure
 -----------------
 
@@ -314,7 +316,35 @@ Project Structure
        ├── context.py                # RhapsodyContext (state management)
        ├── formatters.py             # OutputFormatter (table/JSON/CSV)
        └── logging_config.py         # CliLoggingConfigurator
+```
 
+Key changes:
+- `_core.py` → `core.py`
+- Added `application.py` in models/
+- Reorganized `elements/` subpackages to match current structure
+- Updated `commands/` to list new command files
+- Updated `actions/` to list new action files
+- Removed deprecated `element_command.py`, `element_action.py`
+
+- [ ] **Step 2: Commit**
+
+```bash
+git add docs/index.rst
+git commit -m "docs: update architecture diagram to reflect v0.2.0 structure"
+```
+
+---
+
+## Task 6: Update docs/index.rst Supported Element Types section
+
+**Files:**
+- Modify: `docs/index.rst:284-313` (Supported Element Types section)
+
+- [ ] **Step 1: Update Supported Element Types section**
+
+In `docs/index.rst`, find lines 284-313. Replace the Supported Element Types section with:
+
+```rst
 Supported Element Types
 -----------------------
 
@@ -337,35 +367,85 @@ The package currently wraps **50+ element types** including:
 **Support Elements**: CodeGenerator, SearchManager, Selection, ProgressBar, File, ControlledFile
 
 Plus **hundreds of generic methods** from `RPModelElement` available on all element types.
+```
 
-Platform Requirements
----------------------
+Key changes:
+- Added Activity Elements category
+- Added Statechart Elements category
+- Added Interaction Elements category
+- Added Support Elements category
+- Updated Classifier Elements to include Signal, Exception, Enumeration
 
-* **Operating System**: Windows (Rhapsody COM API is Windows-specific)
-* **Python**: 3.8 or higher
-* **IBM Rhapsody**: Must be installed on the system
-* **COM Dependencies**: pywin32 (automatically installed)
+- [ ] **Step 2: Commit**
 
-Contributing
-------------
+```bash
+git add docs/index.rst
+git commit -m "docs: update supported element types list"
+```
 
-Contributions are welcome! Please see :doc:`contributing` for guidelines on how to contribute to rhapsody-cli.
+---
 
-License
--------
+## Task 7: Verify Sphinx build
 
-rhapsody-cli is licensed under the MIT License. See :doc:`license` for details.
+- [ ] **Step 1: Build Sphinx documentation**
 
-Links
------
+Run:
+```bash
+cd docs
+.\make.bat html
+```
 
-* `GitHub Repository <https://github.com/melodypapa/rhapsody-cli>`_
-* `PyPI Package <https://pypi.org/project/rhapsody-cli/>`_
-* `IBM Rhapsody Official Website <https://www.ibm.com/products/rhapsody>`_
+Expected: Build succeeds with no warnings
 
-Indices and tables
-==================
+- [ ] **Step 2: Check for warnings**
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+If any warnings appear, fix them and rebuild.
+
+- [ ] **Step 3: Final commit (if any fixes needed)**
+
+```bash
+git add docs/
+git commit -m "docs: fix Sphinx build warnings"
+```
+
+---
+
+## Task 8: Final verification and push
+
+- [ ] **Step 1: Verify all changes are committed**
+
+Run:
+```bash
+git status
+git log --oneline -5
+```
+
+Expected: Working tree clean, 7-8 commits visible
+
+- [ ] **Step 2: Push to remote**
+
+```bash
+git push origin HEAD
+```
+
+Or create a PR if on a feature branch.
+
+---
+
+## Self-Review Checklist
+
+**Spec coverage:**
+- [x] README.md test count (936 → 1519) — Task 1
+- [x] docs/index.rst version (0.1.0 → 0.2.0) — Task 2
+- [x] docs/index.rst test count (161+ → 1519) — Task 2
+- [x] docs/index.rst API examples (camelCase → snake_case) — Task 3
+- [x] docs/index.rst CLI examples (element → package/class/etc.) — Task 4
+- [x] docs/index.rst architecture diagram (_core.py → core.py, new structure) — Task 5
+- [x] docs/index.rst supported elements list — Task 6
+- [x] Sphinx build verification — Task 7
+
+**Placeholder scan:** No placeholders found — all sections contain actual content.
+
+**Type consistency:**
+- All method names use snake_case throughout ✓
+- All CLI commands match current implementation ✓
