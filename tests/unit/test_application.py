@@ -369,3 +369,16 @@ def test_check_model_delegates_to_com() -> None:
     app.check_model()
 
     fake_app.checkModel.assert_called_once_with()
+
+
+def test_create_new_collection_returns_rpcollection() -> None:
+    from rhapsody_cli.models.core import RPCollection
+
+    fake_app = make_fake_element("Application")
+    fake_app.createNewCollection.return_value = make_fake_collection([])
+    app = RhapsodyApplication(fake_app)
+
+    result = app.create_new_collection()
+
+    fake_app.createNewCollection.assert_called_once_with()
+    assert isinstance(result, RPCollection)

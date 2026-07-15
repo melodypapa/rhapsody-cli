@@ -284,6 +284,24 @@ class RhapsodyApplication:
         """
         return str(com_utils.call_com(lambda: self._com.getOMROOT()))
 
+    def create_new_collection(self) -> RPCollection:
+        """Create a new empty ``IRPCollection`` for use with COM calls that require a pre-allocated collection.
+
+        Some Rhapsody COM methods (e.g. ``IRPDiagram.getPicturesWithImageMap``) populate a
+        caller-provided collection rather than returning one. Use this method to create
+        the empty collection, pass it to such methods, then read the results from it.
+
+        Returns:
+            RPCollection: A new, empty collection.
+
+        Raises:
+            RhapsodyRuntimeException: If the underlying COM call fails.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPApplication::createNewCollection()
+        """
+        return RPCollection(com_utils.call_com(lambda: self._com.createNewCollection()))
+
     def generate(self) -> None:
         """Generate code for the entire project.
 
