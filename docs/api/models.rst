@@ -68,6 +68,14 @@ Statechart Elements
    :undoc-members:
    :show-inheritance:
 
+Interaction Elements
+~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: rhapsody_cli.models.elements.interactions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Relation Elements
 ~~~~~~~~~~~~~~~~~
 
