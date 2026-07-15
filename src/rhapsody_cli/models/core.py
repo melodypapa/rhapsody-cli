@@ -114,11 +114,11 @@ class RPModelElement(AbstractRPModelElement):
     # [x] get_all_tags                      [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_annotations                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] get_association_classes           [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_binary_id                     [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_binary_id                     [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_constraints                  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_constraints_by_him             [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_controlled_files              [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_decoration_style              [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_decoration_style              [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_dependencies                 [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_description                  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_description_html              [x] impl  [x] docstring  [x] unit test  [x] integration test
@@ -131,12 +131,12 @@ class RPModelElement(AbstractRPModelElement):
     # [x] get_full_path_name_in               [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_guid                         [x] impl  [x] docstring  [x] unit test  [x] integration test   (already implemented)
     # [x] get_hyper_links                   [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_icon_file_name                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_interface_name                [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_is_external                   [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_is_of_meta_class                [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_is_show_display_name            [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_is_unresolved                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_icon_file_name                 [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] get_interface_name                [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] get_is_external                   [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] get_is_of_meta_class                [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] get_is_show_display_name            [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] get_is_unresolved                 [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_local_tags                    [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_main_diagram                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] get_meta_class                    [x] impl  [x] docstring  [x] unit test  [x] integration test   (already implemented)
@@ -147,7 +147,7 @@ class RPModelElement(AbstractRPModelElement):
     # [x] get_new_term_stereotype            [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_of_template                   [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_oslc_links                    [x] impl  [x] docstring  [x] unit test  [x] integration test  (NotImplementedError)
-    # [x] get_overlay_icon_file_name          [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_overlay_icon_file_name          [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_overridden_properties         [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_overridden_properties_by_pattern [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_owned_dependencies            [x] impl  [x] docstring  [x] unit test  [x] integration test
@@ -168,30 +168,30 @@ class RPModelElement(AbstractRPModelElement):
     # [x] get_tag                          [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_template_parameters           [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_ti                           [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_tool_tip_html                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_user_defined_meta_class         [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_tool_tip_html                  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] get_user_defined_meta_class         [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] has_nested_elements               [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] has_panel_widget                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] high_light_element                [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] is_a_template                     [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] is_description_rtf                [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] is_display_name_rtf                [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] is_modified                      [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] is_modified                      [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] is_remote                        [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] locate_in_browser                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] open_features_dialog              [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] remove_property                  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] remove_redefines                 [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] remove_stereotype                [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] set_decoration_style              [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] set_decoration_style              [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] set_description                  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] set_description_and_hyperlinks     [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] set_description_html              [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] set_description_rtf               [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] set_display_name                  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] set_display_name_rtf               [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] set_guid                         [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_is_show_display_name            [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] set_guid                         [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] set_is_show_display_name            [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] set_main_diagram                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] set_name                         [x] impl  [x] docstring  [x] unit test  [x] integration test   (already implemented)
     # [x] set_of_template                   [x] impl  [x] docstring  [x] unit test  [x] integration test

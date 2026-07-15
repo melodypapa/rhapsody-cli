@@ -1038,3 +1038,165 @@ class TestRPModelElementOslcRemoteIntegration:
             assert retrieved == handle_value
         finally:
             pkg.delete_from_project()
+
+
+@pytest.mark.integration
+class TestRPModelElementMetadataIntegration:
+    """Integration tests for RPModelElement metadata/icon/GUID methods."""
+
+    @staticmethod
+    def _unique(prefix: str = "Test") -> str:
+        return f"{prefix}_{uuid.uuid4().hex[:8]}"
+
+    @staticmethod
+    def _create_package(project: RPProject, name: str) -> RPPackage:
+        pkg = project.add_package(name)
+        assert pkg is not None
+        assert isinstance(pkg, RPPackage)
+        return pkg
+
+    def test_get_binary_id(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("BinIdPkg"))
+        try:
+            cls = pkg.add_class(self._unique("BinIdCls"))
+            binary_id = cls.get_binary_id()
+            assert isinstance(binary_id, bytes)
+            assert len(binary_id) > 0
+
+            guid = cls.get_guid()
+            assert isinstance(guid, str)
+            assert len(guid) > 0
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_interface_name(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("IntNamePkg"))
+        try:
+            cls = pkg.add_class(self._unique("IntNameCls"))
+            iface = cls.get_interface_name()
+            assert isinstance(iface, str)
+            assert iface == "IRPClass"
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_is_of_meta_class_class(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("IsOfPkg"))
+        try:
+            cls = pkg.add_class(self._unique("IsOfCls"))
+            result = cls.get_is_of_meta_class("Class")
+            assert result
+
+            not_result = cls.get_is_of_meta_class("Package")
+            assert not not_result
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_icon_file_name(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("IconPkg"))
+        try:
+            cls = pkg.add_class(self._unique("IconCls"))
+            icon = cls.get_icon_file_name()
+            assert isinstance(icon, str)
+            assert len(icon) > 0
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_overlay_icon_file_name(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("OverlayIconPkg"))
+        try:
+            cls = pkg.add_class(self._unique("OverlayIconCls"))
+            overlay = cls.get_overlay_icon_file_name()
+            assert isinstance(overlay, str)
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_decoration_style_roundtrip(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DecoPkg"))
+        try:
+            cls = pkg.add_class(self._unique("DecoCls"))
+            style = cls.get_decoration_style()
+            assert isinstance(style, str)
+
+            cls.set_decoration_style("None")
+            after = cls.get_decoration_style()
+            assert after == "None"
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_is_external(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("IsExtPkg"))
+        try:
+            cls = pkg.add_class(self._unique("IsExtCls"))
+            result = cls.get_is_external()
+            assert isinstance(result, int)
+            assert result == 0
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_is_unresolved(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("IsUnresPkg"))
+        try:
+            cls = pkg.add_class(self._unique("IsUnresCls"))
+            result = cls.get_is_unresolved()
+            assert isinstance(result, int)
+            assert result == 0
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_user_defined_meta_class(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("UdmcPkg"))
+        try:
+            cls = pkg.add_class(self._unique("UdmcCls"))
+            udmc = cls.get_user_defined_meta_class()
+            assert isinstance(udmc, str)
+            assert udmc == ""
+        finally:
+            pkg.delete_from_project()
+
+    def test_is_modified_after_set_name(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("ModPkg"))
+        try:
+            cls = pkg.add_class(self._unique("ModCls"))
+            cls.set_name(self._unique("Renamed"))
+            modified = cls.is_modified()
+            assert modified
+        finally:
+            pkg.delete_from_project()
+
+    def test_set_guid_and_get_guid(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("GuidPkg"))
+        try:
+            cls = pkg.add_class(self._unique("GuidCls"))
+            guid_hex = uuid.uuid4().hex.upper()
+            new_guid = "{" + guid_hex[:8] + "-" + guid_hex[8:12] + "-" + guid_hex[12:16] + "-" + guid_hex[16:20] + "-" + guid_hex[20:32] + "}"
+            cls.set_guid(new_guid)
+            retrieved = cls.get_guid()
+            assert isinstance(retrieved, str)
+            assert retrieved == new_guid
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_tool_tip_html(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("ToolTipPkg"))
+        try:
+            cls = pkg.add_class(self._unique("ToolTipCls"))
+            html = cls.get_tool_tip_html()
+            assert isinstance(html, str)
+            assert len(html) > 0
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_is_show_display_name_roundtrip(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("ShowDnPkg"))
+        try:
+            cls = pkg.add_class(self._unique("ShowDnCls"))
+            original = cls.get_is_show_display_name()
+            assert isinstance(original, int)
+
+            cls.set_is_show_display_name(0)
+            assert cls.get_is_show_display_name() == 0
+
+            cls.set_is_show_display_name(1)
+            assert cls.get_is_show_display_name() == 1
+        finally:
+            pkg.delete_from_project()
