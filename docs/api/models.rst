@@ -52,6 +52,14 @@ Diagram Elements
    :undoc-members:
    :show-inheritance:
 
+Activity Elements
+~~~~~~~~~~~~~~~~~
+
+.. automodule:: rhapsody_cli.models.elements.activity
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Relation Elements
 ~~~~~~~~~~~~~~~~~
 
