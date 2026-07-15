@@ -4,12 +4,14 @@ These tests require a running Rhapsody instance with an open project.
 """
 
 import uuid
+from pathlib import Path
 
 import pytest
 
 from rhapsody_cli import RhapsodyApplication
-from rhapsody_cli.models.core import RPCollection, RPModelElement
+from rhapsody_cli.models.core import RPCollection, RPModelElement, RPUnit
 from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from tests.integration.conftest import TEST_PROJECT_DIR
 
 
 @pytest.mark.integration
@@ -1340,5 +1342,117 @@ class TestRPModelElementDiagnosticsUiIntegration:
 
             none_elem: RPModelElement = cast(RPModelElement, None)
             cls1.add_link_to_element(cls2, none_elem, none_elem, none_elem)
+        finally:
+            pkg.delete_from_project()
+
+
+@pytest.mark.integration
+class TestRPUnitPersistenceIntegration:
+    """Integration tests for RPUnit filename/language/path/lifecycle methods."""
+
+    @staticmethod
+    def _unique(prefix: str = "Test") -> str:
+        return f"{prefix}_{uuid.uuid4().hex[:8]}"
+
+    @staticmethod
+    def _create_package(project: RPProject, name: str) -> RPPackage:
+        pkg = project.add_package(name)
+        assert pkg is not None
+        assert isinstance(pkg, RPPackage)
+        assert isinstance(pkg, RPUnit)
+        return pkg
+
+    def test_set_and_get_filename_roundtrip(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("UnitPkg"))
+        try:
+            assert isinstance(pkg, RPUnit)
+            new_filename = self._unique("renamed_unit")
+            pkg.set_filename(new_filename)
+            filename = pkg.get_filename()
+            assert new_filename in filename
+            assert isinstance(filename, str)
+        finally:
+            pkg.delete_from_project()
+
+    def test_set_and_get_language_roundtrip(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("LangPkg"))
+        try:
+            original = pkg.get_language()
+            assert isinstance(original, str)
+            pkg.set_language("C++", 0)
+            language = pkg.get_language()
+            assert language == "C++"
+            assert isinstance(language, str)
+            pkg.set_language(original, 0)
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_unit_path_full_and_relative(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("UnitPathPkg"))
+        try:
+            full_path = pkg.get_unit_path(1)
+            assert isinstance(full_path, str)
+            assert len(full_path) > 0
+            assert pkg.get_filename() in full_path
+
+            rel_path = pkg.get_unit_path(0)
+            assert isinstance(rel_path, str)
+            assert len(rel_path) > 0
+            assert pkg.get_filename() in rel_path
+        finally:
+            pkg.delete_from_project()
+
+    def test_set_and_get_unit_path_roundtrip(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("SetUnitPathPkg"))
+        try:
+            original = pkg.get_unit_path(1)
+            assert isinstance(original, str)
+
+            new_path = original
+            pkg.set_unit_path(new_path)
+            updated = pkg.get_unit_path(1)
+            assert updated == new_path
+            assert isinstance(updated, str)
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_current_directory_matches_project(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("CurDirPkg"))
+        try:
+            current_dir = pkg.get_current_directory()
+            assert isinstance(current_dir, str)
+            current_path = Path(current_dir)
+            assert TEST_PROJECT_DIR == current_path or TEST_PROJECT_DIR in current_path.parents
+        finally:
+            pkg.delete_from_project()
+
+    def test_save_after_mutation_clears_modified(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("SavePkg"))
+        try:
+            pkg.set_name(self._unique("SavePkgRenamed"))
+            assert pkg.is_modified() == 1
+            pkg.save()
+            assert pkg.is_modified() == 0
+        finally:
+            pkg.delete_from_project()
+
+    def test_load_and_unload_roundtrip(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("LoadPkg"))
+        try:
+            pkg.unload()
+            assert pkg.get_is_stub() == 1
+            pkg.load(1)
+            assert pkg.get_is_stub() == 0
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_last_modified_time_after_save(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("ModTimePkg"))
+        try:
+            pkg.set_name(self._unique("ModTimePkgRenamed"))
+            pkg.save()
+            modified_time = pkg.get_last_modified_time()
+            assert isinstance(modified_time, str)
+            assert len(modified_time) > 0
         finally:
             pkg.delete_from_project()
