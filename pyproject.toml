@@ -66,10 +66,12 @@ ignore_missing_imports = true
 [[tool.mypy.overrides]]
 module = "_pytest.*"
 ignore_missing_imports = true
+follow_imports = "silent"
 
 [[tool.mypy.overrides]]
 module = "pytest.*"
 ignore_missing_imports = true
+follow_imports = "silent"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
