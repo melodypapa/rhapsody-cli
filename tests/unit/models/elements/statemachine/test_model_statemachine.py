@@ -37,7 +37,7 @@ class TestRPStateVertex:
         trans = make_fake_element("Transition", getName="T1")
         fake.deleteTransition.return_value = None
         sv = RPStateVertex(fake)
-        sv.delete_transition(RPModelElement(trans))
+        sv.delete_transition(RPModelElement(trans))  # type: ignore
         fake.deleteTransition.assert_called_once_with(trans)
 
     def test_get_in_transitions_returns_collection(self) -> None:
@@ -112,7 +112,7 @@ class TestRPState:
         result = make_fake_element("Transition", getName="T1")
         fake.addInternalTransition.return_value = result
         s = RPState(fake)
-        wrapped = s.add_internal_transition(RPModelElement(trigger))
+        wrapped = s.add_internal_transition(RPModelElement(trigger))  # type: ignore
         assert wrapped.get_name() == "T1"
         fake.addInternalTransition.assert_called_once_with(trigger)
 
@@ -131,7 +131,7 @@ class TestRPState:
         result = make_fake_element("Transition", getName="T1")
         fake.addStaticReaction.return_value = result
         s = RPState(fake)
-        wrapped = s.add_static_reaction(RPModelElement(trigger))
+        wrapped = s.add_static_reaction(RPModelElement(trigger))  # type: ignore
         assert wrapped.get_name() == "T1"
         fake.addStaticReaction.assert_called_once_with(trigger)
 
@@ -168,7 +168,7 @@ class TestRPState:
         conn = make_fake_element("Connector", getName="C1")
         fake.deleteConnector.return_value = None
         s = RPState(fake)
-        s.delete_connector(RPModelElement(conn))
+        s.delete_connector(RPModelElement(conn))  # type: ignore
         fake.deleteConnector.assert_called_once_with(conn)
 
     def test_delete_internal_transition_delegates(self) -> None:
@@ -176,7 +176,7 @@ class TestRPState:
         trans = make_fake_element("Transition", getName="T1")
         fake.deleteInternalTransition.return_value = None
         s = RPState(fake)
-        s.delete_internal_transition(RPModelElement(trans))
+        s.delete_internal_transition(RPModelElement(trans))  # type: ignore
         fake.deleteInternalTransition.assert_called_once_with(trans)
 
     def test_delete_static_reaction_delegates(self) -> None:
@@ -184,7 +184,7 @@ class TestRPState:
         trans = make_fake_element("Transition", getName="T1")
         fake.deleteStaticReaction.return_value = None
         s = RPState(fake)
-        s.delete_static_reaction(RPModelElement(trans))
+        s.delete_static_reaction(RPModelElement(trans))  # type: ignore
         fake.deleteStaticReaction.assert_called_once_with(trans)
 
     def test_get_default_transition_wraps_result(self) -> None:
@@ -425,7 +425,7 @@ class TestRPState:
         sw = make_fake_element("Swimlane", getName="L1")
         fake.setItsSwimlane.return_value = None
         s = RPState(fake)
-        s.set_its_swimlane(RPModelElement(sw))
+        s.set_its_swimlane(RPModelElement(sw))  # type: ignore
         fake.setItsSwimlane.assert_called_once_with(sw)
 
     def test_set_reference_to_activity_delegates(self) -> None:

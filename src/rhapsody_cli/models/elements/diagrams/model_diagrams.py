@@ -239,7 +239,7 @@ class RPDiagram(RPUnit):
             com.telelogic.rhapsody.core.IRPDiagram::getDiagramViewOf(java.lang.String name)
         """
         result = AbstractRPModelElement.call_com(lambda: self._com.getDiagramViewOf(name))
-        return cast("RPGraphElement", AbstractRPModelElement.wrap(result)) if result else None
+        return cast("RPGraphElement", AbstractRPModelElement.wrap(result)) if result else None  # type: ignore
 
     def get_diagram_views(self) -> RPCollection:
         """Returns the diagram views for this diagram.

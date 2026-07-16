@@ -22,7 +22,7 @@ TEST_PROJECT_NAME = "TestProject"
 
 def pytest_addoption(parser: Config) -> None:
     """Add custom command line options for integration tests."""
-    parser.addoption(
+    parser.addoption(  # type: ignore
         "--keep-test-artifacts",
         action="store_true",
         default=False,

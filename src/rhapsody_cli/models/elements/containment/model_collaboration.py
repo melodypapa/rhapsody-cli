@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, cast
 from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPUnit
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.elements.common import RPClassifierRole, RPInteractionOccurrence, RPInteractionOperator, RPMessage
+    from rhapsody_cli.models.elements.common import RPClassifierRole, RPInteractionOccurrence, RPInteractionOperator, RPMessage  # type: ignore
     from rhapsody_cli.models.elements.graphics import RPConditionMark
 
 
@@ -408,7 +408,7 @@ class RPCollaboration(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPCollaboration::getActivationCondition()
         """
-        return self._get_method_or_property(self._com, "getActivationCondition", "activationCondition")
+        return cast(str, self._get_method_or_property(self._com, "getActivationCondition", "activationCondition"))
 
     def get_activation_mode(self) -> int:
         """Returns the activation mode of the collaboration.

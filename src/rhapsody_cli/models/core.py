@@ -2265,7 +2265,7 @@ class RPCollection:
         """
         AbstractRPModelElement.call_com(lambda: self._com.addGraphicalItem(item._com))
 
-    def to_list(self) -> list:
+    def to_list(self) -> list:  # type: ignore
         """Converts the collection to a Python list.
 
         Returns:

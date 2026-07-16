@@ -125,7 +125,7 @@ class TestRPFlow:
         instance = make_fake_element("Instance", getName="MyInstance")
         port = make_fake_element("Port", getName="MyPort")
         flow = RPFlow(fake)
-        flow.set_end1_via_port(AbstractRPModelElement.wrap(instance), AbstractRPModelElement.wrap(port))
+        flow.set_end1_via_port(AbstractRPModelElement.wrap(instance), AbstractRPModelElement.wrap(port))  # type: ignore
         fake.setEnd1ViaPort.assert_called_once_with(instance, port)
 
     def test_set_end1_via_sys_ml_port_delegates(self) -> None:
@@ -133,7 +133,7 @@ class TestRPFlow:
         instance = make_fake_element("Instance", getName="MyInstance")
         sysml_port = make_fake_element("SysMLPort", getName="MySysMLPort")
         flow = RPFlow(fake)
-        flow.set_end1_via_sys_ml_port(AbstractRPModelElement.wrap(instance), AbstractRPModelElement.wrap(sysml_port))
+        flow.set_end1_via_sys_ml_port(AbstractRPModelElement.wrap(instance), AbstractRPModelElement.wrap(sysml_port))  # type: ignore
         fake.setEnd1ViaSysMLPort.assert_called_once_with(instance, sysml_port)
 
     def test_set_end2_delegates(self) -> None:
@@ -148,7 +148,7 @@ class TestRPFlow:
         instance = make_fake_element("Instance", getName="MyInstance")
         port = make_fake_element("Port", getName="MyPort")
         flow = RPFlow(fake)
-        flow.set_end2_via_port(AbstractRPModelElement.wrap(instance), AbstractRPModelElement.wrap(port))
+        flow.set_end2_via_port(AbstractRPModelElement.wrap(instance), AbstractRPModelElement.wrap(port))  # type: ignore
         fake.setEnd2ViaPort.assert_called_once_with(instance, port)
 
     def test_set_end2_via_sys_ml_port_delegates(self) -> None:
@@ -156,7 +156,7 @@ class TestRPFlow:
         instance = make_fake_element("Instance", getName="MyInstance")
         sysml_port = make_fake_element("SysMLPort", getName="MySysMLPort")
         flow = RPFlow(fake)
-        flow.set_end2_via_sys_ml_port(AbstractRPModelElement.wrap(instance), AbstractRPModelElement.wrap(sysml_port))
+        flow.set_end2_via_sys_ml_port(AbstractRPModelElement.wrap(instance), AbstractRPModelElement.wrap(sysml_port))  # type: ignore
         fake.setEnd2ViaSysMLPort.assert_called_once_with(instance, sysml_port)
 
     def test_is_registered_for_meta_class_flow(self) -> None:
@@ -337,7 +337,7 @@ class TestRPFlowchart:
         fake = make_fake_element("Flowchart")
         owner = make_fake_element("Operation", getName="myOperation")
         flowchart = RPFlowchart(fake)
-        flowchart.set_its_owner(AbstractRPModelElement.wrap(owner))
+        flowchart.set_its_owner(AbstractRPModelElement.wrap(owner))  # type: ignore
         fake.setItsOwner.assert_called_once_with(owner)
 
     def test_is_registered_for_meta_class_flowchart(self) -> None:

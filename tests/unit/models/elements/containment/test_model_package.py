@@ -333,7 +333,7 @@ def test_package_delete_flow_items_delegates_to_com() -> None:
     package = RPPackage(fake)
     flow_item_fake = make_fake_element("FlowItem", getName="ToDelete")
 
-    package.delete_flow_items(RPModelElement(flow_item_fake))
+    package.delete_flow_items(RPModelElement(flow_item_fake))  # type: ignore
 
     fake.deleteFlowItems.assert_called_once_with(flow_item_fake)
 
@@ -345,7 +345,7 @@ def test_package_delete_flows_delegates_to_com() -> None:
     package = RPPackage(fake)
     flow_fake = make_fake_element("Flow", getName="ToDelete")
 
-    package.delete_flows(RPModelElement(flow_fake))
+    package.delete_flows(RPModelElement(flow_fake))  # type: ignore
 
     fake.deleteFlows.assert_called_once_with(flow_fake)
 
@@ -472,7 +472,7 @@ def test_package_add_link_between_sysml_ports_delegates_to_com() -> None:
     fake.addLinkBetweenSYSMLPorts.return_value = link_fake
     package = RPPackage(fake)
 
-    result = package.add_link_between_sysml_ports(RPModelElement(port1_fake), RPModelElement(port2_fake))
+    result = package.add_link_between_sysml_ports(RPModelElement(port1_fake), RPModelElement(port2_fake))  # type: ignore
 
     fake.addLinkBetweenSYSMLPorts.assert_called_once_with(port1_fake, port2_fake)
     assert result.get_name() == "Link1"

@@ -33,7 +33,7 @@ class TestRPAcceptEventAction:
         fake = make_fake_element("AcceptEventAction")
         event = make_fake_element("Event", getName="MyEvent")
         aea = RPAcceptEventAction(fake)
-        aea.set_event(AbstractRPModelElement.wrap(event))
+        aea.set_event(AbstractRPModelElement.wrap(event))  # type: ignore
         fake.setEvent.assert_called_once_with(event)
 
     def test_is_registered(self) -> None:
@@ -134,14 +134,14 @@ class TestRPCallOperation:
         fake = make_fake_element("CallOperation")
         op = make_fake_element("Operation", getName="myOp")
         co = RPCallOperation(fake)
-        co.set_operation(AbstractRPModelElement.wrap(op))
+        co.set_operation(AbstractRPModelElement.wrap(op))  # type: ignore
         fake.setOperation.assert_called_once_with(op)
 
     def test_set_target_delegates(self) -> None:
         fake = make_fake_element("CallOperation")
         target = make_fake_element("Relation", getName="myTarget")
         co = RPCallOperation(fake)
-        co.set_target(AbstractRPModelElement.wrap(target))
+        co.set_target(AbstractRPModelElement.wrap(target))  # type: ignore
         fake.setTarget.assert_called_once_with(target)
 
     def test_is_registered(self) -> None:
@@ -248,14 +248,14 @@ class TestRPSendAction:
         fake = make_fake_element("SendAction")
         event = make_fake_element("Event", getName="MyEvent")
         sa = RPSendAction(fake)
-        sa.set_event(AbstractRPModelElement.wrap(event))
+        sa.set_event(AbstractRPModelElement.wrap(event))  # type: ignore
         fake.setEvent.assert_called_once_with(event)
 
     def test_set_invoked_operation_delegates(self) -> None:
         fake = make_fake_element("SendAction")
         op = make_fake_element("Operation", getName="myOp")
         sa = RPSendAction(fake)
-        sa.set_invoked_operation(AbstractRPModelElement.wrap(op))
+        sa.set_invoked_operation(AbstractRPModelElement.wrap(op))  # type: ignore
         fake.setInvokedOperation.assert_called_once_with(op)
 
     def test_set_target_delegates(self) -> None:

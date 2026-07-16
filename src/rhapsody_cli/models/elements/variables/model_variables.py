@@ -341,7 +341,7 @@ class RPTag(RPVariable):
         Reference:
             com.telelogic.rhapsody.core.IRPTag::getBase()
         """
-        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getBase", "base")))
+        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getBase", "base")))  # type: ignore
 
     def get_from_profile(self) -> str:
         """Returns the profile from which the tag originates.
