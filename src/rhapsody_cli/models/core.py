@@ -103,10 +103,10 @@ class RPModelElement(AbstractRPModelElement):
     # [x] become_template_instantiation_of   [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] change_to                        [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] clone                           [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] create_oslc_link                  [x] impl  [x] docstring  [x] unit test  [x] integration test  (NotImplementedError)
+    # [x] create_oslc_link                  [x] impl  [x] docstring  [x] unit test  [x] integration test  (not_implemented_error)
     # [x] delete_dependency                [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] delete_from_project               [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] delete_oslc_link                  [x] impl  [x] docstring  [x] unit test  [x] integration test  (NotImplementedError)
+    # [x] delete_oslc_link                  [x] impl  [x] docstring  [x] unit test  [x] integration test  (not_implemented_error)
     # [x] error_message                    [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] find_elements_by_full_name          [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] find_nested_element               [x] impl  [x] docstring  [x] unit test  [x] integration test
@@ -146,7 +146,7 @@ class RPModelElement(AbstractRPModelElement):
     # [x] get_nested_elements_recursive      [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_new_term_stereotype            [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_of_template                   [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_oslc_links                    [x] impl  [x] docstring  [x] unit test  [x] integration test  (NotImplementedError)
+    # [x] get_oslc_links                    [x] impl  [x] docstring  [x] unit test  [x] integration test  (not_implemented_error)
     # [x] get_overlay_icon_file_name          [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_overridden_properties         [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_overridden_properties_by_pattern [x] impl  [x] docstring  [x] unit test  [x] integration test
@@ -203,10 +203,10 @@ class RPModelElement(AbstractRPModelElement):
     # [x] set_tag_value                     [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] set_ti                           [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] synchronize_template_instantiation [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [deprecated] getStereotype          - skipped (use getStereotypes)
-    # [deprecated] setStereotype          - skipped (use addSpecificStereotype / addStereotype / removeStereotype)
-    # [deprecated] lockOnDesignManager    - skipped (Design Manager removed in Rhapsody 8.4)
-    # [deprecated] unlockOnDesignManager  - skipped (Design Manager removed in Rhapsody 8.4)
+    # [deprecated] get_stereotype          - skipped (use get_stereotypes)
+    # [deprecated] set_stereotype          - skipped (use add_specific_stereotype / add_stereotype / remove_stereotype)
+    # [deprecated] lock_on_design_manager    - skipped (Design Manager removed in Rhapsody 8.4)
+    # [deprecated] unlock_on_design_manager  - skipped (Design Manager removed in Rhapsody 8.4)
 
     def __init__(self, com_obj: Any) -> None:
         self._com = com_obj
@@ -1810,7 +1810,7 @@ class RPUnit(RPModelElement):
     # [x] set_separate_save_unit                 [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] set_unit_path                         [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] unload                              [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [inherited] getNestedElements - provided by RPModelElement
+    # [inherited] get_nested_elements - provided by rp_model_element
     # No deprecated IRPUnit methods.
 
     def copy_to_another_project(self, parent_in_target: "RPModelElement") -> "RPModelElement":
@@ -2190,14 +2190,14 @@ class RPCollection:
     # [x] get_count  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_item  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] add_item  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] addGraphicalItem  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] toList  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] setSize  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] add_graphical_item  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] to_list  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] set_size  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] remove  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] setString  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] setModelElement  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] set_string  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] set_model_element  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] empty  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] setInteger  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] set_integer  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # No deprecated IRPCollection methods.
 
     def __init__(self, com_obj: Any) -> None:
