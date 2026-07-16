@@ -254,7 +254,7 @@ class MyAction(RhapsodyContextAction):
 
 ## CI/CD
 
-- `.github/workflows/python-package.yml` — runs `ruff check`, `black --check`, `mypy` (Python < 3.10 only), and `pytest tests/unit -v --cov` across Python 3.8–3.13 on `windows-latest`. Integration/system tests are not run in CI (they require a live Rhapsody instance).
+- `.github/workflows/python-package.yml` — runs `ruff check`, `black --check`, `mypy`, and `pytest tests/unit -v --cov` across Python 3.8–3.13 on `windows-latest`. Integration/system tests are not run in CI (they require a live Rhapsody instance).
 - `.github/workflows/python-publish.yml` — auto-publishes to PyPI on GitHub release.
 
 ## Common Tasks

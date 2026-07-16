@@ -45,7 +45,7 @@ ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ && pytes
 
 - ruff: E, F, I, UP, B, N rule sets. Black: line-length 200, py38 target.
 - `win32com.*` / `pywintypes`: `ignore_missing_imports` in mypy config.
-- CI runs `mypy` only on Python < 3.10 (pattern-matching syntax issue in pytest on 3.10+ blocks the type-checked code path).
+- CI runs `ruff check`, `black check`, `mypy`, and `pytest` on unit tests across Python 3.8–3.13 on `windows-latest`.
 - CI runs full gate on `windows-latest` across Python 3.8–3.13. Codecov upload.
 
 ## Forbidden

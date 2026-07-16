@@ -313,7 +313,7 @@ tests/
 
 ### GitHub Actions CI/CD
 
-- **CI:** `.github/workflows/python-package.yml` runs on `windows-latest` across Python 3.8–3.13. Steps: `ruff check src/ tests/`, `black --check src/ tests/`, `mypy src/ tests/` (only for Python < 3.10), then `pytest tests/unit -v --cov=src/rhapsody_cli --cov-report=xml`. Integration/system tests are **not** run in CI (they need a live Rhapsody instance).
+- **CI:** `.github/workflows/python-package.yml` runs on `windows-latest` across Python 3.8–3.13. Steps: `ruff check src/ tests/`, `black --check src/ tests/`, `mypy src/ tests/`, then `pytest tests/unit -v --cov=src/rhapsody_cli --cov-report=xml`. Integration/system tests are **not** run in CI (they need a live Rhapsody instance).
 - **CD:** `.github/workflows/python-publish.yml` auto-publishes to PyPI on GitHub release.
 
 ---
