@@ -13,7 +13,7 @@ class RPActor(RPClassifier):
     """Wraps ``IRPActor``: represents an actor in the model."""
 
     # IRPActor method parity checklist:
-    # [x] add_event_reception_with_event  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] add_event_reception_with_event  [x] impl (raises NotImplementedError)  [x] docstring  [x] unit test  [x] integration test  (COM method not exposed)
     # [x] get_is_behavior_overriden  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] set_is_behavior_overriden  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] update_contained_diagrams_on_server  [x] impl  [x] docstring  [x] unit test  [ ] integration test
@@ -22,6 +22,10 @@ class RPActor(RPClassifier):
 
     def add_event_reception_with_event(self, name: str, event: RPModelElement) -> "RPEventReception":
         """Adds a new event reception to the actor, using the specified event.
+
+        Note: ``addEventReceptionWithEvent`` is not exposed in the Rhapsody COM
+        automation type library. This method raises ``NotImplementedError`` to
+        prevent its use.
 
         Args:
             name: The name to use for the new event reception.
@@ -32,12 +36,16 @@ class RPActor(RPClassifier):
             The wrapped ``IRPEventReception`` that was created.
 
         Raises:
-            RhapsodyRuntimeException: if the event reception cannot be added.
+            NotImplementedError: Always raised, as this method is not exposed
+                in the Rhapsody COM type library.
 
         Reference:
             com.telelogic.rhapsody.core.IRPActor::addEventReceptionWithEvent(java.lang.String name, com.telelogic.rhapsody.core.IRPEvent event)
         """
-        return cast("RPEventReception", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addEventReceptionWithEvent(name, event._com))))
+        raise NotImplementedError(
+            "addEventReceptionWithEvent is not exposed in the Rhapsody COM automation type library. "
+            "Use add_event_reception(name) instead and set the event via the reception object."
+        )
 
     def get_is_behavior_overriden(self) -> bool:
         """Checks whether the actor overrides the behavior defined in its base class's statechart.

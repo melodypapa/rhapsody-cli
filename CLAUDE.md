@@ -197,7 +197,34 @@ class RPMyClass(RPModelElement):
 AbstractRPModelElement.register_wrapper("MyClass", RPMyClass)
 ```
 
-Then add the import to `models/elements/__init__.py` so registration fires on package import.
+Then add the import to the subpackage's `__init__.py` so registration fires on package import.
+
+### COM Wrapping Rules
+
+**Critical:** When implementing wrapper methods, follow these rules for COM interactions:
+
+- **All COM calls** → Use `call_com(lambda: self._com.methodName(...))` (translates `com_error` → `RhapsodyRuntimeException`)
+- **No-arg getters** → Use `_get_method_or_property(self._com, "getX", "x")` (prefers Java-style method, falls back to bare property; note: strings are COM identifiers, not Python names)
+- **Parameterized getters** → MUST use `call_com` directly (`_get_method_or_property` drops extra args)
+- **Single-arg setters** → Use `_set_method_or_property(self._com, "setX", "x", value)`
+- **Multi-arg setters** → MUST use `call_com` directly
+- **Return wrapped element** → Use `AbstractRPModelElement.wrap(...)` or specific wrapper constructor
+- **Return collection** → Use `RPCollection(self.call_com(...))`
+
+```python
+def get_name(self) -> str:
+    """Returns the name of the element."""
+    return str(self._get_method_or_property(self._com, "getName", "name"))
+
+def set_name(self, name: str) -> None:
+    """Sets the name of the element."""
+    self._set_method_or_property(self._com, "setName", "name", name)
+
+def get_nested_elements(self) -> "RPCollection":
+    """Returns nested elements (parameterized getter)."""
+    com_result = self.call_com(lambda: self._com.getNestedElements())
+    return RPCollection(com_result)
+```
 
 ### TDD is Mandatory
 
@@ -261,8 +288,10 @@ class MyAction(RhapsodyContextAction):
 
 ### Add a new element wrapper
 
+**Important:** Read `docs/java_api` HTML files first — they document every Java model class's detailed information including exact method names and signatures.
+
 1. Create `src/rhapsody_cli/models/elements/<subpackage>/model_myclass.py` (choose subpackage based on element type: `classifiers/`, `containment/`, `relations/`, etc.)
-2. Define `RPMyClass(RPModelElement)` with methods mirroring the Java API
+2. Define `RPMyClass(RPModelElement)` with methods mirroring the Java API (use snake_case for Python method names, camelCase for internal COM calls)
 3. Call `AbstractRPModelElement.register_wrapper("MyClass", RPMyClass)` at module level
 4. Write tests in `tests/unit/models/elements/test_myclass.py` using fakes from `tests/unit/models/fakes.py`
 5. Add the import to the subpackage's `__init__.py` so registration fires on import

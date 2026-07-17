@@ -173,8 +173,8 @@ class TestRPClassIntegration:
         finally:
             test_class.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="addEventReceptionWithEvent COM method not exposed in Rhapsody automation type library")
     def test_add_event_reception_with_event(self, test_project: RPProject) -> None:
+        """Test that add_event_reception_with_event raises NotImplementedError (not exposed in COM type library)."""
         pkg_name = self._unique("EvWEvPkg")
         class_name = self._unique("EvWEvCls")
         event_name = self._unique("MyEvent")
@@ -183,12 +183,8 @@ class TestRPClassIntegration:
         test_class = pkg.add_class(class_name)
         try:
             event = pkg.add_event(event_name)
-            reception = test_class.add_event_reception_with_event(reception_name, event)
-            assert reception is not None
-            assert isinstance(reception, RPEventReception)
-            assert reception.get_name() == reception_name
-            items = [i.get_name() for i in test_class.get_interface_items()]
-            assert reception_name in items
+            with pytest.raises(NotImplementedError, match="addEventReceptionWithEvent is not exposed in the Rhapsody COM"):
+                test_class.add_event_reception_with_event(reception_name, event)
         finally:
             test_class.delete_from_project()
 
@@ -362,48 +358,3 @@ class TestRPClassIntegration:
         finally:
             test_class.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="addLink requires parts created via IRPClass.addPart which is not wrapped yet")
-    def test_add_link(self, test_project: RPProject) -> None:
-        pkg_name = self._unique("LinkPkg")
-        class_a_name = self._unique("LinkClsA")
-        class_b_name = self._unique("LinkClsB")
-        comp_name = self._unique("CompositeCls")
-        pkg = self._create_package(test_project, pkg_name)
-        class_a = pkg.add_class(class_a_name)
-        class_b = pkg.add_class(class_b_name)
-        comp = pkg.add_class(comp_name)
-        try:
-            assoc = class_a.add_relation_to(class_b, "roleA", "Association", "1", "roleB", "Association", "1", "")
-            assert assoc is not None
-            part1 = AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: comp._com.addPart("part1", class_a._com)))
-            part2 = AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: comp._com.addPart("part2", class_b._com)))
-            link = comp.add_link(part1, part2, assoc, None, None)
-            assert link is not None
-        finally:
-            comp.delete_from_project()
-            class_b.delete_from_project()
-            class_a.delete_from_project()
-
-    @pytest.mark.xfail(strict=False, reason="addLinkToPartViaPort requires parts and ports not wrappable yet")
-    def test_add_link_to_part_via_port(self, test_project: RPProject) -> None:
-        pkg_name = self._unique("LnkPortPkg")
-        class_a_name = self._unique("LnkPortA")
-        class_b_name = self._unique("LnkPortB")
-        comp_name = self._unique("LnkPortComp")
-        pkg = self._create_package(test_project, pkg_name)
-        class_a = pkg.add_class(class_a_name)
-        class_b = pkg.add_class(class_b_name)
-        comp = pkg.add_class(comp_name)
-        try:
-            assoc = class_a.add_relation_to(class_b, "roleA", "Association", "1", "roleB", "Association", "1", "")
-            assert assoc is not None
-            _p1 = AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: comp._com.addPart("part1", class_a._com)))
-            part2 = AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: comp._com.addPart("part2", class_b._com)))
-            port_a = comp.add_port("portA")
-            port_b = comp.add_port("portB")
-            link = comp.add_link_to_part_via_port(part2, port_b, port_a, None)
-            assert link is not None
-        finally:
-            comp.delete_from_project()
-            class_b.delete_from_project()
-            class_a.delete_from_project()

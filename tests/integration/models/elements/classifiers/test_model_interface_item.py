@@ -62,21 +62,6 @@ class TestRPInterfaceItemIntegration:
         finally:
             test_class.delete_from_project()
 
-    @pytest.mark.xfail(reason="setArguments COM method not exposed in type library", strict=False)
-    def test_set_arguments(self, test_project: RPProject) -> None:
-        pkg_name = self._unique("SetArgPkg")
-        class_name = self._unique("SetArgCls")
-        op_name = self._unique("setArgOp")
-        pkg = self._create_package(test_project, pkg_name)
-        test_class = pkg.add_class(class_name)
-        try:
-            operation = test_class.add_operation(op_name)
-            operation.set_arguments("int x, float y")
-            args = list(operation.get_arguments())
-            assert len(args) == 2
-        finally:
-            test_class.delete_from_project()
-
     def test_signature_methods(self, test_project: RPProject) -> None:
         pkg_name = self._unique("SigPkg")
         class_name = self._unique("SigCls")

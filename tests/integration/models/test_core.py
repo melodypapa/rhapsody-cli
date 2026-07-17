@@ -659,14 +659,18 @@ class TestRPModelElementDescriptionDisplayNameIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="Rhapsody documents setDescriptionHTML as unimplemented")
     def test_set_and_get_description_html(self, test_project: RPProject) -> None:
+        """Test that setDescriptionHTML raises NotImplementedError (documented as unimplemented)."""
         pkg = self._create_package(test_project, self._unique("HtmlDescPkg"))
         try:
             cls = pkg.add_class(self._unique("HtmlDescCls"))
             html = "<html><body>Hello</body></html>"
-            cls.set_description_html(html)
 
+            # setDescriptionHTML is documented as "Not implemented - should not be used"
+            with pytest.raises(NotImplementedError, match="setDescriptionHTML is documented as"):
+                cls.set_description_html(html)
+
+            # getDescriptionHTML should work normally
             retrieved_html = cls.get_description_html()
             assert isinstance(retrieved_html, str)
         finally:

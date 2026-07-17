@@ -23,7 +23,6 @@ class RPInterfaceItem(RPClassifier):
     # [x] get_signature_no_arg_names  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_signature_no_arg_types  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] match_on_signature  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [ ] set_arguments  [x] impl  [x] docstring  [ ] unit test  [x] integration test  (xfail - COM method not exposed)
     # [inherited] irp_classifier / irp_unit / irp_model_element methods (covered by rp_classifier / rp_unit / rp_model_element checklists)
     # No deprecated IRPInterfaceItem methods.
 
@@ -74,17 +73,6 @@ class RPInterfaceItem(RPClassifier):
             com.telelogic.rhapsody.core.IRPInterfaceItem::getArguments()
         """
         return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getArguments", "arguments"))
-
-    def set_arguments(self, new_val: str) -> None:
-        """Sets the argument signature for the operation.
-
-        Args:
-            new_val: The argument signature string (e.g. ``"int x, float y"``).
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPInterfaceItem::setArguments(java.lang.String newVal)
-        """
-        AbstractRPModelElement.call_com(lambda: self._com.setArguments(new_val))
 
     def get_signature(self) -> str:
         """Returns the signature of the operation.
