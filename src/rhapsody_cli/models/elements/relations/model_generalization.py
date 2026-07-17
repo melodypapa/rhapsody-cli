@@ -70,16 +70,16 @@ class RPGeneralization(RPModelElement):
         """
         return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsVirtual", "isVirtual"))
 
-    def get_visibility(self) -> int:
+    def get_visibility(self) -> str:
         """Returns the visibility of the generalization.
 
         Returns:
-            The visibility as an integer (0=private, 1=protected, 2=public, 3=package).
+            The visibility string (e.g. ``"public"``, ``"private"``).
 
         Reference:
             com.telelogic.rhapsody.core.IRPGeneralization::getVisibility()
         """
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "getVisibility", "visibility"))
+        return str(AbstractRPModelElement._get_method_or_property(self._com, "getVisibility", "visibility"))
 
     def set_base_class(self, base_class: RPClassifier) -> None:
         """Sets the base class (parent) of the generalization.
@@ -125,14 +125,14 @@ class RPGeneralization(RPModelElement):
         """
         AbstractRPModelElement.call_com(lambda: self._com.setIsVirtual(is_virtual))
 
-    def set_visibility(self, visibility: int) -> None:
+    def set_visibility(self, visibility: str) -> None:
         """Sets the visibility of the generalization.
 
         Args:
-            visibility: The visibility value (0=private, 1=protected, 2=public, 3=package).
+            visibility: The visibility string to set (e.g. ``"public"``, ``"private"``).
 
         Reference:
-            com.telelogic.rhapsody.core.IRPGeneralization::setVisibility(int visibility)
+            com.telelogic.rhapsody.core.IRPGeneralization::setVisibility(java.lang.String visibility)
         """
         AbstractRPModelElement.call_com(lambda: self._com.setVisibility(visibility))
 

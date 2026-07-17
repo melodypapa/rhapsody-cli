@@ -563,7 +563,8 @@ class ClassLinkAction(AbstractClassAction):
             source = self._resolve_and_validate_class(args.path)
 
         target_name = args.add if args.add else args.remove
-        target = source.find_nested_classifier_recursive(target_name)
+        owner = source.get_owner()
+        target = owner.find_nested_classifier_recursive(target_name)
         if target is None:
             raise CliExecutionError(f"Class '{target_name}' not found")
 
