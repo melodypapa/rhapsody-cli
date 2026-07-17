@@ -16,14 +16,14 @@ class RPInterfaceItem(RPClassifier):
     """
 
     # IRPInterfaceItem method parity checklist:
-    # [x] add_argument  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] add_argument_before_position  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_arguments  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_signature  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_signature_no_arg_names  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_signature_no_arg_types  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] match_on_signature  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] set_arguments  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] add_argument  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] add_argument_before_position  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] get_arguments  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] get_signature  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] get_signature_no_arg_names  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] get_signature_no_arg_types  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] match_on_signature  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [ ] set_arguments  [x] impl  [x] docstring  [ ] unit test  [x] integration test  (xfail - COM method not exposed)
     # [inherited] irp_classifier / irp_unit / irp_model_element methods (covered by rp_classifier / rp_unit / rp_model_element checklists)
     # No deprecated IRPInterfaceItem methods.
 

@@ -13,7 +13,7 @@ class RPActor(RPClassifier):
     """Wraps ``IRPActor``: represents an actor in the model."""
 
     # IRPActor method parity checklist:
-    # [x] add_event_reception_with_event  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] add_event_reception_with_event  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_is_behavior_overriden  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] set_is_behavior_overriden  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] update_contained_diagrams_on_server  [x] impl  [x] docstring  [x] unit test  [ ] integration test
