@@ -1,7 +1,8 @@
 """CLI system test helpers and fixtures.
 
 Provides subprocess CLI invocation helpers and a session-scoped
-test project created via the CLI itself.
+test project created via the Python API directly (not subprocess)
+to avoid UI dialog and timeout issues.
 """
 
 import json
@@ -12,6 +13,8 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+
+from rhapsody_cli import RhapsodyApplication
 
 
 def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
@@ -63,25 +66,25 @@ def _unique_name(prefix: str = "Test") -> str:
 
 @pytest.fixture(scope="session")
 def cli_project(test_project_dir: Path) -> str:
-    """Session-scoped test project created via CLI.
+    """Session-scoped test project created via Python API.
 
-    Creates a new project using `rhapsody-cli project new` and yields
-    the project name. The project stays open for the duration of the session
-    (the `project close` CLI command is a no-op in subprocess mode — it
-    checks `self._project` which is always None in a fresh process, rather
-    than calling `app.active_project()`).
+    Uses the Python API directly (not the subprocess CLI) to avoid
+    UI dialogs and timeout issues with `project new`. The project
+    is properly closed on teardown.
 
     Returns:
         The project name string.
     """
     project_name = "SystemTestProject"
 
-    # Create project via CLI
-    result = _run_cli("project", "new", str(test_project_dir), project_name)
-    assert result.returncode == 0, f"Failed to create project: {result.stderr}"
+    app = RhapsodyApplication.connect(attach_only=True)
+    app.create_new_project(str(test_project_dir), project_name)
 
     yield project_name
 
-    # NOTE: project close is a no-op in subprocess mode (CLI bug).
-    # The project remains open in the Rhapsody instance after the session.
-    _run_cli("project", "close")
+    # Close project via Python API (not subprocess CLI, which is a no-op)
+    app = RhapsodyApplication.connect(attach_only=True)
+    for proj in app.get_projects():
+        if proj.get_name() == project_name:
+            proj.close()
+            break

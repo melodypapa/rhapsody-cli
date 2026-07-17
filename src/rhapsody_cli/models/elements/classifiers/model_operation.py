@@ -308,22 +308,16 @@ class RPOperation(RPInterfaceItem):
         """
         return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsTrigger", "isTrigger"))
 
-    def get_visibility(self) -> int:
+    def get_visibility(self) -> str:
         """Returns the visibility of the operation.
 
-        The visibility values correspond to:
-        - 0: Private
-        - 1: Protected
-        - 2: Public
-        - 3: Package
-
         Returns:
-            The visibility as an integer.
+            The visibility string (e.g. ``"public"``, ``"private"``).
 
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::getVisibility()
         """
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "getVisibility", "visibility"))
+        return str(AbstractRPModelElement._get_method_or_property(self._com, "getVisibility", "visibility"))
 
     def set_body(self, body: str) -> None:
         """Sets the body/implementation of the operation.
@@ -380,20 +374,14 @@ class RPOperation(RPInterfaceItem):
         """
         AbstractRPModelElement.call_com(lambda: self._com.setIsFinal(is_final))
 
-    def set_visibility(self, visibility: int) -> None:
+    def set_visibility(self, visibility: str) -> None:
         """Sets the visibility of the operation.
 
-        The visibility values correspond to:
-        - 0: Private
-        - 1: Protected
-        - 2: Public
-        - 3: Package
-
         Args:
-            visibility: The visibility value to set.
+            visibility: The visibility string to set (e.g. ``"public"``, ``"private"``).
 
         Reference:
-            com.telelogic.rhapsody.core.IRPOperation::setVisibility(int visibility)
+            com.telelogic.rhapsody.core.IRPOperation::setVisibility(java.lang.String visibility)
         """
         AbstractRPModelElement.call_com(lambda: self._com.setVisibility(visibility))
 

@@ -134,13 +134,29 @@ class TestClassCLI:
             _run_cli("package", "delete", "--path", pkg_path)
 
     def test_class_link_generalization(self, cli_project: str) -> None:
-        """Test adding a generalization link between classes."""
+        """Test adding a generalization link between nested classes.
+
+        Classes are nested inside a container class (not directly under a
+        package) so that the source class's owner is an RPClassifier, which
+        is the type that defines find_nested_classifier_recursive.
+        """
+        from rhapsody_cli import RhapsodyApplication
+
         pkg_name = _unique_name("LinkPkg")
+        container_cls_name = _unique_name("ContainerCls")
         parent_cls_name = _unique_name("ParentCls")
         child_cls_name = _unique_name("ChildCls")
         pkg_path = self._create_package(pkg_name)
-        self._create_class(pkg_path, parent_cls_name)
-        child_path = self._create_class(pkg_path, child_cls_name)
+        self._create_class(pkg_path, container_cls_name)
+
+        # Create nested classes inside ContainerCls via Python API
+        # (the CLI class create only accepts package parents)
+        app = RhapsodyApplication.connect(attach_only=True)
+        project = app.active_project()
+        container = project.find_nested_element_recursive(container_cls_name, "Class")
+        container.add_class(parent_cls_name)
+        container.add_class(child_cls_name)
+        child_path = f"{pkg_path}/{container_cls_name}/{child_cls_name}"
 
         try:
             # Add generalization: child -> parent
@@ -160,11 +176,13 @@ class TestClassCLI:
         pkg_path = self._create_package(pkg_name)
 
         try:
-            cls_json = json.dumps({
-                "name": cls_name,
-                "attributes": ["attr1", "attr2"],
-                "operations": ["op1"],
-            })
+            cls_json = json.dumps(
+                {
+                    "name": cls_name,
+                    "attributes": ["attr1", "attr2"],
+                    "operations": ["op1"],
+                }
+            )
             result = _run_cli("class", "create", "--path", pkg_path, "--input", cls_json)
             assert result.returncode == 0, f"Failed: {result.stderr}"
 

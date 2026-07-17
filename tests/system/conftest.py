@@ -6,6 +6,7 @@ Rhapsody auto-skip when no instance is available.
 
 import shutil
 import sys
+import tempfile
 from pathlib import Path
 
 import pytest
@@ -15,7 +16,7 @@ from rhapsody_cli import RhapsodyApplication
 # Add unit directory to Python path so imports from unit tests work
 sys.path.insert(0, str(Path(__file__).parent.parent / "unit"))
 
-TEST_PROJECT_DIR = Path(__file__).parent.parent.parent / "demos" / "test_project_system"
+TEST_PROJECT_DIR = Path(tempfile.gettempdir()) / "rhapsody_cli_system_test"
 TEST_PROJECT_NAME = "SystemTestProject"
 
 

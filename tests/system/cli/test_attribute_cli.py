@@ -89,9 +89,12 @@ class TestAttributeCLI:
         try:
             # View uses --path + --name (not a combined path)
             result = _run_cli(
-                "attribute", "view",
-                "--path", cls_path,
-                "--name", f"NonExistent_{uuid.uuid4().hex[:8]}",
+                "attribute",
+                "view",
+                "--path",
+                cls_path,
+                "--name",
+                f"NonExistent_{uuid.uuid4().hex[:8]}",
             )
             assert result.returncode != 0
             assert "error" in result.stderr.lower() or "failed" in result.stderr.lower()
@@ -149,9 +152,12 @@ class TestAttributeCLI:
         try:
             # Delete uses --path + --name
             result = _run_cli(
-                "attribute", "delete",
-                "--path", cls_path,
-                "--name", f"NonExistent_{uuid.uuid4().hex[:8]}",
+                "attribute",
+                "delete",
+                "--path",
+                cls_path,
+                "--name",
+                f"NonExistent_{uuid.uuid4().hex[:8]}",
             )
             assert result.returncode != 0
             assert "error" in result.stderr.lower() or "failed" in result.stderr.lower()

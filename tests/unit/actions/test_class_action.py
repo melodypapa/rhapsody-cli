@@ -660,10 +660,12 @@ class TestClassLinkAction:
         action = ClassLinkAction()
         mock_source = MagicMock()
         mock_source.get_meta_class.return_value = "Class"
+        mock_owner = MagicMock()
+        mock_source.get_owner.return_value = mock_owner
         mock_target = MagicMock()
 
         with patch.object(action, "_resolve_and_validate_class", return_value=mock_source):
-            mock_source.find_nested_classifier_recursive.return_value = mock_target
+            mock_owner.find_nested_classifier_recursive.return_value = mock_target
 
             args = MagicMock()
             args.path = "Sensors/TemperatureSensor"
@@ -674,7 +676,7 @@ class TestClassLinkAction:
 
             action.execute(args)
 
-            mock_source.find_nested_classifier_recursive.assert_called_once_with("BaseSensor")
+            mock_owner.find_nested_classifier_recursive.assert_called_once_with("BaseSensor")
             mock_source.add_generalization.assert_called_once_with(mock_target)
 
     def test_remove_generalization_by_path(self) -> None:
@@ -684,10 +686,12 @@ class TestClassLinkAction:
         action = ClassLinkAction()
         mock_source = MagicMock()
         mock_source.get_meta_class.return_value = "Class"
+        mock_owner = MagicMock()
+        mock_source.get_owner.return_value = mock_owner
         mock_target = MagicMock()
 
         with patch.object(action, "_resolve_and_validate_class", return_value=mock_source):
-            mock_source.find_nested_classifier_recursive.return_value = mock_target
+            mock_owner.find_nested_classifier_recursive.return_value = mock_target
 
             args = MagicMock()
             args.path = "Sensors/TemperatureSensor"
@@ -698,7 +702,7 @@ class TestClassLinkAction:
 
             action.execute(args)
 
-            mock_source.find_nested_classifier_recursive.assert_called_once_with("BaseSensor")
+            mock_owner.find_nested_classifier_recursive.assert_called_once_with("BaseSensor")
             mock_source.delete_generalization.assert_called_once_with(mock_target)
 
     def test_link_requires_add_or_remove(self) -> None:
@@ -725,7 +729,9 @@ class TestClassLinkAction:
         action = ClassLinkAction()
         mock_source = MagicMock()
         mock_source.get_meta_class.return_value = "Class"
-        mock_source.find_nested_classifier_recursive.return_value = None
+        mock_owner = MagicMock()
+        mock_source.get_owner.return_value = mock_owner
+        mock_owner.find_nested_classifier_recursive.return_value = None
 
         with patch.object(action, "_resolve_and_validate_class", return_value=mock_source):
             args = MagicMock()
@@ -747,10 +753,12 @@ class TestClassLinkAction:
         action = ClassLinkAction()
         mock_source = MagicMock()
         mock_source.get_meta_class.return_value = "Class"
+        mock_owner = MagicMock()
+        mock_source.get_owner.return_value = mock_owner
         mock_target = MagicMock()
 
         with patch.object(action, "_resolve_class_by_guid", return_value=mock_source):
-            mock_source.find_nested_classifier_recursive.return_value = mock_target
+            mock_owner.find_nested_classifier_recursive.return_value = mock_target
 
             args = MagicMock()
             args.path = None
