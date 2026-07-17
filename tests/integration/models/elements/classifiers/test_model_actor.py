@@ -49,6 +49,21 @@ class TestRPActorIntegration:
         finally:
             actor.delete_from_project()
 
+    def test_add_event_reception_with_event(self, test_project: RPProject) -> None:
+        """Test that add_event_reception_with_event raises NotImplementedError (not exposed in COM type library)."""
+        pkg_name = self._unique("ActorEvPkg")
+        actor_name = self._unique("EvActor")
+        event_name = self._unique("MyEvent")
+        reception_name = self._unique("onMyEvent")
+        pkg = self._create_package(test_project, pkg_name)
+        try:
+            actor = pkg.add_actor(actor_name)
+            event = pkg.add_event(event_name)
+            with pytest.raises(NotImplementedError, match="addEventReceptionWithEvent is not exposed in the Rhapsody COM"):
+                actor.add_event_reception_with_event(reception_name, event)
+        finally:
+            actor.delete_from_project()
+
     def test_actor_owner(self, test_project: RPProject) -> None:
         pkg_name = self._unique("OwnPkg")
         actor_name = self._unique("OwnActor")

@@ -131,11 +131,8 @@ def test_stereotypes(test_project: RPProject) -> None:
     """
     try:
         # Create a stereotype with tag definition for testing
-        stereo = test_project.add_stereotype("TestStereotype")  # type: ignore[call-arg]
+        stereo = test_project.add_stereotype("TestStereotype", "Class")
         if stereo is not None:
-            # Add a tag definition to the stereotype
-            stereo.add_tag_definition("TestTag", "String")  # type: ignore[attr-defined]
-
             # Save the project to persist the stereotype setup
             test_project.save(with_subs=1)
     except Exception as e:

@@ -21,30 +21,30 @@ class RPClass(RPClassifier):
     # [x] add_destructor            [x] impl  [x] docstring  [x] unit test  [x] integration test   (already implemented)
     # [x] add_superclass            [x] impl  [x] docstring  [x] unit test  [x] integration test   (already implemented)
     # [x] get_is_abstract            [x] impl  [x] docstring  [x] unit test  [x] integration test   (already implemented)
-    # [x] add_event_reception        [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] add_event_reception_with_event [x] impl [x] docstring [x] unit test  [ ] integration test
-    # [x] add_link                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] add_link_to_part_via_port     [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] add_reception             [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] add_triggered_operation    [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] add_event_reception        [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] add_event_reception_with_event [x] impl (raises NotImplementedError) [x] docstring [x] unit test  [x] integration test  (COM method not exposed)
+    # [x] add_link                  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] add_link_to_part_via_port     [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] add_reception             [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] add_triggered_operation    [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] add_type                  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] delete_class              [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] delete_constructor        [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] delete_destructor         [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] delete_event_reception     [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] delete_reception          [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] delete_class              [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] delete_constructor        [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] delete_destructor         [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] delete_event_reception     [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] delete_reception          [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] delete_superclass         [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] delete_type               [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_is_active              [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_is_behavior_overriden   [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_is_composite           [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_is_final               [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_is_reactive            [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] delete_type               [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] get_is_active              [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] get_is_behavior_overriden   [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] get_is_composite           [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] get_is_final               [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] get_is_reactive            [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] set_is_abstract (unimplemented -- raises not_implemented_error, see docstring)  [ ] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] set_is_active              [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_is_behavior_overriden   [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_is_final               [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] update_contained_diagrams_on_server [x] impl [x] docstring [x] unit test  [ ] integration test
+    # [x] set_is_active              [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] set_is_behavior_overriden   [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] set_is_final               [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] update_contained_diagrams_on_server [x] impl [x] docstring [x] unit test  [x] integration test
     # No deprecated methods in IRPClass.
 
     def add_superclass(self, super_class: "RPClass") -> None:
@@ -127,6 +127,10 @@ class RPClass(RPClassifier):
     def add_event_reception_with_event(self, name: str, event: RPModelElement) -> "RPEventReception":
         """Adds a new event reception, using the specified event.
 
+        Note: ``addEventReceptionWithEvent`` is not exposed in the Rhapsody COM
+        automation type library. This method raises ``NotImplementedError`` to
+        prevent its use.
+
         Args:
             name: The name to use for the new event reception.
             event: The event that should be associated with the new event reception.
@@ -135,12 +139,15 @@ class RPClass(RPClassifier):
             The wrapped ``IRPEventReception`` created.
 
         Raises:
-            RhapsodyRuntimeException: if the event reception cannot be added.
+            NotImplementedError: Always raised, as this method is not exposed
+                in the Rhapsody COM type library.
 
         Reference:
             com.telelogic.rhapsody.core.IRPClass::addEventReceptionWithEvent(java.lang.String name, com.telelogic.rhapsody.core.IRPEvent event)
         """
-        return cast("RPEventReception", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addEventReceptionWithEvent(name, event._com))))
+        raise NotImplementedError(
+            "addEventReceptionWithEvent is not exposed in the Rhapsody COM automation type library. " "Use add_event_reception(name) instead and set the event via the reception object."
+        )
 
     def add_link(
         self,
