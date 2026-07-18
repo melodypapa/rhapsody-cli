@@ -43,6 +43,7 @@ class RPCollaboration(RPUnit):
     # [ ] get_activator  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] get_associations  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] get_classifier  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [wrong-interface] get_classifier_roles  - calls getClassifierRoles; exists on IRPAssociationRole, not IRPCollaboration (audit 2026-07-18)
     # [ ] get_concurrent_group  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] get_execution_occurrences  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] get_interaction_occurrences  [x] impl  [x] docstring  [ ] unit test  [ ] integration test

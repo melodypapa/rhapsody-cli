@@ -91,6 +91,17 @@ class RPProject(RPPackage):
     # [x] start_transaction_of_no_cg_interest  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [inherited] irp_package / irp_unit / irp_model_element methods (covered by rp_package / rp_unit / rp_model_element checklists)
     # Deprecated IRPProject methods listed above.
+    #
+    # Audit 2026-07-18: methods implemented in RPProject but NOT declared on IRPProject in the Java API (docs/java_api HTML).
+    # The following [not-in-api] methods were REMOVED from RPProject (they did not exist on any IRP* interface in Java API):
+    #   find_by_name (findByName), find_by_meta_class (findByMetaClass),
+    #   get_is_dirty (getIsDirty), set_dirty (setDirty),
+    #   add_collaboration (addCollaboration), get_collaborations (getCollaborations),
+    #   find_collaboration (findCollaboration), delete_collaboration (deleteCollaboration)
+    # [wrong-interface] add_configuration  - calls addConfiguration; exists on IRPComponent, not IRPProject (duplicate of RPComponent.add_configuration)
+    # [wrong-interface] get_configurations  - calls getConfigurations; exists on IRPComponent, not IRPProject (duplicate of RPComponent.get_configurations)
+    # [wrong-interface] find_configuration  - calls findConfiguration; exists on IRPComponent, not IRPProject (duplicate of RPComponent.find_configuration)
+    # [wrong-interface] delete_configuration  - calls deleteConfiguration; exists on IRPComponent, not IRPProject (duplicate of RPComponent.delete_configuration)
 
     def add_package(self, name: str) -> "RPPackage":
         """Adds a new package to the project.
@@ -196,28 +207,6 @@ class RPProject(RPPackage):
         """
         return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getComponents", "components"))
 
-    def find_by_name(self, name: str) -> Any:
-        """Finds an element in the project by name.
-
-        Args:
-            name: The name of the element to find.
-
-        Returns:
-            The wrapped element if found.
-        """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findByName(name)))
-
-    def find_by_meta_class(self, meta_class: str) -> RPCollection:
-        """Finds all elements in the project with a given metaclass.
-
-        Args:
-            meta_class: The metaclass name to search for.
-
-        Returns:
-            An ``RPCollection`` of matching elements.
-        """
-        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.findByMetaClass(meta_class)))
-
     def find_element_by_guid(self, guid: str) -> "RPModelElement":
         """Finds an element in the project by GUID.
 
@@ -231,22 +220,6 @@ class RPProject(RPPackage):
             com.telelogic.rhapsody.core.IRPProject::findElementByGUID(java.lang.String theGUID)
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findElementByGUID(guid)))
-
-    def get_is_dirty(self) -> int:
-        """Checks whether the project has unsaved changes.
-
-        Returns:
-            ``1`` if the project is dirty (has unsaved changes), ``0`` otherwise.
-        """
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsDirty", "isDirty"))
-
-    def set_dirty(self, is_dirty: int) -> None:
-        """Sets the dirty flag of the project.
-
-        Args:
-            is_dirty: ``1`` to mark as dirty, ``0`` to mark as clean.
-        """
-        AbstractRPModelElement._set_method_or_property(self._com, "setDirty", "dirty", is_dirty)
 
     # --- Component methods ---
     def add_component(self, name: str) -> "RPComponent":
@@ -419,57 +392,6 @@ class RPProject(RPPackage):
             com.telelogic.rhapsody.core.IRPProject::setActiveComponent(com.telelogic.rhapsody.core.IRPComponent component)
         """
         AbstractRPModelElement.call_com(lambda: self._com.setActiveComponent(component._com))
-
-    # --- Collaboration methods ---
-    def add_collaboration(self, name: str) -> "RPCollaboration":
-        """Adds a new collaboration to the project.
-
-        Args:
-            name: The name of the new collaboration.
-
-        Returns:
-            The wrapped ``IRPCollaboration`` created.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPProject::addCollaboration(java.lang.String name)
-        """
-        return cast("RPCollaboration", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addCollaboration(name))))
-
-    def get_collaborations(self) -> "RPCollection":
-        """Returns all collaborations in the project.
-
-        Returns:
-            An ``RPCollection`` of ``IRPCollaboration`` objects.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPProject::getCollaborations()
-        """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getCollaborations", "collaborations"))
-
-    def find_collaboration(self, name: str) -> "RPCollaboration":
-        """Finds a collaboration in the project by name.
-
-        Args:
-            name: The name of the collaboration to find.
-
-        Returns:
-            The wrapped ``IRPCollaboration`` if found, otherwise empty wrapper.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPProject::findCollaboration(java.lang.String name)
-        """
-        return cast("RPCollaboration", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findCollaboration(name))))
-
-    def delete_collaboration(self, collab: Any) -> None:
-        """Deletes a collaboration from the project.
-
-        Args:
-            collab: The collaboration to delete.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPProject::deleteCollaboration(com.telelogic.rhapsody.core.IRPCollaboration collab)
-        """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteCollaboration(collab._com))
 
     # --- Stereotype methods ---
     def get_all_stereotypes(self) -> "RPCollection":
