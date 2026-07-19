@@ -21,6 +21,13 @@ UTS_XCH_00054: _apply_attribute_extras sets data_type, visibility, multiplicity,
 UTS_XCH_00055: _apply_type_extras creates enumeration literals
 UTS_XCH_00056: _apply_object_extras sets classifier
 UTS_XCH_00057: _apply_operation_extras warns on unresolvable return_type
+UTS_XCH_00058: _apply_dependency_extras wires source/target
+UTS_XCH_00059: _apply_generalization_extras wires derived/base
+UTS_XCH_00060: _apply_relation_extras wires source/target and properties
+UTS_XCH_00061: _apply_port_extras sets flags, contract, interfaces
+UTS_XCH_00062: _apply_event_extras sets base_event and super_event
+UTS_XCH_00063: _apply_event_reception_extras sets event reference
+UTS_XCH_00064: _process_element dispatches 6 new element types
 """
 
 from unittest.mock import MagicMock
@@ -329,3 +336,299 @@ class TestApplyObjectExtras:
         importer._apply_object_extras(obj, {"classifier": "MyClass"})
 
         obj.set_classifier.assert_called_once_with(classifier)
+
+
+class TestApplyDependencyExtras:
+    """UTS_XCH_00058: _apply_dependency_extras wires source/target."""
+
+    def test_sets_dependent_and_depends_on(self) -> None:
+        target = MagicMock()
+        target.get_name.return_value = "OtherClass"
+        project = MagicMock()
+        project.get_nested_elements.return_value = [target]
+        importer = _make_importer(project=project)
+        dependency = MagicMock()
+        dependency.get_name.return_value = "dep1"
+        parent = MagicMock()
+        parent.get_name.return_value = "MyClass"
+
+        importer._apply_dependency_extras(dependency, {"depends_on": "OtherClass"}, parent)
+
+        dependency.set_dependent.assert_called_once_with(parent)
+        dependency.set_depends_on.assert_called_once_with(target)
+
+    def test_warns_when_depends_on_unresolvable(self) -> None:
+        project = MagicMock()
+        project.get_nested_elements.return_value = []
+        importer = _make_importer(project=project)
+        dependency = MagicMock()
+        dependency.get_name.return_value = "dep1"
+        parent = MagicMock()
+        parent.get_name.return_value = "MyClass"
+
+        importer._apply_dependency_extras(dependency, {"depends_on": "Missing"}, parent)
+
+        dependency.set_depends_on.assert_not_called()
+        # set_dependent still called (source is always the parent)
+        dependency.set_dependent.assert_called_once_with(parent)
+
+
+class TestApplyGeneralizationExtras:
+    """UTS_XCH_00059: _apply_generalization_extras wires derived/base."""
+
+    def test_sets_derived_class_and_base_class(self) -> None:
+        base = MagicMock()
+        base.get_name.return_value = "BaseClass"
+        project = MagicMock()
+        project.get_nested_elements.return_value = [base]
+        importer = _make_importer(project=project)
+        generalization = MagicMock()
+        generalization.get_name.return_value = "gen1"
+        parent = MagicMock()
+        parent.get_name.return_value = "MyClass"
+
+        importer._apply_generalization_extras(
+            generalization,
+            {"base_class": "BaseClass", "visibility": "public", "is_virtual": True},
+            parent,
+        )
+
+        generalization.set_derived_class.assert_called_once_with(parent)
+        generalization.set_base_class.assert_called_once_with(base)
+        generalization.set_visibility.assert_called_once_with("public")
+        generalization.set_is_virtual.assert_called_once_with(True)
+
+
+class TestApplyRelationExtras:
+    """UTS_XCH_00060: _apply_relation_extras wires source/target and properties."""
+
+    def test_sets_source_target_and_properties(self) -> None:
+        target = MagicMock()
+        target.get_name.return_value = "OtherClass"
+        project = MagicMock()
+        project.get_nested_elements.return_value = [target]
+        importer = _make_importer(project=project)
+        relation = MagicMock()
+        relation.get_name.return_value = "assoc1"
+        parent = MagicMock()
+        parent.get_name.return_value = "MyClass"
+
+        importer._apply_relation_extras(
+            relation,
+            {
+                "relation_type": "Association",
+                "to": "OtherClass",
+                "multiplicity": "0..*",
+                "is_navigable": True,
+                "role": "items",
+                "visibility": "public",
+            },
+            parent,
+        )
+
+        relation.set_of_class.assert_called_once_with(parent)
+        relation.set_other_class.assert_called_once_with(target)
+        relation.set_relation_type.assert_called_once_with("Association")
+        relation.set_multiplicity.assert_called_once_with("0..*")
+        relation.set_is_navigable.assert_called_once_with(True)
+        relation.set_relation_role_name.assert_called_once_with("items")
+        relation.set_visibility.assert_called_once_with("public")
+
+    def test_uses_from_override_when_provided(self) -> None:
+        source = MagicMock()
+        source.get_name.return_value = "ExplicitSource"
+        target = MagicMock()
+        target.get_name.return_value = "Target"
+        project = MagicMock()
+        project.get_nested_elements.return_value = [source, target]
+        importer = _make_importer(project=project)
+        relation = MagicMock()
+        relation.get_name.return_value = "assoc1"
+        parent = MagicMock()
+        parent.get_name.return_value = "MyClass"
+
+        importer._apply_relation_extras(
+            relation,
+            {"from": "ExplicitSource", "to": "Target"},
+            parent,
+        )
+
+        relation.set_of_class.assert_called_once_with(source)
+
+    def test_falls_back_to_parent_when_from_unresolvable(self) -> None:
+        target = MagicMock()
+        target.get_name.return_value = "Target"
+        project = MagicMock()
+        project.get_nested_elements.return_value = [target]
+        importer = _make_importer(project=project)
+        relation = MagicMock()
+        relation.get_name.return_value = "assoc1"
+        parent = MagicMock()
+        parent.get_name.return_value = "MyClass"
+
+        importer._apply_relation_extras(
+            relation,
+            {"from": "Missing", "to": "Target"},
+            parent,
+        )
+
+        relation.set_of_class.assert_called_once_with(parent)
+
+
+class TestApplyPortExtras:
+    """UTS_XCH_00061: _apply_port_extras sets flags, contract, interfaces."""
+
+    def test_sets_flags_and_contract(self) -> None:
+        contract = MagicMock()
+        contract.get_name.return_value = "IFoo"
+        project = MagicMock()
+        project.get_nested_elements.return_value = [contract]
+        importer = _make_importer(project=project)
+        port = MagicMock()
+        port.get_name.return_value = "p1"
+
+        importer._apply_port_extras(
+            port,
+            {
+                "is_behavioral": True,
+                "is_reversed": False,
+                "contract": "IFoo",
+            },
+        )
+
+        port.set_is_behavioral.assert_called_once_with(True)
+        port.set_is_reversed.assert_called_once_with(False)
+        port.set_contract.assert_called_once_with(contract)
+
+    def test_adds_provided_and_required_interfaces(self) -> None:
+        iface1 = MagicMock()
+        iface1.get_name.return_value = "IFoo"
+        iface2 = MagicMock()
+        iface2.get_name.return_value = "IBar"
+        project = MagicMock()
+        project.get_nested_elements.return_value = [iface1, iface2]
+        importer = _make_importer(project=project)
+        port = MagicMock()
+        port.get_name.return_value = "p1"
+
+        importer._apply_port_extras(
+            port,
+            {"provided_interfaces": ["IFoo"], "required_interfaces": ["IBar"]},
+        )
+
+        port.add_provided_interface.assert_called_once_with(iface1)
+        port.add_required_interface.assert_called_once_with(iface2)
+
+
+class TestApplyEventExtras:
+    """UTS_XCH_00062: _apply_event_extras sets base_event and super_event."""
+
+    def test_sets_base_and_super_event(self) -> None:
+        base = MagicMock()
+        base.get_name.return_value = "BaseEvent"
+        sup = MagicMock()
+        sup.get_name.return_value = "SuperEvent"
+        project = MagicMock()
+        project.get_nested_elements.return_value = [base, sup]
+        importer = _make_importer(project=project)
+        event = MagicMock()
+        event.get_name.return_value = "TickEvent"
+
+        importer._apply_event_extras(
+            event,
+            {"base_event": "BaseEvent", "super_event": "SuperEvent"},
+        )
+
+        event.set_base_event.assert_called_once_with(base)
+        event.set_super_event.assert_called_once_with(sup)
+
+
+class TestApplyEventReceptionExtras:
+    """UTS_XCH_00063: _apply_event_reception_extras sets event reference."""
+
+    def test_sets_event_reference(self) -> None:
+        evt = MagicMock()
+        evt.get_name.return_value = "TickEvent"
+        project = MagicMock()
+        project.get_nested_elements.return_value = [evt]
+        importer = _make_importer(project=project)
+        reception = MagicMock()
+        reception.get_name.return_value = "onTick"
+
+        importer._apply_event_reception_extras(reception, {"event": "TickEvent"})
+
+        reception.set_event.assert_called_once_with(evt)
+
+
+class TestProcessElementNewTypes:
+    """UTS_XCH_00064: _process_element dispatches the 6 new element types."""
+
+    def test_dispatches_dependency(self) -> None:
+        importer = _make_importer()
+        parent = MagicMock()
+        parent.get_nested_elements.return_value = []
+        new_dep = MagicMock()
+        new_dep.get_name.return_value = "dep1"
+        parent.add_new_aggr.return_value = new_dep
+
+        result = importer._process_element(parent, {"name": "dep1", "type": "Dependency"})
+
+        parent.add_new_aggr.assert_called_once_with("Dependency", "dep1")
+        assert result.get_name() == "dep1"
+
+    def test_dispatches_generalization(self) -> None:
+        importer = _make_importer()
+        parent = MagicMock()
+        parent.get_nested_elements.return_value = []
+        new_gen = MagicMock()
+        new_gen.get_name.return_value = "gen1"
+        parent.add_new_aggr.return_value = new_gen
+
+        result = importer._process_element(parent, {"name": "gen1", "type": "Generalization"})
+
+        parent.add_new_aggr.assert_called_once_with("Generalization", "gen1")
+        assert result.get_name() == "gen1"
+
+    def test_dispatches_relation(self) -> None:
+        importer = _make_importer()
+        parent = MagicMock()
+        parent.get_nested_elements.return_value = []
+        new_rel = MagicMock()
+        parent.add_new_aggr.return_value = new_rel
+
+        importer._process_element(parent, {"name": "assoc1", "type": "Relation"})
+
+        parent.add_new_aggr.assert_called_once_with("Relation", "assoc1")
+
+    def test_dispatches_port(self) -> None:
+        importer = _make_importer()
+        parent = MagicMock()
+        parent.get_nested_elements.return_value = []
+        new_port = MagicMock()
+        parent.add_new_aggr.return_value = new_port
+
+        importer._process_element(parent, {"name": "p1", "type": "Port"})
+
+        parent.add_new_aggr.assert_called_once_with("Port", "p1")
+
+    def test_dispatches_event(self) -> None:
+        importer = _make_importer()
+        parent = MagicMock()
+        parent.get_nested_elements.return_value = []
+        new_evt = MagicMock()
+        parent.add_new_aggr.return_value = new_evt
+
+        importer._process_element(parent, {"name": "TickEvent", "type": "Event"})
+
+        parent.add_new_aggr.assert_called_once_with("Event", "TickEvent")
+
+    def test_dispatches_event_reception(self) -> None:
+        importer = _make_importer()
+        parent = MagicMock()
+        parent.get_nested_elements.return_value = []
+        new_rec = MagicMock()
+        parent.add_new_aggr.return_value = new_rec
+
+        importer._process_element(parent, {"name": "onTick", "type": "EventReception"})
+
+        parent.add_new_aggr.assert_called_once_with("EventReception", "onTick")

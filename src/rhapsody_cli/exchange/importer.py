@@ -107,8 +107,18 @@ class RhapsodyImporter(RhapsodyModelHelper):
             self._apply_type_extras(element, spec)
         elif element_type == "Object":
             self._apply_object_extras(element, spec)
-        # Dependency/Generalization/Relation/Port/Event/EventReception extras
-        # are added in Task 6.
+        elif element_type == "Dependency":
+            self._apply_dependency_extras(element, spec, parent)
+        elif element_type == "Generalization":
+            self._apply_generalization_extras(element, spec, parent)
+        elif element_type == "Relation":
+            self._apply_relation_extras(element, spec, parent)
+        elif element_type == "Port":
+            self._apply_port_extras(element, spec)
+        elif element_type == "Event":
+            self._apply_event_extras(element, spec)
+        elif element_type == "EventReception":
+            self._apply_event_reception_extras(element, spec)
 
         # Generic children (Package, Class, Type with kind=Structure)
         if element_type in ("Package", "Class", "Type"):
@@ -194,4 +204,150 @@ class RhapsodyImporter(RhapsodyModelHelper):
                     "Cannot resolve classifier '%s' for object '%s'",
                     spec["classifier"],
                     obj.get_name(),
+                )
+
+    def _apply_dependency_extras(
+        self, dependency: RPModelElement, spec: Dict[str, Any], parent: RPModelElement
+    ) -> None:
+        """Apply Dependency-specific fields: source (parent) and target (depends_on)."""
+        dependency.set_dependent(parent)  # type: ignore[attr-defined]
+        if "depends_on" in spec:
+            target = self.resolve_classifier(spec["depends_on"])
+            if target is not None:
+                dependency.set_depends_on(target)  # type: ignore[attr-defined]
+            else:
+                logger.warning(
+                    "Cannot resolve depends_on '%s' for dependency '%s'",
+                    spec["depends_on"],
+                    dependency.get_name(),
+                )
+
+    def _apply_generalization_extras(
+        self, generalization: RPModelElement, spec: Dict[str, Any], parent: RPModelElement
+    ) -> None:
+        """Apply Generalization-specific fields: derived_class (parent), base_class, visibility, is_virtual."""
+        generalization.set_derived_class(parent)  # type: ignore[attr-defined]
+        if "base_class" in spec:
+            target = self.resolve_classifier(spec["base_class"])
+            if target is not None:
+                generalization.set_base_class(target)  # type: ignore[attr-defined]
+            else:
+                logger.warning(
+                    "Cannot resolve base_class '%s' for generalization '%s'",
+                    spec["base_class"],
+                    generalization.get_name(),
+                )
+        if "visibility" in spec:
+            generalization.set_visibility(spec["visibility"])  # type: ignore[attr-defined]
+        if "is_virtual" in spec:
+            generalization.set_is_virtual(spec["is_virtual"])  # type: ignore[attr-defined]
+
+    def _apply_relation_extras(
+        self, relation: RPModelElement, spec: Dict[str, Any], parent: RPModelElement
+    ) -> None:
+        """Apply Relation-specific fields: from (source), to (target), relation_type, multiplicity, etc."""
+        if "from" in spec:
+            source = self.resolve_classifier(spec["from"])
+            if source is None:
+                logger.warning(
+                    "Cannot resolve from '%s' for relation '%s'; using parent",
+                    spec["from"],
+                    relation.get_name(),
+                )
+                source = parent
+        else:
+            source = parent
+        relation.set_of_class(source)  # type: ignore[attr-defined]
+        if "to" in spec:
+            target = self.resolve_classifier(spec["to"])
+            if target is not None:
+                relation.set_other_class(target)  # type: ignore[attr-defined]
+            else:
+                logger.warning(
+                    "Cannot resolve to '%s' for relation '%s'",
+                    spec["to"],
+                    relation.get_name(),
+                )
+        if "relation_type" in spec:
+            relation.set_relation_type(spec["relation_type"])  # type: ignore[attr-defined]
+        if "multiplicity" in spec:
+            relation.set_multiplicity(spec["multiplicity"])  # type: ignore[attr-defined]
+        if "is_navigable" in spec:
+            relation.set_is_navigable(spec["is_navigable"])  # type: ignore[attr-defined]
+        if "role" in spec:
+            relation.set_relation_role_name(spec["role"])  # type: ignore[attr-defined]
+        if "visibility" in spec:
+            relation.set_visibility(spec["visibility"])  # type: ignore[attr-defined]
+
+    def _apply_port_extras(self, port: RPModelElement, spec: Dict[str, Any]) -> None:
+        """Apply Port-specific fields: is_behavioral, is_reversed, contract, provided/required_interfaces."""
+        if "is_behavioral" in spec:
+            port.set_is_behavioral(spec["is_behavioral"])  # type: ignore[attr-defined]
+        if "is_reversed" in spec:
+            port.set_is_reversed(spec["is_reversed"])  # type: ignore[attr-defined]
+        if "contract" in spec:
+            classifier = self.resolve_classifier(spec["contract"])
+            if classifier is not None:
+                port.set_contract(classifier)  # type: ignore[attr-defined]
+            else:
+                logger.warning(
+                    "Cannot resolve contract '%s' for port '%s'",
+                    spec["contract"],
+                    port.get_name(),
+                )
+        for iface_name in spec.get("provided_interfaces", []):
+            iface = self.resolve_classifier(iface_name)
+            if iface is not None:
+                port.add_provided_interface(iface)  # type: ignore[attr-defined]
+            else:
+                logger.warning(
+                    "Cannot resolve provided_interface '%s' for port '%s'",
+                    iface_name,
+                    port.get_name(),
+                )
+        for iface_name in spec.get("required_interfaces", []):
+            iface = self.resolve_classifier(iface_name)
+            if iface is not None:
+                port.add_required_interface(iface)  # type: ignore[attr-defined]
+            else:
+                logger.warning(
+                    "Cannot resolve required_interface '%s' for port '%s'",
+                    iface_name,
+                    port.get_name(),
+                )
+
+    def _apply_event_extras(self, event: RPModelElement, spec: Dict[str, Any]) -> None:
+        """Apply Event-specific fields: base_event, super_event."""
+        if "base_event" in spec:
+            target = self.resolve_classifier(spec["base_event"])
+            if target is not None:
+                event.set_base_event(target)  # type: ignore[attr-defined]
+            else:
+                logger.warning(
+                    "Cannot resolve base_event '%s' for event '%s'",
+                    spec["base_event"],
+                    event.get_name(),
+                )
+        if "super_event" in spec:
+            target = self.resolve_classifier(spec["super_event"])
+            if target is not None:
+                event.set_super_event(target)  # type: ignore[attr-defined]
+            else:
+                logger.warning(
+                    "Cannot resolve super_event '%s' for event '%s'",
+                    spec["super_event"],
+                    event.get_name(),
+                )
+
+    def _apply_event_reception_extras(self, reception: RPModelElement, spec: Dict[str, Any]) -> None:
+        """Apply EventReception-specific fields: event reference."""
+        if "event" in spec:
+            target = self.resolve_classifier(spec["event"])
+            if target is not None:
+                reception.set_event(target)  # type: ignore[attr-defined]
+            else:
+                logger.warning(
+                    "Cannot resolve event '%s' for reception '%s'",
+                    spec["event"],
+                    reception.get_name(),
                 )
