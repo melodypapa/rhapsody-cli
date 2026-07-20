@@ -38,16 +38,12 @@ class RhapsodyImporter(RhapsodyModelHelper):
         """
         version = data.get(VERSION_KEY)
         if version != SCHEMA_VERSION:
-            raise CliExecutionError(
-                f"Unsupported schema version: {version} (expected {SCHEMA_VERSION})"
-            )
+            raise CliExecutionError(f"Unsupported schema version: {version} (expected {SCHEMA_VERSION})")
         self.project = root_element  # type: ignore[assignment]
         for spec in data.get(RHAPSODY_MODEL_KEY, []):
             self._process_element(root_element, spec)
 
-    def _process_element(
-        self, parent: RPModelElement, spec: Dict[str, Any]
-    ) -> Optional[RPModelElement]:
+    def _process_element(self, parent: RPModelElement, spec: Dict[str, Any]) -> Optional[RPModelElement]:
         """Dispatch a single element spec to find_or_create_<type>, then apply extras.
 
         Args:
@@ -206,9 +202,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
                     obj.get_name(),
                 )
 
-    def _apply_dependency_extras(
-        self, dependency: RPModelElement, spec: Dict[str, Any], parent: RPModelElement
-    ) -> None:
+    def _apply_dependency_extras(self, dependency: RPModelElement, spec: Dict[str, Any], parent: RPModelElement) -> None:
         """Apply Dependency-specific fields: source (parent) and target (depends_on)."""
         dependency.set_dependent(parent)  # type: ignore[attr-defined]
         if "depends_on" in spec:
@@ -222,9 +216,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
                     dependency.get_name(),
                 )
 
-    def _apply_generalization_extras(
-        self, generalization: RPModelElement, spec: Dict[str, Any], parent: RPModelElement
-    ) -> None:
+    def _apply_generalization_extras(self, generalization: RPModelElement, spec: Dict[str, Any], parent: RPModelElement) -> None:
         """Apply Generalization-specific fields: derived_class (parent), base_class, visibility, is_virtual."""
         generalization.set_derived_class(parent)  # type: ignore[attr-defined]
         if "base_class" in spec:
@@ -242,9 +234,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
         if "is_virtual" in spec:
             generalization.set_is_virtual(spec["is_virtual"])  # type: ignore[attr-defined]
 
-    def _apply_relation_extras(
-        self, relation: RPModelElement, spec: Dict[str, Any], parent: RPModelElement
-    ) -> None:
+    def _apply_relation_extras(self, relation: RPModelElement, spec: Dict[str, Any], parent: RPModelElement) -> None:
         """Apply Relation-specific fields: from (source), to (target), relation_type, multiplicity, etc."""
         if "from" in spec:
             source = self.resolve_classifier(spec["from"])

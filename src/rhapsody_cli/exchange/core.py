@@ -88,9 +88,7 @@ class RhapsodyModelHelper:
             return existing
         return parent.add_new_aggr("Attribute", name)
 
-    def find_or_create_type(
-        self, parent: RPModelElement, name: str, kind: Optional[str] = None
-    ) -> RPModelElement:
+    def find_or_create_type(self, parent: RPModelElement, name: str, kind: Optional[str] = None) -> RPModelElement:
         """Find or create a Type under parent, optionally setting its kind."""
         existing = self.find_child_by_name(parent, "Type", name)
         if existing is not None:
@@ -216,9 +214,7 @@ class RhapsodyModelHelper:
     # Public lookup
     # ------------------------------------------------------------------
 
-    def find_child_by_name(
-        self, parent: RPModelElement, meta_class: str, name: str
-    ) -> Optional[RPModelElement]:
+    def find_child_by_name(self, parent: RPModelElement, meta_class: str, name: str) -> Optional[RPModelElement]:
         """Find a direct child of parent by metaclass + name. Returns None if not found."""
         try:
             children = parent.get_nested_elements()
@@ -268,7 +264,12 @@ class RhapsodyModelHelper:
         """Walk owner chain to find the Project; return its name, or '' if not found."""
         current: Optional[RPModelElement] = container
         visited: Set[int] = set()
+        max_depth = 1000
+        depth = 0
         while current is not None:
+            depth += 1
+            if depth > max_depth:
+                break
             try:
                 meta = current.get_meta_class()
             except Exception:
@@ -291,9 +292,7 @@ class RhapsodyModelHelper:
                 break
         return ""
 
-    def _find_element_by_name(
-        self, container: RPModelElement, name: str
-    ) -> Optional[RPModelElement]:
+    def _find_element_by_name(self, container: RPModelElement, name: str) -> Optional[RPModelElement]:
         """Recursively search container's nested elements for one with matching name."""
         try:
             children = container.get_nested_elements()

@@ -605,9 +605,7 @@ class PackageExportAction(AbstractPackageAction):
         super().__init__(command_id="export")
 
     def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
-        parser = sub_parser.add_parser(
-            self.command_id, help="Export a package to a YAML file"
-        )
+        parser = sub_parser.add_parser(self.command_id, help="Export a package to a YAML file")
         self.add_path_argument(parser, required=False, help_text="Path to package (defaults to root)")
         parser.add_argument("--file", required=True, help="Output YAML file path")
         self.add_verbose_argument(parser)
@@ -639,9 +637,7 @@ class PackageImportAction(AbstractPackageAction):
         super().__init__(command_id="import")
 
     def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
-        parser = sub_parser.add_parser(
-            self.command_id, help="Import a YAML file into a package"
-        )
+        parser = sub_parser.add_parser(self.command_id, help="Import a YAML file into a package")
         self.add_path_argument(parser, required=False, help_text="Path to target package (defaults to root)")
         parser.add_argument("--file", required=True, help="Input YAML file path")
         self.add_verbose_argument(parser)

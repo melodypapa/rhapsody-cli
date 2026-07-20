@@ -705,16 +705,12 @@ class TestPackageExportAction:
                 args.file = "sensors.yaml"
                 args.verbose = False
 
-                with patch.object(action, "_connect_app", return_value=fake_app), patch.object(
-                    action, "_resolve_and_validate_package", return_value=fake_package
-                ):
+                with patch.object(action, "_connect_app", return_value=fake_app), patch.object(action, "_resolve_and_validate_package", return_value=fake_package):
                     action.execute(args)
 
                 mock_exporter_cls.assert_called_once_with(app=fake_app)
                 mock_exporter.export.assert_called_once_with(fake_package)
-                mock_yaml_cls.return_value.write.assert_called_once_with(
-                    "sensors.yaml", {"version": 1, "project": "P", "rhapsody-model": []}
-                )
+                mock_yaml_cls.return_value.write.assert_called_once_with("sensors.yaml", {"version": 1, "project": "P", "rhapsody-model": []})
 
     def test_export_raises_on_unresolved_package(self) -> None:
         from rhapsody_cli.actions.package_action import PackageExportAction
@@ -722,9 +718,7 @@ class TestPackageExportAction:
         action = PackageExportAction()
         fake_app = MagicMock(name="FakeApplication")
 
-        with patch("rhapsody_cli.actions.package_action.RhapsodyExporter"), patch(
-            "rhapsody_cli.actions.package_action.RhapsodyYaml"
-        ):
+        with patch("rhapsody_cli.actions.package_action.RhapsodyExporter"), patch("rhapsody_cli.actions.package_action.RhapsodyYaml"):
             args = MagicMock()
             args.path = "Nonexistent"
             args.file = "out.yaml"
@@ -763,16 +757,12 @@ class TestPackageImportAction:
                 args.file = "sensors.yaml"
                 args.verbose = False
 
-                with patch.object(action, "_connect_app", return_value=fake_app), patch.object(
-                    action, "_resolve_and_validate_package", return_value=fake_package
-                ):
+                with patch.object(action, "_connect_app", return_value=fake_app), patch.object(action, "_resolve_and_validate_package", return_value=fake_package):
                     action.execute(args)
 
                 mock_yaml.read.assert_called_once_with("sensors.yaml")
                 mock_importer_cls.assert_called_once_with(app=fake_app)
-                mock_importer.import_template.assert_called_once_with(
-                    {"version": 1, "project": "P", "rhapsody-model": []}, fake_package
-                )
+                mock_importer.import_template.assert_called_once_with({"version": 1, "project": "P", "rhapsody-model": []}, fake_package)
                 fake_app.save_all.assert_called_once()
 
     def test_import_raises_on_yaml_read_failure(self) -> None:
@@ -793,8 +783,6 @@ class TestPackageImportAction:
                 args.file = "missing.yaml"
                 args.verbose = False
 
-                with patch.object(action, "_connect_app", return_value=fake_app), patch.object(
-                    action, "_resolve_and_validate_package", return_value=fake_package
-                ):
+                with patch.object(action, "_connect_app", return_value=fake_app), patch.object(action, "_resolve_and_validate_package", return_value=fake_package):
                     with pytest.raises(CliExecutionError, match="file not found"):
                         action.execute(args)

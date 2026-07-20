@@ -37,9 +37,7 @@ class TestProjectExportAction:
         mock_exporter_cls.assert_called_once_with(app=fake_app)
         mock_exporter.export.assert_called_once_with(fake_project)
         mock_yaml_cls.assert_called_once()
-        mock_yaml_cls.return_value.write.assert_called_once_with(
-            "output.yaml", {"version": 1, "project": "P", "rhapsody-model": []}
-        )
+        mock_yaml_cls.return_value.write.assert_called_once_with("output.yaml", {"version": 1, "project": "P", "rhapsody-model": []})
 
     @patch("rhapsody_cli.actions.project_action.RhapsodyYaml")
     @patch("rhapsody_cli.actions.project_action.RhapsodyExporter")
@@ -60,9 +58,7 @@ class TestProjectImportAction:
 
     @patch("rhapsody_cli.actions.project_action.RhapsodyImporter")
     @patch("rhapsody_cli.actions.project_action.RhapsodyYaml")
-    def test_import_reads_yaml_and_calls_import_template(
-        self, mock_yaml_cls: MagicMock, mock_importer_cls: MagicMock
-    ) -> None:
+    def test_import_reads_yaml_and_calls_import_template(self, mock_yaml_cls: MagicMock, mock_importer_cls: MagicMock) -> None:
         action = ProjectImportAction()
         fake_app = MagicMock(name="FakeApplication")
         fake_project = MagicMock(name="FakeProject")
@@ -84,16 +80,12 @@ class TestProjectImportAction:
 
         mock_yaml.read.assert_called_once_with("input.yaml")
         mock_importer_cls.assert_called_once_with(app=fake_app)
-        mock_importer.import_template.assert_called_once_with(
-            {"version": 1, "project": "P", "rhapsody-model": []}, fake_project
-        )
+        mock_importer.import_template.assert_called_once_with({"version": 1, "project": "P", "rhapsody-model": []}, fake_project)
         fake_app.save_all.assert_called_once()
 
     @patch("rhapsody_cli.actions.project_action.RhapsodyImporter")
     @patch("rhapsody_cli.actions.project_action.RhapsodyYaml")
-    def test_import_raises_on_yaml_read_failure(
-        self, mock_yaml_cls: MagicMock, mock_importer_cls: MagicMock
-    ) -> None:
+    def test_import_raises_on_yaml_read_failure(self, mock_yaml_cls: MagicMock, mock_importer_cls: MagicMock) -> None:
         action = ProjectImportAction()
         fake_app = MagicMock(name="FakeApplication")
         fake_app.active_project.return_value = MagicMock()

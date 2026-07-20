@@ -132,9 +132,7 @@ class ProjectExportAction(RhapsodyContextAction):
         super().__init__(command_id="export")
 
     def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
-        parser = sub_parser.add_parser(
-            self.command_id, help="Export the active project to a YAML file"
-        )
+        parser = sub_parser.add_parser(self.command_id, help="Export the active project to a YAML file")
         parser.add_argument("--file", required=True, help="Output YAML file path")
         self.add_verbose_argument(parser)
 
@@ -165,9 +163,7 @@ class ProjectImportAction(RhapsodyContextAction):
         super().__init__(command_id="import")
 
     def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
-        parser = sub_parser.add_parser(
-            self.command_id, help="Import a YAML file into the active project"
-        )
+        parser = sub_parser.add_parser(self.command_id, help="Import a YAML file into the active project")
         parser.add_argument("--file", required=True, help="Input YAML file path")
         self.add_verbose_argument(parser)
 

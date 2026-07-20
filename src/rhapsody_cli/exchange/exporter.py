@@ -5,7 +5,7 @@ SWR_XCH_003: Project Export
 """
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 from rhapsody_cli.exchange.core import RhapsodyModelHelper
 from rhapsody_cli.exchange.schema import PROJECT_KEY, RHAPSODY_MODEL_KEY, SCHEMA_VERSION, VERSION_KEY
@@ -279,6 +279,8 @@ class RhapsodyExporter(RhapsodyModelHelper):
     def _wrap_if_needed(self, element: Any) -> RPModelElement:
         if isinstance(element, RPModelElement):
             return element
+        if callable(getattr(element, "get_meta_class", None)):
+            return cast(RPModelElement, element)
         return RPModelElement.wrap(element)
 
     def _export_container(self, container: RPModelElement, type_name: str) -> Dict[str, Any]:
