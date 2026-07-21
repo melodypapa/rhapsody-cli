@@ -9,9 +9,20 @@ a registry populated by each element module at import time.
 """
 
 from enum import IntEnum
-from typing import Any, Callable, Dict, Iterator, Type, TypeVar
+from typing import TYPE_CHECKING, Any, Callable, Dict, Iterator, Type, TypeVar
 
 from rhapsody_cli import com_utils
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.elements.classifiers.model_association_class import RPAssociationClass
+    from rhapsody_cli.models.elements.classifiers.model_stereotype import RPStereotype
+    from rhapsody_cli.models.elements.containment.model_project import RPProject
+    from rhapsody_cli.models.elements.diagrams.model_diagrams import RPDiagram
+    from rhapsody_cli.models.elements.graphics.model_graphics import RPLink
+    from rhapsody_cli.models.elements.relations.model_dependency import RPDependency
+    from rhapsody_cli.models.elements.relations.model_relation import RPRelation
+    from rhapsody_cli.models.elements.templates.model_templates import RPTemplateInstantiation
+    from rhapsody_cli.models.elements.variables.model_variables import RPTag
 
 T = TypeVar("T")
 
@@ -255,7 +266,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         return str(AbstractRPModelElement._get_method_or_property(self._com, "getGUID", "GUID"))
 
-    def add_association(self, end1: "RPModelElement", end2: "RPModelElement", name: str) -> "RPModelElement":
+    def add_association(self, end1: "RPRelation", end2: "RPRelation", name: str) -> "RPAssociationClass":
         """Creates an association class using the specified IRPRelation elements.
 
         Can only be called on elements that can contain association classes -
@@ -274,7 +285,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addAssociation(end1._com, end2._com, name)))
 
-    def add_dependency(self, depends_on_name: str, depends_on_type: str) -> "RPModelElement":
+    def add_dependency(self, depends_on_name: str, depends_on_type: str) -> "RPDependency":
         """Adds a dependency from the model element to the model element specified by the parameters.
 
         The method searches the model recursively until it finds an element
@@ -297,7 +308,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addDependency(depends_on_name, depends_on_type)))
 
-    def add_dependency_between(self, dependent: "RPModelElement", depends_on: "RPModelElement") -> "RPModelElement":
+    def add_dependency_between(self, dependent: "RPModelElement", depends_on: "RPModelElement") -> "RPDependency":
         """Creates a dependency between the two specified elements.
 
         In most cases :meth:`add_dependency_to` should be used. This method is
@@ -319,7 +330,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addDependencyBetween(dependent._com, depends_on._com)))
 
-    def add_dependency_to(self, element: "RPModelElement") -> "RPModelElement":
+    def add_dependency_to(self, element: "RPModelElement") -> "RPDependency":
         """Adds a dependency upon another model element.
 
         Args:
@@ -336,10 +347,10 @@ class RPModelElement(AbstractRPModelElement):
     def add_link_to_element(
         self,
         to_element: "RPModelElement",
-        assoc: "RPModelElement",
+        assoc: "RPRelation",
         from_port: "RPModelElement",
         to_port: "RPModelElement",
-    ) -> "RPModelElement":
+    ) -> "RPLink":
         """Creates a link between this model element and the model element specified as an argument.
 
         In addition to the other element to connect, you must specify either
@@ -407,7 +418,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         AbstractRPModelElement.call_com(lambda: self._com.addRedefines(new_redefine._com))
 
-    def add_remote_dependency_to(self, element: "RPModelElement", link_type: str) -> "RPModelElement":
+    def add_remote_dependency_to(self, element: "RPModelElement", link_type: str) -> "RPDependency":
         """For Design Manager projects, creates a dependency from a model element to a remote element.
 
         Args:
@@ -422,7 +433,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addRemoteDependencyTo(element._com, link_type)))
 
-    def add_specific_stereotype(self, stereotype: "RPModelElement") -> None:
+    def add_specific_stereotype(self, stereotype: "RPStereotype") -> None:
         """Applies the specified stereotype to the model element.
 
         Args:
@@ -433,7 +444,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         AbstractRPModelElement.call_com(lambda: self._com.addSpecificStereotype(stereotype._com))
 
-    def add_stereotype(self, name: str, meta_type: str) -> "RPModelElement":
+    def add_stereotype(self, name: str, meta_type: str) -> "RPStereotype":
         """Applies the specified stereotype to the model element.
 
         If the project already contains a stereotype with the given name
@@ -513,7 +524,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         raise NotImplementedError("Rhapsody2.Application.1 does not expose createOSLCLink; method is defined for Java API parity only.")
 
-    def delete_dependency(self, dependency: "RPModelElement") -> None:
+    def delete_dependency(self, dependency: "RPDependency") -> None:
         """Deletes the specified dependency from the model.
 
         Args:
@@ -916,7 +927,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getLocalTags", "localTags"))
 
-    def get_main_diagram(self) -> "RPModelElement":
+    def get_main_diagram(self) -> "RPDiagram":
         """Returns the "main" diagram for the element.
 
         This operation is valid only for packages, classes, actors, use
@@ -973,7 +984,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getNestedElementsRecursive", "nestedElementsRecursive"))
 
-    def get_new_term_stereotype(self) -> "RPModelElement":
+    def get_new_term_stereotype(self) -> "RPStereotype":
         """If a "new term" stereotype has been applied to the element, returns the stereotype.
 
         Returns:
@@ -1086,7 +1097,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getOwner", "owner"))
 
-    def get_project(self) -> "RPModelElement":
+    def get_project(self) -> "RPProject":
         """Returns the project that the current element belongs to.
 
         Returns:
@@ -1256,7 +1267,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         return str(AbstractRPModelElement._get_method_or_property(self._com, "getRmmUrl", "rmmUrl"))
 
-    def get_save_unit(self) -> "RPModelElement":
+    def get_save_unit(self) -> "RPUnit":
         """Returns the unit that the model element is saved in.
 
         Returns:
@@ -1278,7 +1289,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getStereotypes", "stereotypes"))
 
-    def get_tag(self, name: str) -> "RPModelElement":
+    def get_tag(self, name: str) -> "RPTag":
         """Returns the tag specified.
 
         This method can be used for both local tags and global tags.
@@ -1305,7 +1316,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getTemplateParameters", "templateParameters"))
 
-    def get_ti(self) -> "RPModelElement":
+    def get_ti(self) -> "RPTemplateInstantiation":
         """For template instantiations, returns an object containing the template instantiation parameters.
 
         Returns:
@@ -1484,7 +1495,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         AbstractRPModelElement.call_com(lambda: self._com.removeRedefines(removed_redefine._com))
 
-    def remove_stereotype(self, stereotype: "RPModelElement") -> None:
+    def remove_stereotype(self, stereotype: "RPStereotype") -> None:
         """Removes the specified stereotype from the element.
 
         Args:
@@ -1609,7 +1620,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         AbstractRPModelElement._set_method_or_property(self._com, "setIsShowDisplayName", "isShowDisplayName", is_show_display_name)
 
-    def set_main_diagram(self, main_diagram: "RPModelElement") -> None:
+    def set_main_diagram(self, main_diagram: "RPDiagram") -> None:
         """Specifies the "main" diagram for the element.
 
         This operation is valid only for packages, classes, actors, use
@@ -1672,7 +1683,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         AbstractRPModelElement._set_method_or_property(self._com, "setRequirementTraceabilityHandle", "requirementTraceabilityHandle", requirement_traceability_handle)
 
-    def set_tag_context_value(self, tag: "RPModelElement", elements: "RPCollection", multiplicities: "RPCollection") -> "RPModelElement":
+    def set_tag_context_value(self, tag: "RPTag", elements: "RPCollection", multiplicities: "RPCollection") -> "RPTag":
         """Applies the specified tag and sets its value to a specific instance of another model element.
 
         ``elements`` is a collection of model elements representing the full
@@ -1698,7 +1709,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.setTagContextValue(tag._com, elements._com, multiplicities._com)))
 
-    def set_tag_element_value(self, tag: "RPModelElement", val: "RPModelElement") -> "RPModelElement":
+    def set_tag_element_value(self, tag: "RPTag", val: "RPModelElement") -> "RPTag":
         """Applies a tag whose type is a model element to the current element with the value specified.
 
         If the tag has already been applied, this method can be used to modify
@@ -1716,7 +1727,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.setTagElementValue(tag._com, val._com)))
 
-    def set_tag_value(self, tag: "RPModelElement", val: str) -> "RPModelElement":
+    def set_tag_value(self, tag: "RPTag", val: str) -> "RPTag":
         """Applies the specified tag to the model element with the value specified.
 
         If the tag has already been applied, this method can be used to modify
@@ -1734,7 +1745,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.setTagValue(tag._com, val)))
 
-    def set_ti(self, ti: "RPModelElement") -> None:
+    def set_ti(self, ti: "RPTemplateInstantiation") -> None:
         """Sets the template instantiation for the model element (for internal use only).
 
         Args:

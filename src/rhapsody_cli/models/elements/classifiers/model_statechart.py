@@ -278,7 +278,7 @@ class RPStatechart(RPClass):
         """
         return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getGraphicalElements", "graphicalElements"))
 
-    def get_inherits_from(self) -> RPModelElement:
+    def get_inherits_from(self) -> "RPStatechart":
         """Returns the statechart that this statechart inherits from.
 
         Returns:
@@ -287,7 +287,7 @@ class RPStatechart(RPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getInheritsFrom()
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getInheritsFrom", "inheritsFrom"))
+        return cast("RPStatechart", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getInheritsFrom", "inheritsFrom")))
 
     def get_is_main_behavior(self) -> int:
         """Checks whether this statechart is the main behavior of its owning class.
@@ -311,7 +311,7 @@ class RPStatechart(RPClass):
         """
         return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsOverridden", "isOverridden"))
 
-    def get_its_class(self) -> RPModelElement:
+    def get_its_class(self) -> "RPClass":
         """Returns the class that owns this statechart.
 
         Returns:
@@ -320,7 +320,7 @@ class RPStatechart(RPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getItsClass()
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getItsClass", "itsClass"))
+        return cast("RPClass", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getItsClass", "itsClass")))
 
     def get_picture(self) -> Any:
         """Returns the picture representation of the statechart.

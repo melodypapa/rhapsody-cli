@@ -1,6 +1,6 @@
 """Values model-element wrappers (auto-generated stubs)."""
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
 
@@ -35,7 +35,7 @@ class RPInstanceSlot(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPInstanceSlot::addElementValue(com.telelogic.rhapsody.core.IRPModelElement val)
         """
-        return AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addElementValue(val._com)))
+        return cast("RPInstanceValue", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addElementValue(val._com))))
 
     def add_string_value(self, val: str) -> "RPLiteralSpecification":
         """Adds a string value to this instance slot.
@@ -52,7 +52,7 @@ class RPInstanceSlot(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPInstanceSlot::addStringValue(java.lang.String val)
         """
-        return AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addStringValue(val)))
+        return cast("RPLiteralSpecification", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addStringValue(val))))
 
     def get_slot_property(self) -> "RPModelElement":
         """Returns the slot property of this instance slot.
@@ -127,7 +127,7 @@ class RPInstanceSpecification(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPInstanceSpecification::addInstanceSlot(java.lang.String name, com.telelogic.rhapsody.core.IRPModelElement slotProperty)
         """
-        return AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addInstanceSlot(name, slot_property._com)))
+        return cast("RPInstanceSlot", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addInstanceSlot(name, slot_property._com))))
 
     def get_classifier(self) -> "RPClassifier":
         """Returns the classifier of this instance specification.
@@ -141,7 +141,7 @@ class RPInstanceSpecification(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPInstanceSpecification::getClassifier()
         """
-        return AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getClassifier()))
+        return cast("RPClassifier", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getClassifier())))
 
     def get_instance_slots(self) -> "RPCollection":
         """Returns the instance slots of this instance specification.

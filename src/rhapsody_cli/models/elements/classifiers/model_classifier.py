@@ -426,7 +426,7 @@ class RPClassifier(RPUnit):
             ),
         )
 
-    def delete_attribute(self, attribute: "RPModelElement") -> None:
+    def delete_attribute(self, attribute: "RPAttribute") -> None:
         """Deletes the specified attribute.
 
         Args:
@@ -437,7 +437,7 @@ class RPClassifier(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteAttribute(attribute._com))
 
-    def delete_flow_items(self, p_item: "RPModelElement") -> None:
+    def delete_flow_items(self, p_item: "RPFlowItem") -> None:
         """Deletes the specified item flow.
 
         Args:
@@ -448,7 +448,7 @@ class RPClassifier(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteFlowItems(p_item._com))
 
-    def delete_flows(self, p_flow: "RPModelElement") -> None:
+    def delete_flows(self, p_flow: "RPFlow") -> None:
         """Deletes the specified flow.
 
         Args:
@@ -471,7 +471,7 @@ class RPClassifier(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteGeneralization(super_class._com))
 
-    def delete_operation(self, operation: "RPModelElement") -> None:
+    def delete_operation(self, operation: "RPOperation") -> None:
         """Deletes the specified operation.
 
         Args:
@@ -482,7 +482,7 @@ class RPClassifier(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteOperation(operation._com))
 
-    def delete_relation(self, relation: "RPModelElement") -> None:
+    def delete_relation(self, relation: "RPRelation") -> None:
         """Deletes the specified relation.
 
         Args:
