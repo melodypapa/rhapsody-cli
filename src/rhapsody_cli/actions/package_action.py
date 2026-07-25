@@ -19,7 +19,7 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List, cast
 
-from rhapsody_cli.actions.abstract_action import ElementManagementAction
+from rhapsody_cli.actions.abstract_action import ElementManagementAction, SessionAwareAction
 from rhapsody_cli.cli.formatters import OutputFormatter
 from rhapsody_cli.exceptions import CliExecutionError, RhapsodyConnectionError
 from rhapsody_cli.exchange.exporter import RhapsodyExporter
@@ -29,7 +29,7 @@ from rhapsody_cli.exchange.yaml_utils import RhapsodyYaml
 logger = logging.getLogger(__name__)
 
 
-class AbstractPackageAction(ElementManagementAction):
+class AbstractPackageAction(SessionAwareAction, ElementManagementAction):
     """Base class for package actions with common path validation.
 
     SWR_PKG_0005: Path Validation
@@ -93,6 +93,7 @@ class PackageCreateAction(AbstractPackageAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute package creation."""
+        super().execute(args)
         self.logger.info("Starting package creation...")
         input_data = args.input if args.input else args.attributes
         if not input_data:
@@ -304,6 +305,7 @@ class PackageDeleteAction(AbstractPackageAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute package deletion."""
+        super().execute(args)
         self.logger.info("Starting package deletion...")
         self.logger.info("Resolving package path '%s'...", args.path)
         package = self._resolve_and_validate_package(args.path)
@@ -340,6 +342,7 @@ class PackageViewAction(AbstractPackageAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute package view."""
+        super().execute(args)
         self.logger.info("Starting package view operation...")
         self.logger.info("Resolving package path '%s'...", args.path)
         package = self._resolve_and_validate_package(args.path)
@@ -410,6 +413,7 @@ class PackageListAction(AbstractPackageAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute package list."""
+        super().execute(args)
         self.logger.info("Starting package list operation...")
         self.logger.info("Resolving package path '%s'...", args.path)
         package = self._resolve_and_validate_package(args.path)
@@ -581,6 +585,7 @@ class PackageUpdateAction(AbstractPackageAction):
         Args:
             args: Parsed argparse.Namespace with path/guid and attribute data.
         """
+        super().execute(args)
         self.logger.info("Starting package update...")
         if not args.path and not args.guid:
             raise CliExecutionError("Either --path or --guid is required")
@@ -611,6 +616,7 @@ class PackageExportAction(AbstractPackageAction):
         self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
+        super().execute(args)
         try:
             app = self._connect_app()
             package = self._resolve_and_validate_package(args.path)
@@ -643,6 +649,7 @@ class PackageImportAction(AbstractPackageAction):
         self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
+        super().execute(args)
         try:
             app = self._connect_app()
             package = self._resolve_and_validate_package(args.path)

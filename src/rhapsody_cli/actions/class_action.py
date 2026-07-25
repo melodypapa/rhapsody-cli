@@ -22,14 +22,14 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List, cast
 
-from rhapsody_cli.actions.abstract_action import ElementManagementAction
+from rhapsody_cli.actions.abstract_action import ElementManagementAction, SessionAwareAction
 from rhapsody_cli.cli.formatters import OutputFormatter
 from rhapsody_cli.exceptions import CliExecutionError
 
 logger = logging.getLogger(__name__)
 
 
-class AbstractClassAction(ElementManagementAction):
+class AbstractClassAction(SessionAwareAction, ElementManagementAction):
     """Base class for class actions with common path and GUID validation.
 
     SWR_CLS_00005: Path Validation
@@ -153,6 +153,7 @@ class ClassCreateAction(AbstractClassAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute class creation."""
+        super().execute(args)
         input_data = args.input if args.input else args.attributes
         if not input_data:
             raise CliExecutionError("Either --input or attributes argument must be provided")
@@ -307,6 +308,7 @@ class ClassDeleteAction(AbstractClassAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute class deletion."""
+        super().execute(args)
         if args.path and args.guid:
             raise CliExecutionError("Only one of --path or --guid may be specified")
         if not args.path and not args.guid:
@@ -347,6 +349,7 @@ class ClassListAction(AbstractClassAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute class list."""
+        super().execute(args)
         package = self._resolve_and_validate_package(args.path)
 
         try:
@@ -440,6 +443,7 @@ class ClassViewAction(AbstractClassAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute class view."""
+        super().execute(args)
         if args.path and args.guid:
             raise CliExecutionError("Only one of --path or --guid may be specified")
         if not args.path and not args.guid:
@@ -548,6 +552,7 @@ class ClassLinkAction(AbstractClassAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute class link operation."""
+        super().execute(args)
         if args.path and args.guid:
             raise CliExecutionError("Only one of --path or --guid may be specified")
         if not args.path and not args.guid:
@@ -695,6 +700,7 @@ class ClassUpdateAction(AbstractClassAction):
         Args:
             args: Parsed argparse.Namespace with path/guid and attribute data.
         """
+        super().execute(args)
         self.logger.info("Starting class update...")
         if not args.path and not args.guid:
             raise CliExecutionError("Either --path or --guid is required")

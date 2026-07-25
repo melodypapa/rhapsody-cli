@@ -4,6 +4,7 @@ import os
 import shutil
 import sys
 import time
+from datetime import datetime
 from pathlib import Path
 from typing import Generator
 
@@ -78,6 +79,40 @@ def rhapsody_app() -> RhapsodyApplication:
     """Session-scoped Rhapsody application fixture."""
     app = RhapsodyApplication.connect(attach_only=True)
     return app
+
+
+@pytest.fixture(scope="session", autouse=True)
+def rhapsody_session(rhapsody_app: RhapsodyApplication) -> Generator[RhapsodyApplication, None, None]:
+    """Connect once for entire test session, disconnect at end.
+
+    Creates a session file that persists across all integration tests,
+    improving performance by avoiding repeated connect/disconnect cycles.
+
+    The session file is stored in the user's home directory and has a
+    long timeout (30 minutes) to accommodate slow test runs.
+
+    Yields:
+        RhapsodyApplication: The connected application instance.
+    """
+    from rhapsody_cli.session import Session, SessionManager
+
+    session_manager = SessionManager()
+
+    # Create session file with long timeout for integration tests
+    now = datetime.now()
+    session: Session = {
+        "connected": True,
+        "instance_type": "attached",  # We're attaching to existing instance
+        "connected_at": now.isoformat(),
+        "last_activity": now.isoformat(),
+        "timeout_minutes": 30,  # Long timeout for test session
+    }
+    session_manager.save(session)
+
+    yield rhapsody_app
+
+    # Cleanup: clear session file at end
+    session_manager.clear()
 
 
 @pytest.fixture(scope="session", autouse=True)
