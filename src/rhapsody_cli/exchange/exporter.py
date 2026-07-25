@@ -281,7 +281,7 @@ class RhapsodyExporter(RhapsodyModelHelper):
             return element
         if callable(getattr(element, "get_meta_class", None)):
             return cast(RPModelElement, element)
-        return RPModelElement.wrap(element)
+        return cast(RPModelElement, RPModelElement.wrap(element))
 
     def _export_container(self, container: RPModelElement, type_name: str) -> Dict[str, Any]:
         spec: Dict[str, Any] = {"name": container.get_name(), "type": type_name}

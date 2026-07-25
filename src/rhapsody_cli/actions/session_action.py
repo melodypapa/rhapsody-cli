@@ -92,7 +92,7 @@ class ConnectAction(AbstractAction):
             if args.timeout < 0:
                 logger.warning("Invalid timeout %d, using default (5 minutes)", args.timeout)
                 return 5
-            return args.timeout
+            return int(args.timeout)
 
         # 2. Config file
         config_file = SessionManager.SESSION_DIR / "config.json"

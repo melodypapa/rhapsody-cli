@@ -349,13 +349,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         return cast("RPDependency", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addDependencyTo(element._com))))
 
-    def add_link_to_element(
-        self,
-        to_element: "RPModelElement",
-        assoc: "RPRelation",
-        from_port: "RPModelElement",
-        to_port: "RPModelElement",
-    ) -> "RPLink":
+    def add_link_to_element(self, to_element: "RPModelElement", assoc: "RPRelation", from_port: "RPModelElement", to_port: "RPModelElement") -> "RPLink":
         """Creates a link between this model element and the model element specified as an argument.
 
         In addition to the other element to connect, you must specify either

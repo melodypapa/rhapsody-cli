@@ -5,6 +5,7 @@ import logging
 import sys
 from typing import Optional
 
+from rhapsody_cli.actions.abstract_action import AbstractAction
 from rhapsody_cli.actions.session_action import ConnectAction, DisconnectAction, StatusAction, VersionAction
 from rhapsody_cli.cli.logging_config import CliLoggingConfigurator
 from rhapsody_cli.commands.attribute_command import AttributeCommand
@@ -43,6 +44,7 @@ def main() -> None:
 
     try:
         # Single-level commands (no AbstractCommand wrapper)
+        action: AbstractAction
         if command_name == "connect":
             action = ConnectAction()
             # Parse args for connect

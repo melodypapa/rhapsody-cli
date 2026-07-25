@@ -99,6 +99,12 @@ class MyAction:
 
 ### Import Order & Organization
 
+**Rule: All imports must be at the beginning of the file and use full package path.**
+
+- **Location:** Imports must be placed at the beginning of the file, after the module docstring
+- **Style:** Use full package path (no relative imports)
+- **Order:** stdlib → third-party → local application
+
 ```python
 # 1. Standard library
 import argparse
@@ -115,6 +121,178 @@ from rhapsody_cli.cli.context import RhapsodyContext
 from rhapsody_cli.exceptions import RhapsodyConnectionError
 from rhapsody_cli.models.elements.classifiers import RPClass
 ```
+
+**✅ CORRECT: Full package path**
+```python
+from rhapsody_cli.actions.abstract_action import AbstractAction
+from rhapsody_cli.models.elements.classifiers.model_class import RPClass
+```
+
+**❌ WRONG: Relative imports**
+```python
+from .abstract_action import AbstractAction
+from ..models.elements.classifiers.model_class import RPClass
+```
+
+**Exception:** `TYPE_CHECKING` imports are allowed to be grouped separately for type-hint-only imports.
+
+### Why Full Package Path?
+
+- **Clarity:** Import source is immediately visible
+- **Refactoring safety:** Moving files doesn't break imports
+- **IDE support:** Better autocomplete and navigation
+- **Consistency:** All imports follow the same pattern
+
+---
+
+## Function Definition Style
+
+### Keep Arguments on One Line
+
+Method and function arguments should be on the same line as the method name, not wrapped to multiple lines.
+
+**✅ CORRECT: Arguments on same line**
+```python
+def get_element(self, name: str, element_type: str) -> Optional[RPModelElement]:
+    return self._find_element(name, element_type)
+
+def connect(self, timeout: int = 30, attach_only: bool = False) -> RhapsodyApplication:
+    return RhapsodyApplication.connect(attach_only=attach_only)
+
+def create_package(self, name: str, parent: Optional[RPPackage] = None) -> RPPackage:
+    if parent is None:
+        parent = self._get_default_package()
+    return parent.add_package(name)
+```
+
+**❌ WRONG: Arguments wrapped to multiple lines**
+```python
+def get_element(
+    self,
+    name: str,
+    element_type: str
+) -> Optional[RPModelElement]:
+    return self._find_element(name, element_type)
+
+def connect(
+    self,
+    timeout: int = 30,
+    attach_only: bool = False
+) -> RhapsodyApplication:
+    return RhapsodyApplication.connect(attach_only=attach_only)
+```
+
+### When Wrapping is Acceptable
+
+If a line is too long (exceeds Black's line length limit of 200), wrap arguments but keep them grouped logically:
+
+```python
+# Acceptable: Line too long, wrap with all args on next line
+def export_to_yaml(
+    self, project: RPProject, output_path: Path, include_diagrams: bool = True
+) -> None:
+    self._exporter.export(project, output_path, include_diagrams)
+```
+
+---
+
+## Type Annotations
+
+### ❌ DO NOT USE: `Any` Type
+
+**The `Any` type is FORBIDDEN.** Replace it with the accurate data type.
+
+`Any` disables type checking — it tells mypy "don't check this," which defeats the purpose of having type annotations. Every parameter, return type, and variable must use a concrete type.
+
+**✅ CORRECT: Use accurate types**
+```python
+from typing import Dict, List, Optional, Union
+
+# CORRECT: Concrete types
+def get_element(name: str, element_type: str) -> Optional[RPModelElement]:
+    return self._find_element(name, element_type)
+
+# CORRECT: Dict with key/value types
+def parse_config(path: Path) -> Dict[str, Union[str, int, bool]]:
+    return json.loads(path.read_text())
+
+# CORRECT: List with element type
+def get_all_packages(project: RPProject) -> List[RPPackage]:
+    return project.get_packages()
+
+# CORRECT: Union for multiple known types
+def format_value(value: Union[str, int, float]) -> str:
+    return str(value)
+```
+
+**❌ WRONG: Using `Any`**
+```python
+from typing import Any
+
+# WRONG: Any disables type checking
+def get_element(name: str, element_type: str) -> Any:
+    return self._find_element(name, element_type)
+
+# WRONG: Any in collections
+def parse_config(path: Path) -> Dict[str, Any]:
+    return json.loads(path.read_text())
+
+# WRONG: Any as parameter
+def format_value(value: Any) -> str:
+    return str(value)
+```
+
+### What to Use Instead of `Any`
+
+| Scenario | Use Instead |
+|----------|-------------|
+| Unknown dict structure | `Dict[str, Union[str, int, bool]]` or define a `TypedDict` |
+| Unknown list contents | `List[<concrete_type>]` (e.g., `List[str]`, `List[RPModelElement]`) |
+| Multiple possible types | `Union[TypeA, TypeB, TypeC]` |
+| Truly unknown object | `object` (still allows isinstance checks; `Any` allows everything silently) |
+| JSON/dynamic data | Define a `TypedDict` or use `Dict[str, Union[...]]` with known value types |
+| argparse.Namespace fields | Cast to the expected type immediately: `timeout: int = int(args.timeout)` |
+
+### Using `cast()` for Dynamic Data
+
+When loading dynamic data (JSON, COM returns), use `cast()` to assert the expected type after validation:
+
+```python
+from typing import cast
+
+def load_session(path: Path) -> Optional[Session]:
+    data = json.loads(path.read_text())
+    if not all(key in data for key in REQUIRED_KEYS):
+        return None
+    return cast(Session, data)  # Validated, now typed
+```
+
+### Using `TypedDict` for Structured Dicts
+
+For dicts with known keys, define a `TypedDict`:
+
+```python
+from typing import TypedDict
+
+class Session(TypedDict):
+    connected: bool
+    instance_type: str
+    connected_at: str
+    last_activity: str
+    timeout_minutes: int
+
+def load_session(path: Path) -> Optional[Session]:
+    data = json.loads(path.read_text())
+    return cast(Session, data)
+```
+
+### Why No `Any`?
+
+- **Type safety:** `Any` silently disables type checking, hiding bugs
+- **IDE support:** Concrete types enable autocomplete and inline documentation
+- **Refactoring confidence:** Type checkers catch breaking changes across the codebase
+- **Self-documenting:** Accurate types communicate intent to other developers
+- **Consistency:** mypy strict mode enforces types — `Any` undermines it
 
 ---
 
@@ -780,6 +958,7 @@ All code reviews must verify:
 
 ### Code Quality
 - [ ] Type annotations complete?
+- [ ] **NO `Any` type used** (replace with accurate concrete types)?
 - [ ] Docstrings present for all public methods?
 - [ ] Error handling with `raise ... from e`?
 - [ ] Private methods prefixed with `_`?
