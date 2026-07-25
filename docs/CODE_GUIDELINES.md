@@ -196,6 +196,106 @@ def export_to_yaml(
 
 ---
 
+## Type Annotations
+
+### ❌ DO NOT USE: `Any` Type
+
+**The `Any` type is FORBIDDEN.** Replace it with the accurate data type.
+
+`Any` disables type checking — it tells mypy "don't check this," which defeats the purpose of having type annotations. Every parameter, return type, and variable must use a concrete type.
+
+**✅ CORRECT: Use accurate types**
+```python
+from typing import Dict, List, Optional, Union
+
+# CORRECT: Concrete types
+def get_element(name: str, element_type: str) -> Optional[RPModelElement]:
+    return self._find_element(name, element_type)
+
+# CORRECT: Dict with key/value types
+def parse_config(path: Path) -> Dict[str, Union[str, int, bool]]:
+    return json.loads(path.read_text())
+
+# CORRECT: List with element type
+def get_all_packages(project: RPProject) -> List[RPPackage]:
+    return project.get_packages()
+
+# CORRECT: Union for multiple known types
+def format_value(value: Union[str, int, float]) -> str:
+    return str(value)
+```
+
+**❌ WRONG: Using `Any`**
+```python
+from typing import Any
+
+# WRONG: Any disables type checking
+def get_element(name: str, element_type: str) -> Any:
+    return self._find_element(name, element_type)
+
+# WRONG: Any in collections
+def parse_config(path: Path) -> Dict[str, Any]:
+    return json.loads(path.read_text())
+
+# WRONG: Any as parameter
+def format_value(value: Any) -> str:
+    return str(value)
+```
+
+### What to Use Instead of `Any`
+
+| Scenario | Use Instead |
+|----------|-------------|
+| Unknown dict structure | `Dict[str, Union[str, int, bool]]` or define a `TypedDict` |
+| Unknown list contents | `List[<concrete_type>]` (e.g., `List[str]`, `List[RPModelElement]`) |
+| Multiple possible types | `Union[TypeA, TypeB, TypeC]` |
+| Truly unknown object | `object` (still allows isinstance checks; `Any` allows everything silently) |
+| JSON/dynamic data | Define a `TypedDict` or use `Dict[str, Union[...]]` with known value types |
+| argparse.Namespace fields | Cast to the expected type immediately: `timeout: int = int(args.timeout)` |
+
+### Using `cast()` for Dynamic Data
+
+When loading dynamic data (JSON, COM returns), use `cast()` to assert the expected type after validation:
+
+```python
+from typing import cast
+
+def load_session(path: Path) -> Optional[Session]:
+    data = json.loads(path.read_text())
+    if not all(key in data for key in REQUIRED_KEYS):
+        return None
+    return cast(Session, data)  # Validated, now typed
+```
+
+### Using `TypedDict` for Structured Dicts
+
+For dicts with known keys, define a `TypedDict`:
+
+```python
+from typing import TypedDict
+
+class Session(TypedDict):
+    connected: bool
+    instance_type: str
+    connected_at: str
+    last_activity: str
+    timeout_minutes: int
+
+def load_session(path: Path) -> Optional[Session]:
+    data = json.loads(path.read_text())
+    return cast(Session, data)
+```
+
+### Why No `Any`?
+
+- **Type safety:** `Any` silently disables type checking, hiding bugs
+- **IDE support:** Concrete types enable autocomplete and inline documentation
+- **Refactoring confidence:** Type checkers catch breaking changes across the codebase
+- **Self-documenting:** Accurate types communicate intent to other developers
+- **Consistency:** mypy strict mode enforces types — `Any` undermines it
+
+---
+
 ## TDD Methodology
 
 ### Principle: Tests First
@@ -858,6 +958,7 @@ All code reviews must verify:
 
 ### Code Quality
 - [ ] Type annotations complete?
+- [ ] **NO `Any` type used** (replace with accurate concrete types)?
 - [ ] Docstrings present for all public methods?
 - [ ] Error handling with `raise ... from e`?
 - [ ] Private methods prefixed with `_`?

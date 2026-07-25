@@ -57,6 +57,8 @@ See [docs/CODE_GUIDELINES.md](docs/CODE_GUIDELINES.md) for detailed coding stand
 
 - Naming conventions (UPPERCASE constants, snake_case methods)
 - Import style (full package path, no relative imports)
+- Function definition style (arguments on one line)
+- Type annotations (**no `Any` type** — use accurate concrete types)
 - TDD methodology and coverage targets
 - Class-based architecture patterns
 - CLI command patterns
@@ -64,6 +66,7 @@ See [docs/CODE_GUIDELINES.md](docs/CODE_GUIDELINES.md) for detailed coding stand
 ## Forbidden
 
 - `from __future__ import annotations` (use string-quoted forward refs or `TYPE_CHECKING` imports instead)
+- `Any` type in type annotations (use accurate concrete types, `Union`, `TypedDict`, or `object` instead — see [docs/CODE_GUIDELINES.md](docs/CODE_GUIDELINES.md#type-annotations))
 - `element._com.delete()` (use `element.delete_from_project()` instead)
 - `Co-authored-by: Copilot` or any AI attribution
 - Direct commits to `main` — always use `feature/`, `fix/`, `refactor/`, `docs/` branches
