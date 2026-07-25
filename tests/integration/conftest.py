@@ -1,6 +1,5 @@
 """Integration test configuration."""
 
-import json
 import os
 import shutil
 import sys

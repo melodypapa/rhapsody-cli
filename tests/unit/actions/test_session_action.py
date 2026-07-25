@@ -88,9 +88,7 @@ class TestConnectAction:
         mock_app = MagicMock()
         mock_app.get_version.return_value = "9.0.0"
 
-        with patch(
-            "rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app
-        ) as mock_connect:
+        with patch("rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app) as mock_connect:
             action = ConnectAction()
             args = argparse.Namespace(timeout=None, attach_only=True, no_gui=False)
 
@@ -122,9 +120,7 @@ class TestConnectAction:
         mock_app = MagicMock()
         mock_app.get_version.return_value = "9.0.0"
 
-        with patch(
-            "rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app
-        ) as mock_connect:
+        with patch("rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app) as mock_connect:
             action = ConnectAction()
             args = argparse.Namespace(timeout=None, attach_only=False, no_gui=True)
 
@@ -466,9 +462,7 @@ class TestVersionAction:
         captured = capsys.readouterr()
         assert "rhapsody-cli version:" in captured.out
 
-    def test_version_shows_rhapsody_version_when_connected(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
-    ) -> None:
+    def test_version_shows_rhapsody_version_when_connected(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture) -> None:
         """Version shows Rhapsody version when connected."""
         session_dir = tmp_path / ".rhapsody-cli"
         session_dir.mkdir(parents=True)
@@ -498,9 +492,7 @@ class TestVersionAction:
         assert "rhapsody-cli version:" in captured.out
         assert "Rhapsody version: 9.0.0" in captured.out
 
-    def test_version_no_rhapsody_when_not_connected(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
-    ) -> None:
+    def test_version_no_rhapsody_when_not_connected(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture) -> None:
         """Version shows only CLI version when not connected."""
         session_dir = tmp_path / ".rhapsody-cli"
         monkeypatch.setattr(SessionManager, "SESSION_DIR", session_dir)
@@ -514,9 +506,7 @@ class TestVersionAction:
         assert "rhapsody-cli version:" in captured.out
         assert "Rhapsody version" not in captured.out
 
-    def test_version_handles_rhapsody_not_running(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
-    ) -> None:
+    def test_version_handles_rhapsody_not_running(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture) -> None:
         """Version handles Rhapsody not running gracefully when connected."""
         session_dir = tmp_path / ".rhapsody-cli"
         session_dir.mkdir(parents=True)

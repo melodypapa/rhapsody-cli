@@ -5,15 +5,11 @@ import json
 import logging
 import os
 from datetime import datetime, timedelta
-from typing import TYPE_CHECKING
 
 from rhapsody_cli.actions.abstract_action import AbstractAction
 from rhapsody_cli.application import RhapsodyApplication
 from rhapsody_cli.exceptions import CliExecutionError, RhapsodyConnectionError
 from rhapsody_cli.session import Session, SessionManager
-
-if TYPE_CHECKING:
-    from rhapsody_cli.models.elements.containment import RPProject
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +47,7 @@ class ConnectAction(AbstractAction):
         # Connect to Rhapsody
         try:
             show_gui = not args.no_gui
-            app = RhapsodyApplication.connect(attach_only=args.attach_only, show_gui=show_gui)
+            RhapsodyApplication.connect(attach_only=args.attach_only, show_gui=show_gui)
 
             # Determine instance type
             # If attach_only succeeded, we attached; otherwise we launched

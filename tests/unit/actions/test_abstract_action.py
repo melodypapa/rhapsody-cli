@@ -1,14 +1,13 @@
 """Tests for AbstractAction and its subclasses' shared helpers."""
 
 import argparse
+import json
+from datetime import datetime, timedelta
+from pathlib import Path
 from typing import Any, List, Optional
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
-
-import json
-from datetime import datetime, timedelta
-from pathlib import Path
 
 from rhapsody_cli.actions.abstract_action import (
     AbstractAction,
@@ -387,9 +386,7 @@ class TestSessionAwareAction:
         with pytest.raises(CliExecutionError, match="Not connected"):
             action.execute(args)
 
-    def test_execute_updates_activity_with_valid_session(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_execute_updates_activity_with_valid_session(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         """SessionAwareAction.execute() updates last_activity for valid session."""
         from rhapsody_cli.session import Session, SessionManager
 
@@ -435,9 +432,7 @@ class TestSessionAwareAction:
         now = datetime.now()
         assert (now - last_activity).total_seconds() < 1.0
 
-    def test_execute_raises_on_timed_out_session(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_execute_raises_on_timed_out_session(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         """SessionAwareAction.execute() raises if session is timed out."""
         from rhapsody_cli.session import Session, SessionManager
 
