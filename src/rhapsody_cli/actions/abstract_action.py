@@ -155,6 +155,44 @@ class RhapsodyContextAction(AbstractAction):
         raise CliExecutionError(f"Error: {error}") from error
 
 
+class SessionAwareAction(RhapsodyContextAction):
+    """Base class for actions that require a valid session.
+
+    Extends RhapsodyContextAction to enforce session pre-check before execution.
+    All element actions (project, package, class, etc.) should inherit from this class.
+
+    Usage:
+        Subclasses should call super().execute(args) at the start of their execute()
+        method to trigger the session check.
+
+    Raises:
+        CliExecutionError: If session is not valid or not connected.
+    """
+
+    def execute(self, args: argparse.Namespace) -> None:
+        """Check session validity before allowing execution.
+
+        This method does NOT call super().execute() - it only performs the session
+        check and returns. Subclasses should call this via super().execute(args)
+        at the start of their execute() method.
+
+        Args:
+            args: Parsed command-line arguments.
+
+        Raises:
+            CliExecutionError: If not connected or session timed out.
+        """
+        from rhapsody_cli.session import SessionManager
+
+        session_manager = SessionManager()
+        session = session_manager.load()
+
+        if not session or not session_manager.is_valid(session):
+            raise CliExecutionError("Not connected. Run 'rhapsody-cli connect' first.")
+
+        session_manager.update_activity(session)
+
+
 class ElementManagementAction(RhapsodyContextAction):
     """Base class for element management actions (add, delete, query, view).
 

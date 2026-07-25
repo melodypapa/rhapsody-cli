@@ -6,10 +6,15 @@ from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
+import json
+from datetime import datetime, timedelta
+from pathlib import Path
+
 from rhapsody_cli.actions.abstract_action import (
     AbstractAction,
     ElementManagementAction,
     RhapsodyContextAction,
+    SessionAwareAction,
 )
 from rhapsody_cli.cli.path_resolver import PathResolver, PathResolverError
 from rhapsody_cli.exceptions import CliExecutionError, RhapsodyConnectionError
@@ -352,3 +357,108 @@ class TestRhapsodyContextActionPrintFormattedOutput:
         captured = capsys.readouterr()
         assert "Foo" in captured.out
         assert "Name" in captured.out
+
+
+class _FakeSessionAction(SessionAwareAction):
+    """Minimal concrete subclass of SessionAwareAction for testing."""
+
+    def init_arguments(self, sub_parser: Any) -> None:  # pragma: no cover - not exercised
+        """Unused: test scaffold only."""
+
+    def execute(self, args: argparse.Namespace) -> None:
+        """Execute with session check (calls super().execute())."""
+        super().execute(args)  # This triggers the session check
+
+
+@pytest.mark.no_session
+class TestSessionAwareAction:
+    """Tests for SessionAwareAction base class."""
+
+    def test_execute_raises_without_session(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+        """SessionAwareAction.execute() raises if no valid session."""
+        from rhapsody_cli.session import SessionManager
+
+        # Ensure no session exists
+        monkeypatch.setattr(SessionManager, "SESSION_DIR", tmp_path / ".rhapsody-cli")
+
+        action = _FakeSessionAction(command_id="test")
+        args = argparse.Namespace()
+
+        with pytest.raises(CliExecutionError, match="Not connected"):
+            action.execute(args)
+
+    def test_execute_updates_activity_with_valid_session(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """SessionAwareAction.execute() updates last_activity for valid session."""
+        from rhapsody_cli.session import Session, SessionManager
+
+        session_dir = tmp_path / ".rhapsody-cli"
+        session_dir.mkdir(parents=True)
+        session_file = session_dir / "session.json"
+
+        old_time = datetime.now() - timedelta(minutes=5)
+        session: Session = {
+            "connected": True,
+            "instance_type": "attached",
+            "connected_at": old_time.isoformat(),
+            "last_activity": old_time.isoformat(),
+            "timeout_minutes": 10,
+        }
+        session_file.write_text(json.dumps(session))
+
+        monkeypatch.setattr(SessionManager, "SESSION_DIR", session_dir)
+
+        executed = False
+
+        class TestAction(SessionAwareAction):
+            def __init__(self) -> None:
+                super().__init__(command_id="test")
+
+            def init_arguments(self, sub_parser: Any) -> None:
+                pass
+
+            def execute(self, args: argparse.Namespace) -> None:
+                super().execute(args)
+                nonlocal executed
+                executed = True
+
+        action = TestAction()
+        args = argparse.Namespace()
+        action.execute(args)
+
+        assert executed
+
+        # Verify last_activity was updated
+        loaded = json.loads(session_file.read_text())
+        last_activity = datetime.fromisoformat(loaded["last_activity"])
+        now = datetime.now()
+        assert (now - last_activity).total_seconds() < 1.0
+
+    def test_execute_raises_on_timed_out_session(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """SessionAwareAction.execute() raises if session is timed out."""
+        from rhapsody_cli.session import Session, SessionManager
+
+        session_dir = tmp_path / ".rhapsody-cli"
+        session_dir.mkdir(parents=True)
+        session_file = session_dir / "session.json"
+
+        old_time = datetime.now() - timedelta(minutes=10)
+        session: Session = {
+            "connected": True,
+            "instance_type": "attached",
+            "connected_at": old_time.isoformat(),
+            "last_activity": old_time.isoformat(),
+            "timeout_minutes": 5,
+        }
+        session_file.write_text(json.dumps(session))
+
+        monkeypatch.setattr(SessionManager, "SESSION_DIR", session_dir)
+
+        action = _FakeSessionAction(command_id="test")
+        args = argparse.Namespace()
+
+        with pytest.raises(CliExecutionError, match="Not connected"):
+            action.execute(args)

@@ -18,6 +18,7 @@ class Session(TypedDict):
     timeout_minutes: int
 
 
+@pytest.mark.no_session
 class TestSessionType:
     """Tests for Session TypedDict."""
 
@@ -35,6 +36,7 @@ class TestSessionType:
         assert session["timeout_minutes"] == 5
 
 
+@pytest.mark.no_session
 class TestSessionManagerLoad:
     """Tests for SessionManager.load()."""
 
@@ -88,6 +90,7 @@ class TestSessionManagerLoad:
         assert result is None
 
 
+@pytest.mark.no_session
 class TestSessionManagerSave:
     """Tests for SessionManager.save()."""
 
@@ -119,6 +122,7 @@ class TestSessionManagerSave:
         assert loaded["timeout_minutes"] == 10
 
 
+@pytest.mark.no_session
 class TestSessionManagerClear:
     """Tests for SessionManager.clear()."""
 
@@ -138,6 +142,7 @@ class TestSessionManagerClear:
         assert not session_file.exists()
 
 
+@pytest.mark.no_session
 class TestSessionManagerIsValid:
     """Tests for SessionManager.is_valid()."""
 
@@ -210,6 +215,7 @@ class TestSessionManagerIsValid:
         assert result is True
 
 
+@pytest.mark.no_session
 class TestSessionManagerUpdateActivity:
     """Tests for SessionManager.update_activity()."""
 
