@@ -5,7 +5,7 @@ SWR_XCH_003: Project Export
 """
 
 import logging
-from typing import Any, Dict, List, Optional, cast
+from typing import Dict, List, Optional, cast
 
 from rhapsody_cli.exchange.core import RhapsodyModelHelper
 from rhapsody_cli.exchange.schema import PROJECT_KEY, RHAPSODY_MODEL_KEY, SCHEMA_VERSION, VERSION_KEY
@@ -17,7 +17,7 @@ _LOGGER = logging.getLogger(__name__)
 class RhapsodyExporter(RhapsodyModelHelper):
     """Walks a Rhapsody container and produces a YAML-serializable dict."""
 
-    def export(self, container: Any) -> Dict[str, Any]:
+    def export(self, container: RPModelElement) -> Dict[str, object]:
         """Export the container's children to a YAML dict.
 
         Args:
@@ -30,7 +30,7 @@ class RhapsodyExporter(RhapsodyModelHelper):
         wrapped = self._wrap_if_needed(container)
         project_name = self._get_project_name(wrapped)
         children = self._collect_children(wrapped)
-        model_list: List[Dict[str, Any]] = []
+        model_list: List[Dict[str, object]] = []
         for child in children:
             spec = self._export_element(child)
             if spec is not None:
@@ -41,7 +41,7 @@ class RhapsodyExporter(RhapsodyModelHelper):
             RHAPSODY_MODEL_KEY: model_list,
         }
 
-    def _export_element(self, element: Any) -> Optional[Dict[str, Any]]:
+    def _export_element(self, element: object) -> Optional[Dict[str, object]]:
         """Dispatch to a type-specific exporter based on metaclass.
 
         Args:
@@ -81,14 +81,14 @@ class RhapsodyExporter(RhapsodyModelHelper):
         self._attach_common_fields(spec, wrapped)
         return spec
 
-    def _export_package(self, pkg: RPModelElement) -> Dict[str, Any]:
+    def _export_package(self, pkg: RPModelElement) -> Dict[str, object]:
         return self._export_container(pkg, "Package")
 
-    def _export_class(self, cls: RPModelElement) -> Dict[str, Any]:
+    def _export_class(self, cls: RPModelElement) -> Dict[str, object]:
         return self._export_container(cls, "Class")
 
-    def _export_type(self, type_element: RPModelElement) -> Dict[str, Any]:
-        spec: Dict[str, Any] = {"name": type_element.get_name(), "type": "Type"}
+    def _export_type(self, type_element: RPModelElement) -> Dict[str, object]:
+        spec: Dict[str, object] = {"name": type_element.get_name(), "type": "Type"}
         kind = self._safe_get(type_element, "get_kind")
         if kind:
             spec["kind"] = kind
@@ -103,9 +103,9 @@ class RhapsodyExporter(RhapsodyModelHelper):
                 spec["children"] = child_specs
         return spec
 
-    def _export_operation(self, op: RPModelElement) -> Dict[str, Any]:
-        spec: Dict[str, Any] = {"name": op.get_name(), "type": "Operation"}
-        return_classifier = self._safe_get(op, "get_returns")
+    def _export_operation(self, op: RPModelElement) -> Dict[str, object]:
+        spec: Dict[str, object] = {"name": op.get_name(), "type": "Operation"}
+        return_classifier = cast(Optional[RPModelElement], self._safe_get(op, "get_returns"))
         return_name = self.get_classifier_name(return_classifier) if return_classifier is not None else None
         if return_name:
             spec["return_type"] = return_name
@@ -117,9 +117,9 @@ class RhapsodyExporter(RhapsodyModelHelper):
             spec["arguments"] = arguments
         return spec
 
-    def _export_argument(self, arg: RPModelElement) -> Dict[str, Any]:
-        spec: Dict[str, Any] = {"name": arg.get_name(), "type": "Argument"}
-        type_classifier = self._safe_get(arg, "get_type")
+    def _export_argument(self, arg: RPModelElement) -> Dict[str, object]:
+        spec: Dict[str, object] = {"name": arg.get_name(), "type": "Argument"}
+        type_classifier = cast(Optional[RPModelElement], self._safe_get(arg, "get_type"))
         type_name = self.get_classifier_name(type_classifier) if type_classifier is not None else None
         if type_name:
             spec["data_type"] = type_name
@@ -128,9 +128,9 @@ class RhapsodyExporter(RhapsodyModelHelper):
             spec["direction"] = direction
         return spec
 
-    def _export_attribute(self, attr: RPModelElement) -> Dict[str, Any]:
-        spec: Dict[str, Any] = {"name": attr.get_name(), "type": "Attribute"}
-        type_classifier = self._safe_get(attr, "get_type")
+    def _export_attribute(self, attr: RPModelElement) -> Dict[str, object]:
+        spec: Dict[str, object] = {"name": attr.get_name(), "type": "Attribute"}
+        type_classifier = cast(Optional[RPModelElement], self._safe_get(attr, "get_type"))
         type_name = self.get_classifier_name(type_classifier) if type_classifier is not None else None
         if type_name:
             spec["data_type"] = type_name
@@ -145,27 +145,27 @@ class RhapsodyExporter(RhapsodyModelHelper):
             spec["is_static"] = bool(is_static)
         return spec
 
-    def _export_object(self, obj: RPModelElement) -> Dict[str, Any]:
-        spec: Dict[str, Any] = {"name": obj.get_name(), "type": "Object"}
-        classifier = self._safe_get(obj, "get_classifier")
+    def _export_object(self, obj: RPModelElement) -> Dict[str, object]:
+        spec: Dict[str, object] = {"name": obj.get_name(), "type": "Object"}
+        classifier = cast(Optional[RPModelElement], self._safe_get(obj, "get_classifier"))
         classifier_name = self.get_classifier_name(classifier) if classifier is not None else None
         if classifier_name:
             spec["classifier"] = classifier_name
         return spec
 
-    def _export_enumeration_literal(self, literal: RPModelElement) -> Dict[str, Any]:
+    def _export_enumeration_literal(self, literal: RPModelElement) -> Dict[str, object]:
         return {"name": literal.get_name(), "type": "EnumerationLiteral"}
 
-    def _export_dependency(self, dep: RPModelElement) -> Dict[str, Any]:
-        spec: Dict[str, Any] = {"name": dep.get_name(), "type": "Dependency"}
+    def _export_dependency(self, dep: RPModelElement) -> Dict[str, object]:
+        spec: Dict[str, object] = {"name": dep.get_name(), "type": "Dependency"}
         target = self._safe_get(dep, "get_depends_on")
         target_name = self._classifier_name(target)
         if target_name:
             spec["depends_on"] = target_name
         return spec
 
-    def _export_generalization(self, gen: RPModelElement) -> Dict[str, Any]:
-        spec: Dict[str, Any] = {"name": gen.get_name(), "type": "Generalization"}
+    def _export_generalization(self, gen: RPModelElement) -> Dict[str, object]:
+        spec: Dict[str, object] = {"name": gen.get_name(), "type": "Generalization"}
         base = self._safe_get(gen, "get_base_class")
         base_name = self._classifier_name(base)
         if base_name:
@@ -178,8 +178,8 @@ class RhapsodyExporter(RhapsodyModelHelper):
             spec["is_virtual"] = bool(is_virtual)
         return spec
 
-    def _export_relation(self, rel: RPModelElement) -> Dict[str, Any]:
-        spec: Dict[str, Any] = {"name": rel.get_name(), "type": "Relation"}
+    def _export_relation(self, rel: RPModelElement) -> Dict[str, object]:
+        spec: Dict[str, object] = {"name": rel.get_name(), "type": "Relation"}
         relation_type = self._safe_get(rel, "get_relation_type")
         if relation_type:
             spec["relation_type"] = relation_type
@@ -205,8 +205,8 @@ class RhapsodyExporter(RhapsodyModelHelper):
             spec["visibility"] = visibility
         return spec
 
-    def _export_port(self, port: RPModelElement) -> Dict[str, Any]:
-        spec: Dict[str, Any] = {"name": port.get_name(), "type": "Port"}
+    def _export_port(self, port: RPModelElement) -> Dict[str, object]:
+        spec: Dict[str, object] = {"name": port.get_name(), "type": "Port"}
         is_behavioral = self._safe_get(port, "get_is_behavioral")
         if is_behavioral is not None:
             spec["is_behavioral"] = bool(is_behavioral)
@@ -225,8 +225,8 @@ class RhapsodyExporter(RhapsodyModelHelper):
             spec["required_interfaces"] = required
         return spec
 
-    def _export_event(self, event: RPModelElement) -> Dict[str, Any]:
-        spec: Dict[str, Any] = {"name": event.get_name(), "type": "Event"}
+    def _export_event(self, event: RPModelElement) -> Dict[str, object]:
+        spec: Dict[str, object] = {"name": event.get_name(), "type": "Event"}
         base = self._safe_get(event, "get_base_event")
         base_name = self._classifier_name(base)
         if base_name:
@@ -237,8 +237,8 @@ class RhapsodyExporter(RhapsodyModelHelper):
             spec["super_event"] = sup_name
         return spec
 
-    def _export_event_reception(self, reception: RPModelElement) -> Dict[str, Any]:
-        spec: Dict[str, Any] = {"name": reception.get_name(), "type": "EventReception"}
+    def _export_event_reception(self, reception: RPModelElement) -> Dict[str, object]:
+        spec: Dict[str, object] = {"name": reception.get_name(), "type": "EventReception"}
         event = self._safe_get(reception, "get_event")
         event_name = self._classifier_name(event)
         if event_name:
@@ -276,51 +276,51 @@ class RhapsodyExporter(RhapsodyModelHelper):
 
     # --- Private helpers ---
 
-    def _wrap_if_needed(self, element: Any) -> RPModelElement:
+    def _wrap_if_needed(self, element: object) -> RPModelElement:
         if isinstance(element, RPModelElement):
             return element
         if callable(getattr(element, "get_meta_class", None)):
             return cast(RPModelElement, element)
         return cast(RPModelElement, RPModelElement.wrap(element))
 
-    def _export_container(self, container: RPModelElement, type_name: str) -> Dict[str, Any]:
-        spec: Dict[str, Any] = {"name": container.get_name(), "type": type_name}
+    def _export_container(self, container: RPModelElement, type_name: str) -> Dict[str, object]:
+        spec: Dict[str, object] = {"name": container.get_name(), "type": type_name}
         children = self._collect_children(container)
         child_specs = self._export_children(children)
         if child_specs:
             spec["children"] = child_specs
         return spec
 
-    def _export_children(self, children: List[RPModelElement]) -> List[Dict[str, Any]]:
-        result: List[Dict[str, Any]] = []
+    def _export_children(self, children: List[RPModelElement]) -> List[Dict[str, object]]:
+        result: List[Dict[str, object]] = []
         for child in children:
             spec = self._export_element(child)
             if spec is not None:
                 result.append(spec)
         return result
 
-    def _export_collection(self, element: RPModelElement, method_name: str) -> List[Dict[str, Any]]:
+    def _export_collection(self, element: RPModelElement, method_name: str) -> List[Dict[str, object]]:
         if not hasattr(element, method_name):
             return []
         collection = getattr(element, method_name)()
         if collection is None:
             return []
-        result: List[Dict[str, Any]] = []
+        result: List[Dict[str, object]] = []
         for item in collection:
             spec = self._export_element(item)
             if spec is not None:
                 result.append(spec)
         return result
 
-    def _safe_get(self, element: RPModelElement, method_name: str) -> Any:
+    def _safe_get(self, element: RPModelElement, method_name: str) -> Optional[object]:
         if not hasattr(element, method_name):
             return None
         try:
-            return getattr(element, method_name)()
+            return getattr(element, method_name)()  # type: ignore[no-any-return]
         except Exception:
             return None
 
-    def _attach_common_fields(self, spec: Dict[str, Any], element: RPModelElement) -> None:
+    def _attach_common_fields(self, spec: Dict[str, object], element: RPModelElement) -> None:
         stereotypes = self._export_stereotypes(element)
         if stereotypes:
             spec["stereotypes"] = stereotypes
@@ -344,7 +344,7 @@ class RhapsodyExporter(RhapsodyModelHelper):
         except Exception:
             return []
 
-    def _classifier_name(self, classifier: Any) -> Optional[str]:
+    def _classifier_name(self, classifier: object) -> Optional[str]:
         if classifier is None:
             return None
         try:

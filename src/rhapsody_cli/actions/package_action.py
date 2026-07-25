@@ -17,7 +17,7 @@ import argparse
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, cast
+from typing import Dict, List, cast
 
 from rhapsody_cli.actions.abstract_action import ElementManagementAction, SessionAwareAction
 from rhapsody_cli.cli.formatters import OutputFormatter
@@ -25,6 +25,7 @@ from rhapsody_cli.exceptions import CliExecutionError, RhapsodyConnectionError
 from rhapsody_cli.exchange.exporter import RhapsodyExporter
 from rhapsody_cli.exchange.importer import RhapsodyImporter
 from rhapsody_cli.exchange.yaml_utils import RhapsodyYaml
+from rhapsody_cli.models.core import RPModelElement
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +37,7 @@ class AbstractPackageAction(SessionAwareAction, ElementManagementAction):
     SWR_PKG_0010: Error Handling and Logging
     """
 
-    def _resolve_and_validate_package(self, path: str) -> Any:
+    def _resolve_and_validate_package(self, path: str) -> RPModelElement:
         """Resolve path and validate it's a Package element.
 
         Args:
@@ -115,18 +116,18 @@ class PackageCreateAction(AbstractPackageAction):
         errors: List[str] = []
         for pkg_attrs in packages_data:
             try:
-                name = self._create_single_package(container, pkg_attrs, args.path, is_root=is_root)
+                name = self._create_single_package(container, pkg_attrs, cast(str, args.path), is_root=is_root)
                 created.append(name)
             except CliExecutionError:
                 raise
             except Exception as e:
                 pkg_name = pkg_attrs.get("name", "unknown")
                 self.logger.error("Failed to create package '%s': %s", pkg_name, e)
-                errors.append(pkg_name)
+                errors.append(cast(str, pkg_name))
 
         self._report_results(created, errors, len(packages_data))
 
-    def _create_single_package(self, container: Any, pkg_attrs: Dict[str, Any], parent_path: Any, *, is_root: bool = False) -> str:
+    def _create_single_package(self, container: RPModelElement, pkg_attrs: Dict[str, object], parent_path: str, *, is_root: bool = False) -> str:
         """Create a single package and set its attributes. Returns the package name.
 
         Args:
@@ -151,9 +152,9 @@ class PackageCreateAction(AbstractPackageAction):
         try:
             # Call the appropriate creation method based on location
             if is_root:
-                package = container.add_package(name)
+                package = container.add_package(name)  # type: ignore[attr-defined]
             else:
-                package = container.add_nested_package(name)
+                package = container.add_nested_package(name)  # type: ignore[attr-defined]
         except Exception as e:
             error_str = str(e)
             # Check if error indicates the package already exists
@@ -183,7 +184,7 @@ class PackageCreateAction(AbstractPackageAction):
         self.logger.info("Created package: %s", full_path)
         return name
 
-    def _check_package_not_exists(self, container: Any, name: str, is_root: bool) -> None:
+    def _check_package_not_exists(self, container: RPModelElement, name: str, is_root: bool) -> None:
         """Check if a package with the given name already exists in the container.
 
         Args:
@@ -198,16 +199,16 @@ class PackageCreateAction(AbstractPackageAction):
 
         try:
             if is_root:
-                existing_packages = container.get_packages()
+                existing_packages = container.get_packages()  # type: ignore[attr-defined]
                 container_desc = "project root"
             else:
-                existing_packages = container.get_nested_packages()
+                existing_packages = container.get_nested_packages()  # type: ignore[attr-defined]
                 parent_name = container.get_name()
                 container_desc = f"package '{parent_name}'"
 
             # Search for duplicate by name
             for pkg in existing_packages:
-                pkg_name = pkg.get_name()
+                pkg_name = cast(RPModelElement, pkg).get_name()
                 if pkg_name == name:
                     raise CliExecutionError(f"Package '{name}' already exists in {container_desc}")
         except CliExecutionError:
@@ -226,14 +227,14 @@ class PackageCreateAction(AbstractPackageAction):
         if errors:
             self.logger.info("Created %d/%d packages with %d error(s)", len(created), total, len(errors))
 
-    def _load_json_data(self, attributes_input: str) -> Any:
+    def _load_json_data(self, attributes_input: str) -> Dict[str, object]:
         """Load JSON data from inline string or external file.
 
         SWR_PKG_0006: External JSON File Support
         """
         if attributes_input.startswith("{") or attributes_input.startswith("["):
             try:
-                return json.loads(attributes_input)
+                return cast(Dict[str, object], json.loads(attributes_input))
             except json.JSONDecodeError as e:
                 raise CliExecutionError(f"Invalid JSON: {e}") from e
 
@@ -242,48 +243,48 @@ class PackageCreateAction(AbstractPackageAction):
 
         try:
             with open(attributes_input, encoding="utf-8") as f:
-                return json.load(f)
+                return cast(Dict[str, object], json.load(f))
         except json.JSONDecodeError as e:
             raise CliExecutionError(f"Invalid JSON in file: {e}") from e
         except OSError as e:
             raise CliExecutionError(f"Failed to read file: {e}") from e
 
-    def _set_attributes(self, package: Any, attrs: Dict[str, Any]) -> None:
+    def _set_attributes(self, package: RPModelElement, attrs: Dict[str, object]) -> None:
         """Set validated attributes on package."""
         self._set_basic_attributes(package, attrs)
         self._set_properties(package, attrs)
         self._set_stereotypes(package, attrs)
         self._set_tags(package, attrs)
 
-    def _set_basic_attributes(self, package: Any, attrs: Dict[str, Any]) -> None:
+    def _set_basic_attributes(self, package: RPModelElement, attrs: Dict[str, object]) -> None:
         """Set basic attributes."""
         if "description" in attrs:
-            package.set_description(attrs["description"])
+            package.set_description(cast(str, attrs["description"]))
         if "description_html" in attrs:
-            package.set_description_html(attrs["description_html"])
+            package.set_description_html(cast(str, attrs["description_html"]))
         if "description_rtf" in attrs:
-            package.set_description_rtf(attrs["description_rtf"])
+            package.set_description_rtf(cast(str, attrs["description_rtf"]))
         if "display_name" in attrs:
-            package.set_display_name(attrs["display_name"])
+            package.set_display_name(cast(str, attrs["display_name"]))
         if "display_name_rtf" in attrs:
-            package.set_display_name_rtf(attrs["display_name_rtf"])
+            package.set_display_name_rtf(cast(str, attrs["display_name_rtf"]))
 
-    def _set_properties(self, package: Any, attrs: Dict[str, Any]) -> None:
+    def _set_properties(self, package: RPModelElement, attrs: Dict[str, object]) -> None:
         """Set custom properties."""
         if "properties" in attrs:
-            for key, val in attrs["properties"].items():
+            for key, val in cast(Dict[str, str], attrs["properties"]).items():
                 package.set_property_value(key, val)
 
-    def _set_stereotypes(self, package: Any, attrs: Dict[str, Any]) -> None:
+    def _set_stereotypes(self, package: RPModelElement, attrs: Dict[str, object]) -> None:
         """Apply stereotypes."""
         if "stereotypes" in attrs:
-            for stereotype in attrs["stereotypes"]:
+            for stereotype in cast(List[str], attrs["stereotypes"]):
                 package.add_stereotype(stereotype, "Package")
 
-    def _set_tags(self, package: Any, attrs: Dict[str, Any]) -> None:
+    def _set_tags(self, package: RPModelElement, attrs: Dict[str, object]) -> None:
         """Set tags."""
         if "tags" in attrs:
-            for key, val in attrs["tags"].items():
+            for key, val in cast(Dict[str, str], attrs["tags"]).items():
                 package.set_property_value(key, val)
 
 
@@ -356,13 +357,14 @@ class PackageViewAction(AbstractPackageAction):
                 self._write_to_file(args.output, output)
                 self.logger.info("Writing output to file '%s'", args.output)
             else:
+                # NOTE: Result data to stdout (not logger) so it stays safe for piping/redirection.
                 print(output)
         except CliExecutionError:
             raise
         except Exception as e:
             self._handle_execution_error(e, f"Failed to view package '{args.path}'")
 
-    def _collect_package_data(self, package: Any) -> Dict[str, str]:
+    def _collect_package_data(self, package: RPModelElement) -> Dict[str, str]:
         """Collect package details into a data dictionary."""
         return {
             "name": package.get_name(),
@@ -431,16 +433,17 @@ class PackageListAction(AbstractPackageAction):
                 self._write_to_file(args.output, output)
                 self.logger.info("Writing output to file '%s'", args.output)
             else:
+                # NOTE: Result data to stdout (not logger) so it stays safe for piping/redirection.
                 print(output)
         except CliExecutionError:
             raise
         except Exception as e:
             self._handle_execution_error(e, f"Failed to list packages in '{args.path}'")
 
-    def _collect_nested_package_names(self, package: Any) -> List[str]:
+    def _collect_nested_package_names(self, package: RPModelElement) -> List[str]:
         """Collect names of nested packages."""
-        nested_packages = package.get_nested_packages()
-        return [pkg.get_name() for pkg in nested_packages]
+        nested_packages = package.get_nested_packages()  # type: ignore[attr-defined]
+        return [cast(RPModelElement, pkg).get_name() for pkg in nested_packages]
 
     def _format_output(self, package_names: List[str], format_type: str) -> str:
         """Format output based on format parameter."""
@@ -492,7 +495,7 @@ class PackageUpdateAction(AbstractPackageAction):
         parser.add_argument("attributes", nargs="?", default=None, help="Inline JSON or JSON file path")
         self.add_verbose_argument(parser)
 
-    def _resolve_element_by_guid(self, guid: str) -> Any:
+    def _resolve_element_by_guid(self, guid: str) -> RPModelElement:
         """Resolve element by GUID and validate it's a Package.
 
         Args:
@@ -505,15 +508,15 @@ class PackageUpdateAction(AbstractPackageAction):
             CliExecutionError: If GUID not found or element is not a Package.
         """
         project = self._get_active_root()
-        element = project.find_element_by_guid(guid)
+        element = project.find_element_by_guid(guid)  # type: ignore[attr-defined]
         if element is None:
             raise CliExecutionError(f"GUID '{guid}' not found")
         meta_class = element.get_meta_class()
         if meta_class != "Package":
             raise CliExecutionError(f"GUID '{guid}' does not resolve to a Package (found {meta_class})")
-        return element
+        return cast(RPModelElement, element)
 
-    def _load_json_data(self, args: Any) -> Dict[str, Any]:
+    def _load_json_data(self, args: argparse.Namespace) -> Dict[str, object]:
         """Load JSON data from inline string or file.
 
         SWR_PKG_0006: External JSON File Support
@@ -527,7 +530,7 @@ class PackageUpdateAction(AbstractPackageAction):
         if args.input:
             try:
                 with open(args.input, encoding="utf-8") as f:
-                    return cast(Dict[str, Any], json.load(f))
+                    return cast(Dict[str, object], json.load(f))
             except FileNotFoundError:
                 raise CliExecutionError(f"File not found: {args.input}") from None
             except json.JSONDecodeError as e:
@@ -536,20 +539,20 @@ class PackageUpdateAction(AbstractPackageAction):
             data_str = args.attributes.strip()
             if data_str.startswith("{"):
                 try:
-                    return cast(Dict[str, Any], json.loads(data_str))
+                    return cast(Dict[str, object], json.loads(data_str))
                 except json.JSONDecodeError as e:
                     raise CliExecutionError(f"Invalid JSON: {e}") from e
             else:
                 try:
                     with open(data_str, encoding="utf-8") as f:
-                        return cast(Dict[str, Any], json.load(f))
+                        return cast(Dict[str, object], json.load(f))
                 except FileNotFoundError:
                     raise CliExecutionError(f"File not found: {data_str}") from None
                 except json.JSONDecodeError as e:
                     raise CliExecutionError(f"Invalid JSON: {e}") from e
         return {}
 
-    def _set_attributes(self, package: Any, data: Dict[str, Any]) -> None:
+    def _set_attributes(self, package: RPModelElement, data: Dict[str, object]) -> None:
         """Set validated attributes on package (partial update).
 
         Only fields present in `data` are modified; unknown fields are
@@ -564,19 +567,19 @@ class PackageUpdateAction(AbstractPackageAction):
                 self.logger.warning("Skipping unknown attribute: %s", key)
                 continue
             if key == "name":
-                package.set_name(value)
+                package.set_name(cast(str, value))
             elif key == "description":
-                package.set_description(value)
+                package.set_description(cast(str, value))
             elif key == "display_name":
-                package.set_display_name(value)
+                package.set_display_name(cast(str, value))
             elif key == "stereotypes":
-                for stereotype in value:
+                for stereotype in cast(List[str], value):
                     package.add_stereotype(stereotype, "Package")
             elif key == "tags":
-                for tag_key, tag_value in value.items():
+                for tag_key, tag_value in cast(Dict[str, str], value).items():
                     package.set_property_value(tag_key, tag_value)
             elif key == "properties":
-                for prop_key, prop_value in value.items():
+                for prop_key, prop_value in cast(Dict[str, str], value).items():
                     package.set_property_value(prop_key, prop_value)
 
     def execute(self, args: argparse.Namespace) -> None:

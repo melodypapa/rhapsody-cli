@@ -19,11 +19,12 @@ import argparse
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Dict, List, cast
 
 from rhapsody_cli.actions.abstract_action import ElementManagementAction, SessionAwareAction
 from rhapsody_cli.cli.formatters import OutputFormatter
 from rhapsody_cli.exceptions import CliExecutionError
+from rhapsody_cli.models.core import RPModelElement
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +37,7 @@ class AbstractOperationAction(SessionAwareAction, ElementManagementAction):
     SWR_OP_00010: GUID Lookup Support
     """
 
-    def _resolve_classifier(self, path: str) -> Any:
+    def _resolve_classifier(self, path: str) -> RPModelElement:
         """Resolve a parent classifier path.
 
         Args:
@@ -51,7 +52,7 @@ class AbstractOperationAction(SessionAwareAction, ElementManagementAction):
         root = self._get_active_root()
         return self._resolve_container_or_element(root, path, resolve_element=True, operation=f"resolve classifier path '{path}'")
 
-    def _resolve_operation(self, classifier: Any, name: str) -> Any:
+    def _resolve_operation(self, classifier: RPModelElement, name: str) -> RPModelElement:
         """Find an operation by name within a classifier.
 
         Args:
@@ -64,12 +65,12 @@ class AbstractOperationAction(SessionAwareAction, ElementManagementAction):
         Raises:
             CliExecutionError: If operation not found.
         """
-        operation = classifier.find_interface_item(name)
+        operation = classifier.find_interface_item(name)  # type: ignore[attr-defined]
         if operation is None:
             raise CliExecutionError(f"Operation '{name}' not found in classifier")
-        return operation
+        return cast(RPModelElement, operation)
 
-    def _resolve_operation_by_guid(self, guid: str) -> Any:
+    def _resolve_operation_by_guid(self, guid: str) -> RPModelElement:
         """Locate an operation by GUID and validate it's an Operation element.
 
         SWR_OP_00010: GUID Lookup Support
@@ -156,11 +157,11 @@ class OperationCreateAction(AbstractOperationAction):
             except Exception as e:
                 op_name = op_attrs.get("name", "unknown")
                 self.logger.error("Failed to create operation '%s': %s", op_name, e)
-                errors.append(op_name)
+                errors.append(cast(str, op_name))
 
         self._report_results(created, errors, len(ops_data))
 
-    def _create_single_operation(self, classifier: Any, op_attrs: Dict[str, Any], parent_path: str) -> str:
+    def _create_single_operation(self, classifier: RPModelElement, op_attrs: Dict[str, object], parent_path: str) -> str:
         """Create a single operation and set its attributes. Returns the operation name."""
         name = str(op_attrs.get("name", ""))
         if not name:
@@ -170,7 +171,7 @@ class OperationCreateAction(AbstractOperationAction):
         if unknown:
             self.logger.warning("Skipping unknown attributes: %s", unknown)
 
-        operation = classifier.add_operation(name)
+        operation = classifier.add_operation(name)  # type: ignore[attr-defined]
         self._set_attributes(classifier, operation, op_attrs)
 
         full_path = f"{parent_path}/{name}"
@@ -184,14 +185,14 @@ class OperationCreateAction(AbstractOperationAction):
         if errors:
             self.logger.info("Created %d/%d operations with %d error(s)", len(created), total, len(errors))
 
-    def _load_json_data(self, attributes_input: str) -> Any:
+    def _load_json_data(self, attributes_input: str) -> Dict[str, object]:
         """Load JSON data from inline string or external file.
 
         SWR_OP_00007: External JSON File Support
         """
         if attributes_input.startswith("{") or attributes_input.startswith("["):
             try:
-                return json.loads(attributes_input)
+                return cast(Dict[str, object], json.loads(attributes_input))
             except json.JSONDecodeError as e:
                 raise CliExecutionError(f"Invalid JSON: {e}") from e
 
@@ -200,51 +201,51 @@ class OperationCreateAction(AbstractOperationAction):
 
         try:
             with open(attributes_input, encoding="utf-8") as f:
-                return json.load(f)
+                return cast(Dict[str, object], json.load(f))
         except json.JSONDecodeError as e:
             raise CliExecutionError(f"Invalid JSON in file: {e}") from e
         except OSError as e:
             raise CliExecutionError(f"Failed to read file: {e}") from e
 
-    def _set_attributes(self, classifier: Any, operation: Any, attrs: Dict[str, Any]) -> None:
+    def _set_attributes(self, classifier: RPModelElement, operation: RPModelElement, attrs: Dict[str, object]) -> None:
         """Set validated attributes on operation."""
         if "name" in attrs:
-            operation.set_name(attrs["name"])
+            operation.set_name(cast(str, attrs["name"]))
         if "body" in attrs:
-            operation.set_body(attrs["body"])
+            operation.set_body(cast(str, attrs["body"]))  # type: ignore[attr-defined]
         if "description" in attrs:
-            operation.set_description(attrs["description"])
+            operation.set_description(cast(str, attrs["description"]))
         if "visibility" in attrs:
-            operation.set_visibility(attrs["visibility"])
+            operation.set_visibility(cast(str, attrs["visibility"]))  # type: ignore[attr-defined]
         if "arguments" in attrs:
-            operation.set_arguments(attrs["arguments"])
+            operation.set_arguments(attrs["arguments"])  # type: ignore[attr-defined]
         self._set_boolean_flags(operation, attrs)
         self._set_returns(classifier, operation, attrs)
 
-    def _set_boolean_flags(self, operation: Any, attrs: Dict[str, Any]) -> None:
+    def _set_boolean_flags(self, operation: RPModelElement, attrs: Dict[str, object]) -> None:
         """Set boolean flags isAbstract, isStatic, isVirtual.
 
         SWR_OP_00012: Boolean Flag Support
         """
         if "isAbstract" in attrs:
-            operation.set_is_abstract(1 if attrs["isAbstract"] else 0)
+            operation.set_is_abstract(1 if attrs["isAbstract"] else 0)  # type: ignore[attr-defined]
         if "isStatic" in attrs:
-            operation.set_is_static(1 if attrs["isStatic"] else 0)
+            operation.set_is_static(1 if attrs["isStatic"] else 0)  # type: ignore[attr-defined]
         if "isVirtual" in attrs:
-            operation.set_is_virtual(1 if attrs["isVirtual"] else 0)
+            operation.set_is_virtual(1 if attrs["isVirtual"] else 0)  # type: ignore[attr-defined]
 
-    def _set_returns(self, classifier: Any, operation: Any, attrs: Dict[str, Any]) -> None:
+    def _set_returns(self, classifier: RPModelElement, operation: RPModelElement, attrs: Dict[str, object]) -> None:
         """Resolve and set the returns type.
 
         SWR_OP_00011: Returns Type Resolution
         """
         if "returns" in attrs:
-            type_name = attrs["returns"]
+            type_name = cast(str, attrs["returns"])
             owner = classifier.get_owner()
-            target = owner.find_nested_classifier_recursive(type_name)
+            target = owner.find_nested_classifier_recursive(type_name)  # type: ignore[attr-defined]
             if target is None:
                 raise CliExecutionError(f"Returns type '{type_name}' not found")
-            operation.set_returns(target)
+            operation.set_returns(target)  # type: ignore[attr-defined]
 
 
 class OperationDeleteAction(AbstractOperationAction):
@@ -287,7 +288,7 @@ class OperationDeleteAction(AbstractOperationAction):
             label = args.name
 
         try:
-            classifier.delete_operation(operation)
+            classifier.delete_operation(operation)  # type: ignore[attr-defined]
             self.logger.info("Deleted operation: %s", label)
         except Exception as e:
             self._handle_execution_error(e, f"Failed to delete operation '{label}'")
@@ -325,16 +326,17 @@ class OperationListAction(AbstractOperationAction):
                 self._write_to_file(args.output, output)
                 self.logger.info("Wrote %d operations to: %s", len(op_names), args.output)
             else:
+                # NOTE: Result data to stdout (not logger) so it stays safe for piping/redirection.
                 print(output)
         except CliExecutionError:
             raise
         except Exception as e:
             self._handle_execution_error(e, f"Failed to list operations in '{args.path}'")
 
-    def _collect_operation_names(self, classifier: Any) -> List[str]:
+    def _collect_operation_names(self, classifier: RPModelElement) -> List[str]:
         """Collect names of operations on a classifier."""
-        operations = classifier.get_operations()
-        return [op.get_name() for op in operations]
+        operations = classifier.get_operations()  # type: ignore[attr-defined]
+        return [cast(RPModelElement, op).get_name() for op in operations]
 
     def _format_output(self, op_names: List[str], format_type: str) -> str:
         """Format output based on format parameter."""
@@ -432,56 +434,57 @@ class OperationViewAction(AbstractOperationAction):
                 self._write_to_file(args.output, output)
                 self.logger.info("Wrote operation details to: %s", args.output)
             else:
+                # NOTE: Result data to stdout (not logger) so it stays safe for piping/redirection.
                 print(output)
         except CliExecutionError:
             raise
         except Exception as e:
             self._handle_execution_error(e, f"Failed to view operation '{args.name or args.guid}'")
 
-    def _collect_operation_data(self, operation: Any) -> Dict[str, Any]:
+    def _collect_operation_data(self, operation: RPModelElement) -> Dict[str, object]:
         """Collect operation details into a data dictionary.
 
         Normalizes boolean flags to int for clean JSON round-trip.
         """
-        returns = operation.get_returns()
-        returns_name = returns.get_name() if returns is not None else ""
-        arguments = operation.get_arguments()
+        returns = operation.get_returns()  # type: ignore[attr-defined]
+        returns_name = cast(RPModelElement, returns).get_name() if returns is not None else ""
+        arguments = operation.get_arguments()  # type: ignore[attr-defined]
         return {
             "name": operation.get_name(),
             "guid": operation.get_guid(),
             "description": operation.get_description(),
-            "body": operation.get_body(),
-            "isAbstract": int(operation.get_is_abstract()),
-            "isStatic": int(operation.get_is_static()),
-            "isVirtual": int(operation.get_is_virtual()),
+            "body": operation.get_body(),  # type: ignore[attr-defined]
+            "isAbstract": int(operation.get_is_abstract()),  # type: ignore[attr-defined]
+            "isStatic": int(operation.get_is_static()),  # type: ignore[attr-defined]
+            "isVirtual": int(operation.get_is_virtual()),  # type: ignore[attr-defined]
             "returns": returns_name,
-            "visibility": operation.get_visibility(),
-            "arguments": [arg.get_name() for arg in arguments],
+            "visibility": operation.get_visibility(),  # type: ignore[attr-defined]
+            "arguments": [cast(RPModelElement, arg).get_name() for arg in arguments],
             "metaClass": operation.get_meta_class(),
             "fullPath": operation.get_full_path_name(),
         }
 
-    def _format_output(self, data: Dict[str, Any], format_type: str) -> str:
+    def _format_output(self, data: Dict[str, object], format_type: str) -> str:
         """Format output based on format parameter."""
         if format_type == "json":
             return OutputFormatter.json_format(data)
         elif format_type == "csv":
-            data_row = [data[key] for key in self._VIEW_KEYS]
+            data_row = [str(data[key]) for key in self._VIEW_KEYS]
             return OutputFormatter.csv_format(self._VIEW_HEADERS, [data_row])
         else:
-            table_rows = [
-                ["Name", data["name"]],
-                ["GUID", data["guid"]],
-                ["Description", data["description"]],
-                ["Body", data["body"]],
-                ["IsAbstract", data["isAbstract"]],
-                ["IsStatic", data["isStatic"]],
-                ["IsVirtual", data["isVirtual"]],
-                ["Returns", data["returns"]],
-                ["Visibility", data["visibility"]],
-                ["Arguments", ", ".join(data["arguments"])],
-                ["MetaClass", data["metaClass"]],
-                ["FullPath", data["fullPath"]],
+            table_rows: List[List[str]] = [
+                ["Name", str(data["name"])],
+                ["GUID", str(data["guid"])],
+                ["Description", str(data["description"])],
+                ["Body", str(data["body"])],
+                ["IsAbstract", str(data["isAbstract"])],
+                ["IsStatic", str(data["isStatic"])],
+                ["IsVirtual", str(data["isVirtual"])],
+                ["Returns", str(data["returns"])],
+                ["Visibility", str(data["visibility"])],
+                ["Arguments", ", ".join(cast(List[str], data["arguments"]))],
+                ["MetaClass", str(data["metaClass"])],
+                ["FullPath", str(data["fullPath"])],
             ]
             return OutputFormatter.table(["Property", "Value"], table_rows)
 
@@ -562,14 +565,14 @@ class OperationUpdateAction(AbstractOperationAction):
 
         self.logger.info("Successfully updated operation: %s", operation.get_name())
 
-    def _load_json_data(self, attributes_input: str) -> Any:
+    def _load_json_data(self, attributes_input: str) -> Dict[str, object]:
         """Load JSON data from inline string or external file.
 
         SWR_OP_00007: External JSON File Support
         """
         if attributes_input.startswith("{") or attributes_input.startswith("["):
             try:
-                return json.loads(attributes_input)
+                return cast(Dict[str, object], json.loads(attributes_input))
             except json.JSONDecodeError as e:
                 raise CliExecutionError(f"Invalid JSON: {e}") from e
 
@@ -578,34 +581,34 @@ class OperationUpdateAction(AbstractOperationAction):
 
         try:
             with open(attributes_input, encoding="utf-8") as f:
-                return json.load(f)
+                return cast(Dict[str, object], json.load(f))
         except json.JSONDecodeError as e:
             raise CliExecutionError(f"Invalid JSON in file: {e}") from e
         except OSError as e:
             raise CliExecutionError(f"Failed to read file: {e}") from e
 
-    def _set_attributes(self, classifier: Any, operation: Any, attrs: Dict[str, Any]) -> None:
+    def _set_attributes(self, classifier: RPModelElement, operation: RPModelElement, attrs: Dict[str, object]) -> None:
         """Set validated attributes on operation (partial update)."""
         if "name" in attrs:
-            operation.set_name(attrs["name"])
+            operation.set_name(cast(str, attrs["name"]))
         if "body" in attrs:
-            operation.set_body(attrs["body"])
+            operation.set_body(cast(str, attrs["body"]))  # type: ignore[attr-defined]
         if "description" in attrs:
-            operation.set_description(attrs["description"])
+            operation.set_description(cast(str, attrs["description"]))
         if "visibility" in attrs:
-            operation.set_visibility(attrs["visibility"])
+            operation.set_visibility(cast(str, attrs["visibility"]))  # type: ignore[attr-defined]
         if "arguments" in attrs:
-            operation.set_arguments(attrs["arguments"])
+            operation.set_arguments(attrs["arguments"])  # type: ignore[attr-defined]
         if "isAbstract" in attrs:
-            operation.set_is_abstract(1 if attrs["isAbstract"] else 0)
+            operation.set_is_abstract(1 if attrs["isAbstract"] else 0)  # type: ignore[attr-defined]
         if "isStatic" in attrs:
-            operation.set_is_static(1 if attrs["isStatic"] else 0)
+            operation.set_is_static(1 if attrs["isStatic"] else 0)  # type: ignore[attr-defined]
         if "isVirtual" in attrs:
-            operation.set_is_virtual(1 if attrs["isVirtual"] else 0)
+            operation.set_is_virtual(1 if attrs["isVirtual"] else 0)  # type: ignore[attr-defined]
         if "returns" in attrs:
-            type_name = attrs["returns"]
+            type_name = cast(str, attrs["returns"])
             owner = classifier.get_owner()
-            target = owner.find_nested_classifier_recursive(type_name)
+            target = owner.find_nested_classifier_recursive(type_name)  # type: ignore[attr-defined]
             if target is None:
                 raise CliExecutionError(f"Returns type '{type_name}' not found")
-            operation.set_returns(target)
+            operation.set_returns(target)  # type: ignore[attr-defined]

@@ -2,12 +2,13 @@
 
 import argparse
 import logging
-from typing import Any, List, NoReturn, Optional
+from typing import List, NoReturn, Optional, cast
 
 from rhapsody_cli.application import RhapsodyApplication
 from rhapsody_cli.cli.formatters import OutputFormatter
 from rhapsody_cli.cli.path_resolver import PathResolver, PathResolverError
 from rhapsody_cli.exceptions import CliExecutionError, RhapsodyConnectionError
+from rhapsody_cli.models.core import RPModelElement
 from rhapsody_cli.models.elements.containment import RPProject
 
 
@@ -97,7 +98,7 @@ class RhapsodyContextAction(AbstractAction):
             self._app = RhapsodyApplication.connect()
         return self._app
 
-    def _print_formatted_output(self, data: Any, headers: List[str], table_rows: List[List[Any]], *, force_table: bool = False) -> None:
+    def _print_formatted_output(self, data: object, headers: List[str], table_rows: List[List[str]], *, force_table: bool = False) -> None:
         """Format `data` per this action's output_format and print to stdout.
 
         Result data goes to stdout (not the logger) so it stays safe for
@@ -115,6 +116,7 @@ class RhapsodyContextAction(AbstractAction):
             output = OutputFormatter.json_format(data)
         else:
             output = OutputFormatter.table(headers, table_rows)
+        # NOTE: Result data to stdout (not logger) so it stays safe for piping/redirection.
         print(output)
 
     def _handle_connection_error(self, error: RhapsodyConnectionError, context_msg: str = "") -> NoReturn:
@@ -236,7 +238,7 @@ class ElementManagementAction(RhapsodyContextAction):
         except RhapsodyConnectionError as e:
             self._handle_connection_error(e)
 
-    def _get_active_root(self) -> Any:
+    def _get_active_root(self) -> RPModelElement:
         """Return the root element of the active project.
 
         Returns:
@@ -244,7 +246,7 @@ class ElementManagementAction(RhapsodyContextAction):
         """
         return self._get_active_project().get_root()
 
-    def _resolve_container_or_element(self, root: Any, path: Optional[str], *, resolve_element: bool, operation: str = "resolve path") -> Any:
+    def _resolve_container_or_element(self, root: RPModelElement, path: Optional[str], *, resolve_element: bool, operation: str = "resolve path") -> RPModelElement:
         """Resolve `path` to a container or element, mapping errors to CliExecutionError.
 
         Args:
@@ -269,8 +271,8 @@ class ElementManagementAction(RhapsodyContextAction):
             if resolve_element:
                 if path is None:
                     raise CliExecutionError(f"A path is required to {operation}")
-                return PathResolver.resolve_element(root, path)
-            return PathResolver.resolve_container(root, path)
+                return cast(RPModelElement, PathResolver.resolve_element(root, path))
+            return cast(RPModelElement, PathResolver.resolve_container(root, path))
         except PathResolverError as e:
             self.logger.error("%s", e)
             raise CliExecutionError(str(e)) from e

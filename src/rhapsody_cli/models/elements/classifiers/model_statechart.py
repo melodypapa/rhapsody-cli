@@ -1,6 +1,6 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPStatechart``."""
 
-from typing import TYPE_CHECKING, Any, Optional, cast
+from typing import TYPE_CHECKING, Optional, cast
 
 from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
 from rhapsody_cli.models.elements.classifiers.model_class import RPClass
@@ -322,7 +322,7 @@ class RPStatechart(RPClass):
         """
         return cast("RPClass", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getItsClass", "itsClass")))
 
-    def get_picture(self) -> Any:
+    def get_picture(self) -> object:
         """Returns the picture representation of the statechart.
 
         Returns:
@@ -333,7 +333,7 @@ class RPStatechart(RPClass):
         """
         return AbstractRPModelElement._get_method_or_property(self._com, "getPicture", "picture")
 
-    def get_picture_as(self, format: str) -> Any:
+    def get_picture_as(self, format: str) -> object:
         """Returns the picture representation in the specified format.
 
         Args:

@@ -3,7 +3,7 @@
 SWR_XCH_005: YAML Schema (version 1) — file I/O layer
 """
 
-from typing import Any, Dict
+from typing import Dict, cast
 
 import yaml
 
@@ -17,7 +17,7 @@ class RhapsodyYaml:
     safe_dump so callers never see raw YAMLError or OSError.
     """
 
-    def read(self, path: str) -> Dict[str, Any]:
+    def read(self, path: str) -> Dict[str, object]:
         """Read and parse a YAML file.
 
         Args:
@@ -39,9 +39,9 @@ class RhapsodyYaml:
             raise CliExecutionError(f"Invalid YAML in {path}: {e}") from e
         if not isinstance(data, dict):
             raise CliExecutionError(f"Expected YAML mapping at top level of {path}, got {type(data).__name__}")
-        return data
+        return cast(Dict[str, object], data)
 
-    def write(self, path: str, data: Dict[str, Any]) -> None:
+    def write(self, path: str, data: Dict[str, object]) -> None:
         """Write a dict to a YAML file.
 
         Args:

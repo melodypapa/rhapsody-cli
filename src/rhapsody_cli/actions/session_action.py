@@ -171,6 +171,8 @@ class StatusAction(AbstractAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         """Show connection status."""
+        # NOTE: All output below is the command's result data (not status/log
+        # messages), written to stdout via print() so it stays safe for piping.
         session_manager = SessionManager()
         session = session_manager.load()
 
@@ -226,6 +228,8 @@ class VersionAction(AbstractAction):
         """Show CLI version and optionally Rhapsody version."""
         from rhapsody_cli import __version__
 
+        # NOTE: Version output is the command's result data, written to stdout
+        # via print() so it stays safe for piping (e.g. `rhapsody-cli version`).
         print(f"rhapsody-cli version: {__version__}")
 
         # Try to show Rhapsody version if connected

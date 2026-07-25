@@ -325,7 +325,7 @@ class RPRhapsodyServer(RPModelElement):
         """Returns the Rhapsody application.
 
         Returns:
-            Any: The IRPApplication instance.
+            RhapsodyApplication: The IRPApplication instance.
 
         Raises:
             RhapsodyRuntimeException: If an error occurs in the Rhapsody API.
@@ -339,7 +339,7 @@ class RPRhapsodyServer(RPModelElement):
         """Returns a hidden Rhapsody application instance.
 
         Returns:
-            Any: The hidden IRPApplication instance.
+            RhapsodyApplication: The hidden IRPApplication instance.
 
         Raises:
             RhapsodyRuntimeException: If an error occurs in the Rhapsody API.
@@ -353,7 +353,7 @@ class RPRhapsodyServer(RPModelElement):
         """Returns an uninitialized Rhapsody application instance.
 
         Returns:
-            Any: The uninitialized IRPApplication instance.
+            RhapsodyApplication: The uninitialized IRPApplication instance.
 
         Raises:
             RhapsodyRuntimeException: If an error occurs in the Rhapsody API.
@@ -420,7 +420,7 @@ class RPSearchManager(RPModelElement):
         """Creates a search query object.
 
         Returns:
-            Any: The search query object that was created.
+            RPSearchQuery: The search query object that was created.
 
         Raises:
             RhapsodyRuntimeException: If an error occurs in the Rhapsody API.
@@ -977,7 +977,7 @@ class RPSearchQuery(RPModelElement):
                 view in the list is 0.
 
         Returns:
-            Any: The specified item from the list of views to be searched.
+            Optional[RPModelElement]: The specified item from the list of views to be searched.
 
         Raises:
             RhapsodyRuntimeException: If an error occurs in the Rhapsody API.
@@ -1161,7 +1161,7 @@ class RPSearchQuery(RPModelElement):
                 created.
 
         Returns:
-            Any: The new query element that was created.
+            RPTableLayout: The new query element that was created.
 
         Raises:
             RhapsodyRuntimeException: If an error occurs in the Rhapsody API.
@@ -1383,7 +1383,7 @@ class RPSearchQuery(RPModelElement):
         allows specifying a list of elements as the scope.
 
         Returns:
-            Any: The model element that constitutes the scope for the search.
+            Optional[RPModelElement]: The model element that constitutes the scope for the search.
 
         Reference:
             com.telelogic.rhapsody.core.IRPSearchQuery::getSearchScopeObject()
@@ -1682,7 +1682,7 @@ class RPSearchResult(RPModelElement):
         """Returns the property matchedObject.
 
         Returns:
-            Any: The matched model element.
+            Optional[RPModelElement]: The matched model element.
 
         Raises:
             RhapsodyRuntimeException: If an error occurs in the Rhapsody API.

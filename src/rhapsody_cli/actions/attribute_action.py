@@ -19,11 +19,12 @@ import argparse
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Dict, List, cast
 
 from rhapsody_cli.actions.abstract_action import ElementManagementAction, SessionAwareAction
 from rhapsody_cli.cli.formatters import OutputFormatter
 from rhapsody_cli.exceptions import CliExecutionError
+from rhapsody_cli.models.core import RPModelElement
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +37,7 @@ class AbstractAttributeAction(SessionAwareAction, ElementManagementAction):
     SWR_ATTR_00010: GUID Lookup Support
     """
 
-    def _resolve_classifier(self, path: str) -> Any:
+    def _resolve_classifier(self, path: str) -> RPModelElement:
         """Resolve a parent classifier path.
 
         Args:
@@ -51,7 +52,7 @@ class AbstractAttributeAction(SessionAwareAction, ElementManagementAction):
         root = self._get_active_root()
         return self._resolve_container_or_element(root, path, resolve_element=True, operation=f"resolve classifier path '{path}'")
 
-    def _resolve_attribute(self, classifier: Any, name: str) -> Any:
+    def _resolve_attribute(self, classifier: RPModelElement, name: str) -> RPModelElement:
         """Find an attribute by name within a classifier.
 
         Args:
@@ -64,12 +65,12 @@ class AbstractAttributeAction(SessionAwareAction, ElementManagementAction):
         Raises:
             CliExecutionError: If attribute not found.
         """
-        attribute = classifier.find_attribute(name)
+        attribute = classifier.find_attribute(name)  # type: ignore[attr-defined]
         if attribute is None:
             raise CliExecutionError(f"Attribute '{name}' not found in classifier")
-        return attribute
+        return cast(RPModelElement, attribute)
 
-    def _resolve_attribute_by_guid(self, guid: str) -> Any:
+    def _resolve_attribute_by_guid(self, guid: str) -> RPModelElement:
         """Locate an attribute by GUID and validate it's an Attribute element.
 
         SWR_ATTR_00010: GUID Lookup Support
@@ -155,11 +156,11 @@ class AttributeCreateAction(AbstractAttributeAction):
             except Exception as e:
                 attr_name = attr_attrs.get("name", "unknown")
                 self.logger.error("Failed to create attribute '%s': %s", attr_name, e)
-                errors.append(attr_name)
+                errors.append(cast(str, attr_name))
 
         self._report_results(created, errors, len(attrs_data))
 
-    def _create_single_attribute(self, classifier: Any, attr_attrs: Dict[str, Any], parent_path: str) -> str:
+    def _create_single_attribute(self, classifier: RPModelElement, attr_attrs: Dict[str, object], parent_path: str) -> str:
         """Create a single attribute and set its attributes. Returns the attribute name."""
         name = str(attr_attrs.get("name", ""))
         if not name:
@@ -169,7 +170,7 @@ class AttributeCreateAction(AbstractAttributeAction):
         if unknown:
             self.logger.warning("Skipping unknown attributes: %s", unknown)
 
-        attribute = classifier.add_attribute(name)
+        attribute = classifier.add_attribute(name)  # type: ignore[attr-defined]
         self._set_attributes(classifier, attribute, attr_attrs)
 
         full_path = f"{parent_path}/{name}"
@@ -183,14 +184,14 @@ class AttributeCreateAction(AbstractAttributeAction):
         if errors:
             self.logger.info("Created %d/%d attributes with %d error(s)", len(created), total, len(errors))
 
-    def _load_json_data(self, attributes_input: str) -> Any:
+    def _load_json_data(self, attributes_input: str) -> Dict[str, object]:
         """Load JSON data from inline string or external file.
 
         SWR_ATTR_00007: External JSON File Support
         """
         if attributes_input.startswith("{") or attributes_input.startswith("["):
             try:
-                return json.loads(attributes_input)
+                return cast(Dict[str, object], json.loads(attributes_input))
             except json.JSONDecodeError as e:
                 raise CliExecutionError(f"Invalid JSON: {e}") from e
 
@@ -199,49 +200,49 @@ class AttributeCreateAction(AbstractAttributeAction):
 
         try:
             with open(attributes_input, encoding="utf-8") as f:
-                return json.load(f)
+                return cast(Dict[str, object], json.load(f))
         except json.JSONDecodeError as e:
             raise CliExecutionError(f"Invalid JSON in file: {e}") from e
         except OSError as e:
             raise CliExecutionError(f"Failed to read file: {e}") from e
 
-    def _set_attributes(self, classifier: Any, attribute: Any, attrs: Dict[str, Any]) -> None:
+    def _set_attributes(self, classifier: RPModelElement, attribute: RPModelElement, attrs: Dict[str, object]) -> None:
         """Set validated attributes on attribute."""
         if "name" in attrs:
-            attribute.set_name(attrs["name"])
+            attribute.set_name(cast(str, attrs["name"]))
         if "defaultValue" in attrs:
-            attribute.set_default_value(attrs["defaultValue"])
+            attribute.set_default_value(cast(str, attrs["defaultValue"]))  # type: ignore[attr-defined]
         if "multiplicity" in attrs:
-            attribute.set_multiplicity(attrs["multiplicity"])
+            attribute.set_multiplicity(cast(str, attrs["multiplicity"]))  # type: ignore[attr-defined]
         if "visibility" in attrs:
-            attribute.set_visibility(attrs["visibility"])
+            attribute.set_visibility(cast(str, attrs["visibility"]))  # type: ignore[attr-defined]
         if "declaration" in attrs:
-            attribute.set_declaration(attrs["declaration"])
+            attribute.set_declaration(cast(str, attrs["declaration"]))  # type: ignore[attr-defined]
         if "description" in attrs:
-            attribute.set_description(attrs["description"])
+            attribute.set_description(cast(str, attrs["description"]))
         self._set_boolean_flags(attribute, attrs)
         self._set_type(classifier, attribute, attrs)
 
-    def _set_boolean_flags(self, attribute: Any, attrs: Dict[str, Any]) -> None:
+    def _set_boolean_flags(self, attribute: RPModelElement, attrs: Dict[str, object]) -> None:
         """Set boolean flag isStatic.
 
         SWR_ATTR_00012: IsStatic Flag Support
         """
         if "isStatic" in attrs:
-            attribute.set_is_static(1 if attrs["isStatic"] else 0)
+            attribute.set_is_static(1 if attrs["isStatic"] else 0)  # type: ignore[attr-defined]
 
-    def _set_type(self, classifier: Any, attribute: Any, attrs: Dict[str, Any]) -> None:
+    def _set_type(self, classifier: RPModelElement, attribute: RPModelElement, attrs: Dict[str, object]) -> None:
         """Resolve and set the attribute type.
 
         SWR_ATTR_00011: Type Resolution
         """
         if "type" in attrs:
-            type_name = attrs["type"]
+            type_name = cast(str, attrs["type"])
             owner = classifier.get_owner()
-            target = owner.find_nested_classifier_recursive(type_name)
+            target = owner.find_nested_classifier_recursive(type_name)  # type: ignore[attr-defined]
             if target is None:
                 raise CliExecutionError(f"Type '{type_name}' not found")
-            attribute.set_type(target)
+            attribute.set_type(target)  # type: ignore[attr-defined]
 
 
 class AttributeDeleteAction(AbstractAttributeAction):
@@ -284,7 +285,7 @@ class AttributeDeleteAction(AbstractAttributeAction):
             label = args.name
 
         try:
-            classifier.delete_attribute(attribute)
+            classifier.delete_attribute(attribute)  # type: ignore[attr-defined]
             self.logger.info("Deleted attribute: %s", label)
         except Exception as e:
             self._handle_execution_error(e, f"Failed to delete attribute '{label}'")
@@ -322,16 +323,17 @@ class AttributeListAction(AbstractAttributeAction):
                 self._write_to_file(args.output, output)
                 self.logger.info("Wrote %d attributes to: %s", len(attr_names), args.output)
             else:
+                # NOTE: Result data to stdout (not logger) so it stays safe for piping/redirection.
                 print(output)
         except CliExecutionError:
             raise
         except Exception as e:
             self._handle_execution_error(e, f"Failed to list attributes in '{args.path}'")
 
-    def _collect_attribute_names(self, classifier: Any) -> List[str]:
+    def _collect_attribute_names(self, classifier: RPModelElement) -> List[str]:
         """Collect names of attributes on a classifier."""
-        attributes = classifier.get_attributes()
-        return [attr.get_name() for attr in attributes]
+        attributes = classifier.get_attributes()  # type: ignore[attr-defined]
+        return [cast(RPModelElement, attr).get_name() for attr in attributes]
 
     def _format_output(self, attr_names: List[str], format_type: str) -> str:
         """Format output based on format parameter."""
@@ -427,53 +429,54 @@ class AttributeViewAction(AbstractAttributeAction):
                 self._write_to_file(args.output, output)
                 self.logger.info("Wrote attribute details to: %s", args.output)
             else:
+                # NOTE: Result data to stdout (not logger) so it stays safe for piping/redirection.
                 print(output)
         except CliExecutionError:
             raise
         except Exception as e:
             self._handle_execution_error(e, f"Failed to view attribute '{args.name or args.guid}'")
 
-    def _collect_attribute_data(self, attribute: Any) -> Dict[str, Any]:
+    def _collect_attribute_data(self, attribute: RPModelElement) -> Dict[str, object]:
         """Collect attribute details into a data dictionary.
 
         Normalizes boolean flags to int for clean JSON round-trip.
         """
-        attr_type = attribute.get_type()
-        type_name = attr_type.get_name() if attr_type is not None else ""
+        attr_type = attribute.get_type()  # type: ignore[attr-defined]
+        type_name = cast(RPModelElement, attr_type).get_name() if attr_type is not None else ""
         return {
             "name": attribute.get_name(),
             "guid": attribute.get_guid(),
             "description": attribute.get_description(),
             "type": type_name,
-            "defaultValue": attribute.get_default_value(),
-            "multiplicity": attribute.get_multiplicity(),
-            "isStatic": int(attribute.get_is_static()),
-            "visibility": attribute.get_visibility(),
-            "declaration": attribute.get_declaration(),
+            "defaultValue": attribute.get_default_value(),  # type: ignore[attr-defined]
+            "multiplicity": attribute.get_multiplicity(),  # type: ignore[attr-defined]
+            "isStatic": int(attribute.get_is_static()),  # type: ignore[attr-defined]
+            "visibility": attribute.get_visibility(),  # type: ignore[attr-defined]
+            "declaration": attribute.get_declaration(),  # type: ignore[attr-defined]
             "metaClass": attribute.get_meta_class(),
             "fullPath": attribute.get_full_path_name(),
         }
 
-    def _format_output(self, data: Dict[str, Any], format_type: str) -> str:
+    def _format_output(self, data: Dict[str, object], format_type: str) -> str:
         """Format output based on format parameter."""
         if format_type == "json":
             return OutputFormatter.json_format(data)
         elif format_type == "csv":
-            data_row = [data[key] for key in self._VIEW_KEYS]
+            data_row = [str(data[key]) for key in self._VIEW_KEYS]
             return OutputFormatter.csv_format(self._VIEW_HEADERS, [data_row])
         else:
-            table_rows = [
-                ["Name", data["name"]],
-                ["GUID", data["guid"]],
-                ["Description", data["description"]],
-                ["Type", data["type"]],
-                ["DefaultValue", data["defaultValue"]],
-                ["Multiplicity", data["multiplicity"]],
-                ["IsStatic", data["isStatic"]],
-                ["Visibility", data["visibility"]],
-                ["Declaration", data["declaration"]],
-                ["MetaClass", data["metaClass"]],
-                ["FullPath", data["fullPath"]],
+            table_rows: List[List[str]] = [
+                ["Name", str(data["name"])],
+                ["GUID", str(data["guid"])],
+                ["Description", str(data["description"])],
+                ["Type", str(data["type"])],
+                ["DefaultValue", str(data["defaultValue"])],
+                ["Multiplicity", str(data["multiplicity"])],
+                ["IsStatic", str(data["isStatic"])],
+                ["Visibility", str(data["visibility"])],
+                ["Declaration", str(data["declaration"])],
+                ["MetaClass", str(data["metaClass"])],
+                ["FullPath", str(data["fullPath"])],
             ]
             return OutputFormatter.table(["Property", "Value"], table_rows)
 
@@ -553,14 +556,14 @@ class AttributeUpdateAction(AbstractAttributeAction):
 
         self.logger.info("Successfully updated attribute: %s", attribute.get_name())
 
-    def _load_json_data(self, attributes_input: str) -> Any:
+    def _load_json_data(self, attributes_input: str) -> Dict[str, object]:
         """Load JSON data from inline string or external file.
 
         SWR_ATTR_00007: External JSON File Support
         """
         if attributes_input.startswith("{") or attributes_input.startswith("["):
             try:
-                return json.loads(attributes_input)
+                return cast(Dict[str, object], json.loads(attributes_input))
             except json.JSONDecodeError as e:
                 raise CliExecutionError(f"Invalid JSON: {e}") from e
 
@@ -569,32 +572,32 @@ class AttributeUpdateAction(AbstractAttributeAction):
 
         try:
             with open(attributes_input, encoding="utf-8") as f:
-                return json.load(f)
+                return cast(Dict[str, object], json.load(f))
         except json.JSONDecodeError as e:
             raise CliExecutionError(f"Invalid JSON in file: {e}") from e
         except OSError as e:
             raise CliExecutionError(f"Failed to read file: {e}") from e
 
-    def _set_attributes(self, classifier: Any, attribute: Any, attrs: Dict[str, Any]) -> None:
+    def _set_attributes(self, classifier: RPModelElement, attribute: RPModelElement, attrs: Dict[str, object]) -> None:
         """Set validated attributes on attribute (partial update)."""
         if "name" in attrs:
-            attribute.set_name(attrs["name"])
+            attribute.set_name(cast(str, attrs["name"]))
         if "defaultValue" in attrs:
-            attribute.set_default_value(attrs["defaultValue"])
+            attribute.set_default_value(cast(str, attrs["defaultValue"]))  # type: ignore[attr-defined]
         if "multiplicity" in attrs:
-            attribute.set_multiplicity(attrs["multiplicity"])
+            attribute.set_multiplicity(cast(str, attrs["multiplicity"]))  # type: ignore[attr-defined]
         if "visibility" in attrs:
-            attribute.set_visibility(attrs["visibility"])
+            attribute.set_visibility(cast(str, attrs["visibility"]))  # type: ignore[attr-defined]
         if "declaration" in attrs:
-            attribute.set_declaration(attrs["declaration"])
+            attribute.set_declaration(cast(str, attrs["declaration"]))  # type: ignore[attr-defined]
         if "description" in attrs:
-            attribute.set_description(attrs["description"])
+            attribute.set_description(cast(str, attrs["description"]))
         if "isStatic" in attrs:
-            attribute.set_is_static(1 if attrs["isStatic"] else 0)
+            attribute.set_is_static(1 if attrs["isStatic"] else 0)  # type: ignore[attr-defined]
         if "type" in attrs:
-            type_name = attrs["type"]
+            type_name = cast(str, attrs["type"])
             owner = classifier.get_owner()
-            target = owner.find_nested_classifier_recursive(type_name)
+            target = owner.find_nested_classifier_recursive(type_name)  # type: ignore[attr-defined]
             if target is None:
                 raise CliExecutionError(f"Type '{type_name}' not found")
-            attribute.set_type(target)
+            attribute.set_type(target)  # type: ignore[attr-defined]

@@ -28,7 +28,7 @@ def call_com(func: Callable[[], T]) -> T:
         raise
 
 
-def _get_method_or_property(com_obj: Any, method_name: str, prop_name: str) -> Any:
+def _get_method_or_property(com_obj: object, method_name: str, prop_name: str) -> Any:
     """Read a value from ``com_obj``, preferring the Java-style method.
 
     Some Rhapsody COM automation Prog IDs (e.g. the Java-mirroring
@@ -37,13 +37,17 @@ def _get_method_or_property(com_obj: Any, method_name: str, prop_name: str) -> A
     ``Rhapsody2.Application.1``) expose the same data as bare COM
     properties (``name``, ``GUID``, ...). Prefer the method when present,
     and fall back to the bare property otherwise.
+
+    Returns ``Any`` because COM property values are dynamically typed
+    (strings, ints, booleans, or nested COM objects); callers wrap the
+    result in ``str()``/``int()``/``bool()``/``wrap()`` as needed.
     """
     if hasattr(com_obj, method_name):
         return call_com(lambda: getattr(com_obj, method_name)())
     return call_com(lambda: getattr(com_obj, prop_name))
 
 
-def _set_method_or_property(com_obj: Any, method_name: str, prop_name: str, value: Any) -> None:
+def _set_method_or_property(com_obj: object, method_name: str, prop_name: str, value: object) -> None:
     """Write a value to ``com_obj``, preferring the Java-style setter method.
 
     See :func:`_get_method_or_property` for why both forms exist.

@@ -3,7 +3,7 @@
 import csv
 import io
 import json
-from typing import Any, List, Optional
+from typing import List, Optional
 
 from tabulate import tabulate  # type: ignore[import-untyped]
 
@@ -12,19 +12,19 @@ class OutputFormatter:
     """Handles formatting output in table, JSON, CSV, or tree formats."""
 
     @staticmethod
-    def table(headers: List[str], rows: List[List[Any]]) -> str:
+    def table(headers: List[str], rows: List[List[str]]) -> str:
         """Format as ASCII table."""
         if not rows:
             return "(no data)"
         return str(tabulate(rows, headers=headers, tablefmt="grid"))
 
     @staticmethod
-    def json_format(data: Any) -> str:
+    def json_format(data: object) -> str:
         """Format as JSON."""
         return json.dumps(data, indent=2, default=str)
 
     @staticmethod
-    def csv_format(headers: List[str], rows: List[List[Any]]) -> str:
+    def csv_format(headers: List[str], rows: List[List[str]]) -> str:
         """Format as CSV."""
         output = io.StringIO()
         writer = csv.writer(output)
@@ -33,7 +33,7 @@ class OutputFormatter:
         return output.getvalue()
 
     @staticmethod
-    def format(data: Any, format_type: str, headers: Optional[List[str]] = None) -> str:
+    def format(data: object, format_type: str, headers: Optional[List[str]] = None) -> str:
         """Route data to appropriate formatter."""
         if format_type == "json":
             return OutputFormatter.json_format(data)
