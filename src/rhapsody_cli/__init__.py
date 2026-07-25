@@ -6,6 +6,8 @@ knowledge transfers directly. Importing this package registers all core
 element wrappers with the internal ``AbstractRPModelElement.wrap()`` dispatch factory.
 """
 
+__version__ = "0.1.0"
+
 from rhapsody_cli import models  # noqa: F401
 from rhapsody_cli.application import RhapsodyApplication
 from rhapsody_cli.exceptions import RhapsodyConnectionError, RhapsodyRuntimeException
