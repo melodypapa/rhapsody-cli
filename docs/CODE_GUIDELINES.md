@@ -99,6 +99,12 @@ class MyAction:
 
 ### Import Order & Organization
 
+**Rule: All imports must be at the beginning of the file and use full package path.**
+
+- **Location:** Imports must be placed at the beginning of the file, after the module docstring
+- **Style:** Use full package path (no relative imports)
+- **Order:** stdlib → third-party → local application
+
 ```python
 # 1. Standard library
 import argparse
@@ -114,6 +120,78 @@ from tabulate import tabulate
 from rhapsody_cli.cli.context import RhapsodyContext
 from rhapsody_cli.exceptions import RhapsodyConnectionError
 from rhapsody_cli.models.elements.classifiers import RPClass
+```
+
+**✅ CORRECT: Full package path**
+```python
+from rhapsody_cli.actions.abstract_action import AbstractAction
+from rhapsody_cli.models.elements.classifiers.model_class import RPClass
+```
+
+**❌ WRONG: Relative imports**
+```python
+from .abstract_action import AbstractAction
+from ..models.elements.classifiers.model_class import RPClass
+```
+
+**Exception:** `TYPE_CHECKING` imports are allowed to be grouped separately for type-hint-only imports.
+
+### Why Full Package Path?
+
+- **Clarity:** Import source is immediately visible
+- **Refactoring safety:** Moving files doesn't break imports
+- **IDE support:** Better autocomplete and navigation
+- **Consistency:** All imports follow the same pattern
+
+---
+
+## Function Definition Style
+
+### Keep Arguments on One Line
+
+Method and function arguments should be on the same line as the method name, not wrapped to multiple lines.
+
+**✅ CORRECT: Arguments on same line**
+```python
+def get_element(self, name: str, element_type: str) -> Optional[RPModelElement]:
+    return self._find_element(name, element_type)
+
+def connect(self, timeout: int = 30, attach_only: bool = False) -> RhapsodyApplication:
+    return RhapsodyApplication.connect(attach_only=attach_only)
+
+def create_package(self, name: str, parent: Optional[RPPackage] = None) -> RPPackage:
+    if parent is None:
+        parent = self._get_default_package()
+    return parent.add_package(name)
+```
+
+**❌ WRONG: Arguments wrapped to multiple lines**
+```python
+def get_element(
+    self,
+    name: str,
+    element_type: str
+) -> Optional[RPModelElement]:
+    return self._find_element(name, element_type)
+
+def connect(
+    self,
+    timeout: int = 30,
+    attach_only: bool = False
+) -> RhapsodyApplication:
+    return RhapsodyApplication.connect(attach_only=attach_only)
+```
+
+### When Wrapping is Acceptable
+
+If a line is too long (exceeds Black's line length limit of 200), wrap arguments but keep them grouped logically:
+
+```python
+# Acceptable: Line too long, wrap with all args on next line
+def export_to_yaml(
+    self, project: RPProject, output_path: Path, include_diagrams: bool = True
+) -> None:
+    self._exporter.export(project, output_path, include_diagrams)
 ```
 
 ---

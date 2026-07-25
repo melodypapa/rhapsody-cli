@@ -51,6 +51,16 @@ ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ && pytes
 - CI runs `mypy` only on Python < 3.10 (pattern-matching syntax issue in pytest on 3.10+).
 - CI runs full gate on `windows-latest` across Python 3.8–3.13. Codecov upload.
 
+## Coding Guidelines
+
+See [docs/CODE_GUIDELINES.md](docs/CODE_GUIDELINES.md) for detailed coding standards including:
+
+- Naming conventions (UPPERCASE constants, snake_case methods)
+- Import style (full package path, no relative imports)
+- TDD methodology and coverage targets
+- Class-based architecture patterns
+- CLI command patterns
+
 ## Forbidden
 
 - `from __future__ import annotations` (use string-quoted forward refs or `TYPE_CHECKING` imports instead)
