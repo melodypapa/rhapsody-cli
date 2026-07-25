@@ -4,7 +4,7 @@ import json
 import logging
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Optional, TypedDict
+from typing import Optional, TypedDict, cast
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +54,7 @@ class SessionManager:
             if not all(key in data for key in required):
                 logger.warning("Session file missing required fields")
                 return None
-            return data  # type: ignore[return-value]
+            return cast(Session, data)
         except json.JSONDecodeError:
             logger.warning("Session file contains invalid JSON")
             return None
