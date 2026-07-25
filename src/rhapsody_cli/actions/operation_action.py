@@ -21,14 +21,14 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List
 
-from rhapsody_cli.actions.abstract_action import ElementManagementAction
+from rhapsody_cli.actions.abstract_action import ElementManagementAction, SessionAwareAction
 from rhapsody_cli.cli.formatters import OutputFormatter
 from rhapsody_cli.exceptions import CliExecutionError
 
 logger = logging.getLogger(__name__)
 
 
-class AbstractOperationAction(ElementManagementAction):
+class AbstractOperationAction(SessionAwareAction, ElementManagementAction):
     """Base class for operation actions with common path, name and GUID validation.
 
     SWR_OP_00006: Path and Name Validation
@@ -135,6 +135,7 @@ class OperationCreateAction(AbstractOperationAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute operation creation."""
+        super().execute(args)
         input_data = args.input if args.input else args.attributes
         if not input_data:
             raise CliExecutionError("Either --input or attributes argument must be provided")
@@ -267,6 +268,7 @@ class OperationDeleteAction(AbstractOperationAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute operation deletion."""
+        super().execute(args)
         has_path_name = args.path and args.name
         has_guid = args.guid is not None
 
@@ -312,6 +314,7 @@ class OperationListAction(AbstractOperationAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute operation list."""
+        super().execute(args)
         classifier = self._resolve_classifier(args.path)
 
         try:
@@ -406,6 +409,7 @@ class OperationViewAction(AbstractOperationAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute operation view."""
+        super().execute(args)
         has_path_name = args.path and args.name
         has_guid = args.guid is not None
 
@@ -528,6 +532,7 @@ class OperationUpdateAction(AbstractOperationAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute operation update."""
+        super().execute(args)
         has_path_name = args.path and args.name
         has_guid = args.guid is not None
 
