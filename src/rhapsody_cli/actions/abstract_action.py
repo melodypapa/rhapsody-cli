@@ -97,14 +97,7 @@ class RhapsodyContextAction(AbstractAction):
             self._app = RhapsodyApplication.connect()
         return self._app
 
-    def _print_formatted_output(
-        self,
-        data: Any,
-        headers: List[str],
-        table_rows: List[List[Any]],
-        *,
-        force_table: bool = False,
-    ) -> None:
+    def _print_formatted_output(self, data: Any, headers: List[str], table_rows: List[List[Any]], *, force_table: bool = False) -> None:
         """Format `data` per this action's output_format and print to stdout.
 
         Result data goes to stdout (not the logger) so it stays safe for
@@ -205,12 +198,7 @@ class ElementManagementAction(RhapsodyContextAction):
     _RECURSIVE_DELETE_HELP = "Delete the element and all elements nested within it"
 
     @staticmethod
-    def add_path_argument(
-        parser: argparse.ArgumentParser,
-        *,
-        required: bool = False,
-        help_text: str = _PATH_ARGUMENT_HELP,
-    ) -> None:
+    def add_path_argument(parser: argparse.ArgumentParser, *, required: bool = False, help_text: str = _PATH_ARGUMENT_HELP) -> None:
         """Add the shared --path argument to a subcommand parser.
 
         Args:
@@ -256,14 +244,7 @@ class ElementManagementAction(RhapsodyContextAction):
         """
         return self._get_active_project().get_root()
 
-    def _resolve_container_or_element(
-        self,
-        root: Any,
-        path: Optional[str],
-        *,
-        resolve_element: bool,
-        operation: str = "resolve path",
-    ) -> Any:
+    def _resolve_container_or_element(self, root: Any, path: Optional[str], *, resolve_element: bool, operation: str = "resolve path") -> Any:
         """Resolve `path` to a container or element, mapping errors to CliExecutionError.
 
         Args:

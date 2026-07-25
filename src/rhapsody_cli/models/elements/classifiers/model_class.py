@@ -149,14 +149,7 @@ class RPClass(RPClassifier):
             "addEventReceptionWithEvent is not exposed in the Rhapsody COM automation type library. " "Use add_event_reception(name) instead and set the event via the reception object."
         )
 
-    def add_link(
-        self,
-        from_part: RPModelElement,
-        to_part: RPModelElement,
-        assoc: RPModelElement,
-        from_port: RPModelElement,
-        to_port: RPModelElement,
-    ) -> "RPLink":
+    def add_link(self, from_part: RPModelElement, to_part: RPModelElement, assoc: RPModelElement, from_port: RPModelElement, to_port: RPModelElement) -> "RPLink":
         """Creates a link between two parts belonging to a class.
 
         In addition to the two parts, you must supply either the association the
@@ -186,13 +179,7 @@ class RPClass(RPClassifier):
         """
         return cast("RPLink", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addLink(from_part._com, to_part._com, assoc._com, from_port._com, to_port._com))))
 
-    def add_link_to_part_via_port(
-        self,
-        to_part: RPModelElement,
-        part_port: RPModelElement,
-        class_port: RPModelElement,
-        assoc: RPModelElement,
-    ) -> "RPLink":
+    def add_link_to_part_via_port(self, to_part: RPModelElement, part_port: RPModelElement, class_port: RPModelElement, assoc: RPModelElement) -> "RPLink":
         """Creates a delegation connector between a class and one of its parts.
 
         You must supply either the association the link should represent, or the

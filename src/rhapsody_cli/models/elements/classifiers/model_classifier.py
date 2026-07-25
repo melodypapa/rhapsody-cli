@@ -183,16 +183,7 @@ class RPClassifier(RPUnit):
         return cast("RPFlow", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addFlows(name))))
 
     def add_relation(
-        self,
-        other_class_name: str,
-        other_class_package_name: str,
-        role_name1: str,
-        link_type1: str,
-        multiplicity1: str,
-        role_name2: str,
-        link_type2: str,
-        multiplicity2: str,
-        link_name: str,
+        self, other_class_name: str, other_class_package_name: str, role_name1: str, link_type1: str, multiplicity1: str, role_name2: str, link_type2: str, multiplicity2: str, link_name: str
     ) -> "RPRelation":
         """Adds a new association to the classifier.
 
@@ -257,15 +248,7 @@ class RPClassifier(RPUnit):
         )
 
     def add_relation_to(
-        self,
-        other_classifier: "RPClassifier",
-        role_name1: str,
-        link_type1: str,
-        multiplicity1: str,
-        role_name2: str,
-        link_type2: str,
-        multiplicity2: str,
-        link_name: str,
+        self, other_classifier: "RPClassifier", role_name1: str, link_type1: str, multiplicity1: str, role_name2: str, link_type2: str, multiplicity2: str, link_name: str
     ) -> "RPRelation":
         """Adds a new association to the classifier.
 
@@ -325,15 +308,7 @@ class RPClassifier(RPUnit):
             ),
         )
 
-    def add_unidirectional_relation(
-        self,
-        other_class_name: str,
-        other_class_package_name: str,
-        role_name: str,
-        link_type: str,
-        multiplicity: str,
-        link_name: str,
-    ) -> "RPRelation":
+    def add_unidirectional_relation(self, other_class_name: str, other_class_package_name: str, role_name: str, link_type: str, multiplicity: str, link_name: str) -> "RPRelation":
         """Adds a new directed association to the classifier.
 
         Args:
@@ -378,14 +353,7 @@ class RPClassifier(RPUnit):
             ),
         )
 
-    def add_unidirectional_relation_to(
-        self,
-        other_classifier: "RPClassifier",
-        role_name: str,
-        link_type: str,
-        multiplicity: str,
-        link_name: str,
-    ) -> "RPRelation":
+    def add_unidirectional_relation_to(self, other_classifier: "RPClassifier", role_name: str, link_type: str, multiplicity: str, link_name: str) -> "RPRelation":
         """Adds a new directed association to the classifier.
 
         Args:
