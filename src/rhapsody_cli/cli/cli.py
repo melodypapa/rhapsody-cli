@@ -1,9 +1,11 @@
 """Main CLI entry point using argparse - PanGu style architecture."""
 
+import argparse
 import logging
 import sys
 from typing import Optional
 
+from rhapsody_cli.actions.session_action import ConnectAction, DisconnectAction, StatusAction, VersionAction
 from rhapsody_cli.cli.logging_config import CliLoggingConfigurator
 from rhapsody_cli.commands.attribute_command import AttributeCommand
 from rhapsody_cli.commands.class_command import ClassCommand
@@ -40,7 +42,44 @@ def main() -> None:
             output_format = command_args[idx + 1]
 
     try:
-        # Dispatch to command group classes
+        # Single-level commands (no AbstractCommand wrapper)
+        if command_name == "connect":
+            action = ConnectAction()
+            # Parse args for connect
+            parser = argparse.ArgumentParser(prog="rhapsody-cli connect")
+            parser.add_argument("--timeout", type=int, help="Session timeout in minutes")
+            parser.add_argument("--attach-only", action="store_true", help="Only attach to existing instance")
+            parser.add_argument("--no-gui", action="store_true", help="Keep GUI hidden")
+            parser.add_argument("-v", "--verbose", action="store_true", help="Enable debug logging")
+            parsed_args = parser.parse_args(command_args)
+            action.execute(parsed_args)
+            return
+
+        elif command_name == "disconnect":
+            action = DisconnectAction()
+            parser = argparse.ArgumentParser(prog="rhapsody-cli disconnect")
+            parser.add_argument("-v", "--verbose", action="store_true", help="Enable debug logging")
+            parsed_args = parser.parse_args(command_args)
+            action.execute(parsed_args)
+            return
+
+        elif command_name == "status":
+            action = StatusAction()
+            parser = argparse.ArgumentParser(prog="rhapsody-cli status")
+            parser.add_argument("-v", "--verbose", action="store_true", help="Enable debug logging")
+            parsed_args = parser.parse_args(command_args)
+            action.execute(parsed_args)
+            return
+
+        elif command_name == "version":
+            action = VersionAction()
+            parser = argparse.ArgumentParser(prog="rhapsody-cli version")
+            parser.add_argument("-v", "--verbose", action="store_true", help="Enable debug logging")
+            parsed_args = parser.parse_args(command_args)
+            action.execute(parsed_args)
+            return
+
+        # Two-level commands (existing)
         cmd: Optional[object] = None
 
         if command_name == "class":
@@ -80,11 +119,21 @@ def main() -> None:
 
 def _usage(error: str) -> None:
     """Print usage message and exit."""
-    commands_text = "Commands:\n  attribute  Manage attributes\n  class      Manage classes\n"
-    commands_text += "  operation  Manage operations\n"
-    commands_text += "  package    Manage packages\n  port       Manage ports\n  project    Manage projects\n"
-    options_text = "Global Options:\n  --format <format>   Output format (table, json, csv)."
-    options_text += " Default: table\n  -v|--verbose        Enable debug logging\n"
+    commands_text = "Single-Level Commands:\n"
+    commands_text += "  connect     Connect to Rhapsody\n"
+    commands_text += "  disconnect  Disconnect from Rhapsody\n"
+    commands_text += "  status      Show connection status\n"
+    commands_text += "  version     Show CLI version\n\n"
+    commands_text += "Two-Level Commands:\n"
+    commands_text += "  attribute   Manage attributes\n"
+    commands_text += "  class       Manage classes\n"
+    commands_text += "  operation   Manage operations\n"
+    commands_text += "  package     Manage packages\n"
+    commands_text += "  port        Manage ports\n"
+    commands_text += "  project     Manage projects\n"
+    options_text = "Global Options:\n"
+    options_text += "  --format <format>   Output format (table, json, csv). Default: table\n"
+    options_text += "  -v|--verbose        Enable debug logging\n"
     options_text += "  -h|--help          Show this help message\n"
 
     message = "Usage:\n  rhapsody-cli <command> [options]\n\n"
