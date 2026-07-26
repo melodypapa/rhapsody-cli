@@ -20,11 +20,12 @@ import argparse
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, cast
+from typing import Dict, List, cast
 
 from rhapsody_cli.actions.abstract_action import ElementManagementAction, SessionAwareAction
 from rhapsody_cli.cli.formatters import OutputFormatter
 from rhapsody_cli.exceptions import CliExecutionError
+from rhapsody_cli.models.core import RPModelElement
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +40,7 @@ class AbstractClassAction(SessionAwareAction, ElementManagementAction):
 
     _PACKAGE_META_CLASSES = {"Package", "Project"}
 
-    def _resolve_and_validate_package(self, path: str) -> Any:
+    def _resolve_and_validate_package(self, path: str) -> RPModelElement:
         """Resolve path and validate it's a Package or Project element.
 
         Used by create and list. RPProject inherits addClass/getClasses from
@@ -63,7 +64,7 @@ class AbstractClassAction(SessionAwareAction, ElementManagementAction):
 
         return container
 
-    def _resolve_and_validate_class(self, path: str) -> Any:
+    def _resolve_and_validate_class(self, path: str) -> RPModelElement:
         """Resolve path and validate it's a Class element.
 
         Used by delete, view, and link.
@@ -86,7 +87,7 @@ class AbstractClassAction(SessionAwareAction, ElementManagementAction):
 
         return element
 
-    def _resolve_class_by_guid(self, guid: str) -> Any:
+    def _resolve_class_by_guid(self, guid: str) -> RPModelElement:
         """Locate a class by GUID and validate it's a Class element.
 
         SWR_CLS_00013: GUID Lookup Support
@@ -174,11 +175,11 @@ class ClassCreateAction(AbstractClassAction):
             except Exception as e:
                 cls_name = cls_attrs.get("name", "unknown")
                 self.logger.error("Failed to create class '%s': %s", cls_name, e)
-                errors.append(cls_name)
+                errors.append(cast(str, cls_name))
 
         self._report_results(created, errors, len(classes_data))
 
-    def _create_single_class(self, parent: Any, cls_attrs: Dict[str, Any], parent_path: str) -> str:
+    def _create_single_class(self, parent: RPModelElement, cls_attrs: Dict[str, object], parent_path: str) -> str:
         """Create a single class and set its attributes. Returns the class name."""
         name = str(cls_attrs.get("name", ""))
         if not name:
@@ -188,7 +189,7 @@ class ClassCreateAction(AbstractClassAction):
         if unknown:
             self.logger.warning("Skipping unknown attributes: %s", unknown)
 
-        cls = parent.add_class(name)
+        cls = parent.add_class(name)  # type: ignore[attr-defined]
         self._set_attributes(parent, cls, cls_attrs)
 
         full_path = f"{parent_path}/{name}"
@@ -202,14 +203,14 @@ class ClassCreateAction(AbstractClassAction):
         if errors:
             self.logger.info("Created %d/%d classes with %d error(s)", len(created), total, len(errors))
 
-    def _load_json_data(self, attributes_input: str) -> Any:
+    def _load_json_data(self, attributes_input: str) -> Dict[str, object]:
         """Load JSON data from inline string or external file.
 
         SWR_CLS_0006: External JSON File Support
         """
         if attributes_input.startswith("{") or attributes_input.startswith("["):
             try:
-                return json.loads(attributes_input)
+                return cast(Dict[str, object], json.loads(attributes_input))
             except json.JSONDecodeError as e:
                 raise CliExecutionError(f"Invalid JSON: {e}") from e
 
@@ -218,13 +219,13 @@ class ClassCreateAction(AbstractClassAction):
 
         try:
             with open(attributes_input, encoding="utf-8") as f:
-                return json.load(f)
+                return cast(Dict[str, object], json.load(f))
         except json.JSONDecodeError as e:
             raise CliExecutionError(f"Invalid JSON in file: {e}") from e
         except OSError as e:
             raise CliExecutionError(f"Failed to read file: {e}") from e
 
-    def _set_attributes(self, parent: Any, cls: Any, attrs: Dict[str, Any]) -> None:
+    def _set_attributes(self, parent: RPModelElement, cls: RPModelElement, attrs: Dict[str, object]) -> None:
         """Set validated attributes on class."""
         self._set_basic_attributes(cls, attrs)
         self._set_boolean_flags(cls, attrs)
@@ -234,58 +235,58 @@ class ClassCreateAction(AbstractClassAction):
         self._set_attributes_list(cls, attrs)
         self._set_superclasses(parent, cls, attrs)
 
-    def _set_basic_attributes(self, cls: Any, attrs: Dict[str, Any]) -> None:
+    def _set_basic_attributes(self, cls: RPModelElement, attrs: Dict[str, object]) -> None:
         """Set basic attributes."""
         if "description" in attrs:
-            cls.set_description(attrs["description"])
+            cls.set_description(cast(str, attrs["description"]))
 
-    def _set_boolean_flags(self, cls: Any, attrs: Dict[str, Any]) -> None:
+    def _set_boolean_flags(self, cls: RPModelElement, attrs: Dict[str, object]) -> None:
         """Set boolean flags isAbstract, isFinal, isActive.
 
         SWR_CLS_00012: Boolean Flag Support
         """
         if "isAbstract" in attrs:
-            cls.set_is_abstract(1 if attrs["isAbstract"] else 0)
+            cls.set_is_abstract(1 if attrs["isAbstract"] else 0)  # type: ignore[attr-defined]
         if "isFinal" in attrs:
-            cls.set_is_final(1 if attrs["isFinal"] else 0)
+            cls.set_is_final(1 if attrs["isFinal"] else 0)  # type: ignore[attr-defined]
         if "isActive" in attrs:
-            cls.set_is_active(1 if attrs["isActive"] else 0)
+            cls.set_is_active(1 if attrs["isActive"] else 0)  # type: ignore[attr-defined]
 
-    def _set_properties(self, cls: Any, attrs: Dict[str, Any]) -> None:
+    def _set_properties(self, cls: RPModelElement, attrs: Dict[str, object]) -> None:
         """Set custom properties (tags)."""
         if "tags" in attrs:
-            for key, val in attrs["tags"].items():
+            for key, val in cast(Dict[str, str], attrs["tags"]).items():
                 cls.set_property_value(key, val)
 
-    def _set_stereotypes(self, cls: Any, attrs: Dict[str, Any]) -> None:
+    def _set_stereotypes(self, cls: RPModelElement, attrs: Dict[str, object]) -> None:
         """Apply stereotypes."""
         if "stereotypes" in attrs:
-            for stereotype in attrs["stereotypes"]:
+            for stereotype in cast(List[str], attrs["stereotypes"]):
                 cls.add_stereotype(stereotype, "Class")
 
-    def _set_operations(self, cls: Any, attrs: Dict[str, Any]) -> None:
+    def _set_operations(self, cls: RPModelElement, attrs: Dict[str, object]) -> None:
         """Add operations."""
         if "operations" in attrs:
-            for op_name in attrs["operations"]:
-                cls.add_operation(op_name)
+            for op_name in cast(List[str], attrs["operations"]):
+                cls.add_operation(op_name)  # type: ignore[attr-defined]
 
-    def _set_attributes_list(self, cls: Any, attrs: Dict[str, Any]) -> None:
+    def _set_attributes_list(self, cls: RPModelElement, attrs: Dict[str, object]) -> None:
         """Add attributes."""
         if "attributes" in attrs:
-            for attr_name in attrs["attributes"]:
-                cls.add_attribute(attr_name)
+            for attr_name in cast(List[str], attrs["attributes"]):
+                cls.add_attribute(attr_name)  # type: ignore[attr-defined]
 
-    def _set_superclasses(self, parent: Any, cls: Any, attrs: Dict[str, Any]) -> None:
+    def _set_superclasses(self, parent: RPModelElement, cls: RPModelElement, attrs: Dict[str, object]) -> None:
         """Add generalization relationships to superclasses.
 
         SWR_CLS_00001: resolves superclass names via parent.findNestedClassifierRecursive(name).
         """
         if "superclasses" in attrs:
-            for name in attrs["superclasses"]:
-                target = parent.find_nested_classifier_recursive(name)
+            for name in cast(List[str], attrs["superclasses"]):
+                target = parent.find_nested_classifier_recursive(name)  # type: ignore[attr-defined]
                 if target is None:
                     raise CliExecutionError(f"Superclass '{name}' not found in package")
-                cls.add_generalization(target)
+                cls.add_generalization(target)  # type: ignore[attr-defined]
 
 
 class ClassDeleteAction(AbstractClassAction):
@@ -360,16 +361,17 @@ class ClassListAction(AbstractClassAction):
                 self._write_to_file(args.output, output)
                 self.logger.info("Wrote %d classes to: %s", len(class_names), args.output)
             else:
+                # NOTE: Result data to stdout (not logger) so it stays safe for piping/redirection.
                 print(output)
         except CliExecutionError:
             raise
         except Exception as e:
             self._handle_execution_error(e, f"Failed to list classes in '{args.path}'")
 
-    def _collect_class_names(self, package: Any) -> List[str]:
+    def _collect_class_names(self, package: RPModelElement) -> List[str]:
         """Collect names of classes in package."""
-        classes = package.get_classes()
-        return [cls.get_name() for cls in classes]
+        classes = package.get_classes()  # type: ignore[attr-defined]
+        return [cast(RPModelElement, cls).get_name() for cls in classes]
 
     def _format_output(self, class_names: List[str], format_type: str) -> str:
         """Format output based on format parameter."""
@@ -462,55 +464,56 @@ class ClassViewAction(AbstractClassAction):
                 self._write_to_file(args.output, output)
                 self.logger.info("Wrote class details to: %s", args.output)
             else:
+                # NOTE: Result data to stdout (not logger) so it stays safe for piping/redirection.
                 print(output)
         except CliExecutionError:
             raise
         except Exception as e:
             self._handle_execution_error(e, f"Failed to view class '{args.path or args.guid}'")
 
-    def _collect_class_data(self, cls: Any) -> Dict[str, Any]:
+    def _collect_class_data(self, cls: RPModelElement) -> Dict[str, object]:
         """Collect class details into a data dictionary.
 
         Normalizes IsAbstract (bool) to int for clean JSON round-trip.
         """
-        operations = cls.get_operations()
-        attributes = cls.get_attributes()
+        operations = cls.get_operations()  # type: ignore[attr-defined]
+        attributes = cls.get_attributes()  # type: ignore[attr-defined]
         return {
             "name": cls.get_name(),
             "guid": cls.get_guid(),
             "description": cls.get_description(),
-            "isAbstract": int(cls.get_is_abstract()),
-            "isActive": int(cls.get_is_active()),
-            "isFinal": int(cls.get_is_final()),
-            "isComposite": int(cls.get_is_composite()),
-            "isReactive": int(cls.get_is_reactive()),
+            "isAbstract": int(cls.get_is_abstract()),  # type: ignore[attr-defined]
+            "isActive": int(cls.get_is_active()),  # type: ignore[attr-defined]
+            "isFinal": int(cls.get_is_final()),  # type: ignore[attr-defined]
+            "isComposite": int(cls.get_is_composite()),  # type: ignore[attr-defined]
+            "isReactive": int(cls.get_is_reactive()),  # type: ignore[attr-defined]
             "metaClass": cls.get_meta_class(),
             "fullPath": cls.get_full_path_name(),
-            "operations": [op.get_name() for op in operations],
-            "attributes": [attr.get_name() for attr in attributes],
+            "operations": [cast(RPModelElement, op).get_name() for op in operations],
+            "attributes": [cast(RPModelElement, attr).get_name() for attr in attributes],
         }
 
-    def _format_output(self, data: Dict[str, Any], format_type: str) -> str:
+    def _format_output(self, data: Dict[str, object], format_type: str) -> str:
         """Format output based on format parameter."""
         if format_type == "json":
             return OutputFormatter.json_format(data)
         elif format_type == "csv":
-            data_row = [data[key] for key in self._VIEW_KEYS]
+            data_row = [str(data[key]) for key in self._VIEW_KEYS]
             return OutputFormatter.csv_format(self._VIEW_HEADERS, [data_row])
         else:
-            table_rows = [
-                ["Name", data["name"]],
-                ["GUID", data["guid"]],
-                ["Description", data["description"]],
-                ["IsAbstract", data["isAbstract"]],
-                ["IsActive", data["isActive"]],
-                ["IsFinal", data["isFinal"]],
-                ["IsComposite", data["isComposite"]],
-                ["IsReactive", data["isReactive"]],
-                ["MetaClass", data["metaClass"]],
-                ["FullPath", data["fullPath"]],
-                ["Operations", ", ".join(data["operations"])],
-                ["Attributes", ", ".join(data["attributes"])],
+            table_rows: List[List[str]] = [
+                ["Name", str(data["name"])],
+                ["GUID", str(data["guid"])],
+                ["Description", str(data["description"])],
+                ["IsAbstract", str(data["isAbstract"])],
+                ["IsActive", str(data["isActive"])],
+                ["IsFinal", str(data["isFinal"])],
+                ["IsComposite", str(data["isComposite"])],
+                ["IsReactive", str(data["isReactive"])],
+                ["MetaClass", str(data["metaClass"])],
+                ["FullPath", str(data["fullPath"])],
+                ["Operations", ", ".join(cast(List[str], data["operations"]))],
+                ["Attributes", ", ".join(cast(List[str], data["attributes"]))],
             ]
             return OutputFormatter.table(["Property", "Value"], table_rows)
 
@@ -569,20 +572,20 @@ class ClassLinkAction(AbstractClassAction):
 
         target_name = args.add if args.add else args.remove
         owner = source.get_owner()
-        target = owner.find_nested_classifier_recursive(target_name)
+        target = owner.find_nested_classifier_recursive(target_name)  # type: ignore[attr-defined]
         if target is None:
             raise CliExecutionError(f"Class '{target_name}' not found")
 
         try:
             if args.add:
-                source.add_generalization(target)
+                source.add_generalization(target)  # type: ignore[attr-defined]
                 self.logger.info(
                     "Added generalization: %s -> %s",
                     args.path or args.guid,
                     target_name,
                 )
             else:
-                source.delete_generalization(target)
+                source.delete_generalization(target)  # type: ignore[attr-defined]
                 self.logger.info(
                     "Removed generalization: %s -/-> %s",
                     args.path or args.guid,
@@ -625,7 +628,7 @@ class ClassUpdateAction(AbstractClassAction):
         parser.add_argument("attributes", nargs="?", default=None, help="Inline JSON or JSON file path")
         self.add_verbose_argument(parser)
 
-    def _load_json_data(self, args: Any) -> Dict[str, Any]:
+    def _load_json_data(self, args: argparse.Namespace) -> Dict[str, object]:
         """Load JSON data from inline string or file.
 
         SWR_CLS_0006: External JSON File Support
@@ -639,7 +642,7 @@ class ClassUpdateAction(AbstractClassAction):
         if args.input:
             try:
                 with open(args.input, encoding="utf-8") as f:
-                    return cast(Dict[str, Any], json.load(f))
+                    return cast(Dict[str, object], json.load(f))
             except FileNotFoundError:
                 raise CliExecutionError(f"File not found: {args.input}") from None
             except json.JSONDecodeError as e:
@@ -648,20 +651,20 @@ class ClassUpdateAction(AbstractClassAction):
             data_str = args.attributes.strip()
             if data_str.startswith("{"):
                 try:
-                    return cast(Dict[str, Any], json.loads(data_str))
+                    return cast(Dict[str, object], json.loads(data_str))
                 except json.JSONDecodeError as e:
                     raise CliExecutionError(f"Invalid JSON: {e}") from e
             else:
                 try:
                     with open(data_str, encoding="utf-8") as f:
-                        return cast(Dict[str, Any], json.load(f))
+                        return cast(Dict[str, object], json.load(f))
                 except FileNotFoundError:
                     raise CliExecutionError(f"File not found: {data_str}") from None
                 except json.JSONDecodeError as e:
                     raise CliExecutionError(f"Invalid JSON: {e}") from e
         return {}
 
-    def _set_attributes(self, cls: Any, data: Dict[str, Any]) -> None:
+    def _set_attributes(self, cls: RPModelElement, data: Dict[str, object]) -> None:
         """Set validated attributes on class (partial update).
 
         SWR_CLS_00012: Boolean Flag Support
@@ -678,20 +681,20 @@ class ClassUpdateAction(AbstractClassAction):
                 self.logger.warning("Skipping unknown attribute: %s", key)
                 continue
             if key == "name":
-                cls.set_name(value)
+                cls.set_name(cast(str, value))
             elif key == "description":
-                cls.set_description(value)
+                cls.set_description(cast(str, value))
             elif key == "isAbstract":
-                cls.set_is_abstract(1 if value else 0)
+                cls.set_is_abstract(1 if value else 0)  # type: ignore[attr-defined]
             elif key == "isFinal":
-                cls.set_is_final(1 if value else 0)
+                cls.set_is_final(1 if value else 0)  # type: ignore[attr-defined]
             elif key == "isActive":
-                cls.set_is_active(1 if value else 0)
+                cls.set_is_active(1 if value else 0)  # type: ignore[attr-defined]
             elif key == "stereotypes":
-                for stereotype in value:
+                for stereotype in cast(List[str], value):
                     cls.add_stereotype(stereotype, "Class")
             elif key == "tags":
-                for tag_key, tag_value in value.items():
+                for tag_key, tag_value in cast(Dict[str, str], value).items():
                     cls.set_property_value(tag_key, tag_value)
 
     def execute(self, args: argparse.Namespace) -> None:

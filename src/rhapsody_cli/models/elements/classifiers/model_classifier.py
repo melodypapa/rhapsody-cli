@@ -1,6 +1,6 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPClassifier``."""
 
-from typing import TYPE_CHECKING, Any, Optional, cast
+from typing import TYPE_CHECKING, Optional, cast
 
 from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement, RPUnit
 
@@ -761,7 +761,7 @@ class RPClassifier(RPUnit):
         """
         return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getPorts", "ports"))
 
-    def add_port(self, name: str) -> Any:
+    def add_port(self, name: str) -> RPModelElement:
         """Adds a new port to this classifier.
 
         Convenience method: the Rhapsody Java API has no dedicated
@@ -775,7 +775,7 @@ class RPClassifier(RPUnit):
         Returns:
             The wrapped ``IRPPort`` created.
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewAggr("Port", name)))
+        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewAggr("Port", name))))
 
     def get_relations(self) -> RPCollection:
         """Returns all the classifier's associations.

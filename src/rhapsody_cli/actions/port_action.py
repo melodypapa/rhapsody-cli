@@ -19,11 +19,12 @@ import argparse
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Dict, List, Union, cast
 
 from rhapsody_cli.actions.abstract_action import ElementManagementAction, SessionAwareAction
 from rhapsody_cli.cli.formatters import OutputFormatter
 from rhapsody_cli.exceptions import CliExecutionError
+from rhapsody_cli.models.core import RPModelElement
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +37,7 @@ class AbstractPortAction(SessionAwareAction, ElementManagementAction):
     SWR_PORT_00010: GUID Lookup Support
     """
 
-    def _resolve_classifier(self, path: str) -> Any:
+    def _resolve_classifier(self, path: str) -> RPModelElement:
         """Resolve a parent classifier path.
 
         Args:
@@ -51,7 +52,7 @@ class AbstractPortAction(SessionAwareAction, ElementManagementAction):
         root = self._get_active_root()
         return self._resolve_container_or_element(root, path, resolve_element=True, operation=f"resolve classifier path '{path}'")
 
-    def _resolve_port(self, classifier: Any, name: str) -> Any:
+    def _resolve_port(self, classifier: RPModelElement, name: str) -> RPModelElement:
         """Find a port by name within a classifier by iterating getPorts().
 
         Args:
@@ -64,13 +65,13 @@ class AbstractPortAction(SessionAwareAction, ElementManagementAction):
         Raises:
             CliExecutionError: If port not found.
         """
-        ports = classifier.get_ports()
+        ports = classifier.get_ports()  # type: ignore[attr-defined]
         for port in ports:
-            if port.get_name() == name:
-                return port
+            if cast(RPModelElement, port).get_name() == name:
+                return cast(RPModelElement, port)
         raise CliExecutionError(f"Port '{name}' not found in classifier")
 
-    def _resolve_port_by_guid(self, guid: str) -> Any:
+    def _resolve_port_by_guid(self, guid: str) -> RPModelElement:
         """Locate a port by GUID and validate it's a Port element.
 
         SWR_PORT_00010: GUID Lookup Support
@@ -153,11 +154,11 @@ class PortCreateAction(AbstractPortAction):
             except Exception as e:
                 port_name = port_attrs.get("name", "unknown")
                 self.logger.error("Failed to create port '%s': %s", port_name, e)
-                errors.append(port_name)
+                errors.append(cast(str, port_name))
 
         self._report_results(created, errors, len(ports_data))
 
-    def _create_single_port(self, classifier: Any, port_attrs: Dict[str, Any], parent_path: str) -> str:
+    def _create_single_port(self, classifier: RPModelElement, port_attrs: Dict[str, object], parent_path: str) -> str:
         """Create a single port and set its attributes. Returns the port name."""
         name = str(port_attrs.get("name", ""))
         if not name:
@@ -167,7 +168,7 @@ class PortCreateAction(AbstractPortAction):
         if unknown:
             self.logger.warning("Skipping unknown attributes: %s", unknown)
 
-        port = classifier.add_port(name)
+        port = classifier.add_port(name)  # type: ignore[attr-defined]
         self._set_attributes(classifier, port, port_attrs)
 
         full_path = f"{parent_path}/{name}"
@@ -181,14 +182,14 @@ class PortCreateAction(AbstractPortAction):
         if errors:
             self.logger.info("Created %d/%d ports with %d error(s)", len(created), total, len(errors))
 
-    def _load_json_data(self, attributes_input: str) -> Any:
+    def _load_json_data(self, attributes_input: str) -> Dict[str, object]:
         """Load JSON data from inline string or external file.
 
         SWR_PORT_00007: External JSON File Support
         """
         if attributes_input.startswith("{") or attributes_input.startswith("["):
             try:
-                return json.loads(attributes_input)
+                return cast(Dict[str, object], json.loads(attributes_input))
             except json.JSONDecodeError as e:
                 raise CliExecutionError(f"Invalid JSON: {e}") from e
 
@@ -197,43 +198,43 @@ class PortCreateAction(AbstractPortAction):
 
         try:
             with open(attributes_input, encoding="utf-8") as f:
-                return json.load(f)
+                return cast(Dict[str, object], json.load(f))
         except json.JSONDecodeError as e:
             raise CliExecutionError(f"Invalid JSON in file: {e}") from e
         except OSError as e:
             raise CliExecutionError(f"Failed to read file: {e}") from e
 
-    def _set_attributes(self, classifier: Any, port: Any, attrs: Dict[str, Any]) -> None:
+    def _set_attributes(self, classifier: RPModelElement, port: RPModelElement, attrs: Dict[str, object]) -> None:
         """Set validated attributes on port."""
         if "name" in attrs:
-            port.set_name(attrs["name"])
+            port.set_name(cast(str, attrs["name"]))
         if "description" in attrs:
-            port.set_description(attrs["description"])
+            port.set_description(cast(str, attrs["description"]))
         self._set_boolean_flags(port, attrs)
         self._set_port_contract(classifier, port, attrs)
 
-    def _set_boolean_flags(self, port: Any, attrs: Dict[str, Any]) -> None:
+    def _set_boolean_flags(self, port: RPModelElement, attrs: Dict[str, object]) -> None:
         """Set boolean flags isBehavioral, isReversed.
 
         SWR_PORT_00012: IsBehavioral and IsReversed Support
         """
         if "isBehavioral" in attrs:
-            port.set_is_behavioral(int(attrs["isBehavioral"]))
+            port.set_is_behavioral(int(cast(Union[str, int], attrs["isBehavioral"])))  # type: ignore[attr-defined]
         if "isReversed" in attrs:
-            port.set_is_reversed(int(attrs["isReversed"]))
+            port.set_is_reversed(int(cast(Union[str, int], attrs["isReversed"])))  # type: ignore[attr-defined]
 
-    def _set_port_contract(self, classifier: Any, port: Any, attrs: Dict[str, Any]) -> None:
+    def _set_port_contract(self, classifier: RPModelElement, port: RPModelElement, attrs: Dict[str, object]) -> None:
         """Resolve and set the portContract.
 
         SWR_PORT_00011: PortContract Resolution
         """
         if "portContract" in attrs:
-            contract_name = attrs["portContract"]
+            contract_name = cast(str, attrs["portContract"])
             owner = classifier.get_owner()
-            target = owner.find_nested_classifier_recursive(contract_name)
+            target = owner.find_nested_classifier_recursive(contract_name)  # type: ignore[attr-defined]
             if target is None:
                 raise CliExecutionError(f"PortContract '{contract_name}' not found")
-            port.set_port_contract(target)
+            port.set_port_contract(target)  # type: ignore[attr-defined]
 
 
 class PortDeleteAction(AbstractPortAction):
@@ -313,16 +314,17 @@ class PortListAction(AbstractPortAction):
                 self._write_to_file(args.output, output)
                 self.logger.info("Wrote %d ports to: %s", len(port_names), args.output)
             else:
+                # NOTE: Result data to stdout (not logger) so it stays safe for piping/redirection.
                 print(output)
         except CliExecutionError:
             raise
         except Exception as e:
             self._handle_execution_error(e, f"Failed to list ports in '{args.path}'")
 
-    def _collect_port_names(self, classifier: Any) -> List[str]:
+    def _collect_port_names(self, classifier: RPModelElement) -> List[str]:
         """Collect names of ports on a classifier."""
-        ports = classifier.get_ports()
-        return [port.get_name() for port in ports]
+        ports = classifier.get_ports()  # type: ignore[attr-defined]
+        return [cast(RPModelElement, port).get_name() for port in ports]
 
     def _format_output(self, port_names: List[str], format_type: str) -> str:
         """Format output based on format parameter."""
@@ -412,47 +414,48 @@ class PortViewAction(AbstractPortAction):
                 self._write_to_file(args.output, output)
                 self.logger.info("Wrote port details to: %s", args.output)
             else:
+                # NOTE: Result data to stdout (not logger) so it stays safe for piping/redirection.
                 print(output)
         except CliExecutionError:
             raise
         except Exception as e:
             self._handle_execution_error(e, f"Failed to view port '{args.name or args.guid}'")
 
-    def _collect_port_data(self, port: Any) -> Dict[str, Any]:
+    def _collect_port_data(self, port: RPModelElement) -> Dict[str, object]:
         """Collect port details into a data dictionary.
 
         Normalizes boolean flags to int for clean JSON round-trip.
         """
-        contract = port.get_port_contract()
-        contract_name = contract.get_name() if contract is not None else ""
+        contract = port.get_port_contract()  # type: ignore[attr-defined]
+        contract_name = cast(RPModelElement, contract).get_name() if contract is not None else ""
         return {
             "name": port.get_name(),
             "guid": port.get_guid(),
             "description": port.get_description(),
-            "isBehavioral": int(port.get_is_behavioral()),
-            "isReversed": int(port.get_is_reversed()),
+            "isBehavioral": int(port.get_is_behavioral()),  # type: ignore[attr-defined]
+            "isReversed": int(port.get_is_reversed()),  # type: ignore[attr-defined]
             "portContract": contract_name,
             "metaClass": port.get_meta_class(),
             "fullPath": port.get_full_path_name(),
         }
 
-    def _format_output(self, data: Dict[str, Any], format_type: str) -> str:
+    def _format_output(self, data: Dict[str, object], format_type: str) -> str:
         """Format output based on format parameter."""
         if format_type == "json":
             return OutputFormatter.json_format(data)
         elif format_type == "csv":
-            data_row = [data[key] for key in self._VIEW_KEYS]
+            data_row = [str(data[key]) for key in self._VIEW_KEYS]
             return OutputFormatter.csv_format(self._VIEW_HEADERS, [data_row])
         else:
-            table_rows = [
-                ["Name", data["name"]],
-                ["GUID", data["guid"]],
-                ["Description", data["description"]],
-                ["IsBehavioral", data["isBehavioral"]],
-                ["IsReversed", data["isReversed"]],
-                ["PortContract", data["portContract"]],
-                ["MetaClass", data["metaClass"]],
-                ["FullPath", data["fullPath"]],
+            table_rows: List[List[str]] = [
+                ["Name", str(data["name"])],
+                ["GUID", str(data["guid"])],
+                ["Description", str(data["description"])],
+                ["IsBehavioral", str(data["isBehavioral"])],
+                ["IsReversed", str(data["isReversed"])],
+                ["PortContract", str(data["portContract"])],
+                ["MetaClass", str(data["metaClass"])],
+                ["FullPath", str(data["fullPath"])],
             ]
             return OutputFormatter.table(["Property", "Value"], table_rows)
 
@@ -529,14 +532,14 @@ class PortUpdateAction(AbstractPortAction):
 
         self.logger.info("Successfully updated port: %s", port.get_name())
 
-    def _load_json_data(self, attributes_input: str) -> Any:
+    def _load_json_data(self, attributes_input: str) -> Dict[str, object]:
         """Load JSON data from inline string or external file.
 
         SWR_PORT_00007: External JSON File Support
         """
         if attributes_input.startswith("{") or attributes_input.startswith("["):
             try:
-                return json.loads(attributes_input)
+                return cast(Dict[str, object], json.loads(attributes_input))
             except json.JSONDecodeError as e:
                 raise CliExecutionError(f"Invalid JSON: {e}") from e
 
@@ -545,26 +548,26 @@ class PortUpdateAction(AbstractPortAction):
 
         try:
             with open(attributes_input, encoding="utf-8") as f:
-                return json.load(f)
+                return cast(Dict[str, object], json.load(f))
         except json.JSONDecodeError as e:
             raise CliExecutionError(f"Invalid JSON in file: {e}") from e
         except OSError as e:
             raise CliExecutionError(f"Failed to read file: {e}") from e
 
-    def _set_attributes(self, classifier: Any, port: Any, attrs: Dict[str, Any]) -> None:
+    def _set_attributes(self, classifier: RPModelElement, port: RPModelElement, attrs: Dict[str, object]) -> None:
         """Set validated attributes on port (partial update)."""
         if "name" in attrs:
-            port.set_name(attrs["name"])
+            port.set_name(cast(str, attrs["name"]))
         if "description" in attrs:
-            port.set_description(attrs["description"])
+            port.set_description(cast(str, attrs["description"]))
         if "isBehavioral" in attrs:
-            port.set_is_behavioral(int(attrs["isBehavioral"]))
+            port.set_is_behavioral(int(cast(Union[str, int], attrs["isBehavioral"])))  # type: ignore[attr-defined]
         if "isReversed" in attrs:
-            port.set_is_reversed(int(attrs["isReversed"]))
+            port.set_is_reversed(int(cast(Union[str, int], attrs["isReversed"])))  # type: ignore[attr-defined]
         if "portContract" in attrs:
-            contract_name = attrs["portContract"]
+            contract_name = cast(str, attrs["portContract"])
             owner = classifier.get_owner()
-            target = owner.find_nested_classifier_recursive(contract_name)
+            target = owner.find_nested_classifier_recursive(contract_name)  # type: ignore[attr-defined]
             if target is None:
                 raise CliExecutionError(f"PortContract '{contract_name}' not found")
-            port.set_port_contract(target)
+            port.set_port_contract(target)  # type: ignore[attr-defined]

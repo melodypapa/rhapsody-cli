@@ -1,6 +1,6 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPProject``."""
 
-from typing import TYPE_CHECKING, Any, Optional, cast
+from typing import TYPE_CHECKING, Optional, cast
 
 from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
 from rhapsody_cli.models.elements.containment.model_package import RPPackage
@@ -235,7 +235,7 @@ class RPProject(RPPackage):
         """
         return cast("RPComponent", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addComponent(name))))
 
-    def delete_component(self, component: Any) -> None:
+    def delete_component(self, component: RPModelElement) -> None:
         """Deletes a component from the project.
 
         Args:
@@ -286,7 +286,7 @@ class RPProject(RPPackage):
         """
         return cast("RPNode", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findNode(name))))
 
-    def delete_node(self, node: Any) -> None:
+    def delete_node(self, node: RPModelElement) -> None:
         """Deletes a node from the project.
 
         Args:
@@ -309,7 +309,7 @@ class RPProject(RPPackage):
         """
         return cast("RPConfiguration", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getActiveConfiguration", "activeConfiguration")))
 
-    def set_active_configuration(self, config: Any) -> None:
+    def set_active_configuration(self, config: RPModelElement) -> None:
         """Sets the active configuration of the project.
 
         Args:
@@ -331,7 +331,7 @@ class RPProject(RPPackage):
         """
         return cast("RPComponent", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getActiveComponent", "activeComponent")))
 
-    def set_active_component(self, component: Any) -> None:
+    def set_active_component(self, component: RPModelElement) -> None:
         """Sets the active component of the project.
 
         Args:
@@ -366,7 +366,7 @@ class RPProject(RPPackage):
         return cast("RPCollaboration", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getNewCollaboration", "newCollaboration")))
 
     # --- Profile methods ---
-    def add_profile(self, name: str) -> Any:
+    def add_profile(self, name: str) -> RPModelElement:
         """Adds a new profile to the project.
 
         Args:
@@ -378,7 +378,7 @@ class RPProject(RPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::addProfile(java.lang.String name)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addProfile(name)))
+        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addProfile(name))))
 
     def get_profiles(self) -> "RPCollection":
         """Returns all profiles in the project.
@@ -546,7 +546,7 @@ class RPProject(RPPackage):
         AbstractRPModelElement.call_com(lambda: self._com.generateReport(template_path, output_path))
 
     # --- Custom Views methods ---
-    def add_custom_view_on_browser(self, view: Any) -> None:
+    def add_custom_view_on_browser(self, view: RPModelElement) -> None:
         """Adds a custom view to be applied on the Rhapsody browser.
 
         Args:
@@ -557,7 +557,7 @@ class RPProject(RPPackage):
         """
         AbstractRPModelElement.call_com(lambda: self._com.addCustomViewOnBrowser(view._com))
 
-    def add_custom_view_on_diagram(self, view: Any) -> None:
+    def add_custom_view_on_diagram(self, view: RPModelElement) -> None:
         """Adds a custom view to be applied on diagrams.
 
         Args:
@@ -598,7 +598,7 @@ class RPProject(RPPackage):
         """
         return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getActiveCustomViewsOnDiagram", "activeCustomViewsOnDiagram"))
 
-    def remove_custom_view_on_browser(self, view: Any) -> None:
+    def remove_custom_view_on_browser(self, view: RPModelElement) -> None:
         """Removes a custom view from the browser.
 
         Args:
@@ -609,7 +609,7 @@ class RPProject(RPPackage):
         """
         AbstractRPModelElement.call_com(lambda: self._com.removeCustomViewOnBrowser(view._com))
 
-    def remove_custom_view_on_diagram(self, view: Any) -> None:
+    def remove_custom_view_on_diagram(self, view: RPModelElement) -> None:
         """Removes a custom view from diagrams.
 
         Args:
@@ -694,7 +694,7 @@ class RPProject(RPPackage):
         """
         return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getRemoteResourcePackages", "remoteResourcePackages"))
 
-    def get_roundtrip_shadow_model(self) -> Any:
+    def get_roundtrip_shadow_model(self) -> object:
         """Returns the roundtrip shadow model of the project.
 
         Returns:
@@ -898,7 +898,7 @@ class RPProject(RPPackage):
         """
         AbstractRPModelElement._set_method_or_property(self._com, "setNotifyPluginOnElementsChanged", "notifyPluginOnElementsChanged", enabled)
 
-    def set_object_explicit(self, obj: Any) -> None:
+    def set_object_explicit(self, obj: RPModelElement) -> None:
         """Sets the specified object as explicit.
 
         Args:
@@ -909,7 +909,7 @@ class RPProject(RPPackage):
         """
         AbstractRPModelElement.call_com(lambda: self._com.setObjectExplicit(obj._com))
 
-    def set_object_implicit(self, obj: Any) -> None:
+    def set_object_implicit(self, obj: RPModelElement) -> None:
         """Sets the specified object as implicit.
 
         Args:

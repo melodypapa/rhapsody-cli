@@ -105,7 +105,7 @@ class RPFlow(RPModelElement):
         """Returns the port at the first end of the flow.
 
         Returns:
-            Any: The port at the first end of the flow.
+            RPPort: The port at the first end of the flow.
 
         Raises:
             RhapsodyRuntimeException: If the operation fails.
@@ -119,7 +119,7 @@ class RPFlow(RPModelElement):
         """Returns the SysML port at the first end of the flow.
 
         Returns:
-            Any: The SysML port at the first end of the flow.
+            RPSysMLPort: The SysML port at the first end of the flow.
 
         Raises:
             RhapsodyRuntimeException: If the operation fails.
@@ -147,7 +147,7 @@ class RPFlow(RPModelElement):
         """Returns the port at the second end of the flow.
 
         Returns:
-            Any: The port at the second end of the flow.
+            RPPort: The port at the second end of the flow.
 
         Raises:
             RhapsodyRuntimeException: If the operation fails.
@@ -161,7 +161,7 @@ class RPFlow(RPModelElement):
         """Returns the SysML port at the second end of the flow.
 
         Returns:
-            Any: The SysML port at the second end of the flow.
+            RPSysMLPort: The SysML port at the second end of the flow.
 
         Raises:
             RhapsodyRuntimeException: If the operation fails.
@@ -375,7 +375,7 @@ class RPFlowchart(RPStatechart):
                 IRPStatechart.getRootState()).
 
         Returns:
-            Any: The Accept Event Action element that was created.
+            RPAcceptEventAction: The Accept Event Action element that was created.
 
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::addAcceptEventAction(java.lang.String name, com.telelogic.rhapsody.core.IRPState parent)
@@ -395,7 +395,7 @@ class RPFlowchart(RPStatechart):
                 IRPStatechart.getRootState()).
 
         Returns:
-            Any: The Accept Time Event element that was created.
+            RPAcceptTimeEvent: The Accept Time Event element that was created.
 
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::addAcceptTimeEvent(java.lang.String name, com.telelogic.rhapsody.core.IRPState parent)
@@ -409,7 +409,7 @@ class RPFlowchart(RPStatechart):
             name: The name to use for the new activity parameter.
 
         Returns:
-            Any: The activity parameter element that was created.
+            RPPin: The activity parameter element that was created.
 
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::addActivityParameter(java.lang.String name)
@@ -424,7 +424,7 @@ class RPFlowchart(RPStatechart):
                 invoke.
 
         Returns:
-            Any: The Call Behavior element that was created.
+            RPState: The Call Behavior element that was created.
 
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::addCallBehavior(com.telelogic.rhapsody.core.IRPModelElement referenced)
@@ -443,7 +443,7 @@ class RPFlowchart(RPStatechart):
                 obtained by calling IRPStatechart.getRootState()).
 
         Returns:
-            Any: The Call Operation element that was created.
+            RPCallOperation: The Call Operation element that was created.
 
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::addCallOperation(java.lang.String name, com.telelogic.rhapsody.core.IRPState parent)
@@ -462,7 +462,7 @@ class RPFlowchart(RPStatechart):
                 obtained by calling IRPStatechart.getRootState()).
 
         Returns:
-            Any: The Object Node element that was created.
+            RPObjectNode: The Object Node element that was created.
 
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::addObjectNode(java.lang.String name, com.telelogic.rhapsody.core.IRPState parent)
@@ -477,7 +477,7 @@ class RPFlowchart(RPStatechart):
                 invoke.
 
         Returns:
-            Any: The Call Behavior element that was created.
+            RPState: The Call Behavior element that was created.
 
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::addReferenceActivity(com.telelogic.rhapsody.core.IRPModelElement referenced)
@@ -491,7 +491,7 @@ class RPFlowchart(RPStatechart):
             name: The name to use for the new swimlane.
 
         Returns:
-            Any: The swimlane that was created.
+            RPSwimlane: The swimlane that was created.
 
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::addSwimlane(java.lang.String name)
@@ -502,7 +502,7 @@ class RPFlowchart(RPStatechart):
         """Returns the IRPActivityDiagram object associated with the activity.
 
         Returns:
-            Any: The IRPActivityDiagram object associated with the activity.
+            RPActivityDiagram: The IRPActivityDiagram object associated with the activity.
 
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::getFlowchartDiagram()
@@ -524,7 +524,7 @@ class RPFlowchart(RPStatechart):
         """Returns the operation that owns the activity. Deprecated: use IRPModelElement.getOwner instead.
 
         Returns:
-            Any: The operation that owns the activity.
+            RPOperation: The operation that owns the activity.
 
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::getItsOwner()
@@ -682,7 +682,7 @@ class RPSwimlane(RPModelElement):
             name: The name to use for the new swimlane.
 
         Returns:
-            Any: The swimlane that was created.
+            RPSwimlane: The swimlane that was created.
 
         Reference:
             com.telelogic.rhapsody.core.IRPSwimlane::addSwimlane(java.lang.String name)

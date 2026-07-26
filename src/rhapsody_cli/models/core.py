@@ -60,7 +60,7 @@ class AbstractRPModelElement:
         return value
 
     @classmethod
-    def wrap(cls, com_obj: Any) -> Optional["RPModelElement"]:
+    def wrap(cls, com_obj: object) -> Optional["RPModelElement"]:
         """Wrap a raw Rhapsody COM model element in its matching wrapper class.
 
         Args:
@@ -78,7 +78,7 @@ class AbstractRPModelElement:
         return wrapper_cls(com_obj)
 
     @classmethod
-    def _get_method_or_property(cls, com_obj: Any, method_name: str, prop_name: str) -> Any:
+    def _get_method_or_property(cls, com_obj: object, method_name: str, prop_name: str) -> Any:
         """Read a value from ``com_obj``, preferring the Java-style method.
 
         Forwards to :func:`rhapsody_cli.com_utils._get_method_or_property`.
@@ -86,7 +86,7 @@ class AbstractRPModelElement:
         return com_utils._get_method_or_property(com_obj, method_name, prop_name)
 
     @classmethod
-    def _set_method_or_property(cls, com_obj: Any, method_name: str, prop_name: str, value: Any) -> None:
+    def _set_method_or_property(cls, com_obj: object, method_name: str, prop_name: str, value: object) -> None:
         """Write a value to ``com_obj``, preferring the Java-style setter method.
 
         Forwards to :func:`rhapsody_cli.com_utils._set_method_or_property`.

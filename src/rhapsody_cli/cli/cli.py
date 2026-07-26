@@ -104,6 +104,9 @@ def main() -> None:
             cmd.execute(output_format=output_format)
 
     except KeyboardInterrupt:
+        # NOTE: Terminal feedback for interactive Ctrl+C; print() to stdout
+        # with a leading newline to clear the ^C echo. Logger would add
+        # timestamps/levels that clutter this one-word message.
         print("\nInterrupted")
         sys.exit(130)
     except SystemExit:
@@ -142,9 +145,11 @@ def _usage(error: str) -> None:
     message += commands_text + "\n" + options_text
 
     if error != "":
+        # NOTE: Usage/error output to stderr (mirrors argparse's help-on-error behavior).
         print(f"Error: {error}\n", file=sys.stderr)
         print(message, file=sys.stderr)
     else:
+        # NOTE: Help/usage output to stdout (mirrors argparse's --help behavior).
         print(message)
     sys.exit(2 if error else 0)
 

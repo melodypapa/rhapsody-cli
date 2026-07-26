@@ -2,11 +2,10 @@
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection
 from rhapsody_cli.models.elements.diagrams.model_diagrams import RPDiagram
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.core import RPCollection
     from rhapsody_cli.models.elements.activity.model_activity import RPFlowchart
     from rhapsody_cli.models.elements.classifiers.model_statechart import RPStatechart
     from rhapsody_cli.models.elements.containment.model_collaboration import RPCollaboration
@@ -118,8 +117,6 @@ class RPSequenceDiagram(RPDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPSequenceDiagram::getRelatedUseCases()
         """
-        from rhapsody_cli.models.core import RPCollection
-
         return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getRelatedUseCases()))
 
 
@@ -155,9 +152,7 @@ class RPStatechartDiagram(RPDiagram):
                 int xStartPosition, int yStartPosition,
                 int xEndPosition, int yEndPosition)
         """
-        from rhapsody_cli.models.core import RPCollection
-
-        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.addAndLine(source_state._com, x_start_position, y_start_position, x_end_position, y_end_position)))
+        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.addAndLine(source_state._com, x_start_position, y_start_position, y_end_position, y_end_position)))
 
     def create_graphics(self) -> None:
         """Creates the graphical representation of the elements in the statechart.
@@ -279,8 +274,6 @@ class RPActivityDiagram(RPStatechartDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPActivityDiagram::decomposeSwimlane(com.telelogic.rhapsody.core.IRPGraphElement graphSwimlane)
         """
-        from rhapsody_cli.models.core import RPCollection
-
         return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.decomposeSwimlane(graph_swimlane._com)))
 
     def get_flowchart(self) -> "RPFlowchart":
