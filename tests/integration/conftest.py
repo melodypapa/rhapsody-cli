@@ -77,7 +77,7 @@ def _safe_cleanup_test_project(app: RhapsodyApplication, project_dir: Path) -> N
 @pytest.fixture(scope="session")
 def rhapsody_app() -> RhapsodyApplication:
     """Session-scoped Rhapsody application fixture.
-    
+
     Launches a new Rhapsody instance with the GUI visible for integration testing.
     If a Rhapsody instance is already running, attaches to it instead.
     The GUI visibility is important for proper rendering and display of model elements.

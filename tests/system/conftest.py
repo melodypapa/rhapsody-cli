@@ -24,7 +24,7 @@ TEST_PROJECT_NAME = "SystemTestProject"
 @pytest.fixture(scope="session")
 def rhapsody_available() -> bool:
     """Check if Rhapsody is available, launching a new instance if needed.
-    
+
     Attempts to launch a new Rhapsody instance with the GUI visible.
     If an instance is already running, attaches to it instead.
     The GUI visibility is important for proper rendering and display of model elements.
