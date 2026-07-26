@@ -120,7 +120,7 @@ def test_class_add_link_unwraps_all_args_and_wraps_result() -> None:
         cast(RPModelElement, AbstractRPModelElement.wrap(to_part)),
         cast(RPModelElement, AbstractRPModelElement.wrap(assoc)),
         cast(RPModelElement, AbstractRPModelElement.wrap(from_port)),
-        cast(RPModelElement, AbstractRPModelElement.wrap(to_port))
+        cast(RPModelElement, AbstractRPModelElement.wrap(to_port)),
     )
 
     fake.addLink.assert_called_once_with(from_part, to_part, assoc, from_port, to_port)
@@ -141,7 +141,7 @@ def test_class_add_link_to_part_via_port_unwraps_and_wraps() -> None:
         cast(RPModelElement, AbstractRPModelElement.wrap(to_part)),
         cast(RPModelElement, AbstractRPModelElement.wrap(part_port)),
         cast(RPModelElement, AbstractRPModelElement.wrap(class_port)),
-        cast(RPModelElement, AbstractRPModelElement.wrap(assoc))
+        cast(RPModelElement, AbstractRPModelElement.wrap(assoc)),
     )
 
     fake.addLinkToPartViaPort.assert_called_once_with(to_part, part_port, class_port, assoc)

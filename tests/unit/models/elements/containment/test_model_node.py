@@ -57,7 +57,7 @@ def test_node_find_component_instance_wraps_result() -> None:
     result = node.find_component_instance("Inst1")
 
     fake.findComponentInstance.assert_called_once_with("Inst1")
-    assert result is not None and result.get_name()     == "Inst1"
+    assert result is not None and result.get_name() == "Inst1"
 
 
 def test_node_find_component_instance_returns_none_when_not_found() -> None:

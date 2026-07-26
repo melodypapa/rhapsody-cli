@@ -166,7 +166,7 @@ class TestRPFileFragment:
         fake.getFragmentElement.return_value = inner
         obj = RPFileFragment(fake)
         result = obj.get_fragment_element()
-        assert result is not None and result.get_name()         == "y"
+        assert result is not None and result.get_name() == "y"
 
     def test_get_fragment_text_delegates_to_com(self) -> None:
         fake = make_fake_element("FileFragment")
