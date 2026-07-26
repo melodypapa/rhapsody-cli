@@ -1,5 +1,7 @@
 """Tests for rhapsody_cli.models.elements.activity.model_actions."""
 
+from typing import TYPE_CHECKING, cast
+
 from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
 from rhapsody_cli.models.elements.activity.model_actions import (
     RPAcceptEventAction,
@@ -11,6 +13,11 @@ from rhapsody_cli.models.elements.activity.model_actions import (
     RPSendAction,
 )
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.elements.classifiers.model_interface_item import RPInterfaceItem
+    from rhapsody_cli.models.elements.interactions.model_interactions import RPEvent
+    from rhapsody_cli.models.elements.relations.model_relation import RPRelation
 
 
 class TestRPAcceptEventAction:
@@ -33,7 +40,7 @@ class TestRPAcceptEventAction:
         fake = make_fake_element("AcceptEventAction")
         event = make_fake_element("Event", getName="MyEvent")
         aea = RPAcceptEventAction(fake)
-        aea.set_event(AbstractRPModelElement.wrap(event))
+        aea.set_event(cast("RPEvent", AbstractRPModelElement.wrap(event)))
         fake.setEvent.assert_called_once_with(event)
 
     def test_is_registered(self) -> None:
@@ -134,14 +141,14 @@ class TestRPCallOperation:
         fake = make_fake_element("CallOperation")
         op = make_fake_element("Operation", getName="myOp")
         co = RPCallOperation(fake)
-        co.set_operation(AbstractRPModelElement.wrap(op))
+        co.set_operation(cast("RPInterfaceItem", AbstractRPModelElement.wrap(op)))
         fake.setOperation.assert_called_once_with(op)
 
     def test_set_target_delegates(self) -> None:
         fake = make_fake_element("CallOperation")
         target = make_fake_element("Relation", getName="myTarget")
         co = RPCallOperation(fake)
-        co.set_target(AbstractRPModelElement.wrap(target))
+        co.set_target(cast("RPRelation", AbstractRPModelElement.wrap(target)))
         fake.setTarget.assert_called_once_with(target)
 
     def test_is_registered(self) -> None:
@@ -241,28 +248,28 @@ class TestRPSendAction:
         fake.getTarget.return_value = target
         sa = RPSendAction(fake)
         result = sa.get_target()
-        assert result.get_name() == "MyClass"
+        assert cast(RPModelElement, result).get_name() == "MyClass"
         fake.getTarget.assert_called_once_with()
 
     def test_set_event_delegates(self) -> None:
         fake = make_fake_element("SendAction")
         event = make_fake_element("Event", getName="MyEvent")
         sa = RPSendAction(fake)
-        sa.set_event(AbstractRPModelElement.wrap(event))
+        sa.set_event(cast("RPEvent", AbstractRPModelElement.wrap(event)))
         fake.setEvent.assert_called_once_with(event)
 
     def test_set_invoked_operation_delegates(self) -> None:
         fake = make_fake_element("SendAction")
         op = make_fake_element("Operation", getName="myOp")
         sa = RPSendAction(fake)
-        sa.set_invoked_operation(AbstractRPModelElement.wrap(op))
+        sa.set_invoked_operation(cast("RPInterfaceItem", AbstractRPModelElement.wrap(op)))
         fake.setInvokedOperation.assert_called_once_with(op)
 
     def test_set_target_delegates(self) -> None:
         fake = make_fake_element("SendAction")
         target = make_fake_element("Class", getName="MyClass")
         sa = RPSendAction(fake)
-        sa.set_target(AbstractRPModelElement.wrap(target))
+        sa.set_target(cast(RPModelElement, AbstractRPModelElement.wrap(target)))
         fake.setTarget.assert_called_once_with(target)
 
     def test_is_registered(self) -> None:

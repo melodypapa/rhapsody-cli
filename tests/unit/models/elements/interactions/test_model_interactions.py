@@ -1,5 +1,7 @@
 """Tests for rhapsody_cli.models.elements.interactions.* classes."""
 
+from typing import TYPE_CHECKING, cast
+
 from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
 from rhapsody_cli.models.elements.classifiers.model_interface_item import RPInterfaceItem
 from rhapsody_cli.models.elements.interactions import (
@@ -16,6 +18,13 @@ from rhapsody_cli.models.elements.interactions import (
     RPTrigger,
 )
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.elements.classifiers.model_statechart import RPStatechart
+    from rhapsody_cli.models.elements.common.model_other_model import RPSysMLPort
+    from rhapsody_cli.models.elements.diagrams.model_diagram_types import RPSequenceDiagram
+    from rhapsody_cli.models.elements.relations.model_port import RPPort
+    from rhapsody_cli.models.elements.statemachine.model_statemachine import RPStateVertex
 
 
 class TestRPEvent:
@@ -178,7 +187,7 @@ class TestRPInteractionOccurrence:
         seq = make_fake_element("SequenceDiagram", getName="SD1")
         fake.setReferenceSequenceDiagram.return_value = None
         io = RPInteractionOccurrence(fake)
-        io.set_reference_sequence_diagram(RPModelElement(seq))
+        io.set_reference_sequence_diagram(cast("RPSequenceDiagram", RPModelElement(seq)))
         fake.setReferenceSequenceDiagram.assert_called_once_with(seq)
 
 
@@ -342,7 +351,7 @@ class TestRPMessage:
         fake.getFormalType.return_value = ft
         msg = RPMessage(fake)
         result = msg.get_formal_type()
-        assert result.get_name() == "FT"
+        assert cast(RPModelElement, result).get_name() == "FT"
         fake.getFormalType.assert_called_once_with()
 
     def test_get_invariant_returns_string(self) -> None:
@@ -473,7 +482,7 @@ class TestRPMessage:
         fp = make_fake_element("SysMLPort", getName="fp1")
         fake.setFlowPort.return_value = None
         msg = RPMessage(fake)
-        msg.set_flow_port(RPModelElement(fp))
+        msg.set_flow_port(cast("RPSysMLPort", RPModelElement(fp)))
         fake.setFlowPort.assert_called_once_with(fp)
 
     def test_set_formal_interface_item_delegates(self) -> None:
@@ -504,7 +513,7 @@ class TestRPMessage:
         p = make_fake_element("Port", getName="p1")
         fake.setPort.return_value = None
         msg = RPMessage(fake)
-        msg.set_port(RPModelElement(p))
+        msg.set_port(cast("RPPort", RPModelElement(p)))
         fake.setPort.assert_called_once_with(p)
 
     def test_set_return_value_delegates(self) -> None:
@@ -698,7 +707,7 @@ class TestRPTransition:
         src = make_fake_element("StateVertex", getName="S1")
         fake.setItsSource.return_value = None
         t = RPTransition(fake)
-        t.set_its_source(RPModelElement(src))
+        t.set_its_source(cast("RPStateVertex", RPModelElement(src)))
         fake.setItsSource.assert_called_once_with(src)
 
     def test_set_its_statechart_delegates(self) -> None:
@@ -706,7 +715,7 @@ class TestRPTransition:
         sc = make_fake_element("Statechart", getName="SC1")
         fake.setItsStatechart.return_value = None
         t = RPTransition(fake)
-        t.set_its_statechart(RPModelElement(sc))
+        t.set_its_statechart(cast("RPStatechart", RPModelElement(sc)))
         fake.setItsStatechart.assert_called_once_with(sc)
 
     def test_set_its_target_delegates(self) -> None:
@@ -714,7 +723,7 @@ class TestRPTransition:
         tgt = make_fake_element("StateVertex", getName="S2")
         fake.setItsTarget.return_value = None
         t = RPTransition(fake)
-        t.set_its_target(RPModelElement(tgt))
+        t.set_its_target(cast("RPStateVertex", RPModelElement(tgt)))
         fake.setItsTarget.assert_called_once_with(tgt)
 
     def test_set_its_trigger_wraps_result(self) -> None:

@@ -1,8 +1,16 @@
 """Tests for rhapsody_cli.elements.statemachine.RPStateVertex and RPState."""
 
+from typing import TYPE_CHECKING, cast
+
 from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
 from rhapsody_cli.models.elements.statemachine import RPState, RPStateVertex
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.elements.activity.model_activity import RPSwimlane
+    from rhapsody_cli.models.elements.classifiers.model_interface_item import RPInterfaceItem
+    from rhapsody_cli.models.elements.graphics.model_graphics import RPConnector
+    from rhapsody_cli.models.elements.interactions.model_interactions import RPTransition
 
 
 class TestRPStateVertex:
@@ -37,7 +45,7 @@ class TestRPStateVertex:
         trans = make_fake_element("Transition", getName="T1")
         fake.deleteTransition.return_value = None
         sv = RPStateVertex(fake)
-        sv.delete_transition(RPModelElement(trans))
+        sv.delete_transition(cast("RPTransition", RPModelElement(trans)))
         fake.deleteTransition.assert_called_once_with(trans)
 
     def test_get_in_transitions_returns_collection(self) -> None:
@@ -112,7 +120,7 @@ class TestRPState:
         result = make_fake_element("Transition", getName="T1")
         fake.addInternalTransition.return_value = result
         s = RPState(fake)
-        wrapped = s.add_internal_transition(RPModelElement(trigger))
+        wrapped = s.add_internal_transition(cast("RPInterfaceItem", RPModelElement(trigger)))
         assert wrapped.get_name() == "T1"
         fake.addInternalTransition.assert_called_once_with(trigger)
 
@@ -131,7 +139,7 @@ class TestRPState:
         result = make_fake_element("Transition", getName="T1")
         fake.addStaticReaction.return_value = result
         s = RPState(fake)
-        wrapped = s.add_static_reaction(RPModelElement(trigger))
+        wrapped = s.add_static_reaction(cast("RPInterfaceItem", RPModelElement(trigger)))
         assert wrapped.get_name() == "T1"
         fake.addStaticReaction.assert_called_once_with(trigger)
 
@@ -168,7 +176,7 @@ class TestRPState:
         conn = make_fake_element("Connector", getName="C1")
         fake.deleteConnector.return_value = None
         s = RPState(fake)
-        s.delete_connector(RPModelElement(conn))
+        s.delete_connector(cast("RPConnector", RPModelElement(conn)))
         fake.deleteConnector.assert_called_once_with(conn)
 
     def test_delete_internal_transition_delegates(self) -> None:
@@ -176,7 +184,7 @@ class TestRPState:
         trans = make_fake_element("Transition", getName="T1")
         fake.deleteInternalTransition.return_value = None
         s = RPState(fake)
-        s.delete_internal_transition(RPModelElement(trans))
+        s.delete_internal_transition(cast("RPTransition", RPModelElement(trans)))
         fake.deleteInternalTransition.assert_called_once_with(trans)
 
     def test_delete_static_reaction_delegates(self) -> None:
@@ -184,7 +192,7 @@ class TestRPState:
         trans = make_fake_element("Transition", getName="T1")
         fake.deleteStaticReaction.return_value = None
         s = RPState(fake)
-        s.delete_static_reaction(RPModelElement(trans))
+        s.delete_static_reaction(cast("RPTransition", RPModelElement(trans)))
         fake.deleteStaticReaction.assert_called_once_with(trans)
 
     def test_get_default_transition_wraps_result(self) -> None:
@@ -287,7 +295,7 @@ class TestRPState:
         fake.getReferenceToActivity.return_value = act
         s = RPState(fake)
         wrapped = s.get_reference_to_activity()
-        assert wrapped.get_name() == "Act1"
+        assert cast(RPModelElement, wrapped).get_name() == "Act1"
         fake.getReferenceToActivity.assert_called_once_with()
 
     def test_get_send_action_wraps_result(self) -> None:
@@ -425,7 +433,7 @@ class TestRPState:
         sw = make_fake_element("Swimlane", getName="L1")
         fake.setItsSwimlane.return_value = None
         s = RPState(fake)
-        s.set_its_swimlane(RPModelElement(sw))
+        s.set_its_swimlane(cast("RPSwimlane", RPModelElement(sw)))
         fake.setItsSwimlane.assert_called_once_with(sw)
 
     def test_set_reference_to_activity_delegates(self) -> None:
