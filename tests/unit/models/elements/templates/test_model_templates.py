@@ -86,7 +86,7 @@ class TestRPTemplateParameter:
         fake.getRepresentative.return_value = rep
         tp = RPTemplateParameter(fake)
         wrapped = tp.get_representative()
-        assert wrapped.get_name() == "C1"
+        assert wrapped is not None and wrapped.get_name() == "C1"
         fake.getRepresentative.assert_called_once_with()
 
     def test_set_parameter_kind_delegates(self) -> None:

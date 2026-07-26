@@ -1,5 +1,6 @@
 """Tests for rhapsody_cli._core class-based wrapping utilities."""
 
+from typing import cast
 from unittest.mock import MagicMock, call
 
 import pytest
@@ -13,6 +14,11 @@ from rhapsody_cli.models.core import (
     RPModelElement,
     RPUnit,
 )
+from rhapsody_cli.models.elements.classifiers import RPStereotype
+from rhapsody_cli.models.elements.diagrams import RPDiagram
+from rhapsody_cli.models.elements.relations import RPDependency, RPRelation
+from rhapsody_cli.models.elements.templates import RPTemplateInstantiation
+from rhapsody_cli.models.elements.variables import RPTag
 from tests.unit.models.fakes import make_com_error, make_fake_collection, make_fake_element
 
 
@@ -121,7 +127,7 @@ def test_wrap_falls_back_to_meta_class_property_when_method_missing() -> None:
 
     element = AbstractRPModelElement.wrap(fake)
 
-    assert element.get_meta_class() == "Class"
+    assert element is not None and element.get_meta_class() == "Class"
 
 
 def test_model_element_get_guid_delegates_to_com() -> None:
@@ -426,7 +432,7 @@ def test_model_element_add_association_unwraps_args_and_wraps_result() -> None:
     fake = make_fake_element("Class", addAssociation=result_fake)
     element = RPModelElement(fake)
 
-    result = element.add_association(end1, end2, "Assoc")
+    result = element.add_association(cast(RPRelation, end1), cast(RPRelation, end2), "Assoc")
 
     assert isinstance(result, RPModelElement)
     assert result.get_name() == "Assoc"
@@ -481,7 +487,7 @@ def test_model_element_add_link_to_element_unwraps_args_and_wraps_result() -> No
     fake = make_fake_element("Class", addLinkToElement=link_fake)
     element = RPModelElement(fake)
 
-    result = element.add_link_to_element(to_element, assoc, from_port, to_port)
+    result = element.add_link_to_element(to_element, cast(RPRelation, assoc), from_port, to_port)
 
     assert isinstance(result, RPModelElement)
     assert result.get_name() == "Link"
@@ -537,7 +543,7 @@ def test_model_element_add_specific_stereotype_unwraps_argument() -> None:
     fake = make_fake_element("Class")
     element = RPModelElement(fake)
 
-    element.add_specific_stereotype(stereotype)
+    element.add_specific_stereotype(cast(RPStereotype, stereotype))
 
     fake.addSpecificStereotype.assert_called_once_with(stereotype._com)
 
@@ -601,7 +607,7 @@ def test_model_element_delete_dependency_unwraps_argument() -> None:
     fake = make_fake_element("Class")
     element = RPModelElement(fake)
 
-    element.delete_dependency(dependency)
+    element.delete_dependency(cast(RPDependency, dependency))
 
     fake.deleteDependency.assert_called_once_with(dependency._com)
 
@@ -1316,7 +1322,7 @@ def test_model_element_remove_stereotype_unwraps_argument() -> None:
     fake = make_fake_element("Class")
     element = RPModelElement(fake)
 
-    element.remove_stereotype(stereotype)
+    element.remove_stereotype(cast(RPStereotype, stereotype))
 
     fake.removeStereotype.assert_called_once_with(stereotype._com)
 
@@ -1407,7 +1413,7 @@ def test_model_element_set_main_diagram_unwraps_argument() -> None:
     fake = make_fake_element("Class")
     element = RPModelElement(fake)
 
-    element.set_main_diagram(diagram)
+    element.set_main_diagram(cast(RPDiagram, diagram))
 
     fake.setMainDiagram.assert_called_once_with(diagram._com)
 
@@ -1458,7 +1464,7 @@ def test_model_element_set_tag_context_value_unwraps_args_and_wraps_result() -> 
     fake = make_fake_element("Class", setTagContextValue=result_fake)
     element = RPModelElement(fake)
 
-    result = element.set_tag_context_value(tag, elements, multiplicities)
+    result = element.set_tag_context_value(cast(RPTag, tag), elements, multiplicities)
 
     assert isinstance(result, RPModelElement)
     assert result.get_name() == "CtxTag"
@@ -1472,7 +1478,7 @@ def test_model_element_set_tag_element_value_unwraps_args_and_wraps_result() -> 
     fake = make_fake_element("Class", setTagElementValue=result_fake)
     element = RPModelElement(fake)
 
-    result = element.set_tag_element_value(tag, val)
+    result = element.set_tag_element_value(cast(RPTag, tag), val)
 
     assert isinstance(result, RPModelElement)
     assert result.get_name() == "ElemTag"
@@ -1485,7 +1491,7 @@ def test_model_element_set_tag_value_unwraps_tag_and_wraps_result() -> None:
     fake = make_fake_element("Class", setTagValue=result_fake)
     element = RPModelElement(fake)
 
-    result = element.set_tag_value(tag, "a value")
+    result = element.set_tag_value(cast(RPTag, tag), "a value")
 
     assert isinstance(result, RPModelElement)
     assert result.get_name() == "ValTag"
@@ -1497,7 +1503,7 @@ def test_model_element_set_ti_unwraps_argument() -> None:
     fake = make_fake_element("Class")
     element = RPModelElement(fake)
 
-    element.set_ti(ti)
+    element.set_ti(cast(RPTemplateInstantiation, ti))
 
     fake.setTi.assert_called_once_with(ti._com)
 

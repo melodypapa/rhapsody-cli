@@ -1,5 +1,8 @@
 """Tests for rhapsody_cli.elements.project.RPProject."""
 
+from typing import cast
+
+from rhapsody_cli.models.core import RPModelElement
 from rhapsody_cli.models.elements.containment import RPPackage, RPProject
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -124,7 +127,7 @@ def test_project_find_element_by_guid_returns_wrapped_element() -> None:
     result = project.find_element_by_guid("12345")
 
     fake.findElementByGUID.assert_called_once_with("12345")
-    assert result.get_name() == "MyClass"
+    assert result is not None and result.get_name() == "MyClass"
 
 
 # --- New tests for RPProject ---
@@ -220,7 +223,7 @@ def test_project_find_element_by_binary_id_delegates_to_com() -> None:
     result = project.find_element_by_binary_id("abc123")
 
     fake.findElementByBinaryID.assert_called_once_with("abc123")
-    assert result.get_name() == "MyClass"
+    assert result is not None and result.get_name() == "MyClass"
 
 
 # --- Task 6: Gateway/Report methods ---
@@ -426,7 +429,8 @@ def test_project_get_roundtrip_shadow_model_returns_wrapped_element() -> None:
     result = project.get_roundtrip_shadow_model()
 
     fake.getRoundtripShadowModel.assert_called_once_with()
-    assert result.get_name() == "ShadowModel"
+    result_elem = cast(RPModelElement, result)
+    assert result_elem.get_name() == "ShadowModel"
 
 
 def test_project_is_actively_managed_returns_int() -> None:

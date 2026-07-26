@@ -1,6 +1,10 @@
 """Tests for rhapsody_cli.elements.package.RPPackage."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPUnit
+from typing import cast
+
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement, RPUnit
+from rhapsody_cli.models.elements.activity import RPFlow, RPFlowItem
+from rhapsody_cli.models.elements.common import RPSysMLPort
 from rhapsody_cli.models.elements.containment import RPPackage
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -327,25 +331,21 @@ def test_package_add_flows_delegates_to_com() -> None:
 
 
 def test_package_delete_flow_items_delegates_to_com() -> None:
-    from rhapsody_cli.models.core import RPModelElement
-
     fake = make_fake_element("Package")
     package = RPPackage(fake)
     flow_item_fake = make_fake_element("FlowItem", getName="ToDelete")
 
-    package.delete_flow_items(RPModelElement(flow_item_fake))
+    package.delete_flow_items(cast(RPFlowItem, RPModelElement(flow_item_fake)))
 
     fake.deleteFlowItems.assert_called_once_with(flow_item_fake)
 
 
 def test_package_delete_flows_delegates_to_com() -> None:
-    from rhapsody_cli.models.core import RPModelElement
-
     fake = make_fake_element("Package")
     package = RPPackage(fake)
     flow_fake = make_fake_element("Flow", getName="ToDelete")
 
-    package.delete_flows(RPModelElement(flow_fake))
+    package.delete_flows(cast(RPFlow, RPModelElement(flow_fake)))
 
     fake.deleteFlows.assert_called_once_with(flow_fake)
 
@@ -463,8 +463,6 @@ def test_package_add_implicit_object_delegates_to_com() -> None:
 
 
 def test_package_add_link_between_sysml_ports_delegates_to_com() -> None:
-    from rhapsody_cli.models.core import RPModelElement
-
     fake = make_fake_element("Package")
     port1_fake = make_fake_element("SysMLPort", getName="Port1")
     port2_fake = make_fake_element("SysMLPort", getName="Port2")
@@ -472,7 +470,10 @@ def test_package_add_link_between_sysml_ports_delegates_to_com() -> None:
     fake.addLinkBetweenSYSMLPorts.return_value = link_fake
     package = RPPackage(fake)
 
-    result = package.add_link_between_sysml_ports(RPModelElement(port1_fake), RPModelElement(port2_fake))
+    result = package.add_link_between_sysml_ports(
+        cast(RPSysMLPort, RPModelElement(port1_fake)),
+        cast(RPSysMLPort, RPModelElement(port2_fake)),
+    )
 
     fake.addLinkBetweenSYSMLPorts.assert_called_once_with(port1_fake, port2_fake)
     assert result.get_name() == "Link1"

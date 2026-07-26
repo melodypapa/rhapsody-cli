@@ -24,22 +24,25 @@ UTS_XCH_00029: _get_project_name walks owner chain
 UTS_XCH_00030: find_or_create returns existing element without creating duplicate
 """
 
-from typing import Any
+from typing import TYPE_CHECKING, Optional, cast
 from unittest.mock import MagicMock
 
 from rhapsody_cli.exchange.core import RhapsodyModelHelper
 from rhapsody_cli.models.core import RPModelElement
 
+if TYPE_CHECKING:
+    from rhapsody_cli.models.elements.containment import RPProject
 
-def _make_helper(project: Any = None) -> RhapsodyModelHelper:
+
+def _make_helper(project: Optional[RPModelElement] = None) -> RhapsodyModelHelper:
     """Build a RhapsodyModelHelper with a mocked app and project.
 
     Skips RhapsodyApplication.connect() entirely.
     """
     app = MagicMock()
     helper = RhapsodyModelHelper.__new__(RhapsodyModelHelper)
-    helper.app = app  # type: ignore[assignment]
-    helper.project = project
+    helper.app = app
+    helper.project = cast(Optional["RPProject"], project)
     return helper
 
 

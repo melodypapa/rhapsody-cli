@@ -336,7 +336,7 @@ class TestRPClassifierIntegration:
             assert inner in nested
             found = outer.find_nested_classifier(inner_name)
             assert found is not None and found.get_name() == inner_name
-            deep = cast(RPClass, inner).add_class(deep_name)
+            deep = inner.add_class(deep_name)
             assert deep is not None
             found_deep = outer.find_nested_classifier_recursive(deep_name)
             assert found_deep is not None and found_deep.get_name() == deep_name

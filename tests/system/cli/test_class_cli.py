@@ -151,9 +151,13 @@ class TestClassCLI:
 
         # Create nested classes inside ContainerCls via Python API
         # (the CLI class create only accepts package parents)
+        from rhapsody_cli.models.elements.classifiers import RPClass
+
         app = RhapsodyApplication.connect(attach_only=True)
         project = app.active_project()
         container = project.find_nested_element_recursive(container_cls_name, "Class")
+        assert container is not None, f"Could not find container class {container_cls_name}"
+        assert isinstance(container, RPClass), f"Expected RPClass, got {type(container)}"
         container.add_class(parent_cls_name)
         container.add_class(child_cls_name)
         child_path = f"{pkg_path}/{container_cls_name}/{child_cls_name}"

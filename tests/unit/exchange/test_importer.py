@@ -30,19 +30,24 @@ UTS_XCH_00063: _apply_event_reception_extras sets event reference
 UTS_XCH_00064: _process_element dispatches 6 new element types
 """
 
+from typing import TYPE_CHECKING, Dict, Optional, cast
 from unittest.mock import MagicMock
 
 import pytest
 
 from rhapsody_cli.exceptions import CliExecutionError
 from rhapsody_cli.exchange.importer import RhapsodyImporter
+from rhapsody_cli.models.core import RPModelElement
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.elements.containment import RPProject
 
 
-def _make_importer(project: object = None) -> RhapsodyImporter:
+def _make_importer(project: Optional[RPModelElement] = None) -> RhapsodyImporter:
     """Build a RhapsodyImporter with mocked app and project (skips connect)."""
     importer = RhapsodyImporter.__new__(RhapsodyImporter)
     importer.app = MagicMock()
-    importer.project = project
+    importer.project = cast(Optional["RPProject"], project)
     return importer
 
 
@@ -102,7 +107,7 @@ class TestProcessElementDispatch:
         new_pkg.get_nested_elements.return_value = []
         parent.add_new_aggr.return_value = new_pkg
 
-        spec = {"name": "Pkg1", "type": "Package", "children": [{"name": "ChildCls", "type": "Class"}]}
+        spec: Dict[str, object] = {"name": "Pkg1", "type": "Package", "children": [{"name": "ChildCls", "type": "Class"}]}
         new_cls = MagicMock()
         new_cls.get_nested_elements.return_value = []
         new_pkg.add_new_aggr.return_value = new_cls
@@ -179,7 +184,7 @@ class TestProcessElementDispatch:
         new_pkg.get_stereotypes.return_value = []
         parent.add_new_aggr.return_value = new_pkg
 
-        spec = {
+        spec: Dict[str, object] = {
             "name": "Pkg1",
             "type": "Package",
             "stereotypes": ["SwComponent"],
@@ -574,6 +579,7 @@ class TestProcessElementNewTypes:
         result = importer._process_element(parent, {"name": "dep1", "type": "Dependency"})
 
         parent.add_new_aggr.assert_called_once_with("Dependency", "dep1")
+        assert result is not None
         assert result.get_name() == "dep1"
 
     def test_dispatches_generalization(self) -> None:
@@ -587,6 +593,7 @@ class TestProcessElementNewTypes:
         result = importer._process_element(parent, {"name": "gen1", "type": "Generalization"})
 
         parent.add_new_aggr.assert_called_once_with("Generalization", "gen1")
+        assert result is not None
         assert result.get_name() == "gen1"
 
     def test_dispatches_relation(self) -> None:

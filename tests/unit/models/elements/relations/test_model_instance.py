@@ -1,6 +1,8 @@
 """Tests for rhapsody_cli.elements.instance.RPInstance."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection
+from typing import cast
+
+from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
 from rhapsody_cli.models.elements.relations import RPInstance, RPRelation
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -159,7 +161,7 @@ def test_instance_set_instantiated_by_unwraps_arg() -> None:
     op = make_fake_element("Operation", getName="create")
     instance = RPInstance(fake)
 
-    instance.set_instantiated_by(AbstractRPModelElement.wrap(op))
+    instance.set_instantiated_by(cast(RPModelElement, AbstractRPModelElement.wrap(op)))
 
     fake.setInstantiatedBy.assert_called_once_with(op)
 

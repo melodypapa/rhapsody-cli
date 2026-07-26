@@ -1,8 +1,12 @@
 """Tests for rhapsody_cli.elements.classifier.RPClassifier."""
 
+from typing import cast
+
 from rhapsody_cli.models.core import RPModelElement, RPUnit
-from rhapsody_cli.models.elements.classifiers import RPClassifier
-from rhapsody_cli.models.elements.relations import RPPort
+from rhapsody_cli.models.elements.activity import RPFlow, RPFlowItem
+from rhapsody_cli.models.elements.classifiers import RPClassifier, RPOperation
+from rhapsody_cli.models.elements.relations import RPPort, RPRelation
+from rhapsody_cli.models.elements.variables import RPAttribute
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
@@ -173,7 +177,7 @@ def test_classifier_delete_attribute_delegates_to_com() -> None:
     attr_fake = make_fake_element("Attribute", getName="count")
     classifier = RPClassifier(fake)
 
-    classifier.delete_attribute(RPModelElement(attr_fake))
+    classifier.delete_attribute(cast(RPAttribute, RPModelElement(attr_fake)))
 
     fake.deleteAttribute.assert_called_once_with(attr_fake)
 
@@ -183,7 +187,7 @@ def test_classifier_delete_flow_items_delegates_to_com() -> None:
     item_fake = make_fake_element("FlowItem", getName="flowItem")
     classifier = RPClassifier(fake)
 
-    classifier.delete_flow_items(RPModelElement(item_fake))
+    classifier.delete_flow_items(cast(RPFlowItem, RPModelElement(item_fake)))
 
     fake.deleteFlowItems.assert_called_once_with(item_fake)
 
@@ -193,7 +197,7 @@ def test_classifier_delete_flows_delegates_to_com() -> None:
     flow_fake = make_fake_element("Flow", getName="flow")
     classifier = RPClassifier(fake)
 
-    classifier.delete_flows(RPModelElement(flow_fake))
+    classifier.delete_flows(cast(RPFlow, RPModelElement(flow_fake)))
 
     fake.deleteFlows.assert_called_once_with(flow_fake)
 
@@ -213,7 +217,7 @@ def test_classifier_delete_operation_delegates_to_com() -> None:
     op_fake = make_fake_element("Operation", getName="doIt")
     classifier = RPClassifier(fake)
 
-    classifier.delete_operation(RPModelElement(op_fake))
+    classifier.delete_operation(cast(RPOperation, RPModelElement(op_fake)))
 
     fake.deleteOperation.assert_called_once_with(op_fake)
 
@@ -223,7 +227,7 @@ def test_classifier_delete_relation_delegates_to_com() -> None:
     rel_fake = make_fake_element("Relation", getName="assoc")
     classifier = RPClassifier(fake)
 
-    classifier.delete_relation(RPModelElement(rel_fake))
+    classifier.delete_relation(cast(RPRelation, RPModelElement(rel_fake)))
 
     fake.deleteRelation.assert_called_once_with(rel_fake)
 
@@ -309,7 +313,7 @@ def test_classifier_find_nested_classifier_recursive_wraps_result() -> None:
     result = classifier.find_nested_classifier_recursive("Nested")
 
     fake.findNestedClassifierRecursive.assert_called_once_with("Nested")
-    assert result.get_name() == "Nested"
+    assert result is not None and result.get_name() == "Nested"
 
 
 def test_classifier_find_relation_wraps_result() -> None:

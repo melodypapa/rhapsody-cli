@@ -1,6 +1,8 @@
 """Tests for rhapsody_cli.models.elements.relations.RPRelation."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPUnit
+from typing import cast
+
+from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement, RPUnit
 from rhapsody_cli.models.elements.classifiers import RPClassifier
 from rhapsody_cli.models.elements.relations import RPRelation
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
@@ -19,7 +21,7 @@ def test_relation_add_qualifier_delegates_to_com() -> None:
     qualifier = make_fake_element("Class", getName="Key")
     relation = RPRelation(fake)
 
-    relation.add_qualifier(AbstractRPModelElement.wrap(qualifier))
+    relation.add_qualifier(cast(RPModelElement, AbstractRPModelElement.wrap(qualifier)))
 
     fake.addQualifier.assert_called_once_with(qualifier)
 
@@ -192,7 +194,7 @@ def test_relation_remove_qualifier_delegates_to_com() -> None:
     qualifier = make_fake_element("Class", getName="Key")
     relation = RPRelation(fake)
 
-    relation.remove_qualifier(AbstractRPModelElement.wrap(qualifier))
+    relation.remove_qualifier(cast(RPModelElement, AbstractRPModelElement.wrap(qualifier)))
 
     fake.removeQualifier.assert_called_once_with(qualifier)
 
@@ -258,7 +260,7 @@ def test_relation_set_qualifier_type_delegates_to_com() -> None:
     klass_fake = make_fake_element("Class", getName="KeyType")
     relation = RPRelation(fake)
 
-    relation.set_qualifier_type(AbstractRPModelElement.wrap(klass_fake))
+    relation.set_qualifier_type(cast(RPClassifier, AbstractRPModelElement.wrap(klass_fake)))
 
     fake.setQualifierType.assert_called_once_with(klass_fake)
 

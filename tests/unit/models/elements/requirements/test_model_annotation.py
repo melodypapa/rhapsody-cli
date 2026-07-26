@@ -1,6 +1,8 @@
 """Tests for rhapsody_cli.models.elements.requirements.RPAnnotation."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPUnit
+from typing import cast
+
+from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement, RPUnit
 from rhapsody_cli.models.elements.requirements.model_requirements import RPAnnotation
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -18,7 +20,7 @@ def test_annotation_add_anchor_delegates_to_com() -> None:
     target = make_fake_element("Class", getName="Widget")
     annotation = RPAnnotation(fake)
 
-    annotation.add_anchor(AbstractRPModelElement.wrap(target))
+    annotation.add_anchor(cast(RPModelElement, AbstractRPModelElement.wrap(target)))
 
     fake.addAnchor.assert_called_once_with(target)
 
@@ -68,7 +70,7 @@ def test_annotation_remove_anchor_delegates_to_com() -> None:
     target = make_fake_element("Class", getName="Widget")
     annotation = RPAnnotation(fake)
 
-    annotation.remove_anchor(AbstractRPModelElement.wrap(target))
+    annotation.remove_anchor(cast(RPModelElement, AbstractRPModelElement.wrap(target)))
 
     fake.removeAnchor.assert_called_once_with(target)
 

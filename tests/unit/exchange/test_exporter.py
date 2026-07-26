@@ -23,16 +23,21 @@ UTS_XCH_00084: _export_event emits base_event and super_event
 UTS_XCH_00085: _export_event_reception emits event reference
 """
 
+from typing import TYPE_CHECKING, Dict, List, Optional, cast
 from unittest.mock import MagicMock
 
 from rhapsody_cli.exchange.exporter import RhapsodyExporter
+from rhapsody_cli.models.core import RPModelElement
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.elements.containment import RPProject
 
 
-def _make_exporter(project: object = None) -> RhapsodyExporter:
+def _make_exporter(project: Optional[RPModelElement] = None) -> RhapsodyExporter:
     """Build a RhapsodyExporter with mocked app and project."""
     exporter = RhapsodyExporter.__new__(RhapsodyExporter)
     exporter.app = MagicMock()
-    exporter.project = project
+    exporter.project = cast(Optional["RPProject"], project)
     return exporter
 
 
@@ -82,9 +87,10 @@ class TestExport:
 
         result = exporter.export(project)
 
-        assert len(result["rhapsody-model"]) == 1
-        assert result["rhapsody-model"][0]["name"] == "Widget"
-        assert result["rhapsody-model"][0]["type"] == "Class"
+        model_list = cast(List[Dict[str, object]], result["rhapsody-model"])
+        assert len(model_list) == 1
+        assert model_list[0]["name"] == "Widget"
+        assert model_list[0]["type"] == "Class"
 
 
 class TestExportPackage:
@@ -107,10 +113,12 @@ class TestExportPackage:
 
         result = exporter._export_element(pkg)
 
+        assert result is not None
         assert result["name"] == "Outer"
         assert result["type"] == "Package"
         assert "children" in result
-        assert result["children"][0]["name"] == "Inner"
+        children = cast(List[Dict[str, object]], result["children"])
+        assert children[0]["name"] == "Inner"
 
 
 class TestExportClass:
@@ -127,6 +135,7 @@ class TestExportClass:
 
         result = exporter._export_element(cls)
 
+        assert result is not None
         assert result["name"] == "Widget"
         assert result["type"] == "Class"
 
@@ -156,12 +165,14 @@ class TestExportOperation:
 
         result = exporter._export_element(op)
 
+        assert result is not None
         assert result["return_type"] == "int"
         assert result["is_static"] is True
-        assert len(result["arguments"]) == 1
-        assert result["arguments"][0]["name"] == "x"
-        assert result["arguments"][0]["data_type"] == "int"
-        assert result["arguments"][0]["direction"] == "in"
+        arguments = cast(List[Dict[str, object]], result["arguments"])
+        assert len(arguments) == 1
+        assert arguments[0]["name"] == "x"
+        assert arguments[0]["data_type"] == "int"
+        assert arguments[0]["direction"] == "in"
 
 
 class TestExportArgument:
@@ -181,6 +192,7 @@ class TestExportArgument:
 
         result = exporter._export_element(arg)
 
+        assert result is not None
         assert result["name"] == "name"
         assert result["type"] == "Argument"
         assert result["data_type"] == "String"
@@ -206,6 +218,7 @@ class TestExportAttribute:
 
         result = exporter._export_element(attr)
 
+        assert result is not None
         assert result["data_type"] == "int"
         assert result["visibility"] == "public"
         assert result["multiplicity"] == "1"
@@ -233,9 +246,11 @@ class TestExportType:
 
         result = exporter._export_element(type_element)
 
+        assert result is not None
         assert result["kind"] == "Enumeration"
         assert "literals" in result
-        assert result["literals"][0]["name"] == "RED"
+        literals = cast(List[Dict[str, object]], result["literals"])
+        assert literals[0]["name"] == "RED"
 
     def test_emits_children_for_structure_kind(self) -> None:
         child = MagicMock()
@@ -258,9 +273,11 @@ class TestExportType:
 
         result = exporter._export_element(type_element)
 
+        assert result is not None
         assert result["kind"] == "Structure"
         assert "children" in result
-        assert result["children"][0]["name"] == "x"
+        children = cast(List[Dict[str, object]], result["children"])
+        assert children[0]["name"] == "x"
 
 
 class TestExportObject:
@@ -279,6 +296,7 @@ class TestExportObject:
 
         result = exporter._export_element(obj)
 
+        assert result is not None
         assert result["classifier"] == "MyClass"
 
 
@@ -295,6 +313,7 @@ class TestExportEnumerationLiteral:
 
         result = exporter._export_element(literal)
 
+        assert result is not None
         assert result == {"name": "RED", "type": "EnumerationLiteral"}
 
 
@@ -345,6 +364,7 @@ class TestExportStereotypesAndTags:
 
         result = exporter._export_element(cls)
 
+        assert result is not None
         assert result["stereotypes"] == ["Interface"]
         assert result["tags"] == {"status": "active"}
 
@@ -386,6 +406,7 @@ class TestExportDependency:
 
         result = exporter._export_element(dep)
 
+        assert result is not None
         assert result["type"] == "Dependency"
         assert result["depends_on"] == "OtherClass"
 
@@ -400,6 +421,7 @@ class TestExportDependency:
 
         result = exporter._export_element(dep)
 
+        assert result is not None
         assert result["type"] == "Dependency"
         assert "depends_on" not in result
 
@@ -422,6 +444,7 @@ class TestExportGeneralization:
 
         result = exporter._export_element(gen)
 
+        assert result is not None
         assert result["type"] == "Generalization"
         assert result["base_class"] == "BaseClass"
         assert result["visibility"] == "public"
@@ -452,6 +475,7 @@ class TestExportRelation:
 
         result = exporter._export_element(rel)
 
+        assert result is not None
         assert result["type"] == "Relation"
         assert result["relation_type"] == "Association"
         assert result["from"] == "MyClass"
@@ -482,6 +506,7 @@ class TestExportRelation:
 
         result = exporter._export_element(rel)
 
+        assert result is not None
         assert result["relation_type"] == "Aggregation"
         assert "multiplicity" not in result
         assert "is_navigable" not in result
@@ -509,6 +534,7 @@ class TestExportPort:
 
         result = exporter._export_element(port)
 
+        assert result is not None
         assert result["type"] == "Port"
         assert result["is_behavioral"] is True
         assert result["is_reversed"] is False
@@ -533,6 +559,7 @@ class TestExportPort:
 
         result = exporter._export_element(port)
 
+        assert result is not None
         assert result["provided_interfaces"] == ["IFoo"]
         assert result["required_interfaces"] == ["IBar"]
 
@@ -556,6 +583,7 @@ class TestExportEvent:
 
         result = exporter._export_element(event)
 
+        assert result is not None
         assert result["type"] == "Event"
         assert result["base_event"] == "BaseEvt"
         assert result["super_event"] == "SuperEvt"
@@ -572,6 +600,7 @@ class TestExportEvent:
 
         result = exporter._export_element(event)
 
+        assert result is not None
         assert "base_event" not in result
         assert "super_event" not in result
 
@@ -592,6 +621,7 @@ class TestExportEventReception:
 
         result = exporter._export_element(reception)
 
+        assert result is not None
         assert result["type"] == "EventReception"
         assert result["event"] == "TickEvent"
 
@@ -606,4 +636,5 @@ class TestExportEventReception:
 
         result = exporter._export_element(reception)
 
+        assert result is not None
         assert "event" not in result

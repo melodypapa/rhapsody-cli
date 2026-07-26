@@ -4,6 +4,7 @@ These tests require a running Rhapsody instance with an open project.
 """
 
 import time
+from typing import cast
 
 import pytest
 
@@ -174,6 +175,8 @@ class TestRPClassIntegration:
 
     def test_add_event_reception_with_event(self, test_project: RPProject) -> None:
         """Test that add_event_reception_with_event raises NotImplementedError (not exposed in COM type library)."""
+        from rhapsody_cli.models.elements.interactions import RPEvent
+
         pkg_name = self._unique("EvWEvPkg")
         class_name = self._unique("EvWEvCls")
         event_name = self._unique("MyEvent")
@@ -183,7 +186,7 @@ class TestRPClassIntegration:
         try:
             event = pkg.add_event(event_name)
             with pytest.raises(NotImplementedError, match="addEventReceptionWithEvent is not exposed in the Rhapsody COM"):
-                test_class.add_event_reception_with_event(reception_name, event)
+                test_class.add_event_reception_with_event(reception_name, cast(RPEvent, event))
         finally:
             test_class.delete_from_project()
 

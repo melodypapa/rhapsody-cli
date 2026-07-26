@@ -48,7 +48,7 @@ class TestRPInstanceSlot:
         fake.getSlotProperty.return_value = prop
         slot = RPInstanceSlot(fake)
         wrapped = slot.get_slot_property()
-        assert wrapped.get_name() == "attr1"
+        assert wrapped is not None and wrapped.get_name() == "attr1"
         fake.getSlotProperty.assert_called_once_with()
 
     def test_get_values_returns_collection(self) -> None:
@@ -144,7 +144,7 @@ class TestRPInstanceValue:
         fake.getValue.return_value = val
         iv = RPInstanceValue(fake)
         wrapped = iv.get_value()
-        assert wrapped.get_name() == "C1"
+        assert wrapped is not None and wrapped.get_name() == "C1"
         fake.getValue.assert_called_once_with()
 
     def test_set_value_delegates(self) -> None:

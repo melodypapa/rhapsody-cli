@@ -4,7 +4,7 @@ import argparse
 import json
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, List, Optional
+from typing import Any, List, Optional, cast
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
@@ -17,6 +17,7 @@ from rhapsody_cli.actions.abstract_action import (
 )
 from rhapsody_cli.cli.path_resolver import PathResolver, PathResolverError
 from rhapsody_cli.exceptions import CliExecutionError, RhapsodyConnectionError
+from rhapsody_cli.models.core import RPModelElement
 
 
 class TestAbstractActionAddVerboseArgument:
@@ -189,18 +190,18 @@ class TestElementManagementActionResolveContainer:
         pkg = _FakeElement("pkg")
         root = _make_root_with(pkg)
 
-        result = action._resolve_container_or_element(root, "pkg", resolve_element=False)
+        result = action._resolve_container_or_element(cast(RPModelElement, root), "pkg", resolve_element=False)
 
-        assert result is pkg
+        assert cast(_FakeElement, result) is pkg
 
     def test_resolve_container_returns_root_for_empty_path(self) -> None:
         """Container mode with empty/None path should return the root itself."""
         action = _FakeElementAction(command_id="fake")
         root = _make_root_with()
 
-        result = action._resolve_container_or_element(root, None, resolve_element=False)
+        result = action._resolve_container_or_element(cast(RPModelElement, root), None, resolve_element=False)
 
-        assert result is root
+        assert cast(_FakeElement, result) is root
 
     def test_resolve_container_raises_cli_error_on_path_error(self) -> None:
         """PathResolverError should be re-raised as CliExecutionError."""
@@ -208,7 +209,7 @@ class TestElementManagementActionResolveContainer:
         root = _make_root_with()
 
         with pytest.raises(CliExecutionError) as exc_info:
-            action._resolve_container_or_element(root, "missing", resolve_element=False)
+            action._resolve_container_or_element(cast(RPModelElement, root), "missing", resolve_element=False)
 
         assert exc_info.value.__cause__ is not None
         assert isinstance(exc_info.value.__cause__, PathResolverError)
@@ -225,7 +226,7 @@ class TestElementManagementActionResolveContainer:
         PathResolver.resolve_container = staticmethod(boom)  # type: ignore[method-assign,assignment]
         try:
             with pytest.raises(CliExecutionError):
-                action._resolve_container_or_element(root, "pkg", resolve_element=False)
+                action._resolve_container_or_element(cast(RPModelElement, root), "pkg", resolve_element=False)
         finally:
             PathResolver.resolve_container = staticmethod(original)  # type: ignore[method-assign,assignment]
 
@@ -240,9 +241,9 @@ class TestElementManagementActionResolveElement:
         pkg = _FakeElement("pkg", [cls])
         root = _make_root_with(pkg)
 
-        result = action._resolve_container_or_element(root, "pkg/MyClass", resolve_element=True)
+        result = action._resolve_container_or_element(cast(RPModelElement, root), "pkg/MyClass", resolve_element=True)
 
-        assert result is cls
+        assert cast(_FakeElement, result) is cls
 
     def test_resolve_element_raises_cli_error_on_path_error(self) -> None:
         """PathResolverError should be re-raised as CliExecutionError."""
@@ -250,7 +251,7 @@ class TestElementManagementActionResolveElement:
         root = _make_root_with()
 
         with pytest.raises(CliExecutionError) as exc_info:
-            action._resolve_container_or_element(root, "missing", resolve_element=True)
+            action._resolve_container_or_element(cast(RPModelElement, root), "missing", resolve_element=True)
 
         assert isinstance(exc_info.value.__cause__, PathResolverError)
 
@@ -266,7 +267,7 @@ class TestElementManagementActionResolveElement:
         PathResolver.resolve_element = staticmethod(boom)  # type: ignore[method-assign,assignment]
         try:
             with pytest.raises(CliExecutionError):
-                action._resolve_container_or_element(root, "pkg", resolve_element=True)
+                action._resolve_container_or_element(cast(RPModelElement, root), "pkg", resolve_element=True)
         finally:
             PathResolver.resolve_element = staticmethod(original)  # type: ignore[method-assign,assignment]
 
@@ -330,7 +331,7 @@ class TestRhapsodyContextActionPrintFormattedOutput:
         action = _FakeContextAction(command_id="fake")
         action.output_format = "json"
 
-        action._print_formatted_output(data={"a": 1}, headers=["a"], table_rows=[[1]])
+        action._print_formatted_output(data={"a": 1}, headers=["a"], table_rows=[["1"]])
 
         captured = capsys.readouterr()
         assert '"a"' in captured.out

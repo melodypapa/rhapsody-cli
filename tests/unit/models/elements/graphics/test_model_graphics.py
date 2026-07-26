@@ -41,7 +41,7 @@ class TestRPGraphElementTask15:
         fake.getModelObject.return_value = model_obj
         ge = RPGraphElement(fake)
         wrapped = ge.get_model_object()
-        assert wrapped.get_name() == "Widget"
+        assert wrapped is not None and wrapped.get_name() == "Widget"
         fake.getModelObject.assert_called_once_with()
 
     def test_get_all_graphical_properties_returns_collection(self) -> None:

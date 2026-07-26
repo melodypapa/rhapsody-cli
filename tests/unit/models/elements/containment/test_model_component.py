@@ -69,8 +69,7 @@ def test_component_find_configuration_wraps_result() -> None:
     result = comp.find_configuration("Config1")
 
     fake.findConfiguration.assert_called_once_with("Config1")
-    assert result is not None
-    assert result.get_name() == "Config1"
+    assert result is not None and result.get_name()     == "Config1"
 
 
 def test_component_find_configuration_returns_none_when_not_found() -> None:

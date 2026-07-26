@@ -10,7 +10,7 @@ import subprocess
 import sys
 import uuid
 from pathlib import Path
-from typing import Any
+from typing import Any, Generator
 
 import pytest
 
@@ -65,7 +65,7 @@ def _unique_name(prefix: str = "Test") -> str:
 
 
 @pytest.fixture(scope="session")
-def cli_project(test_project_dir: Path) -> str:
+def cli_project(test_project_dir: Path) -> Generator[str, None, None]:
     """Session-scoped test project created via Python API.
 
     Uses the Python API directly (not the subprocess CLI) to avoid

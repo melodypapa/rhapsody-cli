@@ -5,12 +5,15 @@ These tests require a running Rhapsody instance with an open project.
 
 import uuid
 from pathlib import Path
+from typing import cast
 
 import pytest
 
 from rhapsody_cli import RhapsodyApplication
 from rhapsody_cli.models.core import AddToModelMode, RPCollection, RPModelElement, RPUnit
 from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.diagrams import RPDiagram
+from rhapsody_cli.models.elements.relations import RPRelation
 from tests.integration.conftest import TEST_PROJECT_DIR
 
 
@@ -445,7 +448,7 @@ class TestRPModelElementDependenciesIntegration:
         try:
             cls1 = pkg.add_class(self._unique("Class1"))
             cls2 = pkg.add_class(self._unique("Class2"))
-            assoc = RPModelElement.add_association(pkg, cls1, cls2, self._unique("AssocName"))
+            assoc = RPModelElement.add_association(pkg, cast(RPRelation, cls1), cast(RPRelation, cls2), self._unique("AssocName"))
             assert assoc is not None
             assert isinstance(assoc, RPModelElement)
         finally:
@@ -881,7 +884,7 @@ class TestRPModelElementNavigationIntegration:
             assert found.get_name() == class_name
 
             not_found = pkg.find_nested_element(self._unique("Missing"), "Class")
-            assert not_found.get_name() == ""
+            assert not_found is not None and not_found.get_name() == ""
         finally:
             pkg.delete_from_project()
 
@@ -893,7 +896,7 @@ class TestRPModelElementNavigationIntegration:
             class_name = self._unique("DeepCls")
             subpkg.add_class(class_name)
             not_found = pkg.find_nested_element(class_name, "Class")
-            assert not_found.get_name() == ""
+            assert not_found is not None and not_found.get_name() == ""
             found = pkg.find_nested_element_recursive(class_name, "Class")
             assert found is not None
             assert isinstance(found, RPModelElement)
@@ -1555,7 +1558,7 @@ class TestRPModelElementDiagnosticsUiIntegration:
             assert isinstance(diagram_guid, str)
             assert len(diagram_guid) > 0
 
-            cls.set_main_diagram(diagram)
+            cls.set_main_diagram(cast(RPDiagram, diagram))
             retrieved = cls.get_main_diagram()
             assert retrieved is not None
             assert retrieved.get_guid() == diagram_guid
@@ -1606,7 +1609,7 @@ class TestRPModelElementDiagnosticsUiIntegration:
             from typing import cast
 
             none_elem: RPModelElement = cast(RPModelElement, None)
-            cls1.add_link_to_element(cls2, none_elem, none_elem, none_elem)
+            cls1.add_link_to_element(cls2, cast(RPRelation, none_elem), none_elem, none_elem)
         finally:
             pkg.delete_from_project()
 
