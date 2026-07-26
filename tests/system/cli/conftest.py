@@ -65,26 +65,55 @@ def _unique_name(prefix: str = "Test") -> str:
 
 
 @pytest.fixture(scope="session")
-def cli_project(test_project_dir: Path) -> Generator[str, None, None]:
+def cli_connection() -> Generator[None, None, None]:
+    """Establish a CLI session connection via the subprocess.
+
+    Establishes a single session that all CLI commands in the session will use.
+    This avoids creating a new COM connection for each subprocess call.
+
+    Cleans up the session file after tests complete to prevent unit tests
+    from detecting it and trying to connect to Rhapsody.
+
+    Yields:
+        None — the session is established as a side effect.
+    """
+    result = _run_cli("connect")
+    assert result.returncode == 0, f"Failed to connect via CLI: {result.stderr}"
+    yield
+    # Clean up: disconnect to clear session file
+    _run_cli("disconnect")
+
+
+@pytest.fixture(scope="session")
+def cli_project(test_project_dir: Path, cli_connection: None) -> Generator[str, None, None]:
     """Session-scoped test project created via Python API.
 
     Uses the Python API directly (not the subprocess CLI) to avoid
     UI dialogs and timeout issues with `project new`. The project
     is properly closed on teardown.
 
+    Attaches to the existing Rhapsody instance that was launched by cli_connection.
+    Does not kill or restart Rhapsody to preserve the CLI session.
+
+    Depends on cli_connection to ensure a session is established first.
+
     Returns:
         The project name string.
     """
     project_name = "SystemTestProject"
 
+    # Attach to existing Rhapsody instance (launched by cli_connection)
     app = RhapsodyApplication.connect(attach_only=True)
     app.create_new_project(str(test_project_dir), project_name)
 
     yield project_name
 
-    # Close project via Python API (not subprocess CLI, which is a no-op)
-    app = RhapsodyApplication.connect(attach_only=True)
-    for proj in app.get_projects():
-        if proj.get_name() == project_name:
-            proj.close()
-            break
+    # Close project via Python API
+    try:
+        app = RhapsodyApplication.connect(attach_only=True)
+        for proj in app.get_projects():
+            if proj.get_name() == project_name:
+                proj.close()
+                break
+    except Exception:
+        pass  # If connection fails, instance may already be closed

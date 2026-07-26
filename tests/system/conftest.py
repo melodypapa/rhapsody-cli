@@ -7,6 +7,7 @@ Rhapsody auto-skip when no instance is available.
 import shutil
 import sys
 import tempfile
+import time
 from pathlib import Path
 
 import pytest
@@ -22,9 +23,21 @@ TEST_PROJECT_NAME = "SystemTestProject"
 
 @pytest.fixture(scope="session")
 def rhapsody_available() -> bool:
-    """Check if a running Rhapsody instance is available."""
+    """Check if Rhapsody is available, launching a new instance if needed.
+
+    Attempts to launch a new Rhapsody instance with the GUI visible.
+    If an instance is already running, attaches to it instead.
+    The GUI visibility is important for proper rendering and display of model elements.
+    """
     try:
-        app = RhapsodyApplication.connect(attach_only=True)
+        app = RhapsodyApplication.connect(attach_only=False, show_gui=True)
+        # Give the GUI time to initialize and render
+        time.sleep(2)
+        # Bring window to foreground to make GUI visible
+        try:
+            app.bring_window_to_top()
+        except Exception:
+            pass  # If bring_window_to_top fails, continue anyway
         app.get_is_hidden_ui()
         return True
     except Exception:
