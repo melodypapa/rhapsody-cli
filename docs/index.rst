@@ -5,7 +5,7 @@ Welcome to rhapsody-cli's Documentation
 
 rhapsody-cli is a Pythonic wrapper around the IBM Rhapsody COM API, providing a complete Python interface to the Rhapsody modeling tool. It mirrors the Rhapsody Java API, enabling developers to programmatically interact with Rhapsody models and projects.
 
-**Current Version**: 0.2.0
+**Current Version**: 0.2.1
 **Python Requirements**: >= 3.8
 **License**: MIT
 **Platform**: Windows (requires IBM Rhapsody installation)
@@ -134,6 +134,17 @@ View available commands:
 .. code-block:: bash
 
    rhapsody-cli --help
+
+Session management:
+
+.. code-block:: bash
+
+   rhapsody-cli connect                    # Connect to Rhapsody
+   rhapsody-cli connect --attach-only      # Only attach to existing instance
+   rhapsody-cli connect --timeout 30       # Set session timeout (minutes)
+   rhapsody-cli status                     # Show connection status
+   rhapsody-cli disconnect                 # Disconnect from Rhapsody
+   rhapsody-cli version                    # Show CLI version
 
 Project management:
 

@@ -6,6 +6,104 @@ Overview
 
 rhapsody-cli provides a command-line interface for common Rhapsody operations. The CLI is built using Python's standard-library argparse and supports multiple output formats.
 
+Command Structure
+-----------------
+
+The CLI has two types of commands:
+
+* **Single-Level Commands**: Direct actions (connect, disconnect, status, version)
+* **Two-Level Commands**: Action groups with subcommands (project, package, class, attribute, operation, port)
+
+Session Management Commands
+----------------------------
+
+``connect`` - Connect to Rhapsody
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+   rhapsody-cli connect [OPTIONS]
+
+Connects to Rhapsody. If an instance is already running, attaches to it.
+Otherwise, launches a new instance.
+
+**Options:**
+
+* ``--attach-only`` - Only attach to an existing instance (don't launch if none running)
+* ``--timeout MINUTES`` - Set session timeout (default: 30 minutes)
+* ``--no-gui`` - Keep Rhapsody GUI hidden
+* ``-v, --verbose`` - Enable debug logging
+
+**Example:**
+
+.. code-block:: bash
+
+   rhapsody-cli connect
+   rhapsody-cli connect --attach-only
+   rhapsody-cli connect --timeout 60 --no-gui
+   rhapsody-cli connect --verbose
+
+``disconnect`` - Disconnect from Rhapsody
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+   rhapsody-cli disconnect [OPTIONS]
+
+Disconnects from the current Rhapsody session.
+
+**Options:**
+
+* ``-v, --verbose`` - Enable debug logging
+
+**Example:**
+
+.. code-block:: bash
+
+   rhapsody-cli disconnect
+   rhapsody-cli disconnect --verbose
+
+``status`` - Show Connection Status
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+   rhapsody-cli status [OPTIONS]
+
+Shows the current connection status and open projects.
+
+**Options:**
+
+* ``-v, --verbose`` - Enable debug logging
+
+**Example:**
+
+.. code-block:: bash
+
+   rhapsody-cli status
+   rhapsody-cli status --verbose
+
+``version`` - Show CLI Version
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+   rhapsody-cli version [OPTIONS]
+
+Displays the installed rhapsody-cli version.
+
+**Options:**
+
+* ``-v, --verbose`` - Enable debug logging
+
+**Example:**
+
+.. code-block:: bash
+
+   rhapsody-cli version
+
+
+
 Getting Started
 ---------------
 
@@ -22,13 +120,13 @@ View Subcommand Help
 .. code-block:: bash
 
    rhapsody-cli project --help
-   rhapsody-cli element --help
    rhapsody-cli package --help
+   rhapsody-cli class --help
 
 Output Formats
 --------------
 
-The ``--output`` option controls the output format:
+The ``--format`` option (for two-level commands) controls the output format:
 
 * ``table`` (default) - Human-readable table
 * ``json`` - JSON format
@@ -43,10 +141,18 @@ Examples
    rhapsody-cli project list
 
    # JSON format
-   rhapsody-cli --output json project list
+   rhapsody-cli package view --path Sensors --format json
 
    # CSV format
-   rhapsody-cli --output csv element query
+   rhapsody-cli class list --path Sensors --format csv
+
+Global Options
+---------------
+
+* ``--format {table,json,csv}`` - Output format for two-level commands (default: table)
+* ``-v, --verbose`` - Enable debug logging for any command
+* ``-h, --help`` - Show help message
+
 
 Project Commands
 ----------------

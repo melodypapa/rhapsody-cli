@@ -1,6 +1,6 @@
 # rhapsody-cli
 
-[![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/user/rhapsody-cli)
+[![Version](https://img.shields.io/badge/version-0.2.1-blue.svg)](https://github.com/user/rhapsody-cli)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Platform](https://img.shields.io/badge/platform-Windows-lightgrey.svg)](https://www.microsoft.com/windows)
@@ -15,7 +15,7 @@ knowledge and documentation transfer directly.
 - **Complete API Mirroring**: Method names and signatures match the Rhapsody Java API exactly (converted to snake_case)
 - **Object-Oriented Design**: Clean Python classes wrapping COM objects with proper type hints
 - **Comprehensive Element Support**: 96 Rhapsody element types wrapped with full method coverage
-- **CLI Tools**: Command-line utilities for project, package, class, operation, attribute, port, export, and import management
+- **CLI Tools**: Single-level commands for session management (connect, disconnect, status, version) and two-level commands for project, package, class, operation, attribute, and port management
 - **Multi-Level Path Navigation**: Navigate hierarchical model structures using `/` or `\` separators
 - **Bulk Operations**: Create multiple elements, list recursively, and delete with safety confirmations
 - **Robust Error Handling**: Automatic COM error translation with user-friendly exception messages
@@ -84,7 +84,32 @@ app.quit()
 
 ### Command-Line Interface
 
-The CLI provides eight command groups: `project`, `package`, `class`, `attribute`, `operation`, `port`, `export`, and `import`.
+The CLI provides **single-level commands** for session management and **two-level commands** for model element operations:
+
+**Single-Level Commands**: `connect`, `disconnect`, `status`, `version`
+
+**Two-Level Commands**: `project`, `package`, `class`, `attribute`, `operation`, `port`
+
+#### Session Management (Single-Level Commands)
+
+```bash
+# Connect to Rhapsody
+rhapsody-cli connect
+
+# Connect with options
+rhapsody-cli connect --attach-only       # Only attach to existing instance
+rhapsody-cli connect --timeout 30        # Set session timeout (minutes)
+rhapsody-cli connect --no-gui            # Keep GUI hidden
+
+# Show connection status
+rhapsody-cli status
+
+# Disconnect from Rhapsody
+rhapsody-cli disconnect
+
+# Show CLI version
+rhapsody-cli version
+```
 
 #### Project Management
 
@@ -140,23 +165,11 @@ rhapsody-cli attribute update --path Sensors/TemperatureSensor --name threshold 
 rhapsody-cli attribute delete --path Sensors/TemperatureSensor --name threshold
 ```
 
-#### Export and Import (YAML)
+### Command Options
 
-The `export` and `import` command groups serialize Rhapsody model elements to / from YAML:
+#### Two-Level Commands
 
-```bash
-# Export a project or package to a YAML file
-rhapsody-cli export project --path MyProject "C:\Models\MyProject.yaml"
-rhapsody-cli export package --path Sensors "C:\Models\Sensors.yaml"
-
-# Import a previously exported YAML file back into Rhapsody
-rhapsody-cli import project "C:\Models\MyProject.yaml"
-rhapsody-cli import package "C:\Models\Sensors.yaml"
-```
-
-### Global Options
-
-`--verbose`/`-v` and `--format {table,json,csv}` are specified **after** the command group name (most subcommands also accept a per-action `--output <file>`):
+`--verbose`/`-v` and `--format {table,json,csv}` are specified **after** the command group name:
 
 ```bash
 # Enable verbose logging
@@ -164,6 +177,16 @@ rhapsody-cli class list --path Sensors --verbose
 
 # Specify output format
 rhapsody-cli package view --path Sensors --format json
+```
+
+#### Single-Level Commands
+
+`--verbose`/`-v` is available on all session management commands:
+
+```bash
+# Enable verbose logging
+rhapsody-cli status --verbose
+rhapsody-cli connect --verbose
 ```
 
 ### Multi-Instance Support
@@ -370,6 +393,16 @@ See [Contributing Guide](docs/contributing.rst) for:
 MIT License - see [LICENSE](LICENSE) file for details.
 
 ## Changelog
+
+### v0.2.1 (2026-07-26)
+
+- **Fixed**: Resolved all mypy type annotation errors in formatters and test files for strict type checking
+- **Fixed**: Corrected lazy import placement to comply with coding rules (moved to file beginning)
+- **Fixed**: Resolved coding rule violations across entire source codebase
+- **Improved**: Enhanced integration/system test GUI visibility and session management
+- **Improved**: Applied black formatting to test fixture files for consistent code style
+- **Updated**: Documentation and coding guidelines now include comprehensive best practices
+- **Quality**: Test suite now passes strict mypy validation across all Python versions
 
 ### v0.2.0 (2026-07-20)
 
