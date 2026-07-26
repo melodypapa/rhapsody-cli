@@ -6,6 +6,7 @@ import logging
 import os
 from datetime import datetime, timedelta
 
+from rhapsody_cli import __version__
 from rhapsody_cli.actions.abstract_action import AbstractAction
 from rhapsody_cli.application import RhapsodyApplication
 from rhapsody_cli.exceptions import CliExecutionError, RhapsodyConnectionError
@@ -226,8 +227,6 @@ class VersionAction(AbstractAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         """Show CLI version and optionally Rhapsody version."""
-        from rhapsody_cli import __version__
-
         # NOTE: Version output is the command's result data, written to stdout
         # via print() so it stays safe for piping (e.g. `rhapsody-cli version`).
         print(f"rhapsody-cli version: {__version__}")

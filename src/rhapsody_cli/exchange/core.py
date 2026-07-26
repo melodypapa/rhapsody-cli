@@ -8,10 +8,10 @@ SWR_XCH_010: Reusable Model Manipulation API
 import logging
 from typing import TYPE_CHECKING, Dict, List, Optional, Set
 
+from rhapsody_cli.application import RhapsodyApplication
 from rhapsody_cli.models.core import RPModelElement
 
 if TYPE_CHECKING:
-    from rhapsody_cli.application import RhapsodyApplication
     from rhapsody_cli.models.elements.containment import RPProject
 
 logger = logging.getLogger(__name__)
@@ -36,8 +36,6 @@ class RhapsodyModelHelper:
             app: Existing RhapsodyApplication, or None to trigger lazy connect.
         """
         if app is None:
-            from rhapsody_cli.application import RhapsodyApplication
-
             app = RhapsodyApplication.connect(attach_only=True)
         self.app = app
         self.project: Optional["RPProject"] = None  # noqa: UP037

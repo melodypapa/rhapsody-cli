@@ -10,6 +10,7 @@ from rhapsody_cli.cli.path_resolver import PathResolver, PathResolverError
 from rhapsody_cli.exceptions import CliExecutionError, RhapsodyConnectionError
 from rhapsody_cli.models.core import RPModelElement
 from rhapsody_cli.models.elements.containment import RPProject
+from rhapsody_cli.session import SessionManager
 
 
 class AbstractAction:
@@ -177,8 +178,6 @@ class SessionAwareAction(RhapsodyContextAction):
         Raises:
             CliExecutionError: If not connected or session timed out.
         """
-        from rhapsody_cli.session import SessionManager
-
         session_manager = SessionManager()
         session = session_manager.load()
 
