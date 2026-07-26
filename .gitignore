@@ -232,4 +232,6 @@ demos/demo_project/_scratch_*/
 
 # Integration test temporary project
 demos/test_project/
-
+archive/
+output.json
+pytest_html_report.html
