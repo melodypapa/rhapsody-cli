@@ -3,7 +3,7 @@
 import csv
 import io
 import json
-from typing import List, Optional
+from typing import List, Optional, cast
 
 from tabulate import tabulate  # type: ignore[import-untyped]
 
@@ -39,9 +39,9 @@ class OutputFormatter:
             return OutputFormatter.json_format(data)
         elif format_type == "csv":
             headers = headers or []
-            rows = data if isinstance(data, list) else [data]
-            return OutputFormatter.csv_format(headers, rows)
+            rows = data if isinstance(data, list) else [[data]]
+            return OutputFormatter.csv_format(headers, cast(List[List[str]], rows))
         else:  # table (default)
             headers = headers or []
-            rows = data if isinstance(data, list) else [data]
-            return OutputFormatter.table(headers, rows)
+            rows = data if isinstance(data, list) else [[data]]
+            return OutputFormatter.table(headers, cast(List[List[str]], rows))
