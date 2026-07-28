@@ -53,7 +53,7 @@
 - `RPState.add_state(name)` (inherited from `RPState` itself, see `model_statemachine.py:234`) → a plain child `RPState`, used as the target for `RPState.set_entry_action(str)` → `RPState.get_the_entry_action()` (`RPAction`) and for `RPState.set_state_type("EventState")` → `RPState.get_send_action()` (`RPSendAction`)
 - `RPClassifier.add_flows(name)` (`model_classifier.py:171`) → `RPFlow` directly on any `RPClass`
 - `RPClassifier.add_flow_items(name)` (`model_classifier.py:157`) → `RPFlowItem` directly on any `RPClass`
-- `RPProject.add_collaboration(name)` (inherited from `RPProject`, defined in `model_project.py:423`) → `RPCollaboration`; `RPCollaboration.add_action_block(name)` (`model_collaboration.py:58`, typed `RPUnit` but wraps to `RPActionBlock` via the `"ActionBlock"` meta-class registration) — used only as a smoke check since `RPActionBlock` has no own methods
+- `RPProject.add_new_aggr("Collaboration", name)` (generic factory on `RPModelElement`, `src/rhapsody_cli/models/core.py:378`; returns `RPCollaboration` via the `"Collaboration"` meta-class registration) — there is no dedicated `add_collaboration` wrapper; `RPCollaboration.add_action_block(name)` (`model_collaboration.py:58`, typed `RPUnit` but wraps to `RPActionBlock` via the `"ActionBlock"` meta-class registration) — used only as a smoke check since `RPActionBlock` has no own methods
 - `RPPackage.add_event(name)` (inherited, `model_package.py:786`) → `RPEvent`, used to populate `set_event`/`get_event` on `RPAcceptEventAction` and `RPSendAction`
 - `RPClass.add_operation(name)` → `RPOperation` (an `RPInterfaceItem` subclass, `model_operation.py:13`), used for `RPCallOperation.set_operation`/`get_operation` and `RPSendAction.set_invoked_operation`/`get_invoked_operation`
 - `RPClassifier.add_relation_to(other_classifier, role1, link_type1, mult1, role2, link_type2, mult2, link_name)` (`model_classifier.py:259`) → `RPRelation`, used for `RPCallOperation.set_target`/`get_target`
@@ -833,7 +833,7 @@ class TestRPActionBlockIntegration:
         from rhapsody_cli.models.elements.activity import RPActionBlock
         from rhapsody_cli.models.elements.containment import RPCollaboration
 
-        collaboration: RPCollaboration = test_project.add_collaboration(_unique("Collab"))
+        collaboration: RPCollaboration = test_project.add_new_aggr("Collaboration", _unique("Collab"))
         try:
             action_block = collaboration.add_action_block(_unique("ActionBlock"))
             assert isinstance(action_block, RPActionBlock)
