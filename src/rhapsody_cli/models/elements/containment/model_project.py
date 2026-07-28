@@ -54,7 +54,7 @@ class RPProject(RPPackage):
     # [ ] get_code_generated_files  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [x] get_components  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] get_default_directory_scheme  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] get_new_collaboration  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] get_new_collaboration  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [x] get_new_progress_bar  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] get_notify_plugin_on_elements_changed  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [ ] get_profiles  [x] impl  [x] docstring  [ ] unit test  [ ] integration test

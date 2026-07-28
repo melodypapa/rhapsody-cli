@@ -429,26 +429,28 @@ git commit -m "test: add RPProject component/node/configuration management integ
 
 **Files:**
 - Modify: `tests/integration/models/elements/containment/test_model_project.py`
-- Modify: `src/rhapsody_cli/models/elements/containment/model_project.py` (flip checklist boxes; add rows for `addCollaboration`, `getCollaborations`, `findCollaboration`, `deleteCollaboration`)
+- Modify: `src/rhapsody_cli/models/elements/containment/model_project.py` (flip checklist boxes only — no new rows; `addCollaboration`/`deleteCollaboration` have no dedicated wrapper, and `getCollaborations`/`findCollaboration` are absent from the `IRPProject` Java API)
 
-**Methods covered:** `add_collaboration`, `get_collaborations`, `find_collaboration`, `delete_collaboration`, `get_new_collaboration`, `get_profiles`, `get_all_stereotypes` (7 methods)
+**Methods covered:** `get_new_collaboration`, `get_profiles`, `get_all_stereotypes` (3 `RPProject` methods). The collaboration create/get/delete lifecycle below is exercised through the *inherited* generic factories (`add_new_aggr`, `get_nested_elements_by_meta_class`, `delete_from_project`) — covered by the core plan — because there is no `add_collaboration`/`get_collaborations`/`find_collaboration`/`delete_collaboration` on `RPProject` (`getCollaborations`/`findCollaboration` are absent from the `IRPProject` Java API).
 
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
 def test_collaboration_lifecycle(self, test_project: RPProject) -> None:
     collab_name = self._unique("MyCollaboration")
-    collab = test_project.add_collaboration(collab_name)
+    # No dedicated add_collaboration/get_collaborations/find_collaboration/delete_collaboration
+    # wrappers exist (getCollaborations/findCollaboration are absent from IRPProject). Use the
+    # inherited generic factories from RPModelElement instead.
+    collab = test_project.add_new_aggr("Collaboration", collab_name)
     try:
         assert collab is not None
+        assert isinstance(collab, RPCollaboration)
         assert collab.get_name() == collab_name
-        collabs = list(test_project.get_collaborations())
+        collabs = list(test_project.get_nested_elements_by_meta_class("Collaboration", 0))
         assert collab in collabs
-        found = test_project.find_collaboration(collab_name)
-        assert found == collab
     finally:
-        test_project.delete_collaboration(collab)
-        remaining = [c.get_name() for c in test_project.get_collaborations()]
+        collab.delete_from_project()
+        remaining = [c.get_name() for c in test_project.get_nested_elements_by_meta_class("Collaboration", 0)]
         assert collab_name not in remaining
 ```
 
@@ -461,7 +463,7 @@ Expected: PASS
 
 - [ ] **Step 3: Flip checklist boxes**
 
-Flip `getNewCollaboration`, `getProfiles`, `getAllStereotypes` to `[x] integration test`. Add new rows and flip for `addCollaboration`, `getCollaborations`, `findCollaboration`, `deleteCollaboration` (verify actual unit-test state first).
+Flip `getNewCollaboration`, `getProfiles`, `getAllStereotypes` to `[x] integration test`. (No new rows: `addCollaboration`/`deleteCollaboration` have no dedicated wrapper and `getCollaborations`/`findCollaboration` are absent from the `IRPProject` Java API — do not add them.)
 
 - [ ] **Step 4: Run quality gate**
 
@@ -480,21 +482,22 @@ git commit -m "test: add RPProject collaboration and profile management integrat
 
 **Files:**
 - Modify: `tests/integration/models/elements/containment/test_model_project.py`
-- Modify: `src/rhapsody_cli/models/elements/containment/model_project.py` (flip checklist boxes; add rows for `find_by_name`, `find_by_meta_class`, `get_root`)
+- Modify: `src/rhapsody_cli/models/elements/containment/model_project.py` (flip checklist boxes; add a row for `get_root` only — `find_by_name`/`find_by_meta_class` do not exist on `IRPProject`)
 
-**Methods covered:** `find_by_name`, `find_by_meta_class`, `find_element_by_guid`, `find_element_by_binary_id`, `find_element_by_file_name`, `get_cg_simplified_model_package`, `get_code_generated_files`, `get_root` (8 methods)
+**Methods covered:** `find_element_by_guid`, `find_element_by_binary_id`, `find_element_by_file_name`, `get_cg_simplified_model_package`, `get_code_generated_files`, `get_root` (6 methods). (Name/meta-class lookup is done via the *inherited* `find_elements_by_full_name(name, meta_class)` and `get_nested_elements_by_meta_class(meta_class, recursive)` on `RPModelElement` — covered by the core plan — since `IRPProject` has no `findByName`/`findByMetaClass`.)
 
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_find_by_name_and_guid(self, test_project: RPProject) -> None:
+def test_find_element_by_guid_roundtrip(self, test_project: RPProject) -> None:
     class_name = self._unique("FindableProjectClass")
     pkg = test_project.add_package(self._unique("FindPkg"))
     new_class = pkg.add_class(class_name)
     try:
-        found_by_name = test_project.find_by_name(class_name)
-        assert found_by_name is not None
-        assert found_by_name.get_name() == class_name
+        # Name/meta-class lookup uses the inherited RPModelElement.find_elements_by_full_name /
+        # get_nested_elements_by_meta_class (IRPProject has no findByName/findByMetaClass).
+        nested = list(test_project.get_nested_elements_by_meta_class("Class", 1))
+        assert new_class in nested
         guid = new_class.get_guid()
         found_by_guid = test_project.find_element_by_guid(guid)
         assert found_by_guid is not None
@@ -503,7 +506,7 @@ def test_find_by_name_and_guid(self, test_project: RPProject) -> None:
         new_class.delete_from_project()
 ```
 
-For remaining methods in this task, follow the same established pattern: `find_by_meta_class("Class")` should return an `RPCollection` containing `new_class`. `find_element_by_binary_id` and `find_element_by_file_name` are best tested as smoke tests confirming the call succeeds without error and, where possible, returns the expected element found via another documented ID/path (skip/xfail if Rhapsody2.Application.1 does not populate these IDs for pure in-memory elements, following the existing `xfail` documentation convention). `get_cg_simplified_model_package` and `get_code_generated_files` are read-only getters — test them as simple non-`None`/collection-returned smoke tests. `get_root` is trivial (returns `self`, no COM call) — test with `assert test_project.get_root() is test_project`.
+For remaining methods in this task, follow the same established pattern: name/meta-class lookup is covered by the inherited `get_nested_elements_by_meta_class("Class", 1)` (assert it contains `new_class`) and `find_elements_by_full_name(class_name, "Class")` — both `RPModelElement` methods — rather than a nonexistent `find_by_meta_class`. `find_element_by_binary_id` and `find_element_by_file_name` are best tested as smoke tests confirming the call succeeds without error and, where possible, returns the expected element found via another documented ID/path (skip/xfail if Rhapsody2.Application.1 does not populate these IDs for pure in-memory elements, following the existing `xfail` documentation convention). `get_cg_simplified_model_package` and `get_code_generated_files` are read-only getters — test them as simple non-`None`/collection-returned smoke tests. `get_root` is trivial (returns `self`, no COM call) — test with `assert test_project.get_root() is test_project`.
 
 - [ ] **Step 2: Run the new tests against live Rhapsody**
 
@@ -512,7 +515,7 @@ Expected: PASS (or documented xfail per the note above)
 
 - [ ] **Step 3: Flip checklist boxes**
 
-Flip `find_element_by_guid`, `findElementByBinaryID`, `findElementByFileName`, `getCgSimplifiedModelPackage`, `getCodeGeneratedFiles` to `[x] integration test`. Add new rows and flip for `find_by_name`, `find_by_meta_class`, `get_root`.
+Flip `find_element_by_guid`, `findElementByBinaryID`, `findElementByFileName`, `getCgSimplifiedModelPackage`, `getCodeGeneratedFiles` to `[x] integration test`. Add a new row and flip for `get_root` only (do not add `find_by_name`/`find_by_meta_class` — they have no `IRPProject` backing).
 
 - [ ] **Step 4: Run quality gate**
 
@@ -531,36 +534,30 @@ git commit -m "test: add RPProject find/search operation integration tests"
 
 **Files:**
 - Modify: `tests/integration/models/elements/containment/test_model_project.py`
-- Modify: `src/rhapsody_cli/models/elements/containment/model_project.py` (flip checklist boxes; add rows for `get_is_dirty`, `set_dirty`)
+- Modify: `src/rhapsody_cli/models/elements/containment/model_project.py` (flip checklist boxes only — `get_is_dirty`/`set_dirty` do not exist on `IRPProject`; modified state is observed via the real `is_modified_recursive`)
 
-**Methods covered:** `become_active_project`, `close`, `save_as`, `allow_auto_save`, `allow_non_unique_names`, `is_modified_recursive`, `locate_in_ide`, `highlight_from_code`, `get_is_dirty`, `set_dirty` (10 methods)
+**Methods covered:** `become_active_project`, `close`, `save_as`, `allow_auto_save`, `allow_non_unique_names`, `is_modified_recursive`, `locate_in_ide`, `highlight_from_code` (8 methods). (There is no `get_is_dirty`/`set_dirty` on `IRPProject` — zero "dirty" symbols in the Java API. Modified-state is read-only via `is_modified_recursive`.)
 
 > **Note:** `close` must be tested very carefully — it must **not** close the session-scoped `test_project` fixture used by every other test in the suite. Create a **second, disposable** project (or skip actually invoking `close()` and instead smoke-test that the method exists and is callable against a throwaway project created via `rhapsody_app.create_new_project` in a temp directory, cleaning that directory up in `finally`) rather than calling `test_project.close()`.
 
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_dirty_flag_roundtrip(self, test_project: RPProject) -> None:
-    original = test_project.get_is_dirty()
-    try:
-        test_project.set_dirty(1)
-        assert test_project.get_is_dirty() == 1
-        test_project.set_dirty(0)
-        assert test_project.get_is_dirty() == 0
-    finally:
-        test_project.set_dirty(original)
+def test_is_modified_recursive_returns_bool(self, test_project: RPProject) -> None:
+    # IRPProject has no isDirty/setDirty; is_modified_recursive is the real read-only probe.
+    assert isinstance(test_project.is_modified_recursive(), bool)
 ```
 
 For remaining methods in this task, follow the same established pattern: `allow_auto_save(1)`/`allow_auto_save(0)` and `allow_non_unique_names(1)`/`allow_non_unique_names(0)` are smoke tests confirming the calls succeed without error (these configure global engine behavior with no directly observable getter). `is_modified_recursive` should be tested as a smoke test asserting it returns a `bool`. `locate_in_ide` and `highlight_from_code(file_path, line_number)` are smoke tests confirming the call succeeds without raising (use a dummy path/line number; wrap in `pytest.mark.xfail` if the live IDE integration is unavailable in the test environment). `become_active_project` is a smoke test confirming the call succeeds without error on the already-active `test_project`. `save_as` and `close` should use the disposable second-project pattern described in the Note above — create a temp project, `save_as` a scratch path, then optionally `close()` it, cleaning up the directory in `finally`.
 
 - [ ] **Step 2: Run the new tests against live Rhapsody**
 
-Run: `pytest tests/integration/models/elements/containment/test_model_project.py -m integration -v -k "Dirty or AutoSave or NonUnique or Modified or Ide or Highlight or ActiveProject or SaveAs or Close"`
+Run: `pytest tests/integration/models/elements/containment/test_model_project.py -m integration -v -k "Modified or AutoSave or NonUnique or Ide or Highlight or ActiveProject or SaveAs or Close"`
 Expected: PASS (or documented xfail)
 
 - [ ] **Step 3: Flip checklist boxes**
 
-Flip `become_active_project`, `close`, `saveAs`, `allowAutoSave`, `allowNonUniqueNames`, `isModifiedRecursive`, `locateInIDE`, `highlightFromCode` to `[x] integration test`. Add new rows and flip for `get_is_dirty`, `set_dirty`.
+Flip `become_active_project`, `close`, `saveAs`, `allowAutoSave`, `allowNonUniqueNames`, `isModifiedRecursive`, `locateInIDE`, `highlightFromCode` to `[x] integration test`. (Do not add `get_is_dirty`/`set_dirty` — no `IRPProject` backing exists.)
 
 - [ ] **Step 4: Run quality gate**
 
@@ -1007,7 +1004,7 @@ class TestRPCollaborationIntegration:
         collab_name = self._unique("MsgCollab")
         role_name = self._unique("MyRole")
         msg_name = self._unique("MyMessage")
-        collab = test_project.add_collaboration(collab_name)
+        collab = test_project.add_new_aggr("Collaboration", collab_name)
         try:
             assert isinstance(collab, RPCollaboration)
             role = collab.add_classifier_role(role_name)
@@ -1020,7 +1017,7 @@ class TestRPCollaborationIntegration:
             messages = list(collab.get_messages())
             assert message in messages
         finally:
-            test_project.delete_collaboration(collab)
+            collab.delete_from_project()
 ```
 
 For remaining methods in this task, follow the same established pattern: `add_classifier_role_by_name` and `add_classifier_role_for_instance` mirror `add_classifier_role` (the latter requires creating an `RPInstance`, e.g. via `RPNode.add_component_instance`, to pass in). `add_found_message`/`add_lost_message`/`add_reply_message` mirror `add_message`, each asserting membership in `get_messages()`. `get_message_points`, `get_classifier`, `get_activator`, `get_associations` are read-only getter smoke tests asserting the expected type or `RPCollection`/`None`.
@@ -1061,7 +1058,7 @@ git commit -m "test: add RPCollaboration message/classifier role integration tes
 def test_interaction_occurrence_lifecycle(self, test_project: RPProject) -> None:
     collab_name = self._unique("InterOccCollab")
     occ_name = self._unique("MyInteractionOccurrence")
-    collab = test_project.add_collaboration(collab_name)
+    collab = test_project.add_new_aggr("Collaboration", collab_name)
     try:
         occurrence = collab.add_interaction_occurrence(occ_name)
         assert occurrence is not None
@@ -1069,7 +1066,7 @@ def test_interaction_occurrence_lifecycle(self, test_project: RPProject) -> None
         occurrences = list(collab.get_interaction_occurrences())
         assert occurrence in occurrences
     finally:
-        test_project.delete_collaboration(collab)
+        collab.delete_from_project()
 ```
 
 For remaining methods in this task, follow the same established pattern: `add_action_block`, `add_cancelled_timeout`, `add_condition_mark`, `add_ctor`, `add_data_flow`, `add_destruction_event`, `add_dtor`, `add_duration_constraint`, `add_duration_observation`, `add_state_invariant`, `add_system_border`, `add_time_constraint`, `add_time_interval`, `add_time_observation`, `add_timeout` are all simple create + `isinstance`/`get_name` smoke tests with no dedicated getter (assert the element is created without error; use `delete_from_project()` for cleanup where the returned wrapper supports it). `add_interaction_operator`/`get_interaction_operators` mirrors the `add_interaction_occurrence` test shape above. `get_execution_occurrences` is a read-only getter smoke test asserting an `RPCollection` is returned.
@@ -1109,7 +1106,7 @@ git commit -m "test: add RPCollaboration interaction structure integration tests
 ```python
 def test_generate_sequence_and_metadata(self, test_project: RPProject) -> None:
     collab_name = self._unique("MetaCollab")
-    collab = test_project.add_collaboration(collab_name)
+    collab = test_project.add_new_aggr("Collaboration", collab_name)
     try:
         collab.generate_sequence()
         assert isinstance(collab.get_activation_condition(), str)
@@ -1117,7 +1114,7 @@ def test_generate_sequence_and_metadata(self, test_project: RPProject) -> None:
         assert isinstance(collab.get_concurrent_group(), int)
         assert isinstance(collab.get_mode(), int)
     finally:
-        test_project.delete_collaboration(collab)
+        collab.delete_from_project()
 ```
 
 For remaining methods in this task, follow the same established pattern: `get_predecessor`/`get_successor` are read-only getter smoke tests asserting they return `None` or a valid `RPUnit`-typed object without error for a freshly-created, unlinked collaboration.
