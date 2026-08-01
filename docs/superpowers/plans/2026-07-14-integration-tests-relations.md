@@ -679,7 +679,7 @@ class TestRPRelationIntegration:
             relation.set_relation_label(self._unique("Label"))
             assert relation.get_relation_label() != ""
         finally:
-            pkg.delete_association(relation)
+            relation.delete_from_project()
             class_a.delete_from_project()
             class_b.delete_from_project()
 ```
@@ -748,7 +748,7 @@ def test_relation_naming_visibility_and_navigability(self, test_project: RPProje
         assert isinstance(relation.get_is_symmetric(), bool)
         assert isinstance(relation.is_typeless_object(), bool)
     finally:
-        pkg.delete_association(relation)
+        relation.delete_from_project()
         class_a.delete_from_project()
         class_b.delete_from_project()
 ```
@@ -821,7 +821,7 @@ def test_relation_qualifiers_and_inverse(self, test_project: RPProject) -> None:
         inverse = relation.get_inverse()
         assert inverse is not None
     finally:
-        pkg.delete_association(relation)
+        relation.delete_from_project()
         class_a.delete_from_project()
         class_b.delete_from_project()
         qualifier_type.delete_from_project()

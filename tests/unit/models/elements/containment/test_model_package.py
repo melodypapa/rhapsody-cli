@@ -243,18 +243,6 @@ def test_package_find_class_delegates_to_com() -> None:
     assert result.get_name() == "MyClass"
 
 
-def test_package_find_nested_package_delegates_to_com() -> None:
-    fake = make_fake_element("Package")
-    nested = make_fake_element("Package", getName="NestedPkg")
-    fake.findNestedPackage.return_value = nested
-    package = RPPackage(fake)
-
-    result = package.find_nested_package("NestedPkg")
-
-    fake.findNestedPackage.assert_called_once_with("NestedPkg")
-    assert result.get_name() == "NestedPkg"
-
-
 def test_package_add_association_delegates_to_com() -> None:
     fake = make_fake_element("Package")
     assoc = make_fake_element("Relation", getName="assoc1")
@@ -265,19 +253,6 @@ def test_package_add_association_delegates_to_com() -> None:
 
     fake.addAssociation.assert_called_once_with("assoc1")
     assert result.get_name() == "assoc1"
-
-
-def test_package_get_associations_returns_collection() -> None:
-    from rhapsody_cli.models.core import RPCollection
-
-    fake = make_fake_element("Package")
-    assoc = make_fake_element("Relation", getName="assoc1")
-    fake.getAssociations.return_value = make_fake_collection([assoc])
-    package = RPPackage(fake)
-
-    result = package.get_associations()
-
-    assert isinstance(result, RPCollection)
 
 
 def test_package_get_events_returns_collection() -> None:

@@ -42,9 +42,9 @@
 
 **Files:**
 - Modify: `tests/integration/models/elements/containment/test_model_project.py`
-- Modify: `src/rhapsody_cli/models/elements/containment/model_package.py` (flip checklist boxes; add rows for `getActivityDiagrams`, `deleteActivityDiagram`, which have none)
+- Modify: `src/rhapsody_cli/models/elements/containment/model_package.py` (flip checklist boxes)
 
-**Methods covered:** `add_activity_diagram`, `get_activity_diagrams`, `delete_activity_diagram`, `add_sequence_diagram`, `get_sequence_diagrams`, `delete_sequence_diagram`, `add_use_case_diagram`, `get_use_case_diagrams`, `delete_use_case_diagram`, `add_collaboration_diagram`, `get_collaboration_diagrams`, `delete_collaboration_diagram`, `add_component_diagram`, `get_component_diagrams`, `delete_component_diagram`, `add_deployment_diagram`, `get_deployment_diagrams`, `delete_deployment_diagram`, `add_object_model_diagram`, `get_object_model_diagrams`, `delete_object_model_diagram`, `add_statechart_diagram`, `add_timing_diagram`, `get_timing_diagrams`, `delete_timing_diagram`, `add_panel_diagram`, `get_panel_diagrams`, `delete_panel_diagram`, `get_behavioral_diagrams` (29 methods)
+**Methods covered:** `add_activity_diagram`, `add_sequence_diagram`, `get_sequence_diagrams`, `delete_sequence_diagram`, `add_use_case_diagram`, `get_use_case_diagrams`, `delete_use_case_diagram`, `add_collaboration_diagram`, `get_collaboration_diagrams`, `delete_collaboration_diagram`, `add_component_diagram`, `get_component_diagrams`, `delete_component_diagram`, `add_deployment_diagram`, `get_deployment_diagrams`, `delete_deployment_diagram`, `add_object_model_diagram`, `get_object_model_diagrams`, `delete_object_model_diagram`, `add_statechart_diagram`, `add_timing_diagram`, `get_timing_diagrams`, `delete_timing_diagram`, `add_panel_diagram`, `get_panel_diagrams`, `delete_panel_diagram`, `get_behavioral_diagrams` (27 methods)
 
 - [ ] **Step 1: Write the failing/new integration tests**
 
@@ -57,13 +57,11 @@ def test_activity_diagram_lifecycle(self, test_project: RPProject) -> None:
     try:
         assert diagram is not None
         assert diagram.get_name() == diag_name
-        diagrams = list(pkg.get_activity_diagrams())
-        assert diagram in diagrams
         behavioral = list(pkg.get_behavioral_diagrams())
         assert diagram in behavioral
     finally:
-        pkg.delete_activity_diagram(diagram)
-        remaining = [d.get_name() for d in pkg.get_activity_diagrams()]
+        diagram.delete_from_project()
+        remaining = [d.get_name() for d in pkg.get_behavioral_diagrams()]
         assert diag_name not in remaining
 ```
 
@@ -76,7 +74,7 @@ Expected: PASS (or documented xfail)
 
 - [ ] **Step 3: Flip checklist boxes**
 
-In `src/rhapsody_cli/models/elements/containment/model_package.py`, flip the 27 existing rows to `[x] integration test` and add+flip new rows for `getActivityDiagrams` and `deleteActivityDiagram` (both `[x] impl [x] docstring [ ] unit test [x] integration test` — these two have no prior unit test coverage; do not fabricate a `[x]` for unit test).
+In `src/rhapsody_cli/models/elements/containment/model_package.py`, flip the 27 existing rows to `[x] integration test`.
 
 - [ ] **Step 4: Run quality gate**
 
@@ -95,9 +93,9 @@ git commit -m "test: add RPPackage diagram factory/getter/deleter integration te
 
 **Files:**
 - Modify: `tests/integration/models/elements/containment/test_model_project.py`
-- Modify: `src/rhapsody_cli/models/elements/containment/model_package.py` (flip checklist boxes; add row for `findNestedPackage`)
+- Modify: `src/rhapsody_cli/models/elements/containment/model_package.py` (flip checklist boxes)
 
-**Methods covered:** `delete_class`, `delete_actor`, `delete_use_case`, `find_class`, `find_actor`, `find_use_case`, `find_nested_package`, `delete_package`, `add_exception`, `get_enumerations` (10 methods)
+**Methods covered:** `delete_class`, `delete_actor`, `delete_use_case`, `find_class`, `find_actor`, `find_use_case`, `delete_package`, `add_exception`, `get_enumerations` (9 methods)
 
 - [ ] **Step 1: Write the failing/new integration tests**
 
@@ -116,7 +114,7 @@ def test_class_find_and_delete(self, test_project: RPProject) -> None:
     assert class_name not in classes
 ```
 
-For remaining methods in this task, follow the same established pattern: `find_actor`/`delete_actor` and `find_use_case`/`delete_use_case` mirror the class test shape exactly (create via `add_actor`/`add_use_case`, find by name, delete, assert absence from `get_actors`/`get_use_cases`). `find_nested_package`/`delete_package` follow the same shape using `add_nested_package`. `add_exception` should be tested as a plain create + `isinstance`/`get_name` check with `delete_from_project()` cleanup (no documented Rhapsody limitation exists for this one, unlike `add_signal`/`add_enumeration`/`add_interface`). `get_enumerations` should be tested as a read-only getter returning an (empty or non-empty) `RPCollection` without attempting to populate it (since `add_enumeration` is `xfail` elsewhere).
+For remaining methods in this task, follow the same established pattern: `find_actor`/`delete_actor` and `find_use_case`/`delete_use_case` mirror the class test shape exactly (create via `add_actor`/`add_use_case`, find by name, delete, assert absence from `get_actors`/`get_use_cases`). `delete_package` follows the same shape using `add_nested_package`. `add_exception` should be tested as a plain create + `isinstance`/`get_name` check with `delete_from_project()` cleanup (no documented Rhapsody limitation exists for this one, unlike `add_signal`/`add_enumeration`/`add_interface`). `get_enumerations` should be tested as a read-only getter returning an (empty or non-empty) `RPCollection` without attempting to populate it (since `add_enumeration` is `xfail` elsewhere).
 
 - [ ] **Step 2: Run the new tests against live Rhapsody**
 
@@ -125,7 +123,7 @@ Expected: PASS (or documented xfail if `add_exception` turns out to hit the same
 
 - [ ] **Step 3: Flip checklist boxes**
 
-In `model_package.py`, flip `deleteClass`, `deleteActor`, `deleteUseCase`, `findClass`, `findActor`, `findUseCase`, `deletePackage` to `[x] integration test`; add and flip a new row for `findNestedPackage`; add rows for `add_exception`/`addException` and `get_enumerations`/`getEnumerations` if missing (copy actual unit-test state).
+In `model_package.py`, flip `deleteClass`, `deleteActor`, `deleteUseCase`, `findClass`, `findActor`, `findUseCase`, `deletePackage` to `[x] integration test`; add rows for `add_exception`/`addException` and `get_enumerations`/`getEnumerations` if missing (copy actual unit-test state).
 
 - [ ] **Step 4: Run quality gate**
 
@@ -144,9 +142,9 @@ git commit -m "test: add RPPackage class/actor/usecase/package CRUD integration 
 
 **Files:**
 - Modify: `tests/integration/models/elements/containment/test_model_project.py`
-- Modify: `src/rhapsody_cli/models/elements/containment/model_package.py` (flip checklist boxes; add rows for `addAssociation`, `getAssociations`, `deleteAssociation`)
+- Modify: `src/rhapsody_cli/models/elements/containment/model_package.py` (flip checklist boxes; add row for `addAssociation`)
 
-**Methods covered:** `add_association`, `get_associations`, `delete_association`, `add_event`, `get_events`, `find_event`, `delete_event` (7 methods)
+**Methods covered:** `add_association`, `add_event`, `get_events`, `find_event`, `delete_event` (5 methods)
 
 - [ ] **Step 1: Write the failing/new integration tests**
 
@@ -159,12 +157,8 @@ def test_association_lifecycle(self, test_project: RPProject) -> None:
     try:
         assert assoc is not None
         assert assoc.get_name() == assoc_name
-        assocs = list(pkg.get_associations())
-        assert assoc in assocs
     finally:
-        pkg.delete_association(assoc)
-        remaining = [a.get_name() for a in pkg.get_associations()]
-        assert assoc_name not in remaining
+        assoc.delete_from_project()
 ```
 
 For remaining methods in this task, follow the same established pattern: `add_event`/`get_events`/`find_event`/`delete_event` follow the identical create → assert in getter → find by name → delete → assert absent shape used above for associations.
@@ -176,7 +170,7 @@ Expected: PASS
 
 - [ ] **Step 3: Flip checklist boxes**
 
-Add rows for `addAssociation`/`getAssociations`/`deleteAssociation` (no existing rows) and flip them plus `addEvent`, `getEvents`, `findEvent`, `deleteEvent` to `[x] integration test`.
+Add a row for `addAssociation` (no existing row) and flip it plus `addEvent`, `getEvents`, `findEvent`, `deleteEvent` to `[x] integration test`.
 
 - [ ] **Step 4: Run quality gate**
 

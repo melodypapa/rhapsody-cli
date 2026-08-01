@@ -107,6 +107,15 @@ States: *"`RPProject.add_collaboration(name)` (… defined in `model_project.py:
 
 ## 🟡 Wrappers that claim a Java API reference which doesn't exist (MEDIUM)
 
+> **✅ Status (2026-07-26): RESOLVED by removal.** All five wrapper methods (`get_activity_diagrams`,
+> `delete_activity_diagram`, `find_nested_package`, `get_associations`, `delete_association`) were
+> **deleted** from `model_package.py` along with their unit tests and the corresponding containment-plan
+> tasks, applying the same "no Java API backing → remove" rule used for Defects 1–2. Re-verified: the
+> cited COM methods remain absent from `IRPPackage.html`; every retained sibling (`addAssociation`,
+> `addActivityDiagram`, `addNestedPackage`, `deletePackage`, `getPackages`, `getBehavioralDiagrams`)
+> **is** present. `RPCollaboration.get_associations` is unrelated and retained (`getAssociations`
+> exists on `IRPCollaboration`).
+
 Five `RPPackage` wrappers reference `IRPPackage` methods that are **absent** from the Java API doc,
 while their sibling add/get methods **are** present — so the absence is not a doc artifact:
 
@@ -174,5 +183,5 @@ grep -rnE 'get_activity_diagrams|find_nested_package|get_associations|add_collab
 
 1. ✅ **Defect 3** (activity plan) — swapped `add_collaboration` → `add_new_aggr("Collaboration", …)` in the creation-chain note and the `RPActionBlock` test body.
 2. ✅ **Defects 1 & 2** (containment plan) — rewrote the collaboration task (`RPProject-B` + 3 `RPCollaboration-*` tasks) and the find/dirty tasks (`RPProject-C`, `RPProject-D`); removed the fabricated `get_is_dirty`/`set_dirty` and invented `find_by_name`/`find_by_meta_class`/`get_collaborations`/`find_collaboration` entirely.
-3. ⏳ **🟡 five `RPPackage` wrappers** — **OPEN**: need **live** Rhapsody confirmation; flip to `xfail(strict=False)` with a documented reason if they raise, and add the missing checklist rows so they're tracked.
+3. ✅ **🟡 five `RPPackage` wrappers** — **RESOLVED by removal** (see status note under the 🟡 heading above): all five methods, their unit tests, and the containment-plan tasks referencing them were deleted, since the cited `IRPPackage` methods are absent from the Java API doc.
 4. ✅ **Minor** — fixed the stale `get_new_collaboration` checklist row.
