@@ -273,17 +273,6 @@ class RPPackage(RPUnit):
         """
         return cast("RPUseCase", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addUseCase(name))))
 
-    def add_exception(self, name: str) -> RPModelElement:
-        """Adds a new exception to the package.
-
-        Args:
-            name: The name of the new exception.
-
-        Returns:
-            The wrapped exception element created.
-        """
-        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addException(name))))
-
     # --- Diagram adders (Pattern E) ---
     def add_activity_diagram(self, name: str) -> "RPActivityDiagram":
         """Adds a new activity diagram to the package.
@@ -426,17 +415,6 @@ class RPPackage(RPUnit):
         return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addPanelDiagram(name))))
 
     # --- Diagram getters (Pattern C) ---
-    def get_activity_diagrams(self) -> "RPCollection":
-        """Returns all activity diagrams contained in this package.
-
-        Returns:
-            An ``RPCollection`` of ``IRPActivityDiagram`` objects.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPPackage::getActivityDiagrams()
-        """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getActivityDiagrams", "activityDiagrams"))
-
     def get_sequence_diagrams(self) -> "RPCollection":
         """Returns all sequence diagrams contained in this package.
 
@@ -526,17 +504,6 @@ class RPPackage(RPUnit):
         return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getPanelDiagrams", "panelDiagrams"))
 
     # --- Diagram deleters (Pattern F) ---
-    def delete_activity_diagram(self, diagram: RPModelElement) -> None:
-        """Deletes an activity diagram from the package.
-
-        Args:
-            diagram: The activity diagram to delete.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPPackage::deleteActivityDiagram(com.telelogic.rhapsody.core.IRPActivityDiagram diagram)
-        """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteActivityDiagram(diagram._com))
-
     def delete_sequence_diagram(self, diagram: RPModelElement) -> None:
         """Deletes a sequence diagram from the package.
 
@@ -735,20 +702,6 @@ class RPPackage(RPUnit):
         """
         return cast("RPUseCase", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findUseCase(name))))
 
-    def find_nested_package(self, name: str) -> "RPPackage":
-        """Finds a nested package by name.
-
-        Args:
-            name: The name of the nested package to find.
-
-        Returns:
-            The wrapped ``IRPPackage`` if found, otherwise empty wrapper.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPPackage::findNestedPackage(java.lang.String name)
-        """
-        return cast("RPPackage", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findNestedPackage(name))))
-
     # --- Association methods ---
     def add_association(self, name: str) -> "RPRelation":  # type: ignore[override]
         """Adds a new association to the package.
@@ -763,28 +716,6 @@ class RPPackage(RPUnit):
             com.telelogic.rhapsody.core.IRPPackage::addAssociation(java.lang.String name)
         """
         return cast("RPRelation", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addAssociation(name))))
-
-    def get_associations(self) -> "RPCollection":
-        """Returns all associations contained in this package.
-
-        Returns:
-            An ``RPCollection`` of ``IRPRelation`` objects.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPPackage::getAssociations()
-        """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getAssociations", "associations"))
-
-    def delete_association(self, association: RPModelElement) -> None:
-        """Deletes an association from the package.
-
-        Args:
-            association: The association to delete.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPPackage::deleteAssociation(com.telelogic.rhapsody.core.IRPRelation association)
-        """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteAssociation(association._com))
 
     # --- Event methods ---
     def add_event(self, name: str) -> RPModelElement:

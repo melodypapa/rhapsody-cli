@@ -243,7 +243,7 @@ class ElementManagementAction(RhapsodyContextAction):
         Returns:
             The root model element of the active project.
         """
-        return self._get_active_project().get_root()
+        return self._get_active_project()
 
     def _resolve_container_or_element(self, root: RPModelElement, path: Optional[str], *, resolve_element: bool, operation: str = "resolve path") -> RPModelElement:
         """Resolve `path` to a container or element, mapping errors to CliExecutionError.
