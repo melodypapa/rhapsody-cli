@@ -148,30 +148,6 @@ def test_package_add_use_case_returns_wrapped_element() -> None:
     assert result.get_name() == "UC1"
 
 
-def test_package_add_exception_returns_wrapped_element() -> None:
-    fake = make_fake_element("Package")
-    exc = make_fake_element("Classifier", getName="Exception1")
-    fake.addException.return_value = exc
-    package = RPPackage(fake)
-
-    package.add_exception("Exception1")
-
-    fake.addException.assert_called_once_with("Exception1")
-
-
-def test_package_add_exception_returns_registered_wrapper() -> None:
-    from rhapsody_cli.models.elements.classifiers import RPException
-
-    fake = make_fake_element("Package")
-    exc = make_fake_element("Exception", getName="Exception1")
-    fake.addException.return_value = exc
-    package = RPPackage(fake)
-
-    result = package.add_exception("Exception1")
-
-    assert isinstance(result, RPException)
-
-
 # --- New diagram tests ---
 def test_package_add_activity_diagram_delegates_to_com() -> None:
     fake = make_fake_element("Package")

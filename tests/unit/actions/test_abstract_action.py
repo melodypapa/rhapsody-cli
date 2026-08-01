@@ -119,18 +119,15 @@ class TestElementManagementActionGetActiveRoot:
     """Test the _get_active_root() helper."""
 
     def test_get_active_root_returns_root_of_active_project(self) -> None:
-        """_get_active_root() should return whatever project.getRoot() yields."""
+        """_get_active_root() returns the active project, which is the model root (no separate getRoot in the Java API)."""
         action = _FakeElementAction(command_id="fake")
-        fake_root = Mock(name="root")
         fake_project = Mock(name="project")
-        fake_project.get_root.return_value = fake_root
         # Bypass the real _get_active_project (which hits RhapsodyContext).
         action._get_active_project = lambda: fake_project  # type: ignore[method-assign]
 
         result = action._get_active_root()
 
-        assert result is fake_root
-        fake_project.get_root.assert_called_once_with()
+        assert result is fake_project
 
 
 class TestElementManagementActionGetActiveProject:

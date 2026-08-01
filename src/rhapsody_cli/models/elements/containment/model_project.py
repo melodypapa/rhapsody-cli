@@ -159,14 +159,6 @@ class RPProject(RPPackage):
         """
         return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getPackages", "packages"))
 
-    def get_root(self) -> "RPProject":
-        """Returns the root project element.
-
-        Returns:
-            The project itself, which acts as the root container.
-        """
-        return self
-
     def add_class(self, name: str) -> "RPClass":
         """Adds a new class to the project's top level.
 

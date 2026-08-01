@@ -273,17 +273,6 @@ class RPPackage(RPUnit):
         """
         return cast("RPUseCase", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addUseCase(name))))
 
-    def add_exception(self, name: str) -> RPModelElement:
-        """Adds a new exception to the package.
-
-        Args:
-            name: The name of the new exception.
-
-        Returns:
-            The wrapped exception element created.
-        """
-        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addException(name))))
-
     # --- Diagram adders (Pattern E) ---
     def add_activity_diagram(self, name: str) -> "RPActivityDiagram":
         """Adds a new activity diagram to the package.
