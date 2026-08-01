@@ -95,7 +95,7 @@ git commit -m "test: add RPPackage diagram factory/getter/deleter integration te
 - Modify: `tests/integration/models/elements/containment/test_model_project.py`
 - Modify: `src/rhapsody_cli/models/elements/containment/model_package.py` (flip checklist boxes)
 
-**Methods covered:** `delete_class`, `delete_actor`, `delete_use_case`, `find_class`, `find_actor`, `find_use_case`, `delete_package`, `get_enumerations` (8 methods)
+**Methods covered:** `delete_class`, `delete_actor`, `delete_use_case`, `find_class`, `find_actor`, `find_use_case`, `delete_package` (7 methods)
 
 - [ ] **Step 1: Write the failing/new integration tests**
 
@@ -114,16 +114,16 @@ def test_class_find_and_delete(self, test_project: RPProject) -> None:
     assert class_name not in classes
 ```
 
-For remaining methods in this task, follow the same established pattern: `find_actor`/`delete_actor` and `find_use_case`/`delete_use_case` mirror the class test shape exactly (create via `add_actor`/`add_use_case`, find by name, delete, assert absence from `get_actors`/`get_use_cases`). `delete_package` follows the same shape using `add_nested_package`. `get_enumerations` should be tested as a read-only getter returning an (empty or non-empty) `RPCollection` without attempting to populate it (since `add_enumeration` is `xfail` elsewhere).
+For remaining methods in this task, follow the same established pattern: `find_actor`/`delete_actor` and `find_use_case`/`delete_use_case` mirror the class test shape exactly (create via `add_actor`/`add_use_case`, find by name, delete, assert absence from `get_actors`/`get_use_cases`). `delete_package` follows the same shape using `add_nested_package`.
 
 - [ ] **Step 2: Run the new tests against live Rhapsody**
 
-Run: `pytest tests/integration/models/elements/containment/test_model_project.py -m integration -v -k "Class or Actor or UseCase or Package or Enumeration"`
+Run: `pytest tests/integration/models/elements/containment/test_model_project.py -m integration -v -k "Class or Actor or UseCase or Package"`
 Expected: PASS
 
 - [ ] **Step 3: Flip checklist boxes**
 
-In `model_package.py`, flip `deleteClass`, `deleteActor`, `deleteUseCase`, `findClass`, `findActor`, `findUseCase`, `deletePackage` to `[x] integration test`; add rows for `get_enumerations`/`getEnumerations` if missing (copy actual unit-test state).
+In `model_package.py`, flip `deleteClass`, `deleteActor`, `deleteUseCase`, `findClass`, `findActor`, `findUseCase`, `deletePackage` to `[x] integration test`.
 
 - [ ] **Step 4: Run quality gate**
 
