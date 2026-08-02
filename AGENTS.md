@@ -40,6 +40,22 @@ pytest -k "test_foo"                  # pattern match
 
 Write failing test first, then implement. Coverage target 80% min, 90%+ preferred.
 
+## Integration Test Scope Rules
+
+Each file under `tests/integration/models/elements/` targets **exactly one wrapper class** and asserts only on methods that class **owns**. Parent-class methods are **setup only**, never the subject of an assertion.
+
+**Why:** `RPModelElement` methods (`get_name`, `get_meta_class`, `get_owner`, `delete_from_project`) and `RPClassifier` methods (`add_attribute`, `add_operation`, `add_relation_to`, `add_statechart`, …) are already covered in `test_core.py` and `test_model_classifier.py`. Re-testing them in a child's file is noise and hides the child's own (often untested) methods.
+
+**Rules:**
+
+1. Before writing a test, read the model module's checklist. Assert only on methods **not** marked `[inherited]`.
+2. Build the fixture with parent methods; the assertion block calls only own-class methods. Reference pattern: `test_model_association_class.py` — uses `add_relation_to` (an `RPClassifier` method) to build the fixture, then asserts on `RPAssociationClass`'s own four methods (`get_end1`/`get_end2`/`get_is_class`/`set_is_class`).
+3. If the class **redefines** an inherited method with a different signature/return type (e.g. `RPActor.get_is_behavior_overriden()` → `bool` vs `RPClass.get_is_behavior_overriden()` → `int`; `RPActor.update_contained_diagrams_on_server()` no-arg vs `RPClass` takes `int`), the test must assert the **child's** contract so it would fail if it resolved to the parent's override (e.g. `assert x is False`, not `assert x == 0`).
+4. Testing an abstract base via a concrete subclass is fine (e.g. `RPInterfaceItem` via `RPOperation`) — but assert the base's methods, not the subclass's overrides.
+5. Pure creation/navigation smoke tests (only `get_name`/`get_meta_class`/`get_owner` + a parent `add_*`) belong in `test_core.py`, not a child element file.
+
+**Offline verification (no Rhapsody available):** `pytest <file> --collect-only -q` proves imports/syntax; live execution is CI-only on `windows-latest`. See `docs/superpowers/plans/2026-08-02-integration-test-own-methods-focus.md` for the audit + cleanup pass that established these rules.
+
 ## Quality Gate
 
 ```bash
