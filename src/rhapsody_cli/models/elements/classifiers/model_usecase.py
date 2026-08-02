@@ -36,7 +36,7 @@ class RPUseCase(RPClassifier):
     # [x] get_entry_points  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] get_extension_points  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [ ] get_is_behavior_overriden  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] set_is_behavior_overriden  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] set_is_behavior_overriden (unimplemented -- raises NotImplementedError; getter works via COM)  [ ] impl  [x] docstring  [x] unit test  [x] integration test
     # [ ] update_contained_diagrams_on_server  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [inherited] irp_classifier / irp_unit / irp_model_element methods (covered by rp_classifier / rp_unit / rp_model_element checklists)
     # No deprecated IRPUseCase methods.
@@ -215,10 +215,23 @@ class RPUseCase(RPClassifier):
         Args:
             is_overriden: ``1`` to mark as overridden, ``0`` otherwise.
 
+        Raises:
+            NotImplementedError: Always. Under Rhapsody2.Application.1 the
+                ``setIsBehaviorOverriden`` method is not exposed in the COM
+                automation type library for use cases (the getter
+                ``getIsBehaviorOverriden`` is exposed and works; the sibling
+                ``RPActor``/``RPClass`` versions of this setter *are* exposed).
+                Marked unimplemented rather than failing with a raw COM
+                ``AttributeError`` at runtime.
+
         Reference:
             com.telelogic.rhapsody.core.IRPUseCase::setIsBehaviorOverriden(int isBehaviorOverriden)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setIsBehaviorOverriden(is_overriden))
+        raise NotImplementedError(
+            "RPUseCase.set_is_behavior_overriden is unimplemented: setIsBehaviorOverriden is not exposed in the "
+            "Rhapsody COM automation type library for UseCase (get_is_behavior_overriden works). See docstring for "
+            "details."
+        )
 
     def update_contained_diagrams_on_server(self) -> None:
         """Updates the contained diagrams on the server.

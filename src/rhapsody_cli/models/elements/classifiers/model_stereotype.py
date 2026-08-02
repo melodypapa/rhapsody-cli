@@ -18,7 +18,7 @@ class RPStereotype(RPClassifier):
     # [ ] get_is_new_term  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] get_of_meta_class  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] remove_meta_class  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] set_is_new_term  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] set_is_new_term (unimplemented -- raises NotImplementedError; getter works via COM)  [ ] impl  [x] docstring  [x] unit test  [x] integration test
     # [inherited] irp_classifier / irp_unit / irp_model_element methods (covered by rp_classifier / rp_unit / rp_model_element checklists)
     # No deprecated IRPStereotype methods.
 
@@ -83,10 +83,19 @@ class RPStereotype(RPClassifier):
         Args:
             is_new_term: ``1`` to mark as new term, ``0`` otherwise.
 
+        Raises:
+            NotImplementedError: Always. Under Rhapsody2.Application.1 the
+                ``setIsNewTerm`` method is not exposed in the COM automation
+                type library for stereotypes (the getter ``getIsNewTerm`` is
+                exposed and works). Marked unimplemented rather than failing
+                with a raw COM ``AttributeError`` at runtime.
+
         Reference:
             com.telelogic.rhapsody.core.IRPStereotype::setIsNewTerm(int isNewTerm)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setIsNewTerm(is_new_term))
+        raise NotImplementedError(
+            "RPStereotype.set_is_new_term is unimplemented: setIsNewTerm is not exposed in the " "Rhapsody COM automation type library (get_is_new_term works). See docstring for details."
+        )
 
 
 AbstractRPModelElement.register_wrapper("Stereotype", RPStereotype)
