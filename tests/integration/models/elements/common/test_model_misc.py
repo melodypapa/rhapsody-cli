@@ -2,6 +2,7 @@ import uuid
 
 import pytest
 
+from rhapsody_cli.models.core import RPCollection
 from rhapsody_cli.models.elements.common import RPComment, RPConstraint
 from rhapsody_cli.models.elements.containment import RPPackage, RPProject
 
@@ -58,5 +59,18 @@ class TestRPConstraintIntegration:
             assert isinstance(constraint, RPConstraint)
             assert constraint.get_name() == con_name
             assert constraint.get_meta_class() == "Constraint"
+        finally:
+            constraint.delete_from_project()
+
+    def test_get_constraints_by_me_returns_collection(self, test_project: RPProject) -> None:
+        pkg_name = self._unique("ConPkg")
+        con_name = self._unique("MyConstraint")
+        pkg = self._create_package(test_project, pkg_name)
+        constraint = pkg.add_new_aggr("Constraint", con_name)
+        assert isinstance(constraint, RPConstraint)
+        try:
+            result = constraint.get_constraints_by_me()
+            assert isinstance(result, RPCollection)
+            assert isinstance(result.get_count(), int)
         finally:
             constraint.delete_from_project()
