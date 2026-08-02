@@ -870,7 +870,6 @@ class TestRPModelElementNavigationIntegration:
         assert isinstance(pkg, RPPackage)
         return pkg
 
-    @pytest.mark.xfail(strict=False, reason="TODO: find_nested_element may not handle missing elements correctly")
     def test_find_nested_element(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("NavPkg"))
         try:
@@ -882,19 +881,20 @@ class TestRPModelElementNavigationIntegration:
             assert found.get_name() == class_name
 
             not_found = pkg.find_nested_element(self._unique("Missing"), "Class")
-            assert not_found is not None and not_found.get_name() == ""
+            # Rhapsody findNestedElement returns None (not an empty-name element) when no match.
+            assert not_found is None
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="TODO: find_nested_element_recursive may not traverse all levels correctly")
     def test_find_nested_element_recursive(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("RecPkg"))
         try:
-            subpkg = pkg.add_package(self._unique("SubPkg"))  # type: ignore[attr-defined]
+            subpkg = pkg.add_nested_package(self._unique("SubPkg"))
             class_name = self._unique("DeepCls")
             subpkg.add_class(class_name)
             not_found = pkg.find_nested_element(class_name, "Class")
-            assert not_found is not None and not_found.get_name() == ""
+            # The class is nested one level down, so first-level search returns None.
+            assert not_found is None
             found = pkg.find_nested_element_recursive(class_name, "Class")
             assert found is not None
             assert isinstance(found, RPModelElement)
@@ -977,11 +977,10 @@ class TestRPModelElementNavigationIntegration:
             pkg2.delete_from_project()
             pkg1.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="TODO: has_nested_elements may not return accurate count after element addition")
     def test_has_nested_elements(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("HasNestPkg"))
         try:
-            empty_pkg = pkg.add_package(self._unique("EmptyPkg"))  # type: ignore[attr-defined]
+            empty_pkg = pkg.add_nested_package(self._unique("EmptyPkg"))
             assert empty_pkg.has_nested_elements() == 0
             assert isinstance(empty_pkg.has_nested_elements(), int)
             empty_pkg.add_class(self._unique("SomeCls"))
@@ -1850,13 +1849,12 @@ class TestRPUnitCrossProjectIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="TODO: get_nested_save_units_count may not match actual collection count")
     def test_get_nested_save_units_count_matches_collection(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("NestPkg"))
         try:
             assert isinstance(pkg, RPUnit)
             pkg.save()
-            sub_pkg = pkg.add_package(self._unique("SubPkg"))  # type: ignore[attr-defined]
+            sub_pkg = pkg.add_nested_package(self._unique("SubPkg"))
             sub_pkg.set_separate_save_unit(1)
             sub_pkg.save()
 
