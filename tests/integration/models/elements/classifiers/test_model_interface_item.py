@@ -80,7 +80,7 @@ class TestRPInterfaceItemIntegration:
         finally:
             test_class.delete_from_project()
 
-    @pytest.mark.xfail(reason="matchOnSignature COM method always returns 0 in this Rhapsody build", strict=False)
+    @pytest.mark.xfail(reason="Rhapsody COM defect: IRPInterfaceItem.matchOnSignature always returns 0 in this build", strict=False)
     def test_match_on_signature(self, test_project: RPProject) -> None:
         pkg_name = self._unique("MatchPkg")
         class_name = self._unique("MatchCls")

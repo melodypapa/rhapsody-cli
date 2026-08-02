@@ -281,7 +281,7 @@ class TestRPClassIntegration:
         finally:
             test_class.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="setIsFinal COM property does not persist in this Rhapsody build (same limitation as setIsAbstract)")
+    @pytest.mark.xfail(strict=False, reason="Rhapsody COM defect: IRPClass.setIsFinal does not persist (get returns 0) — same limitation as setIsAbstract")
     def test_is_final_roundtrip(self, test_project: RPProject) -> None:
         pkg_name = self._unique("FinalPkg")
         class_name = self._unique("FinalCls")
@@ -306,7 +306,7 @@ class TestRPClassIntegration:
         finally:
             test_class.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="requires RMM/DM server connection not available in test environment")
+    @pytest.mark.xfail(strict=False, reason="IRPClass COM dispatch does not expose updateContainedDiagramsOnServer (AttributeError) though declared in the Java API")
     def test_update_contained_diagrams_on_server(self, test_project: RPProject) -> None:
         pkg_name = self._unique("SrvPkg")
         class_name = self._unique("SrvCls")

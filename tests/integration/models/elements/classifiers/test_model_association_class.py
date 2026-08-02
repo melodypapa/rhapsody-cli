@@ -35,7 +35,7 @@ class TestRPAssociationClassIntegration:
         assert pkg is not None and isinstance(pkg, RPPackage)
         return pkg
 
-    @pytest.mark.xfail(strict=False, reason="addRelationTo(linkName) does not create AssociationClass in this Rhapsody COM build")
+    @pytest.mark.xfail(strict=False, reason="Rhapsody COM defect: addRelationTo creates a plain Association, not an AssociationClass")
     def test_association_class_found_via_package(self, test_project: RPProject) -> None:
         pkg_name = self._unique("AssocPkg")
         class_a_name = self._unique("ClassA")

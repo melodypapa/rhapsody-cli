@@ -143,7 +143,7 @@ class TestRPCollectionMutationMethodsIntegration:
         assert isinstance(pkg, RPPackage)
         return pkg
 
-    @pytest.mark.xfail(reason="addGraphicalItem is only supported by IRPSelection, not generic IRPCollection from createNewCollection()")
+    @pytest.mark.xfail(reason="IRPCollection does not expose metaClass and addNewNodeForElement is on IRPSelection, not a generic collection (AttributeError)")
     def test_add_graphical_item_appends_and_count_increases(self, test_project: RPProject, rhapsody_app: RhapsodyApplication) -> None:
         pkg = self._create_package(test_project, self._unique("GfxItemPkg"))
         try:
@@ -541,7 +541,7 @@ class TestRPModelElementStereotypesTagsIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="Requires stereotype with tag definition")
+    @pytest.mark.xfail(strict=False, reason="fixture gap: get_tag returns None because no tag definition is created on the stereotype (no wrapper method to add one)")
     def test_get_tag(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("GetTagTestPkg"))
         try:
@@ -554,12 +554,12 @@ class TestRPModelElementStereotypesTagsIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="New term stereotype not available on base project")
+    @pytest.mark.xfail(strict=False, reason="fixture gap: project has no new-term stereotype; get_new_term_stereotype returns None")
     def test_get_new_term_stereotype(self, test_project: RPProject) -> None:
         stereotypes = test_project.get_new_term_stereotype()
         assert stereotypes is not None
 
-    @pytest.mark.xfail(strict=False, reason="Requires stereotype with tag definition")
+    @pytest.mark.xfail(strict=False, reason="fixture gap: depends on get_tag('SomeTag') which returns None (no tag definition created)")
     def test_set_tag_value(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("SetTagValTestPkg"))
         try:
@@ -574,7 +574,7 @@ class TestRPModelElementStereotypesTagsIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="Requires stereotype with tag definition")
+    @pytest.mark.xfail(strict=False, reason="fixture gap: depends on get_tag('SomeTag') which returns None (no tag definition created)")
     def test_set_tag_element_value(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("SetTagElemTestPkg"))
         try:
@@ -589,7 +589,7 @@ class TestRPModelElementStereotypesTagsIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="Requires stereotype with tag definition")
+    @pytest.mark.xfail(strict=False, reason="fixture gap: depends on get_tag('SomeTag') which returns None (no tag definition created)")
     def test_set_tag_context_value(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("SetTagCtxTestPkg"))
         try:
@@ -685,7 +685,7 @@ class TestRPModelElementDescriptionDisplayNameIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="TODO: set_description_and_hyperlinks COM call not reliable across Rhapsody versions")
+    @pytest.mark.xfail(strict=False, reason="IRPModelElement.setDescriptionAndHyperlinks raises E_INVALIDARG (0x80070057) — argument type mismatch")
     def test_set_description_and_hyperlinks(self, test_project: RPProject, rhapsody_app: RhapsodyApplication) -> None:
         pkg = self._create_package(test_project, self._unique("HyperlinkPkg"))
         try:
@@ -755,7 +755,7 @@ class TestRPModelElementPropertiesIntegration:
         assert isinstance(pkg, RPPackage)
         return pkg
 
-    @pytest.mark.xfail(strict=False, reason="TODO: property API may not be available on all element types")
+    @pytest.mark.xfail(strict=False, reason="IRPModelElement.addProperty raises HRESULT 0x80040002 for unregistered property keys (e.g. 'Custom::X')")
     def test_add_property_and_get_property_value(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("AddPropPkg"))
         try:
@@ -768,7 +768,7 @@ class TestRPModelElementPropertiesIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="TODO: property API may not be available on all element types")
+    @pytest.mark.xfail(strict=False, reason="IRPModelElement.setPropertyValue raises HRESULT 0x80040002 for key 'General::Graphics::ShowLabels'")
     def test_set_property_value_and_read_back(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("SetPropPkg"))
         try:
@@ -779,7 +779,7 @@ class TestRPModelElementPropertiesIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="TODO: remove_property may not work as expected on all element types")
+    @pytest.mark.xfail(strict=False, reason="IRPModelElement.addProperty raises HRESULT 0x80040002 for unregistered property keys")
     def test_add_then_remove_property(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("RemPropPkg"))
         try:
@@ -795,7 +795,7 @@ class TestRPModelElementPropertiesIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="TODO: get_property_value_explicit may not work as expected")
+    @pytest.mark.xfail(strict=False, reason="blocked on setPropertyValue setup step which raises HRESULT 0x80040002")
     def test_get_property_value_explicit(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("PropExpPkg"))
         try:
@@ -806,7 +806,7 @@ class TestRPModelElementPropertiesIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="TODO: get_overridden_properties may return unexpected results")
+    @pytest.mark.xfail(strict=False, reason="blocked on setPropertyValue setup step which raises HRESULT 0x80040002")
     def test_get_overridden_properties(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("OvPropPkg"))
         try:
@@ -818,7 +818,7 @@ class TestRPModelElementPropertiesIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="TODO: get_overridden_properties_by_pattern may not match expected results")
+    @pytest.mark.xfail(strict=False, reason="blocked on setPropertyValue setup step which raises HRESULT 0x80040002")
     def test_get_overridden_properties_by_pattern(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("OvPropPatPkg"))
         try:
@@ -830,7 +830,7 @@ class TestRPModelElementPropertiesIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="TODO: get_property_value_conditional requires context validation")
+    @pytest.mark.xfail(strict=False, reason="blocked on setPropertyValue setup step which raises HRESULT 0x80040002")
     def test_get_property_value_conditional(self, test_project: RPProject, rhapsody_app: RhapsodyApplication) -> None:
         pkg = self._create_package(test_project, self._unique("CondPkg"))
         try:
@@ -842,7 +842,7 @@ class TestRPModelElementPropertiesIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="TODO: get_property_value_conditional_explicit requires context validation")
+    @pytest.mark.xfail(strict=False, reason="blocked on setPropertyValue setup step which raises HRESULT 0x80040002")
     def test_get_property_value_conditional_explicit(self, test_project: RPProject, rhapsody_app: RhapsodyApplication) -> None:
         pkg = self._create_package(test_project, self._unique("CondExpPkg"))
         try:
@@ -1019,7 +1019,7 @@ class TestRPModelElementCloningTemplatesIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="TODO: change_to may not work for all meta class conversions")
+    @pytest.mark.xfail(strict=False, reason="IRPModelElement.changeTo raises HRESULT 0x8004000A (invalid meta-class conversion)")
     def test_change_to(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("ChangePkg"))
         try:
@@ -1043,7 +1043,7 @@ class TestRPModelElementCloningTemplatesIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="TODO: get_of_template may not work correctly on plain elements")
+    @pytest.mark.xfail(strict=False, reason="IRPModelElement.getOfTemplate returns None for a plain (non-instantiated) element; test assumption is wrong")
     def test_get_of_template_on_plain_element(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("OfTemplPkg"))
         try:
@@ -1055,7 +1055,7 @@ class TestRPModelElementCloningTemplatesIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="Template instantiation API may not be available")
+    @pytest.mark.xfail(strict=False, reason="IRPModelElement.becomeTemplateInstantiationOf raises E_FAIL (0x80004005) without an existing template to bind to")
     def test_become_template_instantiation_of(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("TemplInstPkg"))
         try:
@@ -1068,7 +1068,7 @@ class TestRPModelElementCloningTemplatesIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="Template parameter API may not be available")
+    @pytest.mark.xfail(strict=False, reason="blocked on becomeTemplateInstantiationOf setup step which raises E_FAIL (0x80004005)")
     def test_set_of_template(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("SetOfTemplPkg"))
         try:
@@ -1105,7 +1105,7 @@ class TestRPModelElementCloningTemplatesIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="Template instantiation API may not be available")
+    @pytest.mark.xfail(strict=False, reason="blocked on becomeTemplateInstantiationOf setup step which raises E_FAIL (0x80004005)")
     def test_set_ti(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("SetTiPkg"))
         try:
@@ -1121,7 +1121,7 @@ class TestRPModelElementCloningTemplatesIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="Template instantiation API may not be available")
+    @pytest.mark.xfail(strict=False, reason="blocked on becomeTemplateInstantiationOf setup step which raises E_FAIL (0x80004005)")
     def test_synchronize_template_instantiation(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("SyncTemplPkg"))
         try:
@@ -1149,7 +1149,7 @@ class TestRPModelElementRedefinesConstraintsIntegration:
         assert isinstance(pkg, RPPackage)
         return pkg
 
-    @pytest.mark.xfail(strict=False, reason="TODO: add_redefines relationship may not persist across all Rhapsody versions")
+    @pytest.mark.xfail(strict=False, reason="IRPModelElement.addRedefines raises E_FAIL (0x80004005); requires a redefinable operation in a specialization context")
     def test_add_redefines_and_get_redefines(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("RedefPkg"))
         try:
@@ -1166,7 +1166,7 @@ class TestRPModelElementRedefinesConstraintsIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="TODO: remove_redefines may not work correctly on all element types")
+    @pytest.mark.xfail(strict=False, reason="blocked on addRedefines setup step which raises E_FAIL (0x80004005)")
     def test_remove_redefines(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("RemRedefPkg"))
         try:
@@ -1270,7 +1270,7 @@ class TestRPModelElementOslcRemoteIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="TODO: get_rmm_url may require RMM configuration")
+    @pytest.mark.xfail(strict=False, reason="IRPModelElement.rmmUrl property not exposed via COM dispatch (AttributeError: addClass.rmmUrl)")
     def test_get_rmm_url_returns_empty_string(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("RmmUrlPkg"))
         try:
@@ -1342,7 +1342,7 @@ class TestRPModelElementMetadataIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="TODO: get_is_of_meta_class may not work correctly on all element types")
+    @pytest.mark.xfail(strict=False, reason="IRPModelElement.getIsOfMetaClass not exposed via COM dispatch (AttributeError: addClass.getIsOfMetaClass)")
     def test_get_is_of_meta_class_class(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("IsOfPkg"))
         try:
@@ -1407,7 +1407,7 @@ class TestRPModelElementMetadataIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="TODO: get_user_defined_meta_class may return unexpected empty string")
+    @pytest.mark.xfail(strict=False, reason="IRPModelElement.getUserDefinedMetaClass returns 'Class' (the metaclass), not '' for a plain element; semantics differ from the test assumption")
     def test_get_user_defined_meta_class(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("UdmcPkg"))
         try:
@@ -1428,7 +1428,10 @@ class TestRPModelElementMetadataIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="TODO: set_guid/get_guid roundtrip may not work on all element types")
+    @pytest.mark.xfail(
+        strict=False,
+        reason="IRPModelElement.setGUID does not change getGUID output; getGUID returns Rhapsody's internal " "'GUID <hex>' format, not the registry format passed to setGUID",
+    )
     def test_set_guid_and_get_guid(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("GuidPkg"))
         try:
@@ -1543,7 +1546,7 @@ class TestRPModelElementDiagnosticsUiIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="TODO: get_main_diagram/set_main_diagram may not work as expected")
+    @pytest.mark.xfail(strict=False, reason="IRPModelElement.addNewAggr raises HRESULT 0x80040009")
     def test_get_main_diagram_and_set_main_diagram_roundtrip(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("DiagPkg"))
         try:
@@ -1652,7 +1655,7 @@ class TestRPUnitPersistenceIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="TODO: get_unit_path may not handle full/relative paths correctly")
+    @pytest.mark.xfail(strict=False, reason="IRPUnit.getUnitPath not exposed on IRPPackage via COM (AttributeError: addPackage.getUnitPath); package must be a separate save unit")
     def test_get_unit_path_full_and_relative(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("UnitPathPkg"))
         try:
@@ -1668,7 +1671,7 @@ class TestRPUnitPersistenceIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="TODO: set_unit_path/get_unit_path may not persist path changes")
+    @pytest.mark.xfail(strict=False, reason="IRPUnit.getUnitPath not exposed on IRPPackage via COM (AttributeError: addPackage.getUnitPath); package must be a separate save unit")
     def test_set_and_get_unit_path_roundtrip(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("SetUnitPathPkg"))
         try:
@@ -1703,7 +1706,7 @@ class TestRPUnitPersistenceIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="TODO: load/unload may not work reliably on all element types")
+    @pytest.mark.xfail(strict=False, reason="IRPModelElement.deleteFromProject raises HRESULT 0x80040001 during the load/unload sequence")
     def test_load_and_unload_roundtrip(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("LoadPkg"))
         try:
@@ -1777,7 +1780,7 @@ class TestRPUnitCmStateIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="TODO: get_is_stub may not reflect unload state correctly")
+    @pytest.mark.xfail(strict=False, reason="blocked on deleteFromProject during unload which raises HRESULT 0x80040001")
     def test_get_is_stub_after_unload(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("StubPkg"))
         try:
