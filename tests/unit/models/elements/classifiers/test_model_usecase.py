@@ -1,5 +1,7 @@
 """Tests for rhapsody_cli.elements.usecase.RPUseCase."""
 
+import pytest
+
 from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.classifiers import RPClassifier, RPUseCase
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
@@ -62,3 +64,15 @@ def test_usecase_is_registered_for_meta_class_usecase() -> None:
     wrapped = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, RPUseCase)
+
+
+def test_usecase_set_is_behavior_overriden_raises_not_implemented() -> None:
+    """RPUseCase.set_is_behavior_overriden raises NotImplementedError: setIsBehaviorOverriden
+    is not exposed in the Rhapsody COM automation type library for UseCase (get works)."""
+    fake = make_fake_element("UseCase")
+    usecase = RPUseCase(fake)
+
+    with pytest.raises(NotImplementedError):
+        usecase.set_is_behavior_overriden(1)
+
+    fake.setIsBehaviorOverriden.assert_not_called()

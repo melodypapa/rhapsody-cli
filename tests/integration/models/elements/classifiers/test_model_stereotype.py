@@ -2,15 +2,16 @@
 
 Scope: only methods that RPStereotype owns (IRPStereotype::addMetaClass,
 removeMetaClass, getOfMetaClass, getIcon, getIsNewTerm, setIsNewTerm).
-``add_stereotype`` (an IRPModelElement method) is used only to create the
-fixture; its behaviour is covered by test_core.py.
+The stereotype fixture is created on a class via ``add_stereotype`` (an
+IRPModelElement method) — its behaviour is covered by test_core.py.
 """
 
 import uuid
+from typing import Tuple
 
 import pytest
 
-from rhapsody_cli.models.elements.classifiers import RPStereotype
+from rhapsody_cli.models.elements.classifiers import RPClass, RPStereotype
 from rhapsody_cli.models.elements.containment import RPPackage, RPProject
 
 
@@ -28,14 +29,23 @@ class TestRPStereotypeIntegration:
         assert pkg is not None and isinstance(pkg, RPPackage)
         return pkg
 
+    def _create_stereotype(self, pkg: RPPackage, stereo_name: str) -> Tuple[RPClass, RPStereotype]:
+        # addStereotype(name, "Class") succeeds when applied to a Class element; applying a
+        # "Class"-scoped stereotype directly to a Package raises a COM error in this build.
+        # The owning class is returned so cleanup can delete it before the stereotype
+        # (a stereotype cannot be delete_from_project'd while still applied to a class).
+        test_class = pkg.add_class(self._unique("SterCls"))
+        stereotype = test_class.add_stereotype(stereo_name, "Class")
+        assert isinstance(stereotype, RPStereotype)
+        return test_class, stereotype
+
     def test_meta_class_add_get_remove(self, test_project: RPProject) -> None:
         pkg_name = self._unique("SterPkg")
         stereo_name = self._unique("MyStereotype")
         pkg = self._create_package(test_project, pkg_name)
-        stereotype = pkg.add_stereotype(stereo_name, "Class")
+        test_class, stereotype = self._create_stereotype(pkg, stereo_name)
         try:
-            assert isinstance(stereotype, RPStereotype)
-            # Created for "Class"; adding another applicable metaclass should grow the list.
+            # Created scoped to "Class"; adding another applicable metaclass should grow the list.
             before = stereotype.get_of_meta_class()
             assert isinstance(before, str)
             stereotype.add_meta_class("Attribute")
@@ -45,29 +55,32 @@ class TestRPStereotypeIntegration:
             after_remove = stereotype.get_of_meta_class()
             assert "Attribute" not in after_remove
         finally:
+            test_class.delete_from_project()
             stereotype.delete_from_project()
 
-    def test_is_new_term_roundtrip(self, test_project: RPProject) -> None:
+    def test_set_is_new_term_raises_not_implemented(self, test_project: RPProject) -> None:
+        # setIsNewTerm is not exposed in the COM automation type library for stereotypes
+        # (getIsNewTerm is), so the wrapper raises NotImplementedError — mirrors RPClass.set_is_abstract.
         pkg_name = self._unique("SterPkg")
         stereo_name = self._unique("MyStereotype")
         pkg = self._create_package(test_project, pkg_name)
-        stereotype = pkg.add_stereotype(stereo_name, "Class")
+        test_class, stereotype = self._create_stereotype(pkg, stereo_name)
         try:
             assert stereotype.get_is_new_term() in (0, 1)
-            stereotype.set_is_new_term(1)
-            assert stereotype.get_is_new_term() == 1
-            stereotype.set_is_new_term(0)
-            assert stereotype.get_is_new_term() == 0
+            with pytest.raises(NotImplementedError, match="setIsNewTerm is not exposed"):
+                stereotype.set_is_new_term(1)
         finally:
+            test_class.delete_from_project()
             stereotype.delete_from_project()
 
     def test_get_icon_is_string(self, test_project: RPProject) -> None:
         pkg_name = self._unique("SterPkg")
         stereo_name = self._unique("MyStereotype")
         pkg = self._create_package(test_project, pkg_name)
-        stereotype = pkg.add_stereotype(stereo_name, "Class")
+        test_class, stereotype = self._create_stereotype(pkg, stereo_name)
         try:
             icon = stereotype.get_icon()
             assert isinstance(icon, str)
         finally:
+            test_class.delete_from_project()
             stereotype.delete_from_project()
