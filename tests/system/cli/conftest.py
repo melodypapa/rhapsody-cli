@@ -15,6 +15,7 @@ from typing import Any, Generator
 import pytest
 
 from rhapsody_cli import RhapsodyApplication
+from rhapsody_cli.session import SessionManager
 
 
 def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
@@ -80,8 +81,13 @@ def cli_connection() -> Generator[None, None, None]:
     result = _run_cli("connect")
     assert result.returncode == 0, f"Failed to connect via CLI: {result.stderr}"
     yield
-    # Clean up: disconnect to clear session file
-    _run_cli("disconnect")
+    # Clear the CLI session file directly. We intentionally do NOT run
+    # `disconnect`: DisconnectAction calls app.quit() for a "launched" instance,
+    # which would terminate the shared Rhapsody process owned by
+    # tests/conftest.py::rhapsody_instance before other fixtures finish tearing
+    # down (the root cause of the prior Windows fatal exceptions). The owner
+    # quits Rhapsody exactly once, last.
+    SessionManager().clear()
 
 
 @pytest.fixture(scope="session")

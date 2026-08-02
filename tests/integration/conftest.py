@@ -6,7 +6,7 @@ import sys
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Generator
+from typing import Generator, Optional
 
 import pytest
 from pytest import Config, FixtureRequest
@@ -75,16 +75,17 @@ def _safe_cleanup_test_project(app: RhapsodyApplication, project_dir: Path) -> N
 
 
 @pytest.fixture(scope="session")
-def rhapsody_app() -> RhapsodyApplication:
+def rhapsody_app(rhapsody_instance: Optional[RhapsodyApplication]) -> Optional[RhapsodyApplication]:
     """Session-scoped Rhapsody application fixture.
 
-    Launches a new Rhapsody instance with the GUI visible for integration testing.
-    If a Rhapsody instance is already running, attaches to it instead.
-    The GUI visibility is important for proper rendering and display of model elements.
+    Uses the shared ``rhapsody_instance`` owner (see ``tests/conftest.py``) rather
+    than launching its own, so the Rhapsody lifecycle is owned in exactly one
+    place. Returns ``None`` when Rhapsody is unavailable; the ``_require_rhapsody``
+    autouse fixture then skips the session.
     """
-    app = RhapsodyApplication.connect(attach_only=False, show_gui=True)
-    # Give the GUI time to initialize and render
-    time.sleep(2)
+    app = rhapsody_instance
+    if app is None:
+        return None
     # Bring window to foreground to make GUI visible
     try:
         app.bring_window_to_top()
