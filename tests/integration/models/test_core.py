@@ -277,7 +277,6 @@ class TestRPCollectionMutationMethodsIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="read-back of variant typed slots is not reliable on all collections")
     def test_set_string_stores_value(self, test_project: RPProject, rhapsody_app: RhapsodyApplication) -> None:
         pkg = self._create_package(test_project, self._unique("SetStrPkg"))
         try:
@@ -291,7 +290,6 @@ class TestRPCollectionMutationMethodsIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="read-back of variant typed slots is not reliable on all collections")
     def test_set_integer_stores_value(self, test_project: RPProject, rhapsody_app: RhapsodyApplication) -> None:
         pkg = self._create_package(test_project, self._unique("SetIntPkg"))
         try:
@@ -1841,7 +1839,6 @@ class TestRPUnitCrossProjectIntegration:
         assert isinstance(pkg, RPUnit)
         return pkg
 
-    @pytest.mark.xfail(strict=False, reason="TODO: get_nested_save_units may not return empty collection as expected")
     def test_get_nested_save_units_empty_on_plain_package(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("NestPkg"))
         try:
@@ -1871,7 +1868,6 @@ class TestRPUnitCrossProjectIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="TODO: get_structure_diagrams may not return empty collection as expected")
     def test_get_structure_diagrams_empty_on_class(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("StructPkg"))
         try:
@@ -1884,7 +1880,6 @@ class TestRPUnitCrossProjectIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="TODO: get_add_to_model_mode may not return expected value")
     def test_get_add_to_model_mode_returns_int(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("AddModePkg"))
         try:
@@ -1896,7 +1891,6 @@ class TestRPUnitCrossProjectIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="TODO: is_reference_unit may not work correctly on local units")
     def test_is_reference_unit_false_for_local_unit(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("RefPkg"))
         try:

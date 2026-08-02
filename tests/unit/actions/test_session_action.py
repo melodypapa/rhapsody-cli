@@ -452,8 +452,14 @@ class TestStatusAction:
 class TestVersionAction:
     """Tests for VersionAction."""
 
-    def test_version_shows_cli_version(self, capsys: pytest.CaptureFixture) -> None:
-        """Version shows CLI version."""
+    def test_version_shows_cli_version(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture) -> None:
+        """Version shows CLI version (no session → CLI version only)."""
+        # Isolate SESSION_DIR: integration/system tests leave a real session file in
+        # the home directory during a full-suite run, which would otherwise make this
+        # test take the connected branch and hit live COM (unmocked get_version()).
+        session_dir = tmp_path / ".rhapsody-cli"
+        monkeypatch.setattr(SessionManager, "SESSION_DIR", session_dir)
+
         action = VersionAction()
         args = argparse.Namespace()
 
