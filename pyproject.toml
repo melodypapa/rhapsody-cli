@@ -81,6 +81,7 @@ testpaths = ["tests"]
 markers = [
     "integration: marks tests as integration tests (require Rhapsody)",
     "system: marks tests as system tests (subprocess CLI, require Rhapsody)",
+    "no_session: opts test out of the auto-use mock_session fixture (tests session absence)",
 ]
 addopts = [
     "--cov=rhapsody_cli",
