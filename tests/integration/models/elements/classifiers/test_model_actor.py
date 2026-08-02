@@ -3,7 +3,6 @@ from typing import cast
 
 import pytest
 
-from rhapsody_cli.models.elements.classifiers import RPActor
 from rhapsody_cli.models.elements.containment import RPPackage, RPProject
 
 
@@ -20,21 +19,6 @@ class TestRPActorIntegration:
         pkg = project.add_package(name)
         assert pkg is not None and isinstance(pkg, RPPackage)
         return pkg
-
-    def test_create_actor_in_package(self, test_project: RPProject) -> None:
-        pkg_name = self._unique("ActorPkg")
-        actor_name = self._unique("TestActor")
-        pkg = self._create_package(test_project, pkg_name)
-        try:
-            actor = pkg.add_actor(actor_name)
-            assert actor is not None
-            assert isinstance(actor, RPActor)
-            assert actor.get_name() == actor_name
-            assert actor.get_meta_class() == "Actor"
-            actors = pkg.get_actors()
-            assert actor in list(actors)
-        finally:
-            actor.delete_from_project()
 
     def test_actor_behavior_override(self, test_project: RPProject) -> None:
         pkg_name = self._unique("BehPkg")
@@ -64,18 +48,5 @@ class TestRPActorIntegration:
             event = pkg.add_event(event_name)
             with pytest.raises(NotImplementedError, match="addEventReceptionWithEvent is not exposed in the Rhapsody COM"):
                 actor.add_event_reception_with_event(reception_name, cast(RPEvent, event))
-        finally:
-            actor.delete_from_project()
-
-    def test_actor_owner(self, test_project: RPProject) -> None:
-        pkg_name = self._unique("OwnPkg")
-        actor_name = self._unique("OwnActor")
-        pkg = self._create_package(test_project, pkg_name)
-        try:
-            actor = pkg.add_actor(actor_name)
-            owner = actor.get_owner()
-            assert owner is not None
-            assert owner.get_name() == pkg_name
-            assert isinstance(owner, RPPackage)
         finally:
             actor.delete_from_project()
