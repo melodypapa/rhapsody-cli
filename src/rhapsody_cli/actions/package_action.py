@@ -115,6 +115,13 @@ class PackageCreateAction(AbstractPackageAction):
         created: List[str] = []
         errors: List[str] = []
         for pkg_attrs in packages_data:
+            if not isinstance(pkg_attrs, dict):
+                # JSON like '["A", "B"]' yields non-object items; record them
+                # as per-item errors instead of crashing mid-bulk.
+                pkg_name = str(pkg_attrs)
+                self.logger.error("Failed to create package '%s': each package must be a JSON object with a 'name' key", pkg_name)
+                errors.append(pkg_name)
+                continue
             try:
                 name = self._create_single_package(container, pkg_attrs, cast(str, args.path), is_root=is_root)
                 created.append(name)
@@ -622,7 +629,11 @@ class PackageExportAction(AbstractPackageAction):
         super().execute(args)
         try:
             app = self._connect_app()
-            package = self._resolve_and_validate_package(args.path)
+            if args.path:
+                package = self._resolve_and_validate_package(args.path)
+            else:
+                # --path omitted: the root; export the active project itself.
+                package = self._get_active_project()
             exporter = RhapsodyExporter(app=app)
             data = exporter.export(package)
             yaml_io = RhapsodyYaml()

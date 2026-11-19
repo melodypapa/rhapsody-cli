@@ -15,7 +15,7 @@ knowledge and documentation transfer directly.
 - **Complete API Mirroring**: Method names and signatures match the Rhapsody Java API exactly (converted to snake_case)
 - **Object-Oriented Design**: Clean Python classes wrapping COM objects with proper type hints
 - **Comprehensive Element Support**: 96 Rhapsody element types wrapped with full method coverage
-- **CLI Tools**: Single-level commands for session management (connect, disconnect, status, version) and two-level commands for project, package, class, operation, attribute, and port management
+- **CLI Tools**: Single-level commands for session management (`connect`, `disconnect`, `status`, `version`) and model exchange (`export`, `import`), plus two-level commands for `project`, `package`, and `class` management
 - **Multi-Level Path Navigation**: Navigate hierarchical model structures using `/` or `\` separators
 - **Bulk Operations**: Create multiple elements, list recursively, and delete with safety confirmations
 - **Robust Error Handling**: Automatic COM error translation with user-friendly exception messages
@@ -86,9 +86,9 @@ app.quit()
 
 The CLI provides **single-level commands** for session management and **two-level commands** for model element operations:
 
-**Single-Level Commands**: `connect`, `disconnect`, `status`, `version`
+**Single-Level Commands**: `connect`, `disconnect`, `status`, `version`, `export`, `import`
 
-**Two-Level Commands**: `project`, `package`, `class`, `attribute`, `operation`, `port`
+**Two-Level Commands**: `project`, `package`, `class`
 
 #### Session Management (Single-Level Commands)
 
@@ -147,23 +147,24 @@ rhapsody-cli class create --path Sensors '{"name":"TemperatureSensor"}'
 rhapsody-cli class view --path Sensors/TemperatureSensor --format json
 rhapsody-cli class list --path Sensors
 rhapsody-cli class link --path Sensors/TemperatureSensor --add BaseSensor
-rhapsody-cli class update --path Sensors/TemperatureSensor '{"isAbstract":true}'
+rhapsody-cli class update --path Sensors/TemperatureSensor '{"description":"Updated"}'
 rhapsody-cli class delete --path Sensors/TemperatureSensor
 ```
 
-#### Attribute, Operation, and Port Management
+#### Model Import/Export
 
-`attribute`, `operation`, and `port` share the same argument shape (`--path` to the owning classifier, `--name` or `--guid` to identify the member, and an inline/`--input` JSON payload):
+`export` and `import` are single-level commands operating at package granularity (`--path` optional, defaults to the project root, so exporting the root covers the whole model):
 
 ```bash
-rhapsody-cli attribute create --path Sensors/TemperatureSensor '{"name":"threshold","type":"int"}'
-rhapsody-cli operation create --path Sensors/TemperatureSensor '{"name":"readValue"}'
-rhapsody-cli port create --path Sensors/TemperatureSensor '{"name":"clientPort"}'
-
-rhapsody-cli attribute list --path Sensors/TemperatureSensor
-rhapsody-cli attribute update --path Sensors/TemperatureSensor --name threshold '{"isStatic":true}'
-rhapsody-cli attribute delete --path Sensors/TemperatureSensor --name threshold
+rhapsody-cli export --file model.yaml
+rhapsody-cli export --path Sensors --file sensors.yaml
+rhapsody-cli import --file model.yaml
+rhapsody-cli import --path Sensors --file model.yaml
 ```
+
+#### Suspended Commands
+
+`attribute`, `operation`, and `port` are temporarily suspended: running them prints a notice and exits with code 2. Their implementations remain in the codebase (`src/rhapsody_cli/actions/`), and they can be re-enabled by removing them from `SUSPENDED_COMMANDS` in `src/rhapsody_cli/cli/cli.py`.
 
 ### Command Options
 
@@ -393,6 +394,14 @@ See [Contributing Guide](docs/contributing.rst) for:
 MIT License - see [LICENSE](LICENSE) file for details.
 
 ## Changelog
+
+### Unreleased
+
+- **Breaking**: Suspended the `attribute`, `operation`, and `port` command groups — running them now prints a suspension notice and exits with code 2 (implementations retained; re-enable via `SUSPENDED_COMMANDS` in `src/rhapsody_cli/cli/cli.py`)
+- **Breaking**: Removed the `project export`/`project import` subcommands (project-level exchange is superseded by package-level commands; `ProjectExportAction`/`ProjectImportAction` remain in the codebase unwired)
+- Added single-level `export` and `import` commands for YAML-based model exchange at package granularity (`--path` optional, defaults to project root), reusing `PackageExportAction`/`PackageImportAction`
+- Removed `export`/`import` subcommands from the `package` group (now top-level commands)
+- **Known limitation**: `class create`/`class update` with `"isAbstract"` cannot persist on `Rhapsody2.Application.1` — the COM property accepts writes but never persists them, so `RPClass.set_is_abstract` refuses loudly instead of silently no-oppping (other boolean flags such as `isFinal`/`isActive` are unaffected)
 
 ### v0.2.1 (2026-07-26)
 

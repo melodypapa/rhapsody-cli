@@ -6,8 +6,6 @@ from rhapsody_cli.actions.abstract_action import AbstractAction
 from rhapsody_cli.actions.package_action import (
     PackageCreateAction,
     PackageDeleteAction,
-    PackageExportAction,
-    PackageImportAction,
     PackageListAction,
     PackageUpdateAction,
     PackageViewAction,
@@ -16,7 +14,7 @@ from rhapsody_cli.commands.abstract_command import AbstractCommand
 
 
 class PackageCommand(AbstractCommand):
-    """Package command group - handles package subcommands (create, delete, view, list, update, export, import)."""
+    """Package command group - handles package subcommands (create, delete, view, list, update)."""
 
     def __init__(self, args: List[str]) -> None:
         """Initialize PackageCommand and parse package subcommands.
@@ -35,6 +33,4 @@ class PackageCommand(AbstractCommand):
             PackageViewAction(),
             PackageListAction(),
             PackageUpdateAction(),
-            PackageExportAction(),
-            PackageImportAction(),
         ]

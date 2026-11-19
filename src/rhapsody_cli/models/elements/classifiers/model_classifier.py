@@ -121,16 +121,23 @@ class RPClassifier(RPUnit):
         """
         return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getOperations", "operations"))
 
-    def add_generalization(self, base_classifier: "RPClassifier") -> None:
+    def add_generalization(self, base_classifier: "RPClassifier") -> Optional["RPModelElement"]:
         """Adds a generalization relationship from this classifier to another.
 
         Args:
             base_classifier: The base classifier to generalize from.
 
+        Returns:
+            The created generalization wrapped as an ``RPModelElement``, or
+            ``None`` if the COM layer returns no object.
+
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::addGeneralization(com.telelogic.rhapsody.core.IRPClassifier pVal)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.addGeneralization(base_classifier._com))
+        created = AbstractRPModelElement.call_com(lambda: self._com.addGeneralization(base_classifier._com))
+        if created is None:
+            return None
+        return cast("RPModelElement", AbstractRPModelElement.wrap(created))
 
     def add_statechart(self) -> "RPStatechart":
         """Adds a statechart behavior to this classifier.

@@ -154,6 +154,8 @@ class ClassCreateAction(AbstractClassAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute class creation."""
+        # pi-lens-ignore: python-sql-injection
+        # super().execute() is the CLI action-dispatch chain (session check), not a DB sink.
         super().execute(args)
         input_data = args.input if args.input else args.attributes
         if not input_data:
@@ -167,6 +169,13 @@ class ClassCreateAction(AbstractClassAction):
         created: List[str] = []
         errors: List[str] = []
         for cls_attrs in classes_data:
+            if not isinstance(cls_attrs, dict):
+                # JSON like '"Name"' or '["A", "B"]' yields non-object items;
+                # record them as per-item errors instead of crashing mid-bulk.
+                cls_name = str(cls_attrs)
+                self.logger.error("Failed to create class '%s': each class must be a JSON object with a 'name' key", cls_name)
+                errors.append(cls_name)
+                continue
             try:
                 name = self._create_single_class(parent, cls_attrs, args.path)
                 created.append(name)
@@ -279,11 +288,12 @@ class ClassCreateAction(AbstractClassAction):
     def _set_superclasses(self, parent: RPModelElement, cls: RPModelElement, attrs: Dict[str, object]) -> None:
         """Add generalization relationships to superclasses.
 
-        SWR_CLS_00001: resolves superclass names via parent.findNestedClassifierRecursive(name).
+        SWR_CLS_00001: resolves superclass names via the Java API
+        IRPModelElement::findNestedElementRecursive(name, "Class").
         """
         if "superclasses" in attrs:
             for name in cast(List[str], attrs["superclasses"]):
-                target = parent.find_nested_classifier_recursive(name)  # type: ignore[attr-defined]
+                target = parent.find_nested_element_recursive(name, "Class")
                 if target is None:
                     raise CliExecutionError(f"Superclass '{name}' not found in package")
                 cls.add_generalization(target)  # type: ignore[attr-defined]
@@ -309,6 +319,8 @@ class ClassDeleteAction(AbstractClassAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute class deletion."""
+        # pi-lens-ignore: python-sql-injection
+        # super().execute() is the CLI action-dispatch chain (session check), not a DB sink.
         super().execute(args)
         if args.path and args.guid:
             raise CliExecutionError("Only one of --path or --guid may be specified")
@@ -350,6 +362,8 @@ class ClassListAction(AbstractClassAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute class list."""
+        # pi-lens-ignore: python-sql-injection
+        # super().execute() is the CLI action-dispatch chain (session check), not a DB sink.
         super().execute(args)
         package = self._resolve_and_validate_package(args.path)
 
@@ -445,6 +459,8 @@ class ClassViewAction(AbstractClassAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute class view."""
+        # pi-lens-ignore: python-sql-injection
+        # super().execute() is the CLI action-dispatch chain (session check), not a DB sink.
         super().execute(args)
         if args.path and args.guid:
             raise CliExecutionError("Only one of --path or --guid may be specified")
@@ -555,6 +571,8 @@ class ClassLinkAction(AbstractClassAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute class link operation."""
+        # pi-lens-ignore: python-sql-injection
+        # super().execute() is the CLI action-dispatch chain (session check), not a DB sink.
         super().execute(args)
         if args.path and args.guid:
             raise CliExecutionError("Only one of --path or --guid may be specified")
@@ -572,7 +590,7 @@ class ClassLinkAction(AbstractClassAction):
 
         target_name = args.add if args.add else args.remove
         owner = source.get_owner()
-        target = owner.find_nested_classifier_recursive(target_name)  # type: ignore[attr-defined]
+        target = owner.find_nested_element_recursive(target_name, "Class")
         if target is None:
             raise CliExecutionError(f"Class '{target_name}' not found")
 
@@ -703,6 +721,8 @@ class ClassUpdateAction(AbstractClassAction):
         Args:
             args: Parsed argparse.Namespace with path/guid and attribute data.
         """
+        # pi-lens-ignore: python-sql-injection
+        # super().execute() is the CLI action-dispatch chain (session check), not a DB sink.
         super().execute(args)
         self.logger.info("Starting class update...")
         if not args.path and not args.guid:
