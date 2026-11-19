@@ -60,8 +60,9 @@ class RhapsodyApplication:
         """
         if win32com is None:
             raise RhapsodyConnectionError("pywin32 is not available; Rhapsody automation requires Windows.")
+        client = win32com.client
         try:
-            com_obj = com_utils.call_com(lambda: win32com.client.GetActiveObject(_PROG_ID))
+            com_obj = com_utils.call_com(lambda: client.GetActiveObject(_PROG_ID))
         except RhapsodyRuntimeException as exc:
             raise RhapsodyConnectionError(f"No running Rhapsody instance found: {exc}") from exc
         return cls(com_obj)
@@ -79,8 +80,9 @@ class RhapsodyApplication:
         """
         if win32com is None:
             raise RhapsodyConnectionError("pywin32 is not available; Rhapsody automation requires Windows.")
+        client = win32com.client
         try:
-            com_obj = com_utils.call_com(lambda: win32com.client.Dispatch(_PROG_ID))
+            com_obj = com_utils.call_com(lambda: client.Dispatch(_PROG_ID))
         except RhapsodyRuntimeException as exc:
             raise RhapsodyConnectionError(f"Failed to launch Rhapsody instance: {exc}") from exc
         return cls(com_obj)
@@ -255,10 +257,20 @@ class RhapsodyApplication:
     def get_version(self) -> str:
         """Get the Rhapsody version string.
 
+        Prefers the Java-style ``getVersion()`` method and falls back to the
+        bare ``version`` member exposed by property-style Prog IDs (e.g.
+        ``Rhapsody2.Application.1``), where pywin32 dynamic dispatch may
+        present it as a callable rather than a plain property.
+
         Returns:
             The version string (e.g. ``"8.3.1"``).
         """
-        return str(com_utils.call_com(lambda: self._com.getVersion()))
+        value = com_utils._get_method_or_property(self._com, "getVersion", "version")
+        if callable(value):
+            # pywin32 dynamic dispatch can expose the bare 'version' member as
+            # a bound method rather than a plain property; invoke it.
+            value = com_utils.call_com(value)
+        return str(value)
 
     def get_build_no(self) -> str:
         """Return the Rhapsody build number.

@@ -265,6 +265,28 @@ def test_get_version_returns_string() -> None:
     assert app.get_version() == "8.3.1"
 
 
+def test_get_version_falls_back_to_callable_version_property_when_method_missing() -> None:
+    """Some Rhapsody COM Prog IDs (e.g. Rhapsody2.Application.1) expose the
+    version via the bare 'version' member instead of a getVersion() method.
+    pywin32 dynamic dispatch exposes that member as a callable (bound method),
+    so the fallback must invoke it to get the string."""
+    fake_app = MagicMock(spec=["version"])
+    fake_app.version = MagicMock(return_value="8.3.1")
+    app = RhapsodyApplication(fake_app)
+
+    assert app.get_version() == "8.3.1"
+
+
+def test_get_version_falls_back_to_plain_version_property_when_method_missing() -> None:
+    """Prog IDs that expose 'version' as a true COM property return the value
+    directly; get_version() must handle that shape too."""
+    fake_app = MagicMock(spec=["version"])
+    fake_app.version = "8.3.1"
+    app = RhapsodyApplication(fake_app)
+
+    assert app.get_version() == "8.3.1"
+
+
 def test_get_build_no_returns_string() -> None:
     fake_app = MagicMock(name="FakeApplication")
     fake_app.getBuildNo.return_value = "12345"
