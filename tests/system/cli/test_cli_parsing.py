@@ -63,23 +63,19 @@ class TestCLIParsing:
         assert result.returncode != 0
         assert "required" in result.stderr.lower() or "usage:" in result.stderr.lower()
 
-    def test_attribute_create_missing_path(self) -> None:
-        """Test that attribute create without --path shows usage error."""
-        result = _run_cli("attribute", "create")
-        assert result.returncode != 0
-        assert "required" in result.stderr.lower() or "usage:" in result.stderr.lower()
+    @pytest.mark.parametrize("command", ["attribute", "operation", "port"])
+    def test_suspended_command_shows_notice(self, command: str) -> None:
+        """Test that suspended command groups print a suspension notice and exit 2."""
+        result = _run_cli(command, "create")
+        assert result.returncode == 2
+        assert "temporarily suspended" in result.stderr
 
-    def test_operation_create_missing_path(self) -> None:
-        """Test that operation create without --path shows usage error."""
-        result = _run_cli("operation", "create")
-        assert result.returncode != 0
-        assert "required" in result.stderr.lower() or "usage:" in result.stderr.lower()
-
-    def test_port_create_missing_path(self) -> None:
-        """Test that port create without --path shows usage error."""
-        result = _run_cli("port", "create")
-        assert result.returncode != 0
-        assert "required" in result.stderr.lower() or "usage:" in result.stderr.lower()
+    def test_usage_lists_suspended_section(self) -> None:
+        """Test that --help shows active and suspended command sections."""
+        result = _run_cli("--help")
+        assert result.returncode == 0
+        assert "Suspended Commands" in result.stdout
+        assert "attribute" in result.stdout
 
     def test_project_open_missing_arguments(self) -> None:
         """Test that project open without project_path shows usage error."""
