@@ -413,6 +413,25 @@ class TestGeneralizationImport:
         created.set_is_virtual.assert_called_once_with(False)
         assert result is not None
 
+    def test_generalization_tolerates_none_handle(self) -> None:
+        """Some Prog IDs return nothing from addGeneralization even though the
+        relation is created; the importer must not crash applying extras."""
+        base = MagicMock()
+        base.get_name.return_value = "BaseSensor"
+        project = MagicMock()
+        project.get_nested_elements.return_value = [base]
+        importer = _make_importer(project=project)
+        derived = MagicMock()
+        derived.add_generalization.return_value = None
+
+        result = importer._process_element(
+            derived,
+            {"name": "BaseSensor", "type": "Generalization", "base_class": "BaseSensor"},
+        )
+
+        derived.add_generalization.assert_called_once_with(base)
+        assert result is None
+
     def test_generalization_skips_unresolvable_base(self) -> None:
         project = MagicMock()
         project.get_nested_elements.return_value = []

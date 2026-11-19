@@ -248,7 +248,17 @@ class RhapsodyImporter(RhapsodyModelHelper):
         if target is None:
             logger.warning("Cannot resolve base_class '%s' for generalization '%s'", base_class_name, spec_name)
             return None
-        created = cast(RPModelElement, parent.add_generalization(target))  # type: ignore[attr-defined]
+        created = cast(Optional[RPModelElement], parent.add_generalization(target))  # type: ignore[attr-defined]
+        if created is None:
+            # Some Prog IDs (Rhapsody2.Application.1) return nothing from
+            # addGeneralization even though the relation is created with
+            # default visibility/virtuality; there is no handle for extras.
+            logger.info(
+                "Created generalization '%s' -> '%s' (no element handle returned; visibility/is_virtual not applied)",
+                spec_name,
+                base_class_name,
+            )
+            return None
         self.apply_stereotypes(created, cast(List[str], spec.get("stereotypes", [])))
         self.apply_tags(created, cast(Dict[str, str], spec.get("tags", {})))
         if "visibility" in spec:
