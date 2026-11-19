@@ -79,3 +79,46 @@ class TestUsageText:
             assert f"  {active} " in out
         for suspended in ("attribute", "operation", "port"):
             assert f"  {suspended} " in out
+
+
+class TestSingleLevelExchangeCommands:
+    """Tests for the single-level export/import commands."""
+
+    def test_export_dispatches_with_file_and_default_root_path(self) -> None:
+        with patch("rhapsody_cli.cli.cli.PackageExportAction") as mock_action_cls:
+            mock_instance = MagicMock()
+            mock_action_cls.return_value = mock_instance
+            with patch("sys.argv", ["rhapsody-cli", "export", "--file", "out.yaml"]):
+                main()
+        mock_instance.execute.assert_called_once()
+        args = mock_instance.execute.call_args[0][0]
+        assert args.file == "out.yaml"
+        assert args.path is None
+
+    def test_export_dispatches_with_explicit_path(self) -> None:
+        with patch("rhapsody_cli.cli.cli.PackageExportAction") as mock_action_cls:
+            mock_instance = MagicMock()
+            mock_action_cls.return_value = mock_instance
+            with patch("sys.argv", ["rhapsody-cli", "export", "--path", "Sensors", "--file", "sensors.yaml"]):
+                main()
+        args = mock_instance.execute.call_args[0][0]
+        assert args.path == "Sensors"
+        assert args.file == "sensors.yaml"
+
+    def test_import_dispatches_with_file_and_explicit_path(self) -> None:
+        with patch("rhapsody_cli.cli.cli.PackageImportAction") as mock_action_cls:
+            mock_instance = MagicMock()
+            mock_action_cls.return_value = mock_instance
+            with patch("sys.argv", ["rhapsody-cli", "import", "--path", "Sensors", "--file", "in.yaml"]):
+                main()
+        mock_instance.execute.assert_called_once()
+        args = mock_instance.execute.call_args[0][0]
+        assert args.path == "Sensors"
+        assert args.file == "in.yaml"
+
+    def test_export_requires_file_argument(self, capsys: pytest.CaptureFixture[str]) -> None:
+        with patch("sys.argv", ["rhapsody-cli", "export"]):
+            with pytest.raises(SystemExit) as exc_info:
+                main()
+        assert exc_info.value.code == 2
+        assert "required" in capsys.readouterr().err.lower()
