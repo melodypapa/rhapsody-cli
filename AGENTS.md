@@ -10,7 +10,7 @@ Pythonic wrapper around the IBM Rhapsody COM API. All method names use snake_cas
 |-------|------|---------|
 | Models | `src/rhapsody_cli/models/` | COM wrappers for 97+ element types. `elements/` has 13 domain subpackages (`activity/`, `classifiers/`, `common/`, `containment/`, `diagrams/`, `graphics/`, `interactions/`, `relations/`, `requirements/`, `statemachine/`, `templates/`, `values/`, `variables/`). `support/` wraps codegen/IDE/file APIs. `core.py` = `AbstractRPModelElement`, `RPModelElement`, `RPCollection`, `RPUnit`. |
 | Application | `src/rhapsody_cli/application.py` | `RhapsodyApplication` — attach/launch/connect to Rhapsody. Prog ID: `Rhapsody2.Application.1`. |
-| CLI | `src/rhapsody_cli/cli/` + `commands/` + `actions/` | argparse (stdlib), "PanGu style": `AbstractCommand` → `AbstractAction`. Dispatch: `main()` → `AbstractCommand.execute()` → `AbstractAction.execute()`. **Actual command groups:** `class`, `attribute`, `operation`, `package`, `port`, `project` (not `element`/`io` — older docs are stale). |
+| CLI | `src/rhapsody_cli/cli/` + `commands/` + `actions/` | argparse (stdlib), "PanGu style": `AbstractCommand` → `AbstractAction`. Dispatch: `main()` → `AbstractCommand.execute()` → `AbstractAction.execute()`. **Actual command groups:** active `project`, `package`, `class` plus single-level `connect`, `disconnect`, `status`, `version`, `export`, `import`. `attribute`, `operation`, `port` are suspended at dispatch (`SUSPENDED_COMMANDS` in `cli/cli.py`) — implementations retained. (`element`/`io` no longer exist.) |
 
 ## COM Wrapping Rules (critical)
 
