@@ -123,7 +123,7 @@ class TestPackageCreateAction:
     def test_create_bulk_packages_from_file(self, tmp_path: Any) -> None:
         """UTS_PKG_00002: Test creating multiple packages from JSON file."""
         json_file = tmp_path / "packages.json"
-        json_file.write_text('[{"name":"TempSensors","description":"Temperature"},' '{"name":"PressureSensors","description":"Pressure"}]')
+        json_file.write_text('[{"name":"TempSensors","description":"Temperature"},{"name":"PressureSensors","description":"Pressure"}]')
 
         action = PackageCreateAction()
         mock_parent = MagicMock()
