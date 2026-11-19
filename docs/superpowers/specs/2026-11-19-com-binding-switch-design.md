@@ -13,7 +13,10 @@ established:
 
 - Early binding (`EnsureDispatch`) generates typed wrappers from the typelib:
   `IRPApplication` (180 methods), `IRPProject` (212 members), `IRPComponent`
-  (116 members), generated lazily per interface on first return.
+  (116 members), generated lazily per interface on first return. The design
+  requires returned model objects (project, package, class, component, and
+  collection elements) to remain gen_py typed objects; this is a live spike
+  gate, not an assumption.
 - Property-style basics (`name`, `metaClass`) are **not** in the generated
   class member lists but **live-read works** — pywin falls through to dynamic
   resolution for undeclared members.
@@ -35,9 +38,11 @@ binding with a smoke gate, not a big-bang flip.
 ## Goal
 
 Make the COM binding selectable via the `RHAPSODY_COM_BINDING` environment
-variable (`dynamic` default, `early` opt-in), validate `early` against the
-full live smoke checklist, and flip the default to `early` only if parity is
-proven.
+variable (`dynamic` default, `early` opt-in), require the application and all
+returned model COM objects to be gen_py typed objects in early mode, validate
+`early` against the full live smoke checklist, and flip the default to `early`
+only if typedness and parity are proven. Keep `models/`, `com_utils.py`,
+wrappers, CLI, and actions unchanged and in use.
 
 ## Non-Goals
 
@@ -59,11 +64,17 @@ proven.
 - `_launch()`: `early` -> `win32com.client.gencache.EnsureDispatch(_PROG_ID)`
   (generates/uses the gen_py cache and launches if no instance is running);
   `dynamic` -> `win32com.client.Dispatch(_PROG_ID)` (unchanged).
-- `_attach()`: stays `GetActiveObject(_PROG_ID)` for both bindings — attach
-  must never launch. Once the gen_py cache exists, the returned object is
-  early-bound automatically (documented pywin behavior); with no cache it is
-  dynamic. Early binding therefore fully activates after the first launch (or
-  any cache-generating call).
+- `_attach()`: first calls `GetActiveObject(_PROG_ID)` so it can never launch.
+  For `dynamic`, return the result unchanged. For `early`, pass the already
+  acquired raw COM object to `gencache.EnsureDispatch(raw_object)` to create or
+  apply the generated wrapper without asking pywin32 to launch by ProgID. This
+  ensures an attach-only process with no pre-existing gen_py cache still gets
+  early-bound objects. Unit tests must prove early attach calls
+  `GetActiveObject` first and only passes that object to `EnsureDispatch`.
+- `models/`, `com_utils.py`, wrapper classes, CLI, and actions are unchanged
+  and remain in use. Existing COM helpers/property fallbacks continue operating
+  on the typed objects; no helper nativization or wrapper API rename is part of
+  this work.
 - The property-style fallback in `com_utils._get_method_or_property` is
   unchanged and required under both bindings (probe evidence: `getName`
   absent/failing everywhere; `name` works everywhere).
@@ -114,11 +125,13 @@ pass. Record results in the implementation plan.
 ## Testing
 
 - **Unit (TDD)**: binding parsing (valid/invalid/default), `_launch` uses
-  `EnsureDispatch` when `early` and `Dispatch` when `dynamic`,
-  `_attach` always uses `GetActiveObject`; all via patching
-  `win32com.client` functions — no real COM in unit tests.
-- **Live (Windows)**: spike (§2) + smoke gate (§3) under early; dynamic smoke
-  unchanged as control.
+  `EnsureDispatch` when `early` and `Dispatch` when `dynamic`, `_attach`
+  always calls `GetActiveObject` first and applies `EnsureDispatch` to that
+  object only when early; all via patching `win32com.client` functions — no
+  real COM in unit tests.
+- **Live (Windows)**: spike (§2) asserts every model object and collection
+  element is gen_py typed, then exercises the member inventory; full smoke
+  gate (§3) under early; dynamic smoke unchanged as control.
 - **Quality gate**: `ruff check src/ tests/ && black --check src/ tests/ &&
   mypy src/ tests/ && pytest tests/unit`.
 
