@@ -75,7 +75,14 @@ class RhapsodyImporter(RhapsodyModelHelper):
         elif element_type == "Dependency":
             element = self.find_or_create_dependency(parent, name)
         elif element_type == "Generalization":
-            element = self.find_or_create_generalization(parent, name)
+            # Generalizations wire via IRPClassifier::addGeneralization on the
+            # derived class (the exporter nests them under it); creating via
+            # addNewAggr + setDerivedClass/setBaseClass is not functional on
+            # property-style Prog IDs (smoke-verified on Rhapsody2.Application.1).
+            # Early return: relations have no generic children, and the common
+            # stereotypes/tags plus visibility/is_virtual are applied on the
+            # created element inside _import_generalization.
+            return self._import_generalization(parent, spec)
         elif element_type == "Relation":
             element = self.find_or_create_relation(parent, name)
         elif element_type == "Port":
@@ -105,8 +112,6 @@ class RhapsodyImporter(RhapsodyModelHelper):
             self._apply_object_extras(element, spec)
         elif element_type == "Dependency":
             self._apply_dependency_extras(element, spec, parent)
-        elif element_type == "Generalization":
-            self._apply_generalization_extras(element, spec, parent)
         elif element_type == "Relation":
             self._apply_relation_extras(element, spec, parent)
         elif element_type == "Port":
@@ -221,24 +226,36 @@ class RhapsodyImporter(RhapsodyModelHelper):
                     dependency.get_name(),
                 )
 
-    def _apply_generalization_extras(self, generalization: RPModelElement, spec: Dict[str, object], parent: RPModelElement) -> None:
-        """Apply Generalization-specific fields: derived_class (parent), base_class, visibility, is_virtual."""
-        generalization.set_derived_class(parent)  # type: ignore[attr-defined]
-        if "base_class" in spec:
-            base_class = cast(str, spec["base_class"])
-            target = self.resolve_classifier(base_class)
-            if target is not None:
-                generalization.set_base_class(target)  # type: ignore[attr-defined]
-            else:
-                logger.warning(
-                    "Cannot resolve base_class '%s' for generalization '%s'",
-                    base_class,
-                    generalization.get_name(),
-                )
+    def _import_generalization(self, parent: RPModelElement, spec: Dict[str, object]) -> Optional[RPModelElement]:
+        """Wire a Generalization via IRPClassifier::addGeneralization on the derived class.
+
+        The exporter nests Generalization specs under the derived class, so
+        ``parent`` is the derived (child) classifier. Creating the relation via
+        addNewAggr + setDerivedClass/setBaseClass does not work on property-style
+        Prog IDs such as Rhapsody2.Application.1 (smoke-verified), while
+        addGeneralization is.
+
+        Returns:
+            The created generalization element, or None if base_class is
+            missing or cannot be resolved.
+        """
+        base_class_name = cast(Optional[str], spec.get("base_class"))
+        spec_name = cast(str, spec.get("name"))
+        if base_class_name is None:
+            logger.warning("Generalization '%s' has no base_class; skipping", spec_name)
+            return None
+        target = self.resolve_classifier(base_class_name)
+        if target is None:
+            logger.warning("Cannot resolve base_class '%s' for generalization '%s'", base_class_name, spec_name)
+            return None
+        created = cast(RPModelElement, parent.add_generalization(target))  # type: ignore[attr-defined]
+        self.apply_stereotypes(created, cast(List[str], spec.get("stereotypes", [])))
+        self.apply_tags(created, cast(Dict[str, str], spec.get("tags", {})))
         if "visibility" in spec:
-            generalization.set_visibility(cast(str, spec["visibility"]))  # type: ignore[attr-defined]
+            created.set_visibility(cast(str, spec["visibility"]))  # type: ignore[attr-defined]
         if "is_virtual" in spec:
-            generalization.set_is_virtual(cast(bool, spec["is_virtual"]))  # type: ignore[attr-defined]
+            created.set_is_virtual(cast(bool, spec["is_virtual"]))  # type: ignore[attr-defined]
+        return created
 
     def _apply_relation_extras(self, relation: RPModelElement, spec: Dict[str, object], parent: RPModelElement) -> None:
         """Apply Relation-specific fields: from (source), to (target), relation_type, multiplicity, etc."""

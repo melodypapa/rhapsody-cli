@@ -378,30 +378,51 @@ class TestApplyDependencyExtras:
         dependency.set_dependent.assert_called_once_with(parent)
 
 
-class TestApplyGeneralizationExtras:
-    """UTS_XCH_00059: _apply_generalization_extras wires derived/base."""
+class TestGeneralizationImport:
+    """UTS_XCH_00059: generalizations wire via IRPClassifier::addGeneralization.
 
-    def test_sets_derived_class_and_base_class(self) -> None:
+    addNewAggr + setDerivedClass/setBaseClass are not functional on
+    property-style Prog IDs such as Rhapsody2.Application.1 (smoke-verified);
+    addGeneralization on the derived class is.
+    """
+
+    def test_generalization_wires_via_add_generalization(self) -> None:
         base = MagicMock()
-        base.get_name.return_value = "BaseClass"
+        base.get_name.return_value = "BaseSensor"
         project = MagicMock()
         project.get_nested_elements.return_value = [base]
         importer = _make_importer(project=project)
-        generalization = MagicMock()
-        generalization.get_name.return_value = "gen1"
-        parent = MagicMock()
-        parent.get_name.return_value = "MyClass"
+        derived = MagicMock()
+        derived.get_name.return_value = "TemperatureSensor"
+        created = MagicMock()
+        derived.add_generalization.return_value = created
 
-        importer._apply_generalization_extras(
-            generalization,
-            {"base_class": "BaseClass", "visibility": "public", "is_virtual": True},
-            parent,
+        result = importer._process_element(
+            derived,
+            {
+                "name": "BaseSensor",
+                "type": "Generalization",
+                "base_class": "BaseSensor",
+                "visibility": "public",
+                "is_virtual": False,
+            },
         )
 
-        generalization.set_derived_class.assert_called_once_with(parent)
-        generalization.set_base_class.assert_called_once_with(base)
-        generalization.set_visibility.assert_called_once_with("public")
-        generalization.set_is_virtual.assert_called_once_with(True)
+        derived.add_generalization.assert_called_once_with(base)
+        created.set_visibility.assert_called_once_with("public")
+        created.set_is_virtual.assert_called_once_with(False)
+        assert result is not None
+
+    def test_generalization_skips_unresolvable_base(self) -> None:
+        project = MagicMock()
+        project.get_nested_elements.return_value = []
+        importer = _make_importer(project=project)
+        derived = MagicMock()
+
+        result = importer._process_element(derived, {"name": "BaseSensor", "type": "Generalization", "base_class": "Ghost"})
+
+        derived.add_generalization.assert_not_called()
+        assert result is None
 
 
 class TestApplyRelationExtras:
@@ -583,18 +604,15 @@ class TestProcessElementNewTypes:
         assert result.get_name() == "dep1"
 
     def test_dispatches_generalization(self) -> None:
+        """Generalization dispatch wires via add_generalization (see
+        TestGeneralizationImport); a spec without base_class is skipped."""
         importer = _make_importer()
         parent = MagicMock()
-        parent.get_nested_elements.return_value = []
-        new_gen = MagicMock()
-        new_gen.get_name.return_value = "gen1"
-        parent.add_new_aggr.return_value = new_gen
 
         result = importer._process_element(parent, {"name": "gen1", "type": "Generalization"})
 
-        parent.add_new_aggr.assert_called_once_with("Generalization", "gen1")
-        assert result is not None
-        assert result.get_name() == "gen1"
+        parent.add_new_aggr.assert_not_called()
+        assert result is None
 
     def test_dispatches_relation(self) -> None:
         importer = _make_importer()

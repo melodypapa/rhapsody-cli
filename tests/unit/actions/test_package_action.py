@@ -102,6 +102,24 @@ class TestPackageCreateAction:
             mock_parent.add_nested_package.assert_called_once_with("TempSensors")
             mock_package.set_description.assert_called_once_with("Temperature sensors")
 
+    def test_create_scalar_json_item_recorded_as_error(self) -> None:
+        """A non-object JSON item (e.g. a bare string in a bulk array) is
+        recorded as a per-item error and surfaces as the bulk 'all failed'
+        CliExecutionError instead of an escaping AttributeError."""
+        action = PackageCreateAction()
+        mock_parent = MagicMock()
+
+        with patch.object(action, "_resolve_and_validate_package", return_value=mock_parent):
+            args = MagicMock()
+            args.path = "Sensors"
+            args.input = None
+            args.attributes = '["TempSensors"]'
+
+            with pytest.raises(CliExecutionError, match="Created 0/1 packages; all failed"):
+                # pi-lens-ignore: python-sql-injection
+                # AbstractAction.execute() is CLI action dispatch, not a DB sink.
+                action.execute(args)
+
     def test_create_bulk_packages_from_file(self, tmp_path: Any) -> None:
         """UTS_PKG_00002: Test creating multiple packages from JSON file."""
         json_file = tmp_path / "packages.json"
@@ -686,6 +704,32 @@ class TestPackageUpdateAction:
 
 class TestPackageExportAction:
     """UTS_XCH_00088: package export action writes YAML file."""
+
+    def test_export_uses_active_project_when_path_omitted(self) -> None:
+        """--path omitted means the root: export the active project (smoke
+        finding: passing None into the resolver failed with 'Path None does
+        not resolve to a Package (found Project)')."""
+        from rhapsody_cli.actions.package_action import PackageExportAction
+
+        action = PackageExportAction()
+        fake_app = MagicMock(name="FakeApplication")
+        fake_project = MagicMock(name="FakeProject")
+
+        with patch("rhapsody_cli.actions.package_action.RhapsodyExporter") as mock_exporter_cls:
+            with patch("rhapsody_cli.actions.package_action.RhapsodyYaml"):
+                mock_exporter = MagicMock()
+                mock_exporter_cls.return_value = mock_exporter
+                mock_exporter.export.return_value = {"version": 1, "project": "P", "rhapsody-model": []}
+
+                args = MagicMock()
+                args.path = None
+                args.file = "root.yaml"
+                args.verbose = False
+
+                with patch.object(action, "_connect_app", return_value=fake_app), patch.object(action, "_get_active_project", return_value=fake_project):
+                    action.execute(args)
+
+                mock_exporter.export.assert_called_once_with(fake_project)
 
     def test_export_writes_yaml_file(self) -> None:
         from rhapsody_cli.actions.package_action import PackageExportAction
