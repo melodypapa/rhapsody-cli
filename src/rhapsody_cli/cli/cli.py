@@ -3,7 +3,7 @@
 import argparse
 import logging
 import sys
-from typing import Optional
+from typing import Optional, Set
 
 from rhapsody_cli.actions.abstract_action import AbstractAction
 from rhapsody_cli.actions.session_action import ConnectAction, DisconnectAction, StatusAction, VersionAction
@@ -18,6 +18,12 @@ from rhapsody_cli.exceptions import CliExecutionError
 
 logger = logging.getLogger(__name__)
 
+# Command groups that are temporarily suspended: implementations are retained
+# (actions/, commands/ and their tests) but dispatch rejects them with an
+# explicit notice. Re-enable by removing the name here, from _usage(), and
+# re-adding the dispatch/get_actions() wiring.
+SUSPENDED_COMMANDS: Set[str] = {"attribute", "operation", "port"}
+
 
 def main() -> None:
     """Main CLI entry point."""
@@ -30,6 +36,13 @@ def main() -> None:
     # Check for help
     if command_name in ("-h", "--help"):
         _usage("")
+
+    # Suspended commands: reject with an explicit notice before any dispatch
+    if command_name in SUSPENDED_COMMANDS:
+        # NOTE: Suspension notice to stderr (mirrors usage-on-error behavior).
+        print(f"rhapsody-cli: command '{command_name}' is temporarily suspended.", file=sys.stderr)
+        print("Active commands: connect, disconnect, status, version, project, package, class", file=sys.stderr)
+        sys.exit(2)
 
     # Check for verbose flag in args and configure logging
     verbose = "-v" in command_args or "--verbose" in command_args
@@ -130,12 +143,13 @@ def _usage(error: str) -> None:
     commands_text += "  status      Show connection status\n"
     commands_text += "  version     Show CLI version\n\n"
     commands_text += "Two-Level Commands:\n"
-    commands_text += "  attribute   Manage attributes\n"
     commands_text += "  class       Manage classes\n"
-    commands_text += "  operation   Manage operations\n"
     commands_text += "  package     Manage packages\n"
+    commands_text += "  project     Manage projects\n\n"
+    commands_text += "Suspended Commands (temporarily disabled, implementations retained):\n"
+    commands_text += "  attribute   Manage attributes\n"
+    commands_text += "  operation   Manage operations\n"
     commands_text += "  port        Manage ports\n"
-    commands_text += "  project     Manage projects\n"
     options_text = "Global Options:\n"
     options_text += "  --format <format>   Output format (table, json, csv). Default: table\n"
     options_text += "  -v|--verbose        Enable debug logging\n"
