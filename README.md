@@ -147,7 +147,7 @@ rhapsody-cli class create --path Sensors '{"name":"TemperatureSensor"}'
 rhapsody-cli class view --path Sensors/TemperatureSensor --format json
 rhapsody-cli class list --path Sensors
 rhapsody-cli class link --path Sensors/TemperatureSensor --add BaseSensor
-rhapsody-cli class update --path Sensors/TemperatureSensor '{"isAbstract":true}'
+rhapsody-cli class update --path Sensors/TemperatureSensor '{"description":"Updated"}'
 rhapsody-cli class delete --path Sensors/TemperatureSensor
 ```
 
@@ -401,6 +401,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 - **Breaking**: Removed the `project export`/`project import` subcommands (project-level exchange is superseded by package-level commands; `ProjectExportAction`/`ProjectImportAction` remain in the codebase unwired)
 - Added single-level `export` and `import` commands for YAML-based model exchange at package granularity (`--path` optional, defaults to project root), reusing `PackageExportAction`/`PackageImportAction`
 - Removed `export`/`import` subcommands from the `package` group (now top-level commands)
+- **Known limitation**: `class create`/`class update` with `"isAbstract"` cannot persist on `Rhapsody2.Application.1` — the COM property accepts writes but never persists them, so `RPClass.set_is_abstract` refuses loudly instead of silently no-oppping (other boolean flags such as `isFinal`/`isActive` are unaffected)
 
 ### v0.2.1 (2026-07-26)
 

@@ -882,3 +882,55 @@ git commit -m "test: record live CLI smoke results for simplified command surfac
 - Spec coverage: suspension mechanics (Task 1), export/import promotion (Task 2), group slimming + retained unwired `ProjectExport/ImportAction` (Task 3), system tests (Task 4), docs incl. CLAUDE.md/AGENTS.md stale sections (Task 5), gate (Task 6), live smoke of every kept subcommand incl. export/import roundtrip (Task 7). Re-enablement path documented in `cli.py` comment + docs.
 - Spec deviation (improvement): the spec's smoke fixture said "scratch copy of `demos/test_project/TestProject.rpy`", but no ready-made `.rpy` exists in the repo (only the `TestProject_rpy/` split-unit directory). Task 7 instead creates the scratch project with the CLI's own `project new` — which is itself one of the commands under test.
 - Type consistency: `SUSPENDED_COMMANDS: Set[str]` (typing.Set, py38-safe); mock assertions target `execute.call_args[0][0]` Namespace attributes `path`/`file`/`verbose`, matching the inline parser definitions and `Package{Export,Import}Action`'s existing argument names.
+
+---
+
+## Execution Results (2026-11-19)
+
+All tasks completed on branch `docs/cli-simplification`. Live smoke run against
+Rhapsody 10.0.3 (`Rhapsody2.Application.1`) with scratch project under
+`build/smoke/` (created via `project new`, cleaned up afterward).
+
+| # | Command | Result | Notes |
+| --- | ------- | ------ | ----- |
+| 1 | `version` | PASS | prints CLI version |
+| 2 | `status` (disconnected) | PASS | "Session timed out" notice, exit 0 |
+| 3 | `connect --no-gui` | PASS | launched Rhapsody, session file created |
+| 4 | `status` (connected) | PASS (after fix 1) | shows connection info + `Rhapsody version: 10.0.3` |
+| 5 | `project new` (absolute) | PASS | SmokeProj.rpyx created + opened |
+| 5b | `project new` (relative) | PASS (after fix 2) | initially failed with raw COM E_FAIL |
+| 6 | `project list` | PASS | renders table |
+| 7 | `project open` | PASS (after fix 3) | missing file now rejected with clear error, exit 1 |
+| 8 | `project close` | PASS | |
+| 9 | `package create` (root/nested) | PASS | |
+| 10 | `package view --format json` | PASS | name/GUID/description/metaClass/fullPath |
+| 11 | `package list` | PASS | |
+| 12 | `package update` | PASS | |
+| 13 | `package delete` | PASS | |
+| 14 | `class create` x2 | PASS | |
+| 15 | `class view --format json` | PASS | full class dict incl. flags |
+| 16 | `class list` | PASS | |
+| 17 | `class link` | PASS (after fix 4) | generalization verified in-model via probe |
+| 18 | `class update` (description) | PASS (after fix 5 note) | description persists; `isAbstract` is a known Rhapsody COM limitation (writes never persist) — reported loudly |
+| 19 | `class delete` | PASS | |
+| 20 | `export` (root, no --path) | PASS (after fix 6) | 611 B YAML of active project |
+| 21 | `export --path Sensors` | PASS | 265 B YAML |
+| 22 | `import --path Reimported` | PASS (after fix 7) | classes + generalization verified in-model via probe |
+| 23 | `attribute list` | PASS | suspension notice, exit 2 |
+| 24 | `operation list` | PASS | suspension notice, exit 2 |
+| 25 | `port list` | PASS | suspension notice, exit 2 |
+| 26 | `disconnect` + `status` | PASS | session cleared, "Not connected" |
+
+Bugs found by smoke and fixed via TDD (failing unit test first, all in this branch):
+
+1. `status`/`version` crashed (`getVersion` missing on property-style Prog ID) — `get_version` now falls back to the bare `version` member (callable or plain).
+2. `project new` with a relative path failed with raw COM E_FAIL — location resolved to absolute.
+3. `project open` on a missing file exited 0 silently — now exits 1 with "Project file not found".
+4. `class link` / `class create --superclasses` called a nonexistent model method — now resolve via `findNestedElementRecursive(name, "Class")`.
+5. Scalar JSON items in class/package bulk-create crashed with AttributeError — recorded as per-item errors.
+6. `export`/`import` with `--path` omitted failed ("Path 'None' does not resolve") — default to the active project root.
+7. `import` generalization wiring used non-functional `addNewAggr`/`setDerivedClass`/`setBaseClass` COM calls — now wires via `IRPClassifier::addGeneralization` and tolerates Prog IDs that return no handle.
+
+Known limitation (Rhapsody COM, not fixable in this codebase): `isAbstract`
+writes are accepted but never persisted by `Rhapsody2.Application.1`;
+`RPClass.set_is_abstract` refuses loudly. Documented in README + user guide.

@@ -271,8 +271,14 @@ JSON file; ``name`` is required.
 
 .. code-block:: bash
 
-   rhapsody-cli class update --path pkg/TemperatureSensor '{"isAbstract": true}'
+   rhapsody-cli class update --path pkg/TemperatureSensor '{"description": "Updated"}'
    rhapsody-cli class delete --path pkg/TemperatureSensor
+
+.. note::
+
+   The ``isAbstract`` flag cannot be persisted on property-style Rhapsody
+   Prog IDs (the COM property accepts writes but never persists them);
+   ``class update`` reports this explicitly instead of silently ignoring it.
 
 Package Commands
 -----------------
