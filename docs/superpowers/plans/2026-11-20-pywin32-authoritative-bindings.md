@@ -30,6 +30,21 @@
 
 **Priority:** Task 3 (removal of the unavailable RPClass member) runs before any fix or backlog work.
 
+## Property vs method refactor — IRPClass only
+
+This plan does **not** refactor property/method handling across the wrapper hierarchy. The shared helpers (`com_utils._get_method_or_property` / `_set_method_or_property`, `com_utils.py:31-58`) already implement the dual binding correctly, and the 56 getter/property rows in the IRPClass report are that pattern working as intended. Scope is limited to COM call sites **visible in the IRPClass report**.
+
+| Shape in `IRPClass_api_report.md` | Correct wrapper form | IRPClass application |
+|---|---|---|
+| pywin32 member is a `property` (e.g. `BinaryID`, `CMHeader`, `isAbstract`, `activityDiagram`) | `_get_method_or_property(self._com, "getX", "x")` / `_set_method_or_property(...)`, Java name first, pywin32 name second | Already used by the 56 rows; only `BinaryID` and `CMHeader` have the wrong pywin32 name and are fixed in Task 4 |
+| pywin32 member is a `method` (e.g. `isOfMetaClass`) | direct `com_utils.call_com(lambda: self._com.isOfMetaClass(...))` | `get_is_of_meta_class` is fixed in Task 4 — a getter/property helper would return the bound method without calling it |
+| pywin32 member absent (e.g. `updateContainedDiagramsOnServer`, `getRmmUrl`) | remove the wrapper, or keep a documented `NotImplementedError` stub | `RPClass.update_contained_diagrams_on_server` removed in Task 3; inherited `get_rmm_url` documented in Task 5 |
+
+**Explicit non-goals of this scoped consideration:**
+- No descriptors, proxy objects, or generic typed-property helpers — that would touch all 97+ wrappers and invalidate every fake-based unit test.
+- No changes to property/method handling for the other 11 interfaces.
+- No new validator status for "property called as method"; a one-off guard in Task 5 verifies the IRPClass-visible case. A generic validator check can be a follow-up in #121.
+
 ## Scope and non-goals
 
 **In scope:**
@@ -820,6 +835,42 @@ PY
 
 Expected: `IRPClass: zero actionable deviations`.
 
+Then guard the IRPClass-visible property/method shapes (no generic validator change):
+
+```bash
+python - <<'PY'
+import ast
+import json
+from pathlib import Path
+
+catalog = json.loads(Path("docs/reports/pywin32_authority.json").read_text(encoding="utf-8"))["catalog"]["IRPClass"]
+properties = {name for name, kind in catalog.items() if "property" in kind}
+sources = [
+    Path("src/rhapsody_cli/models/core.py"),
+    Path("src/rhapsody_cli/models/elements/classifiers/model_class.py"),
+]
+violations: list = []
+for source in sources:
+    tree = ast.parse(source.read_text(encoding="utf-8"))
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call) or not isinstance(node.func, ast.Attribute):
+            continue
+        base = node.func.value
+        if (
+            isinstance(base, ast.Attribute)
+            and base.attr == "_com"
+            and isinstance(base.value, ast.Name)
+            and base.value.id == "self"
+            and node.func.attr in properties
+        ):
+            violations.append(f"{source}:{node.lineno}: {node.func.attr}()")
+assert not violations, violations
+print("IRPClass: no property-shaped pywin32 member called as a method")
+PY
+```
+
+Expected: `IRPClass: no property-shaped pywin32 member called as a method`. If it fails, the listed call site must use `_get_method_or_property` instead of `self._com.X()`.
+
 - [ ] **Step 3: Add the guard test**
 
 Add to `tests/unit/test_validate_model_api.py`:
@@ -867,6 +918,7 @@ The generated pywin32 interface from the registered `Rhapsody2 1.0` type library
 - If pywin32 does not expose a member at all, remove the wrapper that calls it (or keep a documented `NotImplementedError` stub) and add its Java name to `documented_unavailable`.
 - Document intentional Python-name aliases in `documented_aliases` instead of renaming public methods.
 - After changing a wrapper, regenerate its report with `python scripts/validate_model_api.py <IRPInterface> --source authority --path docs/reports` and require zero rows under `## Comparison details`.
+- Property/method refactoring is scoped to the members visible in the report being fixed (here: IRPClass). Do not reshape the shared wrapper hierarchy for one interface's deviations.
 ```
 
 - [ ] **Step 2: Run the quality gate**
@@ -899,7 +951,7 @@ Expected: PR #122 updates automatically.
 
 ## Self-review
 
-**Spec coverage:** IRPClass is the only target report. All 11 deviation types from the inventory have an explicit proposal (table above) and a task that implements or consciously defers it. The "remove unavailable first" instruction is Task 3, ahead of all fixes. Shared-base limitations (`get_rmm_url`, OSLC stubs, `setDescriptionHTML`) are documented rather than silently left broken, and tracked in #121.
+**Spec coverage:** IRPClass is the only target report. All 11 deviation types from the inventory have an explicit proposal (table above) and a task that implements or consciously defers it. The "remove unavailable first" instruction is Task 3, ahead of all fixes. The property/method consideration is explicitly scoped to IRPClass-visible call sites, with a decision table and a one-off guard in Task 5 — no hierarchy-wide refactor. Shared-base limitations (`get_rmm_url`, OSLC stubs, `setDescriptionHTML`) are documented rather than silently left broken, and tracked in #121.
 
 **Placeholder scan:** No TBD/TODO steps. Every code-changing step contains the complete code. Generated JSON is produced by a committed script with a verification command.
 
