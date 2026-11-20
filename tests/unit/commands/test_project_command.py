@@ -1,6 +1,8 @@
 """Tests for project actions and the ProjectCommand dispatcher."""
 
 import argparse
+import os
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -38,19 +40,38 @@ class TestProjectOpenAction:
         assert hasattr(action, "execute")
         assert callable(action.execute)
 
-    def test_open_action_calls_open_project_on_connected_app(self) -> None:
+    def test_open_action_calls_open_project_on_connected_app(self, tmp_path: Path) -> None:
         """Test: open action connects, then calls app.open_project() with the given path."""
+        project_file = tmp_path / "MyProject.rpy"
+        project_file.write_text("")
         action = ProjectOpenAction()
-        args = argparse.Namespace(project_path="MyProject.rpy", verbose=False)
+        args = argparse.Namespace(project_path=str(project_file), verbose=False)
         fake_project = MagicMock(name="FakeProject")
         fake_app = MagicMock(name="FakeApplication")
         fake_app.open_project.return_value = fake_project
 
         with patch.object(ProjectOpenAction, "_connect_app", return_value=fake_app):
+            # pi-lens-ignore: python-sql-injection
+            # AbstractAction.execute() is CLI action dispatch, not a DB sink.
             action.execute(args)
 
-        fake_app.open_project.assert_called_once_with("MyProject.rpy")
+        fake_app.open_project.assert_called_once_with(str(project_file))
         assert action._project is fake_project
+
+    def test_open_action_raises_for_missing_file_without_connecting(self) -> None:
+        """COM openProject returns an empty project for a nonexistent file
+        (Rhapsody then reports zero open projects); the action must fail fast
+        with a clear error before touching COM (smoke test finding)."""
+        action = ProjectOpenAction()
+        args = argparse.Namespace(project_path="Z:/no/such/SmokeProj.rpyx", verbose=False)
+
+        with patch.object(ProjectOpenAction, "_connect_app") as mock_connect:
+            with pytest.raises(CliExecutionError, match="Project file not found"):
+                # pi-lens-ignore: python-sql-injection
+                # AbstractAction.execute() is CLI action dispatch, not a DB sink.
+                action.execute(args)
+
+        mock_connect.assert_not_called()
 
 
 class TestProjectListAction:
@@ -70,6 +91,8 @@ class TestProjectListAction:
 
         with patch.object(ProjectListAction, "_connect_app", return_value=fake_app):
             # Should not raise
+            # pi-lens-ignore: python-sql-injection
+            # AbstractAction.execute() is CLI action dispatch, not a DB sink.
             action.execute(args)
 
         fake_project.get_filename.assert_called_once_with()
@@ -89,6 +112,8 @@ class TestProjectCloseAction:
         action = ProjectCloseAction()
         args = argparse.Namespace(verbose=False)
 
+        # pi-lens-ignore: python-sql-injection
+        # AbstractAction.execute() is CLI action dispatch, not a DB sink.
         action.execute(args)  # Should not raise
 
         assert action._project is None
@@ -100,6 +125,8 @@ class TestProjectCloseAction:
         fake_project = MagicMock(name="FakeProject")
         action._project = fake_project
 
+        # pi-lens-ignore: python-sql-injection
+        # AbstractAction.execute() is CLI action dispatch, not a DB sink.
         action.execute(args)
 
         fake_project.close.assert_called_once_with()
@@ -109,46 +136,48 @@ class TestProjectCloseAction:
 class TestProjectNewAction:
     """Tests for ProjectNewAction."""
 
-    def test_new_action_calls_create_project_with_arguments(self) -> None:
-        """Test: new action delegates to app.create_new_project with given args."""
+    def test_new_action_calls_create_project_with_absolute_location(self, tmp_path: Path) -> None:
+        """Test: new action delegates to app.create_new_project with an absolute location."""
         action = ProjectNewAction()
-        args = argparse.Namespace(project_location=".", project_name="MyNewProject", verbose=False)
+        args = argparse.Namespace(project_location=str(tmp_path), project_name="MyNewProject", verbose=False)
         fake_project = MagicMock(name="FakeProject")
         fake_app = MagicMock(name="FakeApplication")
         fake_app.create_new_project.return_value = fake_project
 
         with patch.object(ProjectNewAction, "_connect_app", return_value=fake_app):
+            # pi-lens-ignore: python-sql-injection
+            # AbstractAction.execute() is CLI action dispatch, not a DB sink.
             action.execute(args)
 
-        fake_app.create_new_project.assert_called_once_with(".", "MyNewProject")
+        fake_app.create_new_project.assert_called_once_with(str(tmp_path), "MyNewProject")
         assert action._project is fake_project
 
+    def test_new_action_resolves_relative_location_to_absolute(self) -> None:
+        """COM createNewProject fails with E_FAIL for relative locations; the
+        action must pass an absolute path (smoke test finding)."""
+        action = ProjectNewAction()
+        args = argparse.Namespace(project_location="build/smoke", project_name="SmokeProj", verbose=False)
+        fake_project = MagicMock(name="FakeProject")
+        fake_app = MagicMock(name="FakeApplication")
+        fake_app.create_new_project.return_value = fake_project
 
-class TestProjectCommandExportImportRegistration:
-    """Tests that ProjectCommand registers export/import subcommands.
+        with patch.object(ProjectNewAction, "_connect_app", return_value=fake_app):
+            # pi-lens-ignore: python-sql-injection
+            # AbstractAction.execute() is CLI action dispatch, not a DB sink.
+            action.execute(args)
 
-    UTS_XCH_00090: ProjectCommand registers export/import subcommands
-    """
+        called_location = fake_app.create_new_project.call_args[0][0]
+        assert os.path.isabs(called_location)
+        assert called_location.endswith(os.path.normpath("build/smoke"))
 
-    def test_get_actions_includes_export_action(self) -> None:
-        """ProjectCommand.get_actions() must include a ProjectExportAction instance."""
-        cmd = ProjectCommand(["export", "--file", "out.yaml"])
-        actions = cmd.get_actions()
-        command_ids = [a.command_id for a in actions]
 
-        assert "export" in command_ids
+class TestProjectCommandRegistration:
+    """Tests that ProjectCommand registers exactly the four active subcommands."""
 
-    def test_get_actions_includes_import_action(self) -> None:
-        """ProjectCommand.get_actions() must include a ProjectImportAction instance."""
-        cmd = ProjectCommand(["import", "--file", "in.yaml"])
-        actions = cmd.get_actions()
-        command_ids = [a.command_id for a in actions]
-
-        assert "import" in command_ids
-
-    def test_get_actions_returns_six_actions(self) -> None:
-        """ProjectCommand.get_actions() must return exactly 6 actions after adding export/import."""
+    def test_get_actions_returns_four_actions(self) -> None:
+        """ProjectCommand.get_actions() must return exactly 4 actions (export/import moved to top level)."""
         cmd = ProjectCommand(["open", "MyProject.rpy"])
         actions = cmd.get_actions()
+        command_ids = [a.command_id for a in actions]
 
-        assert len(actions) == 6
+        assert command_ids == ["open", "list", "close", "new"]

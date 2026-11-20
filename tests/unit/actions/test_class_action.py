@@ -276,12 +276,12 @@ class TestClassCreateAction:
             mock_class.add_attribute.assert_any_call("unit")
 
     def test_create_with_superclasses(self) -> None:
-        """UTS_CLS_00008: Test superclasses resolved via findNestedClassifierRecursive."""
+        """UTS_CLS_00008: Test superclasses resolved via findNestedElementRecursive(name, 'Class')."""
         action, mock_parent = self._make_action_with_parent()
         mock_class = MagicMock()
         mock_parent.add_class.return_value = mock_class
         mock_base = MagicMock()
-        mock_parent.find_nested_classifier_recursive.return_value = mock_base
+        mock_parent.find_nested_element_recursive.return_value = mock_base
 
         with patch.object(action, "_resolve_and_validate_package", return_value=mock_parent):
             args = MagicMock()
@@ -291,8 +291,25 @@ class TestClassCreateAction:
 
             action.execute(args)
 
-            mock_parent.find_nested_classifier_recursive.assert_called_once_with("BaseSensor")
+            mock_parent.find_nested_element_recursive.assert_called_once_with("BaseSensor", "Class")
             mock_class.add_generalization.assert_called_once_with(mock_base)
+
+    def test_create_scalar_json_item_recorded_as_error(self) -> None:
+        """A non-object JSON item (e.g. a bare string) is recorded as a
+        per-item error and surfaces as the bulk 'all failed' CliExecutionError
+        instead of an escaping AttributeError."""
+        action, mock_parent = self._make_action_with_parent()
+
+        with patch.object(action, "_resolve_and_validate_package", return_value=mock_parent):
+            args = MagicMock()
+            args.path = "Sensors"
+            args.input = None
+            args.attributes = '["TemperatureSensor"]'
+
+            with pytest.raises(CliExecutionError, match="Created 0/1 classes; all failed"):
+                # pi-lens-ignore: python-sql-injection
+                # AbstractAction.execute() is CLI action dispatch, not a DB sink.
+                action.execute(args)
 
     def test_create_skips_unknown_attributes(self) -> None:
         """UTS_CLS_00009: Test unknown attributes skipped with warning."""
@@ -665,7 +682,7 @@ class TestClassLinkAction:
         mock_target = MagicMock()
 
         with patch.object(action, "_resolve_and_validate_class", return_value=mock_source):
-            mock_owner.find_nested_classifier_recursive.return_value = mock_target
+            mock_owner.find_nested_element_recursive.return_value = mock_target
 
             args = MagicMock()
             args.path = "Sensors/TemperatureSensor"
@@ -676,7 +693,7 @@ class TestClassLinkAction:
 
             action.execute(args)
 
-            mock_owner.find_nested_classifier_recursive.assert_called_once_with("BaseSensor")
+            mock_owner.find_nested_element_recursive.assert_called_once_with("BaseSensor", "Class")
             mock_source.add_generalization.assert_called_once_with(mock_target)
 
     def test_remove_generalization_by_path(self) -> None:
@@ -691,7 +708,7 @@ class TestClassLinkAction:
         mock_target = MagicMock()
 
         with patch.object(action, "_resolve_and_validate_class", return_value=mock_source):
-            mock_owner.find_nested_classifier_recursive.return_value = mock_target
+            mock_owner.find_nested_element_recursive.return_value = mock_target
 
             args = MagicMock()
             args.path = "Sensors/TemperatureSensor"
@@ -702,7 +719,7 @@ class TestClassLinkAction:
 
             action.execute(args)
 
-            mock_owner.find_nested_classifier_recursive.assert_called_once_with("BaseSensor")
+            mock_owner.find_nested_element_recursive.assert_called_once_with("BaseSensor", "Class")
             mock_source.delete_generalization.assert_called_once_with(mock_target)
 
     def test_link_requires_add_or_remove(self) -> None:
@@ -731,7 +748,7 @@ class TestClassLinkAction:
         mock_source.get_meta_class.return_value = "Class"
         mock_owner = MagicMock()
         mock_source.get_owner.return_value = mock_owner
-        mock_owner.find_nested_classifier_recursive.return_value = None
+        mock_owner.find_nested_element_recursive.return_value = None
 
         with patch.object(action, "_resolve_and_validate_class", return_value=mock_source):
             args = MagicMock()
@@ -758,7 +775,7 @@ class TestClassLinkAction:
         mock_target = MagicMock()
 
         with patch.object(action, "_resolve_class_by_guid", return_value=mock_source):
-            mock_owner.find_nested_classifier_recursive.return_value = mock_target
+            mock_owner.find_nested_element_recursive.return_value = mock_target
 
             args = MagicMock()
             args.path = None

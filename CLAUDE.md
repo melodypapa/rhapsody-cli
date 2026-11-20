@@ -97,13 +97,15 @@ ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ && pytes
 ### Running the CLI
 
 ```bash
-rhapsody-cli element add --type class --name MyClass
-rhapsody-cli element query
+rhapsody-cli connect
 rhapsody-cli project open path/to/project.rpy
 rhapsody-cli project list
+rhapsody-cli class list --path SomePackage
 ```
 
-**Available command groups:** `element` | `io` | `project`
+**Active single-level commands:** `connect` | `disconnect` | `status` | `version` | `export` | `import`
+**Active two-level command groups:** `project` | `package` | `class`
+**Suspended (dispatch rejects with a notice, implementations retained):** `attribute` | `operation` | `port` — see `SUSPENDED_COMMANDS` in `src/rhapsody_cli/cli/cli.py`.
 
 ## Architecture
 
@@ -146,7 +148,7 @@ Prog ID: `Rhapsody2.Application.1` (`application.py:18`). `pywin32` imports are 
 The CLI uses **argparse** (stdlib) with a class-based, two-tier command/action architecture (recently migrated from Click — see git history). This "PanGu style" pattern is mandatory for all new CLI code.
 
 **Dispatch flow** (`cli/cli.py:16`):
-1. `main()` reads `sys.argv[1]` as the command group name (`element` | `io` | `project`)
+1. `main()` reads `sys.argv[1]` as the command name, rejects names in `SUSPENDED_COMMANDS` (`attribute` | `operation` | `port`) with a notice and exit code 2, then routes single-level commands (`connect` | `disconnect` | `status` | `version` | `export` | `import`) directly to their actions and two-level groups (`project` | `package` | `class`) to `AbstractCommand` subclasses
 2. Instantiates the matching `AbstractCommand` subclass with the remaining args
 3. The command group constructs an `argparse.ArgumentParser` with one subparser per `AbstractAction`
 4. On `execute()`, dispatches to the selected action's `execute(args)`
@@ -157,7 +159,7 @@ The CLI uses **argparse** (stdlib) with a class-based, two-tier command/action a
 - `execute()` (`abstract_command.py:62`) looks up the selected action and calls `action.execute(parsed_args)`
 
 **Actions** (`actions/abstract_action.py:12`):
-- Each action = one subcommand (e.g. `ElementAddAction` → `element add`)
+- Each action = one subcommand (e.g. `ClassCreateAction` → `class create`)
 - Instance attributes: `command_id` (subcommand identifier), `logger` (instance-specific `logging.getLogger(self.__class__.__name__)`)
 - Must implement `init_arguments(sub_parser)` (register its own subparser + args) and `execute(args)` (business logic)
 - Base hierarchy: `AbstractAction` → `RhapsodyContextAction` (adds connection/error handling) → `ElementManagementAction` (adds `_get_active_project()` helper)
@@ -301,7 +303,7 @@ class MyAction(RhapsodyContextAction):
 1. Write tests first in appropriate `tests/unit/cli/`, `tests/unit/commands/`, or `tests/unit/actions/` module
 2. Create an action class inheriting from `AbstractAction` (or `RhapsodyContextAction` / `ElementManagementAction`)
 3. Implement `init_arguments(sub_parser)` to register the subparser and `execute(args)` for business logic
-4. Register the action in the appropriate command group's `get_actions()` method (`ElementCommand`, `ProjectCommand`, etc.)
+4. Register the action in the appropriate command group's `get_actions()` method (`ClassCommand`, `PackageCommand`, `ProjectCommand`, etc.)
 5. Verify unit tests pass and run the full quality gate
 
 ## Documentation

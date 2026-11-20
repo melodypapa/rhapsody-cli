@@ -11,8 +11,12 @@ Command Structure
 
 The CLI has two types of commands:
 
-* **Single-Level Commands**: Direct actions (connect, disconnect, status, version)
-* **Two-Level Commands**: Action groups with subcommands (project, package, class, attribute, operation, port)
+* **Single-Level Commands**: Direct actions (connect, disconnect, status, version, export, import)
+* **Two-Level Commands**: Action groups with subcommands (project, package, class)
+
+Command groups ``attribute``, ``operation``, and ``port`` are temporarily
+suspended: running them prints a notice and exits with code 2 (their
+implementations remain in the codebase).
 
 Session Management Commands
 ----------------------------
@@ -202,7 +206,7 @@ Lists all currently open Rhapsody projects.
 .. code-block:: bash
 
    rhapsody-cli project list
-   rhapsody-cli --output json project list
+   rhapsody-cli --format json project list
 
 ``project close`` - Close Active Project
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -219,128 +223,62 @@ Closes the currently active project.
 
    rhapsody-cli project close
 
-Element Commands
-----------------
+Class Commands
+--------------
 
-Multi-Level Paths
-~~~~~~~~~~~~~~~~~~
+Classes are managed through the ``class`` command group with the
+subcommands ``create``, ``view``, ``list``, ``link``, ``update``, and
+``delete``. All subcommands except ``create`` require ``--path`` (or
+``--guid``) to identify the class. Paths use "/" or "\\"-separated
+segments to navigate nested packages, e.g. ``parent-pkg/pkg/child-pkg``;
+when ``--path`` is omitted on ``create``, the class is created at the
+project root.
 
-The ``--path`` option (on ``add`` and ``query``) and the ``path`` argument
-(on ``view`` and ``delete``) accept "/" or "\\"-separated paths to navigate
-nested packages, e.g. ``parent-pkg/pkg/child-pkg``. An optional leading
-``Root`` segment is accepted and ignored. When ``--path`` is omitted on
-``add`` or ``query``, the project root is used.
-
-``element add`` - Add New Element(s)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-   rhapsody-cli element add --type TYPE --name NAME [--path PATH]
-   rhapsody-cli element add --type TYPE --bulk FILE [--path PATH]
-
-Create one new element (``--name``) or many elements at once (``--bulk``)
-in the active project. ``--path`` selects the destination container;
-defaults to the project root.
-
-**Examples:**
+``class create`` - Create a Class
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
-   # Single element at the root
-   rhapsody-cli element add --type class --name MyClass
+   rhapsody-cli class create --path PARENT_PATH ATTRIBUTES
 
-   # Single element in a nested package
-   rhapsody-cli element add --type class --name MyClass --path parent-pkg/pkg
-
-   # Bulk-create classes from a file
-   rhapsody-cli element add --type class --bulk items.txt --path pkg
-
-``items.txt`` contains one element name per line, blank lines are skipped::
-
-   Class1
-   Class2
-   Class3
-
-Output on success::
-
-   Added 3 items:
-     ✓ Class1 created at pkg/Class1
-     ✓ Class2 created at pkg/Class2
-     ✓ Class3 created at pkg/Class3
-
-Output with per-item errors (creation continues past failures)::
-
-   Added 2/3 items. Errors:
-     Line 2 (Class2): duplicate name
-
-``element view`` - View Element Details
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-   rhapsody-cli element view --path PATH
-
-Display detailed information about a specific element addressed by a
-multi-level path.
+Create one or more classes under the package/classifier at
+``PARENT_PATH``. ``ATTRIBUTES``/``--input`` accepts inline JSON or a
+JSON file; ``name`` is required.
 
 **Example:**
 
 .. code-block:: bash
 
-   rhapsody-cli element view --path pkg/subpkg/MyClass
-   rhapsody-cli --output json element view --path pkg/subpkg/MyClass
+   rhapsody-cli class create --path pkg '{"name": "TemperatureSensor"}'
 
-``element query`` - Query Model Elements
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-   rhapsody-cli element query [PATTERN] [--path PATH] [--recursive]
-
-Query and list elements directly under ``--path`` (default: project root).
-Add ``--recursive`` to include elements nested at any depth; recursive
-output includes each element's full path.
-
-**Example:**
+``class view`` / ``class list``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
-   # List direct children of the root
-   rhapsody-cli element query
+   rhapsody-cli class view --path pkg/TemperatureSensor [--format table|json|csv]
+   rhapsody-cli class list --path pkg [--format table|json|csv]
 
-   # List direct children of a nested package
-   rhapsody-cli element query --path pkg/subpkg
-
-   # List the entire hierarchy under a package
-   rhapsody-cli element query --path pkg --recursive
-
-   # JSON output
-   rhapsody-cli --output json element query --recursive
-
-``element delete`` - Delete Element(s)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+``class link`` - Link a Generalization
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
-   rhapsody-cli element delete PATH [--recursive] [--force]
+   rhapsody-cli class link --path pkg/Child --add BaseName
 
-Delete the element addressed by ``PATH``. Add ``--recursive`` to also
-delete every element nested within it; without ``--force`` this prompts
-for confirmation showing how many nested elements will be removed.
-
-**Example:**
+``class update`` / ``class delete``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
-   # Delete a single element
-   rhapsody-cli element delete pkg/subpkg/MyClass
+   rhapsody-cli class update --path pkg/TemperatureSensor '{"description": "Updated"}'
+   rhapsody-cli class delete --path pkg/TemperatureSensor
 
-   # Delete a package and everything inside it (with confirmation prompt)
-   rhapsody-cli element delete pkg/subpkg --recursive
+.. note::
 
-   # Same, but skip the confirmation prompt
-   rhapsody-cli element delete pkg/subpkg --recursive --force
+   The ``isAbstract`` flag cannot be persisted on property-style Rhapsody
+   Prog IDs (the COM property accepts writes but never persists them);
+   ``class update`` reports this explicitly instead of silently ignoring it.
 
 Package Commands
 -----------------
@@ -449,6 +387,37 @@ List the names of packages directly nested under ``PATH``.
    rhapsody-cli package list --path pkg
    rhapsody-cli package list --path pkg --format json --output nested.json
 
+Model Import/Export
+-------------------
+
+``export`` and ``import`` are single-level commands for YAML-based model
+exchange, operating at package granularity. ``--path`` is optional and
+defaults to the project root, so exporting the root covers the whole
+model.
+
+.. code-block:: bash
+
+   # Export the whole model (root package) to YAML
+   rhapsody-cli export --file model.yaml
+
+   # Export one package
+   rhapsody-cli export --path pkg/Sensors --file sensors.yaml
+
+   # Import a YAML file into the root package
+   rhapsody-cli import --file model.yaml
+
+   # Import a YAML file into a package
+   rhapsody-cli import --path pkg/Sensors --file model.yaml
+
+Suspended Commands
+------------------
+
+The ``attribute``, ``operation``, and ``port`` command groups are
+temporarily suspended. Running them prints a notice on stderr and exits
+with code 2. Their implementations remain in
+``src/rhapsody_cli/actions/`` and can be re-enabled by removing them
+from ``SUSPENDED_COMMANDS`` in ``src/rhapsody_cli/cli/cli.py``.
+
 Common Use Cases
 ----------------
 
@@ -464,10 +433,10 @@ Create a New Project with Model
    rhapsody-cli package create --path ExistingPackage '{"name": "MyPackage"}'
 
    # Add a class inside the new package
-   rhapsody-cli element add --type class --name MyClass --path ExistingPackage/MyPackage
+   rhapsody-cli class create --path ExistingPackage/MyPackage '{"name": "MyClass"}'
 
    # View what we created
-   rhapsody-cli element query --path ExistingPackage/MyPackage
+   rhapsody-cli class view --path ExistingPackage/MyPackage/MyClass
 
    # Close project
    rhapsody-cli project close
@@ -480,8 +449,8 @@ Query and Export
    # Open project
    rhapsody-cli project open myproject.rpy
 
-   # Query all elements recursively (JSON format)
-   rhapsody-cli --output json element query --recursive > elements.json
+   # Export the whole model to YAML
+   rhapsody-cli export --file elements.yaml
 
    # Close project
    rhapsody-cli project close
@@ -500,8 +469,8 @@ Example bash script (Windows):
    REM Open project
    rhapsody-cli project open "C:\MyModels\myproject.rpy"
 
-   REM Query elements and save to file
-   rhapsody-cli --output json element query > elements.json
+   REM Export the model to a YAML file
+   rhapsody-cli export --file model.yaml
 
    REM Close project
    rhapsody-cli project close
@@ -513,18 +482,16 @@ Example Python integration:
 .. code-block:: python
 
    import subprocess
-   import json
 
-   # Query elements via CLI
+   # Export the model via CLI
    result = subprocess.run(
-       ["rhapsody-cli", "--output", "json", "element", "query"],
+       ["rhapsody-cli", "export", "--file", "model.yaml"],
        capture_output=True,
        text=True
    )
 
    if result.returncode == 0:
-       elements = json.loads(result.stdout)
-       print(f"Found {len(elements)} elements")
+       print("Model exported successfully")
    else:
        print(f"Error: {result.stderr}")
 
@@ -539,7 +506,7 @@ Save CLI output to file:
 .. code-block:: bash
 
    rhapsody-cli project list > projects.txt
-   rhapsody-cli --output json element query > elements.json
+   rhapsody-cli class list --path pkg --format json > classes.json
 
 Piping Output
 ~~~~~~~~~~~~~
@@ -548,17 +515,16 @@ Process output with other tools:
 
 .. code-block:: bash
 
-   rhapsody-cli --output json element query | python -m json.tool
+   rhapsody-cli class list --path pkg --format json | python -m json.tool
 
-Environment Variables
-~~~~~~~~~~~~~~~~~~~~~
+Output Format Flag
+~~~~~~~~~~~~~~~~~~
 
-Set default output format:
+Pass ``--format`` after the command group:
 
 .. code-block:: bash
 
-   set RHAPSODY_OUTPUT=json
-   rhapsody-cli element query
+   rhapsody-cli class list --path pkg --format json
 
 Troubleshooting
 ---------------

@@ -1,6 +1,7 @@
 """Project actions - each subcommand of `project` as its own Action class."""
 
 import argparse
+import os
 
 from rhapsody_cli.actions.abstract_action import RhapsodyContextAction
 from rhapsody_cli.exceptions import CliExecutionError, RhapsodyConnectionError
@@ -25,6 +26,10 @@ class ProjectOpenAction(RhapsodyContextAction):
     def execute(self, args: argparse.Namespace) -> None:
         """Open a project file."""
         project_path = args.project_path
+        if not os.path.isfile(project_path):
+            # COM openProject silently returns an empty project for a missing
+            # file; fail fast with a clear error before touching COM.
+            raise CliExecutionError(f"Project file not found: {project_path}")
         try:
             app = self._connect_app()
             self._project = app.open_project(project_path)
@@ -110,7 +115,9 @@ class ProjectNewAction(RhapsodyContextAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         """Create a new project."""
-        project_location = args.project_location
+        # COM createNewProject fails with E_FAIL for relative locations; always
+        # hand it an absolute path.
+        project_location = os.path.abspath(args.project_location)
         project_name = args.project_name
         try:
             app = self._connect_app()

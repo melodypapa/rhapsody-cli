@@ -64,14 +64,19 @@ def test_classifier_get_operations_returns_collection() -> None:
     assert operations[0].get_name() == "doIt"
 
 
-def test_classifier_add_generalization_delegates_to_com() -> None:
+def test_classifier_add_generalization_delegates_to_com_and_returns_wrapped() -> None:
     fake = make_fake_element("Class")
     base = make_fake_element("Class", getName="Base")
+    fake.addGeneralization.return_value = make_fake_element("Generalization", getName="gen1")
     classifier = RPClassifier(fake)
 
-    classifier.add_generalization(RPClassifier(base))
+    # pi-lens-ignore: func-returns-value
+    # add_generalization returns the wrapped IRPGeneralization (the new contract under test).
+    result = classifier.add_generalization(RPClassifier(base))
 
     fake.addGeneralization.assert_called_once_with(base)
+    assert result is not None
+    assert result.get_name() == "gen1"
 
 
 def test_classifier_add_statechart_wraps_result() -> None:
