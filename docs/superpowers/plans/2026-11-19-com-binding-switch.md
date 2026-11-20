@@ -19,7 +19,8 @@
 - No real COM in unit tests; patch `rhapsody_cli.application.win32com`.
 - Live checks require licensed Rhapsody on Windows; use scratch projects and clean them afterward.
 - `early` must not be considered successful unless project, package, class, component, and collection-element `_com` objects are from `win32com.gen_py` and wrapper operations succeed on them.
-- Commit style: conventional commits; no AI attribution.
+- Commit style: conventional commits; no AI attribution. Every task commit below uses explicit paths — never `git add -A` / `git add .`. Pre-flight: the working tree currently has an unrelated uncommitted deletion (`D docs/plans/type-annotation-audit-round3.md`); leave it untouched unless the user resolves it.
+- Cache isolation for live gates: a populated gen_py cache makes plain `Dispatch`/`GetActiveObject` return typed shells too, so any `dynamic` control run (Tasks 6-8) is only valid if the cache is cleared first (`win32com.client.gencache.Rebuild()` or delete `%TEMP%\gen_py\3.x\<guid>`), or if the dynamic control runs before any early-mode invocation. Record which protocol was used.
 
 ---
 
@@ -68,7 +69,7 @@ Expected: 4 failures because `_get_binding` does not yet exist.
 
 - [ ] **Step 3: Implement**
 
-In `application.py`, add `import os` and after `_PROG_ID`:
+In `application.py`, add `import logging` and `import os`, define `logger = logging.getLogger(__name__)` near the top of the module, then after `_PROG_ID` add:
 
 ```python
 _BINDING_ENV = "RHAPSODY_COM_BINDING"
@@ -102,7 +103,7 @@ git commit -m "feat: add RHAPSODY_COM_BINDING selection"
 - Modify: `src/rhapsody_cli/application.py`
 - Test: `tests/unit/test_application.py`
 
-**Produces:** `_launch()` selects `EnsureDispatch(_PROG_ID)` for `early`, `Dispatch(_PROG_ID)` otherwise; existing `call_com` error translation and `RhapsodyConnectionError` handling remain unchanged.
+**Produces:** `_launch()` calls `win32com.client.gencache.EnsureDispatch(_PROG_ID)` directly for `early` (no `call_com` wrapper) and `Dispatch(_PROG_ID)` otherwise; the dynamic path's existing `call_com` error translation and `RhapsodyConnectionError` handling remain unchanged.
 
 - [ ] **Step 1: Add failing tests**
 
@@ -142,12 +143,16 @@ In `_launch`, keep the existing pywin32 guard and exception handling, but branch
 
 ```python
             if _get_binding() == "early":
-                com_obj = com_utils.call_com(lambda: win32com.client.gencache.EnsureDispatch(_PROG_ID))
+                com_obj = win32com.client.gencache.EnsureDispatch(_PROG_ID)
             else:
                 com_obj = com_utils.call_com(lambda: win32com.client.Dispatch(_PROG_ID))
 ```
 
-If `client.gencache` is not present through the normal guarded import, import `win32com.client.gencache` inside the same guarded import block and call it through that imported module. Do not change `com_utils` or any model wrapper.
+Prerequisite for this task (and Task 3): extend the guarded import block in `application.py` to include `import win32com.client.gencache` — plain `import win32com.client` (the current code at line 18) does not make the `gencache` attribute available. (`logger` from Task 1 is also required by `_get_binding()`.)
+
+Call `EnsureDispatch` directly as shown — it is a pywin32 wrapper-generation call, not a Rhapsody COM method, and is intentionally not wrapped in `call_com`.
+
+Keep the exact access chain `win32com.client.gencache.EnsureDispatch(...)` shown above. The unit tests patch `rhapsody_cli.application.win32com` and assert on `mock_win32com.client.gencache.EnsureDispatch`, so binding `gencache` to a separate name (e.g. `gencache.EnsureDispatch(...)`) would bypass the patch and fail the tests. Do not change `com_utils` or any model wrapper.
 
 - [ ] **Step 4: Verify and commit**
 
@@ -213,7 +218,9 @@ In `_attach()`, preserve the current `GetActiveObject` call and error translatio
         return cls(com_obj)
 ```
 
-Do not pass `_PROG_ID` to `EnsureDispatch` from `_attach`; only pass the COM object already returned by `GetActiveObject`.
+Call `EnsureDispatch` directly as shown — it is a wrapper-generation call, not a Rhapsody COM method, and is intentionally not wrapped in `call_com`. Keep the exact `win32com.client.gencache.EnsureDispatch` chain so the unit-test patch intercepts it. Do not pass `_PROG_ID` to `EnsureDispatch` from `_attach`; only pass the COM object already returned by `GetActiveObject`.
+
+Consequence to record: a `com_error` raised by `EnsureDispatch` is no longer translated to `RhapsodyRuntimeException`, so the existing `except RhapsodyRuntimeException` in `_attach` will not catch it and `connect()` will not fall back to `_launch()` on that failure. If that fallback must be preserved, add explicit handling for the COM error type here — do not reintroduce `call_com`.
 
 - [ ] **Step 4: Verify and commit**
 
@@ -234,7 +241,7 @@ git commit -m "feat: EnsureDispatch existing application on early attach without
 
 - [ ] **Step 1: Document in CLAUDE.md**
 
-Add a `### COM Binding (RHAPSODY_COM_BINDING)` section after the application-layer section and before the CLI-layer section. State: `dynamic` default until the live parity gate; `early` uses EnsureDispatch on launch and on an already-acquired GetActiveObject during attach; models/core, wrappers, com_utils, CLI and actions are unchanged; property access fallback remains required; cache location and rebuild/delete recovery after Rhapsody upgrades.
+Add a `### COM Binding (RHAPSODY_COM_BINDING)` section after the application-layer section and before the CLI-layer section. State: `dynamic` default until the live parity gate; `early` uses EnsureDispatch on launch and on an already-acquired GetActiveObject during attach; models/core, wrappers, com_utils, CLI and actions are unchanged; property access fallback remains required; cache location and rebuild/delete recovery after Rhapsody upgrades; and that a populated gen_py cache is auto-used by plain `Dispatch`/`GetActiveObject`, so a true `dynamic` control run requires clearing it first.
 
 - [ ] **Step 2: Document in the user guide**
 
@@ -300,6 +307,8 @@ Using the existing snake_case APIs (do not change wrappers): `get_name`, `get_me
 
 Any returned model object is not gen_py typed, or any wrapper operation that succeeds under `dynamic` fails under `early` → STOP; do not flip the default. Record element type, member, error, and dynamic control result in this plan. Ask for design revision before broad smoke. If all typedness and member checks pass, continue to Task 7.
 
+**Cache isolation:** a populated gen_py cache makes plain `Dispatch`/`GetActiveObject` return typed shells too, so a `dynamic` control can silently be early-bound. Before each `dynamic` control run, clear the cache (`win32com.client.gencache.Rebuild()` or delete `%TEMP%\gen_py\3.x\<guid>`), or run the dynamic control first before any `early` invocation. Record which protocol was used alongside the control result; a control run without cache isolation does not count as evidence.
+
 - [ ] **Step 5: Clean scratch project and record results**
 
 Close the project, disconnect, remove `build/early-binding-spike/`, and record Rhapsody version + runtime types + pass/fail.
@@ -317,7 +326,7 @@ Use the 26-command checklist in `docs/superpowers/plans/2026-11-19-cli-simplific
 
 - [ ] **Step 2: Record results**
 
-Append a per-command PASS/FAIL table, Rhapsody version, and any COM type signatures. If any smoke check fails, retry that exact command with `RHAPSODY_COM_BINDING=dynamic` to distinguish a binding regression from an existing issue. No default flip unless every required command passes.
+Append a per-command PASS/FAIL table, Rhapsody version, and any COM type signatures. If any smoke check fails, retry that exact command with `RHAPSODY_COM_BINDING=dynamic` to distinguish a binding regression from an existing issue — but first clear the gen_py cache (see Global Constraints / Task 6) so the retry genuinely exercises dynamic binding. No default flip unless every required command passes.
 
 - [ ] **Step 3: Commit results**
 
@@ -345,7 +354,7 @@ Update env-var tests so unset/empty -> `early`, explicit `dynamic` -> `dynamic`,
 
 - [ ] **Step 3: Verify**
 
-Run the full quality gate and one control smoke pass with `RHAPSODY_COM_BINDING=dynamic` to prove rollback mode still works.
+Run the full quality gate and one control smoke pass with `RHAPSODY_COM_BINDING=dynamic` to prove rollback mode still works. Clear the gen_py cache first (see Global Constraints / Task 6); otherwise the cache will hand the "dynamic" process generated shells and the control proves nothing.
 
 - [ ] **Step 4: Commit**
 
@@ -360,3 +369,5 @@ git commit -m "feat: make typed EnsureDispatch binding the default"
 - Attach safety: `GetActiveObject` occurs before EnsureDispatch and the acquired object—not the ProgID—is passed into EnsureDispatch, so early attach cannot launch a new instance.
 - Spec coverage: binding selection, launch, attach, cache docs, live typed object gate, full smoke and conditional default flip are all covered.
 - No com_utils nativization/deprecation task: user explicitly disallowed model-layer refactoring and said to keep model objects/com_utils in use; com_utils therefore remains unchanged and is expected to have internal callers.
+- Cache isolation: gen_py cache auto-use makes `dynamic` controls unreliable after an `early` run; Tasks 6-8 require an explicit cache clear (or dynamic-first ordering) for every control comparison. Pre-flight working tree also carries one unrelated uncommitted deletion, so all task commits use explicit paths only.
+- `call_com` is intentionally not applied to `EnsureDispatch` (launch or attach): it is a pywin32 wrapper-generation call, not a Rhapsody COM method. The pre-existing dynamic path keeps `call_com` unchanged; `com_utils` itself stays in place.
