@@ -15,13 +15,13 @@ if TYPE_CHECKING:
     )
 
 try:
-    import win32com.client
+    import win32com.client as win32_client
 except ImportError:  # pragma: no cover - pywin32 is Windows-only
     # pywin32 is only installed on Windows (see pyproject.toml). Importing
     # this module must still succeed on other platforms (e.g. Sphinx
     # autodoc running on Read the Docs' Linux build image); the COM calls
     # themselves will simply fail at runtime with a clear error instead.
-    win32com = None
+    win32_client = None
 
 from rhapsody_cli import com_utils
 from rhapsody_cli.exceptions import RhapsodyConnectionError, RhapsodyRuntimeException
@@ -58,10 +58,10 @@ class RhapsodyApplication:
             RhapsodyConnectionError: If pywin32 is unavailable or no running
                 Rhapsody instance can be found.
         """
-        if win32com is None:
+        if win32_client is None:
             raise RhapsodyConnectionError("pywin32 is not available; Rhapsody automation requires Windows.")
         try:
-            com_obj = com_utils.call_com(lambda: win32com.client.GetActiveObject(_PROG_ID))
+            com_obj = com_utils.call_com(lambda: win32_client.GetActiveObject(_PROG_ID))
         except RhapsodyRuntimeException as exc:
             raise RhapsodyConnectionError(f"No running Rhapsody instance found: {exc}") from exc
         return cls(com_obj)
@@ -77,10 +77,10 @@ class RhapsodyApplication:
             RhapsodyConnectionError: If pywin32 is unavailable or launching
                 Rhapsody fails.
         """
-        if win32com is None:
+        if win32_client is None:
             raise RhapsodyConnectionError("pywin32 is not available; Rhapsody automation requires Windows.")
         try:
-            com_obj = com_utils.call_com(lambda: win32com.client.Dispatch(_PROG_ID))
+            com_obj = com_utils.call_com(lambda: win32_client.Dispatch(_PROG_ID))
         except RhapsodyRuntimeException as exc:
             raise RhapsodyConnectionError(f"Failed to launch Rhapsody instance: {exc}") from exc
         return cls(com_obj)
@@ -258,7 +258,7 @@ class RhapsodyApplication:
         Returns:
             The version string (e.g. ``"8.3.1"``).
         """
-        return str(com_utils.call_com(lambda: self._com.getVersion()))
+        return str(com_utils.call_com(lambda: self._com.version()))
 
     def get_build_no(self) -> str:
         """Return the Rhapsody build number.

@@ -259,10 +259,11 @@ def test_save_all_delegates_to_com() -> None:
 
 def test_get_version_returns_string() -> None:
     fake_app = MagicMock(name="FakeApplication")
-    fake_app.getVersion.return_value = "8.3.1"
+    fake_app.version.return_value = "8.3.1"
     app = RhapsodyApplication(fake_app)
 
     assert app.get_version() == "8.3.1"
+    fake_app.version.assert_called_once_with()
 
 
 def test_get_build_no_returns_string() -> None:
