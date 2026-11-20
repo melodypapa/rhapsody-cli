@@ -6,7 +6,7 @@
 
 **Architecture:** The validator (`scripts/validate_model_api.py`) compares Java Javadoc, wrapper AST, and the pywin32 generated interface. This plan adds a committed authority snapshot (pywin32 name → kind per interface, plus documented aliases and documented-unavailable members) and an offline `--source authority` mode. `IRPClass` (`src/rhapsody_cli/models/elements/classifiers/model_class.py`) is the only target report; several root causes live in the inherited `RPModelElement` (`src/rhapsody_cli/models/core.py`) and are fixed there because they cannot be fixed in the child class.
 
-**Tech Stack:** Python 3.8+ stdlib (`ast`, `json`, `argparse`, `pathlib`, `typing.TypedDict`), pytest, ruff/black/mypy, Markdown reports. Windows CI has pywin32; macOS/Linux needs the temporary `pywintypes` stub documented in Task 6.
+**Tech Stack:** Python 3.8+ stdlib (`ast`, `json`, `argparse`, `pathlib`, `typing.TypedDict`), pytest, ruff/black/mypy, Markdown reports. Windows CI has pywin32 and live Rhapsody; macOS/Linux needs the temporary `pywintypes` stub documented in Task 7.
 
 ---
 
@@ -74,6 +74,8 @@ This plan does **not** refactor property/method handling across the wrapper hier
 | `tests/unit/models/elements/classifiers/test_model_class.py` (modify) | Remove old delegation test; add removal guard. |
 | `src/rhapsody_cli/models/core.py` (modify) | `BinaryID`, `CMHeader`, `isOfMetaClass` call sites. |
 | `tests/unit/models/test_core.py` (modify) | TDD tests for the three call-site changes. |
+| `tests/integration/models/elements/classifiers/test_model_class.py` (modify) | Remove the integration test for the deleted IRPClass method. |
+| `tests/integration/models/test_core.py` (modify) | Remove obsolete xfail, retitle documented-unavailable xfail; live verification of Task 4 call sites. |
 | `docs/reports/IRPClass_api_report.md` (regenerate) | Proof of zero actionable deviations. |
 | `docs/CODE_GUIDELINES.md` (modify) | "pywin32 Bindings Are Authoritative" rule. |
 
@@ -900,7 +902,95 @@ git commit -m "docs: regenerate IRPClass report with zero binding deviations"
 
 ---
 
-### Task 6: Record the rule and run the quality gate
+### Task 6: Integration tests for IRPClass and live COM verification
+
+**Files:**
+- Modify: `tests/integration/models/elements/classifiers/test_model_class.py:309-317`
+- Modify: `tests/integration/models/test_core.py:1344-1359` and `:1273`
+- Verify only (no edit): `tests/integration/models/test_core.py:1321-1330`, `:1760-1771`
+
+- [ ] **Step 1: Delete the integration test for the removed method**
+
+Delete this xfailed test from `tests/integration/models/elements/classifiers/test_model_class.py`:
+
+```python
+    @pytest.mark.xfail(strict=False, reason="IRPClass COM dispatch does not expose updateContainedDiagramsOnServer (AttributeError) though declared in the Java API")
+    def test_update_contained_diagrams_on_server(self, test_project: RPProject) -> None:
+        pkg_name = self._unique("SrvPkg")
+        class_name = self._unique("SrvCls")
+        pkg = self._create_package(test_project, pkg_name)
+        test_class = pkg.add_class(class_name)
+        try:
+            test_class.update_contained_diagrams_on_server(0)
+        finally:
+            test_class.delete_from_project()
+```
+
+This is required by the integration scope rule: the file targets `RPClass` and asserts only its own methods; the method no longer exists.
+
+- [ ] **Step 2: Remove the now-obsolete xfail on `get_is_of_meta_class`**
+
+Task 4 changes the COM call to `isOfMetaClass`, which is the member pywin32 actually exposes. Replace the decorator line:
+
+```python
+    @pytest.mark.xfail(strict=False, reason="IRPModelElement.getIsOfMetaClass not exposed via COM dispatch (AttributeError: addClass.getIsOfMetaClass)")
+```
+
+with nothing, leaving the test body unchanged:
+
+```python
+    def test_get_is_of_meta_class_class(self, test_project: RPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("IsOfPkg"))
+        try:
+            cls = pkg.add_class(self._unique("IsOfCls"))
+            result = cls.get_is_of_meta_class("Class")
+            assert result
+
+            not_result = cls.get_is_of_meta_class("Package")
+            assert not not_result
+        finally:
+            pkg.delete_from_project()
+```
+
+- [ ] **Step 3: Retitle the xfail for `get_rmm_url`**
+
+`get_rmm_url` is inherited and intentionally retained as a documented-unavailable wrapper (Task 5), so the live call still cannot succeed. Replace only the reason string:
+
+```python
+    @pytest.mark.xfail(strict=False, reason="getRmmUrl is listed in documented_unavailable; the pywin32 interface does not expose it")
+```
+
+Keep the test body unchanged.
+
+- [ ] **Step 4: Collection verification (no Rhapsody required)**
+
+```bash
+pytest tests/integration/models/elements/classifiers/test_model_class.py tests/integration/models/test_core.py --collect-only -q
+```
+
+Expected: collection succeeds; `test_update_contained_diagrams_on_server` is absent from the collected list.
+
+- [ ] **Step 5: Live verification on Windows/CI only**
+
+These are the real proof that the pywin32 names chosen in Task 4 work against a live Rhapsody instance; they cannot run on macOS/Linux:
+
+```bash
+pytest tests/integration/models/test_core.py -k "get_binary_id or get_cm_header or get_is_of_meta_class" -v
+pytest tests/integration/models/elements/classifiers/test_model_class.py -k "get_is_abstract" -v
+```
+
+Expected: `test_get_binary_id`, `test_set_and_get_cm_header_roundtrip`, and `test_get_is_of_meta_class_class` pass (the last one as a normal pass, not `xfail`); `get_is_abstract` is unaffected.
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add tests/integration/models/elements/classifiers/test_model_class.py tests/integration/models/test_core.py
+git commit -m "test: align IRPClass integration tests with pywin32 bindings"
+```
+
+---
+
+### Task 7: Record the rule and run the quality gate
 
 **Files:**
 - Modify: `docs/CODE_GUIDELINES.md` (insert before `## Questions?`)
@@ -954,6 +1044,8 @@ Expected: PR #122 updates automatically.
 **Spec coverage:** IRPClass is the only target report. All 11 deviation types from the inventory have an explicit proposal (table above) and a task that implements or consciously defers it. The "remove unavailable first" instruction is Task 3, ahead of all fixes. The property/method consideration is explicitly scoped to IRPClass-visible call sites, with a decision table and a one-off guard in Task 5 — no hierarchy-wide refactor. Shared-base limitations (`get_rmm_url`, OSLC stubs, `setDescriptionHTML`) are documented rather than silently left broken, and tracked in #121.
 
 **Placeholder scan:** No TBD/TODO steps. Every code-changing step contains the complete code. Generated JSON is produced by a committed script with a verification command.
+
+**Test coverage:** Unit tests cover every code change (validator classification, authority round-trip, removal guard, three call-site fixes, IRPClass report guard). Integration tests are explicitly handled in Task 6: the removed method's integration test is deleted, the obsolete `get_is_of_meta_class` xfail is removed, the `get_rmm_url` xfail reason is retitled, and the live `BinaryID`/`CMHeader` tests are the Windows-only proof of Task 4. Collection is verifiable offline; execution is CI-only per the project rules.
 
 **Type consistency:** `AuthorityData` (catalog, documented_aliases, documented_unavailable) is defined once in Task 1 and used unchanged in Tasks 2 and 5. `apply_pywin32_authority(rows, interface_name, authority)` has one signature used by all tests and `main`. `Rows` matches `build_deviation_rows`' return type. No `Any` annotations; no Python 3.9-only APIs (py3.8 target honored).
 
