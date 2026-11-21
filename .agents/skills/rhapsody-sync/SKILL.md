@@ -48,7 +48,7 @@ Every canonical `docs/reports/<INTERFACE>_api_report.md` carries a `- Java packa
 
 Move the wrapper only if it is not already in the canonical package. Add package `__init__.py` exports, preserve registration/import side effects, and update every internal reference to the canonical import. Keep the existing module naming convention where practical. Do not leave a compatibility shim at the old path for the migrated interface. Migrate only the requested interface; avoid unrelated package moves and refactors. If moving it safely requires broad changes or would break public imports, stop and ask before expanding scope.
 
-Both unit and integration tests move with it, mirroring the canonical package segment by segment. Use snake_case for the test module name derived from the Java interface (`IRPClass` → `test_irp_class.py`), and add `__init__.py` at every mirrored directory level. For example:
+Both unit and integration tests move with it, mirroring the canonical package segment by segment — the same report-declared Java package as the wrapper. Use snake_case for the test module name derived from the Java interface (`IRPClass` → `test_irp_class.py`), and add `__init__.py` at every mirrored directory level. For example:
 
 - Unit test: `tests/unit/models/com/telelogic/rhapsody/core/test_irp_class.py`
 - Integration test: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_class.py`
@@ -100,8 +100,10 @@ Add or update integration coverage only for supported behavior owned by this wra
 ## 6. Update the class requirement document
 
 Create or update the class's own requirement file at
-`docs/requirements/<java.package.path>/<snake_case>.md` — the same package path as the
-wrapper (for example `docs/requirements/com/telelogic/rhapsody/core/irp_class.md` for
+`docs/requirements/<java.package.path>/<snake_case>.md` — `<java.package.path>` is the Java
+package declared in the report's Summary (section 2), mirrored beneath `docs/requirements/`
+regardless of where the wrapper currently lives (for example
+`docs/requirements/com/telelogic/rhapsody/core/irp_class.md` for
 `IRPClass`). Use the JavaDoc class description for the summary, but retain project-specific
 requirements and implementation facts that JavaDoc cannot express. Keep the existing SWR
 entry format (`ID`, `Title`, `Status`, `Priority`, `Description`, `Implementation`,
@@ -113,7 +115,9 @@ monolith until their own sync run moves them.
 ## 7. Update the class RST document
 
 Create or update the class's API page at `docs/api/<java.package.path>/<snake_case>.rst` —
-for example `docs/api/com/telelogic/rhapsody/core/irp_class.rst` for `IRPClass`. Start the
+`<java.package.path>` is the same report-declared Java package as in section 6, mirrored
+beneath `docs/api/` regardless of where the wrapper currently lives (for example
+`docs/api/com/telelogic/rhapsody/core/irp_class.rst` for `IRPClass`). Start the
 page with the verifier-recognized anchor `.. _rhapsody-java-interface-<INTERFACE>:` and
 include the Java interface, Java package, JavaDoc-derived description, Python wrapper, and
 canonical import path. Promote the class heading to the page title.
