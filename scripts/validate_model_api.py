@@ -14,7 +14,7 @@ if __package__ in (None, ""):  # running as `python scripts/validate_model_api.p
 from scripts.pywin32_authority import AuthorityData, load_authority  # noqa: E402
 
 _TYPELIB_DESCRIPTION = "Rhapsody2 1.0 Type Library"
-_HELPER_NAMES = {"_get_method_or_property", "_set_method_or_property"}
+_HELPER_NAMES = {"_get_method_or_property", "_set_method_or_property", "get_com_property", "set_com_property"}
 Rows = List[Tuple[str, str, str, str, str]]
 _AUTHORITY_INFO_STATUSES = {"ACCESSOR_ALIAS_MISMATCH", "METHOD_PROPERTY_MISMATCH", "PYTHON_ONLY_MEMBER", "JAVA_ONLY_MEMBER"}
 _AUTHORITY_BACKLOG_STATUSES = {"MISSING_PYTHON_WRAPPER", "PYWIN32_ONLY_MEMBER"}

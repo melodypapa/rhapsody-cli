@@ -80,6 +80,25 @@ def test_collect_python_members_includes_bases_helpers_and_local_only_methods(tm
     assert "local_helper() (no static COM member)" in members["python-only:local_helper"]
 
 
+def test_collect_python_members_records_com_property_helper_names(tmp_path: Path) -> None:
+    models_root = tmp_path / "models"
+    models_root.mkdir()
+    (models_root / "model_props.py").write_text(
+        """class RPProps:
+    def is_abstract(self):
+        return AbstractRPModelElement.get_com_property(self._com, 'isAbstract')
+    def set_is_active(self, value):
+        AbstractRPModelElement.set_com_property(self._com, 'isActive', value)
+""",
+        encoding="utf-8",
+    )
+
+    members = collect_python_members("IRPProps", models_root)
+
+    assert "is_abstract() -> isAbstract" in members["isAbstract"]
+    assert "set_is_active() -> isActive" in members["isActive"]
+
+
 def test_collect_python_members_maps_application_interface_to_application_facade(tmp_path: Path) -> None:
     models_root = tmp_path / "models"
     models_root.mkdir()
