@@ -1,6 +1,7 @@
 """Tests for rhapsody_cli.elements.class_.RPClass."""
 
 from typing import cast
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -275,11 +276,13 @@ def test_class_is_composite_property_delegates_to_com() -> None:
     assert klass.is_composite == 1
 
 
-def test_class_is_final_property_delegates_to_com() -> None:
-    fake = make_fake_element("Class", getIsFinal=0)
+def test_class_is_final_property_calls_pywin32_method() -> None:
+    fake = MagicMock(spec=["getIsFinal"])
+    fake.getIsFinal.return_value = 0
     klass = RPClass(fake)
 
     assert klass.is_final == 0
+    fake.getIsFinal.assert_called_once_with()
 
 
 def test_class_is_reactive_property_delegates_to_com() -> None:
@@ -317,8 +320,8 @@ def test_class_is_behavior_overriden_setter_delegates_to_com() -> None:
     fake.setIsBehaviorOverriden.assert_called_once_with(1)
 
 
-def test_class_is_final_setter_delegates_to_com() -> None:
-    fake = make_fake_element("Class")
+def test_class_is_final_setter_calls_pywin32_method() -> None:
+    fake = MagicMock(spec=["setIsFinal"])
     klass = RPClass(fake)
 
     klass.is_final = 1

@@ -348,12 +348,12 @@ class RPClass(RPClassifier):
     @property
     def is_final(self) -> int:
         """``1`` if the class is final, ``0`` otherwise."""
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsFinal", "isFinal"))
+        return int(AbstractRPModelElement.call_com(lambda: self._com.getIsFinal()))
 
     @is_final.setter
     def is_final(self, new_val: int) -> None:
         """Set to ``1`` to make the class final, ``0`` otherwise."""
-        AbstractRPModelElement._set_method_or_property(self._com, "setIsFinal", "isFinal", new_val)
+        AbstractRPModelElement.call_com(lambda: self._com.setIsFinal(new_val))
 
     @property
     def is_reactive(self) -> int:
