@@ -2,8 +2,7 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.activity.model_actions import RPAction, RPSendAction
@@ -14,7 +13,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.elements.interactions.model_interactions import RPTransition
 
 
-class RPStateVertex(RPModelElement):
+class RPStateVertex(IRPModelElement):
     """Wraps ``IRPStateVertex``: represents the characteristics shared by various statechart elements such as states, join/fork connectors, and condition connectors."""
 
     # IRPStateVertex method parity checklist:
@@ -495,7 +494,7 @@ class RPState(RPStateVertex):
         """
         return cast("RPStatechart", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getNestedStatechart", "nestedStatechart")))
 
-    def get_reference_to_activity(self) -> Optional["RPModelElement"]:
+    def get_reference_to_activity(self) -> Optional["IRPModelElement"]:
         """For call behavior elements, returns the activity that is referenced.
 
         Returns:
@@ -741,7 +740,7 @@ class RPState(RPStateVertex):
         """
         AbstractRPModelElement.call_com(lambda: self._com.setItsSwimlane(its_swimlane._com))
 
-    def set_reference_to_activity(self, reference_to_activity: "RPModelElement") -> None:
+    def set_reference_to_activity(self, reference_to_activity: "IRPModelElement") -> None:
         """For call behavior elements, sets the activity that is referenced by the element.
 
         Args:

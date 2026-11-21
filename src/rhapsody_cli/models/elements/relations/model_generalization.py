@@ -2,14 +2,14 @@
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.classifiers.model_usecase import RPExtensionPoint
 
 
-class RPGeneralization(RPModelElement):
+class RPGeneralization(IRPModelElement):
     """Wraps ``IRPGeneralization``: a generalization (inheritance) relationship."""
 
     # IRPGeneralization method parity checklist:
@@ -103,7 +103,7 @@ class RPGeneralization(RPModelElement):
         """
         AbstractRPModelElement.call_com(lambda: self._com.setDerivedClass(derived_class._com))
 
-    def set_extension_point(self, extension_point: RPModelElement) -> None:
+    def set_extension_point(self, extension_point: IRPModelElement) -> None:
         """Sets the extension point for this generalization.
 
         Args:

@@ -2,8 +2,7 @@
 
 from typing import cast
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 from rhapsody_cli.models.elements.relations import RPInstance, RPRelation
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -160,7 +159,7 @@ def test_instance_set_instantiated_by_unwraps_arg() -> None:
     op = make_fake_element("Operation", properties={"name": "create"})
     instance = RPInstance(fake)
 
-    instance.set_instantiated_by(cast(RPModelElement, AbstractRPModelElement.wrap(op)))
+    instance.set_instantiated_by(cast(IRPModelElement, AbstractRPModelElement.wrap(op)))
 
     fake.setInstantiatedBy.assert_called_once_with(op)
 

@@ -1,7 +1,6 @@
 """Tests for rhapsody_cli.models.elements.misc wrappers."""
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 from rhapsody_cli.models.elements.common.model_misc import (
     RPComment,
     RPConstraint,
@@ -14,7 +13,7 @@ def test_enumeration_literal_is_a_model_element() -> None:
     fake = make_fake_element("EnumerationLiteral", properties={"name": "LITERAL1"})
     literal = RPEnumerationLiteral(fake)
 
-    assert isinstance(literal, RPModelElement)
+    assert isinstance(literal, IRPModelElement)
     assert literal.get_name() == "LITERAL1"
 
 
@@ -30,7 +29,7 @@ def test_comment_is_a_model_element() -> None:
     fake = make_fake_element("Comment", properties={"name": "Comment1"})
     comment = RPComment(fake)
 
-    assert isinstance(comment, RPModelElement)
+    assert isinstance(comment, IRPModelElement)
     assert comment.get_name() == "Comment1"
 
 
@@ -46,7 +45,7 @@ def test_constraint_is_a_model_element() -> None:
     fake = make_fake_element("Constraint", properties={"name": "Constraint1"})
     constraint = RPConstraint(fake)
 
-    assert isinstance(constraint, RPModelElement)
+    assert isinstance(constraint, IRPModelElement)
     assert constraint.get_name() == "Constraint1"
 
 

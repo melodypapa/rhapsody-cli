@@ -1,7 +1,6 @@
 """Tests for rhapsody_cli.models.elements.common.model_other_model.RPClassifierRole."""
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 from rhapsody_cli.models.elements.classifiers import RPClassifier
 from rhapsody_cli.models.elements.common import RPClassifierRole
 from rhapsody_cli.models.elements.relations import RPInstance
@@ -12,7 +11,7 @@ class TestRPClassifierRole:
     def test_is_model_element(self) -> None:
         fake = make_fake_element("ClassifierRole", properties={"name": "Lifeline1"})
         role = RPClassifierRole(fake)
-        assert isinstance(role, RPModelElement)
+        assert isinstance(role, IRPModelElement)
         assert role.get_name() == "Lifeline1"
 
     def test_is_registered(self) -> None:

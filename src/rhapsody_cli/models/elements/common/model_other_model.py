@@ -2,8 +2,7 @@
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
 from rhapsody_cli.models.elements.relations.model_instance import RPInstance
 
@@ -15,7 +14,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.elements.relations.model_relation import RPRelation
 
 
-class RPClassifierRole(RPModelElement):
+class RPClassifierRole(IRPModelElement):
     """Wraps ``IRPClassifierRole``: represents lifelines in sequence diagrams and "objects" (lifelines) in communication diagrams."""
 
     # IRPClassifierRole method parity checklist:

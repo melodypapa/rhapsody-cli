@@ -2,8 +2,7 @@
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement, RPUnit
 from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
 
 if TYPE_CHECKING:
@@ -51,7 +50,7 @@ class RPRelation(RPUnit):
     # [x] set_relation_type           [x] impl  [x] docstring  [x] unit test  [ ] integration test   (already implemented)
     # No deprecated methods in IRPRelation. All 31 methods at full parity.
 
-    def add_qualifier(self, p_val: RPModelElement) -> None:
+    def add_qualifier(self, p_val: IRPModelElement) -> None:
         """Adds a qualifier to the association.
 
         Args:
@@ -308,7 +307,7 @@ class RPRelation(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.makeUnidirect())
 
-    def remove_qualifier(self, p_val: RPModelElement) -> None:
+    def remove_qualifier(self, p_val: IRPModelElement) -> None:
         """Removes a qualifier from the association.
 
         Args:

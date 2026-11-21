@@ -49,9 +49,9 @@ not re-derive scope or decisions already recorded in the row's Notes.
   the package move (wrapper, imports/exports/registration, unit + integration tests to the
   mirrored `tests/{unit,integration}/models/com/telelogic/rhapsody/core/` paths, snake_case
   test module names, `__init__.py` at every level, no compatibility shim).
-- **core.py base rows defer the §2 move (user decision 2026-11-21):** `RPModelElement`,
+- **core.py base rows defer the §2 move (user decision 2026-11-21):** `IRPModelElement`,
   `IRPCollection`, `RPUnit` and `AbstractRPModelElement` share `models/core.py`; moving one
-  base class alone creates import cycles (`RPUnit(RPModelElement)`). Each base row runs its
+  base class alone creates import cycles (`RPUnit(IRPModelElement)`). Each base row runs its
   binding migration at the current location and records the §2 move as an open blocker; the
   moves land as a small dedicated refactor once the rows have emptied `core.py`.
 - **Python-only members are removed (SKILL §3/§4, added 2026-11-21):** a wrapper member with
@@ -60,7 +60,7 @@ not re-derive scope or decisions already recorded in the row's Notes.
   checklist row, RST row. Sole exception: documented-unavailable `NotImplementedError` stubs
   for Java members the COM cannot serve (they stay, listed in `documented_unavailable`).
   In-repo callers must be migrated (or the removal blocked) before deletion. Classes synced
-  before this rule (IRPClass, RPModelElement) still carry python-only rows; their removal
+  before this rule (IRPClass, IRPModelElement) still carry python-only rows; their removal
   folds into the Step 8 closeout pass before those rows archive.
 - **Per-class documents (SKILL §6/§7):** requirement and RST artifacts live at the class's
   package path — `docs/requirements/<java.package.path>/<snake_case>.md` and
@@ -69,7 +69,7 @@ not re-derive scope or decisions already recorded in the row's Notes.
   monoliths into the per-class files (no duplicates); `elements.rst` lists per-class pages in
   its toctree. `verify_sync.py` checks the per-class paths strictly (no legacy fallback).
 - **core.py split:** `models/core.py` holds `AbstractRPModelElement` (2 forwarder
-  definitions), `RPModelElement`, `IRPCollection`, `RPUnit` — 92 legacy sites total. Survey and
+  definitions), `IRPModelElement`, `IRPCollection`, `RPUnit` — 92 legacy sites total. Survey and
   split per class at each row's start. IRPModelElement's 22 unit-family names (`CMHeader`,
   `filename`, `isReadOnly`, ...) exist only in other interfaces' catalogs: resolve against
   IRPUnit's catalog entry during the IRPUnit row, or record a blocker in the IRPModelElement

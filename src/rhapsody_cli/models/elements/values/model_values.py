@@ -2,14 +2,13 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
 
 
-class RPInstanceSlot(RPModelElement):
+class RPInstanceSlot(IRPModelElement):
     """Wraps ``IRPInstanceSlot``."""
 
     # IRPInstanceSlot method parity checklist:
@@ -21,7 +20,7 @@ class RPInstanceSlot(RPModelElement):
     # [inherited] irp_model_element methods (covered by rp_model_element checklist)
     # No deprecated IRPInstanceSlot methods.
 
-    def add_element_value(self, val: "RPModelElement") -> "RPInstanceValue":
+    def add_element_value(self, val: "IRPModelElement") -> "RPInstanceValue":
         """Adds an element value to this instance slot.
 
         Args:
@@ -55,7 +54,7 @@ class RPInstanceSlot(RPModelElement):
         """
         return cast("RPLiteralSpecification", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addStringValue(val))))
 
-    def get_slot_property(self) -> Optional["RPModelElement"]:
+    def get_slot_property(self) -> Optional["IRPModelElement"]:
         """Returns the slot property of this instance slot.
 
         Returns:
@@ -83,7 +82,7 @@ class RPInstanceSlot(RPModelElement):
         """
         return IRPCollection(self.call_com(lambda: self._com.getValues()))
 
-    def set_slot_property(self, slot_property: "RPModelElement") -> None:
+    def set_slot_property(self, slot_property: "IRPModelElement") -> None:
         """Sets the slot property of this instance slot.
 
         Args:
@@ -98,7 +97,7 @@ class RPInstanceSlot(RPModelElement):
         self.call_com(lambda: self._com.setSlotProperty(slot_property._com))
 
 
-class RPInstanceSpecification(RPModelElement):
+class RPInstanceSpecification(IRPModelElement):
     """Wraps ``IRPInstanceSpecification``."""
 
     # IRPInstanceSpecification method parity checklist:
@@ -111,7 +110,7 @@ class RPInstanceSpecification(RPModelElement):
     # [inherited] irp_model_element methods (covered by rp_model_element checklist)
     # No deprecated IRPInstanceSpecification methods.
 
-    def add_instance_slot(self, name: str, slot_property: "RPModelElement") -> "RPInstanceSlot":
+    def add_instance_slot(self, name: str, slot_property: "IRPModelElement") -> "RPInstanceSlot":
         """Adds a new instance slot for the specified property of the classifier.
 
         Args:
@@ -202,7 +201,7 @@ class RPInstanceSpecification(RPModelElement):
         self.call_com(lambda: self._com.setClassifier(classifier._com))
 
 
-class RPValueSpecification(RPModelElement):
+class RPValueSpecification(IRPModelElement):
     """Wraps ``IRPValueSpecification``: represents the UML concept of "value specification".
 
     Serves as the base interface for IRPContextSpecification,
@@ -226,7 +225,7 @@ class RPInstanceValue(RPValueSpecification):
     # [inherited] irp_value_specification methods (covered by rp_value_specification checklist)
     # No deprecated IRPInstanceValue methods.
 
-    def get_value(self) -> Optional["RPModelElement"]:
+    def get_value(self) -> Optional["IRPModelElement"]:
         """Returns the stored value.
 
         Returns:
@@ -237,7 +236,7 @@ class RPInstanceValue(RPValueSpecification):
         """
         return AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getValue()))
 
-    def set_value(self, value: "RPModelElement") -> None:
+    def set_value(self, value: "IRPModelElement") -> None:
         """Sets the value to store.
 
         Args:

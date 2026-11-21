@@ -2,8 +2,7 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement, RPUnit
 from rhapsody_cli.models.elements.interactions.model_interactions import RPMessage
 from rhapsody_cli.models.elements.statemachine.model_statemachine import RPStateVertex
 
@@ -248,7 +247,7 @@ class RPConnector(RPStateVertex):
         self.call_com(lambda: self._com.setOfState(of_state._com))
 
 
-class RPGraphElement(RPModelElement):
+class RPGraphElement(IRPModelElement):
     """Wraps ``IRPGraphElement``."""
 
     # IRPGraphElement method parity checklist:
@@ -448,7 +447,7 @@ class RPGraphElement(RPModelElement):
         """
         return IRPCollection(self.call_com(lambda: self._com.getLocalProperties()))
 
-    def get_model_object(self) -> Optional["RPModelElement"]:
+    def get_model_object(self) -> Optional["IRPModelElement"]:
         """Returns the model object associated with this graph element.
 
         Returns:
@@ -584,7 +583,7 @@ class RPGraphElement(RPModelElement):
         self._set_method_or_property(self._com, "setSelectedImage", "selectedImage", selected_image)
 
 
-class RPGraphicalProperty(RPModelElement):
+class RPGraphicalProperty(IRPModelElement):
     """Wraps ``IRPGraphicalProperty``."""
 
     # IRPGraphicalProperty method parity checklist:
@@ -636,7 +635,7 @@ class RPGraphicalProperty(RPModelElement):
         return str(self._get_method_or_property(self._com, "getValue", "value"))
 
 
-class RPImageMap(RPModelElement):
+class RPImageMap(IRPModelElement):
     """Wraps ``IRPImageMap``."""
 
     # IRPImageMap method parity checklist:
@@ -845,7 +844,7 @@ class RPLink(RPUnit):
         """
         return cast("RPInstance", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getFrom())))
 
-    def get_from_element(self) -> Optional["RPModelElement"]:
+    def get_from_element(self) -> Optional["IRPModelElement"]:
         """Returns the source element of this link.
 
         Returns:
@@ -926,7 +925,7 @@ class RPLink(RPUnit):
         """
         return cast("RPInstance", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getTo())))
 
-    def get_to_element(self) -> Optional["RPModelElement"]:
+    def get_to_element(self) -> Optional["IRPModelElement"]:
         """Returns the target element of this link.
 
         Returns:
@@ -1540,7 +1539,7 @@ class RPMatrixView(RPUnit):
         self._set_method_or_property(self._com, "setIncludeDescendantsToScope", "includeDescendantsToScope", include_descendants_to_scope)
 
 
-class RPMessagePoint(RPModelElement):
+class RPMessagePoint(IRPModelElement):
     """Wraps ``IRPMessagePoint``."""
 
     # IRPMessagePoint method parity checklist:
@@ -2058,7 +2057,7 @@ class RPTableLayout(RPUnit):
         """
         return int(self._get_method_or_property(self._com, "getRelationTable", "relationTable"))
 
-    def get_result_list(self, scope: "RPModelElement") -> IRPCollection:
+    def get_result_list(self, scope: "IRPModelElement") -> IRPCollection:
         """Returns the result list for the given scope.
 
         Args:

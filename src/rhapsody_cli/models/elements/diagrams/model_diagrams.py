@@ -2,10 +2,10 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.core import (
     AbstractRPModelElement,
-    RPModelElement,
+    IRPCollection,
+    IRPModelElement,
     RPUnit,
 )
 
@@ -93,7 +93,7 @@ class RPDiagram(RPUnit):
         """
         return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getCustomViews", "customViews"))
 
-    def get_corresponding_graphic_elements(self, model_element: RPModelElement) -> IRPCollection:
+    def get_corresponding_graphic_elements(self, model_element: IRPModelElement) -> IRPCollection:
         """Returns the graphical elements that represent the specified model element.
 
         In cases where the same model element appears multiple times in a single
@@ -162,7 +162,7 @@ class RPDiagram(RPUnit):
         """
         return cast("RPGraphElement", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewEdgeByType(type_, source._com, target._com))))
 
-    def add_new_edge_for_element(self, element: RPModelElement) -> "RPGraphElement":
+    def add_new_edge_for_element(self, element: IRPModelElement) -> "RPGraphElement":
         """Adds a new edge for the specified element.
 
         Args:
@@ -194,7 +194,7 @@ class RPDiagram(RPUnit):
         """
         return cast("RPGraphElement", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewNodeByType(type_, x, y, width, height))))
 
-    def add_new_node_for_element(self, element: RPModelElement, x: int, y: int, width: int, height: int) -> "RPGraphElement":
+    def add_new_node_for_element(self, element: IRPModelElement, x: int, y: int, width: int, height: int) -> "RPGraphElement":
         """Adds a new node for the specified element.
 
         Args:

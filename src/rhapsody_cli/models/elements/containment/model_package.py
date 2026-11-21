@@ -2,8 +2,7 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement, RPUnit
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
@@ -401,7 +400,7 @@ class RPPackage(RPUnit):
         """
         return cast("RPTimingDiagram", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addTimingDiagram(name))))
 
-    def add_panel_diagram(self, name: str) -> RPModelElement:
+    def add_panel_diagram(self, name: str) -> IRPModelElement:
         """Adds a new panel diagram to the package.
 
         Args:
@@ -413,7 +412,7 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addPanelDiagram(java.lang.String name)
         """
-        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addPanelDiagram(name))))
+        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addPanelDiagram(name))))
 
     # --- Diagram getters (Pattern C) ---
     def get_sequence_diagrams(self) -> "IRPCollection":
@@ -505,7 +504,7 @@ class RPPackage(RPUnit):
         return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getPanelDiagrams", "panelDiagrams"))
 
     # --- Diagram deleters (Pattern F) ---
-    def delete_sequence_diagram(self, diagram: RPModelElement) -> None:
+    def delete_sequence_diagram(self, diagram: IRPModelElement) -> None:
         """Deletes a sequence diagram from the package.
 
         Args:
@@ -516,7 +515,7 @@ class RPPackage(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteSequenceDiagram(diagram._com))
 
-    def delete_use_case_diagram(self, diagram: RPModelElement) -> None:
+    def delete_use_case_diagram(self, diagram: IRPModelElement) -> None:
         """Deletes a use case diagram from the package.
 
         Args:
@@ -527,7 +526,7 @@ class RPPackage(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteUseCaseDiagram(diagram._com))
 
-    def delete_collaboration_diagram(self, diagram: RPModelElement) -> None:
+    def delete_collaboration_diagram(self, diagram: IRPModelElement) -> None:
         """Deletes a collaboration diagram from the package.
 
         Args:
@@ -538,7 +537,7 @@ class RPPackage(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteCollaborationDiagram(diagram._com))
 
-    def delete_component_diagram(self, diagram: RPModelElement) -> None:
+    def delete_component_diagram(self, diagram: IRPModelElement) -> None:
         """Deletes a component diagram from the package.
 
         Args:
@@ -549,7 +548,7 @@ class RPPackage(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteComponentDiagram(diagram._com))
 
-    def delete_deployment_diagram(self, diagram: RPModelElement) -> None:
+    def delete_deployment_diagram(self, diagram: IRPModelElement) -> None:
         """Deletes a deployment diagram from the package.
 
         Args:
@@ -560,7 +559,7 @@ class RPPackage(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteDeploymentDiagram(diagram._com))
 
-    def delete_object_model_diagram(self, diagram: RPModelElement) -> None:
+    def delete_object_model_diagram(self, diagram: IRPModelElement) -> None:
         """Deletes an object model diagram from the package.
 
         Args:
@@ -571,7 +570,7 @@ class RPPackage(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteObjectModelDiagram(diagram._com))
 
-    def delete_timing_diagram(self, diagram: RPModelElement) -> None:
+    def delete_timing_diagram(self, diagram: IRPModelElement) -> None:
         """Deletes a timing diagram from the package.
 
         Args:
@@ -582,7 +581,7 @@ class RPPackage(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteTimingDiagram(diagram._com))
 
-    def delete_panel_diagram(self, diagram: RPModelElement) -> None:
+    def delete_panel_diagram(self, diagram: IRPModelElement) -> None:
         """Deletes a panel diagram from the package.
 
         Args:
@@ -594,7 +593,7 @@ class RPPackage(RPUnit):
         AbstractRPModelElement.call_com(lambda: self._com.deletePanelDiagram(diagram._com))
 
     # --- Classifier deleters (Pattern F) ---
-    def delete_class(self, cls: RPModelElement) -> None:
+    def delete_class(self, cls: IRPModelElement) -> None:
         """Deletes a class from the package.
 
         Args:
@@ -605,7 +604,7 @@ class RPPackage(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteClass(cls._com))
 
-    def delete_actor(self, actor: RPModelElement) -> None:
+    def delete_actor(self, actor: IRPModelElement) -> None:
         """Deletes an actor from the package.
 
         Args:
@@ -616,7 +615,7 @@ class RPPackage(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteActor(actor._com))
 
-    def delete_use_case(self, use_case: RPModelElement) -> None:
+    def delete_use_case(self, use_case: IRPModelElement) -> None:
         """Deletes a use case from the package.
 
         Args:
@@ -649,7 +648,7 @@ class RPPackage(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteFlows(flow._com))
 
-    def delete_package(self, package: RPModelElement) -> None:
+    def delete_package(self, package: IRPModelElement) -> None:
         """Deletes a nested package from this package.
 
         Args:
@@ -719,7 +718,7 @@ class RPPackage(RPUnit):
         return cast("RPRelation", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addAssociation(name))))
 
     # --- Event methods ---
-    def add_event(self, name: str) -> RPModelElement:
+    def add_event(self, name: str) -> IRPModelElement:
         """Adds a new event to the package.
 
         Args:
@@ -731,7 +730,7 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addEvent(java.lang.String name)
         """
-        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addEvent(name))))
+        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addEvent(name))))
 
     def get_events(self) -> "IRPCollection":
         """Returns all events contained in this package.
@@ -766,7 +765,7 @@ class RPPackage(RPUnit):
         """
         return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getFlows", "flows"))
 
-    def find_event(self, name: str) -> Optional[RPModelElement]:
+    def find_event(self, name: str) -> Optional[IRPModelElement]:
         """Finds an event in the package by name.
 
         Args:
@@ -780,7 +779,7 @@ class RPPackage(RPUnit):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findEvent(name)))
 
-    def delete_event(self, event: RPModelElement) -> None:
+    def delete_event(self, event: IRPModelElement) -> None:
         """Deletes an event from the package.
 
         Args:
@@ -792,7 +791,7 @@ class RPPackage(RPUnit):
         AbstractRPModelElement.call_com(lambda: self._com.deleteEvent(event._com))
 
     # --- Node methods ---
-    def add_node(self, name: str) -> RPModelElement:
+    def add_node(self, name: str) -> IRPModelElement:
         """Adds a new node to the package.
 
         Args:
@@ -804,7 +803,7 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addNode(java.lang.String name)
         """
-        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNode(name))))
+        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNode(name))))
 
     def get_nodes(self) -> "IRPCollection":
         """Returns all nodes contained in this package.
@@ -817,7 +816,7 @@ class RPPackage(RPUnit):
         """
         return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getNodes", "nodes"))
 
-    def find_node(self, name: str) -> Optional[RPModelElement]:
+    def find_node(self, name: str) -> Optional[IRPModelElement]:
         """Finds a node in the package by name.
 
         Args:
@@ -831,7 +830,7 @@ class RPPackage(RPUnit):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findNode(name)))
 
-    def delete_node(self, node: RPModelElement) -> None:
+    def delete_node(self, node: IRPModelElement) -> None:
         """Deletes a node from the package.
 
         Args:
@@ -843,7 +842,7 @@ class RPPackage(RPUnit):
         AbstractRPModelElement.call_com(lambda: self._com.deleteNode(node._com))
 
     # --- Module methods ---
-    def add_module(self, name: str) -> RPModelElement:
+    def add_module(self, name: str) -> IRPModelElement:
         """Adds a new module to the package.
 
         Args:
@@ -855,7 +854,7 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addModule(java.lang.String name)
         """
-        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addModule(name))))
+        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addModule(name))))
 
     def get_modules(self) -> "IRPCollection":
         """Returns all modules contained in this package.
@@ -869,7 +868,7 @@ class RPPackage(RPUnit):
         return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getModules", "modules"))
 
     # --- Type methods ---
-    def add_type(self, name: str) -> RPModelElement:
+    def add_type(self, name: str) -> IRPModelElement:
         """Adds a new type to the package.
 
         Args:
@@ -881,7 +880,7 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addType(java.lang.String name)
         """
-        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addType(name))))
+        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addType(name))))
 
     def get_types(self) -> "IRPCollection":
         """Returns all types contained in this package.
@@ -894,7 +893,7 @@ class RPPackage(RPUnit):
         """
         return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getTypes", "types"))
 
-    def find_type(self, name: str) -> Optional[RPModelElement]:
+    def find_type(self, name: str) -> Optional[IRPModelElement]:
         """Finds a type in the package by name.
 
         Args:
@@ -908,7 +907,7 @@ class RPPackage(RPUnit):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findType(name)))
 
-    def delete_type(self, type_elem: RPModelElement) -> None:
+    def delete_type(self, type_elem: IRPModelElement) -> None:
         """Deletes a type from the package.
 
         Args:
@@ -945,7 +944,7 @@ class RPPackage(RPUnit):
         """
         return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getGlobalFunctions", "globalFunctions"))
 
-    def delete_global_function(self, func: RPModelElement) -> None:
+    def delete_global_function(self, func: IRPModelElement) -> None:
         """Deletes a global function from the package.
 
         Args:
@@ -957,7 +956,7 @@ class RPPackage(RPUnit):
         AbstractRPModelElement.call_com(lambda: self._com.deleteGlobalFunction(func._com))
 
     # --- Global object methods ---
-    def add_global_object(self, name: str) -> RPModelElement:
+    def add_global_object(self, name: str) -> IRPModelElement:
         """Adds a new global object to the package.
 
         Args:
@@ -969,7 +968,7 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addGlobalObject(java.lang.String name)
         """
-        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addGlobalObject(name))))
+        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addGlobalObject(name))))
 
     def get_global_objects(self) -> "IRPCollection":
         """Returns all global objects contained in this package.
@@ -982,7 +981,7 @@ class RPPackage(RPUnit):
         """
         return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getGlobalObjects", "globalObjects"))
 
-    def find_global_object(self, name: str) -> Optional[RPModelElement]:
+    def find_global_object(self, name: str) -> Optional[IRPModelElement]:
         """Finds a global object in the package by name.
 
         Args:
@@ -996,7 +995,7 @@ class RPPackage(RPUnit):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findGlobalObject(name)))
 
-    def delete_global_object(self, obj: RPModelElement) -> None:
+    def delete_global_object(self, obj: IRPModelElement) -> None:
         """Deletes a global object from the package.
 
         Args:
@@ -1008,7 +1007,7 @@ class RPPackage(RPUnit):
         AbstractRPModelElement.call_com(lambda: self._com.deleteGlobalObject(obj._com))
 
     # --- Global variable methods ---
-    def add_global_variable(self, name: str) -> RPModelElement:
+    def add_global_variable(self, name: str) -> IRPModelElement:
         """Adds a new global variable to the package.
 
         Args:
@@ -1020,7 +1019,7 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addGlobalVariable(java.lang.String name)
         """
-        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addGlobalVariable(name))))
+        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addGlobalVariable(name))))
 
     def get_global_variables(self) -> "IRPCollection":
         """Returns all global variables contained in this package.
@@ -1033,7 +1032,7 @@ class RPPackage(RPUnit):
         """
         return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getGlobalVariables", "globalVariables"))
 
-    def find_global_variable(self, name: str) -> Optional[RPModelElement]:
+    def find_global_variable(self, name: str) -> Optional[IRPModelElement]:
         """Finds a global variable in the package by name.
 
         Args:
@@ -1047,7 +1046,7 @@ class RPPackage(RPUnit):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findGlobalVariable(name)))
 
-    def delete_global_variable(self, var: RPModelElement) -> None:
+    def delete_global_variable(self, var: IRPModelElement) -> None:
         """Deletes a global variable from the package.
 
         Args:
@@ -1082,7 +1081,7 @@ class RPPackage(RPUnit):
         return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getNestedComponents", "nestedComponents"))
 
     # --- Instance specification methods ---
-    def add_instance_specification(self, name: str) -> RPModelElement:
+    def add_instance_specification(self, name: str) -> IRPModelElement:
         """Adds a new instance specification to the package.
 
         Args:
@@ -1094,7 +1093,7 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addInstanceSpecification(java.lang.String name)
         """
-        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addInstanceSpecification(name))))
+        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addInstanceSpecification(name))))
 
     def get_instance_specifications(self) -> "IRPCollection":
         """Returns all instance specifications contained in this package.
@@ -1108,7 +1107,7 @@ class RPPackage(RPUnit):
         return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getInstanceSpecifications", "instanceSpecifications"))
 
     # --- Link methods ---
-    def add_link(self, name: str) -> RPModelElement:
+    def add_link(self, name: str) -> IRPModelElement:
         """Adds a new link to the package.
 
         Args:
@@ -1120,7 +1119,7 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addLink(java.lang.String name)
         """
-        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addLink(name))))
+        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addLink(name))))
 
     def get_links(self) -> "IRPCollection":
         """Returns all links contained in this package.
@@ -1173,7 +1172,7 @@ class RPPackage(RPUnit):
         return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getSourceArtifacts", "sourceArtifacts"))
 
     # --- Find usage ---
-    def find_usage(self, element: RPModelElement) -> "IRPCollection":
+    def find_usage(self, element: IRPModelElement) -> "IRPCollection":
         """Finds all usages of an element in this package.
 
         Args:

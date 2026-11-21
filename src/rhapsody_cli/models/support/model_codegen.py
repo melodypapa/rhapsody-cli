@@ -3,8 +3,7 @@
 from typing import TYPE_CHECKING, Optional
 
 from rhapsody_cli.application import RhapsodyApplication
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 from rhapsody_cli.models.elements.graphics.model_graphics import RPTableLayout
 
 if TYPE_CHECKING:
@@ -15,7 +14,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.elements.graphics.model_graphics import RPMatrixView, RPTableView
 
 
-class RPBaseExternalCodeGeneratorTool(RPModelElement):
+class RPBaseExternalCodeGeneratorTool(IRPModelElement):
     """Wraps ``IRPBaseExternalCodeGeneratorTool``."""
 
     # IRPBaseExternalCodeGeneratorTool method parity checklist:
@@ -64,7 +63,7 @@ class RPBaseExternalCodeGeneratorTool(RPModelElement):
         self.call_com(lambda: self._com.writeCodeGenMessage(msg))
 
 
-class RPCodeGenerator(RPModelElement):
+class RPCodeGenerator(IRPModelElement):
     """Wraps ``IRPCodeGenerator``."""
 
     # IRPCodeGenerator method parity checklist:
@@ -73,7 +72,7 @@ class RPCodeGenerator(RPModelElement):
     # [x] get_interface_name             [x] impl (inherited from rp_model_element)
     # No deprecated IRPCodeGenerator methods.
 
-    def get_code_annotations(self, element: "RPModelElement", b_spec_file: int) -> "IRPCollection":
+    def get_code_annotations(self, element: "IRPModelElement", b_spec_file: int) -> "IRPCollection":
         """Returns code annotations for the given model element.
 
         Args:
@@ -91,7 +90,7 @@ class RPCodeGenerator(RPModelElement):
         """
         return IRPCollection(self.call_com(lambda: self._com.getCodeAnnotations(element._com, b_spec_file)))
 
-    def get_generated_file_names(self, element: "RPModelElement") -> "IRPCollection":
+    def get_generated_file_names(self, element: "IRPModelElement") -> "IRPCollection":
         """Returns the generated file names for the given model element.
 
         Args:
@@ -109,7 +108,7 @@ class RPCodeGenerator(RPModelElement):
         return IRPCollection(self.call_com(lambda: self._com.getGeneratedFileNames(element._com)))
 
 
-class RPDiagSynthAPI(RPModelElement):
+class RPDiagSynthAPI(IRPModelElement):
     """Wraps ``IRPDiagSynthAPI``."""
 
     # IRPDiagSynthAPI method parity checklist:
@@ -257,7 +256,7 @@ class RPDiagSynthAPI(RPModelElement):
         return int(self.call_com(lambda: self._com.sendMessage(p_tested_s_d, source, target, event, operation, type_)))
 
 
-class RPExternalCheckRegistry(RPModelElement):
+class RPExternalCheckRegistry(IRPModelElement):
     """Wraps ``IRPExternalCheckRegistry``."""
 
     # IRPExternalCheckRegistry method parity checklist:
@@ -295,7 +294,7 @@ class RPExternalCheckRegistry(RPModelElement):
         self.call_com(lambda: self._com.setFailedElementsComments(str_val))
 
 
-class RPExternalRoundtripInvoker(RPModelElement):
+class RPExternalRoundtripInvoker(IRPModelElement):
     """Wraps ``IRPExternalRoundtripInvoker``."""
 
     # IRPExternalRoundtripInvoker method parity checklist:
@@ -303,7 +302,7 @@ class RPExternalRoundtripInvoker(RPModelElement):
     # No deprecated IRPExternalRoundtripInvoker methods.
 
 
-class RPIntegrator(RPModelElement):
+class RPIntegrator(IRPModelElement):
     """Wraps ``IRPIntegrator``."""
 
     # IRPIntegrator method parity checklist:
@@ -311,7 +310,7 @@ class RPIntegrator(RPModelElement):
     # No deprecated IRPIntegrator methods.
 
 
-class RPRhapsodyServer(RPModelElement):
+class RPRhapsodyServer(IRPModelElement):
     """Wraps ``IRPRhapsodyServer``."""
 
     # IRPRhapsodyServer method parity checklist:
@@ -379,7 +378,7 @@ class RPRhapsodyServer(RPModelElement):
         self.call_com(lambda: self._com.initializeApplication(p_val._com))
 
 
-class RPRoundTrip(RPModelElement):
+class RPRoundTrip(IRPModelElement):
     """Wraps ``IRPRoundTrip``."""
 
     # IRPRoundTrip method parity checklist:
@@ -406,7 +405,7 @@ class RPRoundTrip(RPModelElement):
         return IRPCollection(self.call_com(lambda: self._com.roundtripFile(filename, re_generate_file)))
 
 
-class RPSearchManager(RPModelElement):
+class RPSearchManager(IRPModelElement):
     """Wraps ``IRPSearchManager``: used to carry out a search in a Rhapsody model."""
 
     # IRPSearchManager method parity checklist:
@@ -479,7 +478,7 @@ class RPSearchManager(RPModelElement):
         self.call_com(lambda: self._com.searchAsync(p_search_query._com))
 
 
-class RPSearchQuery(RPModelElement):
+class RPSearchQuery(IRPModelElement):
     """Wraps ``IRPSearchQuery``: represents the search criteria objects that are used by IRPSearchManager to carry out searches."""
 
     # IRPSearchQuery method parity checklist:
@@ -656,7 +655,7 @@ class RPSearchQuery(RPModelElement):
         """
         return int(self.call_com(lambda: self._com.addMatrixToViewsList(view._com)))
 
-    def add_search_scope(self, scope_element: "RPModelElement") -> None:
+    def add_search_scope(self, scope_element: "IRPModelElement") -> None:
         """Adds an element to the scope for the search.
 
         Args:
@@ -969,7 +968,7 @@ class RPSearchQuery(RPModelElement):
         """
         return IRPCollection(self._get_method_or_property(self._com, "getSearchScopeElements", "searchScopeElements"))
 
-    def get_view(self, index: int) -> Optional["RPModelElement"]:
+    def get_view(self, index: int) -> Optional["IRPModelElement"]:
         """Retrieves the specified item from the list of tables, matrices, and
         diagrams that are to be searched.
 
@@ -978,7 +977,7 @@ class RPSearchQuery(RPModelElement):
                 view in the list is 0.
 
         Returns:
-            Optional[RPModelElement]: The specified item from the list of views to be searched.
+            Optional[IRPModelElement]: The specified item from the list of views to be searched.
 
         Raises:
             RhapsodyRuntimeException: If an error occurs in the Rhapsody API.
@@ -1108,7 +1107,7 @@ class RPSearchQuery(RPModelElement):
         """
         self.call_com(lambda: self._com.removeFilterTag())
 
-    def remove_search_scope_element(self, scope_element: "RPModelElement") -> int:
+    def remove_search_scope_element(self, scope_element: "IRPModelElement") -> int:
         """Removes the specified model element from the scope for the search.
 
         Args:
@@ -1377,14 +1376,14 @@ class RPSearchQuery(RPModelElement):
         """
         return str(self._get_method_or_property(self._com, "getSearchFindAsOption", "searchFindAsOption"))
 
-    def get_search_scope_object(self) -> Optional["RPModelElement"]:
+    def get_search_scope_object(self) -> Optional["IRPModelElement"]:
         """Returns the scope specified for the search.
 
         Deprecated. Use getSearchScopeElements instead, as Rhapsody now
         allows specifying a list of elements as the scope.
 
         Returns:
-            Optional[RPModelElement]: The model element that constitutes the scope for the search.
+            Optional[IRPModelElement]: The model element that constitutes the scope for the search.
 
         Reference:
             com.telelogic.rhapsody.core.IRPSearchQuery::getSearchScopeObject()
@@ -1575,7 +1574,7 @@ class RPSearchQuery(RPModelElement):
         """
         self.call_com(lambda: self._com.setSearchFindAsOption(search_find_as_option))
 
-    def set_search_scope_object(self, search_scope_object: "RPModelElement") -> None:
+    def set_search_scope_object(self, search_scope_object: "IRPModelElement") -> None:
         """Sets the scope for the search.
 
         Deprecated. Use addSearchScope instead, as Rhapsody now allows
@@ -1640,7 +1639,7 @@ class RPSearchQuery(RPModelElement):
         self.call_com(lambda: self._com.setViewsToSearch(views_to_search))
 
 
-class RPSearchResult(RPModelElement):
+class RPSearchResult(IRPModelElement):
     """Wraps ``IRPSearchResult``."""
 
     # IRPSearchResult method parity checklist:
@@ -1679,11 +1678,11 @@ class RPSearchResult(RPModelElement):
         """
         return IRPCollection(self._get_method_or_property(self._com, "getMatchedFields", "matchedFields"))
 
-    def get_matched_object(self) -> Optional["RPModelElement"]:
+    def get_matched_object(self) -> Optional["IRPModelElement"]:
         """Returns the property matchedObject.
 
         Returns:
-            Optional[RPModelElement]: The matched model element.
+            Optional[IRPModelElement]: The matched model element.
 
         Raises:
             RhapsodyRuntimeException: If an error occurs in the Rhapsody API.

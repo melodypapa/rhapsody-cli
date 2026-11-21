@@ -2,8 +2,7 @@
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection
 from rhapsody_cli.models.elements.relations.model_instance import RPInstance
 
 if TYPE_CHECKING:

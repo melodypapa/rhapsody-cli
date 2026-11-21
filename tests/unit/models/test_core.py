@@ -1,5 +1,6 @@
 """Tests for rhapsody_cli._core class-based wrapping utilities."""
 
+import re
 from pathlib import Path
 from typing import cast
 from unittest.mock import MagicMock, call
@@ -8,11 +9,11 @@ import pytest
 
 import rhapsody_cli.models.core as core_module
 from rhapsody_cli.exceptions import RhapsodyRuntimeException
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.core import (
     AbstractRPModelElement,
     AddToModelMode,
-    RPModelElement,
+    IRPCollection,
+    IRPModelElement,
     RPUnit,
 )
 from rhapsody_cli.models.elements.classifiers import RPStereotype
@@ -23,7 +24,7 @@ from rhapsody_cli.models.elements.variables import RPTag
 from tests.unit.models.fakes import make_com_error, make_fake_collection, make_fake_element
 
 
-class _FakeClassWrapper(RPModelElement):
+class _FakeClassWrapper(IRPModelElement):
     pass
 
 
@@ -102,14 +103,14 @@ def test_core_module_no_longer_exports_backward_compatibility_wrappers() -> None
 
 def test_model_element_get_name_delegates_to_com() -> None:
     fake = make_fake_element("Class", properties={"name": "Widget"})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_name() == "Widget"
 
 
 def test_model_element_set_name_delegates_to_com() -> None:
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.set_name("NewName")
 
@@ -118,7 +119,7 @@ def test_model_element_set_name_delegates_to_com() -> None:
 
 def test_model_element_get_meta_class_delegates_to_com() -> None:
     fake = make_fake_element("Package")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_meta_class() == "Package"
 
@@ -130,14 +131,14 @@ def test_model_element_get_name_falls_back_to_property_when_method_missing() -> 
     back to bare property access in that case."""
     fake = MagicMock(spec=["name"])
     fake.name = "PropertyStyleName"
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_name() == "PropertyStyleName"
 
 
 def test_model_element_set_name_falls_back_to_property_when_method_missing() -> None:
     fake = MagicMock(spec=["name"])
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.set_name("NewName")
 
@@ -147,7 +148,7 @@ def test_model_element_set_name_falls_back_to_property_when_method_missing() -> 
 def test_model_element_get_meta_class_falls_back_to_property_when_method_missing() -> None:
     fake = MagicMock(spec=["metaClass"])
     fake.metaClass = "Class"
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_meta_class() == "Class"
 
@@ -155,7 +156,7 @@ def test_model_element_get_meta_class_falls_back_to_property_when_method_missing
 def test_model_element_get_guid_falls_back_to_property_when_method_missing() -> None:
     fake = MagicMock(spec=["GUID"])
     fake.GUID = "guid-456"
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_guid() == "guid-456"
 
@@ -171,7 +172,7 @@ def test_wrap_falls_back_to_meta_class_property_when_method_missing() -> None:
 
 def test_model_element_get_guid_delegates_to_com() -> None:
     fake = make_fake_element("Class", properties={"GUID": "guid-123"})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_guid() == "guid-123"
 
@@ -182,7 +183,7 @@ def test_model_element_com_error_becomes_rhapsody_runtime_exception() -> None:
         def name(self) -> str:  # noqa: N802 - mirrors the camelCase COM identifier
             raise make_com_error("boom")
 
-    element = RPModelElement(_FailingCom())
+    element = IRPModelElement(_FailingCom())
 
     with pytest.raises(RhapsodyRuntimeException, match="boom"):
         element.get_name()
@@ -191,8 +192,8 @@ def test_model_element_com_error_becomes_rhapsody_runtime_exception() -> None:
 def test_model_element_equality_by_underlying_com_object() -> None:
     fake = make_fake_element("Class")
 
-    assert RPModelElement(fake) == RPModelElement(fake)
-    assert RPModelElement(fake) != RPModelElement(make_fake_element("Class"))
+    assert IRPModelElement(fake) == IRPModelElement(fake)
+    assert IRPModelElement(fake) != IRPModelElement(make_fake_element("Class"))
 
 
 def test_unit_save_delegates_to_com() -> None:
@@ -257,7 +258,7 @@ def test_unit_is_a_model_element() -> None:
     fake = make_fake_element("Package", properties={"name": "MyPkg"})
     unit = RPUnit(fake)
 
-    assert isinstance(unit, RPModelElement)
+    assert isinstance(unit, IRPModelElement)
     assert unit.get_name() == "MyPkg"
 
 
@@ -275,7 +276,7 @@ def test_collection_getitem_wraps_model_elements() -> None:
 
     item = collection[0]
 
-    assert isinstance(item, RPModelElement)
+    assert isinstance(item, IRPModelElement)
     assert item.get_name() == "Widget"
     fake.Item.assert_called_once_with(1)
 
@@ -322,7 +323,7 @@ def test_collection_add_item_delegates_to_com() -> None:
     collection = IRPCollection(fake)
     new_element = make_fake_element("Class")
 
-    collection.add_item(RPModelElement(new_element))
+    collection.add_item(IRPModelElement(new_element))
 
     fake.addItem.assert_called_once_with(new_element)
 
@@ -353,7 +354,7 @@ def test_collection_get_item_falls_back_to_item_property_when_method_missing() -
 
     item = collection.get_item(1)
 
-    assert isinstance(item, RPModelElement)
+    assert isinstance(item, IRPModelElement)
     assert item.get_name() == "Widget"
     fake.Item.assert_called_once_with(1)
 
@@ -363,7 +364,7 @@ def test_collection_add_graphical_item_delegates_to_com() -> None:
     collection = IRPCollection(fake)
     item = make_fake_element("Class")
 
-    collection.add_graphical_item(RPModelElement(item))
+    collection.add_graphical_item(IRPModelElement(item))
 
     fake.addGraphicalItem.assert_called_once_with(item)
 
@@ -414,7 +415,7 @@ def test_collection_set_model_element_delegates_to_com() -> None:
     collection = IRPCollection(fake)
     element = make_fake_element("Class")
 
-    collection.set_model_element(1, RPModelElement(element))
+    collection.set_model_element(1, IRPModelElement(element))
 
     fake.setModelElement.assert_called_once_with(1, element)
 
@@ -452,7 +453,7 @@ def test_wrap_falls_back_to_model_element_for_unregistered_type() -> None:
 
     wrapped = AbstractRPModelElement.wrap(fake)
 
-    assert type(wrapped) is RPModelElement
+    assert type(wrapped) is IRPModelElement
     assert wrapped.get_name() == "Mystery"
 
 
@@ -468,15 +469,15 @@ def test_wrap_handles_none_com_object() -> None:
 
 
 def test_model_element_add_association_unwraps_args_and_wraps_result() -> None:
-    end1 = RPModelElement(make_fake_element("Element"))
-    end2 = RPModelElement(make_fake_element("Element"))
+    end1 = IRPModelElement(make_fake_element("Element"))
+    end2 = IRPModelElement(make_fake_element("Element"))
     result_fake = make_fake_element("AssociationClass", properties={"name": "Assoc"})
     fake = make_fake_element("Class", addAssociation=result_fake)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.add_association(cast(RPRelation, end1), cast(RPRelation, end2), "Assoc")
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "Assoc"
     fake.addAssociation.assert_called_once_with(end1._com, end2._com, "Assoc")
 
@@ -484,54 +485,54 @@ def test_model_element_add_association_unwraps_args_and_wraps_result() -> None:
 def test_model_element_add_dependency_wraps_result() -> None:
     dep_fake = make_fake_element("Dependency", properties={"name": "Dep"})
     fake = make_fake_element("Class", addDependency=dep_fake)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.add_dependency("Target", "Class")
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "Dep"
     fake.addDependency.assert_called_once_with("Target", "Class")
 
 
 def test_model_element_add_dependency_between_unwraps_args_and_wraps_result() -> None:
-    dependent = RPModelElement(make_fake_element("Element"))
-    depends_on = RPModelElement(make_fake_element("Element"))
+    dependent = IRPModelElement(make_fake_element("Element"))
+    depends_on = IRPModelElement(make_fake_element("Element"))
     dep_fake = make_fake_element("Dependency", properties={"name": "Dep"})
     fake = make_fake_element("Class", addDependencyBetween=dep_fake)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.add_dependency_between(dependent, depends_on)
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "Dep"
     fake.addDependencyBetween.assert_called_once_with(dependent._com, depends_on._com)
 
 
 def test_model_element_add_dependency_to_unwraps_argument_and_wraps_result() -> None:
-    target = RPModelElement(make_fake_element("Element"))
+    target = IRPModelElement(make_fake_element("Element"))
     dep_fake = make_fake_element("Dependency", properties={"name": "Dep"})
     fake = make_fake_element("Class", addDependencyTo=dep_fake)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.add_dependency_to(target)
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "Dep"
     fake.addDependencyTo.assert_called_once_with(target._com)
 
 
 def test_model_element_add_link_to_element_unwraps_args_and_wraps_result() -> None:
-    to_element = RPModelElement(make_fake_element("Element"))
-    assoc = RPModelElement(make_fake_element("Element"))
-    from_port = RPModelElement(make_fake_element("Element"))
-    to_port = RPModelElement(make_fake_element("Element"))
+    to_element = IRPModelElement(make_fake_element("Element"))
+    assoc = IRPModelElement(make_fake_element("Element"))
+    from_port = IRPModelElement(make_fake_element("Element"))
+    to_port = IRPModelElement(make_fake_element("Element"))
     link_fake = make_fake_element("Link", properties={"name": "Link"})
     fake = make_fake_element("Class", addLinkToElement=link_fake)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.add_link_to_element(to_element, cast(RPRelation, assoc), from_port, to_port)
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "Link"
     fake.addLinkToElement.assert_called_once_with(to_element._com, assoc._com, from_port._com, to_port._com)
 
@@ -539,18 +540,18 @@ def test_model_element_add_link_to_element_unwraps_args_and_wraps_result() -> No
 def test_model_element_add_new_aggr_wraps_result() -> None:
     new_fake = make_fake_element("Element", properties={"name": "NewElem"})
     fake = make_fake_element("Package", addNewAggr=new_fake)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.add_new_aggr("Class", "NewElem")
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "NewElem"
     fake.addNewAggr.assert_called_once_with("Class", "NewElem")
 
 
 def test_model_element_add_property_delegates_to_com() -> None:
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.add_property("key", "type", "value")
 
@@ -558,9 +559,9 @@ def test_model_element_add_property_delegates_to_com() -> None:
 
 
 def test_model_element_add_redefines_unwraps_argument() -> None:
-    redefine = RPModelElement(make_fake_element("Element"))
+    redefine = IRPModelElement(make_fake_element("Element"))
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.add_redefines(redefine)
 
@@ -568,22 +569,22 @@ def test_model_element_add_redefines_unwraps_argument() -> None:
 
 
 def test_model_element_add_remote_dependency_to_unwraps_arg_and_wraps_result() -> None:
-    target = RPModelElement(make_fake_element("Element"))
+    target = IRPModelElement(make_fake_element("Element"))
     dep_fake = make_fake_element("Dependency", properties={"name": "Dep"})
     fake = make_fake_element("Class", addRemoteDependencyTo=dep_fake)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.add_remote_dependency_to(target, "linkType")
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "Dep"
     fake.addRemoteDependencyTo.assert_called_once_with(target._com, "linkType")
 
 
 def test_model_element_add_specific_stereotype_unwraps_argument() -> None:
-    stereotype = RPModelElement(make_fake_element("Stereotype"))
+    stereotype = IRPModelElement(make_fake_element("Stereotype"))
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.add_specific_stereotype(cast(RPStereotype, stereotype))
 
@@ -593,19 +594,19 @@ def test_model_element_add_specific_stereotype_unwraps_argument() -> None:
 def test_model_element_add_stereotype_wraps_result() -> None:
     st_fake = make_fake_element("Stereotype", properties={"name": "Ster"})
     fake = make_fake_element("Class", addStereotype=st_fake)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.add_stereotype("Ster", "Class")
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "Ster"
     fake.addStereotype.assert_called_once_with("Ster", "Class")
 
 
 def test_model_element_become_template_instantiation_of_unwraps_argument() -> None:
-    template = RPModelElement(make_fake_element("Element"))
+    template = IRPModelElement(make_fake_element("Element"))
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.become_template_instantiation_of(template)
 
@@ -615,39 +616,39 @@ def test_model_element_become_template_instantiation_of_unwraps_argument() -> No
 def test_model_element_change_to_wraps_result() -> None:
     changed_fake = make_fake_element("Element", properties={"name": "Changed"})
     fake = make_fake_element("Class", changeTo=changed_fake)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.change_to("Package")
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "Changed"
     fake.changeTo.assert_called_once_with("Package")
 
 
 def test_model_element_clone_unwraps_owner_and_wraps_result() -> None:
-    new_owner = RPModelElement(make_fake_element("Element"))
+    new_owner = IRPModelElement(make_fake_element("Element"))
     cloned_fake = make_fake_element("Element", properties={"name": "Clone"})
     fake = make_fake_element("Class", clone=cloned_fake)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.clone("Clone", new_owner)
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "Clone"
     fake.clone.assert_called_once_with("Clone", new_owner._com)
 
 
 def test_model_element_create_oslc_link_raises_not_implemented() -> None:
-    element = RPModelElement(make_fake_element("Class"))
+    element = IRPModelElement(make_fake_element("Class"))
 
     with pytest.raises(NotImplementedError):
         element.create_oslc_link("type", "purl")
 
 
 def test_model_element_delete_dependency_unwraps_argument() -> None:
-    dependency = RPModelElement(make_fake_element("Dependency"))
+    dependency = IRPModelElement(make_fake_element("Dependency"))
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.delete_dependency(cast(RPDependency, dependency))
 
@@ -656,7 +657,7 @@ def test_model_element_delete_dependency_unwraps_argument() -> None:
 
 def test_model_element_delete_from_project_delegates_to_com() -> None:
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.delete_from_project()
 
@@ -664,7 +665,7 @@ def test_model_element_delete_from_project_delegates_to_com() -> None:
 
 
 def test_model_element_delete_oslc_link_raises_not_implemented() -> None:
-    element = RPModelElement(make_fake_element("Class"))
+    element = IRPModelElement(make_fake_element("Class"))
 
     with pytest.raises(NotImplementedError):
         element.delete_oslc_link("type", "purl")
@@ -672,7 +673,7 @@ def test_model_element_delete_oslc_link_raises_not_implemented() -> None:
 
 def test_model_element_error_message_returns_str() -> None:
     fake = make_fake_element("Class", errorMessage="boom")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.error_message() == "boom"
     fake.errorMessage.assert_called_once_with()
@@ -681,11 +682,11 @@ def test_model_element_error_message_returns_str() -> None:
 def test_model_element_find_elements_by_full_name_wraps_result() -> None:
     found_fake = make_fake_element("Element", properties={"name": "Found"})
     fake = make_fake_element("Package", findElementsByFullName=found_fake)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.find_elements_by_full_name("Path::To::Found", "Class")
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "Found"
     fake.findElementsByFullName.assert_called_once_with("Path::To::Found", "Class")
 
@@ -693,11 +694,11 @@ def test_model_element_find_elements_by_full_name_wraps_result() -> None:
 def test_model_element_find_nested_element_wraps_result() -> None:
     found_fake = make_fake_element("Element", properties={"name": "Found"})
     fake = make_fake_element("Package", findNestedElement=found_fake)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.find_nested_element("Found", "Class")
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "Found"
     fake.findNestedElement.assert_called_once_with("Found", "Class")
 
@@ -705,11 +706,11 @@ def test_model_element_find_nested_element_wraps_result() -> None:
 def test_model_element_find_nested_element_recursive_wraps_result() -> None:
     found_fake = make_fake_element("Element", properties={"name": "Found"})
     fake = make_fake_element("Package", findNestedElementRecursive=found_fake)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.find_nested_element_recursive("Found", "Class")
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "Found"
     fake.findNestedElementRecursive.assert_called_once_with("Found", "Class")
 
@@ -717,7 +718,7 @@ def test_model_element_find_nested_element_recursive_wraps_result() -> None:
 def test_model_element_get_all_tags_returns_collection() -> None:
     coll = make_fake_collection([])
     fake = make_fake_element("Class", properties={"allTags": coll})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_all_tags()
 
@@ -727,7 +728,7 @@ def test_model_element_get_all_tags_returns_collection() -> None:
 def test_model_element_get_annotations_returns_collection() -> None:
     coll = make_fake_collection([])
     fake = make_fake_element("Class", properties={"annotations": coll})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_annotations()
 
@@ -737,7 +738,7 @@ def test_model_element_get_annotations_returns_collection() -> None:
 def test_model_element_get_association_classes_returns_collection() -> None:
     coll = make_fake_collection([])
     fake = make_fake_element("Class", properties={"associationClasses": coll})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_association_classes()
 
@@ -747,7 +748,7 @@ def test_model_element_get_association_classes_returns_collection() -> None:
 def test_model_element_get_binary_id_falls_back_to_pywin32_binaryid_property() -> None:
     fake = MagicMock(spec=["BinaryID"])
     fake.BinaryID = b"\x01\x02\x03"
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_binary_id() == b"\x01\x02\x03"
 
@@ -755,7 +756,7 @@ def test_model_element_get_binary_id_falls_back_to_pywin32_binaryid_property() -
 def test_model_element_get_constraints_returns_collection() -> None:
     coll = make_fake_collection([])
     fake = make_fake_element("Class", properties={"constraints": coll})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_constraints()
 
@@ -765,7 +766,7 @@ def test_model_element_get_constraints_returns_collection() -> None:
 def test_model_element_get_constraints_by_him_returns_collection() -> None:
     coll = make_fake_collection([])
     fake = make_fake_element("Class", properties={"constraintsByHim": coll})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_constraints_by_him()
 
@@ -775,7 +776,7 @@ def test_model_element_get_constraints_by_him_returns_collection() -> None:
 def test_model_element_get_controlled_files_returns_collection() -> None:
     coll = make_fake_collection([])
     fake = make_fake_element("Class", properties={"controlledFiles": coll})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_controlled_files()
 
@@ -784,7 +785,7 @@ def test_model_element_get_controlled_files_returns_collection() -> None:
 
 def test_model_element_get_decoration_style_returns_str() -> None:
     fake = make_fake_element("Class", getDecorationStyle="Bold")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_decoration_style() == "Bold"
 
@@ -792,7 +793,7 @@ def test_model_element_get_decoration_style_returns_str() -> None:
 def test_model_element_get_dependencies_returns_collection() -> None:
     coll = make_fake_collection([])
     fake = make_fake_element("Class", properties={"dependencies": coll})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_dependencies()
 
@@ -801,63 +802,63 @@ def test_model_element_get_dependencies_returns_collection() -> None:
 
 def test_model_element_get_description_returns_str() -> None:
     fake = make_fake_element("Class", properties={"description": "A description"})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_description() == "A description"
 
 
 def test_model_element_get_description_html_returns_str() -> None:
     fake = make_fake_element("Class", properties={"descriptionHTML": "<p>desc</p>"})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_description_html() == "<p>desc</p>"
 
 
 def test_model_element_get_description_plain_text_returns_str() -> None:
     fake = make_fake_element("Class", properties={"descriptionPlainText": "plain"})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_description_plain_text() == "plain"
 
 
 def test_model_element_get_description_rtf_returns_str() -> None:
     fake = make_fake_element("Class", properties={"descriptionRTF": "{\\rtf}"})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_description_rtf() == "{\\rtf}"
 
 
 def test_model_element_get_display_name_returns_str() -> None:
     fake = make_fake_element("Class", properties={"displayName": "Label"})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_display_name() == "Label"
 
 
 def test_model_element_get_display_name_rtf_returns_str() -> None:
     fake = make_fake_element("Class", getDisplayNameRTF="{\\rtf}")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_display_name_rtf() == "{\\rtf}"
 
 
 def test_model_element_get_error_message_returns_str() -> None:
     fake = make_fake_element("Class", getErrorMessage="boom")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_error_message() == "boom"
 
 
 def test_model_element_get_full_path_name_returns_str() -> None:
     fake = make_fake_element("Class", getFullPathName="Pkg::Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_full_path_name() == "Pkg::Class"
 
 
 def test_model_element_get_full_path_name_in_returns_str() -> None:
     fake = make_fake_element("Class", getFullPathNameIn="Class in Pkg")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_full_path_name_in() == "Class in Pkg"
 
@@ -865,7 +866,7 @@ def test_model_element_get_full_path_name_in_returns_str() -> None:
 def test_model_element_get_hyper_links_returns_collection() -> None:
     coll = make_fake_collection([])
     fake = make_fake_element("Class", properties={"hyperLinks": coll})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_hyper_links()
 
@@ -874,21 +875,21 @@ def test_model_element_get_hyper_links_returns_collection() -> None:
 
 def test_model_element_get_icon_file_name_returns_str() -> None:
     fake = make_fake_element("Class", getIconFileName="D:\\icons\\class.gif")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_icon_file_name() == "D:\\icons\\class.gif"
 
 
 def test_model_element_get_interface_name_returns_str() -> None:
     fake = make_fake_element("Class", properties={"interfaceName": "IRPClass"})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_interface_name() == "IRPClass"
 
 
 def test_model_element_get_is_external_returns_int() -> None:
     fake = make_fake_element("Class", properties={"isExternal": 1})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_is_external() == 1
 
@@ -896,7 +897,7 @@ def test_model_element_get_is_external_returns_int() -> None:
 def test_model_element_get_is_of_meta_class_calls_pywin32_member() -> None:
     fake = MagicMock(spec=["isOfMetaClass"])
     fake.isOfMetaClass.return_value = 1
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_is_of_meta_class("Class") == 1
     fake.isOfMetaClass.assert_called_once_with("Class")
@@ -904,14 +905,14 @@ def test_model_element_get_is_of_meta_class_calls_pywin32_member() -> None:
 
 def test_model_element_get_is_show_display_name_returns_int() -> None:
     fake = make_fake_element("Class", properties={"isShowDisplayName": 0})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_is_show_display_name() == 0
 
 
 def test_model_element_get_is_unresolved_returns_int() -> None:
     fake = make_fake_element("Class", properties={"isUnresolved": 0})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_is_unresolved() == 0
 
@@ -919,7 +920,7 @@ def test_model_element_get_is_unresolved_returns_int() -> None:
 def test_model_element_get_local_tags_returns_collection() -> None:
     coll = make_fake_collection([])
     fake = make_fake_element("Class", properties={"localTags": coll})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_local_tags()
 
@@ -929,18 +930,18 @@ def test_model_element_get_local_tags_returns_collection() -> None:
 def test_model_element_get_main_diagram_wraps_result() -> None:
     diagram_fake = make_fake_element("Diagram", properties={"name": "Main"})
     fake = make_fake_element("Class", properties={"mainDiagram": diagram_fake})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_main_diagram()
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "Main"
 
 
 def test_model_element_get_nested_elements_returns_collection() -> None:
     coll = make_fake_collection([make_fake_element("Class", properties={"name": "Child"})])
     fake = make_fake_element("Package", getNestedElements=coll)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_nested_elements()
 
@@ -951,7 +952,7 @@ def test_model_element_get_nested_elements_returns_collection() -> None:
 def test_model_element_get_nested_elements_by_meta_class_returns_collection() -> None:
     coll = make_fake_collection([])
     fake = make_fake_element("Package", getNestedElementsByMetaClass=coll)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_nested_elements_by_meta_class("Class", 1)
 
@@ -962,7 +963,7 @@ def test_model_element_get_nested_elements_by_meta_class_returns_collection() ->
 def test_model_element_get_nested_elements_recursive_returns_collection() -> None:
     coll = make_fake_collection([])
     fake = make_fake_element("Package", getNestedElementsRecursive=coll)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_nested_elements_recursive()
 
@@ -972,35 +973,28 @@ def test_model_element_get_nested_elements_recursive_returns_collection() -> Non
 def test_model_element_get_new_term_stereotype_wraps_result() -> None:
     st_fake = make_fake_element("Stereotype", properties={"name": "NewTerm"})
     fake = make_fake_element("Class", getNewTermStereotype=st_fake)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_new_term_stereotype()
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "NewTerm"
 
 
 def test_model_element_get_of_template_wraps_result() -> None:
     template_fake = make_fake_element("Element", properties={"name": "Template"})
     fake = make_fake_element("Class", properties={"ofTemplate": template_fake})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_of_template()
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "Template"
-
-
-def test_model_element_get_oslc_links_raises_not_implemented() -> None:
-    element = RPModelElement(make_fake_element("Class"))
-
-    with pytest.raises(NotImplementedError):
-        element.get_oslc_links()
 
 
 def test_model_element_get_overlay_icon_file_name_returns_str() -> None:
     fake = make_fake_element("Class", getOverlayIconFileName="D:\\icons\\overlay.gif")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_overlay_icon_file_name() == "D:\\icons\\overlay.gif"
 
@@ -1008,7 +1002,7 @@ def test_model_element_get_overlay_icon_file_name_returns_str() -> None:
 def test_model_element_get_overridden_properties_returns_collection() -> None:
     coll = make_fake_collection([])
     fake = make_fake_element("Class", getOverriddenProperties=coll)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_overridden_properties(1)
 
@@ -1019,7 +1013,7 @@ def test_model_element_get_overridden_properties_returns_collection() -> None:
 def test_model_element_get_overridden_properties_by_pattern_returns_collection() -> None:
     coll = make_fake_collection([])
     fake = make_fake_element("Class", getOverriddenPropertiesByPattern=coll)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_overridden_properties_by_pattern("C++.*", 1, 0)
 
@@ -1030,7 +1024,7 @@ def test_model_element_get_overridden_properties_by_pattern_returns_collection()
 def test_model_element_get_owned_dependencies_returns_collection() -> None:
     coll = make_fake_collection([])
     fake = make_fake_element("Class", getOwnedDependencies=coll)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_owned_dependencies()
 
@@ -1040,28 +1034,28 @@ def test_model_element_get_owned_dependencies_returns_collection() -> None:
 def test_model_element_get_owner_wraps_result() -> None:
     owner_fake = make_fake_element("Element", properties={"name": "Owner"})
     fake = make_fake_element("Class", properties={"owner": owner_fake})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_owner()
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "Owner"
 
 
 def test_model_element_get_project_wraps_result() -> None:
     project_fake = make_fake_element("Element", properties={"name": "Project"})
     fake = make_fake_element("Class", properties={"project": project_fake})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_project()
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "Project"
 
 
 def test_model_element_get_property_value_returns_str() -> None:
     fake = make_fake_element("Class", getPropertyValue="value")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_property_value("key") == "value"
     fake.getPropertyValue.assert_called_once_with("key")
@@ -1071,7 +1065,7 @@ def test_model_element_get_property_value_conditional_returns_str() -> None:
     formal = IRPCollection(make_fake_collection([]))
     actual = IRPCollection(make_fake_collection([]))
     fake = make_fake_element("Class", getPropertyValueConditional="value")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_property_value_conditional("key", formal, actual) == "value"
     fake.getPropertyValueConditional.assert_called_once_with("key", formal._com, actual._com)
@@ -1081,7 +1075,7 @@ def test_model_element_get_property_value_conditional_explicit_returns_str() -> 
     formal = IRPCollection(make_fake_collection([]))
     actual = IRPCollection(make_fake_collection([]))
     fake = make_fake_element("Class", getPropertyValueConditionalExplicit="value")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_property_value_conditional_explicit("key", formal, actual) == "value"
     fake.getPropertyValueConditionalExplicit.assert_called_once_with("key", formal._com, actual._com)
@@ -1089,7 +1083,7 @@ def test_model_element_get_property_value_conditional_explicit_returns_str() -> 
 
 def test_model_element_get_property_value_explicit_returns_str() -> None:
     fake = make_fake_element("Class", getPropertyValueExplicit="value")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_property_value_explicit("key") == "value"
     fake.getPropertyValueExplicit.assert_called_once_with("key")
@@ -1098,7 +1092,7 @@ def test_model_element_get_property_value_explicit_returns_str() -> None:
 def test_model_element_get_redefines_returns_collection() -> None:
     coll = make_fake_collection([])
     fake = make_fake_element("Class", getRedefines=coll)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_redefines()
 
@@ -1108,7 +1102,7 @@ def test_model_element_get_redefines_returns_collection() -> None:
 def test_model_element_get_references_returns_collection() -> None:
     coll = make_fake_collection([])
     fake = make_fake_element("Class", properties={"references": coll})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_references()
 
@@ -1118,7 +1112,7 @@ def test_model_element_get_references_returns_collection() -> None:
 def test_model_element_get_remote_dependencies_returns_collection() -> None:
     coll = make_fake_collection([])
     fake = make_fake_element("Class", getRemoteDependencies=coll)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_remote_dependencies()
 
@@ -1127,21 +1121,21 @@ def test_model_element_get_remote_dependencies_returns_collection() -> None:
 
 def test_model_element_get_remote_uri_returns_str() -> None:
     fake = make_fake_element("Class", getRemoteURI="https://example.com/req/1")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_remote_uri() == "https://example.com/req/1"
 
 
 def test_model_element_get_requirement_traceability_handle_returns_int() -> None:
     fake = make_fake_element("Class", properties={"requirementTraceabilityHandle": 42})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_requirement_traceability_handle() == 42
 
 
 def test_model_element_get_rmm_url_returns_str() -> None:
     fake = make_fake_element("Class", getRmmUrl="https://rmm/element/1")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_rmm_url() == "https://rmm/element/1"
 
@@ -1149,18 +1143,18 @@ def test_model_element_get_rmm_url_returns_str() -> None:
 def test_model_element_get_save_unit_wraps_result() -> None:
     unit_fake = make_fake_element("Element", properties={"name": "Unit"})
     fake = make_fake_element("Class", getSaveUnit=unit_fake)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_save_unit()
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "Unit"
 
 
 def test_model_element_get_stereotypes_returns_collection() -> None:
     coll = make_fake_collection([])
     fake = make_fake_element("Class", properties={"stereotypes": coll})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_stereotypes()
 
@@ -1170,11 +1164,11 @@ def test_model_element_get_stereotypes_returns_collection() -> None:
 def test_model_element_get_tag_wraps_result() -> None:
     tag_fake = make_fake_element("Tag", properties={"name": "MyTag"})
     fake = make_fake_element("Class", getTag=tag_fake)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_tag("MyTag")
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "MyTag"
     fake.getTag.assert_called_once_with("MyTag")
 
@@ -1182,7 +1176,7 @@ def test_model_element_get_tag_wraps_result() -> None:
 def test_model_element_get_template_parameters_returns_collection() -> None:
     coll = make_fake_collection([])
     fake = make_fake_element("Class", properties={"templateParameters": coll})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_template_parameters()
 
@@ -1192,31 +1186,31 @@ def test_model_element_get_template_parameters_returns_collection() -> None:
 def test_model_element_get_ti_wraps_result() -> None:
     ti_fake = make_fake_element("TemplateInstantiation", properties={"name": "TI"})
     fake = make_fake_element("Class", properties={"ti": ti_fake})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.get_ti()
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "TI"
 
 
 def test_model_element_get_tool_tip_html_returns_str() -> None:
     fake = make_fake_element("Class", getToolTipHTML="<b>tip</b>")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_tool_tip_html() == "<b>tip</b>"
 
 
 def test_model_element_get_user_defined_meta_class_returns_str() -> None:
     fake = make_fake_element("Class", properties={"userDefinedMetaClass": "NewTerm"})
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.get_user_defined_meta_class() == "NewTerm"
 
 
 def test_model_element_has_nested_elements_returns_int() -> None:
     fake = make_fake_element("Class", hasNestedElements=1)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.has_nested_elements() == 1
     fake.hasNestedElements.assert_called_once_with()
@@ -1224,7 +1218,7 @@ def test_model_element_has_nested_elements_returns_int() -> None:
 
 def test_model_element_has_panel_widget_returns_int() -> None:
     fake = make_fake_element("Class", hasPanelWidget=0)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.has_panel_widget() == 0
     fake.hasPanelWidget.assert_called_once_with()
@@ -1232,7 +1226,7 @@ def test_model_element_has_panel_widget_returns_int() -> None:
 
 def test_model_element_high_light_element_delegates_to_com() -> None:
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.high_light_element()
 
@@ -1241,7 +1235,7 @@ def test_model_element_high_light_element_delegates_to_com() -> None:
 
 def test_model_element_is_a_template_returns_int() -> None:
     fake = make_fake_element("Class", isATemplate=0)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.is_a_template() == 0
     fake.isATemplate.assert_called_once_with()
@@ -1249,7 +1243,7 @@ def test_model_element_is_a_template_returns_int() -> None:
 
 def test_model_element_is_description_rtf_returns_int() -> None:
     fake = make_fake_element("Class", isDescriptionRTF=1)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.is_description_rtf() == 1
     fake.isDescriptionRTF.assert_called_once_with()
@@ -1257,7 +1251,7 @@ def test_model_element_is_description_rtf_returns_int() -> None:
 
 def test_model_element_is_display_name_rtf_returns_int() -> None:
     fake = make_fake_element("Class", isDisplayNameRTF=0)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.is_display_name_rtf() == 0
     fake.isDisplayNameRTF.assert_called_once_with()
@@ -1265,7 +1259,7 @@ def test_model_element_is_display_name_rtf_returns_int() -> None:
 
 def test_model_element_is_modified_returns_int() -> None:
     fake = make_fake_element("Class", isModified=1)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.is_modified() == 1
     fake.isModified.assert_called_once_with()
@@ -1273,7 +1267,7 @@ def test_model_element_is_modified_returns_int() -> None:
 
 def test_model_element_is_remote_returns_int() -> None:
     fake = make_fake_element("Class", isRemote=0)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.is_remote() == 0
     fake.isRemote.assert_called_once_with()
@@ -1281,7 +1275,7 @@ def test_model_element_is_remote_returns_int() -> None:
 
 def test_model_element_locate_in_browser_returns_int() -> None:
     fake = make_fake_element("Class", locateInBrowser=1)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     assert element.locate_in_browser() == 1
     fake.locateInBrowser.assert_called_once_with()
@@ -1289,7 +1283,7 @@ def test_model_element_locate_in_browser_returns_int() -> None:
 
 def test_model_element_open_features_dialog_delegates_to_com() -> None:
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.open_features_dialog(1)
 
@@ -1298,7 +1292,7 @@ def test_model_element_open_features_dialog_delegates_to_com() -> None:
 
 def test_model_element_remove_property_delegates_to_com() -> None:
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.remove_property("key")
 
@@ -1306,9 +1300,9 @@ def test_model_element_remove_property_delegates_to_com() -> None:
 
 
 def test_model_element_remove_redefines_unwraps_argument() -> None:
-    redefine = RPModelElement(make_fake_element("Element"))
+    redefine = IRPModelElement(make_fake_element("Element"))
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.remove_redefines(redefine)
 
@@ -1316,9 +1310,9 @@ def test_model_element_remove_redefines_unwraps_argument() -> None:
 
 
 def test_model_element_remove_stereotype_unwraps_argument() -> None:
-    stereotype = RPModelElement(make_fake_element("Stereotype"))
+    stereotype = IRPModelElement(make_fake_element("Stereotype"))
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.remove_stereotype(cast(RPStereotype, stereotype))
 
@@ -1327,7 +1321,7 @@ def test_model_element_remove_stereotype_unwraps_argument() -> None:
 
 def test_model_element_set_decoration_style_delegates_to_com() -> None:
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.set_decoration_style("Bold")
 
@@ -1336,7 +1330,7 @@ def test_model_element_set_decoration_style_delegates_to_com() -> None:
 
 def test_model_element_set_description_delegates_to_com() -> None:
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.set_description("A description")
 
@@ -1346,7 +1340,7 @@ def test_model_element_set_description_delegates_to_com() -> None:
 def test_model_element_set_description_and_hyperlinks_unwraps_targets() -> None:
     targets = IRPCollection(make_fake_collection([]))
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.set_description_and_hyperlinks("{\\rtf}", targets)
 
@@ -1355,7 +1349,7 @@ def test_model_element_set_description_and_hyperlinks_unwraps_targets() -> None:
 
 def test_model_element_set_description_html_delegates_to_com() -> None:
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     with pytest.raises(NotImplementedError):
         element.set_description_html("<p>desc</p>")
@@ -1363,7 +1357,7 @@ def test_model_element_set_description_html_delegates_to_com() -> None:
 
 def test_model_element_set_description_rtf_delegates_to_com() -> None:
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.set_description_rtf("{\\rtf}")
 
@@ -1372,7 +1366,7 @@ def test_model_element_set_description_rtf_delegates_to_com() -> None:
 
 def test_model_element_set_display_name_delegates_to_com() -> None:
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.set_display_name("Label")
 
@@ -1381,7 +1375,7 @@ def test_model_element_set_display_name_delegates_to_com() -> None:
 
 def test_model_element_set_display_name_rtf_delegates_to_com() -> None:
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.set_display_name_rtf("{\\rtf}")
 
@@ -1390,7 +1384,7 @@ def test_model_element_set_display_name_rtf_delegates_to_com() -> None:
 
 def test_model_element_set_guid_delegates_to_com() -> None:
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.set_guid("new-guid")
 
@@ -1399,7 +1393,7 @@ def test_model_element_set_guid_delegates_to_com() -> None:
 
 def test_model_element_set_is_show_display_name_delegates_to_com() -> None:
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.set_is_show_display_name(1)
 
@@ -1407,9 +1401,9 @@ def test_model_element_set_is_show_display_name_delegates_to_com() -> None:
 
 
 def test_model_element_set_main_diagram_unwraps_argument() -> None:
-    diagram = RPModelElement(make_fake_element("Diagram"))
+    diagram = IRPModelElement(make_fake_element("Diagram"))
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.set_main_diagram(cast(RPDiagram, diagram))
 
@@ -1417,9 +1411,9 @@ def test_model_element_set_main_diagram_unwraps_argument() -> None:
 
 
 def test_model_element_set_of_template_unwraps_argument() -> None:
-    template = RPModelElement(make_fake_element("Element"))
+    template = IRPModelElement(make_fake_element("Element"))
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.set_of_template(template)
 
@@ -1427,9 +1421,9 @@ def test_model_element_set_of_template_unwraps_argument() -> None:
 
 
 def test_model_element_set_owner_unwraps_argument() -> None:
-    owner = RPModelElement(make_fake_element("Element"))
+    owner = IRPModelElement(make_fake_element("Element"))
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.set_owner(owner)
 
@@ -1438,7 +1432,7 @@ def test_model_element_set_owner_unwraps_argument() -> None:
 
 def test_model_element_set_property_value_delegates_to_com() -> None:
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.set_property_value("key", "value")
 
@@ -1447,7 +1441,7 @@ def test_model_element_set_property_value_delegates_to_com() -> None:
 
 def test_model_element_set_requirement_traceability_handle_delegates_to_com() -> None:
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.set_requirement_traceability_handle(42)
 
@@ -1455,51 +1449,51 @@ def test_model_element_set_requirement_traceability_handle_delegates_to_com() ->
 
 
 def test_model_element_set_tag_context_value_unwraps_args_and_wraps_result() -> None:
-    tag = RPModelElement(make_fake_element("Tag"))
+    tag = IRPModelElement(make_fake_element("Tag"))
     elements = IRPCollection(make_fake_collection([]))
     multiplicities = IRPCollection(make_fake_collection([]))
     result_fake = make_fake_element("Tag", properties={"name": "CtxTag"})
     fake = make_fake_element("Class", setTagContextValue=result_fake)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.set_tag_context_value(cast(RPTag, tag), elements, multiplicities)
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "CtxTag"
     fake.setTagContextValue.assert_called_once_with(tag._com, elements._com, multiplicities._com)
 
 
 def test_model_element_set_tag_element_value_unwraps_args_and_wraps_result() -> None:
-    tag = RPModelElement(make_fake_element("Tag"))
-    val = RPModelElement(make_fake_element("Element"))
+    tag = IRPModelElement(make_fake_element("Tag"))
+    val = IRPModelElement(make_fake_element("Element"))
     result_fake = make_fake_element("Tag", properties={"name": "ElemTag"})
     fake = make_fake_element("Class", setTagElementValue=result_fake)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.set_tag_element_value(cast(RPTag, tag), val)
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "ElemTag"
     fake.setTagElementValue.assert_called_once_with(tag._com, val._com)
 
 
 def test_model_element_set_tag_value_unwraps_tag_and_wraps_result() -> None:
-    tag = RPModelElement(make_fake_element("Tag"))
+    tag = IRPModelElement(make_fake_element("Tag"))
     result_fake = make_fake_element("Tag", properties={"name": "ValTag"})
     fake = make_fake_element("Class", setTagValue=result_fake)
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     result = element.set_tag_value(cast(RPTag, tag), "a value")
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "ValTag"
     fake.setTagValue.assert_called_once_with(tag._com, "a value")
 
 
 def test_model_element_set_ti_unwraps_argument() -> None:
-    ti = RPModelElement(make_fake_element("TemplateInstantiation"))
+    ti = IRPModelElement(make_fake_element("TemplateInstantiation"))
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.set_ti(cast(RPTemplateInstantiation, ti))
 
@@ -1508,7 +1502,7 @@ def test_model_element_set_ti_unwraps_argument() -> None:
 
 def test_model_element_synchronize_template_instantiation_delegates_to_com() -> None:
     fake = make_fake_element("Class")
-    element = RPModelElement(fake)
+    element = IRPModelElement(fake)
 
     element.synchronize_template_instantiation()
 
@@ -1529,14 +1523,14 @@ def test_add_to_model_mode_constants_match_java_api() -> None:
 
 
 def test_unit_copy_to_another_project_unwraps_parent_and_wraps_result() -> None:
-    parent = RPModelElement(make_fake_element("Project"))
+    parent = IRPModelElement(make_fake_element("Project"))
     copied_fake = make_fake_element("Package", properties={"name": "Copied"})
     fake = make_fake_element("Package", copyToAnotherProject=copied_fake)
     unit = RPUnit(fake)
 
     result = unit.copy_to_another_project(parent)
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "Copied"
     fake.copyToAnotherProject.assert_called_once_with(parent._com)
 
@@ -1672,33 +1666,33 @@ def test_unit_load_passes_flag_and_wraps_result() -> None:
 
     result = unit.load(1)
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "Loaded"
     fake.load.assert_called_once_with(1)
 
 
 def test_unit_move_to_another_project_leave_a_reference_unwraps_parent_and_wraps_result() -> None:
-    parent = RPModelElement(make_fake_element("Project"))
+    parent = IRPModelElement(make_fake_element("Project"))
     moved_fake = make_fake_element("Package", properties={"name": "Moved"})
     fake = make_fake_element("Package", moveToAnotherProjectLeaveAReference=moved_fake)
     unit = RPUnit(fake)
 
     result = unit.move_to_another_project_leave_a_reference(parent)
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "Moved"
     fake.moveToAnotherProjectLeaveAReference.assert_called_once_with(parent._com)
 
 
 def test_unit_reference_to_another_project_unwraps_parent_and_wraps_result() -> None:
-    parent = RPModelElement(make_fake_element("Project"))
+    parent = IRPModelElement(make_fake_element("Project"))
     ref_fake = make_fake_element("Package", properties={"name": "Ref"})
     fake = make_fake_element("Package", referenceToAnotherProject=ref_fake)
     unit = RPUnit(fake)
 
     result = unit.reference_to_another_project(parent)
 
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
     assert result.get_name() == "Ref"
     fake.referenceToAnotherProject.assert_called_once_with(parent._com)
 
@@ -1758,7 +1752,7 @@ def test_unit_unload_delegates_to_com() -> None:
 
 
 def test_rp_model_element_uses_no_legacy_dual_binding_helpers() -> None:
-    """RPModelElement's own methods call exactly one pywin32 member — no name probing."""
+    """IRPModelElement's own methods call exactly one pywin32 member — no name probing."""
     import ast as _ast
 
     source = Path(core_module.__file__).read_text(encoding="utf-8")
@@ -1767,7 +1761,7 @@ def test_rp_model_element_uses_no_legacy_dual_binding_helpers() -> None:
     for node in tree.body:
         if not isinstance(node, _ast.ClassDef):
             continue
-        if node.name not in ("RPModelElement", "AbstractRPModelElement"):
+        if node.name not in ("IRPModelElement", "AbstractRPModelElement"):
             continue
         for fn in node.body:
             if not isinstance(fn, _ast.FunctionDef):
@@ -1783,13 +1777,11 @@ def test_rp_model_element_uses_no_legacy_dual_binding_helpers() -> None:
     assert offenders == []
 
 
-def test_irp_collection_uses_no_legacy_dual_binding_helpers() -> None:
+def test_rp_collection_uses_no_legacy_dual_binding_helpers() -> None:
     """IRPCollection's own methods call exactly one pywin32 member — no name probing."""
     import ast as _ast
 
-    from rhapsody_cli.models.com.telelogic.rhapsody.core import irp_collection as irp_collection_module
-
-    source = Path(irp_collection_module.__file__).read_text(encoding="utf-8")
+    source = Path(core_module.__file__).read_text(encoding="utf-8")
     tree = _ast.parse(source)
     collection_cls = next(node for node in tree.body if isinstance(node, _ast.ClassDef) and node.name == "IRPCollection")
     offenders: list[str] = []
@@ -1807,3 +1799,12 @@ def test_irp_collection_uses_no_legacy_dual_binding_helpers() -> None:
             if isinstance(sub, _ast.Call) and isinstance(sub.func, _ast.Name) and sub.func.id == "hasattr":
                 offenders.append(f"{fn.name}:{sub.lineno}:hasattr-probe")
     assert offenders == []
+
+
+def test_core_module_uses_future_annotations_and_unquoted_type_references() -> None:
+    """Synced wrappers use `from __future__ import annotations` with unquoted type references."""
+    source = Path(core_module.__file__).read_text(encoding="utf-8")
+
+    assert "from __future__ import annotations" in source
+    assert re.search(r'cast\("', source) is None
+    assert re.search(r'(-> |: )"[A-Z][A-Za-z]*"', source) is None

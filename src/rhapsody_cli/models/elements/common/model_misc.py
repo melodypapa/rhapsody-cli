@@ -1,10 +1,9 @@
 """Miscellaneous model element wrappers — RPComment, RPConstraint, RPEnumerationLiteral."""
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 
 
-class RPEnumerationLiteral(RPModelElement):
+class RPEnumerationLiteral(IRPModelElement):
     """Wraps ``IRPEnumerationLiteral``: a literal value in an enumeration."""
 
     # IRPEnumerationLiteral method parity checklist:
@@ -39,7 +38,7 @@ class RPEnumerationLiteral(RPModelElement):
 AbstractRPModelElement.register_wrapper("EnumerationLiteral", RPEnumerationLiteral)
 
 
-class RPComment(RPModelElement):
+class RPComment(IRPModelElement):
     """Wraps ``IRPComment``: a free-text comment element."""
 
     # IRPComment method parity checklist:
@@ -52,7 +51,7 @@ class RPComment(RPModelElement):
 AbstractRPModelElement.register_wrapper("Comment", RPComment)
 
 
-class RPConstraint(RPModelElement):
+class RPConstraint(IRPModelElement):
     """Wraps ``IRPConstraint``: a constraint element."""
 
     # IRPConstraint method parity checklist:

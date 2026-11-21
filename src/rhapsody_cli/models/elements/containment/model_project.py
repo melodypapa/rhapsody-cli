@@ -2,8 +2,7 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 from rhapsody_cli.models.elements.containment.model_package import RPPackage
 
 if TYPE_CHECKING:
@@ -199,7 +198,7 @@ class RPProject(RPPackage):
         """
         return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getComponents", "components"))
 
-    def find_element_by_guid(self, guid: str) -> Optional["RPModelElement"]:
+    def find_element_by_guid(self, guid: str) -> Optional["IRPModelElement"]:
         """Finds an element in the project by GUID.
 
         Args:
@@ -228,7 +227,7 @@ class RPProject(RPPackage):
         """
         return cast("RPComponent", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addComponent(name))))
 
-    def delete_component(self, component: RPModelElement) -> None:
+    def delete_component(self, component: IRPModelElement) -> None:
         """Deletes a component from the project.
 
         Args:
@@ -279,7 +278,7 @@ class RPProject(RPPackage):
         """
         return cast("RPNode", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findNode(name))))
 
-    def delete_node(self, node: RPModelElement) -> None:
+    def delete_node(self, node: IRPModelElement) -> None:
         """Deletes a node from the project.
 
         Args:
@@ -302,7 +301,7 @@ class RPProject(RPPackage):
         """
         return cast("RPConfiguration", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getActiveConfiguration", "activeConfiguration")))
 
-    def set_active_configuration(self, config: RPModelElement) -> None:
+    def set_active_configuration(self, config: IRPModelElement) -> None:
         """Sets the active configuration of the project.
 
         Args:
@@ -324,7 +323,7 @@ class RPProject(RPPackage):
         """
         return cast("RPComponent", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getActiveComponent", "activeComponent")))
 
-    def set_active_component(self, component: RPModelElement) -> None:
+    def set_active_component(self, component: IRPModelElement) -> None:
         """Sets the active component of the project.
 
         Args:
@@ -359,7 +358,7 @@ class RPProject(RPPackage):
         return cast("RPCollaboration", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getNewCollaboration", "newCollaboration")))
 
     # --- Profile methods ---
-    def add_profile(self, name: str) -> RPModelElement:
+    def add_profile(self, name: str) -> IRPModelElement:
         """Adds a new profile to the project.
 
         Args:
@@ -371,7 +370,7 @@ class RPProject(RPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::addProfile(java.lang.String name)
         """
-        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addProfile(name))))
+        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addProfile(name))))
 
     def get_profiles(self) -> "IRPCollection":
         """Returns all profiles in the project.
@@ -397,7 +396,7 @@ class RPProject(RPPackage):
         AbstractRPModelElement.call_com(lambda: self._com.saveAs(file_path))
 
     # --- Find by binary ID ---
-    def find_element_by_binary_id(self, binary_id: str) -> Optional["RPModelElement"]:
+    def find_element_by_binary_id(self, binary_id: str) -> Optional["IRPModelElement"]:
         """Finds an element in the project by binary ID.
 
         Args:
@@ -411,7 +410,7 @@ class RPProject(RPPackage):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findElementByBinaryID(binary_id)))
 
-    def find_element_by_file_name(self, file_name: str) -> Optional["RPModelElement"]:
+    def find_element_by_file_name(self, file_name: str) -> Optional["IRPModelElement"]:
         """Finds an element in the project by file name.
 
         Args:
@@ -539,7 +538,7 @@ class RPProject(RPPackage):
         AbstractRPModelElement.call_com(lambda: self._com.generateReport(template_path, output_path))
 
     # --- Custom Views methods ---
-    def add_custom_view_on_browser(self, view: RPModelElement) -> None:
+    def add_custom_view_on_browser(self, view: IRPModelElement) -> None:
         """Adds a custom view to be applied on the Rhapsody browser.
 
         Args:
@@ -550,7 +549,7 @@ class RPProject(RPPackage):
         """
         AbstractRPModelElement.call_com(lambda: self._com.addCustomViewOnBrowser(view._com))
 
-    def add_custom_view_on_diagram(self, view: RPModelElement) -> None:
+    def add_custom_view_on_diagram(self, view: IRPModelElement) -> None:
         """Adds a custom view to be applied on diagrams.
 
         Args:
@@ -591,7 +590,7 @@ class RPProject(RPPackage):
         """
         return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getActiveCustomViewsOnDiagram", "activeCustomViewsOnDiagram"))
 
-    def remove_custom_view_on_browser(self, view: RPModelElement) -> None:
+    def remove_custom_view_on_browser(self, view: IRPModelElement) -> None:
         """Removes a custom view from the browser.
 
         Args:
@@ -602,7 +601,7 @@ class RPProject(RPPackage):
         """
         AbstractRPModelElement.call_com(lambda: self._com.removeCustomViewOnBrowser(view._com))
 
-    def remove_custom_view_on_diagram(self, view: RPModelElement) -> None:
+    def remove_custom_view_on_diagram(self, view: IRPModelElement) -> None:
         """Removes a custom view from diagrams.
 
         Args:
@@ -891,7 +890,7 @@ class RPProject(RPPackage):
         """
         AbstractRPModelElement._set_method_or_property(self._com, "setNotifyPluginOnElementsChanged", "notifyPluginOnElementsChanged", enabled)
 
-    def set_object_explicit(self, obj: RPModelElement) -> None:
+    def set_object_explicit(self, obj: IRPModelElement) -> None:
         """Sets the specified object as explicit.
 
         Args:
@@ -902,7 +901,7 @@ class RPProject(RPPackage):
         """
         AbstractRPModelElement.call_com(lambda: self._com.setObjectExplicit(obj._com))
 
-    def set_object_implicit(self, obj: RPModelElement) -> None:
+    def set_object_implicit(self, obj: IRPModelElement) -> None:
         """Sets the specified object as implicit.
 
         Args:

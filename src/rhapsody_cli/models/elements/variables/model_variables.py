@@ -4,10 +4,10 @@ com.telelogic.rhapsody.core.
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.core import (
     AbstractRPModelElement,
-    RPModelElement,
+    IRPCollection,
+    IRPModelElement,
     RPUnit,
 )
 from rhapsody_cli.models.elements.classifiers import RPClassifier
@@ -39,7 +39,7 @@ class RPVariable(RPUnit):
     # [inherited] irp_unit / irp_model_element methods (covered by rp_unit / rp_model_element checklists)
     # No deprecated IRPVariable methods.
 
-    def add_element_default_value(self, new_default_val: RPModelElement) -> "RPInstanceValue":
+    def add_element_default_value(self, new_default_val: IRPModelElement) -> "RPInstanceValue":
         """For tags with multiplicity greater than 1, adds a model element as an additional value.
 
         Args:

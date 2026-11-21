@@ -2,8 +2,7 @@
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 from rhapsody_cli.models.elements.activity.model_actions import (
     RPAcceptEventAction,
     RPAcceptTimeEvent,
@@ -25,7 +24,7 @@ class TestRPAcceptEventAction:
     def test_is_state(self) -> None:
         fake = make_fake_element("AcceptEventAction", properties={"name": "AEA1"})
         aea = RPAcceptEventAction(fake)
-        assert isinstance(aea, RPModelElement)
+        assert isinstance(aea, IRPModelElement)
         assert aea.get_name() == "AEA1"
 
     def test_get_event_wraps_result(self) -> None:
@@ -53,7 +52,7 @@ class TestRPAcceptTimeEvent:
     def test_is_state(self) -> None:
         fake = make_fake_element("AcceptTimeEvent", properties={"name": "ATE1"})
         ate = RPAcceptTimeEvent(fake)
-        assert isinstance(ate, RPModelElement)
+        assert isinstance(ate, IRPModelElement)
         assert ate.get_name() == "ATE1"
 
     def test_get_duration_time_returns_string(self) -> None:
@@ -77,7 +76,7 @@ class TestRPAction:
     def test_is_model_element(self) -> None:
         fake = make_fake_element("Action", properties={"name": "Act1"})
         act = RPAction(fake)
-        assert isinstance(act, RPModelElement)
+        assert isinstance(act, IRPModelElement)
         assert act.get_name() == "Act1"
 
     def test_get_body_returns_string(self) -> None:
@@ -101,7 +100,7 @@ class TestRPActionBlock:
     def test_is_message(self) -> None:
         fake = make_fake_element("ActionBlock", properties={"name": "AB1"})
         ab = RPActionBlock(fake)
-        assert isinstance(ab, RPModelElement)
+        assert isinstance(ab, IRPModelElement)
         assert ab.get_name() == "AB1"
 
     def test_is_registered(self) -> None:
@@ -114,7 +113,7 @@ class TestRPCallOperation:
     def test_is_state(self) -> None:
         fake = make_fake_element("CallOperation", properties={"name": "CO1"})
         co = RPCallOperation(fake)
-        assert isinstance(co, RPModelElement)
+        assert isinstance(co, IRPModelElement)
         assert co.get_name() == "CO1"
 
     def test_get_operation_wraps_result(self) -> None:
@@ -157,7 +156,7 @@ class TestRPContextSpecification:
     def test_is_value_specification(self) -> None:
         fake = make_fake_element("ContextSpecification", properties={"name": "CS1"})
         cs = RPContextSpecification(fake)
-        assert isinstance(cs, RPModelElement)
+        assert isinstance(cs, IRPModelElement)
         assert cs.get_name() == "CS1"
 
     def test_get_multiplicities_returns_collection(self) -> None:
@@ -239,7 +238,7 @@ class TestRPSendAction:
         fake.getTarget.return_value = target
         sa = RPSendAction(fake)
         result = sa.get_target()
-        assert cast(RPModelElement, result).get_name() == "MyClass"
+        assert cast(IRPModelElement, result).get_name() == "MyClass"
 
     def test_set_event_delegates(self) -> None:
         fake = make_fake_element("SendAction")
@@ -259,7 +258,7 @@ class TestRPSendAction:
         fake = make_fake_element("SendAction")
         target = make_fake_element("Class", properties={"name": "MyClass"})
         sa = RPSendAction(fake)
-        sa.set_target(cast(RPModelElement, AbstractRPModelElement.wrap(target)))
+        sa.set_target(cast(IRPModelElement, AbstractRPModelElement.wrap(target)))
         fake.setTarget.assert_called_once_with(target)
 
     def test_is_registered(self) -> None:

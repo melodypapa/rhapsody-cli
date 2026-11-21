@@ -1,6 +1,6 @@
 """Tests for rhapsody_cli.models.elements.common.model_other_model.RPSysMLPort."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 from rhapsody_cli.models.elements.classifiers import RPClassifier
 from rhapsody_cli.models.elements.common import RPSysMLPort
 from tests.unit.models.fakes import make_fake_element
@@ -10,7 +10,7 @@ class TestRPSysMLPort:
     def test_is_model_element(self) -> None:
         fake = make_fake_element("SysMLPort", properties={"name": "P1"})
         port = RPSysMLPort(fake)
-        assert isinstance(port, RPModelElement)
+        assert isinstance(port, IRPModelElement)
         assert port.get_name() == "P1"
 
     def test_is_registered(self) -> None:

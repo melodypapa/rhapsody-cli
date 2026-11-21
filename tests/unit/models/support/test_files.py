@@ -1,7 +1,6 @@
 from typing import cast
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
 from rhapsody_cli.models.elements.containment.model_package import RPPackage
 from rhapsody_cli.models.support.model_files import (
@@ -65,7 +64,7 @@ class TestRPFile:
         fake = make_fake_element("File")
         target = make_fake_element("X")
         obj = RPFile(fake)
-        obj.add_model_element(cast(RPModelElement, AbstractRPModelElement.wrap(target)), "x")
+        obj.add_model_element(cast(IRPModelElement, AbstractRPModelElement.wrap(target)), "x")
         fake.addModelElement.assert_called_once_with(target, "x")
 
     def test_add_package_to_scope_delegates_to_com(self) -> None:

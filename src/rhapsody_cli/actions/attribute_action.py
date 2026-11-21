@@ -24,7 +24,7 @@ from typing import Dict, List, cast
 from rhapsody_cli.actions.abstract_action import ElementManagementAction, SessionAwareAction
 from rhapsody_cli.cli.formatters import OutputFormatter
 from rhapsody_cli.exceptions import CliExecutionError
-from rhapsody_cli.models.core import RPModelElement
+from rhapsody_cli.models.core import IRPModelElement
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +37,7 @@ class AbstractAttributeAction(SessionAwareAction, ElementManagementAction):
     SWR_ATTR_00010: GUID Lookup Support
     """
 
-    def _resolve_classifier(self, path: str) -> RPModelElement:
+    def _resolve_classifier(self, path: str) -> IRPModelElement:
         """Resolve a parent classifier path.
 
         Args:
@@ -52,7 +52,7 @@ class AbstractAttributeAction(SessionAwareAction, ElementManagementAction):
         root = self._get_active_root()
         return self._resolve_container_or_element(root, path, resolve_element=True, operation=f"resolve classifier path '{path}'")
 
-    def _resolve_attribute(self, classifier: RPModelElement, name: str) -> RPModelElement:
+    def _resolve_attribute(self, classifier: IRPModelElement, name: str) -> IRPModelElement:
         """Find an attribute by name within a classifier.
 
         Args:
@@ -68,9 +68,9 @@ class AbstractAttributeAction(SessionAwareAction, ElementManagementAction):
         attribute = classifier.find_attribute(name)  # type: ignore[attr-defined]
         if attribute is None:
             raise CliExecutionError(f"Attribute '{name}' not found in classifier")
-        return cast(RPModelElement, attribute)
+        return cast(IRPModelElement, attribute)
 
-    def _resolve_attribute_by_guid(self, guid: str) -> RPModelElement:
+    def _resolve_attribute_by_guid(self, guid: str) -> IRPModelElement:
         """Locate an attribute by GUID and validate it's an Attribute element.
 
         SWR_ATTR_00010: GUID Lookup Support
@@ -160,7 +160,7 @@ class AttributeCreateAction(AbstractAttributeAction):
 
         self._report_results(created, errors, len(attrs_data))
 
-    def _create_single_attribute(self, classifier: RPModelElement, attr_attrs: Dict[str, object], parent_path: str) -> str:
+    def _create_single_attribute(self, classifier: IRPModelElement, attr_attrs: Dict[str, object], parent_path: str) -> str:
         """Create a single attribute and set its attributes. Returns the attribute name."""
         name = str(attr_attrs.get("name", ""))
         if not name:
@@ -206,7 +206,7 @@ class AttributeCreateAction(AbstractAttributeAction):
         except OSError as e:
             raise CliExecutionError(f"Failed to read file: {e}") from e
 
-    def _set_attributes(self, classifier: RPModelElement, attribute: RPModelElement, attrs: Dict[str, object]) -> None:
+    def _set_attributes(self, classifier: IRPModelElement, attribute: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Set validated attributes on attribute."""
         if "name" in attrs:
             attribute.set_name(cast(str, attrs["name"]))
@@ -223,7 +223,7 @@ class AttributeCreateAction(AbstractAttributeAction):
         self._set_boolean_flags(attribute, attrs)
         self._set_type(classifier, attribute, attrs)
 
-    def _set_boolean_flags(self, attribute: RPModelElement, attrs: Dict[str, object]) -> None:
+    def _set_boolean_flags(self, attribute: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Set boolean flag isStatic.
 
         SWR_ATTR_00012: IsStatic Flag Support
@@ -231,7 +231,7 @@ class AttributeCreateAction(AbstractAttributeAction):
         if "isStatic" in attrs:
             attribute.set_is_static(1 if attrs["isStatic"] else 0)  # type: ignore[attr-defined]
 
-    def _set_type(self, classifier: RPModelElement, attribute: RPModelElement, attrs: Dict[str, object]) -> None:
+    def _set_type(self, classifier: IRPModelElement, attribute: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Resolve and set the attribute type.
 
         SWR_ATTR_00011: Type Resolution
@@ -330,10 +330,10 @@ class AttributeListAction(AbstractAttributeAction):
         except Exception as e:
             self._handle_execution_error(e, f"Failed to list attributes in '{args.path}'")
 
-    def _collect_attribute_names(self, classifier: RPModelElement) -> List[str]:
+    def _collect_attribute_names(self, classifier: IRPModelElement) -> List[str]:
         """Collect names of attributes on a classifier."""
         attributes = classifier.get_attributes()  # type: ignore[attr-defined]
-        return [cast(RPModelElement, attr).get_name() for attr in attributes]
+        return [cast(IRPModelElement, attr).get_name() for attr in attributes]
 
     def _format_output(self, attr_names: List[str], format_type: str) -> str:
         """Format output based on format parameter."""
@@ -436,13 +436,13 @@ class AttributeViewAction(AbstractAttributeAction):
         except Exception as e:
             self._handle_execution_error(e, f"Failed to view attribute '{args.name or args.guid}'")
 
-    def _collect_attribute_data(self, attribute: RPModelElement) -> Dict[str, object]:
+    def _collect_attribute_data(self, attribute: IRPModelElement) -> Dict[str, object]:
         """Collect attribute details into a data dictionary.
 
         Normalizes boolean flags to int for clean JSON round-trip.
         """
         attr_type = attribute.get_type()  # type: ignore[attr-defined]
-        type_name = cast(RPModelElement, attr_type).get_name() if attr_type is not None else ""
+        type_name = cast(IRPModelElement, attr_type).get_name() if attr_type is not None else ""
         return {
             "name": attribute.get_name(),
             "guid": attribute.get_guid(),
@@ -578,7 +578,7 @@ class AttributeUpdateAction(AbstractAttributeAction):
         except OSError as e:
             raise CliExecutionError(f"Failed to read file: {e}") from e
 
-    def _set_attributes(self, classifier: RPModelElement, attribute: RPModelElement, attrs: Dict[str, object]) -> None:
+    def _set_attributes(self, classifier: IRPModelElement, attribute: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Set validated attributes on attribute (partial update)."""
         if "name" in attrs:
             attribute.set_name(cast(str, attrs["name"]))

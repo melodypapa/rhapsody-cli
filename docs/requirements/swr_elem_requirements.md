@@ -67,7 +67,7 @@ Java-mirrored methods: `addAttribute(name)` (returns wrapped attribute),
 **Priority:** Medium
 **Description:**
 `RPActor` shall extend `RPClassifier` to wrap `IRPActor`. It shall expose Java-mirrored
-methods: `addEventReceptionWithEvent(name, event)` (accepts an `RPModelElement` event,
+methods: `addEventReceptionWithEvent(name, event)` (accepts an `IRPModelElement` event,
 returns wrapped reception), `getIsBehaviorOverriden()` (returns bool), and
 `setIsBehaviorOverriden(is_overridden)` (translates Python bool to 1/0). The wrapper
 shall register itself for the meta class `"Actor"`.
@@ -120,7 +120,7 @@ methods: `getMultiplicity()` / `setMultiplicity(multiplicity)` (str), `getIsStat
 `RPDiagram` shall extend `RPUnit` to wrap `IRPDiagram`. It shall expose Java-mirrored
 methods: `closeDiagram()`, `addTextBox(text, x_position, y_position, width, height)`
 (returns wrapped text box), `getCustomViews()` (returns `IRPCollection`), and
-`getCorrespondingGraphicElements(model_element)` (accepts an `RPModelElement`, returns
+`getCorrespondingGraphicElements(model_element)` (accepts an `IRPModelElement`, returns
 `IRPCollection`). The wrapper shall register itself for the meta class
 `"ActivityDiagram"`.
 **Implementation:** src/rhapsody_cli/models/elements/diagrams.py:RPDiagram
@@ -172,7 +172,7 @@ meta class `"Requirement"`.
 `RPStatechart` shall extend `RPUnit` to wrap `IRPStatechart`. It shall expose
 Java-mirrored methods: `addNewNodeByType(meta_type, x_position, y_position, width, height)`
 (returns wrapped node), `createGraphics()`, `closeDiagram()`, and `deleteState(state)`
-(accepts an `RPModelElement`). The wrapper shall register itself for the meta class
+(accepts an `IRPModelElement`). The wrapper shall register itself for the meta class
 `"Statechart"`.
 **Implementation:** src/rhapsody_cli/models/elements/classifiers.py:RPStatechart
 **Last Changed:** 2026-07-07

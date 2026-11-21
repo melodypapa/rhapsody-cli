@@ -1,8 +1,7 @@
 """Tests for rhapsody_cli.models.elements.relations.RPPort."""
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection
 from rhapsody_cli.models.elements.classifiers import RPClassifier
 from rhapsody_cli.models.elements.relations import RPInstance, RPPort
 from tests.unit.models.fakes import make_fake_collection, make_fake_element

@@ -1,8 +1,7 @@
 from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.application import RhapsodyApplication
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 from rhapsody_cli.models.elements.diagrams.model_diagram_types import RPSequenceDiagram
 from rhapsody_cli.models.elements.graphics.model_graphics import RPTableLayout
 from rhapsody_cli.models.support.model_codegen import (
@@ -57,7 +56,7 @@ class TestRPCodeGenerator:
         inner = make_fake_element("X", properties={"name": "y"})
         fake.getCodeAnnotations.return_value = make_fake_collection([inner])
         obj = RPCodeGenerator(fake)
-        result = obj.get_code_annotations(cast(RPModelElement, AbstractRPModelElement.wrap(target)), 1)
+        result = obj.get_code_annotations(cast(IRPModelElement, AbstractRPModelElement.wrap(target)), 1)
         fake.getCodeAnnotations.assert_called_once_with(target, 1)
         assert isinstance(result, IRPCollection)
         assert len(result) == 1
@@ -68,7 +67,7 @@ class TestRPCodeGenerator:
         inner = make_fake_element("X", properties={"name": "y"})
         fake.getGeneratedFileNames.return_value = make_fake_collection([inner])
         obj = RPCodeGenerator(fake)
-        result = obj.get_generated_file_names(cast(RPModelElement, AbstractRPModelElement.wrap(target)))
+        result = obj.get_generated_file_names(cast(IRPModelElement, AbstractRPModelElement.wrap(target)))
         fake.getGeneratedFileNames.assert_called_once_with(target)
         assert isinstance(result, IRPCollection)
         assert len(result) == 1
@@ -277,7 +276,7 @@ class TestRPSearchQuery:
         fake = make_fake_element("SearchQuery")
         target = make_fake_element("X")
         obj = RPSearchQuery(fake)
-        obj.add_search_scope(cast(RPModelElement, AbstractRPModelElement.wrap(target)))
+        obj.add_search_scope(cast(IRPModelElement, AbstractRPModelElement.wrap(target)))
         fake.addSearchScope.assert_called_once_with(target)
 
     def test_add_table_to_views_list_delegates_to_com(self) -> None:
@@ -486,7 +485,7 @@ class TestRPSearchQuery:
         fake.removeSearchScopeElement.return_value = 1
         obj = RPSearchQuery(fake)
         wrapped = AbstractRPModelElement.wrap(target)
-        result = obj.remove_search_scope_element(cast(RPModelElement, wrapped))
+        result = obj.remove_search_scope_element(cast(IRPModelElement, wrapped))
         fake.removeSearchScopeElement.assert_called_once_with(target)
         assert result == 1
 
@@ -658,7 +657,7 @@ class TestRPSearchQuery:
         target = make_fake_element("X")
         obj = RPSearchQuery(fake)
         wrapped = AbstractRPModelElement.wrap(target)
-        obj.set_search_scope_object(cast(RPModelElement, wrapped))
+        obj.set_search_scope_object(cast(IRPModelElement, wrapped))
         fake.setSearchScopeObject.assert_called_once_with(target)
 
     def test_set_search_text_delegates_to_com(self) -> None:

@@ -2,7 +2,7 @@
 
 from typing import cast
 
-from rhapsody_cli.models.core import RPModelElement, RPUnit
+from rhapsody_cli.models.core import IRPModelElement, RPUnit
 from rhapsody_cli.models.elements.activity import RPFlow, RPFlowItem
 from rhapsody_cli.models.elements.classifiers import RPClassifier, RPOperation
 from rhapsody_cli.models.elements.relations import RPPort, RPRelation
@@ -177,7 +177,7 @@ def test_classifier_delete_attribute_delegates_to_com() -> None:
     attr_fake = make_fake_element("Attribute", properties={"name": "count"})
     classifier = RPClassifier(fake)
 
-    classifier.delete_attribute(cast(RPAttribute, RPModelElement(attr_fake)))
+    classifier.delete_attribute(cast(RPAttribute, IRPModelElement(attr_fake)))
 
     fake.deleteAttribute.assert_called_once_with(attr_fake)
 
@@ -187,7 +187,7 @@ def test_classifier_delete_flow_items_delegates_to_com() -> None:
     item_fake = make_fake_element("FlowItem", properties={"name": "flowItem"})
     classifier = RPClassifier(fake)
 
-    classifier.delete_flow_items(cast(RPFlowItem, RPModelElement(item_fake)))
+    classifier.delete_flow_items(cast(RPFlowItem, IRPModelElement(item_fake)))
 
     fake.deleteFlowItems.assert_called_once_with(item_fake)
 
@@ -197,7 +197,7 @@ def test_classifier_delete_flows_delegates_to_com() -> None:
     flow_fake = make_fake_element("Flow", properties={"name": "flow"})
     classifier = RPClassifier(fake)
 
-    classifier.delete_flows(cast(RPFlow, RPModelElement(flow_fake)))
+    classifier.delete_flows(cast(RPFlow, IRPModelElement(flow_fake)))
 
     fake.deleteFlows.assert_called_once_with(flow_fake)
 
@@ -217,7 +217,7 @@ def test_classifier_delete_operation_delegates_to_com() -> None:
     op_fake = make_fake_element("Operation", properties={"name": "doIt"})
     classifier = RPClassifier(fake)
 
-    classifier.delete_operation(cast(RPOperation, RPModelElement(op_fake)))
+    classifier.delete_operation(cast(RPOperation, IRPModelElement(op_fake)))
 
     fake.deleteOperation.assert_called_once_with(op_fake)
 
@@ -227,7 +227,7 @@ def test_classifier_delete_relation_delegates_to_com() -> None:
     rel_fake = make_fake_element("Relation", properties={"name": "assoc"})
     classifier = RPClassifier(fake)
 
-    classifier.delete_relation(cast(RPRelation, RPModelElement(rel_fake)))
+    classifier.delete_relation(cast(RPRelation, IRPModelElement(rel_fake)))
 
     fake.deleteRelation.assert_called_once_with(rel_fake)
 

@@ -2,10 +2,10 @@
 from com.telelogic.rhapsody.core.
 """
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.core import (
     AbstractRPModelElement,
-    RPModelElement,
+    IRPCollection,
+    IRPModelElement,
     RPUnit,
 )
 
@@ -30,7 +30,7 @@ class RPAnnotation(RPUnit):
     # [inherited] irp_unit / irp_model_element methods (covered by rp_unit / rp_model_element checklists)
     # No deprecated IRPAnnotation methods.
 
-    def add_anchor(self, target: RPModelElement) -> None:
+    def add_anchor(self, target: IRPModelElement) -> None:
         """Adds an anchor from the annotation to the specified model element.
 
         Args:
@@ -96,7 +96,7 @@ class RPAnnotation(RPUnit):
         """
         return bool(AbstractRPModelElement._get_method_or_property(self._com, "isSpecificationRTF", "specificationRTF"))
 
-    def remove_anchor(self, target: RPModelElement) -> None:
+    def remove_anchor(self, target: IRPModelElement) -> None:
         """Removes the anchor to the specified model element.
 
         Args:

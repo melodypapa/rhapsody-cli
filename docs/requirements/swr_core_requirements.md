@@ -7,20 +7,20 @@
 
 ---
 
-## SWR_CORE_00001: RPModelElement Base Class
+## SWR_CORE_00001: IRPModelElement Base Class
 
 **ID:** SWR_CORE_00001
-**Title:** RPModelElement wraps IRPModelElement as the base for all model elements
+**Title:** IRPModelElement wraps IRPModelElement as the base for all model elements
 **Status:** Implemented
 **Priority:** High
 **Description:**
-`RPModelElement` shall be the base class for every wrapped Rhapsody model element,
+`IRPModelElement` shall be the base class for every wrapped Rhapsody model element,
 mirroring `com.telelogic.rhapsody.core.IRPModelElement`. It shall store exactly one
 attribute, `_com`, holding the raw COM object. It shall expose Java-mirrored methods
 `getName()`, `setName(name)`, `getMetaClass()`, and `getGUID()` that delegate to the
 underlying COM object. It shall implement `__eq__` (COM object equality), `__hash__`
 (by COM object identity), and `__repr__` (showing class name and name).
-**Implementation:** src/rhapsody_cli/models/_core.py:RPModelElement
+**Implementation:** src/rhapsody_cli/models/_core.py:IRPModelElement
 **Last Changed:** 2026-07-07
 
 ---
@@ -32,7 +32,7 @@ underlying COM object. It shall implement `__eq__` (COM object equality), `__has
 **Status:** Implemented
 **Priority:** High
 **Description:**
-`RPUnit` shall extend `RPModelElement` to wrap `IRPUnit` (model elements that can be
+`RPUnit` shall extend `IRPModelElement` to wrap `IRPUnit` (model elements that can be
 saved as separate files). It shall expose Java-mirrored methods: `save()`,
 `getFilename()`, `setFilename(filename)`, `isReadOnly()`, and
 `setReadOnly(read_only)`. The `setReadOnly` method shall translate Python booleans to
@@ -88,7 +88,7 @@ The `wrap(com_obj)` factory function shall inspect the underlying Rhapsody eleme
 runtime type via `getMetaClass()` and return the correct Python wrapper instance. Type
 resolution shall be driven by a registry dict mapping Rhapsody type names to wrapper
 classes. `wrap()` shall never crash on an unmapped type; unmapped types shall fall back
-to a generic `RPModelElement` wrapper.
+to a generic `IRPModelElement` wrapper.
 **Implementation:** src/rhapsody_cli/models/_core.py:wrap
 **Last Changed:** 2026-07-07
 
@@ -127,15 +127,15 @@ members.
 
 ---
 
-## SWR_CORE_00008: Registry Fallback to RPModelElement
+## SWR_CORE_00008: Registry Fallback to IRPModelElement
 
 **ID:** SWR_CORE_00008
-**Title:** Unmapped meta classes fall back to generic RPModelElement wrapper
+**Title:** Unmapped meta classes fall back to generic IRPModelElement wrapper
 **Status:** Implemented
 **Priority:** Medium
 **Description:**
 When `wrap()` encounters a COM object whose `getMetaClass()` is not present in the
-wrapper registry, it shall return a generic `RPModelElement` instance rather than
+wrapper registry, it shall return a generic `IRPModelElement` instance rather than
 raising an error. This guarantees navigation code keeps working for element types that
 do not yet have a dedicated wrapper class.
 **Implementation:** src/rhapsody_cli/models/_core.py:wrap

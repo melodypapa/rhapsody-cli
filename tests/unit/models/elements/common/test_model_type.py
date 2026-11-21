@@ -1,7 +1,6 @@
 """Tests for rhapsody_cli.models.elements.common.model_other_model.RPType."""
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 from rhapsody_cli.models.elements.common import RPType
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -10,7 +9,7 @@ class TestRPType:
     def test_is_model_element(self) -> None:
         fake = make_fake_element("Type", properties={"name": "T1"})
         t = RPType(fake)
-        assert isinstance(t, RPModelElement)
+        assert isinstance(t, IRPModelElement)
         assert t.get_name() == "T1"
 
     def test_is_registered(self) -> None:

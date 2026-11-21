@@ -2,8 +2,7 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
 
 if TYPE_CHECKING:
@@ -11,7 +10,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.elements.interactions.model_interactions import RPEvent, RPEventReception
 
 
-class RPExtensionPoint(RPModelElement):
+class RPExtensionPoint(IRPModelElement):
     """Wraps extension point concept (returned as IRPModelElement from COM)."""
 
     pass
@@ -157,7 +156,7 @@ class RPUseCase(RPClassifier):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteExtensionPoint(extension_point))
 
-    def find_entry_point(self, name: str) -> Optional[RPModelElement]:
+    def find_entry_point(self, name: str) -> Optional[IRPModelElement]:
         """Finds an entry point by name.
 
         Args:
@@ -171,7 +170,7 @@ class RPUseCase(RPClassifier):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findEntryPoint(name)))
 
-    def find_extension_point(self, name: str) -> Optional[RPModelElement]:
+    def find_extension_point(self, name: str) -> Optional[IRPModelElement]:
         """Finds an extension point by name.
 
         Args:

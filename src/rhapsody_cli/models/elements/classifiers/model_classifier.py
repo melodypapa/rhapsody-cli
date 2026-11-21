@@ -2,8 +2,7 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement, RPUnit
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.activity.model_activity import RPFlow, RPFlowchart, RPFlowItem
@@ -556,7 +555,7 @@ class RPClassifier(RPUnit):
         """
         return cast("RPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findNestedClassifier(new_val))))
 
-    def find_nested_classifier_recursive(self, new_val: str) -> Optional["RPModelElement"]:
+    def find_nested_classifier_recursive(self, new_val: str) -> Optional["IRPModelElement"]:
         """Searches recursively for the classifier with the name specified.
 
         This method searches all of the levels below the current classifier. To
@@ -762,7 +761,7 @@ class RPClassifier(RPUnit):
         """
         return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getPorts", "ports"))
 
-    def add_port(self, name: str) -> RPModelElement:
+    def add_port(self, name: str) -> IRPModelElement:
         """Adds a new port to this classifier.
 
         Convenience method: the Rhapsody Java API has no dedicated
@@ -776,7 +775,7 @@ class RPClassifier(RPUnit):
         Returns:
             The wrapped ``IRPPort`` created.
         """
-        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewAggr("Port", name))))
+        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewAggr("Port", name))))
 
     def get_relations(self) -> IRPCollection:
         """Returns all the classifier's associations.

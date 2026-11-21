@@ -1,7 +1,6 @@
 """Tests for rhapsody_cli.elements.diagram.RPDiagram."""
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement, RPUnit
 from rhapsody_cli.models.elements.diagrams.model_diagrams import RPDiagram
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -54,7 +53,7 @@ def test_diagram_get_corresponding_graphic_elements_returns_collection() -> None
     diagram = RPDiagram(fake)
     model_element = make_fake_element("Class", properties={"name": "Widget"})
 
-    elements = diagram.get_corresponding_graphic_elements(RPModelElement(model_element))
+    elements = diagram.get_corresponding_graphic_elements(IRPModelElement(model_element))
 
     fake.getCorrespondingGraphicElements.assert_called_once_with(model_element)
     assert len(elements) == 1

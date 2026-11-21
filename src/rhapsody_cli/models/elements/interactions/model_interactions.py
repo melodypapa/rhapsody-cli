@@ -2,8 +2,7 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 from rhapsody_cli.models.elements.classifiers.model_interface_item import RPInterfaceItem
 from rhapsody_cli.models.elements.containment.model_collaboration import RPCollaboration
 
@@ -68,7 +67,7 @@ class RPEventReception(RPInterfaceItem):
         AbstractRPModelElement._set_method_or_property(self._com, "setEvent", "event", p_val._com)
 
 
-class RPExecutionOccurrence(RPModelElement):
+class RPExecutionOccurrence(IRPModelElement):
     """Wraps ``IRPExecutionOccurrence``."""
 
     # IRPExecutionOccurrence method parity checklist:
@@ -80,7 +79,7 @@ class RPExecutionOccurrence(RPModelElement):
         return cast("RPMessage", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getMessage", "message")))
 
 
-class RPGuard(RPModelElement):
+class RPGuard(IRPModelElement):
     """Wraps ``IRPGuard``."""
 
     # IRPGuard method parity checklist:
@@ -96,7 +95,7 @@ class RPGuard(RPModelElement):
         AbstractRPModelElement._set_method_or_property(self._com, "setBody", "body", body)
 
 
-class RPInteractionOccurrence(RPModelElement):
+class RPInteractionOccurrence(IRPModelElement):
     """Wraps ``IRPInteractionOccurrence``."""
 
     # IRPInteractionOccurrence method parity checklist:
@@ -137,7 +136,7 @@ class RPInteractionOperand(RPCollaboration):
         AbstractRPModelElement._set_method_or_property(self._com, "setInteractionConstraint", "interactionConstraint", interaction_constraint)
 
 
-class RPInteractionOperator(RPModelElement):
+class RPInteractionOperator(IRPModelElement):
     """Wraps ``IRPInteractionOperator``."""
 
     # IRPInteractionOperator method parity checklist:
@@ -157,7 +156,7 @@ class RPInteractionOperator(RPModelElement):
         AbstractRPModelElement._set_method_or_property(self._com, "setInteractionType", "interactionType", interaction_type)
 
 
-class RPMessage(RPModelElement):
+class RPMessage(IRPModelElement):
     """Wraps ``IRPMessage``."""
 
     # IRPMessage method parity checklist:
@@ -227,7 +226,7 @@ class RPMessage(RPModelElement):
     def get_formal_interface_item(self) -> "RPInterfaceItem":
         return cast("RPInterfaceItem", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getFormalInterfaceItem", "formalInterfaceItem")))
 
-    def get_formal_type(self) -> "Optional[RPModelElement]":
+    def get_formal_type(self) -> "Optional[IRPModelElement]":
         return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getFormalType", "formalType"))
 
     def get_invariant(self) -> str:
@@ -287,7 +286,7 @@ class RPMessage(RPModelElement):
     def set_formal_interface_item(self, new_val: "RPInterfaceItem") -> None:
         AbstractRPModelElement._set_method_or_property(self._com, "setFormalInterfaceItem", "formalInterfaceItem", new_val._com)
 
-    def set_formal_type(self, formal_type: "RPModelElement") -> None:
+    def set_formal_type(self, formal_type: "IRPModelElement") -> None:
         AbstractRPModelElement._set_method_or_property(self._com, "setFormalType", "formalType", formal_type._com)
 
     def set_invariant(self, invariant: str) -> None:
@@ -309,7 +308,7 @@ class RPMessage(RPModelElement):
         AbstractRPModelElement._set_method_or_property(self._com, "setTimerValue", "timerValue", timer_value)
 
 
-class RPTransition(RPModelElement):
+class RPTransition(IRPModelElement):
     """Wraps ``IRPTransition``: represents transitions in a statechart."""
 
     # IRPTransition method parity checklist:
@@ -409,7 +408,7 @@ class RPTransition(RPModelElement):
         AbstractRPModelElement.call_com(lambda: self._com.unoverrideInheritance())
 
 
-class RPTrigger(RPModelElement):
+class RPTrigger(IRPModelElement):
     """Wraps ``IRPTrigger``: represents the trigger of a transition in a statechart."""
 
     # IRPTrigger method parity checklist:

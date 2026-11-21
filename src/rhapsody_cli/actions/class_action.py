@@ -25,7 +25,7 @@ from typing import Dict, List, cast
 from rhapsody_cli.actions.abstract_action import ElementManagementAction, SessionAwareAction
 from rhapsody_cli.cli.formatters import OutputFormatter
 from rhapsody_cli.exceptions import CliExecutionError
-from rhapsody_cli.models.core import RPModelElement
+from rhapsody_cli.models.core import IRPModelElement
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +40,7 @@ class AbstractClassAction(SessionAwareAction, ElementManagementAction):
 
     _PACKAGE_META_CLASSES = {"Package", "Project"}
 
-    def _resolve_and_validate_package(self, path: str) -> RPModelElement:
+    def _resolve_and_validate_package(self, path: str) -> IRPModelElement:
         """Resolve path and validate it's a Package or Project element.
 
         Used by create and list. RPProject inherits addClass/getClasses from
@@ -64,7 +64,7 @@ class AbstractClassAction(SessionAwareAction, ElementManagementAction):
 
         return container
 
-    def _resolve_and_validate_class(self, path: str) -> RPModelElement:
+    def _resolve_and_validate_class(self, path: str) -> IRPModelElement:
         """Resolve path and validate it's a Class element.
 
         Used by delete, view, and link.
@@ -87,7 +87,7 @@ class AbstractClassAction(SessionAwareAction, ElementManagementAction):
 
         return element
 
-    def _resolve_class_by_guid(self, guid: str) -> RPModelElement:
+    def _resolve_class_by_guid(self, guid: str) -> IRPModelElement:
         """Locate a class by GUID and validate it's a Class element.
 
         SWR_CLS_00013: GUID Lookup Support
@@ -179,7 +179,7 @@ class ClassCreateAction(AbstractClassAction):
 
         self._report_results(created, errors, len(classes_data))
 
-    def _create_single_class(self, parent: RPModelElement, cls_attrs: Dict[str, object], parent_path: str) -> str:
+    def _create_single_class(self, parent: IRPModelElement, cls_attrs: Dict[str, object], parent_path: str) -> str:
         """Create a single class and set its attributes. Returns the class name."""
         name = str(cls_attrs.get("name", ""))
         if not name:
@@ -225,7 +225,7 @@ class ClassCreateAction(AbstractClassAction):
         except OSError as e:
             raise CliExecutionError(f"Failed to read file: {e}") from e
 
-    def _set_attributes(self, parent: RPModelElement, cls: RPModelElement, attrs: Dict[str, object]) -> None:
+    def _set_attributes(self, parent: IRPModelElement, cls: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Set validated attributes on class."""
         self._set_basic_attributes(cls, attrs)
         self._set_boolean_flags(cls, attrs)
@@ -235,12 +235,12 @@ class ClassCreateAction(AbstractClassAction):
         self._set_attributes_list(cls, attrs)
         self._set_superclasses(parent, cls, attrs)
 
-    def _set_basic_attributes(self, cls: RPModelElement, attrs: Dict[str, object]) -> None:
+    def _set_basic_attributes(self, cls: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Set basic attributes."""
         if "description" in attrs:
             cls.set_description(cast(str, attrs["description"]))
 
-    def _set_boolean_flags(self, cls: RPModelElement, attrs: Dict[str, object]) -> None:
+    def _set_boolean_flags(self, cls: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Set boolean flags isAbstract, isFinal, isActive.
 
         SWR_CLS_00012: Boolean Flag Support
@@ -252,31 +252,31 @@ class ClassCreateAction(AbstractClassAction):
         if "isActive" in attrs:
             cls.is_active = 1 if attrs["isActive"] else 0  # type: ignore[attr-defined]
 
-    def _set_properties(self, cls: RPModelElement, attrs: Dict[str, object]) -> None:
+    def _set_properties(self, cls: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Set custom properties (tags)."""
         if "tags" in attrs:
             for key, val in cast(Dict[str, str], attrs["tags"]).items():
                 cls.set_property_value(key, val)
 
-    def _set_stereotypes(self, cls: RPModelElement, attrs: Dict[str, object]) -> None:
+    def _set_stereotypes(self, cls: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Apply stereotypes."""
         if "stereotypes" in attrs:
             for stereotype in cast(List[str], attrs["stereotypes"]):
                 cls.add_stereotype(stereotype, "Class")
 
-    def _set_operations(self, cls: RPModelElement, attrs: Dict[str, object]) -> None:
+    def _set_operations(self, cls: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Add operations."""
         if "operations" in attrs:
             for op_name in cast(List[str], attrs["operations"]):
                 cls.add_operation(op_name)  # type: ignore[attr-defined]
 
-    def _set_attributes_list(self, cls: RPModelElement, attrs: Dict[str, object]) -> None:
+    def _set_attributes_list(self, cls: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Add attributes."""
         if "attributes" in attrs:
             for attr_name in cast(List[str], attrs["attributes"]):
                 cls.add_attribute(attr_name)  # type: ignore[attr-defined]
 
-    def _set_superclasses(self, parent: RPModelElement, cls: RPModelElement, attrs: Dict[str, object]) -> None:
+    def _set_superclasses(self, parent: IRPModelElement, cls: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Add generalization relationships to superclasses.
 
         SWR_CLS_00001: resolves superclass names via parent.findNestedClassifierRecursive(name).
@@ -368,10 +368,10 @@ class ClassListAction(AbstractClassAction):
         except Exception as e:
             self._handle_execution_error(e, f"Failed to list classes in '{args.path}'")
 
-    def _collect_class_names(self, package: RPModelElement) -> List[str]:
+    def _collect_class_names(self, package: IRPModelElement) -> List[str]:
         """Collect names of classes in package."""
         classes = package.get_classes()  # type: ignore[attr-defined]
-        return [cast(RPModelElement, cls).get_name() for cls in classes]
+        return [cast(IRPModelElement, cls).get_name() for cls in classes]
 
     def _format_output(self, class_names: List[str], format_type: str) -> str:
         """Format output based on format parameter."""
@@ -471,7 +471,7 @@ class ClassViewAction(AbstractClassAction):
         except Exception as e:
             self._handle_execution_error(e, f"Failed to view class '{args.path or args.guid}'")
 
-    def _collect_class_data(self, cls: RPModelElement) -> Dict[str, object]:
+    def _collect_class_data(self, cls: IRPModelElement) -> Dict[str, object]:
         """Collect class details into a data dictionary.
 
         Normalizes IsAbstract (bool) to int for clean JSON round-trip.
@@ -489,8 +489,8 @@ class ClassViewAction(AbstractClassAction):
             "isReactive": int(cls.is_reactive),  # type: ignore[attr-defined]
             "metaClass": cls.get_meta_class(),
             "fullPath": cls.get_full_path_name(),
-            "operations": [cast(RPModelElement, op).get_name() for op in operations],
-            "attributes": [cast(RPModelElement, attr).get_name() for attr in attributes],
+            "operations": [cast(IRPModelElement, op).get_name() for op in operations],
+            "attributes": [cast(IRPModelElement, attr).get_name() for attr in attributes],
         }
 
     def _format_output(self, data: Dict[str, object], format_type: str) -> str:
@@ -664,7 +664,7 @@ class ClassUpdateAction(AbstractClassAction):
                     raise CliExecutionError(f"Invalid JSON: {e}") from e
         return {}
 
-    def _set_attributes(self, cls: RPModelElement, data: Dict[str, object]) -> None:
+    def _set_attributes(self, cls: IRPModelElement, data: Dict[str, object]) -> None:
         """Set validated attributes on class (partial update).
 
         SWR_CLS_00012: Boolean Flag Support

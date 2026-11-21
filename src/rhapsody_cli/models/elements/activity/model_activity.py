@@ -2,8 +2,7 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
 from rhapsody_cli.models.elements.classifiers.model_statechart import RPStatechart
 from rhapsody_cli.models.elements.statemachine.model_statemachine import RPState
@@ -22,7 +21,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.elements.relations.model_port import RPPort
 
 
-class RPFlow(RPModelElement):
+class RPFlow(IRPModelElement):
     """Wraps ``IRPFlow``."""
 
     # IRPFlow method parity checklist:
@@ -46,7 +45,7 @@ class RPFlow(RPModelElement):
     # [inherited] irp_model_element methods (covered by rp_model_element checklist)
     # No deprecated IRPFlow methods.
 
-    def add_conveyed(self, p_element: "RPModelElement") -> None:
+    def add_conveyed(self, p_element: "IRPModelElement") -> None:
         """Adds a conveyed element to the flow.
 
         Args:
@@ -88,7 +87,7 @@ class RPFlow(RPModelElement):
         """
         return str(self._get_method_or_property(self._com, "getDirection", "direction"))
 
-    def get_end1(self) -> "Optional[RPModelElement]":
+    def get_end1(self) -> "Optional[IRPModelElement]":
         """Returns the first end of the flow.
 
         Returns:
@@ -130,7 +129,7 @@ class RPFlow(RPModelElement):
         """
         return cast("RPSysMLPort", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getEnd1SysMLPort())))
 
-    def get_end2(self) -> "Optional[RPModelElement]":
+    def get_end2(self) -> "Optional[IRPModelElement]":
         """Returns the second end of the flow.
 
         Returns:
@@ -172,7 +171,7 @@ class RPFlow(RPModelElement):
         """
         return cast("RPSysMLPort", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getEnd2SysMLPort())))
 
-    def remove_conveyed(self, p_element: "RPModelElement") -> None:
+    def remove_conveyed(self, p_element: "IRPModelElement") -> None:
         """Removes a conveyed element from the flow.
 
         Args:
@@ -201,7 +200,7 @@ class RPFlow(RPModelElement):
         """
         self._set_method_or_property(self._com, "setDirection", "direction", direction)
 
-    def set_end1(self, end1: "RPModelElement") -> None:
+    def set_end1(self, end1: "IRPModelElement") -> None:
         """Sets the first end of the flow.
 
         Args:
@@ -245,7 +244,7 @@ class RPFlow(RPModelElement):
         """
         self.call_com(lambda: self._com.setEnd1ViaSysMLPort(p_instance._com, p_sys_m_l_port._com))
 
-    def set_end2(self, end2: "RPModelElement") -> None:
+    def set_end2(self, end2: "IRPModelElement") -> None:
         """Sets the second end of the flow.
 
         Args:
@@ -302,7 +301,7 @@ class RPFlowItem(RPClassifier):
     # [inherited] irp_unit methods (covered by rp_unit checklist)
     # No deprecated IRPFlowItem methods.
 
-    def add_represented(self, p_element: "RPModelElement") -> None:
+    def add_represented(self, p_element: "IRPModelElement") -> None:
         """Adds an element to the collection of information elements that are represented by the item flow.
 
         Args:
@@ -324,7 +323,7 @@ class RPFlowItem(RPClassifier):
         """
         return IRPCollection(self.call_com(lambda: self._com.getRepresented()))
 
-    def remove_represented(self, p_element: "RPModelElement") -> None:
+    def remove_represented(self, p_element: "IRPModelElement") -> None:
         """Removes the specified element from the collection of information elements that are represented by the item flow.
 
         Args:
@@ -417,7 +416,7 @@ class RPFlowchart(RPStatechart):
         """
         return cast("RPPin", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addActivityParameter(name))))
 
-    def add_call_behavior(self, referenced: "RPModelElement") -> "RPState":
+    def add_call_behavior(self, referenced: "IRPModelElement") -> "RPState":
         """Adds a new Call Behavior element to the activity.
 
         Args:
@@ -470,7 +469,7 @@ class RPFlowchart(RPStatechart):
         """
         return cast("RPObjectNode", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addObjectNode(name, parent._com))))
 
-    def add_reference_activity(self, referenced: "RPModelElement") -> "RPState":
+    def add_reference_activity(self, referenced: "IRPModelElement") -> "RPState":
         """Adds a new Call Behavior element to the activity. Performs same action as the addCallBehavior method.
 
         Args:
@@ -586,7 +585,7 @@ class RPObjectNode(RPState):
     # [deprecated] set_in_state  - skipped (deprecated in Rhapsody Java API)
     # No non-deprecated IRPObjectNode methods.
 
-    def add_in_state(self, val: "RPModelElement") -> None:
+    def add_in_state(self, val: "IRPModelElement") -> None:
         """Adds the specified state to the list of "In State" states for the object node.
 
         Args:
@@ -619,7 +618,7 @@ class RPObjectNode(RPState):
         """
         return IRPCollection(self.call_com(lambda: self._com.getInStateList()))
 
-    def get_represents(self) -> "Optional[RPModelElement]":
+    def get_represents(self) -> "Optional[IRPModelElement]":
         """Returns the class/type that this object node represents.
 
         Returns:
@@ -630,7 +629,7 @@ class RPObjectNode(RPState):
         """
         return AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getRepresents()))
 
-    def remove_in_state(self, val: "RPModelElement") -> None:
+    def remove_in_state(self, val: "IRPModelElement") -> None:
         """Removes the specified state from the list of "In State" states for the object node.
 
         Args:
@@ -652,7 +651,7 @@ class RPObjectNode(RPState):
         """
         self._set_method_or_property(self._com, "setInState", "inState", in_state)
 
-    def set_represents(self, represents: "RPModelElement") -> None:
+    def set_represents(self, represents: "IRPModelElement") -> None:
         """Specifies the class/type that this object node should represent.
 
         Args:
@@ -664,7 +663,7 @@ class RPObjectNode(RPState):
         self._set_method_or_property(self._com, "setRepresents", "represents", represents._com)
 
 
-class RPSwimlane(RPModelElement):
+class RPSwimlane(IRPModelElement):
     """Wraps ``IRPSwimlane``: represents swimlanes in an activity diagram."""
 
     # IRPSwimlane method parity checklist:
@@ -704,7 +703,7 @@ class RPSwimlane(RPModelElement):
         """
         return IRPCollection(self.call_com(lambda: self._com.getContents()))
 
-    def get_represents(self) -> "Optional[RPModelElement]":
+    def get_represents(self) -> "Optional[IRPModelElement]":
         """Returns the model element that the swimlane represents.
 
         Returns:
@@ -729,7 +728,7 @@ class RPSwimlane(RPModelElement):
         """
         return IRPCollection(self.call_com(lambda: self._com.getSwimlanes()))
 
-    def set_represents(self, represents: "RPModelElement") -> None:
+    def set_represents(self, represents: "IRPModelElement") -> None:
         """Specifies the model element that the swimlane is to represent.
 
         Args:

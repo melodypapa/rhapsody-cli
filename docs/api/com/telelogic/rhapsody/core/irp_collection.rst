@@ -9,9 +9,9 @@ The IRPCollection interface is Rhapsody's generic collection of model elements.
 - **Java package:** com.telelogic.rhapsody.core
 - **JavaDoc description:** A generic collection of model elements with 1-based indexed access.
 - **Python wrapper:** IRPCollection
-- **Python import:** ``from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPCollection``
-- **Canonical Python import:** ``rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection``
-  (re-exported from ``rhapsody_cli.models.core`` to preserve existing imports)
+- **Python import:** ``from rhapsody_cli.models.core import IRPCollection``
+- **Canonical module:** pending — the §2 package move is deferred until the IRPUnit and
+  IRPModelElement rows leave ``models/core.py`` (see ``docs/reports/sync-todo``).
 
 
 `add_graphical_item` and `to_list` are documented blockers: their Java members

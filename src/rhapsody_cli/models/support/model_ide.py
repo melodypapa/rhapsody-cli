@@ -2,14 +2,13 @@
 
 from typing import TYPE_CHECKING
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import RPModelElement
+from rhapsody_cli.models.core import IRPCollection, IRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.application import RhapsodyApplication
 
 
-class RPAXViewCtrl(RPModelElement):
+class RPAXViewCtrl(IRPModelElement):
     """Wraps ``IRPAXViewCtrl``."""
 
     # IRPAXViewCtrl method parity checklist:
@@ -52,7 +51,7 @@ class RPAXViewCtrl(RPModelElement):
         self.call_com(lambda: self._com.executeCommand(command_type, p_command_initialization._com, p_command_result._com))
 
 
-class RPExternalIDERegistry(RPModelElement):
+class RPExternalIDERegistry(IRPModelElement):
     """Wraps ``IRPExternalIDERegistry``."""
 
     # IRPExternalIDERegistry method parity checklist:
@@ -107,7 +106,7 @@ class RPExternalIDERegistry(RPModelElement):
         self.call_com(lambda: self._com.sendIDETextMessage(message))
 
 
-class RPInternalOEMPlugin(RPModelElement):
+class RPInternalOEMPlugin(IRPModelElement):
     """Wraps ``IRPInternalOEMPlugin``."""
 
     # IRPInternalOEMPlugin method parity checklist:
@@ -331,7 +330,7 @@ class RPInternalOEMPlugin(RPModelElement):
         return int(self.call_com(lambda: self._com.rhpSavingProject()))
 
 
-class RPJavaPlugins(RPModelElement):
+class RPJavaPlugins(IRPModelElement):
     """Wraps ``IRPJavaPlugins``."""
 
     # IRPJavaPlugins method parity checklist:
@@ -339,7 +338,7 @@ class RPJavaPlugins(RPModelElement):
     # No deprecated IRPJavaPlugins methods.
 
 
-class RPPlugInWindow(RPModelElement):
+class RPPlugInWindow(IRPModelElement):
     """Wraps ``IRPPlugInWindow``."""
 
     # IRPPlugInWindow method parity checklist:
@@ -464,7 +463,7 @@ class RPPlugInWindow(RPModelElement):
         self.call_com(lambda: self._com.showWindow(n_show))
 
 
-class RPProgressBar(RPModelElement):
+class RPProgressBar(IRPModelElement):
     """Wraps ``IRPProgressBar``."""
 
     # IRPProgressBar method parity checklist:
@@ -499,7 +498,7 @@ class RPProgressBar(RPModelElement):
         self.call_com(lambda: self._com.tick(amount))
 
 
-class RPSelection(RPModelElement):
+class RPSelection(IRPModelElement):
     """Wraps ``IRPSelection``: contains methods for cutting, copying, pasting, and deleting graphic elements on diagrams."""
 
     # IRPSelection method parity checklist:
@@ -627,7 +626,7 @@ class RPSelection(RPModelElement):
         return int(self.call_com(lambda: self._com.pasteSelected()))
 
 
-class RPowListListener(RPModelElement):
+class RPowListListener(IRPModelElement):
     """Wraps ``IRPowListListener``."""
 
     # IRPowListListener method parity checklist:
@@ -667,7 +666,7 @@ class RPowListListener(RPModelElement):
         self._set_method_or_property(self._com, "setObjID", "objID", bstr_obj_i_d)
 
 
-class RPowPaneMgr(RPModelElement):
+class RPowPaneMgr(IRPModelElement):
     """Wraps ``IRPowPaneMgr``."""
 
     # IRPowPaneMgr method parity checklist:
@@ -744,7 +743,7 @@ class RPowPaneMgr(RPModelElement):
         return RPowTextListener(self.call_com(lambda: self._com.getOWTextListener(s_obj_i_d)))
 
 
-class RPowTextListener(RPModelElement):
+class RPowTextListener(IRPModelElement):
     """Wraps ``IRPowTextListener``."""
 
     # IRPowTextListener method parity checklist:

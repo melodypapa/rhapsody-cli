@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
 
 if TYPE_CHECKING:
@@ -153,7 +153,7 @@ class IRPClass(RPClassifier):
             "addEventReceptionWithEvent is not exposed in the Rhapsody COM automation type library. " "Use add_event_reception(name) instead and set the event via the reception object."
         )
 
-    def add_link(self, from_part: RPModelElement, to_part: RPModelElement, assoc: RPModelElement, from_port: RPModelElement, to_port: RPModelElement) -> RPLink:
+    def add_link(self, from_part: IRPModelElement, to_part: IRPModelElement, assoc: IRPModelElement, from_port: IRPModelElement, to_port: IRPModelElement) -> RPLink:
         """Creates a link between two parts belonging to a class.
 
         In addition to the two parts, you must supply either the association the
@@ -185,7 +185,7 @@ class IRPClass(RPClassifier):
 
         return cast(RPLink, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addLink(from_part._com, to_part._com, assoc._com, from_port._com, to_port._com))))
 
-    def add_link_to_part_via_port(self, to_part: RPModelElement, part_port: RPModelElement, class_port: RPModelElement, assoc: RPModelElement) -> RPLink:
+    def add_link_to_part_via_port(self, to_part: IRPModelElement, part_port: IRPModelElement, class_port: IRPModelElement, assoc: IRPModelElement) -> RPLink:
         """Creates a delegation connector between a class and one of its parts.
 
         You must supply either the association the link should represent, or the

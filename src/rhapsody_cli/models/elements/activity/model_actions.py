@@ -2,8 +2,7 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 from rhapsody_cli.models.elements.interactions.model_interactions import RPMessage
 from rhapsody_cli.models.elements.statemachine.model_statemachine import RPState
 from rhapsody_cli.models.elements.values.model_values import RPValueSpecification
@@ -82,7 +81,7 @@ class RPAcceptTimeEvent(RPState):
         AbstractRPModelElement._set_method_or_property(self._com, "setDurationTime", "durationTime", duration_time)
 
 
-class RPAction(RPModelElement):
+class RPAction(IRPModelElement):
     """Wraps ``IRPAction``: represents the action defined for a transition in a statechart."""
 
     # IRPAction method parity checklist:
@@ -309,7 +308,7 @@ class RPSendAction(RPAction):
         """
         return cast("RPInterfaceItem", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getInvokedOperation", "invokedOperation")))
 
-    def get_target(self) -> Optional["RPModelElement"]:
+    def get_target(self) -> Optional["IRPModelElement"]:
         """Gets the event target of the Send Action element.
 
         Returns:
@@ -345,7 +344,7 @@ class RPSendAction(RPAction):
         """
         AbstractRPModelElement._set_method_or_property(self._com, "setInvokedOperation", "invokedOperation", invoked_operation._com)
 
-    def set_target(self, target: "RPModelElement") -> None:
+    def set_target(self, target: "IRPModelElement") -> None:
         """Sets the specified model element to be the target of the Send Action element.
 
         Args:

@@ -3,8 +3,7 @@
 from typing import TYPE_CHECKING, Optional, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.diagrams.model_diagram_types import RPStatechartDiagram
@@ -95,7 +94,7 @@ class RPStatechart(IRPClass):
         """
         AbstractRPModelElement.call_com(lambda: self._com.closeDiagram())
 
-    def delete_state(self, state: RPModelElement) -> None:
+    def delete_state(self, state: IRPModelElement) -> None:
         """Deletes a state from the statechart.
 
         Args:
@@ -141,7 +140,7 @@ class RPStatechart(IRPClass):
         """
         return cast("RPGraphNode", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addImage(x_position, y_position, width, height))))
 
-    def add_new_edge_by_type(self, meta_type: str, source: RPModelElement, target: RPModelElement) -> "RPGraphEdge":
+    def add_new_edge_by_type(self, meta_type: str, source: IRPModelElement, target: IRPModelElement) -> "RPGraphEdge":
         """Adds a transition edge of the specified type to the statechart.
 
         Args:
@@ -158,7 +157,7 @@ class RPStatechart(IRPClass):
         """
         return cast("RPGraphEdge", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewEdgeByType(meta_type, source._com, target._com))))
 
-    def add_new_edge_for_element(self, element: RPModelElement, source: RPModelElement, target: RPModelElement) -> "RPGraphEdge":
+    def add_new_edge_for_element(self, element: IRPModelElement, source: IRPModelElement, target: IRPModelElement) -> "RPGraphEdge":
         """Adds a graphical edge for an existing model element to the statechart.
 
         Args:
@@ -175,7 +174,7 @@ class RPStatechart(IRPClass):
         """
         return cast("RPGraphEdge", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewEdgeForElement(element._com, source._com, target._com))))
 
-    def add_new_node_for_element(self, element: RPModelElement, x_position: int, y_position: int, width: int, height: int) -> "RPGraphNode":
+    def add_new_node_for_element(self, element: IRPModelElement, x_position: int, y_position: int, width: int, height: int) -> "RPGraphNode":
         """Adds a graphical node for an existing model element to the statechart.
 
         Args:
@@ -218,7 +217,7 @@ class RPStatechart(IRPClass):
         """
         AbstractRPModelElement.call_com(lambda: self._com.openDiagramView())
 
-    def add_new_accept_event_action(self, name: str) -> Optional["RPModelElement"]:
+    def add_new_accept_event_action(self, name: str) -> Optional["IRPModelElement"]:
         """Adds a new accept event action to the statechart.
 
         Args:
@@ -232,7 +231,7 @@ class RPStatechart(IRPClass):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewAcceptEventAction(name)))
 
-    def add_new_accept_time_event(self, name: str) -> Optional["RPModelElement"]:
+    def add_new_accept_time_event(self, name: str) -> Optional["IRPModelElement"]:
         """Adds a new accept time event to the statechart.
 
         Args:
@@ -381,7 +380,7 @@ class RPStatechart(IRPClass):
         """
         return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getPicturesWithImageMap(first_file_name, diagram_map._com)))
 
-    def get_root_state(self) -> Optional["RPModelElement"]:
+    def get_root_state(self) -> Optional["IRPModelElement"]:
         """Returns the root state of the statechart.
 
         Returns:

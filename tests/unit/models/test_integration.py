@@ -1,8 +1,7 @@
 """Cross-wrapper integration tests: factory methods return correct subclasses."""
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 from rhapsody_cli.models.elements.classifiers import RPClassifier, RPStereotype
 from rhapsody_cli.models.elements.common.model_misc import RPComment, RPConstraint, RPEnumerationLiteral
 from rhapsody_cli.models.elements.containment import (
@@ -62,7 +61,7 @@ def test_wrap_dispatches_generalization_to_rpgeneralization() -> None:
     result = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(result, RPGeneralization)
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
 
 
 def test_wrap_dispatches_dependency_to_rpdependency() -> None:
@@ -71,7 +70,7 @@ def test_wrap_dispatches_dependency_to_rpdependency() -> None:
     result = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(result, RPDependency)
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
 
 
 def test_wrap_dispatches_hyperlink_to_rphyperlink() -> None:
@@ -100,7 +99,7 @@ def test_wrap_dispatches_comment_to_rpcomment() -> None:
     result = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(result, RPComment)
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
 
 
 def test_wrap_dispatches_constraint_to_rpconstraint() -> None:
@@ -109,7 +108,7 @@ def test_wrap_dispatches_constraint_to_rpconstraint() -> None:
     result = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(result, RPConstraint)
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
 
 
 def test_wrap_dispatches_enumeration_literal_to_rpenumeration_literal() -> None:
@@ -118,7 +117,7 @@ def test_wrap_dispatches_enumeration_literal_to_rpenumeration_literal() -> None:
     result = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(result, RPEnumerationLiteral)
-    assert isinstance(result, RPModelElement)
+    assert isinstance(result, IRPModelElement)
 
 
 def test_wrap_dispatches_stereotype_to_rpstereotype() -> None:

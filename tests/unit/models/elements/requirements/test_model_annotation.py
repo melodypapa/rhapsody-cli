@@ -2,8 +2,7 @@
 
 from typing import cast
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement, RPUnit
 from rhapsody_cli.models.elements.requirements.model_requirements import RPAnnotation
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -21,7 +20,7 @@ def test_annotation_add_anchor_delegates_to_com() -> None:
     target = make_fake_element("Class", properties={"name": "Widget"})
     annotation = RPAnnotation(fake)
 
-    annotation.add_anchor(cast(RPModelElement, AbstractRPModelElement.wrap(target)))
+    annotation.add_anchor(cast(IRPModelElement, AbstractRPModelElement.wrap(target)))
 
     fake.addAnchor.assert_called_once_with(target)
 
@@ -71,7 +70,7 @@ def test_annotation_remove_anchor_delegates_to_com() -> None:
     target = make_fake_element("Class", properties={"name": "Widget"})
     annotation = RPAnnotation(fake)
 
-    annotation.remove_anchor(cast(RPModelElement, AbstractRPModelElement.wrap(target)))
+    annotation.remove_anchor(cast(IRPModelElement, AbstractRPModelElement.wrap(target)))
 
     fake.removeAnchor.assert_called_once_with(target)
 

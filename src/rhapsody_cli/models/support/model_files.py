@@ -2,15 +2,14 @@
 
 from typing import TYPE_CHECKING, Optional
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement, RPUnit
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
     from rhapsody_cli.models.elements.containment.model_package import RPPackage
 
 
-class RPASCIIFile(RPModelElement):
+class RPASCIIFile(IRPModelElement):
     """Wraps ``IRPASCIIFile``."""
 
     # IRPASCIIFile method parity checklist:
@@ -148,7 +147,7 @@ class RPFile(RPUnit):
         """
         self.call_com(lambda: self._com.addElement(element._com, file_fragment_type))
 
-    def add_model_element(self, element: "RPModelElement", file_fragment_type: str) -> None:
+    def add_model_element(self, element: "IRPModelElement", file_fragment_type: str) -> None:
         """Adds a model element to the file with the specified fragment type.
 
         Args:
@@ -356,7 +355,7 @@ class RPFile(RPUnit):
         self._set_method_or_property(self._com, "setPath", "path", path)
 
 
-class RPFileFragment(RPModelElement):
+class RPFileFragment(IRPModelElement):
     """Wraps ``IRPFileFragment``."""
 
     # IRPFileFragment method parity checklist:
@@ -368,7 +367,7 @@ class RPFileFragment(RPModelElement):
     # [inherited] irp_model_element methods (covered by rp_model_element checklist)
     # No deprecated IRPFileFragment methods.
 
-    def get_fragment_element(self) -> Optional["RPModelElement"]:
+    def get_fragment_element(self) -> Optional["IRPModelElement"]:
         """Gets the fragmentElement property.
 
         Returns:

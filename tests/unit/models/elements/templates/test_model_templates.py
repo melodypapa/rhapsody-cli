@@ -1,7 +1,6 @@
 """Tests for rhapsody_cli.models.elements.templates.model_templates classes."""
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 from rhapsody_cli.models.elements.templates import (
     RPTemplateInstantiation,
     RPTemplateInstantiationParameter,
@@ -29,7 +28,7 @@ class TestRPTemplateInstantiationParameter:
     def test_is_model_element(self) -> None:
         fake = make_fake_element("TemplateInstantiationParameter", properties={"name": "p1"})
         param = RPTemplateInstantiationParameter(fake)
-        assert isinstance(param, RPModelElement)
+        assert isinstance(param, IRPModelElement)
         assert param.get_name() == "p1"
 
     def test_is_registered(self) -> None:
@@ -95,7 +94,7 @@ class TestRPTemplateParameter:
         fake = make_fake_element("TemplateParameter")
         rep = make_fake_element("Class", properties={"name": "C1"})
         tp = RPTemplateParameter(fake)
-        tp.set_representative(RPModelElement(rep))
+        tp.set_representative(IRPModelElement(rep))
         fake.setRepresentative.assert_called_once_with(rep)
 
     def test_set_class_type_delegates(self) -> None:

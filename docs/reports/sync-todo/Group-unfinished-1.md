@@ -13,16 +13,27 @@ Per-row binding rules: one pywin32-exposed COM member per call —
 `docs/reports/pywin32_authority.json`; catalog-absent sites are blockers, never blind
 migrations; inherited members wait for their base class's own row.
 
-- [ ] irp_model_element_api_report (IRPModelElement · RPModelElement · models/core.py · 1 blocker site left)
-  - Note: run 2026-11-21 — 67 own-method sites classified (43 property / 22 method / 1 both via arg1 / 1 blocker) and migrated; `AbstractRPModelElement.wrap()` migrated to the `metaClass` property (fakes set both forms); 5 inherited-member sites in graphics/codegen (`getName`→`name`, `getInterfaceName`→`interfaceName`) migrated using IRPModelElement's catalog; RPUnit (21) + IRPCollection (1) sites remain for their own rows.
+- [ ] iirp_model_element_api_report (IRPModelElement · IRPModelElement · models/core.py · 1 blocker site left)
+  - Note: re-run 2026-11-21 from a clean slate under the updated skill; class renamed `RPModelElement` → `IRPModelElement` per the Java-class naming rule (same for `RPCollection` → `IRPCollection` and the per-class document file names) (shape-follows-COM, `from __future__ import annotations`, own-members report + Correct Items, Java-package declaration). Prior run's outcome retained in the tree: 67 own-method sites migrated, `wrap()` on the `metaClass` property, python-only `get_oslc_links` removed, 5 inherited-member sites in graphics/codegen migrated. RPUnit (21) + IRPCollection (1) sites remain for their own rows.
+  - [ ] Step 1 — §1 sync TODO published (per-run checklist rendered live at run start)
+  - [ ] Step 2 — §2 resolve target + verify the report's Java-package declaration; canonical package move deferred per standing decision (core.py base classes)
+  - [ ] Step 3 — §3 compare evidence against the regenerated own-members report + catalog
+  - [ ] Step 4 — §4 unit tests (TDD) under the new rules: future annotations + unquoted type references + shape follows the COM definition; full unit suite green
+  - [ ] Step 5 — §5 integration tests (mirrored path; collection-only on macOS)
+  - [ ] Step 6 — §6 SWR class requirement document at the package path
+  - [ ] Step 7 — §7 class RST page at the package path, coverage complete
+  - [ ] Step 8 — §8 verify and report (Windows closeout open unless closed)
+
+- [ ] iirp_collection_api_report (IRPCollection · IRPCollection · models/core.py · 2 blocker sites left)
+  - Note: run 2026-11-21 — `get_count` migrated to the `Count` property and `get_item` migrated to the direct `Item` method (the legacy `getItem` name-probe removed); `make_fake_collection` exposes both forms (`Count` attribute + `Item` side_effect) keeping the ~163 dependent call sites green; `add_graphical_item` and `to_list` are documented blockers (Java members absent from pywin32).
   - [x] Step 1 — §1 sync TODO published (per-run checklist rendered live at run start)
-  - [ ] Step 2 — §2 target resolved (wrapper/inheritance/exports/tests located); OPEN blocker: canonical package move deferred per user decision 2026-11-21 — `RPModelElement` stays in `models/core.py` until the IRPCollection and IRPUnit rows land (moving one base class alone creates import cycles with `RPUnit(RPModelElement)`); mirrored test-path move deferred with it
-  - [x] Step 3 — §3 evidence compared (baseline = committed report + catalog; live validator macOS-blocked, recorded; AST inventory: 67 sites classified against the IRPModelElement catalog, zero blind migrations)
-  - [x] Step 4 — §4 unit tests (structural guard test red → catalog-driven migration → 48 test files flipped to the single-member convention (`properties=` channel, property-assignment asserts) → full unit suite 1700 green; blocker `get_rmm_url` exempted in the guard)
-  - [x] Step 5 — §5 integration tests (behavior-preserving change; mirrored integration files collected 145 tests ✓ — no new coverage required; Windows live run tracked in Step 8)
-  - [x] Step 6 — §6 SWR update (`docs/requirements/com/telelogic/rhapsody/core/rp_model_element.md` — SWR_ELEM_00014 with direct-binding statement, `get_rmm_url` blocker, deferred-move note)
-  - [x] Step 7 — §7 RST update (`docs/api/com/telelogic/rhapsody/core/rp_model_element.rst` — 50-row deviation list-table with post-migration single-member labels, offline coverage check: all report members present; toctree entry added to `elements.rst`)
-  - [ ] Step 8 — §8 verify and report (unit suite 1700 ✓, ruff/black/mypy ✓, skill tests ✓, integration collection-only ✓; OPEN blocker: Windows closeout — `validate_interface.py IRPModelElement --source authority` + `verify_sync.py IRPModelElement` + live integration, then archive)
+  - [ ] Step 2 — §2 target resolved (wrapper/exports/tests located); OPEN blocker: canonical package move deferred per standing decision — `IRPCollection` stays in `models/core.py` with the other base classes
+  - [x] Step 3 — §3 evidence compared (baseline = regenerated own-members report + catalog: 9 Correct Items, 2 PYWIN32_MEMBER_MISSING blockers recorded, zero blind migrations)
+  - [x] Step 4 — §4 unit tests (guard test red (legacy helper + hasattr probe) → migration → collection tests flipped to the `Item`/`Count` convention → full unit suite 1710 green; no PYTHON_ONLY_MEMBER rows existed for this class)
+  - [x] Step 5 — §5 integration tests (behavior-preserving change; mirrored integration tests collected 128 ✓ — no new coverage required; Windows live run tracked in Step 8)
+  - [x] Step 6 — §6 SWR update (`docs/requirements/com/telelogic/rhapsody/core/irp_collection.md` — SWR_ELEM_00015 with binding rules and the two blockers)
+  - [x] Step 7 — §7 RST update (`docs/api/com/telelogic/rhapsody/core/irp_collection.rst` — 2 deviation rows + 9 Correct-Items rows, offline coverage check complete; toctree entry added to `elements.rst`)
+  - [ ] Step 8 — §8 verify and report (unit suite 1710 ✓, gate ✓, skill tests ✓, integration collection-only ✓; OPEN blocker: Windows closeout — `validate_interface.py IRPCollection --source authority` + `verify_sync.py IRPCollection` + live integration, then archive)
 
 - [ ] irp_unit_api_report (IRPUnit · RPUnit · models/core.py · within core.py's 92)
   - Note: unit-family members — catalog kinds: methods `getAddToModelMode`/`getCMState`/`getLanguage`/`getLastModifiedTime`/`getNestedSaveUnits`/`getNestedSaveUnitsCount`/`isReadOnly`/`isReferenceUnit`/`isSeparateSaveUnit`/`setReadOnly`/`setSeparateSaveUnit`/`setUnitPath`; properties `CMHeader`/`currentDirectory`/`filename`/`includeInNextLoad`/`isStub`/`structureDiagrams`; landing this row resolves IRPModelElement's cross-catalog blockers.
