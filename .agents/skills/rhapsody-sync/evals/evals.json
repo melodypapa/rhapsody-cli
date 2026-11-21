@@ -3,14 +3,14 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Sync IRPClass from its JavaDoc. Keep the change scoped to that interface, preserve existing imports, and report any JavaDoc/COM/Python differences in the RST docs.",
+      "prompt": "Sync IRPClass from its JavaDoc. Keep the change scoped to that interface, point imports at the canonical Java-mirrored path, and report any JavaDoc/COM/Python differences in the RST docs.",
       "expected_output": "A visible class-specific TODO list, a complete comparison of IRPClass-owned members, safe package/import updates, focused tests and documentation updates, use of the bundled validator/verifier, and explicit unresolved deviations.",
       "files": []
     },
     {
       "id": 2,
       "prompt": "Please sync IRPActor. Some methods come from IRPClassifier, so don't reimplement or test those as RPActor-owned methods. Use the package declared in JavaDoc for the Python path.",
-      "expected_output": "Inherited methods are distinguished from actor-owned members, package placement follows JavaDoc, compatibility imports are preserved, and the bundled verifier reports only genuine missing package/docs artifacts.",
+      "expected_output": "Inherited methods are distinguished from actor-owned members, package placement follows JavaDoc, every internal reference is updated to the canonical import with no compatibility shim left at the old path, and the bundled verifier reports only genuine missing package/docs artifacts.",
       "files": []
     },
     {

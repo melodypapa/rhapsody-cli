@@ -28,7 +28,7 @@ def _load_sync_tools() -> ModuleType:
 def _write_fixture_project(root: Path, rst_deviations: str) -> Path:
     package_parts = ("com", "telelogic", "rhapsody", "core")
     java_dir = root / "docs" / "java_api" / Path(*package_parts)
-    wrapper_dir = root / "src" / "rhapsody_cli" / "models" / "elements" / Path(*package_parts)
+    wrapper_dir = root / "src" / "rhapsody_cli" / "models" / Path(*package_parts)
     java_dir.mkdir(parents=True)
     wrapper_dir.mkdir(parents=True)
     (root / "scripts").mkdir()
@@ -39,7 +39,7 @@ def _write_fixture_project(root: Path, rst_deviations: str) -> Path:
     (root / "docs" / "requirements" / "swr_elem_requirements.md").write_text("RPThing wraps IRPThing\n", encoding="utf-8")
     (root / "docs" / "api").mkdir()
     package_name = ".".join(package_parts)
-    canonical_import = "rhapsody_cli.models.elements." + package_name + ".model_thing"
+    canonical_import = "rhapsody_cli.models." + package_name + ".model_thing"
     rst = (
         ".. _rhapsody-java-interface-IRPThing:\n\n"
         "IRPThing — RPThing\n"
@@ -60,7 +60,7 @@ def _write_report(root: Path) -> Path:
     report.write_text(
         "# Rhapsody API Validation: IRPThing\n\n"
         "## Summary\n"
-        "- Target wrapper: `RPThing` (`src/rhapsody_cli/models/elements/com/telelogic/rhapsody/core/model_thing.py`)\n\n"
+        "- Target wrapper: `RPThing` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/model_thing.py`)\n\n"
         "## Comparison details\n\n"
         "| Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |\n"
         "| --- | --- | --- | --- | --- |\n"

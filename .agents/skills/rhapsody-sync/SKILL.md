@@ -13,7 +13,7 @@ agents: [pi]
 
 # Rhapsody API sync
 
-Sync one requested Java API interface with its Python wrapper in this project. The input is the JavaDoc interface name (such as `IRPClass`), not a hard-coded Python class. Treat `RPClass` as an example pattern, never as the default target.
+Sync one requested Java API interface with its Python wrapper in this project. The input is the JavaDoc interface name (such as `IRPClass`), not a hard-coded Python class. The Python class keeps the same name as the Java interface, so treat `IRPClass` as the example pattern, never as the default target.
 
 ## 1. Resolve the target and publish its TODOs
 
@@ -26,10 +26,11 @@ Before analysis, create a visible TODO list using an available task-list tool; o
 - [ ] Resolve JavaDoc package, class description, and member inventory.
 - [ ] Locate wrapper, inheritance, exports, tests, and current package path.
 - [ ] Compare every owned member across JavaDoc, COM exposure, and Python implementation.
-- [ ] Add/update focused tests before implementation or package changes.
-- [ ] Mirror the Java package in Python; preserve existing import paths.
+- [ ] Add/update focused unit and integration tests in the mirrored test package before implementation or package changes.
+- [ ] Mirror the Java package in Python and update every import to the canonical path.
 - [ ] Update class checklist and JavaDoc-derived class/method descriptions.
 - [ ] Update package-organized RST entry and list each verified deviation.
+- [ ] Unit tests pass; on Windows, integration tests pass too.
 - [ ] Run focused validation and summarize unresolved items.
 - [ ] Member: addExample() — [ ] JavaDoc [ ] COM [ ] wrapper [ ] disposition
 ```
@@ -44,7 +45,7 @@ Run the skill-local wrapper once for a baseline and use its report as the member
 python .agents/skills/rhapsody-sync/scripts/validate_interface.py <INTERFACE> --source authority
 ```
 
-The helper locates the project root and delegates to the canonical `scripts/validate_model_api.py`; it does not duplicate that logic. A nonzero exit of `1` means actionable deviations were found, not that validation crashed. On Windows with Rhapsody available, use `--source typelib` to inspect the registered binding; otherwise use the committed `docs/reports/pywin32_authority.json` snapshot. The current repository validator is hard-coded to Java package `com.telelogic.rhapsody.core`; if the selected JavaDoc declares another package, the helper stops rather than generating a misleading report.
+The helper locates the project root and delegates to the canonical `scripts/validate_model_api.py`; it does not duplicate that logic. A nonzero exit of `1` means actionable deviations were found, not that validation crashed. A nonzero exit of `2` is a setup failure: missing JavaDoc or an interface absent from the committed snapshot, which covers only a subset of interfaces. On Windows with Rhapsody available, use `--source typelib` to inspect the registered binding; otherwise use the committed `docs/reports/pywin32_authority.json` snapshot. If the committed snapshot lacks the target interface, regenerate it on Windows with `python scripts/pywin32_authority.py --source typelib`; on a machine without Rhapsody, report the blocker and leave the corresponding TODO open. The current repository validator is hard-coded to Java package `com.telelogic.rhapsody.core`; if the selected JavaDoc declares another package, the helper stops rather than generating a misleading report.
 
 Use these sources for different questions:
 
@@ -64,13 +65,20 @@ Never add a direct COM call for a member absent from the binding. Keep exact cam
 
 Follow TDD: write or update a focused fake-COM unit test before changing behavior or import wiring. Unit tests must not use real COM. For each wrapper method added or changed, use JavaDoc for its description, arguments, and return contract while retaining project-specific usage notes and known runtime limitations. Add integration coverage only for supported behavior owned by this wrapper; inherited methods may set up fixtures but are not child assertions. Respect the integration-test ownership rules in `AGENTS.md`, including child overrides with different return contracts.
 
-The canonical Python package mirrors every Java package segment beneath `rhapsody_cli.models.elements`. For example:
+Both unit and integration tests for the migrated class must use the new Python folder structure, mirroring the canonical package segment by segment. Use snake_case for the test module name derived from the Java interface (`IRPClass` → `test_irp_class.py`), and add `__init__.py` at every mirrored directory level. For example:
 
-- Java: `com.telelogic.rhapsody.core`
-- Python import: `rhapsody_cli.models.elements.com.telelogic.rhapsody.core`
-- Directory: `src/rhapsody_cli/models/elements/com/telelogic/rhapsody/core/`
+- Unit test: `tests/unit/models/com/telelogic/rhapsody/core/test_irp_class.py`
+- Integration test: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_class.py`
 
-Move the wrapper only if it is not already in the canonical package. Add package `__init__.py` exports, preserve registration/import side effects, and update relevant internal references. Keep the existing module naming convention where practical. Preserve established domain imports through thin re-exports, and verify old and canonical imports resolve to the same class. Migrate only the requested interface; avoid unrelated package moves and refactors. If moving it safely requires broad changes or would break public imports, stop and ask before expanding scope.
+Do not leave the class's tests under an old domain folder such as `tests/unit/models/elements/classifiers/`.
+
+The canonical Python package mirrors every Java package segment beneath `rhapsody_cli.models`, and the Python class name matches the Java interface name. For example:
+
+- Java: `com.telelogic.rhapsody.core.IRPClass`
+- Python import: `from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass`
+- Directory: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_class.py`
+
+Move the wrapper only if it is not already in the canonical package. Add package `__init__.py` exports, preserve registration/import side effects, and update every internal reference to the canonical import. Keep the existing module naming convention where practical. Do not leave a compatibility shim at the old path for the migrated interface. Migrate only the requested interface; avoid unrelated package moves and refactors. If moving it safely requires broad changes or would break public imports, stop and ask before expanding scope.
 
 ## 4. Update the two class documents
 
@@ -80,7 +88,7 @@ Update the selected class in `docs/requirements/swr_elem_requirements.md`. Use t
 
 ### Package-organized RST
 
-Update `docs/api/elements.rst` under the Java package heading, not the current Python domain grouping. Start the class entry with the verifier-recognized anchor `.. _rhapsody-java-interface-<INTERFACE>:`. Include the Java interface, Java package, JavaDoc-derived description, Python wrapper, canonical import path, and maintained legacy import path.
+Update `docs/api/elements.rst` under the Java package heading, not the current Python domain grouping. Start the class entry with the verifier-recognized anchor `.. _rhapsody-java-interface-<INTERFACE>:`. Include the Java interface, Java package, JavaDoc-derived description, Python wrapper, and canonical import path.
 
 List each verified deviation between JavaDoc, COM/pywin32, and Python implementation in a valid reStructuredText `list-table` with headers `JavaDoc member/signature`, `COM/pywin32 exposure`, `Python implementation`, and `Deviation and treatment`. Include method-vs-property shape and evidence-backed resolution; if there are no deviations, say so explicitly. The verifier checks that the section contains every member reported by the API validator. If the class is already listed under a legacy domain heading, move its entry to the Java-package section instead of duplicating it; leave unrelated and not-yet-migrated classes unchanged. Keep RST navigation valid.
 
@@ -94,6 +102,14 @@ python .agents/skills/rhapsody-sync/scripts/verify_sync.py <INTERFACE>
 python -m pytest -o addopts= .agents/skills/rhapsody-sync/tests -q
 ```
 
-`verify_sync.py` checks Java-package-derived wrapper placement, the class requirement entry, and the RST anchor/table coverage against the generated report. An exit code of `1` lists incomplete or mismatched artifacts. Also run focused project unit tests, import/registration checks, relevant lint/type checks, and RST/Sphinx validation when available. If live Rhapsody integration tests cannot run, say so explicitly; collection-only is not a live test. Leave TODO items open when blocked, with the reason.
+`verify_sync.py` checks Java-package-derived wrapper placement, the class requirement entry, and the RST anchor/table coverage against the generated report. An exit code of `1` lists incomplete or mismatched artifacts. Also run import/registration checks, relevant lint/type checks, and RST/Sphinx validation when available.
 
-Finish with a compact report: Java interface/package, old and canonical Python paths, compatibility imports, files changed, checks run, and remaining deviations. Sync one interface per run; complete and review it before starting another.
+Verification rules:
+
+- **Unit tests must pass all the time.** Run the full unit suite after every change and fix any failure before continuing; never finish a sync with a failing unit test.
+- **On Windows, integration tests must pass.** If the current environment is Windows, run the migrated class's focused integration test with live Rhapsody and require a green result. Collection-only is not a live test. If Rhapsody is not available on Windows, report the blocker and leave the corresponding TODO open rather than claiming success.
+- On non-Windows environments, integration tests may be collection-only; state that explicitly in the report.
+
+Leave TODO items open when blocked, with the reason.
+
+Finish with a compact report: Java interface/package, old and canonical Python paths, files changed, checks run, and remaining deviations. Sync one interface per run; complete and review it before starting another.

@@ -137,7 +137,7 @@ def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) ->
         absolute_wrapper, canonical_import = _canonical_import(root, source_path)
     except ValueError as exc:
         return [str(exc)]
-    expected_package_dir = root / "src" / "rhapsody_cli" / "models" / "elements" / Path(*java_package.split("."))
+    expected_package_dir = root / "src" / "rhapsody_cli" / "models" / Path(*java_package.split("."))
     if absolute_wrapper.parent.resolve() != expected_package_dir.resolve():
         issues.append(f"Wrapper package mismatch: expected {expected_package_dir}, found {absolute_wrapper.parent}")
     if not absolute_wrapper.is_file():
