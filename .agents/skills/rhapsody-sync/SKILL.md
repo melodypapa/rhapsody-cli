@@ -44,6 +44,8 @@ The canonical Python package mirrors every Java package segment beneath `rhapsod
 - Python import: `from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass`
 - Directory: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_class.py`
 
+Every canonical `docs/reports/<INTERFACE>_api_report.md` carries a `- Java package: <package>` line in its Summary. Use that value — cross-checked against the JavaDoc directory — as the Java package when deriving the canonical model class package `rhapsody_cli.models.<java.package.path>` and the mirrored `docs/requirements/<java.package.path>/` and `docs/api/<java.package.path>/` paths. If the line is missing or disagrees with the JavaDoc, stop and record it as a blocker; regenerate the report first with `python scripts/validate_model_api.py <INTERFACE> --source authority --path docs/reports` (or `--source typelib` on Windows with Rhapsody) before moving any wrapper or tests.
+
 Move the wrapper only if it is not already in the canonical package. Add package `__init__.py` exports, preserve registration/import side effects, and update every internal reference to the canonical import. Keep the existing module naming convention where practical. Do not leave a compatibility shim at the old path for the migrated interface. Migrate only the requested interface; avoid unrelated package moves and refactors. If moving it safely requires broad changes or would break public imports, stop and ask before expanding scope.
 
 Both unit and integration tests move with it, mirroring the canonical package segment by segment. Use snake_case for the test module name derived from the Java interface (`IRPClass` → `test_irp_class.py`), and add `__init__.py` at every mirrored directory level. For example:
@@ -138,10 +140,11 @@ python .agents/skills/rhapsody-sync/scripts/verify_sync.py <INTERFACE>
 python -m pytest -o addopts= .agents/skills/rhapsody-sync/tests -q
 ```
 
-`verify_sync.py` checks Java-package-derived wrapper placement, the class requirement entry, and the RST anchor/table coverage against the generated report. An exit code of `1` lists incomplete or mismatched artifacts. Also run import/registration checks, relevant lint/type checks, and RST/Sphinx validation when available.
+`verify_sync.py` checks that the report declares `- Java package: <package>` in its Summary and that the value agrees with the JavaDoc, then verifies Java-package-derived wrapper placement, the class requirement entry, and the RST anchor/table coverage against the generated report. An exit code of `1` lists incomplete or mismatched artifacts. Also run import/registration checks, relevant lint/type checks, and RST/Sphinx validation when available.
 
 Verification rules:
 
+- **The report's Java package must be declared and agree with the JavaDoc.** Step 8's `verify_sync.py` fails when the `- Java package: ...` Summary line is missing or mismatched; regenerate the report before claiming success. `IRPClass` already carries this line and serves as the reference case.
 - **Unit tests must pass all the time.** Run the full unit suite after every change and fix any failure before continuing; never finish a sync with a failing unit test.
 - **On Windows, integration tests must pass.** If the current environment is Windows, run the migrated class's focused integration test with live Rhapsody and require a green result. Collection-only is not a live test. If Rhapsody is not available on Windows, report the blocker and leave the corresponding TODO open rather than claiming success.
 - On non-Windows environments, integration tests may be collection-only; state that explicitly in the report.

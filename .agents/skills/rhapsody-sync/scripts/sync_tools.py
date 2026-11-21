@@ -8,6 +8,7 @@ from typing import List, Optional, Set, Tuple
 
 _INTERFACE_PATTERN = re.compile(r"^# Rhapsody API Validation: (IRP[A-Za-z0-9_]+)$", re.MULTILINE)
 _WRAPPER_PATTERN = re.compile(r"^- Target wrapper: `([^`]+)` \(`([^`]+)`\)$", re.MULTILINE)
+_JAVA_PACKAGE_PATTERN = re.compile(r"^- Java package: `([A-Za-z0-9_.]+)`$", re.MULTILINE)
 _MEMBER_PATTERN = re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\s*\(")
 _RST_INTERFACE_ANCHOR = ".. _rhapsody-java-interface-"
 _REPORT_SECTIONS = {"Comparison details", "Expected Binding Differences", "Wrapper Backlog"}
@@ -94,6 +95,12 @@ def parse_report_target(report_text: str) -> Tuple[str, str]:
     return match.group(1), match.group(2)
 
 
+def parse_report_java_package(report_text: str) -> Optional[str]:
+    """Return the Java package declared in a validator report's Summary, if present."""
+    match = _JAVA_PACKAGE_PATTERN.search(report_text)
+    return match.group(1) if match else None
+
+
 def extract_deviation_members(report_text: str) -> Set[str]:
     """Collect API names from the validator's comparison, binding, and backlog tables."""
     members: Set[str] = set()
@@ -151,6 +158,13 @@ def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) ->
     if report_match is None or report_match.group(1) != simple_name:
         issues.append(f"API report does not match Java interface {simple_name}: {report_path}")
         return issues
+
+    report_java_package = parse_report_java_package(report_text)
+    if report_java_package is None:
+        issues.append(f"API report for {simple_name} is missing the '- Java package: `<package>`' Summary line")
+    elif report_java_package != java_package:
+        issues.append(f"API report declares Java package '{report_java_package}' but JavaDoc declares '{java_package}' for {simple_name}")
+
     try:
         wrapper_class, source_path = parse_report_target(report_text)
         absolute_wrapper, canonical_import = _canonical_import(root, source_path)

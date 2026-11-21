@@ -4,11 +4,29 @@ import importlib.util
 import sys
 from pathlib import Path
 from types import ModuleType
+from typing import Optional
 
 import pytest
 
 SKILL_ROOT = Path(__file__).resolve().parents[1]
 SYNC_TOOLS_PATH = SKILL_ROOT / "scripts" / "sync_tools.py"
+
+_VALID_RST_DEVIATIONS = (
+    ".. list-table:: API deviations\n"
+    "   :header-rows: 1\n\n"
+    "   * - JavaDoc member/signature\n"
+    "     - COM/pywin32 exposure\n"
+    "     - Python implementation\n"
+    "     - Deviation and treatment\n"
+    "   * - ``getValue``\n"
+    "     - ``getValue (method)``\n"
+    "     - ``get_value``\n"
+    "     - Mismatch\n"
+    "   * - ``addExample``\n"
+    "     - unavailable\n"
+    "     - no wrapper\n"
+    "     - JavaDoc-only\n"
+)
 
 
 def _load_sync_tools() -> ModuleType:
@@ -54,12 +72,14 @@ def _write_fixture_project(root: Path, rst_deviations: str) -> Path:
     return root
 
 
-def _write_report(root: Path) -> Path:
+def _write_report(root: Path, java_package: Optional[str] = "com.telelogic.rhapsody.core") -> Path:
     report = root / "docs" / "reports" / "IRPThing_api_report.md"
     report.parent.mkdir(parents=True)
+    java_package_line = f"- Java package: `{java_package}`\n" if java_package else ""
     report.write_text(
         "# Rhapsody API Validation: IRPThing\n\n"
         "## Summary\n"
+        f"{java_package_line}"
         "- Target wrapper: `RPThing` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/model_thing.py`)\n\n"
         "## Comparison details\n\n"
         "| Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |\n"
@@ -128,26 +148,45 @@ def test_verifier_reports_missing_deviation_from_rst(tmp_path: Path) -> None:
 
 def test_verifier_accepts_package_requirements_and_complete_rst_deviations(tmp_path: Path) -> None:
     tools = _load_sync_tools()
-    root = _write_fixture_project(
-        tmp_path / "repo",
-        ".. list-table:: API deviations\n"
-        "   :header-rows: 1\n\n"
-        "   * - JavaDoc member/signature\n"
-        "     - COM/pywin32 exposure\n"
-        "     - Python implementation\n"
-        "     - Deviation and treatment\n"
-        "   * - ``getValue``\n"
-        "     - ``getValue (method)``\n"
-        "     - ``get_value``\n"
-        "     - Mismatch\n"
-        "   * - ``addExample``\n"
-        "     - unavailable\n"
-        "     - no wrapper\n"
-        "     - JavaDoc-only\n",
-    )
+    root = _write_fixture_project(tmp_path / "repo", _VALID_RST_DEVIATIONS)
     report = _write_report(root)
 
     assert tools.verify_sync_artifacts(root, "IRPThing", report) == []
+
+
+def test_parses_java_package_from_report() -> None:
+    tools = _load_sync_tools()
+    report = "# Rhapsody API Validation: IRPThing\n\n## Summary\n- Java package: `com.telelogic.rhapsody.core`\n"
+
+    assert tools.parse_report_java_package(report) == "com.telelogic.rhapsody.core"
+
+
+def test_verifier_reports_missing_java_package(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = _write_fixture_project(tmp_path / "repo", _VALID_RST_DEVIATIONS)
+    report = _write_report(root, java_package=None)
+
+    issues = tools.verify_sync_artifacts(root, "IRPThing", report)
+
+    assert any("Java package" in issue and "missing" in issue.lower() for issue in issues)
+
+
+def test_verifier_reports_java_package_mismatch(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = _write_fixture_project(tmp_path / "repo", _VALID_RST_DEVIATIONS)
+    report = _write_report(root, java_package="com.example.other")
+
+    issues = tools.verify_sync_artifacts(root, "IRPThing", report)
+
+    assert any("com.example.other" in issue and "com.telelogic.rhapsody.core" in issue for issue in issues)
+
+
+def test_irpclass_report_declares_java_package() -> None:
+    tools = _load_sync_tools()
+    root = tools.find_project_root(SYNC_TOOLS_PATH)
+    report = root / "docs" / "reports" / "IRPClass_api_report.md"
+
+    assert tools.parse_report_java_package(report.read_text(encoding="utf-8")) == "com.telelogic.rhapsody.core"
 
 
 def test_offline_blocker_exits_without_report_and_catalog(tmp_path: Path) -> None:
