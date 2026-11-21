@@ -8,8 +8,13 @@ from html.parser import HTMLParser
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
 
+from scripts.pywin32_authority import AuthorityData, load_authority
+
 _TYPELIB_DESCRIPTION = "Rhapsody2 1.0 Type Library"
 _HELPER_NAMES = {"_get_method_or_property", "_set_method_or_property"}
+Rows = List[Tuple[str, str, str, str, str]]
+_AUTHORITY_INFO_STATUSES = {"ACCESSOR_ALIAS_MISMATCH", "METHOD_PROPERTY_MISMATCH", "PYTHON_ONLY_MEMBER", "JAVA_ONLY_MEMBER"}
+_AUTHORITY_BACKLOG_STATUSES = {"MISSING_PYTHON_WRAPPER", "PYWIN32_ONLY_MEMBER"}
 
 
 class _InterfacePageParser(HTMLParser):
@@ -354,6 +359,40 @@ def _classify_deviation(
     return "; ".join(statuses), recommendation
 
 
+def apply_pywin32_authority(rows: Rows, interface_name: str, authority: AuthorityData) -> Tuple[Rows, Rows, Rows]:
+    """Split raw deviations into actionable, informational, and backlog rows."""
+    deviations: Rows = []
+    informational: Rows = []
+    backlog: Rows = []
+    aliases = authority["documented_aliases"].get(interface_name, {})
+    unavailable = set(authority["documented_unavailable"].get(interface_name, []))
+
+    for row in rows:
+        statuses = row[3].split("; ")
+        remaining: List[str] = []
+        for status in statuses:
+            if status in _AUTHORITY_INFO_STATUSES:
+                continue
+            if status == "PYTHON_METHOD_NAME_MISMATCH":
+                wrapper_names = {label.split("()", maxsplit=1)[0] for label in row[0].split("; ") if label != "—"}
+                if wrapper_names and all(name in aliases for name in wrapper_names):
+                    continue
+            if status == "PYWIN32_MEMBER_MISSING":
+                java_names = {entry[: -len(" (method)")] for entry in row[1].split("; ") if entry.endswith(" (method)")}
+                if java_names and java_names.issubset(unavailable):
+                    continue
+            remaining.append(status)
+
+        if any(status in _AUTHORITY_BACKLOG_STATUSES for status in remaining):
+            backlog.append(row)
+        elif remaining:
+            deviations.append((row[0], row[1], row[2], "; ".join(remaining), row[4]))
+        elif any(status in _AUTHORITY_INFO_STATUSES for status in statuses):
+            informational.append(row)
+
+    return deviations, informational, backlog
+
+
 def build_deviation_rows(python_members: Dict[str, Set[str]], java_members: Set[str], pywin32_members: Dict[str, str]) -> List[Tuple[str, str, str, str, str]]:
     """Group accessor/property aliases and report missing or differently shaped API families."""
     python_names: Dict[str, Set[str]] = {}
@@ -407,13 +446,26 @@ def render_report(rows: List[Tuple[str, str, str, str, str]]) -> str:
     return "\n".join(lines)
 
 
+def _append_report_table(lines: List[str], heading: str, rows: Rows) -> None:
+    lines.extend(["", heading, "", "| Python model wrapper | Java API | pywin32 | Status | Recommended change |", "| --- | --- | --- | --- | --- |"])
+    if not rows:
+        lines.append("| — | — | — | — | — |")
+        return
+    for row in rows:
+        escaped_cells = [cell.replace("|", "\\|").replace("\n", "<br>") for cell in row]
+        lines.append("| " + " | ".join(escaped_cells) + " |")
+
+
 def render_markdown_report(
     interface_name: str,
-    rows: List[Tuple[str, str, str, str, str]],
+    rows: Rows,
     wrapper_class: str,
     wrapper_path: str,
     java_signatures: Dict[str, Set[str]],
     member_counts: Tuple[int, int, int],
+    authoritative: bool = False,
+    informational_rows: Optional[Rows] = None,
+    backlog_rows: Optional[Rows] = None,
 ) -> str:
     """Render a comparison summary, five-column deviation table, and AI repair guidance."""
     status_counts: Dict[str, int] = {}
@@ -435,6 +487,15 @@ def render_markdown_report(
     else:
         lines.append("  - None")
 
+    if authoritative:
+        lines.extend(
+            [
+                "",
+                f"- Informational binding differences (expected): `{len(informational_rows or [])}`",
+                f"- Wrapper backlog (supported members without wrappers): `{len(backlog_rows or [])}`",
+            ]
+        )
+
     lines.extend(
         [
             "",
@@ -449,6 +510,10 @@ def render_markdown_report(
         lines.append("| " + " | ".join(escaped_cells) + " |")
     if not rows:
         lines.append("| — | — | — | PASS | No change needed. |")
+
+    if authoritative:
+        _append_report_table(lines, "## Expected Binding Differences", informational_rows or [])
+        _append_report_table(lines, "## Wrapper Backlog", backlog_rows or [])
 
     lines.extend(["", "## AI Fix Guidance"])
     if not rows:
@@ -480,6 +545,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Compare one Rhapsody model wrapper with Java docs and pywin32 members")
     parser.add_argument("java_interface", help="Java API interface name, for example IRPClass")
     parser.add_argument(
+        "--source",
+        choices=("typelib", "authority"),
+        default="typelib",
+        help="pywin32 member source: registered type library (Windows) or committed authority snapshot (offline)",
+    )
+    parser.add_argument(
         "--path",
         type=Path,
         help="Output directory for the Markdown report (default: current working directory)",
@@ -489,6 +560,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
 
 def main(argv: Optional[List[str]] = None) -> int:
     args = build_arg_parser().parse_args(argv)
+    authority = load_authority()
     repository_root = Path(__file__).resolve().parents[1]
     docs_root = repository_root / "docs" / "java_api" / "com" / "telelogic" / "rhapsody" / "core"
     models_root = repository_root / "src" / "rhapsody_cli" / "models"
@@ -500,26 +572,44 @@ def main(argv: Optional[List[str]] = None) -> int:
         java_members = collect_java_members(args.java_interface, docs_root)
         java_signatures = collect_java_signatures(args.java_interface, docs_root)
         python_members = collect_python_members(args.java_interface, models_root)
-        pywin32_members = collect_registered_pywin32_members(args.java_interface)
+        if args.source == "authority":
+            pywin32_members = authority["catalog"].get(args.java_interface)
+            if pywin32_members is None:
+                raise ValueError(f"No pywin32 authority snapshot for {args.java_interface}")
+        else:
+            pywin32_members = collect_registered_pywin32_members(args.java_interface)
     except (OSError, ValueError, RuntimeError) as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 2
 
-    rows = build_deviation_rows(python_members, java_members, pywin32_members)
+    raw_rows = build_deviation_rows(python_members, java_members, pywin32_members)
+    if args.source == "authority":
+        rows, informational_rows, backlog_rows = apply_pywin32_authority(raw_rows, args.java_interface, authority)
+    else:
+        rows, informational_rows, backlog_rows = raw_rows, [], []
+
     try:
         report_path.parent.mkdir(parents=True, exist_ok=True)
         python_method_names = {label.split("()", maxsplit=1)[0] for labels in python_members.values() for label in labels}
         member_counts = (len(python_method_names), len(java_members), len(pywin32_members))
         wrapper_path = wrapper_source.relative_to(repository_root).as_posix()
-        markdown = render_markdown_report(args.java_interface, rows, wrapper_class, wrapper_path, java_signatures, member_counts)
+        markdown = render_markdown_report(
+            args.java_interface,
+            rows,
+            wrapper_class,
+            wrapper_path,
+            java_signatures,
+            member_counts,
+            authoritative=(args.source == "authority"),
+            informational_rows=informational_rows,
+            backlog_rows=backlog_rows,
+        )
         report_path.write_text(markdown, encoding="utf-8")
     except OSError as exc:
         print(f"Error writing Markdown report to {report_path}: {exc}", file=sys.stderr)
         return 2
 
-    if not rows:
-        return 0
-    return 1
+    return 0 if not rows else 1
 
 
 if __name__ == "__main__":

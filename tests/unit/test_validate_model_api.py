@@ -1,8 +1,10 @@
 from pathlib import Path
+from typing import Dict, List, Optional
 
 import pytest
 
 import scripts.validate_model_api as validator
+from scripts.pywin32_authority import AuthorityData
 from scripts.validate_model_api import (
     _resolve_generated_interface_source,
     build_arg_parser,
@@ -305,6 +307,7 @@ def test_argument_parser_requires_one_interface_and_optional_report_directory() 
     default_args = parser.parse_args(["IRPClass"])
     assert default_args.java_interface == "IRPClass"
     assert default_args.path is None
+    assert default_args.source == "typelib"
     args = parser.parse_args(["IRPApplication", "--path", "out"])
     assert args.java_interface == "IRPApplication"
     assert args.path == Path("out")
@@ -312,3 +315,112 @@ def test_argument_parser_requires_one_interface_and_optional_report_directory() 
         parser.parse_args([])
     with pytest.raises(SystemExit):
         parser.parse_args(["IRPClass", "IRPActor"])
+
+
+def _authority(
+    catalog: Optional[Dict[str, Dict[str, str]]] = None,
+    aliases: Optional[Dict[str, Dict[str, str]]] = None,
+    unavailable: Optional[Dict[str, List[str]]] = None,
+) -> AuthorityData:
+    return AuthorityData(
+        catalog=catalog or {},
+        documented_aliases=aliases or {},
+        documented_unavailable=unavailable or {},
+    )
+
+
+def test_apply_pywin32_authority_demotes_expected_differences() -> None:
+    rows = [
+        (
+            "get_activity_diagram() -> activityDiagram; get_activity_diagram() -> getActivityDiagram",
+            "getActivityDiagram (method)",
+            "activityDiagram (property)",
+            "ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH",
+            "Use a property-aware getter/setter fallback.",
+        )
+    ]
+
+    deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPClass", _authority())
+
+    assert deviations == []
+    assert informational == rows
+    assert backlog == []
+
+
+def test_apply_pywin32_authority_suppresses_documented_alias() -> None:
+    rows = [
+        (
+            "get_description_html() -> descriptionHTML; get_description_html() -> getDescriptionHTML",
+            "getDescriptionHTML (method)",
+            "descriptionHTML (property)",
+            "PYTHON_METHOD_NAME_MISMATCH; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH",
+            "Rename the Python method.",
+        )
+    ]
+
+    deviations, informational, backlog = validator.apply_pywin32_authority(
+        rows, "IRPClass", _authority(aliases={"IRPClass": {"get_description_html": "description_html"}})
+    )
+
+    assert deviations == []
+    assert informational == rows
+    assert backlog == []
+
+
+def test_apply_pywin32_authority_suppresses_documented_unavailable_member() -> None:
+    rows = [
+        (
+            "get_rmm_url() -> getRmmUrl; get_rmm_url() -> rmmUrl",
+            "getRmmUrl (method)",
+            "—",
+            "PYWIN32_MEMBER_MISSING",
+            "Use a member exposed by the registered type library.",
+        )
+    ]
+
+    deviations, informational, backlog = validator.apply_pywin32_authority(
+        rows, "IRPClass", _authority(unavailable={"IRPClass": ["getRmmUrl"]})
+    )
+
+    assert (deviations, informational, backlog) == ([], [], [])
+
+
+def test_apply_pywin32_authority_keeps_unexposed_member_as_deviation() -> None:
+    rows = [
+        (
+            "get_binary_id() -> binaryID; get_binary_id() -> getBinaryID",
+            "getBinaryID (method)",
+            "BinaryID (property)",
+            "COM_MEMBER_NOT_EXPOSED; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH",
+            "Use the BinaryID property.",
+        )
+    ]
+
+    deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPClass", _authority())
+
+    assert deviations == [
+        (
+            "get_binary_id() -> binaryID; get_binary_id() -> getBinaryID",
+            "getBinaryID (method)",
+            "BinaryID (property)",
+            "COM_MEMBER_NOT_EXPOSED",
+            "Use the BinaryID property.",
+        )
+    ]
+    assert informational == []
+    assert backlog == []
+
+
+def test_main_authority_source_reports_backlog_without_typelib(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(validator, "load_authority", lambda: _authority(catalog={"IRPClass": {"isAbstract": "property"}}))
+    monkeypatch.setattr(validator, "collect_java_signatures", lambda interface_name, docs_root: {"isAbstract": {"IRPClass.isAbstract()"}})
+    monkeypatch.setattr(validator, "collect_java_members", lambda interface_name, docs_root: {"isAbstract"})
+    monkeypatch.setattr(validator, "collect_python_members", lambda interface_name, models_root: {"isAbstract": {"is_abstract() -> isAbstract"}})
+
+    assert validator.main(["IRPClass", "--source", "authority"]) == 0
+
+    report = (tmp_path / "IRPClass_api_report.md").read_text(encoding="utf-8")
+    assert "## Expected Binding Differences" in report
+    assert "## Wrapper Backlog" in report
+    assert "No deviations require changes." in report
