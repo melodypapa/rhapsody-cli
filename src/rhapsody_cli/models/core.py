@@ -117,9 +117,12 @@ class RPModelElement(AbstractRPModelElement):
 
     Method names use snake_case (``get_name``, ``set_name``,
     ``get_meta_class``, ``get_guid``, ...). Internal COM calls preserve
-    the camelCase API (``self._com.methodName(...)``). Some Rhapsody COM
-    Prog IDs expose these as bare properties instead of methods; see
-    :func:`_get_method_or_property`.
+    the camelCase API (``self._com.methodName(...)``). Bindings are
+    pywin32-authoritative: every member calls exactly one pywin32-exposed
+    COM member recorded in ``docs/reports/pywin32_authority.json`` —
+    method-shaped members via ``call_com`` and property-shaped members via
+    :meth:`get_com_property` / :meth:`set_com_property` — with no runtime
+    name probing or Java-name fallback.
     """
 
     # IRPModelElement method parity checklist:
