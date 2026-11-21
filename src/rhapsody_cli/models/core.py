@@ -669,7 +669,7 @@ class RPModelElement(AbstractRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getBinaryID()
         """
-        return bytes(AbstractRPModelElement._get_method_or_property(self._com, "getBinaryID", "binaryID"))
+        return bytes(AbstractRPModelElement._get_method_or_property(self._com, "getBinaryID", "BinaryID"))
 
     def get_constraints(self) -> "RPCollection":
         """Returns all of the element's constraints.
@@ -891,7 +891,7 @@ class RPModelElement(AbstractRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getIsOfMetaClass(java.lang.String metaClass)
         """
-        return int(AbstractRPModelElement.call_com(lambda: self._com.getIsOfMetaClass(meta_class)))
+        return int(AbstractRPModelElement.call_com(lambda: self._com.isOfMetaClass(meta_class)))
 
     def get_is_show_display_name(self) -> int:
         """Checks whether the model element is configured to display its label instead of its name in diagrams.
@@ -1867,7 +1867,7 @@ class RPUnit(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::getCMHeader()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getCMHeader", "cMHeader"))
+        return str(AbstractRPModelElement._get_method_or_property(self._com, "getCMHeader", "CMHeader"))
 
     def get_cm_state(self) -> int:
         """Returns the configuration management state of the unit.
@@ -2108,7 +2108,7 @@ class RPUnit(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::setCMHeader(java.lang.String cmHeader)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setCMHeader", "cMHeader", cm_header)
+        AbstractRPModelElement._set_method_or_property(self._com, "setCMHeader", "CMHeader", cm_header)
 
     def set_filename(self, filename: str) -> None:
         """Specifies the name that should be used for the file representing the unit.

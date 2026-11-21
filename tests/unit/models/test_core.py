@@ -705,12 +705,12 @@ def test_model_element_get_association_classes_returns_collection() -> None:
     fake.getAssociationClasses.assert_called_once_with()
 
 
-def test_model_element_get_binary_id_returns_bytes() -> None:
-    fake = make_fake_element("Class", getBinaryID=b"\x01\x02\x03")
+def test_model_element_get_binary_id_falls_back_to_pywin32_binaryid_property() -> None:
+    fake = MagicMock(spec=["BinaryID"])
+    fake.BinaryID = b"\x01\x02\x03"
     element = RPModelElement(fake)
 
     assert element.get_binary_id() == b"\x01\x02\x03"
-    fake.getBinaryID.assert_called_once_with()
 
 
 def test_model_element_get_constraints_returns_collection() -> None:
@@ -872,12 +872,13 @@ def test_model_element_get_is_external_returns_int() -> None:
     fake.getIsExternal.assert_called_once_with()
 
 
-def test_model_element_get_is_of_meta_class_returns_int() -> None:
-    fake = make_fake_element("Class", getIsOfMetaClass=1)
+def test_model_element_get_is_of_meta_class_calls_pywin32_member() -> None:
+    fake = MagicMock(spec=["isOfMetaClass"])
+    fake.isOfMetaClass.return_value = 1
     element = RPModelElement(fake)
 
     assert element.get_is_of_meta_class("Class") == 1
-    fake.getIsOfMetaClass.assert_called_once_with("Class")
+    fake.isOfMetaClass.assert_called_once_with("Class")
 
 
 def test_model_element_get_is_show_display_name_returns_int() -> None:
@@ -1557,6 +1558,23 @@ def test_unit_get_cm_header_returns_str() -> None:
 
     assert unit.get_cm_header() == "// CM header"
     fake.getCMHeader.assert_called_once_with()
+
+
+def test_model_element_get_cm_header_falls_back_to_pywin32_cmheader_property() -> None:
+    fake = MagicMock(spec=["CMHeader"])
+    fake.CMHeader = "header-1"
+    element = RPModelElement(fake)
+
+    assert element.get_cm_header() == "header-1"
+
+
+def test_model_element_set_cm_header_falls_back_to_pywin32_cmheader_property() -> None:
+    fake = MagicMock(spec=[])
+    element = RPModelElement(fake)
+
+    element.set_cm_header("header-2")
+
+    assert fake.CMHeader == "header-2"
 
 
 def test_unit_get_cm_state_returns_int() -> None:
