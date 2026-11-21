@@ -42,20 +42,20 @@ COM-style integers (1/0).
 
 ---
 
-## SWR_CORE_00003: RPCollection Iterable Container
+## SWR_CORE_00003: IRPCollection Iterable Container
 
 **ID:** SWR_CORE_00003
-**Title:** RPCollection wraps IRPCollection as an iterable/indexable container
+**Title:** IRPCollection wraps IRPCollection as an iterable/indexable container
 **Status:** Implemented
 **Priority:** High
 **Description:**
-`RPCollection` shall wrap `IRPCollection` and expose Java-mirrored methods `getCount()`,
+`IRPCollection` shall wrap `IRPCollection` and expose Java-mirrored methods `getCount()`,
 `getItem(index)`, and `addItem(element)`. It shall also support Python protocols:
 `__len__` (returns `getCount()`), `__getitem__` (1-based COM indexing via `getItem`,
 raising `IndexError` for negative indices), and `__iter__` (yields each item
 auto-wrapped via `wrap()`). Items returned by `getItem` shall be auto-wrapped via
 `_wrap_if_element`.
-**Implementation:** src/rhapsody_cli/models/_core.py:RPCollection
+**Implementation:** src/rhapsody_cli/models/_core.py:IRPCollection
 **Last Changed:** 2026-07-07
 
 ---
@@ -120,7 +120,7 @@ plus one registry entry, with no changes to `wrap()` itself.
 **Description:**
 The `_wrap_if_element(value)` helper shall return `wrap(value)` if `value` exposes a
 `getMetaClass` attribute (i.e., looks like a Rhapsody model element); otherwise it shall
-return `value` unchanged. This is used by `RPCollection.getItem` to auto-wrap collection
+return `value` unchanged. This is used by `IRPCollection.getItem` to auto-wrap collection
 members.
 **Implementation:** src/rhapsody_cli/models/_core.py:_wrap_if_element
 **Last Changed:** 2026-07-07
@@ -146,14 +146,14 @@ do not yet have a dedicated wrapper class.
 ## SWR_CORE_00009: Negative Index Rejection
 
 **ID:** SWR_CORE_00009
-**Title:** RPCollection rejects negative indices
+**Title:** IRPCollection rejects negative indices
 **Status:** Implemented
 **Priority:** Low
 **Description:**
-`RPCollection.__getitem__` shall raise `IndexError("negative indices are not supported")`
+`IRPCollection.__getitem__` shall raise `IndexError("negative indices are not supported")`
 when given a negative index, because COM collection indexing is 1-based and does not
 support negative indexing.
-**Implementation:** src/rhapsody_cli/models/_core.py:RPCollection.__getitem__
+**Implementation:** src/rhapsody_cli/models/_core.py:IRPCollection.__getitem__
 **Last Changed:** 2026-07-07
 
 ---

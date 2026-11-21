@@ -2,7 +2,8 @@
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 from rhapsody_cli.models.elements.activity.model_actions import (
     RPAcceptEventAction,
     RPAcceptTimeEvent,
@@ -164,7 +165,7 @@ class TestRPContextSpecification:
         fake.getMultiplicities.return_value = make_fake_collection(["1", "2"])
         cs = RPContextSpecification(fake)
         result = cs.get_multiplicities()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         assert len(result) == 2
 
     def test_get_value_returns_collection(self) -> None:
@@ -172,21 +173,21 @@ class TestRPContextSpecification:
         fake.getValue.return_value = make_fake_collection(["pkg", "cls"])
         cs = RPContextSpecification(fake)
         result = cs.get_value()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         assert len(result) == 2
 
     def test_set_multiplicities_delegates(self) -> None:
         fake = make_fake_element("ContextSpecification")
         coll = make_fake_collection(["1", "2"])
         cs = RPContextSpecification(fake)
-        cs.set_multiplicities(RPCollection(coll))
+        cs.set_multiplicities(IRPCollection(coll))
         fake.setMultiplicities.assert_called_once_with(coll)
 
     def test_set_value_delegates(self) -> None:
         fake = make_fake_element("ContextSpecification")
         coll = make_fake_collection(["pkg", "cls"])
         cs = RPContextSpecification(fake)
-        cs.set_value(RPCollection(coll))
+        cs.set_value(IRPCollection(coll))
         fake.setValue.assert_called_once_with(coll)
 
     def test_is_registered(self) -> None:
@@ -213,7 +214,7 @@ class TestRPSendAction:
         fake.getArgVals.return_value = make_fake_collection(["arg1", "arg2"])
         sa = RPSendAction(fake)
         result = sa.get_arg_vals()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         assert len(result) == 2
 
     def test_get_event_wraps_result(self) -> None:

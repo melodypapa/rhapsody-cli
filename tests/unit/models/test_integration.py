@@ -1,7 +1,8 @@
 """Cross-wrapper integration tests: factory methods return correct subclasses."""
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 from rhapsody_cli.models.elements.classifiers import RPClassifier, RPStereotype
 from rhapsody_cli.models.elements.common.model_misc import RPComment, RPConstraint, RPEnumerationLiteral
 from rhapsody_cli.models.elements.containment import (
@@ -155,7 +156,7 @@ def test_collection_contains_mixed_element_types() -> None:
     actor1 = make_fake_element("Actor", properties={"name": "Actor1"})
     coll = make_fake_collection([class1, actor1])
 
-    result = RPCollection(coll)
+    result = IRPCollection(coll)
 
     assert len(result) == 2
     assert isinstance(result[0], IRPClass)

@@ -2,7 +2,8 @@
 
 from typing import TYPE_CHECKING
 
-from rhapsody_cli.models.core import RPCollection, RPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import RPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.application import RhapsodyApplication
@@ -31,7 +32,7 @@ class RPAXViewCtrl(RPModelElement):
         """
         self.call_com(lambda: self._com.doCommand(command_i_d))
 
-    def execute_command(self, command_type: str, p_command_initialization: "RPCollection", p_command_result: "RPCollection") -> None:
+    def execute_command(self, command_type: str, p_command_initialization: "IRPCollection", p_command_result: "IRPCollection") -> None:
         """Execute command.
 
         Args:

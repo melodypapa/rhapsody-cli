@@ -2,7 +2,7 @@
 
 ## Summary
 - Java package: `com.telelogic.rhapsody.core`
-- Target wrapper: `RPCollection` (`src/rhapsody_cli/models/core.py`)
+- Target wrapper: `IRPCollection` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_collection.py`)
 - Members: Python `11`, Java `11`, pywin32 `9`
 - Deviations: `2`
 - Deviations by status:
@@ -48,7 +48,7 @@
 ## AI Fix Guidance
 
 ### Finding 1: PYWIN32_MEMBER_MISSING
-- **Target:** `RPCollection` in `src/rhapsody_cli/models/core.py`
+- **Target:** `IRPCollection` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_collection.py`
 - **Current Python wrapper/COM call:** add_graphical_item() -> addGraphicalItem
 - **Expected Python method(s):** `add_graphical_item`
 - **Java signature(s):** `IRPCollection.addGraphicalItem(com.telelogic.rhapsody.core.IRPGraphElement)`
@@ -57,7 +57,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 2: PYWIN32_MEMBER_MISSING
-- **Target:** `RPCollection` in `src/rhapsody_cli/models/core.py`
+- **Target:** `IRPCollection` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_collection.py`
 - **Current Python wrapper/COM call:** to_list() (no static COM member)
 - **Expected Python method(s):** `to_list`
 - **Java signature(s):** `IRPCollection.toList()`

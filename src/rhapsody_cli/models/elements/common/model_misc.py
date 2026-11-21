@@ -1,6 +1,7 @@
 """Miscellaneous model element wrappers — RPComment, RPConstraint, RPEnumerationLiteral."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 
 
 class RPEnumerationLiteral(RPModelElement):
@@ -59,16 +60,16 @@ class RPConstraint(RPModelElement):
     # [inherited] irp_model_element methods (covered by rp_model_element checklists)
     # No deprecated IRPConstraint methods.
 
-    def get_constraints_by_me(self) -> RPCollection:
+    def get_constraints_by_me(self) -> IRPCollection:
         """Returns the collection of elements constrained by this constraint.
 
         Returns:
-            An ``RPCollection`` of model elements constrained by this constraint.
+            An ``IRPCollection`` of model elements constrained by this constraint.
 
         Reference:
             com.telelogic.rhapsody.core.IRPConstraint::getConstraintsByMe()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getConstraintsByMe", "constraintsByMe"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getConstraintsByMe", "constraintsByMe"))
 
 
 AbstractRPModelElement.register_wrapper("Constraint", RPConstraint)

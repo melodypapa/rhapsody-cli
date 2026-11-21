@@ -2,7 +2,8 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 from rhapsody_cli.models.elements.variables.model_variables import RPVariable
 
 if TYPE_CHECKING:
@@ -17,11 +18,11 @@ class RPTemplateInstantiation(RPModelElement):
     # [inherited] irp_model_element methods (covered by rp_model_element checklist)
     # No deprecated IRPTemplateInstantiation methods.
 
-    def get_template_instantiation_parameters(self) -> "RPCollection":
+    def get_template_instantiation_parameters(self) -> "IRPCollection":
         """Returns the template instantiation parameters of this template instantiation.
 
         Returns:
-            A ``RPCollection`` of the template instantiation parameters.
+            A ``IRPCollection`` of the template instantiation parameters.
 
         Raises:
             RhapsodyRuntimeException: If the property cannot be retrieved.
@@ -29,7 +30,7 @@ class RPTemplateInstantiation(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPTemplateInstantiation::getTemplateInstantiationParameters()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getTemplateInstantiationParameters", "templateInstantiationParameters"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getTemplateInstantiationParameters", "templateInstantiationParameters"))
 
 
 class RPTemplateInstantiationParameter(RPModelElement):

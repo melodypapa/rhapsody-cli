@@ -272,7 +272,7 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.core import RPCollection
+from rhapsody_cli.models.core import IRPCollection
 from rhapsody_cli.models.elements.containment import RPPackage, RPProject
 from rhapsody_cli.models.elements.relations import RPAssociationRole
 
@@ -301,10 +301,10 @@ class TestRPAssociationRoleIntegration:
             assert role.get_meta_class() == "AssociationRole"
 
             classifier_roles = role.get_classifier_roles()
-            assert isinstance(classifier_roles, RPCollection)
+            assert isinstance(classifier_roles, IRPCollection)
 
             formal_relations = role.get_formal_relations()
-            assert isinstance(formal_relations, RPCollection)
+            assert isinstance(formal_relations, IRPCollection)
 
             role_type = role.get_role_type()
             assert role_type is not None
@@ -350,7 +350,7 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.core import RPCollection
+from rhapsody_cli.models.core import IRPCollection
 from rhapsody_cli.models.elements.containment import RPPackage, RPProject
 from rhapsody_cli.models.elements.relations import RPInstance
 
@@ -379,13 +379,13 @@ class TestRPInstanceIntegration:
             assert instance.get_meta_class() == "Instance"
 
             nested = instance.get_all_nested_elements()
-            assert isinstance(nested, RPCollection)
+            assert isinstance(nested, IRPCollection)
 
             in_links = instance.get_in_links()
-            assert isinstance(in_links, RPCollection)
+            assert isinstance(in_links, IRPCollection)
 
             out_links = instance.get_out_links()
-            assert isinstance(out_links, RPCollection)
+            assert isinstance(out_links, IRPCollection)
 
             instance.set_explicit()
             instance.set_implicit()
@@ -450,7 +450,7 @@ def test_instance_instantiated_by_roundtrip(self, test_project: RPProject) -> No
 
 For remaining methods:
 - `add_relation_to_the_whole`: requires an existing whole/part composite structure with a named relation role; write the test attempting `instance.add_relation_to_the_whole(rel_name)` against a class-composed part and assert the result `isinstance(_, RPRelation)`. Mark `@pytest.mark.xfail(reason="addRelationToTheWhole requires the instance to already be a part in a composite structure with a defined whole-part relation; minimal fixture may not satisfy Rhapsody's internal precondition. TODO: revisit with a full composite-structure fixture.", strict=False)` if it does not pass on first live run.
-- `get_list_of_initializer_arguments` / `set_initializer_argument_value`: requires a constructor with parameters on the instance's type. Create `owner_class.add_constructor("int arg1")`, instantiate accordingly, then call `instance.get_list_of_initializer_arguments()` (assert `RPCollection`) and `instance.set_initializer_argument_value("arg1", "5")`. Mark `xfail` with a clear reason if live Rhapsody requires the instance to be explicitly typed by `owner_class` first and no such wiring API exists in this subpackage.
+- `get_list_of_initializer_arguments` / `set_initializer_argument_value`: requires a constructor with parameters on the instance's type. Create `owner_class.add_constructor("int arg1")`, instantiate accordingly, then call `instance.get_list_of_initializer_arguments()` (assert `IRPCollection`) and `instance.set_initializer_argument_value("arg1", "5")`. Mark `xfail` with a clear reason if live Rhapsody requires the instance to be explicitly typed by `owner_class` first and no such wiring API exists in this subpackage.
 
 - [ ] **Step 2: Run the new tests against live Rhapsody**
 

@@ -318,7 +318,7 @@ def test_instance_specification_lifecycle(self, test_project: RPProject) -> None
         assert inst_name not in remaining
 ```
 
-For remaining methods in this task, follow the same established pattern: `add_link`/`get_links` mirror the instance specification test shape (link creation between two instance specs may be required depending on the live COM signature; if `add_link(name)` alone is not sufficient, create two instance specifications first and pass them, adjusting the test accordingly). `get_nested_classifiers` and `get_nested_components` are read-only getters — test them by creating a `RPClass`/`RPComponent` respectively as before and asserting collection membership. `find_all_by_name` should create a uniquely-named class and assert it is returned in the `RPCollection`. `get_source_artifacts` is a simple read-only getter test asserting it returns an `RPCollection` without error. `find_usage` should create a class used as another class's type/superclass (or simplest available usage relationship) and assert the collection returned by `find_usage(element)` is non-empty and contains the using element.
+For remaining methods in this task, follow the same established pattern: `add_link`/`get_links` mirror the instance specification test shape (link creation between two instance specs may be required depending on the live COM signature; if `add_link(name)` alone is not sufficient, create two instance specifications first and pass them, adjusting the test accordingly). `get_nested_classifiers` and `get_nested_components` are read-only getters — test them by creating a `RPClass`/`RPComponent` respectively as before and asserting collection membership. `find_all_by_name` should create a uniquely-named class and assert it is returned in the `IRPCollection`. `get_source_artifacts` is a simple read-only getter test asserting it returns an `IRPCollection` without error. `find_usage` should create a class used as another class's type/superclass (or simplest available usage relationship) and assert the collection returned by `find_usage(element)` is non-empty and contains the using element.
 
 - [ ] **Step 2: Run the new tests against live Rhapsody**
 
@@ -612,7 +612,7 @@ class TestRPComponentIntegration:
             comp.delete_from_project()
 ```
 
-For remaining methods in this task, follow the same established pattern: `add_file`/`get_files`/`get_file`/`delete_file` mirror the configuration test shape (get_file by name after add_file). `add_folder` is a simple create + `isinstance`/`get_name` smoke test. `add_nested_component` should create a nested `RPComponent` and assert it appears in `get_nested_components()`. `get_file_name`, `get_package_file`, `get_path`/`set_path` are getter/setter round-trip tests on the component itself (set then get for `set_path`/`get_path`; simple non-`None` assertions for the read-only ones). `get_panel_diagrams` is a read-only getter smoke test returning an `RPCollection`.
+For remaining methods in this task, follow the same established pattern: `add_file`/`get_files`/`get_file`/`delete_file` mirror the configuration test shape (get_file by name after add_file). `add_folder` is a simple create + `isinstance`/`get_name` smoke test. `add_nested_component` should create a nested `RPComponent` and assert it appears in `get_nested_components()`. `get_file_name`, `get_package_file`, `get_path`/`set_path` are getter/setter round-trip tests on the component itself (set then get for `set_path`/`get_path`; simple non-`None` assertions for the read-only ones). `get_panel_diagrams` is a read-only getter smoke test returning an `IRPCollection`.
 
 - [ ] **Step 2: Run the new tests against live Rhapsody**
 
@@ -666,7 +666,7 @@ def test_scope_element_lifecycle(self, test_project: RPProject) -> None:
         scoped_class.delete_from_project()
 ```
 
-For remaining methods in this task, follow the same established pattern: `add_scope_element_without_aggregates` and `add_to_scope` are alternate scope-add entry points — test each the same way as `add_scope_element` (add, assert membership in `get_scope_elements()`). `all_elements_in_scope` and `get_scope_elements_by_category` are read-only getters — test after populating scope, asserting the scoped element is present (for category, pass the scoped element's `get_meta_class()` as the category filter). `get_scope_by_selected_elements`/`set_scope_by_selected_elements` should be tested as a round-trip: build an `RPCollection`-compatible list/selection, call `set_scope_by_selected_elements`, then assert `get_scope_elements()` reflects it (if Rhapsody's live COM API cannot construct an `RPCollection` argument outside of one it already returned, mark as `xfail` documenting the limitation).
+For remaining methods in this task, follow the same established pattern: `add_scope_element_without_aggregates` and `add_to_scope` are alternate scope-add entry points — test each the same way as `add_scope_element` (add, assert membership in `get_scope_elements()`). `all_elements_in_scope` and `get_scope_elements_by_category` are read-only getters — test after populating scope, asserting the scoped element is present (for category, pass the scoped element's `get_meta_class()` as the category filter). `get_scope_by_selected_elements`/`set_scope_by_selected_elements` should be tested as a round-trip: build an `IRPCollection`-compatible list/selection, call `set_scope_by_selected_elements`, then assert `get_scope_elements()` reflects it (if Rhapsody's live COM API cannot construct an `IRPCollection` argument outside of one it already returned, mark as `xfail` documenting the limitation).
 
 - [ ] **Step 2: Run the new tests against live Rhapsody**
 
@@ -942,7 +942,7 @@ def test_generate_code_for_actors_roundtrip(self, test_project: RPProject) -> No
         comp.delete_from_project()
 ```
 
-For remaining methods in this task, follow the same established pattern: `set_scope_type`/`get_scope_type`, `set_statechart_implementation`/`get_statechart_implementation`, `set_time_model`/`get_time_model`, `set_initialization_code`/`get_initialization_code` are all get/set round-trip tests identical in shape to `generate_code_for_actors` above. `needs_code_generation` is a read-only getter smoke test asserting it returns an `int`. `set_all_elements_in_instrumentation_scope` should be tested by passing the component's own `all_elements_in_scope()` (or an empty `RPCollection`) and confirming the call succeeds without error (mark `xfail` if constructing a valid `RPCollection` argument outside one returned by a getter isn't supported by the live COM API).
+For remaining methods in this task, follow the same established pattern: `set_scope_type`/`get_scope_type`, `set_statechart_implementation`/`get_statechart_implementation`, `set_time_model`/`get_time_model`, `set_initialization_code`/`get_initialization_code` are all get/set round-trip tests identical in shape to `generate_code_for_actors` above. `needs_code_generation` is a read-only getter smoke test asserting it returns an `int`. `set_all_elements_in_instrumentation_scope` should be tested by passing the component's own `all_elements_in_scope()` (or an empty `IRPCollection`) and confirming the call succeeds without error (mark `xfail` if constructing a valid `IRPCollection` argument outside one returned by a getter isn't supported by the live COM API).
 
 - [ ] **Step 2: Run the new tests against live Rhapsody**
 
@@ -1014,7 +1014,7 @@ class TestRPCollaborationIntegration:
             collab.delete_from_project()
 ```
 
-For remaining methods in this task, follow the same established pattern: `add_classifier_role_by_name` and `add_classifier_role_for_instance` mirror `add_classifier_role` (the latter requires creating an `RPInstance`, e.g. via `RPNode.add_component_instance`, to pass in). `add_found_message`/`add_lost_message`/`add_reply_message` mirror `add_message`, each asserting membership in `get_messages()`. `get_message_points`, `get_classifier`, `get_activator`, `get_associations` are read-only getter smoke tests asserting the expected type or `RPCollection`/`None`.
+For remaining methods in this task, follow the same established pattern: `add_classifier_role_by_name` and `add_classifier_role_for_instance` mirror `add_classifier_role` (the latter requires creating an `RPInstance`, e.g. via `RPNode.add_component_instance`, to pass in). `add_found_message`/`add_lost_message`/`add_reply_message` mirror `add_message`, each asserting membership in `get_messages()`. `get_message_points`, `get_classifier`, `get_activator`, `get_associations` are read-only getter smoke tests asserting the expected type or `IRPCollection`/`None`.
 
 - [ ] **Step 2: Run the new tests against live Rhapsody**
 
@@ -1063,7 +1063,7 @@ def test_interaction_occurrence_lifecycle(self, test_project: RPProject) -> None
         collab.delete_from_project()
 ```
 
-For remaining methods in this task, follow the same established pattern: `add_action_block`, `add_cancelled_timeout`, `add_condition_mark`, `add_ctor`, `add_data_flow`, `add_destruction_event`, `add_dtor`, `add_duration_constraint`, `add_duration_observation`, `add_state_invariant`, `add_system_border`, `add_time_constraint`, `add_time_interval`, `add_time_observation`, `add_timeout` are all simple create + `isinstance`/`get_name` smoke tests with no dedicated getter (assert the element is created without error; use `delete_from_project()` for cleanup where the returned wrapper supports it). `add_interaction_operator`/`get_interaction_operators` mirrors the `add_interaction_occurrence` test shape above. `get_execution_occurrences` is a read-only getter smoke test asserting an `RPCollection` is returned.
+For remaining methods in this task, follow the same established pattern: `add_action_block`, `add_cancelled_timeout`, `add_condition_mark`, `add_ctor`, `add_data_flow`, `add_destruction_event`, `add_dtor`, `add_duration_constraint`, `add_duration_observation`, `add_state_invariant`, `add_system_border`, `add_time_constraint`, `add_time_interval`, `add_time_observation`, `add_timeout` are all simple create + `isinstance`/`get_name` smoke tests with no dedicated getter (assert the element is created without error; use `delete_from_project()` for cleanup where the returned wrapper supports it). `add_interaction_operator`/`get_interaction_operators` mirrors the `add_interaction_occurrence` test shape above. `get_execution_occurrences` is a read-only getter smoke test asserting an `IRPCollection` is returned.
 
 - [ ] **Step 2: Run the new tests against live Rhapsody**
 

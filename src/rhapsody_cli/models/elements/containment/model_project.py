@@ -2,7 +2,8 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 from rhapsody_cli.models.elements.containment.model_package import RPPackage
 
 if TYPE_CHECKING:
@@ -148,16 +149,16 @@ class RPProject(RPPackage):
         """
         return cast("RPComponent", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findComponent(name))))
 
-    def get_packages(self) -> RPCollection:
+    def get_packages(self) -> IRPCollection:
         """Returns all top-level packages in the project.
 
         Returns:
-            An ``RPCollection`` of ``IRPPackage`` objects.
+            An ``IRPCollection`` of ``IRPPackage`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getPackages()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getPackages", "packages"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getPackages", "packages"))
 
     def add_class(self, name: str) -> "IRPClass":
         """Adds a new class to the project's top level.
@@ -187,16 +188,16 @@ class RPProject(RPPackage):
         """
         return cast("RPActor", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addActor(name))))
 
-    def get_components(self) -> RPCollection:
+    def get_components(self) -> IRPCollection:
         """Returns all components in the project.
 
         Returns:
-            An ``RPCollection`` of component elements.
+            An ``IRPCollection`` of component elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getComponents()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getComponents", "components"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getComponents", "components"))
 
     def find_element_by_guid(self, guid: str) -> Optional["RPModelElement"]:
         """Finds an element in the project by GUID.
@@ -253,16 +254,16 @@ class RPProject(RPPackage):
         """
         return cast("RPNode", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNode(name))))
 
-    def get_nodes(self) -> "RPCollection":
+    def get_nodes(self) -> "IRPCollection":
         """Returns all nodes in the project.
 
         Returns:
-            An ``RPCollection`` of ``IRPNode`` objects.
+            An ``IRPCollection`` of ``IRPNode`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getNodes()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getNodes", "nodes"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getNodes", "nodes"))
 
     def find_node(self, name: str) -> "RPNode":
         """Finds a node in the project by name.
@@ -335,16 +336,16 @@ class RPProject(RPPackage):
         AbstractRPModelElement.call_com(lambda: self._com.setActiveComponent(component._com))
 
     # --- Stereotype methods ---
-    def get_all_stereotypes(self) -> "RPCollection":
+    def get_all_stereotypes(self) -> "IRPCollection":
         """Returns all stereotypes in the project.
 
         Returns:
-            An ``RPCollection`` of ``IRPStereotype`` objects.
+            An ``IRPCollection`` of ``IRPStereotype`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getAllStereotypes()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getAllStereotypes", "allStereotypes"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getAllStereotypes", "allStereotypes"))
 
     def get_new_collaboration(self) -> "RPCollaboration":
         """Returns a new collaboration object.
@@ -372,16 +373,16 @@ class RPProject(RPPackage):
         """
         return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addProfile(name))))
 
-    def get_profiles(self) -> "RPCollection":
+    def get_profiles(self) -> "IRPCollection":
         """Returns all profiles in the project.
 
         Returns:
-            An ``RPCollection`` of profile elements.
+            An ``IRPCollection`` of profile elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getProfiles()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getProfiles", "profiles"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getProfiles", "profiles"))
 
     # --- Save methods ---
     def save_as(self, file_path: str) -> None:
@@ -425,16 +426,16 @@ class RPProject(RPPackage):
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findElementByFileName(file_name)))
 
     # --- Code generation methods ---
-    def get_code_generated_files(self) -> "RPCollection":
+    def get_code_generated_files(self) -> "IRPCollection":
         """Returns all code-generated files in the project.
 
         Returns:
-            An ``RPCollection`` of file elements.
+            An ``IRPCollection`` of file elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getCodeGeneratedFiles()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getCodeGeneratedFiles", "codeGeneratedFiles"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getCodeGeneratedFiles", "codeGeneratedFiles"))
 
     # --- Other methods ---
     def allow_auto_save(self, allow: int) -> None:
@@ -568,27 +569,27 @@ class RPProject(RPPackage):
         """
         AbstractRPModelElement.call_com(lambda: self._com.applyBrowserCustomViewsOnDiagrams())
 
-    def get_active_custom_views_on_browser(self) -> RPCollection:
+    def get_active_custom_views_on_browser(self) -> IRPCollection:
         """Returns the active custom views applied on the browser.
 
         Returns:
-            An ``RPCollection`` of active browser custom views.
+            An ``IRPCollection`` of active browser custom views.
 
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getActiveCustomViewsOnBrowser()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getActiveCustomViewsOnBrowser", "activeCustomViewsOnBrowser"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getActiveCustomViewsOnBrowser", "activeCustomViewsOnBrowser"))
 
-    def get_active_custom_views_on_diagram(self) -> RPCollection:
+    def get_active_custom_views_on_diagram(self) -> IRPCollection:
         """Returns the active custom views applied on diagrams.
 
         Returns:
-            An ``RPCollection`` of active diagram custom views.
+            An ``IRPCollection`` of active diagram custom views.
 
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getActiveCustomViewsOnDiagram()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getActiveCustomViewsOnDiagram", "activeCustomViewsOnDiagram"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getActiveCustomViewsOnDiagram", "activeCustomViewsOnDiagram"))
 
     def remove_custom_view_on_browser(self, view: RPModelElement) -> None:
         """Removes a custom view from the browser.
@@ -661,30 +662,30 @@ class RPProject(RPPackage):
         """
         AbstractRPModelElement.call_com(lambda: self._com.enableRhapsodyModelManager(enabled))
 
-    def find_elements_with_oslc_link(self, link: str) -> RPCollection:
+    def find_elements_with_oslc_link(self, link: str) -> IRPCollection:
         """Returns the elements that have an OSLC link matching the specified link.
 
         Args:
             link: The OSLC link to search for.
 
         Returns:
-            An ``RPCollection`` of elements with the matching OSLC link.
+            An ``IRPCollection`` of elements with the matching OSLC link.
 
         Reference:
             com.telelogic.rhapsody.core.IRPProject::findElementsWithOSLCLink(java.lang.String link)
         """
-        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.findElementsWithOSLCLink(link)))
+        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.findElementsWithOSLCLink(link)))
 
-    def get_remote_resource_packages(self) -> RPCollection:
+    def get_remote_resource_packages(self) -> IRPCollection:
         """Returns the remote resource packages of the project.
 
         Returns:
-            An ``RPCollection`` of remote resource packages.
+            An ``IRPCollection`` of remote resource packages.
 
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getRemoteResourcePackages()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getRemoteResourcePackages", "remoteResourcePackages"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getRemoteResourcePackages", "remoteResourcePackages"))
 
     def get_roundtrip_shadow_model(self) -> object:
         """Returns the roundtrip shadow model of the project.
@@ -824,19 +825,19 @@ class RPProject(RPPackage):
         """
         return int(AbstractRPModelElement._get_method_or_property(self._com, "getNotifyPluginOnElementsChanged", "notifyPluginOnElementsChanged"))
 
-    def get_requirements_by_id(self, id: str) -> RPCollection:
+    def get_requirements_by_id(self, id: str) -> IRPCollection:
         """Returns the requirements matching the specified ID.
 
         Args:
             id: The requirement ID to search for.
 
         Returns:
-            An ``RPCollection`` of matching requirements.
+            An ``IRPCollection`` of matching requirements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getRequirementsByID(java.lang.String id)
         """
-        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getRequirementsByID(id)))
+        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getRequirementsByID(id)))
 
     def remove(self) -> None:
         """Removes the project.

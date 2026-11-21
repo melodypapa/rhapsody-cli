@@ -2,7 +2,8 @@
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 from rhapsody_cli.models.elements.relations.model_instance import RPInstance
 
 if TYPE_CHECKING:
@@ -109,11 +110,11 @@ class RPPort(RPInstance):
         """
         AbstractRPModelElement._set_method_or_property(self._com, "setPortContract", "portContract", port_contract._com)
 
-    def get_provided_interfaces(self) -> RPCollection:
+    def get_provided_interfaces(self) -> IRPCollection:
         """Returns the interfaces provided by the port.
 
         Returns:
-            An ``RPCollection`` of provided interface classes.
+            An ``IRPCollection`` of provided interface classes.
 
         Raises:
             RhapsodyRuntimeException: if the provided interfaces cannot be retrieved.
@@ -121,7 +122,7 @@ class RPPort(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPPort::getProvidedInterfaces()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getProvidedInterfaces", "providedInterfaces"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getProvidedInterfaces", "providedInterfaces"))
 
     def add_provided_interface(self, new_val: RPModelElement) -> None:
         """Adds a provided interface to the port.
@@ -151,11 +152,11 @@ class RPPort(RPInstance):
         """
         AbstractRPModelElement.call_com(lambda: self._com.removeProvidedInterface(new_val._com))
 
-    def get_required_interfaces(self) -> RPCollection:
+    def get_required_interfaces(self) -> IRPCollection:
         """Returns the interfaces required by the port.
 
         Returns:
-            An ``RPCollection`` of required interface classes.
+            An ``IRPCollection`` of required interface classes.
 
         Raises:
             RhapsodyRuntimeException: if the required interfaces cannot be retrieved.
@@ -163,7 +164,7 @@ class RPPort(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPPort::getRequiredInterfaces()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getRequiredInterfaces", "requiredInterfaces"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getRequiredInterfaces", "requiredInterfaces"))
 
     def add_required_interface(self, new_val: RPModelElement) -> None:
         """Adds a required interface to the port.

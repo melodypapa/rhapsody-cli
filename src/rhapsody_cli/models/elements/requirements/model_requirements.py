@@ -2,9 +2,9 @@
 from com.telelogic.rhapsody.core.
 """
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.core import (
     AbstractRPModelElement,
-    RPCollection,
     RPModelElement,
     RPUnit,
 )
@@ -41,16 +41,16 @@ class RPAnnotation(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.addAnchor(target._com))
 
-    def get_anchored_by_me(self) -> RPCollection:
+    def get_anchored_by_me(self) -> IRPCollection:
         """Gets the list of model elements that are anchored to the annotation.
 
         Returns:
-            An ``RPCollection`` of the anchored model elements.
+            An ``IRPCollection`` of the anchored model elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPAnnotation::getAnchoredByMe()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getAnchoredByMe", "anchoredByMe"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getAnchoredByMe", "anchoredByMe"))
 
     def get_body(self) -> str:
         """Gets the text of the specification for the annotation.

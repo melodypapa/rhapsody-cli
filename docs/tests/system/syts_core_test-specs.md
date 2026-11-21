@@ -52,15 +52,15 @@ rather than raising. The graph is navigated end-to-end through the wrapper API.
 
 ---
 
-## SYTS_CORE_00002: RPCollection End-to-End Iteration Over a Populated Fake Project
+## SYTS_CORE_00002: IRPCollection End-to-End Iteration Over a Populated Fake Project
 
 **ID:** SYTS_CORE_00002
 **Traces-To:** SWR_CORE_00003, SWR_CORE_00007
-**Title:** RPCollection iterates and indexes a populated fake collection with auto-wrapping
+**Title:** IRPCollection iterates and indexes a populated fake collection with auto-wrapping
 **Type:** System
 **Priority:** High
 **Description:**
-This test verifies that `RPCollection` exposes Pythonic iteration and 1-based indexing
+This test verifies that `IRPCollection` exposes Pythonic iteration and 1-based indexing
 over a populated fake `IRPCollection`, and that items returned by `getItem` and `__iter__`
 are auto-wrapped via `_wrap_if_element` into the correct wrapper classes.
 **Pre-conditions:**
@@ -70,7 +70,7 @@ are auto-wrapped via `_wrap_if_element` into the correct wrapper classes.
 - The wrapper registry populated via the elements package import.
 - The fake collection's `getItem` returns 1-based indices.
 **Test Steps:**
-1. Wrap the fake `IRPCollection` in an `RPCollection`.
+1. Wrap the fake `IRPCollection` in an `IRPCollection`.
 2. Assert `len(collection) == 3`.
 3. Iterate the collection with a `for` loop and collect the wrapped items.
 4. Index the collection with `collection[1]`, `collection[2]`, `collection[3]` and assert
@@ -198,22 +198,22 @@ integers.
 
 ---
 
-## SYTS_CORE_00006: RPCollection Rejects Negative Indices
+## SYTS_CORE_00006: IRPCollection Rejects Negative Indices
 
 **ID:** SYTS_CORE_00006
 **Traces-To:** SWR_CORE_00009
-**Title:** RPCollection raises IndexError for negative indices
+**Title:** IRPCollection raises IndexError for negative indices
 **Type:** System
 **Priority:** Low
 **Description:**
-This test verifies that `RPCollection.__getitem__` raises `IndexError` with the message
+This test verifies that `IRPCollection.__getitem__` raises `IndexError` with the message
 "negative indices are not supported" when given a negative index, because COM collection
 indexing is 1-based and does not support negative indexing.
 **Pre-conditions:**
 - A fake `IRPCollection` with at least one element.
-- An `RPCollection` wrapping it.
+- An `IRPCollection` wrapping it.
 **Test Steps:**
-1. Wrap the fake collection in an `RPCollection`.
+1. Wrap the fake collection in an `IRPCollection`.
 2. Attempt `collection[-1]` and assert `IndexError` is raised.
 3. Assert the exception message is exactly "negative indices are not supported".
 4. Confirm that a valid positive index (e.g. `collection[1]`) still works after the
@@ -227,4 +227,4 @@ indexing is 1-based and does not support negative indexing.
 - Fail if a negative index returns an element, raises a different exception, or breaks
   subsequent positive indexing.
 **Last Changed:** 2026-07-07
-
+

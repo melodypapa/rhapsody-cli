@@ -105,17 +105,17 @@ the wrapper's `_com`.
 
 ---
 
-## ITS_APP_00004: getProjects returns RPCollection of wrapped RPProject items
+## ITS_APP_00004: getProjects returns IRPCollection of wrapped RPProject items
 
 **ID:** ITS_APP_00004
 **Traces-To:** SWR_APP_00006, SWR_CORE_00003, SWR_CORE_00007
-**Title:** getProjects() returns an RPCollection whose iteration yields RPProject wrappers
+**Title:** getProjects() returns an IRPCollection whose iteration yields RPProject wrappers
 **Type:** Integration
 **Priority:** Medium
 **Description:**
-Verifies integration between `RhapsodyApplication.getProjects`, `RPCollection`, and `wrap()`/
+Verifies integration between `RhapsodyApplication.getProjects`, `IRPCollection`, and `wrap()`/
 `_wrap_if_element`. The COM collection returned by `_com.getProjects()` must be wrapped as an
-`RPCollection`, and iterating it must auto-wrap each raw COM project as an `RPProject`.
+`IRPCollection`, and iterating it must auto-wrap each raw COM project as an `RPProject`.
 **Pre-conditions:**
 - A `RhapsodyApplication` whose `_com.getProjects` is patched to return a mock `IRPCollection`.
 - The mock collection's `getCount()` returns 2 and `getItem(i)` returns two distinct mock COM
@@ -123,15 +123,15 @@ Verifies integration between `RhapsodyApplication.getProjects`, `RPCollection`, 
 - `rhapsody_cli.models.elements` imported (registry populated).
 **Test Steps:**
 1. Call `app.getProjects()`.
-2. Assert the return value is an `RPCollection`.
+2. Assert the return value is an `IRPCollection`.
 3. Iterate the result and collect items into a list.
 4. Assert the list has length 2 and every item is an `RPProject`.
 5. Assert each item's `_com` matches the corresponding mock returned by `getItem`.
 **Expected Result:**
-`getProjects()` returns an `RPCollection`; iteration transparently wraps each raw COM project as
+`getProjects()` returns an `IRPCollection`; iteration transparently wraps each raw COM project as
 `RPProject` via `_wrap_if_element`/`wrap`.
 **Verification Criteria:**
-- `isinstance(result, RPCollection)` is True.
+- `isinstance(result, IRPCollection)` is True.
 - `len(result) == 2`.
 - All iterated items are `RPProject` instances.
 - Order of `_com` matches `getItem(1)`, `getItem(2)`.
@@ -232,4 +232,4 @@ on the underlying COM object.
 - After first `quit()`: `_com.quit.call_count == 1`.
 - After second `quit()`: `_com.quit.call_count == 2`.
 **Last Changed:** 2026-07-07
-
+

@@ -2,7 +2,7 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.core import RPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.elements.common import RPComment, RPConstraint
 from rhapsody_cli.models.elements.containment import RPPackage, RPProject
 
@@ -70,7 +70,7 @@ class TestRPConstraintIntegration:
         assert isinstance(constraint, RPConstraint)
         try:
             result = constraint.get_constraints_by_me()
-            assert isinstance(result, RPCollection)
+            assert isinstance(result, IRPCollection)
             assert isinstance(result.get_count(), int)
         finally:
             constraint.delete_from_project()

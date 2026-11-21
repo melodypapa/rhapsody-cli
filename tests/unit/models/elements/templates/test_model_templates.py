@@ -1,6 +1,7 @@
 """Tests for rhapsody_cli.models.elements.templates.model_templates classes."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 from rhapsody_cli.models.elements.templates import (
     RPTemplateInstantiation,
     RPTemplateInstantiationParameter,
@@ -21,7 +22,7 @@ class TestRPTemplateInstantiation:
         fake.getTemplateInstantiationParameters.return_value = make_fake_collection([p])
         ti = RPTemplateInstantiation(fake)
         result = ti.get_template_instantiation_parameters()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
 
 
 class TestRPTemplateInstantiationParameter:

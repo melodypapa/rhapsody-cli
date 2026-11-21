@@ -1,6 +1,7 @@
 """Tests for rhapsody_cli.models.elements.values.model_values classes."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 from rhapsody_cli.models.elements.values import (
     RPInstanceSlot,
     RPInstanceSpecification,
@@ -56,7 +57,7 @@ class TestRPInstanceSlot:
         fake.getValues.return_value = make_fake_collection([v])
         slot = RPInstanceSlot(fake)
         result = slot.get_values()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
 
     def test_set_slot_property_delegates(self) -> None:
         fake = make_fake_element("InstanceSlot")
@@ -103,7 +104,7 @@ class TestRPInstanceSpecification:
         fake.getInstanceSlots.return_value = make_fake_collection([s])
         spec = RPInstanceSpecification(fake)
         result = spec.get_instance_slots()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
 
     def test_is_root_instance_specification_returns_int(self) -> None:
         fake = make_fake_element("InstanceSpecification", isRootInstanceSpecification=True)

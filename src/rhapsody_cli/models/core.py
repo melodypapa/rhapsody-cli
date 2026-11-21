@@ -9,9 +9,10 @@ a registry populated by each element module at import time.
 """
 
 from enum import IntEnum
-from typing import TYPE_CHECKING, Any, Callable, Dict, Iterator, List, Optional, Type, TypeVar, cast
+from typing import TYPE_CHECKING, Any, Callable, Dict, Optional, Type, TypeVar, cast
 
 from rhapsody_cli import com_utils
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.classifiers.model_association_class import RPAssociationClass
@@ -641,40 +642,40 @@ class RPModelElement(AbstractRPModelElement):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findNestedElementRecursive(name, meta_class)))
 
-    def get_all_tags(self) -> "RPCollection":
+    def get_all_tags(self) -> "IRPCollection":
         """Returns a collection of all the element's tags.
 
         Returns:
-            An ``RPCollection`` of the element's tags.
+            An ``IRPCollection`` of the element's tags.
 
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getAllTags()
         """
-        return RPCollection(AbstractRPModelElement.get_com_property(self._com, "allTags"))
+        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "allTags"))
 
-    def get_annotations(self) -> "RPCollection":
+    def get_annotations(self) -> "IRPCollection":
         """Returns all of the element's annotations.
 
         Annotations include comments, constraints, and requirements.
 
         Returns:
-            An ``RPCollection`` of the element's annotations.
+            An ``IRPCollection`` of the element's annotations.
 
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getAnnotations()
         """
-        return RPCollection(AbstractRPModelElement.get_com_property(self._com, "annotations"))
+        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "annotations"))
 
-    def get_association_classes(self) -> "RPCollection":
+    def get_association_classes(self) -> "IRPCollection":
         """Returns a collection of all the association classes directly beneath this model element.
 
         Returns:
-            An ``RPCollection`` of association classes.
+            An ``IRPCollection`` of association classes.
 
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getAssociationClasses()
         """
-        return RPCollection(AbstractRPModelElement.get_com_property(self._com, "associationClasses"))
+        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "associationClasses"))
 
     def get_binary_id(self) -> bytes:
         """Returns the GUID of the model element as an array of bytes.
@@ -689,38 +690,38 @@ class RPModelElement(AbstractRPModelElement):
         """
         return bytes(AbstractRPModelElement.get_com_property(self._com, "BinaryID"))
 
-    def get_constraints(self) -> "RPCollection":
+    def get_constraints(self) -> "IRPCollection":
         """Returns all of the element's constraints.
 
         Returns:
-            An ``RPCollection`` of the element's constraints.
+            An ``IRPCollection`` of the element's constraints.
 
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getConstraints()
         """
-        return RPCollection(AbstractRPModelElement.get_com_property(self._com, "constraints"))
+        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "constraints"))
 
-    def get_constraints_by_him(self) -> "RPCollection":
+    def get_constraints_by_him(self) -> "IRPCollection":
         """Returns all of the element's constraints (for internal use only).
 
         Returns:
-            An ``RPCollection`` of constraints.
+            An ``IRPCollection`` of constraints.
 
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getConstraintsByHim()
         """
-        return RPCollection(AbstractRPModelElement.get_com_property(self._com, "constraintsByHim"))
+        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "constraintsByHim"))
 
-    def get_controlled_files(self) -> "RPCollection":
+    def get_controlled_files(self) -> "IRPCollection":
         """Returns a collection of all the element's controlled files.
 
         Returns:
-            An ``RPCollection`` of controlled files.
+            An ``IRPCollection`` of controlled files.
 
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getControlledFiles()
         """
-        return RPCollection(AbstractRPModelElement.get_com_property(self._com, "controlledFiles"))
+        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "controlledFiles"))
 
     def get_decoration_style(self) -> str:
         """Returns the name of the decoration style currently associated with the model element.
@@ -733,16 +734,16 @@ class RPModelElement(AbstractRPModelElement):
         """
         return str(AbstractRPModelElement.call_com(lambda: self._com.getDecorationStyle()))
 
-    def get_dependencies(self) -> "RPCollection":
+    def get_dependencies(self) -> "IRPCollection":
         """Returns all of the element's dependencies.
 
         Returns:
-            An ``RPCollection`` of the element's dependencies.
+            An ``IRPCollection`` of the element's dependencies.
 
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getDependencies()
         """
-        return RPCollection(AbstractRPModelElement.get_com_property(self._com, "dependencies"))
+        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "dependencies"))
 
     def get_description(self) -> str:
         """Returns the description defined for the element.
@@ -848,16 +849,16 @@ class RPModelElement(AbstractRPModelElement):
         """
         return str(AbstractRPModelElement.call_com(lambda: self._com.getFullPathNameIn()))
 
-    def get_hyper_links(self) -> "RPCollection":
+    def get_hyper_links(self) -> "IRPCollection":
         """Returns a collection of all the hyperlinks associated with the element.
 
         Returns:
-            An ``RPCollection`` of hyperlinks.
+            An ``IRPCollection`` of hyperlinks.
 
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getHyperLinks()
         """
-        return RPCollection(AbstractRPModelElement.get_com_property(self._com, "hyperLinks"))
+        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "hyperLinks"))
 
     def get_icon_file_name(self) -> str:
         """Returns the full path of the graphic file used to represent elements of this type in the browser.
@@ -933,16 +934,16 @@ class RPModelElement(AbstractRPModelElement):
         """
         return int(AbstractRPModelElement.get_com_property(self._com, "isUnresolved"))
 
-    def get_local_tags(self) -> "RPCollection":
+    def get_local_tags(self) -> "IRPCollection":
         """Returns a collection of the tags that were created locally for this model element.
 
         Returns:
-            An ``RPCollection`` of locally created tags.
+            An ``IRPCollection`` of locally created tags.
 
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getLocalTags()
         """
-        return RPCollection(AbstractRPModelElement.get_com_property(self._com, "localTags"))
+        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "localTags"))
 
     def get_main_diagram(self) -> "RPDiagram":
         """Returns the "main" diagram for the element.
@@ -958,7 +959,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         return cast("RPDiagram", AbstractRPModelElement.wrap(AbstractRPModelElement.get_com_property(self._com, "mainDiagram")))
 
-    def get_nested_elements(self) -> "RPCollection":
+    def get_nested_elements(self) -> "IRPCollection":
         """Gets a collection of all the model elements that are directly under the current element.
 
         Note that when called on a package, the returned collection does not
@@ -968,14 +969,14 @@ class RPModelElement(AbstractRPModelElement):
         ``getGlobalObjects`` to retrieve them.
 
         Returns:
-            An ``RPCollection`` of nested model elements.
+            An ``IRPCollection`` of nested model elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getNestedElements()
         """
-        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getNestedElements()))
+        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getNestedElements()))
 
-    def get_nested_elements_by_meta_class(self, meta_class: str, recursive: int) -> "RPCollection":
+    def get_nested_elements_by_meta_class(self, meta_class: str, recursive: int) -> "IRPCollection":
         """Retrieves all of the model elements of the specified type below the current element.
 
         Args:
@@ -983,23 +984,23 @@ class RPModelElement(AbstractRPModelElement):
             recursive: ``1`` to search recursively, ``0`` for direct children only.
 
         Returns:
-            An ``RPCollection`` of matching nested elements.
+            An ``IRPCollection`` of matching nested elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getNestedElementsByMetaClass(java.lang.String metaClass, int recursive)
         """
-        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getNestedElementsByMetaClass(meta_class, recursive)))
+        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getNestedElementsByMetaClass(meta_class, recursive)))
 
-    def get_nested_elements_recursive(self) -> "RPCollection":
+    def get_nested_elements_recursive(self) -> "IRPCollection":
         """Returns a collection that consists of the current element and all of the model elements below it.
 
         Returns:
-            An ``RPCollection`` of this element and all nested elements.
+            An ``IRPCollection`` of this element and all nested elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getNestedElementsRecursive()
         """
-        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getNestedElementsRecursive()))
+        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getNestedElementsRecursive()))
 
     def get_new_term_stereotype(self) -> "RPStereotype":
         """If a "new term" stereotype has been applied to the element, returns the stereotype.
@@ -1023,14 +1024,14 @@ class RPModelElement(AbstractRPModelElement):
         """
         return cast("RPModelElement", AbstractRPModelElement.wrap(AbstractRPModelElement.get_com_property(self._com, "ofTemplate")))
 
-    def get_oslc_links(self) -> "RPCollection":
+    def get_oslc_links(self) -> "IRPCollection":
         """Returns a collection of all the element's OSLC links.
 
         Each item in the collection is a string using the format
         ``Type=<<link type>>`` (newline) ``URL=<<linked item URL>>``.
 
         Returns:
-            An ``RPCollection`` of OSLC links.
+            An ``IRPCollection`` of OSLC links.
 
         Raises:
             NotImplementedError: Rhapsody2.Application.1 does not expose
@@ -1052,7 +1053,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         return str(AbstractRPModelElement.call_com(lambda: self._com.getOverlayIconFileName()))
 
-    def get_overridden_properties(self, recursive: int) -> "RPCollection":
+    def get_overridden_properties(self, recursive: int) -> "IRPCollection":
         """Returns a collection of all the properties whose value was overridden for this model element.
 
         Args:
@@ -1060,14 +1061,14 @@ class RPModelElement(AbstractRPModelElement):
                 elements, ``0`` for this element only.
 
         Returns:
-            An ``RPCollection`` of overridden properties.
+            An ``IRPCollection`` of overridden properties.
 
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getOverriddenProperties(int recursive)
         """
-        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getOverriddenProperties(recursive)))
+        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getOverriddenProperties(recursive)))
 
-    def get_overridden_properties_by_pattern(self, pattern: str, localy_overriden_only: int, with_default_values: int) -> "RPCollection":
+    def get_overridden_properties_by_pattern(self, pattern: str, localy_overriden_only: int, with_default_values: int) -> "IRPCollection":
         """Returns the overridden properties matching the specified pattern.
 
         Args:
@@ -1077,7 +1078,7 @@ class RPModelElement(AbstractRPModelElement):
             with_default_values: ``1`` to include default values, ``0`` otherwise.
 
         Returns:
-            An ``RPCollection`` of matching overridden properties.
+            An ``IRPCollection`` of matching overridden properties.
 
         Raises:
             RhapsodyRuntimeException: if the pattern is invalid or the
@@ -1086,13 +1087,13 @@ class RPModelElement(AbstractRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getOverriddenPropertiesByPattern(java.lang.String pattern, int localyOverridenOnly, int withDefaultValues)
         """
-        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getOverriddenPropertiesByPattern(pattern, localy_overriden_only, with_default_values)))
+        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getOverriddenPropertiesByPattern(pattern, localy_overriden_only, with_default_values)))
 
-    def get_owned_dependencies(self) -> "RPCollection":
+    def get_owned_dependencies(self) -> "IRPCollection":
         """Returns all of the dependencies that are owned by the element.
 
         Returns:
-            An ``RPCollection`` of owned dependencies.
+            An ``IRPCollection`` of owned dependencies.
 
         Raises:
             RhapsodyRuntimeException: if the owned dependencies cannot be
@@ -1101,7 +1102,7 @@ class RPModelElement(AbstractRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getOwnedDependencies()
         """
-        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getOwnedDependencies()))
+        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getOwnedDependencies()))
 
     def get_owner(self) -> "RPModelElement":
         """Returns the model element that owns this model element.
@@ -1144,7 +1145,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         return str(AbstractRPModelElement.call_com(lambda: self._com.getPropertyValue(property_key)))
 
-    def get_property_value_conditional(self, property_key: str, formal_key: "RPCollection", actual_values: "RPCollection") -> str:
+    def get_property_value_conditional(self, property_key: str, formal_key: "IRPCollection", actual_values: "IRPCollection") -> str:
         """Returns the value of the specified property, taking into account the tokens and token values specified.
 
         The property key uses the syntax ``Subject.Metaclass.Property``. For
@@ -1167,7 +1168,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         return str(AbstractRPModelElement.call_com(lambda: self._com.getPropertyValueConditional(property_key, formal_key._com, actual_values._com)))
 
-    def get_property_value_conditional_explicit(self, property_key: str, formal_key: "RPCollection", actual_values: "RPCollection") -> str:
+    def get_property_value_conditional_explicit(self, property_key: str, formal_key: "IRPCollection", actual_values: "IRPCollection") -> str:
         """Returns the property value if overridden, taking into account the tokens and token values specified.
 
         Unlike :meth:`get_property_value_conditional`, this returns only the value
@@ -1208,11 +1209,11 @@ class RPModelElement(AbstractRPModelElement):
         """
         return str(AbstractRPModelElement.call_com(lambda: self._com.getPropertyValueExplicit(property_key)))
 
-    def get_redefines(self) -> "RPCollection":
+    def get_redefines(self) -> "IRPCollection":
         """Returns the redefine relationships of the model element.
 
         Returns:
-            An ``RPCollection`` of redefine relationships.
+            An ``IRPCollection`` of redefine relationships.
 
         Raises:
             RhapsodyRuntimeException: if the redefine relationships cannot be
@@ -1221,29 +1222,29 @@ class RPModelElement(AbstractRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getRedefines()
         """
-        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getRedefines()))
+        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getRedefines()))
 
-    def get_references(self) -> "RPCollection":
+    def get_references(self) -> "IRPCollection":
         """Returns a collection of all the model elements that point to this model element.
 
         Returns:
-            An ``RPCollection`` of referencing elements.
+            An ``IRPCollection`` of referencing elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getReferences()
         """
-        return RPCollection(AbstractRPModelElement.get_com_property(self._com, "references"))
+        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "references"))
 
-    def get_remote_dependencies(self) -> "RPCollection":
+    def get_remote_dependencies(self) -> "IRPCollection":
         """For Rhapsody Model Manager projects, returns the dependencies on remote artifacts.
 
         Returns:
-            An ``RPCollection`` of remote dependencies.
+            An ``IRPCollection`` of remote dependencies.
 
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getRemoteDependencies()
         """
-        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getRemoteDependencies()))
+        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getRemoteDependencies()))
 
     def get_remote_uri(self) -> str:
         """For elements that are remote resources, returns the URI of the resource.
@@ -1295,16 +1296,16 @@ class RPModelElement(AbstractRPModelElement):
         """
         return cast("RPUnit", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.getSaveUnit())))
 
-    def get_stereotypes(self) -> "RPCollection":
+    def get_stereotypes(self) -> "IRPCollection":
         """Returns a collection of the stereotypes that have been applied to the element.
 
         Returns:
-            An ``RPCollection`` of applied stereotypes.
+            An ``IRPCollection`` of applied stereotypes.
 
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getStereotypes()
         """
-        return RPCollection(AbstractRPModelElement.get_com_property(self._com, "stereotypes"))
+        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "stereotypes"))
 
     def get_tag(self, name: str) -> "RPTag":
         """Returns the tag specified.
@@ -1322,16 +1323,16 @@ class RPModelElement(AbstractRPModelElement):
         """
         return cast("RPTag", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.getTag(name))))
 
-    def get_template_parameters(self) -> "RPCollection":
+    def get_template_parameters(self) -> "IRPCollection":
         """For model elements that are templates, returns the template parameters.
 
         Returns:
-            An ``RPCollection`` of template parameters.
+            An ``IRPCollection`` of template parameters.
 
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getTemplateParameters()
         """
-        return RPCollection(AbstractRPModelElement.get_com_property(self._com, "templateParameters"))
+        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "templateParameters"))
 
     def get_ti(self) -> "RPTemplateInstantiation":
         """For template instantiations, returns an object containing the template instantiation parameters.
@@ -1548,7 +1549,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         AbstractRPModelElement.set_com_property(self._com, "description", description)
 
-    def set_description_and_hyperlinks(self, rtf_text: str, targets: "RPCollection") -> None:
+    def set_description_and_hyperlinks(self, rtf_text: str, targets: "IRPCollection") -> None:
         """Specifies an RTF description for the element and a collection of elements to hyperlink.
 
         Args:
@@ -1700,7 +1701,7 @@ class RPModelElement(AbstractRPModelElement):
         """
         AbstractRPModelElement.set_com_property(self._com, "requirementTraceabilityHandle", requirement_traceability_handle)
 
-    def set_tag_context_value(self, tag: "RPTag", elements: "RPCollection", multiplicities: "RPCollection") -> "RPTag":
+    def set_tag_context_value(self, tag: "RPTag", elements: "IRPCollection", multiplicities: "IRPCollection") -> "RPTag":
         """Applies the specified tag and sets its value to a specific instance of another model element.
 
         ``elements`` is a collection of model elements representing the full
@@ -1970,16 +1971,16 @@ class RPUnit(RPModelElement):
         """
         return str(AbstractRPModelElement._get_method_or_property(self._com, "getLastModifiedTime", "lastModifiedTime"))
 
-    def get_nested_save_units(self) -> "RPCollection":
+    def get_nested_save_units(self) -> "IRPCollection":
         """Returns a collection of any sub-elements of the unit that were saved as individual files.
 
         Returns:
-            An ``RPCollection`` of sub-elements that were saved as individual files.
+            An ``IRPCollection`` of sub-elements that were saved as individual files.
 
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::getNestedSaveUnits()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getNestedSaveUnits", "nestedSaveUnits"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getNestedSaveUnits", "nestedSaveUnits"))
 
     def get_nested_save_units_count(self) -> int:
         """Returns the number of sub-elements of the unit that were saved as individual files.
@@ -1992,18 +1993,18 @@ class RPUnit(RPModelElement):
         """
         return int(AbstractRPModelElement._get_method_or_property(self._com, "getNestedSaveUnitsCount", "nestedSaveUnitsCount"))
 
-    def get_structure_diagrams(self) -> "RPCollection":
+    def get_structure_diagrams(self) -> "IRPCollection":
         """Returns a collection of any structure diagrams that are sub-elements of the unit.
 
         Used primarily for structure diagrams that belong to individual classes.
 
         Returns:
-            An ``RPCollection`` of structure diagrams that are sub-elements of the unit.
+            An ``IRPCollection`` of structure diagrams that are sub-elements of the unit.
 
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::getStructureDiagrams()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getStructureDiagrams", "structureDiagrams"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getStructureDiagrams", "structureDiagrams"))
 
     def get_unit_path(self, b_full_path: int) -> str:
         """Returns the path of the unit, including the filename.
@@ -2214,192 +2215,3 @@ class RPUnit(RPModelElement):
             com.telelogic.rhapsody.core.IRPUnit::unload()
         """
         AbstractRPModelElement.call_com(lambda: self._com.unload())
-
-
-class RPCollection:
-    """Wraps ``IRPCollection``: an iterable/indexable container of elements."""
-
-    # IRPCollection method parity checklist:
-    # [x] get_count  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_item  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] add_item  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] add_graphical_item  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] to_list  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] set_size  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] remove  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] set_string  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] set_model_element  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] empty  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] set_integer  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # No deprecated IRPCollection methods.
-
-    def __init__(self, com_obj: Any) -> None:
-        self._com = com_obj
-
-    def get_count(self) -> int:
-        """Returns the number of elements in the collection.
-
-        Returns:
-            The number of elements in the collection as an integer.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPCollection::getCount()
-        """
-        return int(AbstractRPModelElement.get_com_property(self._com, "Count"))
-
-    def get_item(self, index: int) -> Any:
-        """Returns the element at the specified index in the collection.
-
-        Args:
-            index: The 1-based position of the element to retrieve.
-
-        Returns:
-            The wrapped element at the given index.
-
-        Raises:
-            RhapsodyRuntimeException: if the element at the given index
-                cannot be retrieved.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPCollection::getItem(int)
-        """
-        raw_item = AbstractRPModelElement.call_com(lambda: self._com.Item(index))
-        return AbstractRPModelElement._wrap_if_element(raw_item)
-
-    def add_item(self, element: RPModelElement) -> None:
-        """Adds an element to the collection.
-
-        Args:
-            element: The model element to add to the collection.
-
-        Raises:
-            RhapsodyRuntimeException: if the element cannot be added to
-                the collection.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPCollection::addItem(com.telelogic.rhapsody.core.IRPModelElement)
-        """
-        AbstractRPModelElement.call_com(lambda: self._com.addItem(element._com))
-
-    def add_graphical_item(self, item: "RPModelElement") -> None:
-        """Adds a graphical item to the collection.
-
-        Args:
-            item: The graphical model element to add.
-
-        Raises:
-            RhapsodyRuntimeException: If the operation fails.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPCollection::addGraphicalItem(com.telelogic.rhapsody.core.IRPModelElement)
-        """
-        AbstractRPModelElement.call_com(lambda: self._com.addGraphicalItem(item._com))
-
-    def to_list(self) -> List[Any]:
-        """Converts the collection to a Python list.
-
-        Returns:
-            A Python list containing all elements in the collection.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPCollection::toList()
-        """
-        return list(self)
-
-    def set_size(self, size: int) -> None:
-        """Sets the size of the collection.
-
-        Args:
-            size: The new size for the collection.
-
-        Raises:
-            RhapsodyRuntimeException: If the operation fails.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPCollection::setSize(int)
-        """
-        AbstractRPModelElement.call_com(lambda: self._com.setSize(size))
-
-    def remove(self, index: int) -> None:
-        """Removes the element at the specified index.
-
-        Args:
-            index: The 1-based index of the element to remove.
-
-        Raises:
-            RhapsodyRuntimeException: If the operation fails.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPCollection::remove(int)
-        """
-        AbstractRPModelElement.call_com(lambda: self._com.remove(index))
-
-    def set_string(self, index: int, value: str) -> None:
-        """Sets a string value at the specified index.
-
-        Args:
-            index: The 1-based index where to set the value.
-            value: The string value to set.
-
-        Raises:
-            RhapsodyRuntimeException: If the operation fails.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPCollection::setString(int, java.lang.String)
-        """
-        AbstractRPModelElement.call_com(lambda: self._com.setString(index, value))
-
-    def set_model_element(self, index: int, element: "RPModelElement") -> None:
-        """Sets a model element at the specified index.
-
-        Args:
-            index: The 1-based index where to set the element.
-            element: The model element to set.
-
-        Raises:
-            RhapsodyRuntimeException: If the operation fails.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPCollection::setModelElement(int, com.telelogic.rhapsody.core.IRPModelElement)
-        """
-        AbstractRPModelElement.call_com(lambda: self._com.setModelElement(index, element._com))
-
-    def empty(self) -> None:
-        """Removes all elements from the collection.
-
-        Raises:
-            RhapsodyRuntimeException: If the operation fails.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPCollection::empty()
-        """
-        AbstractRPModelElement.call_com(lambda: self._com.empty())
-
-    def set_integer(self, index: int, value: int) -> None:
-        """Sets an integer value at the specified index.
-
-        Args:
-            index: The 1-based index where to set the value.
-            value: The integer value to set.
-
-        Raises:
-            RhapsodyRuntimeException: If the operation fails.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPCollection::setInteger(int, int)
-        """
-        AbstractRPModelElement.call_com(lambda: self._com.setInteger(index, value))
-
-    def __len__(self) -> int:
-        return self.get_count()
-
-    def __getitem__(self, index: Any) -> Any:
-        if isinstance(index, slice):
-            return [self.get_item(i + 1) for i in range(*index.indices(len(self)))]
-        if index < 0:
-            raise IndexError("negative indices are not supported")
-        return self.get_item(index + 1)
-
-    def __iter__(self) -> Iterator[Any]:
-        for index in range(1, len(self) + 1):
-            yield self.get_item(index)

@@ -1,6 +1,7 @@
 """Tests for rhapsody_cli.models.elements.misc wrappers."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 from rhapsody_cli.models.elements.common.model_misc import (
     RPComment,
     RPConstraint,
@@ -78,4 +79,4 @@ def test_constraint_get_constraints_by_me_returns_collection() -> None:
     fake.getConstraintsByMe.return_value = make_fake_collection([inner])
     constraint = RPConstraint(fake)
     result = constraint.get_constraints_by_me()
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)

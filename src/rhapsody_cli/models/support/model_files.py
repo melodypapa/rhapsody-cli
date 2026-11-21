@@ -2,7 +2,8 @@
 
 from typing import TYPE_CHECKING, Optional
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement, RPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement, RPUnit
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
@@ -205,7 +206,7 @@ class RPFile(RPUnit):
         """
         self.call_com(lambda: self._com.addToScope(element._com))
 
-    def get_elements(self) -> "RPCollection":
+    def get_elements(self) -> "IRPCollection":
         """Gets the elements property.
 
         Returns:
@@ -217,9 +218,9 @@ class RPFile(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPFile::getElements()
         """
-        return RPCollection(self._get_method_or_property(self._com, "getElements", "elements"))
+        return IRPCollection(self._get_method_or_property(self._com, "getElements", "elements"))
 
-    def get_file_fragments(self) -> "RPCollection":
+    def get_file_fragments(self) -> "IRPCollection":
         """Gets the fileFragments property.
 
         Returns:
@@ -231,7 +232,7 @@ class RPFile(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPFile::getFileFragments()
         """
-        return RPCollection(self._get_method_or_property(self._com, "getFileFragments", "fileFragments"))
+        return IRPCollection(self._get_method_or_property(self._com, "getFileFragments", "fileFragments"))
 
     def get_file_type(self) -> str:
         """Gets the fileType property.
@@ -247,7 +248,7 @@ class RPFile(RPUnit):
         """
         return str(self._get_method_or_property(self._com, "getFileType", "fileType"))
 
-    def get_files(self) -> "RPCollection":
+    def get_files(self) -> "IRPCollection":
         """Gets the files property.
 
         Returns:
@@ -259,7 +260,7 @@ class RPFile(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPFile::getFiles()
         """
-        return RPCollection(self._get_method_or_property(self._com, "getFiles", "files"))
+        return IRPCollection(self._get_method_or_property(self._com, "getFiles", "files"))
 
     def get_imp_name(self, including_path: int) -> str:
         """Gets the implementation name.

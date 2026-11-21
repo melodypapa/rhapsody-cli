@@ -2,7 +2,8 @@
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
 
 if TYPE_CHECKING:
@@ -63,16 +64,16 @@ class RPInterfaceItem(RPClassifier):
         """
         return cast("RPArgument", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addArgumentBeforePosition(new_val, pos))))
 
-    def get_arguments(self) -> RPCollection:
+    def get_arguments(self) -> IRPCollection:
         """Returns all the arguments for the operation.
 
         Returns:
-            An ``RPCollection`` of ``IRPArgument`` objects.
+            An ``IRPCollection`` of ``IRPArgument`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPInterfaceItem::getArguments()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getArguments", "arguments"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getArguments", "arguments"))
 
     def get_signature(self) -> str:
         """Returns the signature of the operation.

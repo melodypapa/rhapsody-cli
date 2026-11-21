@@ -1,6 +1,7 @@
 """Tests for rhapsody_cli.models.elements.common.model_other_model.RPType."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 from rhapsody_cli.models.elements.common import RPType
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -52,7 +53,7 @@ class TestRPType:
         fake.getEnumerationLiterals.return_value = make_fake_collection([lit])
         t = RPType(fake)
         result = t.get_enumeration_literals()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
 
     def test_get_is_predefined_returns_int(self) -> None:
         # Pattern G

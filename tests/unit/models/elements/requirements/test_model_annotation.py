@@ -2,7 +2,8 @@
 
 from typing import cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement, RPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement, RPUnit
 from rhapsody_cli.models.elements.requirements.model_requirements import RPAnnotation
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -33,7 +34,7 @@ def test_annotation_get_anchored_by_me_returns_collection() -> None:
 
     result = annotation.get_anchored_by_me()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
     assert len(result) == 1
 
 

@@ -2,7 +2,8 @@
 
 from typing import cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 from rhapsody_cli.models.elements.relations import RPInstance, RPRelation
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -122,7 +123,7 @@ def test_instance_get_list_of_initializer_arguments_returns_collection() -> None
 
     result = instance.get_list_of_initializer_arguments()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
     assert len(result) == 1
     assert result[0].get_name() == "x"
 

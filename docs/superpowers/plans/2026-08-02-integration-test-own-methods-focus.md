@@ -733,7 +733,7 @@ In `tests/integration/models/elements/common/test_model_misc.py`, inside the exi
 
 ```python
     def test_get_constraints_by_me_returns_collection(self, test_project: RPProject) -> None:
-        from rhapsody_cli.models.core import RPCollection
+        from rhapsody_cli.models.core import IRPCollection
 
         pkg_name = self._unique("ConPkg")
         con_name = self._unique("MyConstraint")
@@ -741,7 +741,7 @@ In `tests/integration/models/elements/common/test_model_misc.py`, inside the exi
         constraint = pkg.add_new_aggr("Constraint", con_name)
         try:
             result = constraint.get_constraints_by_me()
-            assert isinstance(result, RPCollection)
+            assert isinstance(result, IRPCollection)
             assert isinstance(result.get_count(), int)
         finally:
             constraint.delete_from_project()

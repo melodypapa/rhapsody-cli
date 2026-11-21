@@ -86,14 +86,14 @@ The wrapper correctly bridges two `RPClassifier` instances: the base wrapper is 
 
 **ID:** ITS_ELEM_00003
 **Traces-To:** SWR_ELEM_00001, SWR_ELEM_00002, SWR_ELEM_00003
-**Title:** Navigating getPackages() then getOperations() crosses RPCollection and wrapper boundaries
+**Title:** Navigating getPackages() then getOperations() crosses IRPCollection and wrapper boundaries
 **Type:** Integration
 **Priority:** High
 **Description:**
 Verifies integration between container-returning navigation methods (`RPProject.getPackages`,
-`RPClassifier.getOperations`) and `RPCollection` auto-wrapping. A project's packages must be
-returned as an `RPCollection` whose iteration yields `RPPackage` wrappers; navigating further into
-a package's class operations must again yield an `RPCollection` of `RPOperation` wrappers.
+`RPClassifier.getOperations`) and `IRPCollection` auto-wrapping. A project's packages must be
+returned as an `IRPCollection` whose iteration yields `RPPackage` wrappers; navigating further into
+a package's class operations must again yield an `IRPCollection` of `RPOperation` wrappers.
 **Pre-conditions:**
 - A mock COM project whose `getMetaClass() == "Project"` and `getPackages()` returns a mock
   `IRPCollection` containing one mock COM package (`getMetaClass() == "Package"`).
@@ -104,10 +104,10 @@ a package's class operations must again yield an `RPCollection` of `RPOperation`
 - `rhapsody_cli.models.elements` imported.
 **Test Steps:**
 1. `project = wrap(mock_com_project)`.
-2. `pkgs = project.getPackages()`; assert `isinstance(pkgs, RPCollection)` and `len(pkgs) == 1`.
+2. `pkgs = project.getPackages()`; assert `isinstance(pkgs, IRPCollection)` and `len(pkgs) == 1`.
 3. `pkg = pkgs[1]`; assert `isinstance(pkg, RPPackage)`.
 4. `cls = pkg.getClasses()[1]`; assert `isinstance(cls, RPClass)`.
-5. `ops = cls.getOperations()`; assert `isinstance(ops, RPCollection)` and `len(ops) == 2`.
+5. `ops = cls.getOperations()`; assert `isinstance(ops, IRPCollection)` and `len(ops) == 2`.
 6. Assert every item in `ops` is an `RPOperation`.
 **Expected Result:**
 Each navigation hop transparently wraps raw COM elements into the correct subclass; collections
@@ -200,13 +200,13 @@ overrides translate to/from COM integers.
 
 **ID:** ITS_ELEM_00006
 **Traces-To:** SWR_ELEM_00009, SWR_CORE_00003
-**Title:** RPInstance getAllNestedElements/getInLinks/getOutLinks return RPCollections of wrapped items
+**Title:** RPInstance getAllNestedElements/getInLinks/getOutLinks return IRPCollections of wrapped items
 **Type:** Integration
 **Priority:** Medium
 **Description:**
-Verifies that `RPInstance`'s collection-returning navigation methods integrate with `RPCollection`
+Verifies that `RPInstance`'s collection-returning navigation methods integrate with `IRPCollection`
 auto-wrapping. Each of `getAllNestedElements()`, `getInLinks()`, and `getOutLinks()` must return
-an `RPCollection` whose iteration yields wrapped `RPModelElement` subclasses rather than raw COM
+an `IRPCollection` whose iteration yields wrapped `RPModelElement` subclasses rather than raw COM
 objects. Also confirms `getAttributeValue`/`setAttributeValue` round-trip strings through COM.
 **Pre-conditions:**
 - A mock COM instance `inst_com` (`getMetaClass() == "Instance"`) with spies for
@@ -217,19 +217,19 @@ objects. Also confirms `getAttributeValue`/`setAttributeValue` round-trip string
 - `rhapsody_cli.models.elements` imported.
 **Test Steps:**
 1. `inst = wrap(inst_com)`.
-2. `nested = inst.getAllNestedElements()`; assert `isinstance(nested, RPCollection)` and
+2. `nested = inst.getAllNestedElements()`; assert `isinstance(nested, IRPCollection)` and
    `len(nested) == 2`.
 3. Assert every item in `nested` is an `RPModelElement` subclass instance.
 4. `in_links = inst.getInLinks()`; `out_links = inst.getOutLinks()`; assert both are
-   `RPCollection` instances with length 2.
+   `IRPCollection` instances with length 2.
 5. `assert inst.getAttributeValue("color") == "red"`.
 6. `inst.setAttributeValue("color", "blue")`; assert the COM spy received `("color", "blue")`.
 **Expected Result:**
-All collection-returning methods produce `RPCollection` wrappers with auto-wrapped items; string
+All collection-returning methods produce `IRPCollection` wrappers with auto-wrapped items; string
 attribute access round-trips correctly through COM.
 **Verification Criteria:**
-- `isinstance(nested, RPCollection)`, `isinstance(in_links, RPCollection)`,
-  `isinstance(out_links, RPCollection)`.
+- `isinstance(nested, IRPCollection)`, `isinstance(in_links, IRPCollection)`,
+  `isinstance(out_links, IRPCollection)`.
 - All iterated items are `RPModelElement` subclass instances.
 - `inst_com.setAttributeValue.call_args == (("color", "blue"),)`.
 **Last Changed:** 2026-07-07
@@ -240,12 +240,12 @@ attribute access round-trips correctly through COM.
 
 **ID:** ITS_ELEM_00007
 **Traces-To:** SWR_ELEM_00012, SWR_ELEM_00003
-**Title:** RPUseCase.addExtensionPoint then getExtensionPoints round-trips via RPCollection
+**Title:** RPUseCase.addExtensionPoint then getExtensionPoints round-trips via IRPCollection
 **Type:** Integration
 **Priority:** Medium
 **Description:**
 Verifies `RPUseCase.addExtensionPoint(entry_point)` and `getExtensionPoints()` integration: the
-string argument flows to the underlying COM call, and the returned `RPCollection` of extension
+string argument flows to the underlying COM call, and the returned `IRPCollection` of extension
 points auto-wraps its items. Confirms `RPUseCase` inherits `RPClassifier` behavior while adding
 use-case-specific navigation.
 **Pre-conditions:**
@@ -259,11 +259,11 @@ use-case-specific navigation.
 1. `uc = wrap(uc_com)`; assert `isinstance(uc, RPUseCase)` and `isinstance(uc, RPClassifier)`.
 2. `ep = uc.addExtensionPoint("main")`; assert `uc_com.addExtensionPoint` was called with
    `"main"` and `ep._com` is the mock returned.
-3. `eps = uc.getExtensionPoints()`; assert `isinstance(eps, RPCollection)` and `len(eps) == 1`.
+3. `eps = uc.getExtensionPoints()`; assert `isinstance(eps, IRPCollection)` and `len(eps) == 1`.
 4. Assert `eps[1]._com is mock_extension_point`.
 **Expected Result:**
 `addExtensionPoint` round-trips the string and wraps the result; `getExtensionPoints` returns an
-`RPCollection` whose single item is the previously added extension point.
+`IRPCollection` whose single item is the previously added extension point.
 **Verification Criteria:**
 - `isinstance(uc, RPUseCase)` and `isinstance(uc, RPClassifier)` (inheritance).
 - `uc_com.addExtensionPoint.call_args == (("main",),)`.
@@ -307,4 +307,4 @@ delegates graphics operations through `call_com`.
 - `sc_com.deleteState.call_args == ((state_com,),)`.
 - `sc_com.createGraphics.call_count == 1` and `sc_com.closeDiagram.call_count == 1`.
 **Last Changed:** 2026-07-07
-
+

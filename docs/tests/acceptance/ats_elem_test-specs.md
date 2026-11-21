@@ -124,18 +124,18 @@ can script diagram layout and inspect object-level relationships.
   `diagram.addTextBox("Note", 100, 100, 200, 50)`, Then a wrapped text box element is
   returned and the text box appears on the diagram.
 - Given an `RPDiagram` and a model element `elem` that has a presentation on the diagram,
-  When I call `diagram.getCorrespondingGraphicElements(elem)`, Then an `RPCollection` of
+  When I call `diagram.getCorrespondingGraphicElements(elem)`, Then an `IRPCollection` of
   graphic elements is returned (possibly empty if none exist, but no exception).
 - Given an `RPInstance`, When I call `inst.getAttributeValue("Name")` and
   `inst.setAttributeValue("Name", "value")`, Then the value can be round-tripped; and
-  `inst.getInLinks()` and `inst.getOutLinks()` each return an `RPCollection`.
+  `inst.getInLinks()` and `inst.getOutLinks()` each return an `IRPCollection`.
 **Verification Criteria:**
 Open a fixture project containing a class diagram, obtain the `RPDiagram`, add a text box
 with known coordinates, and confirm via `getCorrespondingGraphicElements` (or the GUI)
 that a graphic element now exists. Call `closeDiagram()` and confirm the diagram window
 closes. On an `RPInstance` representing an object linkable to others, set and get an
 attribute value to confirm round-trip, and assert `getInLinks()` and `getOutLinks()` each
-return an `RPCollection` (length may be 0 in a sparse fixture but the call must succeed).
+return an `IRPCollection` (length may be 0 in a sparse fixture but the call must succeed).
 **Last Changed:** 2026-07-07
 
 ---
@@ -187,7 +187,7 @@ traceability and use-case/actor configuration.
   `req.getRequirementID()` subsequently returns `"REQ-001"`.
 - Given an `RPUseCase`, When I call `uc.addExtensionPoint("main success")`, Then the
   extension point is added; and `uc.getExtensionPoints()`, `uc.getEntryPoints()`, and
-  `uc.getDescribingDiagrams()` each return an `RPCollection` (possibly empty, but no
+  `uc.getDescribingDiagrams()` each return an `IRPCollection` (possibly empty, but no
   exception).
 - Given an `RPActor`, When I call `actor.setIsBehaviorOverriden(True)`, Then
   `actor.getIsBehaviorOverriden()` subsequently returns `True` (bool-to-int translation
@@ -199,10 +199,10 @@ traceability and use-case/actor configuration.
 On a fixture project, locate (or create) an `RPRequirement`, call `setRequirementID`
 with a known string, and assert the getter returns that exact string. On an `RPUseCase`,
 add an extension point and assert the three collection-returning methods each yield an
-`RPCollection` instance without raising. On an `RPActor`, toggle
+`IRPCollection` instance without raising. On an `RPActor`, toggle
 `setIsBehaviorOverriden(True)` and assert `getIsBehaviorOverriden()` returns `True`, then
 toggle back to `False` and assert it returns `False`. If a fixture event element is
 available, call `addEventReceptionWithEvent` and assert the returned object is a wrapped
 reception element.
 **Last Changed:** 2026-07-07
-
+

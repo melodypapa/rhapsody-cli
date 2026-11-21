@@ -1,12 +1,12 @@
-## SWR_ELEM_00015: RPCollection Wrapper
+## SWR_ELEM_00015: IRPCollection Wrapper
 
 **ID:** SWR_ELEM_00015
-**Title:** RPCollection wraps IRPCollection, the generic element collection
+**Title:** IRPCollection wraps IRPCollection, the generic element collection
 **Status:** Implemented
 **Priority:** High
 **Description:**
 The `IRPCollection` interface is Rhapsody's generic element collection. The Python
-`RPCollection` shall expose 1-based indexed access (`get_count`, `get_item`, iteration, and
+`IRPCollection` shall expose 1-based indexed access (`get_count`, `get_item`, iteration, and
 `__getitem__`) and the mutators (`add_item`, `set_size`, `remove`, `set_string`,
 `set_integer`, `set_model_element`, `empty`). Every COM call shall target exactly one
 pywin32-exposed member from `docs/reports/pywin32_authority.json` with no runtime name
@@ -17,7 +17,6 @@ invoked as methods via `call_com`. Elements returned by `get_item` are wrapped t
 `add_graphical_item` (Java `addGraphicalItem`) and `to_list` (Java `toList`) are documented
 blockers: both members are absent from the committed pywin32 catalog, so their call sites
 stay unchanged until Windows typelib evidence lands.
-**Implementation:** src/rhapsody_cli/models/core.py:RPCollection (§2 canonical package move
-deferred until the IRPUnit and IRPModelElement rows leave `models/core.py` — see
-`docs/reports/sync-todo`)
+**Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_collection.py:IRPCollection
+(canonical package; re-exported from `rhapsody_cli.models.core` to preserve existing imports)
 **Last Changed:** 2026-11-21

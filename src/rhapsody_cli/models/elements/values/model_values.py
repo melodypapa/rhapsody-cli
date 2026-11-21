@@ -2,7 +2,8 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
@@ -68,11 +69,11 @@ class RPInstanceSlot(RPModelElement):
         """
         return AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getSlotProperty()))
 
-    def get_values(self) -> "RPCollection":
+    def get_values(self) -> "IRPCollection":
         """Returns the values of this instance slot.
 
         Returns:
-            A ``RPCollection`` of the values of this instance slot.
+            A ``IRPCollection`` of the values of this instance slot.
 
         Raises:
             RhapsodyRuntimeException: If the values cannot be retrieved.
@@ -80,7 +81,7 @@ class RPInstanceSlot(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPInstanceSlot::getValues()
         """
-        return RPCollection(self.call_com(lambda: self._com.getValues()))
+        return IRPCollection(self.call_com(lambda: self._com.getValues()))
 
     def set_slot_property(self, slot_property: "RPModelElement") -> None:
         """Sets the slot property of this instance slot.
@@ -143,11 +144,11 @@ class RPInstanceSpecification(RPModelElement):
         """
         return cast("RPClassifier", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getClassifier())))
 
-    def get_instance_slots(self) -> "RPCollection":
+    def get_instance_slots(self) -> "IRPCollection":
         """Returns the instance slots of this instance specification.
 
         Returns:
-            A ``RPCollection`` of the instance slots of this instance specification.
+            A ``IRPCollection`` of the instance slots of this instance specification.
 
         Raises:
             RhapsodyRuntimeException: If the property cannot be retrieved.
@@ -155,7 +156,7 @@ class RPInstanceSpecification(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPInstanceSpecification::getInstanceSlots()
         """
-        return RPCollection(self.call_com(lambda: self._com.getInstanceSlots()))
+        return IRPCollection(self.call_com(lambda: self._com.getInstanceSlots()))
 
     def is_root_instance_specification(self) -> int:
         """Checks whether the instance specification is a root instance specification.

@@ -82,7 +82,7 @@ def test_class_inheritance(self, test_project: RPProject) -> None:
 ```
 
 > **Note:** `RPClass` has no `get_superclasses()` method. Use `get_generalizations()`
-> (inherited from `RPClassifier`), which returns an `RPCollection` of
+> (inherited from `RPClassifier`), which returns an `IRPCollection` of
 > `RPGeneralization` objects; call `.get_base_class()` on each to find the parent.
 
 - [ ] **Step 2: Run test to verify it passes**

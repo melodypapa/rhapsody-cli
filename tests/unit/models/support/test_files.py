@@ -1,6 +1,7 @@
 from typing import cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
 from rhapsody_cli.models.elements.containment.model_package import RPPackage
 from rhapsody_cli.models.support.model_files import (
@@ -93,7 +94,7 @@ class TestRPFile:
         fake.getElements.return_value = make_fake_collection([inner])
         obj = RPFile(fake)
         result = obj.get_elements()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         assert len(result) == 1
 
     def test_get_file_fragments_delegates_to_com(self) -> None:
@@ -102,7 +103,7 @@ class TestRPFile:
         fake.getFileFragments.return_value = make_fake_collection([inner])
         obj = RPFile(fake)
         result = obj.get_file_fragments()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         assert len(result) == 1
 
     def test_get_file_type_delegates_to_com(self) -> None:
@@ -117,7 +118,7 @@ class TestRPFile:
         fake.getFiles.return_value = make_fake_collection([inner])
         obj = RPFile(fake)
         result = obj.get_files()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         assert len(result) == 1
 
     def test_get_imp_name_delegates_to_com(self) -> None:

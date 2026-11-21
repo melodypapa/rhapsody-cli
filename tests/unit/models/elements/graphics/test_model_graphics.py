@@ -1,6 +1,7 @@
 """Tests for graphics package — RPGraphElement, RPGraphEdge, and 12 other classes (Task 15)."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.graphics import (
     RPConditionMark,
     RPConnector,
@@ -49,7 +50,7 @@ class TestRPGraphElementTask15:
         fake.getAllGraphicalProperties.return_value = make_fake_collection([prop])
         ge = RPGraphElement(fake)
         result = ge.get_all_graphical_properties()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
 
     def test_set_associated_image_delegates(self) -> None:
         # Pattern D — single-arg setter (str)
@@ -265,7 +266,7 @@ class TestRPConnectorTask15:
         fake.getDerivedInEdges.return_value = make_fake_collection([trans])
         conn = RPConnector(fake)
         result = conn.get_derived_in_edges()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
 
     def test_get_of_state_wraps_result(self) -> None:
         # Pattern B — returns wrapped RPState
@@ -488,7 +489,7 @@ class TestRPTableLayoutTask15:
         fake.getElementTypes.return_value = make_fake_collection([])
         tl = RPTableLayout(fake)
         result = tl.get_element_types()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
 
     def test_get_relation_table_returns_int(self) -> None:
         # Pattern G
@@ -549,7 +550,7 @@ class TestRPMatrixLayoutTask15:
         fake.getFromElementTypes.return_value = make_fake_collection([])
         ml = RPMatrixLayout(fake)
         result = ml.get_from_element_types()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
 
 
 class TestRPMatrixViewTask15:
@@ -572,7 +573,7 @@ class TestRPMatrixViewTask15:
         fake.getCellElements.return_value = make_fake_collection([el])
         mv = RPMatrixView(fake)
         result = mv.get_cell_elements(0, 0)
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         fake.getCellElements.assert_called_once_with(0, 0)
 
     def test_open_delegates(self) -> None:

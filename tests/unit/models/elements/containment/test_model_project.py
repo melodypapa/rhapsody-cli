@@ -58,7 +58,7 @@ def test_project_find_component_wraps_result() -> None:
 
 
 def test_project_get_packages_returns_collection() -> None:
-    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Project")
     fake.getPackages.return_value = make_fake_collection([make_fake_element("Package", properties={"name": "P1"})])
@@ -66,7 +66,7 @@ def test_project_get_packages_returns_collection() -> None:
 
     packages = project.get_packages()
 
-    assert isinstance(packages, RPCollection)
+    assert isinstance(packages, IRPCollection)
     assert len(packages) == 1
     assert packages[0].get_name() == "P1"
 
@@ -106,7 +106,7 @@ def test_project_add_actor_returns_wrapped_element() -> None:
 
 
 def test_project_get_components_returns_collection() -> None:
-    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Project")
     comp1 = make_fake_element("Component", properties={"name": "Comp1"})
@@ -115,7 +115,7 @@ def test_project_get_components_returns_collection() -> None:
 
     result = project.get_components()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_project_find_element_by_guid_returns_wrapped_element() -> None:
@@ -168,7 +168,7 @@ def test_project_add_node_delegates_to_com() -> None:
 
 
 def test_project_get_nodes_returns_collection() -> None:
-    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Project")
     node = make_fake_element("Node", properties={"name": "Node1"})
@@ -177,7 +177,7 @@ def test_project_get_nodes_returns_collection() -> None:
 
     result = project.get_nodes()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_project_find_node_delegates_to_com() -> None:
@@ -193,7 +193,7 @@ def test_project_find_node_delegates_to_com() -> None:
 
 
 def test_project_get_all_stereotypes_returns_collection() -> None:
-    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Project")
     st = make_fake_element("Stereotype", properties={"name": "MyStereotype"})
@@ -202,7 +202,7 @@ def test_project_get_all_stereotypes_returns_collection() -> None:
 
     result = project.get_all_stereotypes()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_project_save_as_delegates_to_com() -> None:
@@ -289,7 +289,7 @@ def test_project_apply_browser_custom_views_on_diagrams_delegates_to_com() -> No
 
 
 def test_project_get_active_custom_views_on_browser_returns_collection() -> None:
-    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Project")
     view = make_fake_element("CustomView", properties={"name": "V1"})
@@ -298,13 +298,13 @@ def test_project_get_active_custom_views_on_browser_returns_collection() -> None
 
     result = project.get_active_custom_views_on_browser()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
     assert len(result) == 1
     assert result[0].get_name() == "V1"
 
 
 def test_project_get_active_custom_views_on_diagram_returns_collection() -> None:
-    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Project")
     view = make_fake_element("CustomView", properties={"name": "V1"})
@@ -313,7 +313,7 @@ def test_project_get_active_custom_views_on_diagram_returns_collection() -> None
 
     result = project.get_active_custom_views_on_diagram()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
     assert len(result) == 1
     assert result[0].get_name() == "V1"
 
@@ -390,7 +390,7 @@ def test_project_enable_rhapsody_model_manager_delegates_to_com() -> None:
 
 
 def test_project_find_elements_with_oslc_link_returns_collection() -> None:
-    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Project")
     elem = make_fake_element("Class", properties={"name": "C1"})
@@ -400,13 +400,13 @@ def test_project_find_elements_with_oslc_link_returns_collection() -> None:
     result = project.find_elements_with_oslc_link("http://example.com/link")
 
     fake.findElementsWithOSLCLink.assert_called_once_with("http://example.com/link")
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
     assert len(result) == 1
     assert result[0].get_name() == "C1"
 
 
 def test_project_get_remote_resource_packages_returns_collection() -> None:
-    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Project")
     pkg = make_fake_element("Package", properties={"name": "RemotePkg"})
@@ -415,7 +415,7 @@ def test_project_get_remote_resource_packages_returns_collection() -> None:
 
     result = project.get_remote_resource_packages()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
     assert len(result) == 1
     assert result[0].get_name() == "RemotePkg"
 
@@ -547,7 +547,7 @@ def test_project_get_notify_plugin_on_elements_changed_returns_int() -> None:
 
 
 def test_project_get_requirements_by_id_returns_collection() -> None:
-    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Project")
     req = make_fake_element("Requirement", properties={"name": "Req1"})
@@ -557,7 +557,7 @@ def test_project_get_requirements_by_id_returns_collection() -> None:
     result = project.get_requirements_by_id("REQ-001")
 
     fake.getRequirementsByID.assert_called_once_with("REQ-001")
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
     assert len(result) == 1
     assert result[0].get_name() == "Req1"
 

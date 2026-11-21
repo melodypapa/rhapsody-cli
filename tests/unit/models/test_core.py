@@ -8,10 +8,10 @@ import pytest
 
 import rhapsody_cli.models.core as core_module
 from rhapsody_cli.exceptions import RhapsodyRuntimeException
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.core import (
     AbstractRPModelElement,
     AddToModelMode,
-    RPCollection,
     RPModelElement,
     RPUnit,
 )
@@ -263,7 +263,7 @@ def test_unit_is_a_model_element() -> None:
 
 def test_collection_len_delegates_to_get_count() -> None:
     fake = make_fake_collection([make_fake_element("Class")])
-    collection = RPCollection(fake)
+    collection = IRPCollection(fake)
 
     assert len(collection) == 1
 
@@ -271,7 +271,7 @@ def test_collection_len_delegates_to_get_count() -> None:
 def test_collection_getitem_wraps_model_elements() -> None:
     inner = make_fake_element("Class", properties={"name": "Widget"})
     fake = make_fake_collection([inner])
-    collection = RPCollection(fake)
+    collection = IRPCollection(fake)
 
     item = collection[0]
 
@@ -282,7 +282,7 @@ def test_collection_getitem_wraps_model_elements() -> None:
 
 def test_collection_getitem_passes_through_non_element_values() -> None:
     fake = make_fake_collection(["a plain string", 42])
-    collection = RPCollection(fake)
+    collection = IRPCollection(fake)
 
     assert collection[0] == "a plain string"
     assert collection[1] == 42
@@ -290,7 +290,7 @@ def test_collection_getitem_passes_through_non_element_values() -> None:
 
 def test_collection_negative_index_raises_index_error() -> None:
     fake = make_fake_collection(["a plain string"])
-    collection = RPCollection(fake)
+    collection = IRPCollection(fake)
 
     with pytest.raises(IndexError, match="negative indices are not supported"):
         _ = collection[-1]
@@ -298,7 +298,7 @@ def test_collection_negative_index_raises_index_error() -> None:
 
 def test_collection_getitem_supports_slicing() -> None:
     fake = make_fake_collection(["a", "b", "c", "d"])
-    collection = RPCollection(fake)
+    collection = IRPCollection(fake)
 
     assert collection[:2] == ["a", "b"]
     assert collection[1:3] == ["b", "c"]
@@ -309,7 +309,7 @@ def test_collection_iter_yields_all_items() -> None:
     inner_a = make_fake_element("Class", properties={"name": "A"})
     inner_b = make_fake_element("Class", properties={"name": "B"})
     fake = make_fake_collection([inner_a, inner_b])
-    collection = RPCollection(fake)
+    collection = IRPCollection(fake)
 
     names = [item.get_name() for item in collection]
 
@@ -319,7 +319,7 @@ def test_collection_iter_yields_all_items() -> None:
 
 def test_collection_add_item_delegates_to_com() -> None:
     fake = make_fake_collection([])
-    collection = RPCollection(fake)
+    collection = IRPCollection(fake)
     new_element = make_fake_element("Class")
 
     collection.add_item(RPModelElement(new_element))
@@ -329,7 +329,7 @@ def test_collection_add_item_delegates_to_com() -> None:
 
 def test_collection_get_count_delegates_to_com() -> None:
     fake = make_fake_collection([make_fake_element("Class"), make_fake_element("Class")])
-    collection = RPCollection(fake)
+    collection = IRPCollection(fake)
 
     assert collection.get_count() == 2
 
@@ -340,7 +340,7 @@ def test_collection_get_count_falls_back_to_count_property_when_method_missing()
     getCount()/getItem() methods."""
     fake = MagicMock(spec=["Count"])
     fake.Count = 3
-    collection = RPCollection(fake)
+    collection = IRPCollection(fake)
 
     assert collection.get_count() == 3
 
@@ -349,7 +349,7 @@ def test_collection_get_item_falls_back_to_item_property_when_method_missing() -
     inner = make_fake_element("Class", properties={"name": "Widget"})
     fake = MagicMock(spec=["Item"])
     fake.Item.return_value = inner
-    collection = RPCollection(fake)
+    collection = IRPCollection(fake)
 
     item = collection.get_item(1)
 
@@ -360,7 +360,7 @@ def test_collection_get_item_falls_back_to_item_property_when_method_missing() -
 
 def test_collection_add_graphical_item_delegates_to_com() -> None:
     fake = make_fake_collection([])
-    collection = RPCollection(fake)
+    collection = IRPCollection(fake)
     item = make_fake_element("Class")
 
     collection.add_graphical_item(RPModelElement(item))
@@ -372,7 +372,7 @@ def test_collection_to_list_returns_python_list() -> None:
     inner_a = make_fake_element("Class", properties={"name": "A"})
     inner_b = make_fake_element("Class", properties={"name": "B"})
     fake = make_fake_collection([inner_a, inner_b])
-    collection = RPCollection(fake)
+    collection = IRPCollection(fake)
 
     result = collection.to_list()
 
@@ -384,7 +384,7 @@ def test_collection_to_list_returns_python_list() -> None:
 
 def test_collection_set_size_delegates_to_com() -> None:
     fake = make_fake_collection([])
-    collection = RPCollection(fake)
+    collection = IRPCollection(fake)
 
     collection.set_size(5)
 
@@ -393,7 +393,7 @@ def test_collection_set_size_delegates_to_com() -> None:
 
 def test_collection_remove_delegates_to_com() -> None:
     fake = make_fake_collection([])
-    collection = RPCollection(fake)
+    collection = IRPCollection(fake)
 
     collection.remove(1)
 
@@ -402,7 +402,7 @@ def test_collection_remove_delegates_to_com() -> None:
 
 def test_collection_set_string_delegates_to_com() -> None:
     fake = make_fake_collection([])
-    collection = RPCollection(fake)
+    collection = IRPCollection(fake)
 
     collection.set_string(1, "test")
 
@@ -411,7 +411,7 @@ def test_collection_set_string_delegates_to_com() -> None:
 
 def test_collection_set_model_element_delegates_to_com() -> None:
     fake = make_fake_collection([])
-    collection = RPCollection(fake)
+    collection = IRPCollection(fake)
     element = make_fake_element("Class")
 
     collection.set_model_element(1, RPModelElement(element))
@@ -421,7 +421,7 @@ def test_collection_set_model_element_delegates_to_com() -> None:
 
 def test_collection_empty_delegates_to_com() -> None:
     fake = make_fake_collection([])
-    collection = RPCollection(fake)
+    collection = IRPCollection(fake)
 
     collection.empty()
 
@@ -430,7 +430,7 @@ def test_collection_empty_delegates_to_com() -> None:
 
 def test_collection_set_integer_delegates_to_com() -> None:
     fake = make_fake_collection([])
-    collection = RPCollection(fake)
+    collection = IRPCollection(fake)
 
     collection.set_integer(1, 42)
 
@@ -721,7 +721,7 @@ def test_model_element_get_all_tags_returns_collection() -> None:
 
     result = element.get_all_tags()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_model_element_get_annotations_returns_collection() -> None:
@@ -731,7 +731,7 @@ def test_model_element_get_annotations_returns_collection() -> None:
 
     result = element.get_annotations()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_model_element_get_association_classes_returns_collection() -> None:
@@ -741,7 +741,7 @@ def test_model_element_get_association_classes_returns_collection() -> None:
 
     result = element.get_association_classes()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_model_element_get_binary_id_falls_back_to_pywin32_binaryid_property() -> None:
@@ -759,7 +759,7 @@ def test_model_element_get_constraints_returns_collection() -> None:
 
     result = element.get_constraints()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_model_element_get_constraints_by_him_returns_collection() -> None:
@@ -769,7 +769,7 @@ def test_model_element_get_constraints_by_him_returns_collection() -> None:
 
     result = element.get_constraints_by_him()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_model_element_get_controlled_files_returns_collection() -> None:
@@ -779,7 +779,7 @@ def test_model_element_get_controlled_files_returns_collection() -> None:
 
     result = element.get_controlled_files()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_model_element_get_decoration_style_returns_str() -> None:
@@ -796,7 +796,7 @@ def test_model_element_get_dependencies_returns_collection() -> None:
 
     result = element.get_dependencies()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_model_element_get_description_returns_str() -> None:
@@ -869,7 +869,7 @@ def test_model_element_get_hyper_links_returns_collection() -> None:
 
     result = element.get_hyper_links()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_model_element_get_icon_file_name_returns_str() -> None:
@@ -923,7 +923,7 @@ def test_model_element_get_local_tags_returns_collection() -> None:
 
     result = element.get_local_tags()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_model_element_get_main_diagram_wraps_result() -> None:
@@ -944,7 +944,7 @@ def test_model_element_get_nested_elements_returns_collection() -> None:
 
     result = element.get_nested_elements()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
     assert result.get_count() == 1
 
 
@@ -955,7 +955,7 @@ def test_model_element_get_nested_elements_by_meta_class_returns_collection() ->
 
     result = element.get_nested_elements_by_meta_class("Class", 1)
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
     fake.getNestedElementsByMetaClass.assert_called_once_with("Class", 1)
 
 
@@ -966,7 +966,7 @@ def test_model_element_get_nested_elements_recursive_returns_collection() -> Non
 
     result = element.get_nested_elements_recursive()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_model_element_get_new_term_stereotype_wraps_result() -> None:
@@ -1012,7 +1012,7 @@ def test_model_element_get_overridden_properties_returns_collection() -> None:
 
     result = element.get_overridden_properties(1)
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
     fake.getOverriddenProperties.assert_called_once_with(1)
 
 
@@ -1023,7 +1023,7 @@ def test_model_element_get_overridden_properties_by_pattern_returns_collection()
 
     result = element.get_overridden_properties_by_pattern("C++.*", 1, 0)
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
     fake.getOverriddenPropertiesByPattern.assert_called_once_with("C++.*", 1, 0)
 
 
@@ -1034,7 +1034,7 @@ def test_model_element_get_owned_dependencies_returns_collection() -> None:
 
     result = element.get_owned_dependencies()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_model_element_get_owner_wraps_result() -> None:
@@ -1068,8 +1068,8 @@ def test_model_element_get_property_value_returns_str() -> None:
 
 
 def test_model_element_get_property_value_conditional_returns_str() -> None:
-    formal = RPCollection(make_fake_collection([]))
-    actual = RPCollection(make_fake_collection([]))
+    formal = IRPCollection(make_fake_collection([]))
+    actual = IRPCollection(make_fake_collection([]))
     fake = make_fake_element("Class", getPropertyValueConditional="value")
     element = RPModelElement(fake)
 
@@ -1078,8 +1078,8 @@ def test_model_element_get_property_value_conditional_returns_str() -> None:
 
 
 def test_model_element_get_property_value_conditional_explicit_returns_str() -> None:
-    formal = RPCollection(make_fake_collection([]))
-    actual = RPCollection(make_fake_collection([]))
+    formal = IRPCollection(make_fake_collection([]))
+    actual = IRPCollection(make_fake_collection([]))
     fake = make_fake_element("Class", getPropertyValueConditionalExplicit="value")
     element = RPModelElement(fake)
 
@@ -1102,7 +1102,7 @@ def test_model_element_get_redefines_returns_collection() -> None:
 
     result = element.get_redefines()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_model_element_get_references_returns_collection() -> None:
@@ -1112,7 +1112,7 @@ def test_model_element_get_references_returns_collection() -> None:
 
     result = element.get_references()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_model_element_get_remote_dependencies_returns_collection() -> None:
@@ -1122,7 +1122,7 @@ def test_model_element_get_remote_dependencies_returns_collection() -> None:
 
     result = element.get_remote_dependencies()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_model_element_get_remote_uri_returns_str() -> None:
@@ -1164,7 +1164,7 @@ def test_model_element_get_stereotypes_returns_collection() -> None:
 
     result = element.get_stereotypes()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_model_element_get_tag_wraps_result() -> None:
@@ -1186,7 +1186,7 @@ def test_model_element_get_template_parameters_returns_collection() -> None:
 
     result = element.get_template_parameters()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_model_element_get_ti_wraps_result() -> None:
@@ -1344,7 +1344,7 @@ def test_model_element_set_description_delegates_to_com() -> None:
 
 
 def test_model_element_set_description_and_hyperlinks_unwraps_targets() -> None:
-    targets = RPCollection(make_fake_collection([]))
+    targets = IRPCollection(make_fake_collection([]))
     fake = make_fake_element("Class")
     element = RPModelElement(fake)
 
@@ -1456,8 +1456,8 @@ def test_model_element_set_requirement_traceability_handle_delegates_to_com() ->
 
 def test_model_element_set_tag_context_value_unwraps_args_and_wraps_result() -> None:
     tag = RPModelElement(make_fake_element("Tag"))
-    elements = RPCollection(make_fake_collection([]))
-    multiplicities = RPCollection(make_fake_collection([]))
+    elements = IRPCollection(make_fake_collection([]))
+    multiplicities = IRPCollection(make_fake_collection([]))
     result_fake = make_fake_element("Tag", properties={"name": "CtxTag"})
     fake = make_fake_element("Class", setTagContextValue=result_fake)
     element = RPModelElement(fake)
@@ -1621,7 +1621,7 @@ def test_unit_get_nested_save_units_returns_collection() -> None:
 
     result = unit.get_nested_save_units()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_unit_get_nested_save_units_count_returns_int() -> None:
@@ -1638,7 +1638,7 @@ def test_unit_get_structure_diagrams_returns_collection() -> None:
 
     result = unit.get_structure_diagrams()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_unit_get_unit_path_passes_flag_and_returns_str() -> None:
@@ -1783,13 +1783,15 @@ def test_rp_model_element_uses_no_legacy_dual_binding_helpers() -> None:
     assert offenders == []
 
 
-def test_rp_collection_uses_no_legacy_dual_binding_helpers() -> None:
-    """RPCollection's own methods call exactly one pywin32 member — no name probing."""
+def test_irp_collection_uses_no_legacy_dual_binding_helpers() -> None:
+    """IRPCollection's own methods call exactly one pywin32 member — no name probing."""
     import ast as _ast
 
-    source = Path(core_module.__file__).read_text(encoding="utf-8")
+    from rhapsody_cli.models.com.telelogic.rhapsody.core import irp_collection as irp_collection_module
+
+    source = Path(irp_collection_module.__file__).read_text(encoding="utf-8")
     tree = _ast.parse(source)
-    collection_cls = next(node for node in tree.body if isinstance(node, _ast.ClassDef) and node.name == "RPCollection")
+    collection_cls = next(node for node in tree.body if isinstance(node, _ast.ClassDef) and node.name == "IRPCollection")
     offenders: list[str] = []
     for fn in collection_cls.body:
         if not isinstance(fn, _ast.FunctionDef):

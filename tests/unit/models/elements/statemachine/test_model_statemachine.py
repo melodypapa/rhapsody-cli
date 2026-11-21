@@ -2,7 +2,8 @@
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 from rhapsody_cli.models.elements.statemachine import RPState, RPStateVertex
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -54,7 +55,7 @@ class TestRPStateVertex:
         fake.getInTransitions.return_value = make_fake_collection([trans])
         sv = RPStateVertex(fake)
         result = sv.get_in_transitions()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
 
     def test_get_out_transitions_returns_collection(self) -> None:
         fake = make_fake_element("StateVertex")
@@ -62,7 +63,7 @@ class TestRPStateVertex:
         fake.getOutTransitions.return_value = make_fake_collection([trans])
         sv = RPStateVertex(fake)
         result = sv.get_out_transitions()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
 
     def test_get_parent_wraps_result(self) -> None:
         fake = make_fake_element("StateVertex")
@@ -230,7 +231,7 @@ class TestRPState:
         fake.getInternalTransitions.return_value = make_fake_collection([trans])
         s = RPState(fake)
         result = s.get_internal_transitions()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
 
     def test_get_is_overridden_returns_int(self) -> None:
         fake = make_fake_element("State", getIsOverridden=1)
@@ -264,7 +265,7 @@ class TestRPState:
         fake.getLogicalStates.return_value = make_fake_collection([sub])
         s = RPState(fake)
         result = s.get_logical_states()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
 
     def test_get_nested_statechart_wraps_result(self) -> None:
         fake = make_fake_element("State")
@@ -301,7 +302,7 @@ class TestRPState:
         fake.getStaticReactions.return_value = make_fake_collection([sr])
         s = RPState(fake)
         result = s.get_static_reactions()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
 
     def test_get_sub_state_vertices_returns_collection(self) -> None:
         fake = make_fake_element("State")
@@ -309,7 +310,7 @@ class TestRPState:
         fake.getSubStateVertices.return_value = make_fake_collection([sub])
         s = RPState(fake)
         result = s.get_sub_state_vertices()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
 
     def test_get_sub_states_returns_collection(self) -> None:
         fake = make_fake_element("State")
@@ -317,7 +318,7 @@ class TestRPState:
         fake.getSubStates.return_value = make_fake_collection([sub])
         s = RPState(fake)
         result = s.get_sub_states()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
 
     def test_get_the_entry_action_wraps_result(self) -> None:
         fake = make_fake_element("State")

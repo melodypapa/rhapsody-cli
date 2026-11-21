@@ -1,6 +1,7 @@
 """Tests for rhapsody_cli.models.elements.containment.RPComponent."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPUnit
 from rhapsody_cli.models.elements.containment import RPComponent, RPConfiguration
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -55,7 +56,7 @@ def test_component_get_configurations_returns_collection() -> None:
     comp = RPComponent(fake)
 
     result = comp.get_configurations()
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_component_find_configuration_wraps_result() -> None:

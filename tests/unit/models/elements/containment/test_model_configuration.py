@@ -1,6 +1,7 @@
 """Tests for rhapsody_cli.models.elements.containment.RPConfiguration."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPUnit
 from rhapsody_cli.models.elements.containment import RPComponent, RPConfiguration
 from rhapsody_cli.models.elements.relations import RPInstance
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
@@ -43,7 +44,7 @@ def test_configuration_get_initial_instances_returns_collection() -> None:
     config = RPConfiguration(fake)
 
     result = config.get_initial_instances()
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_configuration_delete_initial_instance_delegates() -> None:

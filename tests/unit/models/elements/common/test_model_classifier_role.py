@@ -1,6 +1,7 @@
 """Tests for rhapsody_cli.models.elements.common.model_other_model.RPClassifierRole."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 from rhapsody_cli.models.elements.classifiers import RPClassifier
 from rhapsody_cli.models.elements.common import RPClassifierRole
 from rhapsody_cli.models.elements.relations import RPInstance
@@ -47,13 +48,13 @@ class TestRPClassifierRole:
         assert wrapped.get_name() == "SD1"
 
     def test_get_referencing_classifier_roles_recursively_returns_collection(self) -> None:
-        # Pattern C — no-arg getter returning RPCollection
+        # Pattern C — no-arg getter returning IRPCollection
         fake = make_fake_element("ClassifierRole")
         sub = make_fake_element("ClassifierRole", properties={"name": "Sub"})
         fake.getReferencingClassifierRolesRecursively.return_value = make_fake_collection([sub])
         role = RPClassifierRole(fake)
         result = role.get_referencing_classifier_roles_recursively()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
 
     def test_get_role_type_returns_string(self) -> None:
         # Pattern A — no-arg getter returning primitive

@@ -173,8 +173,8 @@ directly above `def test_is_reference_unit_false_for_local_unit`.
 
 ```bash
 pytest \
-  "tests/integration/models/test_core.py::TestRPCollectionMutationMethodsIntegration::test_set_string_stores_value" \
-  "tests/integration/models/test_core.py::TestRPCollectionMutationMethodsIntegration::test_set_integer_stores_value" \
+  "tests/integration/models/test_core.py::TestIRPCollectionMutationMethodsIntegration::test_set_string_stores_value" \
+  "tests/integration/models/test_core.py::TestIRPCollectionMutationMethodsIntegration::test_set_integer_stores_value" \
   "tests/integration/models/test_core.py::TestRPUnitCrossProjectIntegration::test_get_nested_save_units_empty_on_plain_package" \
   "tests/integration/models/test_core.py::TestRPUnitCrossProjectIntegration::test_get_structure_diagrams_empty_on_class" \
   "tests/integration/models/test_core.py::TestRPUnitCrossProjectIntegration::test_get_add_to_model_mode_returns_int" \

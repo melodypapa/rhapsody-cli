@@ -1,6 +1,7 @@
 """Tests for rhapsody_cli.elements.diagram.RPDiagram."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement, RPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement, RPUnit
 from rhapsody_cli.models.elements.diagrams.model_diagrams import RPDiagram
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -73,9 +74,9 @@ def test_diagram_get_pictures_with_image_map_delegates_to_com_with_two_args() ->
     file_names = make_fake_collection([])
     fake.getPicturesWithImageMap.return_value = file_names
     diagram = RPDiagram(fake)
-    diagram_map = RPCollection(make_fake_collection([]))
+    diagram_map = IRPCollection(make_fake_collection([]))
 
     result = diagram.get_pictures_with_image_map("output.emf", diagram_map)
 
     fake.getPicturesWithImageMap.assert_called_once_with("output.emf", diagram_map._com)
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)

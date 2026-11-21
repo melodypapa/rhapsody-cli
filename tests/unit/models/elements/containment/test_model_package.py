@@ -74,7 +74,7 @@ def test_package_is_registered_for_meta_class_package() -> None:
 
 
 def test_package_get_nested_packages_returns_collection() -> None:
-    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Package")
     nested1 = make_fake_element("Package", properties={"name": "Nested1"})
@@ -83,14 +83,14 @@ def test_package_get_nested_packages_returns_collection() -> None:
     package = RPPackage(fake)
 
     result = package.get_nested_packages()
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
     assert len(result) == 2
     assert result[0].get_name() == "Nested1"
     assert result[1].get_name() == "Nested2"
 
 
 def test_package_get_classes_returns_collection() -> None:
-    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Package")
     class1 = make_fake_element("Class", properties={"name": "Class1"})
@@ -99,12 +99,12 @@ def test_package_get_classes_returns_collection() -> None:
     package = RPPackage(fake)
 
     result = package.get_classes()
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
     assert len(result) == 2
 
 
 def test_package_get_actors_returns_collection() -> None:
-    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Package")
     actor1 = make_fake_element("Actor", properties={"name": "Actor1"})
@@ -112,12 +112,12 @@ def test_package_get_actors_returns_collection() -> None:
     package = RPPackage(fake)
 
     result = package.get_actors()
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
     assert len(result) == 1
 
 
 def test_package_get_use_cases_returns_collection() -> None:
-    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Package")
     uc1 = make_fake_element("UseCase", properties={"name": "UC1"})
@@ -125,7 +125,7 @@ def test_package_get_use_cases_returns_collection() -> None:
     package = RPPackage(fake)
 
     result = package.get_use_cases()
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_package_add_use_case_returns_wrapped_element() -> None:
@@ -166,7 +166,7 @@ def test_package_add_sequence_diagram_delegates_to_com() -> None:
 
 
 def test_package_get_sequence_diagrams_returns_collection() -> None:
-    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Package")
     diagram = make_fake_element("SequenceDiagram", properties={"name": "Seq1"})
@@ -174,7 +174,7 @@ def test_package_get_sequence_diagrams_returns_collection() -> None:
     package = RPPackage(fake)
 
     result = package.get_sequence_diagrams()
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_package_delete_class_delegates_to_com() -> None:
@@ -222,7 +222,7 @@ def test_package_add_association_delegates_to_com() -> None:
 
 
 def test_package_get_events_returns_collection() -> None:
-    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Package")
     event = make_fake_element("Event", properties={"name": "Event1"})
@@ -231,11 +231,11 @@ def test_package_get_events_returns_collection() -> None:
 
     result = package.get_events()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_package_get_nodes_returns_collection() -> None:
-    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Package")
     node = make_fake_element("Node", properties={"name": "Node1"})
@@ -244,7 +244,7 @@ def test_package_get_nodes_returns_collection() -> None:
 
     result = package.get_nodes()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_package_add_flow_items_delegates_to_com() -> None:
@@ -292,7 +292,7 @@ def test_package_delete_flows_delegates_to_com() -> None:
 
 
 def test_package_get_flow_items_returns_collection() -> None:
-    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Package")
     flow_item = make_fake_element("FlowItem", properties={"name": "FlowItem1"})
@@ -300,11 +300,11 @@ def test_package_get_flow_items_returns_collection() -> None:
     package = RPPackage(fake)
 
     result = package.get_flow_items()
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_package_get_flows_returns_collection() -> None:
-    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Package")
     flow = make_fake_element("Flow", properties={"name": "Flow1"})
@@ -312,7 +312,7 @@ def test_package_get_flows_returns_collection() -> None:
     package = RPPackage(fake)
 
     result = package.get_flows()
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 # --- Remote Requirements Methods (Task 3) Tests ---
@@ -326,7 +326,7 @@ def test_package_get_remote_requirements_populate_mode_returns_int() -> None:
 
 
 def test_package_get_root_instance_specifications_returns_collection() -> None:
-    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Package")
     instance_spec = make_fake_element("InstanceSpecification", properties={"name": "IS1"})
@@ -334,7 +334,7 @@ def test_package_get_root_instance_specifications_returns_collection() -> None:
     package = RPPackage(fake)
 
     result = package.get_root_instance_specifications()
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_package_login_to_remote_artifact_server_delegates_to_com() -> None:
@@ -414,7 +414,7 @@ def test_package_add_link_between_sysml_ports_delegates_to_com() -> None:
 
 # --- Misc Methods (Task 5) Tests ---
 def test_package_get_all_nested_elements_returns_collection() -> None:
-    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Package")
     elem1 = make_fake_element("Class", properties={"name": "Class1"})
@@ -423,7 +423,7 @@ def test_package_get_all_nested_elements_returns_collection() -> None:
     package = RPPackage(fake)
 
     result = package.get_all_nested_elements()
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_package_get_events_base_id_returns_string() -> None:
@@ -454,7 +454,7 @@ def test_package_get_saved_in_separate_directory_returns_int() -> None:
 
 
 def test_package_get_user_defined_stereotypes_returns_collection() -> None:
-    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Package")
     stereotype = make_fake_element("Stereotype", properties={"name": "MyStereotype"})
@@ -462,7 +462,7 @@ def test_package_get_user_defined_stereotypes_returns_collection() -> None:
     package = RPPackage(fake)
 
     result = package.get_user_defined_stereotypes()
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_package_set_saved_in_separate_directory_delegates_to_com() -> None:

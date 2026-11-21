@@ -795,7 +795,7 @@ class TestRPContextSpecificationIntegration:
     """Integration tests for RPContextSpecification with real Rhapsody COM API."""
 
     def test_multiplicities_and_value_roundtrip(self, rhapsody_app, test_project: RPProject) -> None:
-        from rhapsody_cli.models.core import RPCollection
+        from rhapsody_cli.models.core import IRPCollection
         from rhapsody_cli.models.elements.activity import RPContextSpecification
 
         # No dedicated add_context_specification factory exists; try the generic
@@ -809,12 +809,12 @@ class TestRPContextSpecificationIntegration:
             context_spec = pkg.add_new_aggr("ContextSpecification", _unique("CtxSpec"))
             assert isinstance(context_spec, RPContextSpecification)
 
-            # get_multiplicities/get_value return an RPCollection; assert the
+            # get_multiplicities/get_value return an IRPCollection; assert the
             # calls succeed on a freshly-created, unbound context specification.
-            assert isinstance(context_spec.get_multiplicities(), RPCollection)
-            assert isinstance(context_spec.get_value(), RPCollection)
+            assert isinstance(context_spec.get_multiplicities(), IRPCollection)
+            assert isinstance(context_spec.get_value(), IRPCollection)
 
-            # set_multiplicities/set_value take an RPCollection of path
+            # set_multiplicities/set_value take an IRPCollection of path
             # elements/indices; an empty collection (obtained via the
             # create_new_collection() factory from the xfail-improvements plan)
             # exercises the setter round-trip without requiring a fully-wired

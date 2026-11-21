@@ -2,7 +2,8 @@
 
 from typing import cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement, RPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement, RPUnit
 from rhapsody_cli.models.elements.classifiers import RPClassifier
 from rhapsody_cli.models.elements.variables.model_variables import RPVariable
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
@@ -73,7 +74,7 @@ def test_variable_get_value_specifications_returns_collection() -> None:
 
     result = variable.get_value_specifications()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
     assert len(result) == 1
 
 

@@ -2,7 +2,8 @@
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 from rhapsody_cli.models.elements.classifiers.model_interface_item import RPInterfaceItem
 from rhapsody_cli.models.elements.interactions import (
     RPDestructionEvent,
@@ -165,7 +166,7 @@ class TestRPInteractionOccurrence:
         fake.getMessagePoints.return_value = make_fake_collection([inner])
         io = RPInteractionOccurrence(fake)
         result = io.get_message_points()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
 
     def test_get_reference_sequence_diagram_wraps_result(self) -> None:
         fake = make_fake_element("InteractionOccurrence")
@@ -202,7 +203,7 @@ class TestRPInteractionOperand:
         fake.getContainedMessages.return_value = make_fake_collection([inner])
         iop = RPInteractionOperand(fake)
         result = iop.get_contained_messages()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
 
     def test_get_interaction_constraint_returns_string(self) -> None:
         fake = make_fake_element("InteractionOperand", getInteractionConstraint="x > 0")
@@ -235,7 +236,7 @@ class TestRPInteractionOperator:
         fake.getInteractionOperands.return_value = make_fake_collection([inner])
         iop = RPInteractionOperator(fake)
         result = iop.get_interaction_operands()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
 
     def test_get_interaction_type_returns_string(self) -> None:
         fake = make_fake_element("InteractionOperator", getInteractionType="alt")
@@ -286,7 +287,7 @@ class TestRPMessage:
         fake.getActualParameterList.return_value = make_fake_collection([inner])
         msg = RPMessage(fake)
         result = msg.get_actual_parameter_list()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
 
     def test_get_communication_connection_wraps_result(self) -> None:
         fake = make_fake_element("Message")
@@ -425,7 +426,7 @@ class TestRPMessage:
     def test_set_actual_parameter_list_delegates(self) -> None:
         inner = make_fake_element("Class", properties={"name": "P"})
         fake = make_fake_element("Message")
-        col = RPCollection(make_fake_collection([inner]))
+        col = IRPCollection(make_fake_collection([inner]))
         fake.setActualParameterList.return_value = None
         msg = RPMessage(fake)
         msg.set_actual_parameter_list(col)
@@ -617,7 +618,7 @@ class TestRPTransition:
         fake.itsCompoundSource.return_value = make_fake_collection([inner])
         t = RPTransition(fake)
         result = t.its_compound_source()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         fake.itsCompoundSource.assert_called_once_with()
 
     def test_override_inheritance_delegates(self) -> None:

@@ -2,7 +2,8 @@
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPUnit
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.common import RPClassifierRole
@@ -437,16 +438,16 @@ class RPCollaboration(RPUnit):
             return None
         return cast("RPUnit", AbstractRPModelElement.wrap(result))
 
-    def get_associations(self) -> "RPCollection":
+    def get_associations(self) -> "IRPCollection":
         """Returns all associations in the collaboration.
 
         Returns:
-            An ``RPCollection`` of ``IRPAssociation`` objects.
+            An ``IRPCollection`` of ``IRPAssociation`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPCollaboration::getAssociations()
         """
-        return RPCollection(self.call_com(lambda: self._com.getAssociations()))
+        return IRPCollection(self.call_com(lambda: self._com.getAssociations()))
 
     def get_classifier(self) -> "RPUnit | None":
         """Returns the classifier of the collaboration.
@@ -473,60 +474,60 @@ class RPCollaboration(RPUnit):
         """
         return int(self.call_com(lambda: self._com.getConcurrentGroup()))
 
-    def get_execution_occurrences(self) -> "RPCollection":
+    def get_execution_occurrences(self) -> "IRPCollection":
         """Returns all execution occurrences in the collaboration.
 
         Returns:
-            An ``RPCollection`` of ``IRPExecutionOccurrence`` objects.
+            An ``IRPCollection`` of ``IRPExecutionOccurrence`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPCollaboration::getExecutionOccurrences()
         """
-        return RPCollection(self.call_com(lambda: self._com.getExecutionOccurrences()))
+        return IRPCollection(self.call_com(lambda: self._com.getExecutionOccurrences()))
 
-    def get_interaction_occurrences(self) -> "RPCollection":
+    def get_interaction_occurrences(self) -> "IRPCollection":
         """Returns all interaction occurrences in the collaboration.
 
         Returns:
-            An ``RPCollection`` of ``IRPInteractionOccurrence`` objects.
+            An ``IRPCollection`` of ``IRPInteractionOccurrence`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPCollaboration::getInteractionOccurrences()
         """
-        return RPCollection(self.call_com(lambda: self._com.getInteractionOccurrences()))
+        return IRPCollection(self.call_com(lambda: self._com.getInteractionOccurrences()))
 
-    def get_interaction_operators(self) -> "RPCollection":
+    def get_interaction_operators(self) -> "IRPCollection":
         """Returns all interaction operators in the collaboration.
 
         Returns:
-            An ``RPCollection`` of ``IRPInteractionOperator`` objects.
+            An ``IRPCollection`` of ``IRPInteractionOperator`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPCollaboration::getInteractionOperators()
         """
-        return RPCollection(self.call_com(lambda: self._com.getInteractionOperators()))
+        return IRPCollection(self.call_com(lambda: self._com.getInteractionOperators()))
 
-    def get_message_points(self) -> "RPCollection":
+    def get_message_points(self) -> "IRPCollection":
         """Returns all message points in the collaboration.
 
         Returns:
-            An ``RPCollection`` of ``IRPMessagePoint`` objects.
+            An ``IRPCollection`` of ``IRPMessagePoint`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPCollaboration::getMessagePoints()
         """
-        return RPCollection(self.call_com(lambda: self._com.getMessagePoints()))
+        return IRPCollection(self.call_com(lambda: self._com.getMessagePoints()))
 
-    def get_messages(self) -> "RPCollection":
+    def get_messages(self) -> "IRPCollection":
         """Returns all messages in the collaboration.
 
         Returns:
-            An ``RPCollection`` of ``IRPMessage`` objects.
+            An ``IRPCollection`` of ``IRPMessage`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPCollaboration::getMessages()
         """
-        return RPCollection(self.call_com(lambda: self._com.getMessages()))
+        return IRPCollection(self.call_com(lambda: self._com.getMessages()))
 
     def get_mode(self) -> int:
         """Returns the mode of the collaboration.

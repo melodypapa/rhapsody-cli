@@ -2,7 +2,8 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 from rhapsody_cli.models.elements.classifiers.model_interface_item import RPInterfaceItem
 from rhapsody_cli.models.elements.containment.model_collaboration import RPCollaboration
 
@@ -105,8 +106,8 @@ class RPInteractionOccurrence(RPModelElement):
     # [inherited] irp_model_element methods (covered by rp_model_element checklist)
     # No deprecated IRPInteractionOccurrence methods.
 
-    def get_message_points(self) -> "RPCollection":
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getMessagePoints", "messagePoints"))
+    def get_message_points(self) -> "IRPCollection":
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getMessagePoints", "messagePoints"))
 
     def get_reference_sequence_diagram(self) -> "RPSequenceDiagram":
         return cast("RPSequenceDiagram", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getReferenceSequenceDiagram", "referenceSequenceDiagram")))
@@ -126,8 +127,8 @@ class RPInteractionOperand(RPCollaboration):
     # [inherited] irp_model_element methods (covered by rp_model_element checklist)
     # No deprecated IRPInteractionOperand methods.
 
-    def get_contained_messages(self) -> "RPCollection":
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getContainedMessages", "containedMessages"))
+    def get_contained_messages(self) -> "IRPCollection":
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getContainedMessages", "containedMessages"))
 
     def get_interaction_constraint(self) -> str:
         return str(AbstractRPModelElement._get_method_or_property(self._com, "getInteractionConstraint", "interactionConstraint"))
@@ -146,8 +147,8 @@ class RPInteractionOperator(RPModelElement):
     # [inherited] irp_model_element methods (covered by rp_model_element checklist)
     # No deprecated IRPInteractionOperator methods.
 
-    def get_interaction_operands(self) -> "RPCollection":
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getInteractionOperands", "interactionOperands"))
+    def get_interaction_operands(self) -> "IRPCollection":
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getInteractionOperands", "interactionOperands"))
 
     def get_interaction_type(self) -> str:
         return str(AbstractRPModelElement._get_method_or_property(self._com, "getInteractionType", "interactionType"))
@@ -205,8 +206,8 @@ class RPMessage(RPModelElement):
     def add_target_execution_occurrence(self) -> "RPExecutionOccurrence":
         return cast("RPExecutionOccurrence", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addTargetExecutionOccurrence())))
 
-    def get_actual_parameter_list(self) -> "RPCollection":
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getActualParameterList", "actualParameterList"))
+    def get_actual_parameter_list(self) -> "IRPCollection":
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getActualParameterList", "actualParameterList"))
 
     def get_communication_connection(self) -> "RPAssociationRole":
         return cast("RPAssociationRole", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getCommunicationConnection", "communicationConnection")))
@@ -271,7 +272,7 @@ class RPMessage(RPModelElement):
     def reroute(self) -> None:
         AbstractRPModelElement.call_com(lambda: self._com.reroute())
 
-    def set_actual_parameter_list(self, p_val: "RPCollection") -> None:
+    def set_actual_parameter_list(self, p_val: "IRPCollection") -> None:
         AbstractRPModelElement.call_com(lambda: self._com.setActualParameterList(p_val._com))
 
     def set_duration_constraint(self, duration_constraint: str) -> None:
@@ -374,8 +375,8 @@ class RPTransition(RPModelElement):
     def is_static_reaction(self) -> int:
         return int(AbstractRPModelElement.call_com(lambda: self._com.isStaticReaction()))
 
-    def its_compound_source(self) -> "RPCollection":
-        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.itsCompoundSource()))
+    def its_compound_source(self) -> "IRPCollection":
+        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.itsCompoundSource()))
 
     def override_inheritance(self) -> None:
         AbstractRPModelElement.call_com(lambda: self._com.overrideInheritance())

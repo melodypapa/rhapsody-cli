@@ -2,7 +2,8 @@
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 from rhapsody_cli.models.elements.activity.model_activity import (
     RPFlow,
     RPFlowchart,
@@ -44,7 +45,7 @@ class TestRPFlow:
         fake.getConveyed.return_value = make_fake_collection([item1, item2])
         flow = RPFlow(fake)
         result = flow.get_conveyed()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         assert len(result) == 2
 
     def test_get_direction_returns_string(self) -> None:
@@ -200,7 +201,7 @@ class TestRPFlowItem:
         fake.getRepresented.return_value = make_fake_collection([item1, item2])
         flow_item = RPFlowItem(fake)
         result = flow_item.get_represented()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         assert len(result) == 2
 
     def test_remove_represented_delegates(self) -> None:
@@ -331,7 +332,7 @@ class TestRPFlowchart:
         fake.getSwimlanes.return_value = make_fake_collection([lane1, lane2])
         flowchart = RPFlowchart(fake)
         result = flowchart.get_swimlanes()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         assert len(result) == 2
 
     def test_set_is_analysis_only_delegates(self) -> None:
@@ -381,7 +382,7 @@ class TestRPObjectNode:
         fake.getInStateList.return_value = make_fake_collection([state1, state2])
         node = RPObjectNode(fake)
         result = node.get_in_state_list()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         assert len(result) == 2
 
     def test_get_represents_wraps_result(self) -> None:
@@ -443,7 +444,7 @@ class TestRPSwimlane:
         fake.getContents.return_value = make_fake_collection([item1, item2])
         swimlane = RPSwimlane(fake)
         result = swimlane.get_contents()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         assert len(result) == 2
 
     def test_get_represents_wraps_result(self) -> None:
@@ -461,7 +462,7 @@ class TestRPSwimlane:
         fake.getSwimlanes.return_value = make_fake_collection([lane1, lane2])
         swimlane = RPSwimlane(fake)
         result = swimlane.get_swimlanes()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         assert len(result) == 2
 
     def test_set_represents_delegates(self) -> None:

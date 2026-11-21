@@ -50,7 +50,7 @@ not re-derive scope or decisions already recorded in the row's Notes.
   mirrored `tests/{unit,integration}/models/com/telelogic/rhapsody/core/` paths, snake_case
   test module names, `__init__.py` at every level, no compatibility shim).
 - **core.py base rows defer the §2 move (user decision 2026-11-21):** `RPModelElement`,
-  `RPCollection`, `RPUnit` and `AbstractRPModelElement` share `models/core.py`; moving one
+  `IRPCollection`, `RPUnit` and `AbstractRPModelElement` share `models/core.py`; moving one
   base class alone creates import cycles (`RPUnit(RPModelElement)`). Each base row runs its
   binding migration at the current location and records the §2 move as an open blocker; the
   moves land as a small dedicated refactor once the rows have emptied `core.py`.
@@ -69,7 +69,7 @@ not re-derive scope or decisions already recorded in the row's Notes.
   monoliths into the per-class files (no duplicates); `elements.rst` lists per-class pages in
   its toctree. `verify_sync.py` checks the per-class paths strictly (no legacy fallback).
 - **core.py split:** `models/core.py` holds `AbstractRPModelElement` (2 forwarder
-  definitions), `RPModelElement`, `RPCollection`, `RPUnit` — 92 legacy sites total. Survey and
+  definitions), `RPModelElement`, `IRPCollection`, `RPUnit` — 92 legacy sites total. Survey and
   split per class at each row's start. IRPModelElement's 22 unit-family names (`CMHeader`,
   `filename`, `isReadOnly`, ...) exist only in other interfaces' catalogs: resolve against
   IRPUnit's catalog entry during the IRPUnit row, or record a blocker in the IRPModelElement

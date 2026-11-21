@@ -2,7 +2,8 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
 from rhapsody_cli.models.elements.classifiers.model_statechart import RPStatechart
 from rhapsody_cli.models.elements.statemachine.model_statemachine import RPState
@@ -59,11 +60,11 @@ class RPFlow(RPModelElement):
         """
         self.call_com(lambda: self._com.addConveyed(p_element._com))
 
-    def get_conveyed(self) -> "RPCollection":
+    def get_conveyed(self) -> "IRPCollection":
         """Returns the conveyed elements of the flow.
 
         Returns:
-            RPCollection: The conveyed elements of the flow.
+            IRPCollection: The conveyed elements of the flow.
 
         Raises:
             RhapsodyRuntimeException: If the operation fails.
@@ -71,7 +72,7 @@ class RPFlow(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPFlow::getConveyed()
         """
-        return RPCollection(self.call_com(lambda: self._com.getConveyed()))
+        return IRPCollection(self.call_com(lambda: self._com.getConveyed()))
 
     def get_direction(self) -> str:
         """Returns the direction of the flow.
@@ -312,16 +313,16 @@ class RPFlowItem(RPClassifier):
         """
         self.call_com(lambda: self._com.addRepresented(p_element._com))
 
-    def get_represented(self) -> "RPCollection":
+    def get_represented(self) -> "IRPCollection":
         """Returns a collection of all the information elements that are represented by the item flow.
 
         Returns:
-            RPCollection: All the information elements that are represented by the item flow.
+            IRPCollection: All the information elements that are represented by the item flow.
 
         Reference:
             com.telelogic.rhapsody.core.IRPFlowItem::getRepresented()
         """
-        return RPCollection(self.call_com(lambda: self._com.getRepresented()))
+        return IRPCollection(self.call_com(lambda: self._com.getRepresented()))
 
     def remove_represented(self, p_element: "RPModelElement") -> None:
         """Removes the specified element from the collection of information elements that are represented by the item flow.
@@ -531,16 +532,16 @@ class RPFlowchart(RPStatechart):
         """
         return cast("RPOperation", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getItsOwner())))
 
-    def get_swimlanes(self) -> "RPCollection":
+    def get_swimlanes(self) -> "IRPCollection":
         """Returns a collection of all the swimlanes in the activity.
 
         Returns:
-            RPCollection: Collection of IRPSwimlane objects.
+            IRPCollection: Collection of IRPSwimlane objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::getSwimlanes()
         """
-        return RPCollection(self.call_com(lambda: self._com.getSwimlanes()))
+        return IRPCollection(self.call_com(lambda: self._com.getSwimlanes()))
 
     def set_is_analysis_only(self, is_analysis_only: int) -> None:
         """Specifies whether the activity should be defined as analysis-only.
@@ -607,16 +608,16 @@ class RPObjectNode(RPState):
         """
         return str(self._get_method_or_property(self._com, "getInState", "inState"))
 
-    def get_in_state_list(self) -> "RPCollection":
+    def get_in_state_list(self) -> "IRPCollection":
         """Returns a collection of the "In State" states for the object node.
 
         Returns:
-            RPCollection: The "In State" states defined for the object node.
+            IRPCollection: The "In State" states defined for the object node.
 
         Reference:
             com.telelogic.rhapsody.core.IRPObjectNode::getInStateList()
         """
-        return RPCollection(self.call_com(lambda: self._com.getInStateList()))
+        return IRPCollection(self.call_com(lambda: self._com.getInStateList()))
 
     def get_represents(self) -> "Optional[RPModelElement]":
         """Returns the class/type that this object node represents.
@@ -689,11 +690,11 @@ class RPSwimlane(RPModelElement):
         """
         return cast("RPSwimlane", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addSwimlane(name))))
 
-    def get_contents(self) -> "RPCollection":
+    def get_contents(self) -> "IRPCollection":
         """Returns a collection of the elements contained in the swimlane.
 
         Returns:
-            RPCollection: The elements contained in the swimlane.
+            IRPCollection: The elements contained in the swimlane.
 
         Raises:
             RhapsodyRuntimeException: If the operation fails.
@@ -701,7 +702,7 @@ class RPSwimlane(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPSwimlane::getContents()
         """
-        return RPCollection(self.call_com(lambda: self._com.getContents()))
+        return IRPCollection(self.call_com(lambda: self._com.getContents()))
 
     def get_represents(self) -> "Optional[RPModelElement]":
         """Returns the model element that the swimlane represents.
@@ -714,11 +715,11 @@ class RPSwimlane(RPModelElement):
         """
         return AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getRepresents()))
 
-    def get_swimlanes(self) -> "RPCollection":
+    def get_swimlanes(self) -> "IRPCollection":
         """Returns a collection of the swimlanes that are nested under this swimlane.
 
         Returns:
-            RPCollection: The swimlanes nested under this swimlane.
+            IRPCollection: The swimlanes nested under this swimlane.
 
         Raises:
             RhapsodyRuntimeException: If the operation fails.
@@ -726,7 +727,7 @@ class RPSwimlane(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPSwimlane::getSwimlanes()
         """
-        return RPCollection(self.call_com(lambda: self._com.getSwimlanes()))
+        return IRPCollection(self.call_com(lambda: self._com.getSwimlanes()))
 
     def set_represents(self, represents: "RPModelElement") -> None:
         """Specifies the model element that the swimlane is to represent.

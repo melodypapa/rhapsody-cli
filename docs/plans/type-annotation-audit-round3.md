@@ -311,7 +311,7 @@ STEP 4: Add Optional to Python signature
 **Search/lookup methods that should return `Optional`:**
 - `find_nested_element()` → `Optional[RPModelElement]`
 - `find_nested_element_recursive()` → `Optional[RPModelElement]`
-- `find_elements_by_full_name()` → Returns `RPCollection` (already handles empty)
+- `find_elements_by_full_name()` → Returns `IRPCollection` (already handles empty)
 - Any method with "find", "get_by_*", "lookup" pattern
 - Check Java docs for each to confirm "can return null" behavior
 

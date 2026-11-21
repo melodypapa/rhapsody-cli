@@ -39,7 +39,7 @@ Pass if both assertions hold.
 **Type:** Unit
 **Priority:** High
 **Description:**
-Verifies that `addPackage(name)` returns a wrapped `RPPackage`, `close()` and `becomeActiveProject()` return `None`, `findComponent(name)` returns a wrapped element, and `getPackages()` returns an `RPCollection`.
+Verifies that `addPackage(name)` returns a wrapped `RPPackage`, `close()` and `becomeActiveProject()` return `None`, `findComponent(name)` returns a wrapped element, and `getPackages()` returns an `IRPCollection`.
 **Pre-conditions:**
 - A fake project COM object built via `tests.fakes.make_fake_element("Project")` configured with `addPackage.return_value = make_fake_element("Package")`, `findComponent.return_value = make_fake_element("Component")`, and `getPackages.return_value = make_fake_collection([make_fake_element("Package")])`.
 - An `RPProject` constructed with that fake object.
@@ -49,9 +49,9 @@ Verifies that `addPackage(name)` returns a wrapped `RPPackage`, `close()` and `b
 3. Call `proj.close()` and assert it returns `None`; assert `fake.close` was called once.
 4. Call `proj.becomeActiveProject()` and assert it returns `None`; assert `fake.becomeActiveProject` was called once.
 5. Call `proj.findComponent("C1")` and assert the result is a wrapped `RPModelElement` whose `_com` is the fake component.
-6. Call `proj.getPackages()` and assert the result is an `RPCollection`.
+6. Call `proj.getPackages()` and assert the result is an `IRPCollection`.
 **Expected Result:**
-All methods delegate correctly. `addPackage` returns a wrapped `RPPackage`; `findComponent` returns a wrapped element; `getPackages` returns an `RPCollection`; `close`/`becomeActiveProject` return `None`.
+All methods delegate correctly. `addPackage` returns a wrapped `RPPackage`; `findComponent` returns a wrapped element; `getPackages` returns an `IRPCollection`; `close`/`becomeActiveProject` return `None`.
 **Verification Criteria:**
 Pass if all type/`_com` assertions hold and `fake.addPackage.call_args == call("P1")`, `fake.findComponent.call_args == call("C1")`.
 **Last Changed:** 2026-07-07
@@ -134,18 +134,18 @@ Pass if the subclass relationship holds.
 **Type:** Unit
 **Priority:** High
 **Description:**
-Verifies that `addAttribute(name)` and `addOperation(name)` return wrapped elements; `getAttributes()` and `getOperations()` return `RPCollection`; `addStatechart()` returns a wrapped statechart.
+Verifies that `addAttribute(name)` and `addOperation(name)` return wrapped elements; `getAttributes()` and `getOperations()` return `IRPCollection`; `addStatechart()` returns a wrapped statechart.
 **Pre-conditions:**
 - A fake classifier COM object via `make_fake_element("Classifier")` configured so that `addAttribute` returns `make_fake_element("Attribute")`, `addOperation` returns `make_fake_element("Operation")`, `addStatechart` returns `make_fake_element("Statechart")`, `getAttributes` returns `make_fake_collection([make_fake_element("Attribute")])`, and `getOperations` returns `make_fake_collection([make_fake_element("Operation")])`.
 **Test Steps:**
 1. Construct `clf = RPClassifier(fake)`.
 2. Call `clf.addAttribute("a")` and assert the result is a wrapped element.
 3. Call `clf.addOperation("o")` and assert the result is a wrapped element.
-4. Call `clf.getAttributes()` and assert the result is an `RPCollection` with `len == 1`.
-5. Call `clf.getOperations()` and assert the result is an `RPCollection` with `len == 1`.
+4. Call `clf.getAttributes()` and assert the result is an `IRPCollection` with `len == 1`.
+5. Call `clf.getOperations()` and assert the result is an `IRPCollection` with `len == 1`.
 6. Call `clf.addStatechart()` and assert the result is a wrapped element.
 **Expected Result:**
-All methods delegate correctly and wrap their results; collection-returning methods return `RPCollection` instances.
+All methods delegate correctly and wrap their results; collection-returning methods return `IRPCollection` instances.
 **Verification Criteria:**
 Pass if all type/`_com`/length assertions hold and the COM methods are called with the supplied names.
 **Last Changed:** 2026-07-07
@@ -425,7 +425,7 @@ Pass if the subclass and registry assertions hold, with the registry key being e
 **Type:** Unit
 **Priority:** Medium
 **Description:**
-Verifies that `closeDiagram()` returns `None`; `addTextBox(text, x, y, w, h)` forwards all five args and returns a wrapped element; `getCustomViews()` returns an `RPCollection`; `getCorrespondingGraphicElements(model_element)` unwraps the element's `_com` and returns an `RPCollection`.
+Verifies that `closeDiagram()` returns `None`; `addTextBox(text, x, y, w, h)` forwards all five args and returns a wrapped element; `getCustomViews()` returns an `IRPCollection`; `getCorrespondingGraphicElements(model_element)` unwraps the element's `_com` and returns an `IRPCollection`.
 **Pre-conditions:**
 - A fake diagram COM object via `make_fake_element("ActivityDiagram")` configured with `addTextBox.return_value = make_fake_element("GraphicObject")`, `getCustomViews.return_value = make_fake_collection([make_fake_element("GraphicObject")])`, `getCorrespondingGraphicElements.return_value = make_fake_collection([])`.
 - A fake model element `fake_el` and `el = RPModelElement(fake_el)`.
@@ -433,10 +433,10 @@ Verifies that `closeDiagram()` returns `None`; `addTextBox(text, x, y, w, h)` fo
 1. Construct `diag = RPDiagram(fake)`.
 2. Call `diag.closeDiagram()` and assert it returns `None`.
 3. Call `diag.addTextBox("hi", 10, 20, 100, 50)` and assert the result is a wrapped element; assert `fake.addTextBox.call_args == call("hi", 10, 20, 100, 50)`.
-4. Call `diag.getCustomViews()` and assert the result is an `RPCollection`.
-5. Call `diag.getCorrespondingGraphicElements(el)` and assert the result is an `RPCollection`; assert `fake.getCorrespondingGraphicElements.call_args == call(fake_el)`.
+4. Call `diag.getCustomViews()` and assert the result is an `IRPCollection`.
+5. Call `diag.getCorrespondingGraphicElements(el)` and assert the result is an `IRPCollection`; assert `fake.getCorrespondingGraphicElements.call_args == call(fake_el)`.
 **Expected Result:**
-All methods delegate correctly; collection-returning methods return `RPCollection`; `getCorrespondingGraphicElements` unwraps the supplied element.
+All methods delegate correctly; collection-returning methods return `IRPCollection`; `getCorrespondingGraphicElements` unwraps the supplied element.
 **Verification Criteria:**
 Pass if all type/call-args assertions hold.
 **Last Changed:** 2026-07-07
@@ -474,17 +474,17 @@ Pass if the subclass and registry assertions hold.
 **Type:** Unit
 **Priority:** Medium
 **Description:**
-Verifies that `getAllNestedElements()`, `getInLinks()`, `getOutLinks()` return `RPCollection`; `getAttributeValue(name)` returns a `str`; `setAttributeValue(name, value)` forwards both string args.
+Verifies that `getAllNestedElements()`, `getInLinks()`, `getOutLinks()` return `IRPCollection`; `getAttributeValue(name)` returns a `str`; `setAttributeValue(name, value)` forwards both string args.
 **Pre-conditions:**
 - A fake instance COM object via `make_fake_element("Instance")` configured with `getAllNestedElements.return_value = make_fake_collection([make_fake_element("Class")])`, `getInLinks.return_value = make_fake_collection([])`, `getOutLinks.return_value = make_fake_collection([])`, `getAttributeValue.return_value = "v1"`.
 **Test Steps:**
 1. Construct `inst = RPInstance(fake)`.
-2. Call `inst.getAllNestedElements()` and assert it is an `RPCollection` with `len == 1`.
+2. Call `inst.getAllNestedElements()` and assert it is an `IRPCollection` with `len == 1`.
 3. Call `inst.getAttributeValue("kind")` and assert it returns `"v1"`.
 4. Call `inst.setAttributeValue("kind", "v2")` and assert `fake.setAttributeValue.call_args == call("kind", "v2")`.
-5. Call `inst.getInLinks()` and `inst.getOutLinks()` and assert both return `RPCollection`.
+5. Call `inst.getInLinks()` and `inst.getOutLinks()` and assert both return `IRPCollection`.
 **Expected Result:**
-All collection-returning methods return `RPCollection`; `getAttributeValue` returns a string; `setAttributeValue` forwards both args verbatim.
+All collection-returning methods return `IRPCollection`; `getAttributeValue` returns a string; `setAttributeValue` forwards both args verbatim.
 **Verification Criteria:**
 Pass if all type/value/call-args assertions hold.
 **Last Changed:** 2026-07-07
@@ -617,17 +617,17 @@ Pass if all three assertions hold.
 **Type:** Unit
 **Priority:** Medium
 **Description:**
-Verifies that `addExtensionPoint(entry_point)` forwards the string arg; `getExtensionPoints()`, `getEntryPoints()`, and `getDescribingDiagrams()` each return an `RPCollection`.
+Verifies that `addExtensionPoint(entry_point)` forwards the string arg; `getExtensionPoints()`, `getEntryPoints()`, and `getDescribingDiagrams()` each return an `IRPCollection`.
 **Pre-conditions:**
 - A fake use case COM object via `make_fake_element("UseCase")` configured so that `getExtensionPoints`, `getEntryPoints`, and `getDescribingDiagrams` each return `make_fake_collection([make_fake_element("ExtensionPoint")])`.
 **Test Steps:**
 1. Construct `uc = RPUseCase(fake)`.
 2. Call `uc.addExtensionPoint("EP1")` and assert `fake.addExtensionPoint.call_args == call("EP1")`.
-3. Call `uc.getExtensionPoints()` and assert it is an `RPCollection` with `len == 1`.
-4. Call `uc.getEntryPoints()` and assert it is an `RPCollection`.
-5. Call `uc.getDescribingDiagrams()` and assert it is an `RPCollection`.
+3. Call `uc.getExtensionPoints()` and assert it is an `IRPCollection` with `len == 1`.
+4. Call `uc.getEntryPoints()` and assert it is an `IRPCollection`.
+5. Call `uc.getDescribingDiagrams()` and assert it is an `IRPCollection`.
 **Expected Result:**
-`addExtensionPoint` forwards the string; all three getters return `RPCollection` instances.
+`addExtensionPoint` forwards the string; all three getters return `IRPCollection` instances.
 **Verification Criteria:**
 Pass if all call-args and type/length assertions hold.
 **Last Changed:** 2026-07-07
@@ -681,4 +681,4 @@ The registry entry for `"Class"` still maps to `RPClass`; no duplicate keys appe
 **Verification Criteria:**
 Pass if the registry entry is unchanged and there is exactly one `"Class"` key.
 **Last Changed:** 2026-07-07
-
+

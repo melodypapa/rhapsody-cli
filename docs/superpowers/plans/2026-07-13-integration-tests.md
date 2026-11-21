@@ -316,7 +316,7 @@ git commit -m "test: add RPModelElement integration tests"
 
 ---
 
-### Task 6: Write Core Model Integration Tests - RPCollection
+### Task 6: Write Core Model Integration Tests - IRPCollection
 
 **Files:**
 - Modify: `tests/integration/models/test_core.py`
@@ -325,14 +325,14 @@ git commit -m "test: add RPModelElement integration tests"
 - Consumes: `test_project` fixture from conftest
 - Consumes: Existing RPModelElement integration test structure
 
-- [x] **Step 1: Add failing tests for RPCollection wrapper**
+- [x] **Step 1: Add failing tests for IRPCollection wrapper**
 
 ```python
 # Add to tests/integration/models/test_core.py
 
 @pytest.mark.integration
-class TestRPCollectionIntegration:
-    """Integration tests for RPCollection with real Rhapsody COM API."""
+class TestIRPCollectionIntegration:
+    """Integration tests for IRPCollection with real Rhapsody COM API."""
 
     def test_get_nested_elements_iteration(self, test_project):
         """Test get_nested_elements returns iterable collection."""
@@ -362,15 +362,15 @@ class TestRPCollectionIntegration:
 - [x] **Step 2: Run tests to verify collection functionality**
 
 ```bash
-pytest tests/integration/models/test_core.py::TestRPCollectionIntegration -v
+pytest tests/integration/models/test_core.py::TestIRPCollectionIntegration -v
 ```
-Expected: Tests validate RPCollection iteration and filtering
+Expected: Tests validate IRPCollection iteration and filtering
 
-- [x] **Step 3: Commit RPCollection tests**
+- [x] **Step 3: Commit IRPCollection tests**
 
 ```bash
 git add tests/integration/models/test_core.py
-git commit -m "test: add RPCollection integration tests"
+git commit -m "test: add IRPCollection integration tests"
 ```
 
 ---
@@ -791,7 +791,7 @@ git commit -m "test: wire CLI integration tests to test_project fixture with mod
 | Model Class | Integration Test File | Key Methods to Test | Test Status | Priority | Dependencies |
 |-------------|----------------------|---------------------|-------------|----------|--------------|
 | **RPModelElement** | `tests/integration/models/test_core.py` | get_name, set_name, get_meta_class, get_guid, get_owner, get_project, delete_from_project | 🟡 In Progress | High | None |
-| **RPCollection** | `tests/integration/models/test_core.py` | iteration, get_nested_elements (with/without filter), count, indexing | 🟡 In Progress | High | RPModelElement |
+| **IRPCollection** | `tests/integration/models/test_core.py` | iteration, get_nested_elements (with/without filter), count, indexing | 🟡 In Progress | High | RPModelElement |
 | **RPUnit** | `tests/integration/models/test_core.py` | save, get_filename, get_canonical_filename | 🔴 Not Started | Medium | RPModelElement |
 | **RPRelations** | `tests/integration/models/test_core.py` | get_relations, add_relation, find_relation | 🔴 Not Started | Medium | RPModelElement |
 | **RPGraphics** | `tests/integration/models/test_core.py` | get_graphical_properties, set_graphical_properties | 🔴 Not Started | Low | RPModelElement |
@@ -1002,7 +1002,7 @@ git commit -m "test: wire CLI integration tests to test_project fixture with mod
   - [ ] set_description() - Sets project description
   - [ ] get_default_language() - Gets default code generation language
 
-### RPCollection (High Priority)
+### IRPCollection (High Priority)
 - [ ] **Iteration and Access** (Partial in Task 6)
   - [x] iteration support - Iterates over elements
   - [x] get_count() - Returns element count

@@ -2,7 +2,8 @@
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement, RPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement, RPUnit
 from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
 
 if TYPE_CHECKING:
@@ -187,11 +188,11 @@ class RPRelation(RPUnit):
         """
         return str(AbstractRPModelElement._get_method_or_property(self._com, "getQualifier", "qualifier"))
 
-    def get_qualifiers(self) -> RPCollection:
+    def get_qualifiers(self) -> IRPCollection:
         """Gets the collection of qualifier model elements for the association.
 
         Returns:
-            An ``RPCollection`` of qualifier model elements.
+            An ``IRPCollection`` of qualifier model elements.
 
         Raises:
             RhapsodyRuntimeException: if the qualifiers cannot be retrieved.
@@ -199,7 +200,7 @@ class RPRelation(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getQualifiers()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getQualifiers", "qualifiers"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getQualifiers", "qualifiers"))
 
     def get_qualifier_type(self) -> "RPClassifier":
         """For associations that use qualifiers, returns the type of the qualifier.

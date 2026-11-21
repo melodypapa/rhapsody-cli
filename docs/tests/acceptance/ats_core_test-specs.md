@@ -71,7 +71,7 @@ happens internally (no `TypeError` from passing a Python `bool`).
 
 ---
 
-## ATS_CORE_00003: Iterate RPCollections Pythonically
+## ATS_CORE_00003: Iterate IRPCollections Pythonically
 
 **ID:** ATS_CORE_00003
 **Traces-To:** SWR_CORE_00003, SWR_CORE_00007
@@ -79,18 +79,18 @@ happens internally (no `TypeError` from passing a Python `bool`).
 **Type:** Acceptance
 **Priority:** High
 **Description:**
-As a Python developer, I want to iterate over an `RPCollection` with a `for` loop, query
+As a Python developer, I want to iterate over an `IRPCollection` with a `for` loop, query
 its length with `len()`, and index it with `[]`, so that I can write idiomatic Python
 navigation code instead of Java-style `getCount`/`getItem` loops.
 **Acceptance Criteria:**
-- Given an `RPCollection` returned from a method like `package.getNestedElements()`, When
+- Given an `IRPCollection` returned from a method like `package.getNestedElements()`, When
   I write `for x in collection:`, Then each yielded `x` is auto-wrapped (e.g., an
   `RPClass`, `RPPackage`, etc.) and the loop visits every element exactly once.
-- Given an `RPCollection` with N items, When I call `len(collection)`, Then the integer
+- Given an `IRPCollection` with N items, When I call `len(collection)`, Then the integer
   returned equals N (matching `getCount()`).
-- Given an `RPCollection` with at least one item, When I call `collection[1]`, Then the
+- Given an `IRPCollection` with at least one item, When I call `collection[1]`, Then the
   first item is returned (1-based COM indexing) and is auto-wrapped via `_wrap_if_element`.
-- Given an `RPCollection` containing non-element values (e.g., strings), When I iterate,
+- Given an `IRPCollection` containing non-element values (e.g., strings), When I iterate,
   Then those values are returned unchanged (not wrapped), while element-like values are
   wrapped.
 **Verification Criteria:**
@@ -172,29 +172,29 @@ newly registered class.
 
 ---
 
-## ATS_CORE_00006: Negative Indexing of RPCollections Is Rejected
+## ATS_CORE_00006: Negative Indexing of IRPCollections Is Rejected
 
 **ID:** ATS_CORE_00006
 **Traces-To:** SWR_CORE_00009
-**Title:** RPCollection raises IndexError for negative indices
+**Title:** IRPCollection raises IndexError for negative indices
 **Type:** Acceptance
 **Priority:** Low
 **Description:**
-As a Python developer, I want `RPCollection` to reject negative indices with a clear
+As a Python developer, I want `IRPCollection` to reject negative indices with a clear
 `IndexError`, so that I am not silently surprised by the mismatch between Python's
 negative indexing and COM's 1-based indexing.
 **Acceptance Criteria:**
-- Given a non-empty `RPCollection`, When I call `collection[-1]`, Then an `IndexError` is
+- Given a non-empty `IRPCollection`, When I call `collection[-1]`, Then an `IndexError` is
   raised whose message is `"negative indices are not supported"`.
-- Given a non-empty `RPCollection`, When I call `collection[-N]` for any negative N, Then
+- Given a non-empty `IRPCollection`, When I call `collection[-N]` for any negative N, Then
   the same `IndexError` is raised (regardless of magnitude).
-- Given a non-empty `RPCollection` with N items, When I call `collection[1]` and
+- Given a non-empty `IRPCollection` with N items, When I call `collection[1]` and
   `collection[N]`, Then valid positive indices still work as expected (1-based).
 **Verification Criteria:**
-Obtain an `RPCollection` with at least one element. Assert that `collection[-1]` raises
+Obtain an `IRPCollection` with at least one element. Assert that `collection[-1]` raises
 `IndexError` with the exact message `"negative indices are not supported"`. Assert that
 `collection[-999]` raises the same `IndexError`. Assert that `collection[1]` returns the
 first item and (if the collection has N >= 2 items) `collection[N]` returns the last item,
 confirming positive indexing still works after the negative-index guard.
 **Last Changed:** 2026-07-07
-
+

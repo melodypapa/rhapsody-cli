@@ -4,9 +4,9 @@ com.telelogic.rhapsody.core.
 
 from typing import TYPE_CHECKING, cast
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.core import (
     AbstractRPModelElement,
-    RPCollection,
     RPModelElement,
     RPUnit,
 )
@@ -100,16 +100,16 @@ class RPVariable(RPUnit):
         """
         return cast("RPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getType", "type")))
 
-    def get_value_specifications(self) -> RPCollection:
+    def get_value_specifications(self) -> IRPCollection:
         """Returns the initial values declared for elements with multiplicity greater than one.
 
         Returns:
-            An ``RPCollection`` of the declared initial value specifications.
+            An ``IRPCollection`` of the declared initial value specifications.
 
         Reference:
             com.telelogic.rhapsody.core.IRPVariable::getValueSpecifications()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getValueSpecifications", "valueSpecifications"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getValueSpecifications", "valueSpecifications"))
 
     def set_declaration(self, declaration: str) -> None:
         """Specifies an on-the-fly declaration for the type of the element.

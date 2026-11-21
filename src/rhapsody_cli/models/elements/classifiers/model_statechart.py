@@ -3,7 +3,8 @@
 from typing import TYPE_CHECKING, Optional, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.diagrams.model_diagram_types import RPStatechartDiagram
@@ -245,38 +246,38 @@ class RPStatechart(IRPClass):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewAcceptTimeEvent(name)))
 
-    def get_all_triggers(self) -> RPCollection:
+    def get_all_triggers(self) -> IRPCollection:
         """Returns all triggers defined in the statechart.
 
         Returns:
-            An ``RPCollection`` of triggers.
+            An ``IRPCollection`` of triggers.
 
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getAllTriggers()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getAllTriggers", "allTriggers"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getAllTriggers", "allTriggers"))
 
-    def get_elements_in_diagram(self) -> RPCollection:
+    def get_elements_in_diagram(self) -> IRPCollection:
         """Returns all model elements displayed in the statechart diagram.
 
         Returns:
-            An ``RPCollection`` of model elements in the diagram.
+            An ``IRPCollection`` of model elements in the diagram.
 
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getElementsInDiagram()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getElementsInDiagram", "elementsInDiagram"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getElementsInDiagram", "elementsInDiagram"))
 
-    def get_graphical_elements(self) -> RPCollection:
+    def get_graphical_elements(self) -> IRPCollection:
         """Returns all graphical elements in the statechart.
 
         Returns:
-            An ``RPCollection`` of graphical elements.
+            An ``IRPCollection`` of graphical elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getGraphicalElements()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getGraphicalElements", "graphicalElements"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getGraphicalElements", "graphicalElements"))
 
     def get_inherits_from(self) -> "RPStatechart":
         """Returns the statechart that this statechart inherits from.
@@ -347,18 +348,18 @@ class RPStatechart(IRPClass):
         """
         return AbstractRPModelElement.call_com(lambda: self._com.getPictureAs(format))
 
-    def get_picture_as_divided_metafiles(self) -> RPCollection:
+    def get_picture_as_divided_metafiles(self) -> IRPCollection:
         """Returns the picture as divided metafiles.
 
         Returns:
-            An ``RPCollection`` of divided metafiles.
+            An ``IRPCollection`` of divided metafiles.
 
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getPictureAsDividedMetafiles()
         """
-        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getPictureAsDividedMetafiles()))
+        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getPictureAsDividedMetafiles()))
 
-    def get_pictures_with_image_map(self, first_file_name: str, diagram_map: "RPCollection") -> "RPCollection":
+    def get_pictures_with_image_map(self, first_file_name: str, diagram_map: "IRPCollection") -> "IRPCollection":
         """Saves the statechart as EMF file(s) and populates the given collection with image-map info.
 
         Same semantics as ``IRPDiagram.getPicturesWithImageMap`` -- saves the statechart
@@ -366,10 +367,10 @@ class RPStatechart(IRPClass):
 
         Args:
             first_file_name: The base name for the created EMF file(s).
-            diagram_map: An empty ``RPCollection`` that will be populated with ``IRPImageMap`` objects.
+            diagram_map: An empty ``IRPCollection`` that will be populated with ``IRPImageMap`` objects.
 
         Returns:
-            An ``RPCollection`` containing the names of the files that were created.
+            An ``IRPCollection`` containing the names of the files that were created.
 
         Raises:
             RhapsodyRuntimeException: If the operation fails.
@@ -378,7 +379,7 @@ class RPStatechart(IRPClass):
             com.telelogic.rhapsody.core.IRPStatechart::getPicturesWithImageMap(
                 java.lang.String firstFileName, com.telelogic.rhapsody.core.IRPCollection diagrammap)
         """
-        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getPicturesWithImageMap(first_file_name, diagram_map._com)))
+        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getPicturesWithImageMap(first_file_name, diagram_map._com)))
 
     def get_root_state(self) -> Optional["RPModelElement"]:
         """Returns the root state of the statechart.
