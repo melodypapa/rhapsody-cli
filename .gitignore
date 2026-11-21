@@ -235,3 +235,5 @@ demos/test_project/
 archive/
 output.json
 pytest_html_report.html
+
+.agents/**/*-workspace
