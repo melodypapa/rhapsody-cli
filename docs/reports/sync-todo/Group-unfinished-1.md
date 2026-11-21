@@ -13,17 +13,6 @@ Per-row binding rules: one pywin32-exposed COM member per call —
 `docs/reports/pywin32_authority.json`; catalog-absent sites are blockers, never blind
 migrations; inherited members wait for their base class's own row.
 
-- [ ] irp_class_api_report (IRPClass · IRPClass · models/com/telelogic/rhapsody/core/irp_class.py · 0 sites left)
-  - Note: pilot run 2026-11-21, commits `7163149` + `b27a8bb`; 7 property-shaped flag sites migrated to `get_com_property`/`set_com_property` (`is_final` was already direct); six flag rows rewritten in `elements.rst`, SWR_ELEM_00004 updated.
-  - [x] Step 1 — §1 sync TODO published (per-run checklist rendered live in the run report)
-  - [x] Step 2 — §2 target resolved (wrapper canonical; JavaDoc evidence from committed report — live `docs/java_api` absent on macOS)
-  - [x] Step 3 — §3 evidence compared (7 legacy sites identified, all property-shaped per catalog; offline proof: six flag families ALIAS_DOCUMENTED/informational, 78+5 matching committed summary)
-  - [x] Step 4 — §4 unit tests (2 setter tests + structural guard red → 34/34 green in `test_irp_class.py`)
-  - [x] Step 5 — §5 integration tests (behavior-preserving change; existing mirrored integration file collected 17 tests ✓ — no new coverage required)
-  - [x] Step 6 — §6 SWR update (`docs/requirements/com/telelogic/rhapsody/core/irp_class.md` — SWR_ELEM_00004 moved from the legacy monolith; property mention + pywin32-direct binding statement)
-  - [x] Step 7 — §7 RST update (`docs/api/com/telelogic/rhapsody/core/irp_class.rst` — section moved from `elements.rst`, six flag rows rewritten, two malformations fixed; toctree entry added)
-  - [ ] Step 8 — §8 verify and report (unit suite 1699 ✓, ruff/black/mypy ✓, skill tests 9 ✓; OPEN blocker: Windows closeout — `validate_interface.py IRPClass --source authority` + `verify_sync.py IRPClass` + live integration, then archive)
-
 - [ ] irp_model_element_api_report (IRPModelElement · RPModelElement · models/core.py · 1 blocker site left)
   - Note: run 2026-11-21 — 67 own-method sites classified (43 property / 22 method / 1 both via arg1 / 1 blocker) and migrated; `AbstractRPModelElement.wrap()` migrated to the `metaClass` property (fakes set both forms); 5 inherited-member sites in graphics/codegen (`getName`→`name`, `getInterfaceName`→`interfaceName`) migrated using IRPModelElement's catalog; RPUnit (21) + RPCollection (1) sites remain for their own rows.
   - [x] Step 1 — §1 sync TODO published (per-run checklist rendered live at run start)
