@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 from typing import List, Optional
 
-from sync_tools import build_validator_command, find_java_doc, find_project_root
+from sync_tools import build_validator_command, find_java_doc, find_project_root, offline_authority_blocker
 
 
 def main(argv: Optional[List[str]] = None) -> int:
@@ -25,6 +25,11 @@ def main(argv: Optional[List[str]] = None) -> int:
         reports_dir = args.reports_dir or root / "docs" / "reports"
         if not reports_dir.is_absolute():
             reports_dir = root / reports_dir
+        if args.source == "authority":
+            blocker = offline_authority_blocker(root, interface_name)
+            if blocker is not None:
+                print(blocker, file=sys.stderr)
+                return 2
         command = build_validator_command(root, interface_name, args.source, reports_dir)
         result = subprocess.run(command, cwd=root, check=False)
     except (FileNotFoundError, OSError, ValueError) as exc:

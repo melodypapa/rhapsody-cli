@@ -148,3 +148,47 @@ def test_verifier_accepts_package_requirements_and_complete_rst_deviations(tmp_p
     report = _write_report(root)
 
     assert tools.verify_sync_artifacts(root, "IRPThing", report) == []
+
+
+def test_offline_blocker_exits_without_report_and_catalog(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    reports = tmp_path / "docs" / "reports"
+    reports.mkdir(parents=True)
+    (reports / "pywin32_authority.json").write_text('{"catalog": {"IRPClass": {}}}', encoding="utf-8")
+
+    blocker = tools.offline_authority_blocker(tmp_path, "IRPState")
+
+    assert blocker is not None
+    assert "docs/reports/IRPState_api_report.md" in blocker
+    assert "--source typelib" in blocker
+
+
+def test_offline_blocker_asks_for_rebuild_when_report_exists(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    reports = tmp_path / "docs" / "reports"
+    reports.mkdir(parents=True)
+    (reports / "pywin32_authority.json").write_text('{"catalog": {"IRPClass": {}}}', encoding="utf-8")
+    (reports / "IRPState_api_report.md").write_text("# Rhapsody API Validation: IRPState\n", encoding="utf-8")
+
+    blocker = tools.offline_authority_blocker(tmp_path, "IRPState")
+
+    assert blocker is not None
+    assert "--source reports" in blocker
+
+
+def test_offline_blocker_clear_when_catalog_covers_interface(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    reports = tmp_path / "docs" / "reports"
+    reports.mkdir(parents=True)
+    (reports / "pywin32_authority.json").write_text('{"catalog": {"IRPState": {}}}', encoding="utf-8")
+
+    assert tools.offline_authority_blocker(tmp_path, "IRPState") is None
+
+
+def test_offline_blocker_exits_when_snapshot_file_missing(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+
+    blocker = tools.offline_authority_blocker(tmp_path, "IRPState")
+
+    assert blocker is not None
+    assert "IRPState_api_report.md" in blocker

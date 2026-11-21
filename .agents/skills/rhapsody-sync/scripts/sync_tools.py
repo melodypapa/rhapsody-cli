@@ -1,5 +1,6 @@
 """Shared helpers for validating and verifying one Rhapsody API sync."""
 
+import json
 import re
 import sys
 from pathlib import Path
@@ -51,6 +52,27 @@ def find_java_doc(root: Path, interface_name: str) -> Tuple[str, str, Path]:
     if not package_parts:
         raise ValueError(f"JavaDoc page has no package directory: {java_doc}")
     return simple_name, ".".join(package_parts), java_doc
+
+
+def offline_authority_blocker(root: Path, interface_name: str) -> Optional[str]:
+    """Return the blocker for offline validation, or None when committed COM evidence exists."""
+    reports_dir = root / "docs" / "reports"
+    try:
+        authority = json.loads((reports_dir / "pywin32_authority.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        authority = {}
+    if interface_name in authority.get("catalog", {}):
+        return None
+    if (reports_dir / f"{interface_name}_api_report.md").is_file():
+        return (
+            f"The authority catalog lacks {interface_name}. Rebuild it from the committed reports with: "
+            "python scripts/pywin32_authority.py --source reports"
+        )
+    return (
+        f"Offline sync cannot proceed: docs/reports/{interface_name}_api_report.md does not exist and "
+        f"{interface_name} is absent from docs/reports/pywin32_authority.json. "
+        "Run the sync on a machine with Rhapsody (--source typelib) or commit a generated report first."
+    )
 
 
 def build_validator_command(root: Path, interface_name: str, source: str, report_dir: Path) -> List[str]:
