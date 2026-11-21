@@ -2245,7 +2245,7 @@ class RPCollection:
         Reference:
             com.telelogic.rhapsody.core.IRPCollection::getCount()
         """
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "getCount", "Count"))
+        return int(AbstractRPModelElement.get_com_property(self._com, "Count"))
 
     def get_item(self, index: int) -> Any:
         """Returns the element at the specified index in the collection.
@@ -2263,10 +2263,7 @@ class RPCollection:
         Reference:
             com.telelogic.rhapsody.core.IRPCollection::getItem(int)
         """
-        if hasattr(self._com, "getItem"):
-            raw_item = AbstractRPModelElement.call_com(lambda: self._com.getItem(index))
-        else:
-            raw_item = AbstractRPModelElement.call_com(lambda: self._com.Item(index))
+        raw_item = AbstractRPModelElement.call_com(lambda: self._com.Item(index))
         return AbstractRPModelElement._wrap_if_element(raw_item)
 
     def add_item(self, element: RPModelElement) -> None:

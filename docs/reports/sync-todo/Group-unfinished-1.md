@@ -24,16 +24,16 @@ migrations; inherited members wait for their base class's own row.
   - [x] Step 7 — §7 RST update (`docs/api/com/telelogic/rhapsody/core/rp_model_element.rst` — 50-row deviation list-table with post-migration single-member labels, offline coverage check: all report members present; toctree entry added to `elements.rst`)
   - [ ] Step 8 — §8 verify and report (unit suite 1700 ✓, ruff/black/mypy ✓, skill tests ✓, integration collection-only ✓; OPEN blocker: Windows closeout — `validate_interface.py IRPModelElement --source authority` + `verify_sync.py IRPModelElement` + live integration, then archive)
 
-- [ ] irp_collection_api_report (IRPCollection · RPCollection · models/core.py · ~2 sites)
-  - Note: `get_count` (`getCount`/`Count` — catalog says `Count` property); mutators (`addItem`, `setSize`, `remove`, ...) already direct `call_com`; `make_fake_collection` stubs `getCount`/`getItem` — 163 test call sites depend on that shape.
-  - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
-  - [ ] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/`
-  - [ ] Step 3 — §3 compare evidence: baseline `validate_interface.py IRPCollection --source authority`; reconcile every owned member; one pywin32 member per call; catalog-absent sites = blockers
-  - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy helper sites in own methods; full unit suite green
-  - [ ] Step 5 — §5 integration tests: add/update integration coverage for owned behavior (mirrored test path); Windows = live run, macOS = collection-only noted
-  - [ ] Step 6 — §6 SWR update: class requirement document `docs/requirements/com/telelogic/rhapsody/core/<snake_case>.md` (moved out of the legacy monolith)
-  - [ ] Step 7 — §7 RST update: class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPCollection:` + deviation list-table)
-  - [ ] Step 8 — §8 verify and report: `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
+- [ ] irp_collection_api_report (IRPCollection · RPCollection · models/core.py · 2 blocker sites left)
+  - Note: run 2026-11-21 — `get_count` migrated to the `Count` property and `get_item` migrated to the direct `Item` method (the legacy `getItem` name-probe removed); `make_fake_collection` exposes both forms (`Count` attribute + `Item` side_effect) keeping the ~163 dependent call sites green; `add_graphical_item` and `to_list` are documented blockers (Java members absent from pywin32).
+  - [x] Step 1 — §1 sync TODO published (per-run checklist rendered live at run start)
+  - [ ] Step 2 — §2 target resolved (wrapper/exports/tests located); OPEN blocker: canonical package move deferred per standing decision — `RPCollection` stays in `models/core.py` with the other base classes
+  - [x] Step 3 — §3 evidence compared (baseline = regenerated own-members report + catalog: 9 Correct Items, 2 PYWIN32_MEMBER_MISSING blockers recorded, zero blind migrations)
+  - [x] Step 4 — §4 unit tests (guard test red (legacy helper + hasattr probe) → migration → collection tests flipped to the `Item`/`Count` convention → full unit suite 1710 green; no PYTHON_ONLY_MEMBER rows existed for this class)
+  - [x] Step 5 — §5 integration tests (behavior-preserving change; mirrored integration tests collected 128 ✓ — no new coverage required; Windows live run tracked in Step 8)
+  - [x] Step 6 — §6 SWR update (`docs/requirements/com/telelogic/rhapsody/core/rp_collection.md` — SWR_ELEM_00015 with binding rules and the two blockers)
+  - [x] Step 7 — §7 RST update (`docs/api/com/telelogic/rhapsody/core/rp_collection.rst` — 2 deviation rows + 9 Correct-Items rows, offline coverage check complete; toctree entry added to `elements.rst`)
+  - [ ] Step 8 — §8 verify and report (unit suite 1710 ✓, gate ✓, skill tests ✓, integration collection-only ✓; OPEN blocker: Windows closeout — `validate_interface.py IRPCollection --source authority` + `verify_sync.py IRPCollection` + live integration, then archive)
 
 - [ ] irp_unit_api_report (IRPUnit · RPUnit · models/core.py · within core.py's 92)
   - Note: unit-family members — catalog kinds: methods `getAddToModelMode`/`getCMState`/`getLanguage`/`getLastModifiedTime`/`getNestedSaveUnits`/`getNestedSaveUnitsCount`/`isReadOnly`/`isReferenceUnit`/`isSeparateSaveUnit`/`setReadOnly`/`setSeparateSaveUnit`/`setUnitPath`; properties `CMHeader`/`currentDirectory`/`filename`/`includeInNextLoad`/`isStub`/`structureDiagrams`; landing this row resolves IRPModelElement's cross-catalog blockers.
