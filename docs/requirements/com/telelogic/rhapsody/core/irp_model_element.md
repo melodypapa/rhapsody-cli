@@ -16,7 +16,9 @@ template members, ...). Every COM call shall target exactly one pywin32-exposed 
 `AbstractRPModelElement.wrap()` shall resolve the wrapper class from the `metaClass`
 property. `get_rmm_url` is a documented blocker: the `getRmmUrl`/`rmmUrl` members are absent
 from the committed pywin32 catalog (see `documented_unavailable` for IRPClass), so its legacy
-dual-binding call site stays unchanged until Windows typelib evidence lands.
+dual-binding call site stays unchanged until Windows typelib evidence lands. The module uses `from __future__ import annotations`
+with unquoted type references; names used only in `cast()` are imported locally inside the
+method to avoid circular imports.
 **Implementation:** src/rhapsody_cli/models/core.py:IRPModelElement (§2 canonical package move
 deferred until the IRPCollection and IRPUnit rows leave `models/core.py` — see
 `docs/reports/sync-todo`)
