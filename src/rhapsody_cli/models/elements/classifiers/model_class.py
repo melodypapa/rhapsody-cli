@@ -20,7 +20,7 @@ class RPClass(RPClassifier):
     # [x] add_constructor           [x] impl  [x] docstring  [x] unit test  [x] integration test   (already implemented)
     # [x] add_destructor            [x] impl  [x] docstring  [x] unit test  [x] integration test   (already implemented)
     # [x] add_superclass            [x] impl  [x] docstring  [x] unit test  [x] integration test   (already implemented)
-    # [x] get_is_abstract            [x] impl  [x] docstring  [x] unit test  [x] integration test   (already implemented)
+    # [x] is_abstract                [x] impl (property)  [x] docstring  [x] unit test  [x] integration test
     # [x] add_event_reception        [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] add_event_reception_with_event [x] impl (raises NotImplementedError) [x] docstring [x] unit test  [x] integration test  (COM method not exposed)
     # [x] add_link                  [x] impl  [x] docstring  [x] unit test  [x] integration test
@@ -35,15 +35,11 @@ class RPClass(RPClassifier):
     # [x] delete_reception          [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] delete_superclass         [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] delete_type               [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_is_active              [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_is_behavior_overriden   [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_is_composite           [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_is_final               [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_is_reactive            [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] set_is_abstract (unimplemented -- raises not_implemented_error, see docstring)  [ ] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] set_is_active              [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] set_is_behavior_overriden   [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] set_is_final               [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] is_active                  [x] impl (property)  [x] docstring  [x] unit test  [x] integration test
+    # [x] is_behavior_overriden      [x] impl (property)  [x] docstring  [x] unit test  [x] integration test
+    # [x] is_composite               [x] impl (property)  [x] docstring  [x] unit test  [x] integration test
+    # [x] is_final                   [x] impl (property)  [x] docstring  [x] unit test  [x] integration test
+    # [x] is_reactive                [x] impl (property)  [x] docstring  [x] unit test  [x] integration test
     # update_contained_diagrams_on_server: unavailable in Rhapsody2.Application.1 type library; wrapper removed.
     # No deprecated methods in IRPClass.
 
@@ -83,16 +79,15 @@ class RPClass(RPClassifier):
         """
         return cast("RPOperation", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addDestructor())))
 
-    def get_is_abstract(self) -> bool:
-        """Checks whether this class is abstract.
-
-        Returns:
-            ``True`` if the class is abstract, ``False`` otherwise.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPClass::getIsAbstract()
-        """
+    @property
+    def is_abstract(self) -> bool:
+        """Checks whether this class is abstract."""
         return bool(AbstractRPModelElement._get_method_or_property(self._com, "getIsAbstract", "isAbstract"))
+
+    @is_abstract.setter
+    def is_abstract(self, is_abstract: bool) -> None:
+        """Unimplemented: the COM write is accepted but never persists."""
+        raise NotImplementedError("RPClass.is_abstract setter is unimplemented: Rhapsody2.Application.1 accepts the write but never persists it.")
 
     def add_class(self, name: str) -> "RPClass":
         """Adds a nested class to this class.
@@ -325,125 +320,45 @@ class RPClass(RPClassifier):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteType(name))
 
-    def get_is_active(self) -> int:
-        """Checks whether the class was defined as "active".
-
-        "Active" means that during execution it runs on its own thread.
-
-        Returns:
-            ``1`` if the class is "active", ``0`` if it is "sequential".
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPClass::getIsActive()
-        """
+    @property
+    def is_active(self) -> int:
+        """``1`` if the class runs on its own thread, ``0`` if sequential."""
         return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsActive", "isActive"))
 
-    def get_is_behavior_overriden(self) -> int:
-        """Checks whether a class does not inherit the behavior of its base class statechart.
-
-        Returns:
-            ``1`` if the class does not inherit this behavior, ``0`` if it does.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPClass::getIsBehaviorOverriden()
-        """
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsBehaviorOverriden", "isBehaviorOverriden"))
-
-    def get_is_composite(self) -> int:
-        """Checks whether the class is a composite class.
-
-        Returns:
-            ``1`` if the class is a composite class, ``0`` if it is not.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPClass::getIsComposite()
-        """
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsComposite", "isComposite"))
-
-    def get_is_final(self) -> int:
-        """Checks whether the class is a final class.
-
-        Relevant only for Java classes.
-
-        Returns:
-            ``1`` if the class is final, ``0`` if not.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPClass::getIsFinal()
-        """
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsFinal", "isFinal"))
-
-    def get_is_reactive(self) -> int:
-        """Checks whether the class is a reactive class.
-
-        A reactive class has a statechart or activity diagram so that it
-        reacts to events.
-
-        Returns:
-            ``1`` if the class is reactive, ``0`` if it is not.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPClass::getIsReactive()
-        """
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsReactive", "isReactive"))
-
-    def set_is_abstract(self, is_abstract: int) -> None:
-        """Specifies that the class should be abstract.
-
-        Args:
-            is_abstract: ``1`` to make the class abstract, ``0`` to make it non-abstract.
-
-        Raises:
-            NotImplementedError: Always. Under Rhapsody2.Application.1 (build 9.0.2) a write to
-                the ``isAbstract`` COM property is accepted without error (the typelib declares
-                both PROPERTYGET and PROPERTYPUT for isAbstract under the same DISPID -- it is
-                not read-only at the interface level), but the write does not persist --
-                confirmed via immediate read-back, post-``saveAll()``, and a fresh re-fetch of
-                the element. No workaround (e.g. the generic ``setPropertyValue`` metatype
-                property system) is currently known; "Abstract" is not a defined key in
-                ``Share/Properties/factory.prp``. Marked unimplemented rather than silently
-                no-opping so callers cannot mistake this for a successful write. Revisit if a
-                future Rhapsody build fixes this.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPClass::setIsAbstract(int isAbstract)
-        """
-        raise NotImplementedError("RPClass.set_is_abstract is unimplemented: Rhapsody2.Application.1 accepts the write but never persists it. See docstring for details.")
-
-    def set_is_active(self, is_active: int) -> None:
-        """Specifies that the class should be defined as "active".
-
-        Args:
-            is_active: ``1`` for "active", ``0`` for "sequential".
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPClass::setIsActive(int isActive)
-        """
+    @is_active.setter
+    def is_active(self, is_active: int) -> None:
+        """Set to ``1`` for active, ``0`` for sequential."""
         AbstractRPModelElement._set_method_or_property(self._com, "setIsActive", "isActive", is_active)
 
-    def set_is_behavior_overriden(self, is_behavior_overriden: int) -> None:
-        """Specifies whether a class should inherit the statechart behavior of its base class.
+    @property
+    def is_behavior_overriden(self) -> int:
+        """``1`` if the class does not inherit its base statechart behavior, else ``0``."""
+        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsBehaviorOverriden", "isBehaviorOverriden"))
 
-        Args:
-            is_behavior_overriden: ``1`` to not inherit, ``0`` to inherit.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPClass::setIsBehaviorOverriden(int isBehaviorOverriden)
-        """
+    @is_behavior_overriden.setter
+    def is_behavior_overriden(self, is_behavior_overriden: int) -> None:
+        """Set to ``1`` to not inherit the base statechart behavior, ``0`` to inherit."""
         AbstractRPModelElement._set_method_or_property(self._com, "setIsBehaviorOverriden", "isBehaviorOverriden", is_behavior_overriden)
 
-    def set_is_final(self, new_val: int) -> None:
-        """Specifies that the class should be a final class.
+    @property
+    def is_composite(self) -> int:
+        """``1`` if the class is a composite class, ``0`` otherwise."""
+        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsComposite", "isComposite"))
 
-        Relevant only for Java classes.
+    @property
+    def is_final(self) -> int:
+        """``1`` if the class is final, ``0`` otherwise."""
+        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsFinal", "isFinal"))
 
-        Args:
-            new_val: ``1`` to make the class final, ``0`` to make it non-final.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPClass::setIsFinal(int newVal)
-        """
+    @is_final.setter
+    def is_final(self, new_val: int) -> None:
+        """Set to ``1`` to make the class final, ``0`` otherwise."""
         AbstractRPModelElement._set_method_or_property(self._com, "setIsFinal", "isFinal", new_val)
+
+    @property
+    def is_reactive(self) -> int:
+        """``1`` if the class has a statechart or activity diagram, ``0`` otherwise."""
+        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsReactive", "isReactive"))
 
 
 AbstractRPModelElement.register_wrapper("Class", RPClass)
