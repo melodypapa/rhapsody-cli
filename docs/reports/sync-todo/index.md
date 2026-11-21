@@ -18,9 +18,9 @@ dual-binding fallback for every subclass), then leaves.
 | [Group-unfinished-1.md](Group-unfinished-1.md) | 16 | ~249 | IRPClass → IRPUseCase | ⬜ 0/16 archived (pilot 5/6 steps) |
 | [Group-finished.md](Group-finished.md) | 0 | 0 | archive | ✅ 0 |
 
-Progress: **0/16 rows fully done**; pilot IRPClass migrated and committed (`7163149`,
-`b27a8bb`) with Step 6's Windows closeout still open. Refreshed 2026-11-21 (site counts from
-the 2026-11-21 survey — re-survey with `grep -c "_method_or_property" <wrapper>` at run start).
+Progress: **0/16 rows fully done**; IRPClass pilot 7/8 (Windows closeout open, `7163149`);
+IRPModelElement 6/8 (Steps 2/8 open: deferred §2 move + Windows closeout, run of 2026-11-21).
+Refreshed 2026-11-21 (site counts re-surveyed at each run start).
 
 ## Resume rule
 
@@ -49,6 +49,11 @@ not re-derive scope or decisions already recorded in the row's Notes.
   the package move (wrapper, imports/exports/registration, unit + integration tests to the
   mirrored `tests/{unit,integration}/models/com/telelogic/rhapsody/core/` paths, snake_case
   test module names, `__init__.py` at every level, no compatibility shim).
+- **core.py base rows defer the §2 move (user decision 2026-11-21):** `RPModelElement`,
+  `RPCollection`, `RPUnit` and `AbstractRPModelElement` share `models/core.py`; moving one
+  base class alone creates import cycles (`RPUnit(RPModelElement)`). Each base row runs its
+  binding migration at the current location and records the §2 move as an open blocker; the
+  moves land as a small dedicated refactor once the rows have emptied `core.py`.
 - **Per-class documents (SKILL §6/§7):** requirement and RST artifacts live at the class's
   package path — `docs/requirements/<java.package.path>/<snake_case>.md` and
   `docs/api/<java.package.path>/<snake_case>.rst` — not in the legacy monoliths

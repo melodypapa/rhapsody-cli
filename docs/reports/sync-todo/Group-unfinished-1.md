@@ -24,16 +24,16 @@ migrations; inherited members wait for their base class's own row.
   - [x] Step 7 — §7 RST update (`docs/api/com/telelogic/rhapsody/core/irp_class.rst` — section moved from `elements.rst`, six flag rows rewritten, two malformations fixed; toctree entry added)
   - [ ] Step 8 — §8 verify and report (unit suite 1699 ✓, ruff/black/mypy ✓, skill tests 9 ✓; OPEN blocker: Windows closeout — `validate_interface.py IRPClass --source authority` + `verify_sync.py IRPClass` + live integration, then archive)
 
-- [ ] irp_model_element_api_report (IRPModelElement · RPModelElement · models/core.py · ~86 sites)
-  - Note: core.py holds 92 sites total incl. RPCollection + 2 forwarders — split at run start; 22 unit-family member names (`CMHeader`, `filename`, `isReadOnly`, ...) resolvable only via other interfaces' catalogs — resolve against IRPUnit's catalog entry or record blocker; `wrap()` (`getMetaClass`/`metaClass`) migrates here.
-  - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
-  - [ ] Step 2 — §2 resolve target: JavaDoc package, wrapper/inheritance/exports/tests located; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` (mirrored test paths, `__init__.py` per level, no shim)
-  - [ ] Step 3 — §3 compare evidence: baseline `validate_interface.py IRPModelElement --source authority`; reconcile every owned member across JavaDoc/COM/Python; one pywin32 member per call; catalog-absent sites = blockers
-  - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first (`make_fake_element` method kwargs / `properties=` channel), then migrate every legacy helper site in own methods; full unit suite green
-  - [ ] Step 5 — §5 integration tests: add/update integration coverage for owned behavior in the mirrored test path (`tests/integration/models/com/telelogic/rhapsody/core/`); Windows = live run, macOS = collection-only noted
-  - [ ] Step 6 — §6 SWR update: class requirement document `docs/requirements/com/telelogic/rhapsody/core/<snake_case>.md` (moved out of the legacy monolith) (JavaDoc-derived description, deviations, implementation facts)
-  - [ ] Step 7 — §7 RST update: class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPModelElement:` + deviation list-table)
-  - [ ] Step 8 — §8 verify and report: `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
+- [ ] irp_model_element_api_report (IRPModelElement · RPModelElement · models/core.py · 1 blocker site left)
+  - Note: run 2026-11-21 — 67 own-method sites classified (43 property / 22 method / 1 both via arg1 / 1 blocker) and migrated; `AbstractRPModelElement.wrap()` migrated to the `metaClass` property (fakes set both forms); 5 inherited-member sites in graphics/codegen (`getName`→`name`, `getInterfaceName`→`interfaceName`) migrated using IRPModelElement's catalog; RPUnit (21) + RPCollection (1) sites remain for their own rows.
+  - [x] Step 1 — §1 sync TODO published (per-run checklist rendered live at run start)
+  - [ ] Step 2 — §2 target resolved (wrapper/inheritance/exports/tests located); OPEN blocker: canonical package move deferred per user decision 2026-11-21 — `RPModelElement` stays in `models/core.py` until the IRPCollection and IRPUnit rows land (moving one base class alone creates import cycles with `RPUnit(RPModelElement)`); mirrored test-path move deferred with it
+  - [x] Step 3 — §3 evidence compared (baseline = committed report + catalog; live validator macOS-blocked, recorded; AST inventory: 67 sites classified against the IRPModelElement catalog, zero blind migrations)
+  - [x] Step 4 — §4 unit tests (structural guard test red → catalog-driven migration → 48 test files flipped to the single-member convention (`properties=` channel, property-assignment asserts) → full unit suite 1700 green; blocker `get_rmm_url` exempted in the guard)
+  - [x] Step 5 — §5 integration tests (behavior-preserving change; mirrored integration files collected 145 tests ✓ — no new coverage required; Windows live run tracked in Step 8)
+  - [x] Step 6 — §6 SWR update (`docs/requirements/com/telelogic/rhapsody/core/rp_model_element.md` — SWR_ELEM_00014 with direct-binding statement, `get_rmm_url` blocker, deferred-move note)
+  - [x] Step 7 — §7 RST update (`docs/api/com/telelogic/rhapsody/core/rp_model_element.rst` — 50-row deviation list-table with post-migration single-member labels, offline coverage check: all report members present; toctree entry added to `elements.rst`)
+  - [ ] Step 8 — §8 verify and report (unit suite 1700 ✓, ruff/black/mypy ✓, skill tests ✓, integration collection-only ✓; OPEN blocker: Windows closeout — `validate_interface.py IRPModelElement --source authority` + `verify_sync.py IRPModelElement` + live integration, then archive)
 
 - [ ] irp_collection_api_report (IRPCollection · RPCollection · models/core.py · ~2 sites)
   - Note: `get_count` (`getCount`/`Count` — catalog says `Count` property); mutators (`addItem`, `setSize`, `remove`, ...) already direct `call_com`; `make_fake_collection` stubs `getCount`/`getItem` — 163 test call sites depend on that shape.
