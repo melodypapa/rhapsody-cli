@@ -337,6 +337,7 @@ def _authority(
     aliases: Optional[Dict[str, Dict[str, str]]] = None,
     unavailable: Optional[Dict[str, List[str]]] = None,
 ) -> AuthorityData:
+    """Build an AuthorityData carrying only the documented-decision maps under test."""
     return AuthorityData(
         catalog=catalog or {},
         documented_aliases=aliases or {},
