@@ -53,11 +53,11 @@ def test_class_add_destructor_wraps_result() -> None:
     assert result.get_name() == "~Widget"
 
 
-def test_class_get_is_abstract_delegates_to_com() -> None:
+def test_class_is_abstract_property_delegates_to_com() -> None:
     fake = make_fake_element("Class", getIsAbstract=1)
     klass = RPClass(fake)
 
-    assert klass.get_is_abstract() is True
+    assert klass.is_abstract is True
 
 
 def test_class_add_class_nested_wraps_result() -> None:
@@ -254,76 +254,74 @@ def test_class_delete_type_delegates_to_com() -> None:
     fake.deleteType.assert_called_once_with("Color")
 
 
-def test_class_get_is_active_delegates_to_com() -> None:
+def test_class_is_active_property_delegates_to_com() -> None:
     fake = make_fake_element("Class", getIsActive=1)
     klass = RPClass(fake)
 
-    assert klass.get_is_active() == 1
+    assert klass.is_active == 1
 
 
-def test_class_get_is_behavior_overriden_delegates_to_com() -> None:
+def test_class_is_behavior_overriden_property_delegates_to_com() -> None:
     fake = make_fake_element("Class", getIsBehaviorOverriden=0)
     klass = RPClass(fake)
 
-    assert klass.get_is_behavior_overriden() == 0
+    assert klass.is_behavior_overriden == 0
 
 
-def test_class_get_is_composite_delegates_to_com() -> None:
+def test_class_is_composite_property_delegates_to_com() -> None:
     fake = make_fake_element("Class", getIsComposite=1)
     klass = RPClass(fake)
 
-    assert klass.get_is_composite() == 1
+    assert klass.is_composite == 1
 
 
-def test_class_get_is_final_delegates_to_com() -> None:
+def test_class_is_final_property_delegates_to_com() -> None:
     fake = make_fake_element("Class", getIsFinal=0)
     klass = RPClass(fake)
 
-    assert klass.get_is_final() == 0
+    assert klass.is_final == 0
 
 
-def test_class_get_is_reactive_delegates_to_com() -> None:
+def test_class_is_reactive_property_delegates_to_com() -> None:
     fake = make_fake_element("Class", getIsReactive=1)
     klass = RPClass(fake)
 
-    assert klass.get_is_reactive() == 1
+    assert klass.is_reactive == 1
 
 
-def test_class_set_is_abstract_raises_not_implemented() -> None:
-    """RPClass.set_is_abstract is marked unimplemented: Rhapsody2.Application.1 accepts the
-    write without error but never persists it, so it raises rather than silently no-opping."""
+def test_class_is_abstract_setter_raises_not_implemented() -> None:
     fake = make_fake_element("Class")
     klass = RPClass(fake)
 
     with pytest.raises(NotImplementedError):
-        klass.set_is_abstract(1)
+        klass.is_abstract = True
 
     fake.setIsAbstract.assert_not_called()
 
 
-def test_class_set_is_active_delegates_to_com() -> None:
+def test_class_is_active_setter_delegates_to_com() -> None:
     fake = make_fake_element("Class")
     klass = RPClass(fake)
 
-    klass.set_is_active(0)
+    klass.is_active = 0
 
     fake.setIsActive.assert_called_once_with(0)
 
 
-def test_class_set_is_behavior_overriden_delegates_to_com() -> None:
+def test_class_is_behavior_overriden_setter_delegates_to_com() -> None:
     fake = make_fake_element("Class")
     klass = RPClass(fake)
 
-    klass.set_is_behavior_overriden(1)
+    klass.is_behavior_overriden = 1
 
     fake.setIsBehaviorOverriden.assert_called_once_with(1)
 
 
-def test_class_set_is_final_delegates_to_com() -> None:
+def test_class_is_final_setter_delegates_to_com() -> None:
     fake = make_fake_element("Class")
     klass = RPClass(fake)
 
-    klass.set_is_final(1)
+    klass.is_final = 1
 
     fake.setIsFinal.assert_called_once_with(1)
 
