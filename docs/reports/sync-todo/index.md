@@ -3,8 +3,8 @@
 Execution ledger for the 16 committed interface reports in `docs/reports/` (`*_api_report.md`)
 and their wrappers. One row = one report = one rhapsody-sync run; every row's steps enumerate
 the rules and steps of [`.agents/skills/rhapsody-sync/SKILL.md`](../../.agents/skills/rhapsody-sync/SKILL.md)
-(§1–§6). Runs tick a step the moment it passes; rows archive to `Group-finished.md` only when
-all six steps pass and the run's commit exists.
+(§1–§8). Runs tick a step the moment it passes; rows archive to `Group-finished.md` only when
+all eight steps pass and the run's commit exists.
 
 ## Layout (2026-11-21)
 
@@ -26,7 +26,7 @@ the 2026-11-21 survey — re-survey with `grep -c "_method_or_property" <wrapper
 
 Take the first row still `[ ]` in queue order from
 [Group-unfinished-1.md](Group-unfinished-1.md). Execute one rhapsody-sync run for that
-interface following SKILL.md §1–§6 exactly as enumerated in the row's steps; tick a step when
+interface following SKILL.md §1–§8 exactly as enumerated in the row's steps; tick a step when
 its evidence lands (never batch-tick at the end); move the row to
 [Group-finished.md](Group-finished.md) only after its commit exists and no step is open. Do
 not re-derive scope or decisions already recorded in the row's Notes.
@@ -40,8 +40,8 @@ not re-derive scope or decisions already recorded in the row's Notes.
   arguments only. A call site whose member is absent from the catalog for that interface is a
   blocker: leave the site unchanged, record it, never migrate blind.
 - **Machine split (2026-11-21):** `docs/java_api/` is gitignored and absent on macOS. There,
-  Steps 1–5 are executable (Step 3/6 use the committed report + catalog as COM evidence, with
-  an offline proof substituting for regeneration checks); Step 6's Windows closeout —
+  Steps 1–7 are executable (Steps 3/8 use the committed report + catalog as COM evidence, with
+  an offline proof substituting for regeneration checks); Step 8's Windows closeout —
   `validate_interface.py <IFACE> --source authority`, `verify_sync.py <IFACE>`, live
   integration run — stays open with the blocker recorded on the row.
 - **Canonical package (SKILL §4):** only `IRPClass` lives in

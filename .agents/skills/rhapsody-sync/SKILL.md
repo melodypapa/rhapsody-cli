@@ -21,24 +21,37 @@ Before any analysis or edit, publish the TODO list: use an available task-list t
 
 ```markdown
 ## Sync TODO — IRPClass (`com.telelogic.rhapsody.core`)
-- [ ] Resolve JavaDoc package, class description, and member inventory.
-- [ ] Locate wrapper, inheritance, exports, tests, and current package path.
-- [ ] Compare every owned member across JavaDoc, COM exposure, and Python implementation.
-- [ ] Add/update focused unit and integration tests in the mirrored test package before implementation or package changes.
-- [ ] Mirror the Java package in Python and update every import to the canonical path.
-- [ ] Update class checklist and JavaDoc-derived class/method descriptions.
-- [ ] Update package-organized RST entry and list each verified deviation.
-- [ ] Unit tests pass; on Windows, integration tests pass too.
-- [ ] Run focused validation and summarize unresolved items.
+- [ ] §2 Resolve JavaDoc package, class description, and member inventory; move wrapper + tests to the canonical package.
+- [ ] §3 Compare every owned member across JavaDoc, COM exposure, and Python implementation.
+- [ ] §4 Write/upgrade the fake-COM unit tests first (red), then migrate the binding call sites (green).
+- [ ] §5 Add/update integration tests in the mirrored test package.
+- [ ] §6 Update the SWR requirement entry.
+- [ ] §7 Update the package-organized RST entry and list each verified deviation.
+- [ ] §8 Run validation (unit suite, gate, validate_interface, verify_sync); summarize unresolved items.
 - [ ] Render this checklist as the final sync report.
 - [ ] Member: addExample() — [ ] JavaDoc [ ] COM [ ] wrapper [ ] disposition
 ```
 
 This checklist is the run's live report. Tick a checkbox in the same response where its evidence lands — a command result, a test count, a documented disposition — and never batch-tick at the end. A box ends the run either ticked or open with the blocker and reason stated next to it. Only mark a task done after checking its evidence. Keep inherited-member notes separate from owned-member tasks.
 
-## 2. Resolve the target
+## 2. Resolve the target and move to the canonical package
 
 If the interface name is missing or ambiguous, ask for it before editing. Find its JavaDoc in `docs/java_api/`, read the declared package, then resolve the matching wrapper, base class, tests, and current exports. Do not infer the Java package or wrapper mapping from the existing Python folder alone.
+
+The canonical Python package mirrors every Java package segment beneath `rhapsody_cli.models`, and the Python class name matches the Java interface name. For example:
+
+- Java: `com.telelogic.rhapsody.core.IRPClass`
+- Python import: `from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass`
+- Directory: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_class.py`
+
+Move the wrapper only if it is not already in the canonical package. Add package `__init__.py` exports, preserve registration/import side effects, and update every internal reference to the canonical import. Keep the existing module naming convention where practical. Do not leave a compatibility shim at the old path for the migrated interface. Migrate only the requested interface; avoid unrelated package moves and refactors. If moving it safely requires broad changes or would break public imports, stop and ask before expanding scope.
+
+Both unit and integration tests move with it, mirroring the canonical package segment by segment. Use snake_case for the test module name derived from the Java interface (`IRPClass` → `test_irp_class.py`), and add `__init__.py` at every mirrored directory level. For example:
+
+- Unit test: `tests/unit/models/com/telelogic/rhapsody/core/test_irp_class.py`
+- Integration test: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_class.py`
+
+Do not leave the class's tests under an old domain folder such as `tests/unit/models/elements/classifiers/`.
 
 ## 3. Compare evidence efficiently, without skipping coverage
 
@@ -66,40 +79,29 @@ Never add a direct COM call for a member absent from the binding. Keep exact cam
 
 Bindings are pywin32-authoritative: every wrapper member depends on exactly one pywin32-exposed COM member, with no runtime name probing or Java-name fallback. Method-shaped members are called with `call_com(lambda: self._com.Name(...))`; property-shaped members are read/written with `get_com_property` / `set_com_property` (name confirmed against `docs/reports/pywin32_authority.json`). Legacy dual-binding call sites (`_get_method_or_property` / `_set_method_or_property`) are migrated as part of the sync — see section 4.
 
-## 4. Apply the smallest safe class change
+## 4. Write the unit tests first (TDD)
 
-Follow TDD: write or update a focused fake-COM unit test before changing behavior or import wiring. Unit tests must not use real COM. For each wrapper method added or changed, use JavaDoc for its description, arguments, and return contract while retaining project-specific usage notes and known runtime limitations. Add integration coverage only for supported behavior owned by this wrapper; inherited methods may set up fixtures but are not child assertions. Respect the integration-test ownership rules in `AGENTS.md`, including child overrides with different return contracts.
+Follow TDD: write or update a focused fake-COM unit test before changing behavior or import wiring. Unit tests must not use real COM. For each wrapper method added or changed, use JavaDoc for its description, arguments, and return contract while retaining project-specific usage notes and known runtime limitations.
 
 **Migrate legacy binding call sites for this class.** For every `_get_method_or_property` / `_set_method_or_property` call in the class's **own** methods: look up the pywin32 member for that operation in `docs/reports/pywin32_authority.json`, then rewrite the site to a direct call — method-shaped → `call_com(lambda: self._com.Name(...))`, property-shaped → `get_com_property` / `set_com_property` — and update the class's unit tests to configure and assert on that single member (fakes use the `properties=` channel of `make_fake_element` for property-shaped members). Inherited members keep base-class behavior until the base class's own sync run. If a call site's member is absent from the catalog for this interface, record it as a blocker and leave the site unchanged — do not migrate on unverifiable evidence.
 
-Both unit and integration tests for the migrated class must use the new Python folder structure, mirroring the canonical package segment by segment. Use snake_case for the test module name derived from the Java interface (`IRPClass` → `test_irp_class.py`), and add `__init__.py` at every mirrored directory level. For example:
+Run the full unit suite after the change and fix any failure before continuing; never advance to the next step with a failing unit test (verification rules in section 8).
 
-- Unit test: `tests/unit/models/com/telelogic/rhapsody/core/test_irp_class.py`
-- Integration test: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_class.py`
+## 5. Update the integration tests
 
-Do not leave the class's tests under an old domain folder such as `tests/unit/models/elements/classifiers/`.
+Add or update integration coverage only for supported behavior owned by this wrapper; inherited methods may set up fixtures but are not child assertions. Respect the integration-test ownership rules in `AGENTS.md`, including child overrides with different return contracts. Integration tests live in the mirrored test path from section 2 — do not leave them under an old domain folder.
 
-The canonical Python package mirrors every Java package segment beneath `rhapsody_cli.models`, and the Python class name matches the Java interface name. For example:
-
-- Java: `com.telelogic.rhapsody.core.IRPClass`
-- Python import: `from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass`
-- Directory: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_class.py`
-
-Move the wrapper only if it is not already in the canonical package. Add package `__init__.py` exports, preserve registration/import side effects, and update every internal reference to the canonical import. Keep the existing module naming convention where practical. Do not leave a compatibility shim at the old path for the migrated interface. Migrate only the requested interface; avoid unrelated package moves and refactors. If moving it safely requires broad changes or would break public imports, stop and ask before expanding scope.
-
-## 5. Update the two class documents
-
-### Requirement entry
+## 6. Update the SWR requirement entry
 
 Update the selected class in `docs/requirements/swr_elem_requirements.md`. Use the JavaDoc class description for the summary, but retain project-specific requirements and implementation facts that JavaDoc cannot express. Add an entry in the existing format if one is missing.
 
-### Package-organized RST
+## 7. Update the package-organized RST
 
 Update `docs/api/elements.rst` under the Java package heading, not the current Python domain grouping. Start the class entry with the verifier-recognized anchor `.. _rhapsody-java-interface-<INTERFACE>:`. Include the Java interface, Java package, JavaDoc-derived description, Python wrapper, and canonical import path.
 
 List each verified deviation between JavaDoc, COM/pywin32, and Python implementation in a valid reStructuredText `list-table` with headers `JavaDoc member/signature`, `COM/pywin32 exposure`, `Python implementation`, and `Deviation and treatment`. Include method-vs-property shape and evidence-backed resolution; if there are no deviations, say so explicitly. The verifier checks that the section contains every member reported by the API validator. If the class is already listed under a legacy domain heading, move its entry to the Java-package section instead of duplicating it; leave unrelated and not-yet-migrated classes unchanged. Keep RST navigation valid.
 
-## 6. Verify and report
+## 8. Verify and report
 
 After edits, run final validation and artifact checks:
 
