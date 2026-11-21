@@ -28,13 +28,13 @@ from typing import TYPE_CHECKING, Optional, cast
 from unittest.mock import MagicMock
 
 from rhapsody_cli.exchange.core import RhapsodyModelHelper
-from rhapsody_cli.models.core import RPModelElement
+from rhapsody_cli.models.core import IRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.containment import RPProject
 
 
-def _make_helper(project: Optional[RPModelElement] = None) -> RhapsodyModelHelper:
+def _make_helper(project: Optional[IRPModelElement] = None) -> RhapsodyModelHelper:
     """Build a RhapsodyModelHelper with a mocked app and project.
 
     Skips RhapsodyApplication.connect() entirely.
@@ -452,13 +452,13 @@ class TestCollectChildren:
     def test_package_without_global_getters_returns_only_nested(self) -> None:
         """If global getters are unavailable, fall back to nested elements only.
 
-        Uses spec=RPModelElement so the package-specific global getters are
+        Uses spec=IRPModelElement so the package-specific global getters are
         absent (they live on RPPackage, not the base class). The implementation's
         ``getattr(container, getter_name, None)`` returns None and skips them.
         """
         nested = MagicMock()
         nested.get_name.return_value = "Nested"
-        pkg = MagicMock(spec=RPModelElement)
+        pkg = MagicMock(spec=IRPModelElement)
         pkg.get_meta_class.return_value = "Package"
         pkg.get_nested_elements.return_value = [nested]
         helper = _make_helper()

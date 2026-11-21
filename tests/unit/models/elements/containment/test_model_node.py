@@ -1,6 +1,6 @@
 """Tests for rhapsody_cli.models.elements.containment.RPNode."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, RPUnit
 from rhapsody_cli.models.elements.containment import RPComponentInstance, RPNode
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -43,7 +43,7 @@ def test_node_get_component_instances_returns_collection() -> None:
     node = RPNode(fake)
 
     result = node.get_component_instances()
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_node_find_component_instance_wraps_result() -> None:

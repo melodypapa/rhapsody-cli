@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 from rhapsody_cli.models.elements.classifiers.model_interface_item import RPInterfaceItem
 from rhapsody_cli.models.elements.interactions import (
     RPDestructionEvent,
@@ -31,7 +31,7 @@ class TestRPEvent:
     def test_is_model_element(self) -> None:
         fake = make_fake_element("Event", properties={"name": "Evt1"})
         evt = RPEvent(fake)
-        assert isinstance(evt, RPModelElement)
+        assert isinstance(evt, IRPModelElement)
         assert evt.get_name() == "Evt1"
 
     def test_is_registered(self) -> None:
@@ -76,7 +76,7 @@ class TestRPEventReception:
     def test_is_model_element(self) -> None:
         fake = make_fake_element("EventReception", properties={"name": "ER1"})
         er = RPEventReception(fake)
-        assert isinstance(er, RPModelElement)
+        assert isinstance(er, IRPModelElement)
         assert er.get_name() == "ER1"
 
     def test_is_registered(self) -> None:
@@ -105,7 +105,7 @@ class TestRPExecutionOccurrence:
     def test_is_model_element(self) -> None:
         fake = make_fake_element("ExecutionOccurrence", properties={"name": "EO1"})
         eo = RPExecutionOccurrence(fake)
-        assert isinstance(eo, RPModelElement)
+        assert isinstance(eo, IRPModelElement)
         assert eo.get_name() == "EO1"
 
     def test_is_registered(self) -> None:
@@ -126,7 +126,7 @@ class TestRPGuard:
     def test_is_model_element(self) -> None:
         fake = make_fake_element("Guard", properties={"name": "G1"})
         g = RPGuard(fake)
-        assert isinstance(g, RPModelElement)
+        assert isinstance(g, IRPModelElement)
         assert g.get_name() == "G1"
 
     def test_is_registered(self) -> None:
@@ -151,7 +151,7 @@ class TestRPInteractionOccurrence:
     def test_is_model_element(self) -> None:
         fake = make_fake_element("InteractionOccurrence", properties={"name": "IO1"})
         io = RPInteractionOccurrence(fake)
-        assert isinstance(io, RPModelElement)
+        assert isinstance(io, IRPModelElement)
         assert io.get_name() == "IO1"
 
     def test_is_registered(self) -> None:
@@ -165,7 +165,7 @@ class TestRPInteractionOccurrence:
         fake.getMessagePoints.return_value = make_fake_collection([inner])
         io = RPInteractionOccurrence(fake)
         result = io.get_message_points()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
 
     def test_get_reference_sequence_diagram_wraps_result(self) -> None:
         fake = make_fake_element("InteractionOccurrence")
@@ -180,7 +180,7 @@ class TestRPInteractionOccurrence:
         seq = make_fake_element("SequenceDiagram", properties={"name": "SD1"})
         fake.setReferenceSequenceDiagram.return_value = None
         io = RPInteractionOccurrence(fake)
-        io.set_reference_sequence_diagram(cast("RPSequenceDiagram", RPModelElement(seq)))
+        io.set_reference_sequence_diagram(cast("RPSequenceDiagram", IRPModelElement(seq)))
         fake.setReferenceSequenceDiagram.assert_called_once_with(seq)
 
 
@@ -188,7 +188,7 @@ class TestRPInteractionOperand:
     def test_is_model_element(self) -> None:
         fake = make_fake_element("InteractionOperand", properties={"name": "IOp1"})
         iop = RPInteractionOperand(fake)
-        assert isinstance(iop, RPModelElement)
+        assert isinstance(iop, IRPModelElement)
         assert iop.get_name() == "IOp1"
 
     def test_is_registered(self) -> None:
@@ -202,7 +202,7 @@ class TestRPInteractionOperand:
         fake.getContainedMessages.return_value = make_fake_collection([inner])
         iop = RPInteractionOperand(fake)
         result = iop.get_contained_messages()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
 
     def test_get_interaction_constraint_returns_string(self) -> None:
         fake = make_fake_element("InteractionOperand", getInteractionConstraint="x > 0")
@@ -221,7 +221,7 @@ class TestRPInteractionOperator:
     def test_is_model_element(self) -> None:
         fake = make_fake_element("InteractionOperator", properties={"name": "Alt"})
         iop = RPInteractionOperator(fake)
-        assert isinstance(iop, RPModelElement)
+        assert isinstance(iop, IRPModelElement)
         assert iop.get_name() == "Alt"
 
     def test_is_registered(self) -> None:
@@ -235,7 +235,7 @@ class TestRPInteractionOperator:
         fake.getInteractionOperands.return_value = make_fake_collection([inner])
         iop = RPInteractionOperator(fake)
         result = iop.get_interaction_operands()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
 
     def test_get_interaction_type_returns_string(self) -> None:
         fake = make_fake_element("InteractionOperator", getInteractionType="alt")
@@ -254,7 +254,7 @@ class TestRPMessage:
     def test_is_model_element(self) -> None:
         fake = make_fake_element("Message", properties={"name": "Msg1"})
         msg = RPMessage(fake)
-        assert isinstance(msg, RPModelElement)
+        assert isinstance(msg, IRPModelElement)
         assert msg.get_name() == "Msg1"
 
     def test_is_registered(self) -> None:
@@ -286,7 +286,7 @@ class TestRPMessage:
         fake.getActualParameterList.return_value = make_fake_collection([inner])
         msg = RPMessage(fake)
         result = msg.get_actual_parameter_list()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
 
     def test_get_communication_connection_wraps_result(self) -> None:
         fake = make_fake_element("Message")
@@ -333,7 +333,7 @@ class TestRPMessage:
         fake.getFormalType.return_value = ft
         msg = RPMessage(fake)
         result = msg.get_formal_type()
-        assert cast(RPModelElement, result).get_name() == "FT"
+        assert cast(IRPModelElement, result).get_name() == "FT"
 
     def test_get_invariant_returns_string(self) -> None:
         fake = make_fake_element("Message", getInvariant="inv")
@@ -425,7 +425,7 @@ class TestRPMessage:
     def test_set_actual_parameter_list_delegates(self) -> None:
         inner = make_fake_element("Class", properties={"name": "P"})
         fake = make_fake_element("Message")
-        col = RPCollection(make_fake_collection([inner]))
+        col = IRPCollection(make_fake_collection([inner]))
         fake.setActualParameterList.return_value = None
         msg = RPMessage(fake)
         msg.set_actual_parameter_list(col)
@@ -450,7 +450,7 @@ class TestRPMessage:
         fp = make_fake_element("SysMLPort", properties={"name": "fp1"})
         fake.setFlowPort.return_value = None
         msg = RPMessage(fake)
-        msg.set_flow_port(cast("RPSysMLPort", RPModelElement(fp)))
+        msg.set_flow_port(cast("RPSysMLPort", IRPModelElement(fp)))
         fake.setFlowPort.assert_called_once_with(fp)
 
     def test_set_formal_interface_item_delegates(self) -> None:
@@ -466,7 +466,7 @@ class TestRPMessage:
         ft = make_fake_element("Class", properties={"name": "FT"})
         fake.setFormalType.return_value = None
         msg = RPMessage(fake)
-        msg.set_formal_type(RPModelElement(ft))
+        msg.set_formal_type(IRPModelElement(ft))
         fake.setFormalType.assert_called_once_with(ft)
 
     def test_set_invariant_delegates(self) -> None:
@@ -481,7 +481,7 @@ class TestRPMessage:
         p = make_fake_element("Port", properties={"name": "p1"})
         fake.setPort.return_value = None
         msg = RPMessage(fake)
-        msg.set_port(cast("RPPort", RPModelElement(p)))
+        msg.set_port(cast("RPPort", IRPModelElement(p)))
         fake.setPort.assert_called_once_with(p)
 
     def test_set_return_value_delegates(self) -> None:
@@ -517,7 +517,7 @@ class TestRPTransition:
     def test_is_model_element(self) -> None:
         fake = make_fake_element("Transition", properties={"name": "T1"})
         t = RPTransition(fake)
-        assert isinstance(t, RPModelElement)
+        assert isinstance(t, IRPModelElement)
         assert t.get_name() == "T1"
 
     def test_is_registered(self) -> None:
@@ -617,7 +617,7 @@ class TestRPTransition:
         fake.itsCompoundSource.return_value = make_fake_collection([inner])
         t = RPTransition(fake)
         result = t.its_compound_source()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         fake.itsCompoundSource.assert_called_once_with()
 
     def test_override_inheritance_delegates(self) -> None:
@@ -665,7 +665,7 @@ class TestRPTransition:
         src = make_fake_element("StateVertex", properties={"name": "S1"})
         fake.setItsSource.return_value = None
         t = RPTransition(fake)
-        t.set_its_source(cast("RPStateVertex", RPModelElement(src)))
+        t.set_its_source(cast("RPStateVertex", IRPModelElement(src)))
         fake.setItsSource.assert_called_once_with(src)
 
     def test_set_its_statechart_delegates(self) -> None:
@@ -673,7 +673,7 @@ class TestRPTransition:
         sc = make_fake_element("Statechart", properties={"name": "SC1"})
         fake.setItsStatechart.return_value = None
         t = RPTransition(fake)
-        t.set_its_statechart(cast("RPStatechart", RPModelElement(sc)))
+        t.set_its_statechart(cast("RPStatechart", IRPModelElement(sc)))
         fake.setItsStatechart.assert_called_once_with(sc)
 
     def test_set_its_target_delegates(self) -> None:
@@ -681,7 +681,7 @@ class TestRPTransition:
         tgt = make_fake_element("StateVertex", properties={"name": "S2"})
         fake.setItsTarget.return_value = None
         t = RPTransition(fake)
-        t.set_its_target(cast("RPStateVertex", RPModelElement(tgt)))
+        t.set_its_target(cast("RPStateVertex", IRPModelElement(tgt)))
         fake.setItsTarget.assert_called_once_with(tgt)
 
     def test_set_its_trigger_wraps_result(self) -> None:
@@ -705,7 +705,7 @@ class TestRPTrigger:
     def test_is_model_element(self) -> None:
         fake = make_fake_element("Trigger", properties={"name": "Trg1"})
         trg = RPTrigger(fake)
-        assert isinstance(trg, RPModelElement)
+        assert isinstance(trg, IRPModelElement)
         assert trg.get_name() == "Trg1"
 
     def test_is_registered(self) -> None:
@@ -750,7 +750,7 @@ class TestRPDestructionEvent:
     def test_is_model_element(self) -> None:
         fake = make_fake_element("DestructionEvent", properties={"name": "DE1"})
         de = RPDestructionEvent(fake)
-        assert isinstance(de, RPModelElement)
+        assert isinstance(de, IRPModelElement)
         assert de.get_name() == "DE1"
 
     def test_is_registered(self) -> None:

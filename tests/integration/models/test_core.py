@@ -1,4 +1,4 @@
-"""Integration tests for RPModelElement and RPCollection with live Rhapsody COM API.
+"""Integration tests for IRPModelElement and IRPCollection with live Rhapsody COM API.
 
 These tests require a running Rhapsody instance with an open project.
 """
@@ -10,7 +10,7 @@ from typing import cast
 import pytest
 
 from rhapsody_cli import RhapsodyApplication
-from rhapsody_cli.models.core import AddToModelMode, RPCollection, RPModelElement, RPUnit
+from rhapsody_cli.models.core import AddToModelMode, IRPCollection, IRPModelElement, RPUnit
 from rhapsody_cli.models.elements.containment import RPPackage, RPProject
 from rhapsody_cli.models.elements.diagrams import RPDiagram
 from rhapsody_cli.models.elements.relations import RPRelation
@@ -19,10 +19,10 @@ from tests.integration.conftest import TEST_PROJECT_DIR
 
 @pytest.mark.integration
 class TestRPModelElementIntegration:
-    """Integration tests for RPModelElement with real Rhapsody COM API."""
+    """Integration tests for IRPModelElement with real Rhapsody COM API."""
 
     def test_get_name(self, test_project: RPProject) -> None:
-        assert isinstance(test_project, RPModelElement)
+        assert isinstance(test_project, IRPModelElement)
         name = test_project.get_name()
         assert name == "TestProject"
         assert isinstance(name, str)
@@ -48,7 +48,7 @@ class TestRPModelElementIntegration:
 
 @pytest.mark.integration
 class TestRPCollectionIntegration:
-    """Integration tests for RPCollection with real Rhapsody COM API."""
+    """Integration tests for IRPCollection with real Rhapsody COM API."""
 
     def test_get_nested_elements_iteration(self, test_project: RPProject) -> None:
         elements = test_project.get_nested_elements()
@@ -67,7 +67,7 @@ class TestRPCollectionIntegration:
 
 @pytest.mark.integration
 class TestRPCollectionAddItemIntegration:
-    """Integration tests for RPCollection.add_item with live Rhapsody COM API."""
+    """Integration tests for IRPCollection.add_item with live Rhapsody COM API."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
@@ -87,7 +87,7 @@ class TestRPCollectionAddItemIntegration:
             cls2 = pkg.add_class(self._unique("AddItemCls2"))
 
             collection = rhapsody_app.create_new_collection()
-            assert isinstance(collection, RPCollection)
+            assert isinstance(collection, IRPCollection)
 
             before = collection.get_count()
             assert isinstance(before, int)
@@ -111,7 +111,7 @@ class TestRPCollectionAddItemIntegration:
             cls = pkg.add_class(self._unique("AddItemIdemCls"))
 
             collection = rhapsody_app.create_new_collection()
-            assert isinstance(collection, RPCollection)
+            assert isinstance(collection, IRPCollection)
 
             collection.add_item(cls)
             collection.add_item(cls)
@@ -125,7 +125,7 @@ class TestRPCollectionAddItemIntegration:
 
 @pytest.mark.integration
 class TestRPCollectionMutationMethodsIntegration:
-    """Integration tests for RPCollection mutation methods with live Rhapsody COM API.
+    """Integration tests for IRPCollection mutation methods with live Rhapsody COM API.
 
     These tests use ``rhapsody_app.create_new_collection()`` to obtain a genuinely
     mutable collection. Read-only snapshots such as ``getNestedElements()`` are
@@ -161,7 +161,7 @@ class TestRPCollectionMutationMethodsIntegration:
             assert gfx2 is not None
 
             collection = rhapsody_app.create_new_collection()
-            assert isinstance(collection, RPCollection)
+            assert isinstance(collection, IRPCollection)
 
             before = collection.get_count()
             assert isinstance(before, int)
@@ -186,7 +186,7 @@ class TestRPCollectionMutationMethodsIntegration:
             cls2 = pkg.add_class(self._unique("ToListCls2"))
 
             collection = rhapsody_app.create_new_collection()
-            assert isinstance(collection, RPCollection)
+            assert isinstance(collection, IRPCollection)
             collection.add_item(cls1)
             collection.add_item(cls2)
 
@@ -195,7 +195,7 @@ class TestRPCollectionMutationMethodsIntegration:
             assert len(result) == collection.get_count()
             assert cls1.get_name() in [item.get_name() for item in result]
             assert cls2.get_name() in [item.get_name() for item in result]
-            assert all(isinstance(item, RPModelElement) for item in result)
+            assert all(isinstance(item, IRPModelElement) for item in result)
         finally:
             pkg.delete_from_project()
 
@@ -203,7 +203,7 @@ class TestRPCollectionMutationMethodsIntegration:
         pkg = self._create_package(test_project, self._unique("SetSizePkg"))
         try:
             collection = rhapsody_app.create_new_collection()
-            assert isinstance(collection, RPCollection)
+            assert isinstance(collection, IRPCollection)
             assert collection.get_count() == 0
 
             collection.set_size(3)
@@ -220,7 +220,7 @@ class TestRPCollectionMutationMethodsIntegration:
             cls2 = pkg.add_class(self._unique("RemoveCls2"))
 
             collection = rhapsody_app.create_new_collection()
-            assert isinstance(collection, RPCollection)
+            assert isinstance(collection, IRPCollection)
             collection.add_item(cls1)
             collection.add_item(cls2)
             before = collection.get_count()
@@ -245,14 +245,14 @@ class TestRPCollectionMutationMethodsIntegration:
             cls3 = pkg.add_class(self._unique("SetModelElemCls3"))
 
             collection = rhapsody_app.create_new_collection()
-            assert isinstance(collection, RPCollection)
+            assert isinstance(collection, IRPCollection)
             collection.add_item(cls1)
             collection.add_item(cls2)
             assert collection.get_count() == 2
 
             collection.set_model_element(1, cls3)
             replaced = collection.get_item(1)
-            assert isinstance(replaced, RPModelElement)
+            assert isinstance(replaced, IRPModelElement)
             assert replaced.get_name() == cls3.get_name()
         finally:
             pkg.delete_from_project()
@@ -264,7 +264,7 @@ class TestRPCollectionMutationMethodsIntegration:
             cls2 = pkg.add_class(self._unique("EmptyCls2"))
 
             collection = rhapsody_app.create_new_collection()
-            assert isinstance(collection, RPCollection)
+            assert isinstance(collection, IRPCollection)
             collection.add_item(cls1)
             collection.add_item(cls2)
             assert collection.get_count() == 2
@@ -281,7 +281,7 @@ class TestRPCollectionMutationMethodsIntegration:
         pkg = self._create_package(test_project, self._unique("SetStrPkg"))
         try:
             collection = rhapsody_app.create_new_collection()
-            assert isinstance(collection, RPCollection)
+            assert isinstance(collection, IRPCollection)
             collection.set_size(1)
             collection.set_string(1, "marker")
 
@@ -294,7 +294,7 @@ class TestRPCollectionMutationMethodsIntegration:
         pkg = self._create_package(test_project, self._unique("SetIntPkg"))
         try:
             collection = rhapsody_app.create_new_collection()
-            assert isinstance(collection, RPCollection)
+            assert isinstance(collection, IRPCollection)
             collection.set_size(1)
             collection.set_integer(1, 42)
 
@@ -306,7 +306,7 @@ class TestRPCollectionMutationMethodsIntegration:
 
 @pytest.mark.integration
 class TestRPModelElementDependenciesIntegration:
-    """Integration tests for RPModelElement dependency/association methods."""
+    """Integration tests for IRPModelElement dependency/association methods."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
@@ -326,11 +326,11 @@ class TestRPModelElementDependenciesIntegration:
             target = pkg.add_class(self._unique("Target"))
             dependency = source.add_dependency_to(target)
             assert dependency is not None
-            assert isinstance(dependency, RPModelElement)
+            assert isinstance(dependency, IRPModelElement)
             assert dependency.get_meta_class() == "Dependency"
 
             deps = source.get_dependencies()
-            assert isinstance(deps, RPCollection)
+            assert isinstance(deps, IRPCollection)
             assert isinstance(deps.get_count(), int)
             assert deps.get_count() >= 0
             assert len(list(deps)) >= 1
@@ -350,7 +350,7 @@ class TestRPModelElementDependenciesIntegration:
             source = pkg.add_class(self._unique("Source"))
             dependency = source.add_dependency(target_name, "Class")
             assert dependency is not None
-            assert isinstance(dependency, RPModelElement)
+            assert isinstance(dependency, IRPModelElement)
             assert dependency.get_meta_class() == "Dependency"
             deps = source.get_dependencies()
             assert len(list(deps)) >= 1
@@ -366,10 +366,10 @@ class TestRPModelElementDependenciesIntegration:
             target = pkg.add_class(self._unique("Target"))
             dependency = pkg.add_dependency_between(source, target)
             assert dependency is not None
-            assert isinstance(dependency, RPModelElement)
+            assert isinstance(dependency, IRPModelElement)
             assert dependency.get_meta_class() == "Dependency"
             deps = pkg.get_owned_dependencies()
-            assert isinstance(deps, RPCollection)
+            assert isinstance(deps, IRPCollection)
             assert isinstance(deps.get_count(), int)
             assert deps.get_count() >= 0
             assert len(list(deps)) >= 1
@@ -385,7 +385,7 @@ class TestRPModelElementDependenciesIntegration:
             target = pkg.add_class(self._unique("Target"))
             dependency = source.add_dependency_to(target)
             owned = source.get_owned_dependencies()
-            assert isinstance(owned, RPCollection)
+            assert isinstance(owned, IRPCollection)
             assert isinstance(owned.get_count(), int)
             assert owned.get_count() >= 0
             assert len(list(owned)) >= 1
@@ -402,10 +402,10 @@ class TestRPModelElementDependenciesIntegration:
             target = pkg.add_class(self._unique("Target"))
             dependency = source.add_remote_dependency_to(target, "dependency")
             assert dependency is not None
-            assert isinstance(dependency, RPModelElement)
+            assert isinstance(dependency, IRPModelElement)
             assert dependency.get_meta_class() == "Dependency"
             remote_deps = source.get_remote_dependencies()
-            assert isinstance(remote_deps, RPCollection)
+            assert isinstance(remote_deps, IRPCollection)
             assert isinstance(remote_deps.get_count(), int)
             assert remote_deps.get_count() >= 0
             source.delete_dependency(dependency)
@@ -417,8 +417,8 @@ class TestRPModelElementDependenciesIntegration:
         pkg = self._create_package(test_project, pkg_name)
         try:
             assoc_classes = pkg.get_association_classes()
-            assert isinstance(assoc_classes, RPCollection)
-            # smoke test: no associations created, but confirm the COM call returns a valid RPCollection
+            assert isinstance(assoc_classes, IRPCollection)
+            # smoke test: no associations created, but confirm the COM call returns a valid IRPCollection
             assert isinstance(assoc_classes.get_count(), int)
         finally:
             pkg.delete_from_project()
@@ -431,7 +431,7 @@ class TestRPModelElementDependenciesIntegration:
             target = pkg.add_class(self._unique("Target"))
             dependency = source.add_dependency_to(target)
             references = target.get_references()
-            assert isinstance(references, RPCollection)
+            assert isinstance(references, IRPCollection)
             assert isinstance(references.get_count(), int)
             assert references.get_count() >= 0
             source.delete_dependency(dependency)
@@ -440,22 +440,22 @@ class TestRPModelElementDependenciesIntegration:
 
     @pytest.mark.xfail(reason="requires RPRelation helper from relations subpackage", strict=False)
     def test_add_association(self, test_project: RPProject) -> None:
-        # RPPackage.add_association has a different signature (name: str), so call RPModelElement's version directly
+        # RPPackage.add_association has a different signature (name: str), so call IRPModelElement's version directly
         pkg_name = self._unique("AssocPkg")
         pkg = self._create_package(test_project, pkg_name)
         try:
             cls1 = pkg.add_class(self._unique("Class1"))
             cls2 = pkg.add_class(self._unique("Class2"))
-            assoc = RPModelElement.add_association(pkg, cast(RPRelation, cls1), cast(RPRelation, cls2), self._unique("AssocName"))
+            assoc = IRPModelElement.add_association(pkg, cast(RPRelation, cls1), cast(RPRelation, cls2), self._unique("AssocName"))
             assert assoc is not None
-            assert isinstance(assoc, RPModelElement)
+            assert isinstance(assoc, IRPModelElement)
         finally:
             pkg.delete_from_project()
 
 
 @pytest.mark.integration
 class TestRPModelElementStereotypesTagsIntegration:
-    """Integration tests for RPModelElement stereotype and tag methods."""
+    """Integration tests for IRPModelElement stereotype and tag methods."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
@@ -471,7 +471,7 @@ class TestRPModelElementStereotypesTagsIntegration:
     def test_get_stereotypes_initially_empty(self, test_project: RPProject) -> None:
         stereotypes = test_project.get_stereotypes()
         assert stereotypes is not None
-        assert isinstance(stereotypes, RPCollection)
+        assert isinstance(stereotypes, IRPCollection)
         assert len(list(stereotypes)) == 0
 
     def test_add_stereotype_and_get_stereotypes(self, test_project: RPProject) -> None:
@@ -479,9 +479,9 @@ class TestRPModelElementStereotypesTagsIntegration:
         try:
             stereo = pkg.add_stereotype(self._unique("TestStereo"), "Package")
             assert stereo is not None
-            assert isinstance(stereo, RPModelElement)
+            assert isinstance(stereo, IRPModelElement)
             stereotypes = pkg.get_stereotypes()
-            assert isinstance(stereotypes, RPCollection)
+            assert isinstance(stereotypes, IRPCollection)
             names = [s.get_name() for s in stereotypes]
             assert stereo.get_name() in names
         finally:
@@ -492,10 +492,10 @@ class TestRPModelElementStereotypesTagsIntegration:
         try:
             stereo = pkg.add_stereotype(self._unique("RemoveMe"), "Package")
             assert stereo is not None
-            assert isinstance(stereo, RPModelElement)
+            assert isinstance(stereo, IRPModelElement)
             pkg.remove_stereotype(stereo)
             stereotypes = pkg.get_stereotypes()
-            assert isinstance(stereotypes, RPCollection)
+            assert isinstance(stereotypes, IRPCollection)
             names = [s.get_name() for s in stereotypes]
             assert stereo.get_name() not in names
         finally:
@@ -506,12 +506,12 @@ class TestRPModelElementStereotypesTagsIntegration:
         try:
             stereo = pkg.add_stereotype(self._unique("SpecificStereo"), "Package")
             assert stereo is not None
-            assert isinstance(stereo, RPModelElement)
+            assert isinstance(stereo, IRPModelElement)
             pkg.remove_stereotype(stereo)
             # add_specific_stereotype returns void (None) according to Java API
             pkg.add_specific_stereotype(stereo)
             stereotypes = pkg.get_stereotypes()
-            assert isinstance(stereotypes, RPCollection)
+            assert isinstance(stereotypes, IRPCollection)
             names = [s.get_name() for s in stereotypes]
             assert stereo.get_name() in names
         finally:
@@ -522,10 +522,10 @@ class TestRPModelElementStereotypesTagsIntegration:
         try:
             stereo = pkg.add_stereotype(self._unique("TagTestStereo"), "Package")
             assert stereo is not None
-            assert isinstance(stereo, RPModelElement)
+            assert isinstance(stereo, IRPModelElement)
             tags = pkg.get_all_tags()
             assert tags is not None
-            assert isinstance(tags, RPCollection)
+            assert isinstance(tags, IRPCollection)
         finally:
             pkg.delete_from_project()
 
@@ -534,10 +534,10 @@ class TestRPModelElementStereotypesTagsIntegration:
         try:
             stereo = pkg.add_stereotype(self._unique("LocalTagTestStereo"), "Package")
             assert stereo is not None
-            assert isinstance(stereo, RPModelElement)
+            assert isinstance(stereo, IRPModelElement)
             tags = pkg.get_local_tags()
             assert tags is not None
-            assert isinstance(tags, RPCollection)
+            assert isinstance(tags, IRPCollection)
         finally:
             pkg.delete_from_project()
 
@@ -547,7 +547,7 @@ class TestRPModelElementStereotypesTagsIntegration:
         try:
             cls = pkg.add_class(self._unique("GetTagTestClass"))
             assert cls is not None
-            assert isinstance(cls, RPModelElement)
+            assert isinstance(cls, IRPModelElement)
             cls.add_stereotype(self._unique("TaggedStereo"), "Class")
             tag = cls.get_tag("SomeTag")
             assert tag is not None
@@ -565,7 +565,7 @@ class TestRPModelElementStereotypesTagsIntegration:
         try:
             cls = pkg.add_class(self._unique("SetTagValTestClass"))
             assert cls is not None
-            assert isinstance(cls, RPModelElement)
+            assert isinstance(cls, IRPModelElement)
             cls.add_stereotype(self._unique("TaggedStereo"), "Class")
             tag = cls.get_tag("SomeTag")
             assert tag is not None
@@ -580,7 +580,7 @@ class TestRPModelElementStereotypesTagsIntegration:
         try:
             cls = pkg.add_class(self._unique("SetTagElemTestClass"))
             assert cls is not None
-            assert isinstance(cls, RPModelElement)
+            assert isinstance(cls, IRPModelElement)
             cls.add_stereotype(self._unique("TaggedStereo"), "Class")
             tag = cls.get_tag("SomeTag")
             assert tag is not None
@@ -595,14 +595,14 @@ class TestRPModelElementStereotypesTagsIntegration:
         try:
             cls = pkg.add_class(self._unique("SetTagCtxTestClass"))
             assert cls is not None
-            assert isinstance(cls, RPModelElement)
+            assert isinstance(cls, IRPModelElement)
             cls.add_stereotype(self._unique("TaggedStereo"), "Class")
             tag = cls.get_tag("SomeTag")
             assert tag is not None
             elements = cls.get_all_tags()
             multiplicities = cls.get_local_tags()
-            assert isinstance(elements, RPCollection)
-            assert isinstance(multiplicities, RPCollection)
+            assert isinstance(elements, IRPCollection)
+            assert isinstance(multiplicities, IRPCollection)
             result = cls.set_tag_context_value(tag, elements, multiplicities)
             assert result is not None
         finally:
@@ -611,7 +611,7 @@ class TestRPModelElementStereotypesTagsIntegration:
 
 @pytest.mark.integration
 class TestRPModelElementDescriptionDisplayNameIntegration:
-    """Integration tests for RPModelElement description and display-name methods."""
+    """Integration tests for IRPModelElement description and display-name methods."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
@@ -693,7 +693,7 @@ class TestRPModelElementDescriptionDisplayNameIntegration:
             cls2 = pkg.add_class(self._unique("Target2"))
 
             new_collection = rhapsody_app.create_new_collection()
-            assert isinstance(new_collection, RPCollection)
+            assert isinstance(new_collection, IRPCollection)
             new_collection.add_item(cls1)
             new_collection.add_item(cls2)
 
@@ -742,7 +742,7 @@ class TestRPModelElementDescriptionDisplayNameIntegration:
 
 @pytest.mark.integration
 class TestRPModelElementPropertiesIntegration:
-    """Integration tests for RPModelElement property methods."""
+    """Integration tests for IRPModelElement property methods."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
@@ -812,7 +812,7 @@ class TestRPModelElementPropertiesIntegration:
         try:
             pkg.set_property_value("General::Graphics::ShowLabels", "True")
             overridden = pkg.get_overridden_properties(0)
-            assert isinstance(overridden, RPCollection)
+            assert isinstance(overridden, IRPCollection)
             assert isinstance(overridden.get_count(), int)
             assert overridden.get_count() > 0
         finally:
@@ -824,7 +824,7 @@ class TestRPModelElementPropertiesIntegration:
         try:
             pkg.set_property_value("General::Graphics::ShowLabels", "True")
             matched = pkg.get_overridden_properties_by_pattern("General*", 0, 0)
-            assert isinstance(matched, RPCollection)
+            assert isinstance(matched, IRPCollection)
             assert isinstance(matched.get_count(), int)
             assert len(list(matched)) >= 1
         finally:
@@ -857,7 +857,7 @@ class TestRPModelElementPropertiesIntegration:
 
 @pytest.mark.integration
 class TestRPModelElementNavigationIntegration:
-    """Integration tests for RPModelElement navigation/search methods."""
+    """Integration tests for IRPModelElement navigation/search methods."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
@@ -877,7 +877,7 @@ class TestRPModelElementNavigationIntegration:
             pkg.add_class(class_name)
             found = pkg.find_nested_element(class_name, "Class")
             assert found is not None
-            assert isinstance(found, RPModelElement)
+            assert isinstance(found, IRPModelElement)
             assert found.get_name() == class_name
 
             not_found = pkg.find_nested_element(self._unique("Missing"), "Class")
@@ -897,7 +897,7 @@ class TestRPModelElementNavigationIntegration:
             assert not_found is None
             found = pkg.find_nested_element_recursive(class_name, "Class")
             assert found is not None
-            assert isinstance(found, RPModelElement)
+            assert isinstance(found, IRPModelElement)
             assert found.get_name() == class_name
         finally:
             pkg.delete_from_project()
@@ -910,7 +910,7 @@ class TestRPModelElementNavigationIntegration:
             full_path = f"{pkg.get_name()}::{class_name}"
             found = test_project.find_elements_by_full_name(full_path, "Class")
             assert found is not None
-            assert isinstance(found, RPModelElement)
+            assert isinstance(found, IRPModelElement)
             assert found.get_name() == class_name
         finally:
             pkg.delete_from_project()
@@ -921,7 +921,7 @@ class TestRPModelElementNavigationIntegration:
             pkg.add_class(self._unique("Child1"))
             pkg.add_class(self._unique("Child2"))
             elements = pkg.get_nested_elements_recursive()
-            assert isinstance(elements, RPCollection)
+            assert isinstance(elements, IRPCollection)
             assert isinstance(elements.get_count(), int)
             assert len(list(elements)) >= 3
         finally:
@@ -971,7 +971,7 @@ class TestRPModelElementNavigationIntegration:
             cls.set_owner(pkg2)
             owner = cls.get_owner()
             assert owner is not None
-            assert isinstance(owner, RPModelElement)
+            assert isinstance(owner, IRPModelElement)
             assert owner.get_name() == pkg2.get_name()
         finally:
             pkg2.delete_from_project()
@@ -991,7 +991,7 @@ class TestRPModelElementNavigationIntegration:
 
 @pytest.mark.integration
 class TestRPModelElementCloningTemplatesIntegration:
-    """Integration tests for RPModelElement clone, change-to and template methods."""
+    """Integration tests for IRPModelElement clone, change-to and template methods."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
@@ -1013,7 +1013,7 @@ class TestRPModelElementCloningTemplatesIntegration:
             clone_name = self._unique("Clone")
             cloned = cls.clone(clone_name, pkg)
             assert cloned is not None
-            assert isinstance(cloned, RPModelElement)
+            assert isinstance(cloned, IRPModelElement)
             assert cloned.get_name() == clone_name
             assert cloned.get_guid() != original_guid
         finally:
@@ -1028,7 +1028,7 @@ class TestRPModelElementCloningTemplatesIntegration:
 
             changed = cls.change_to("ClassCategory")
             assert changed is not None
-            assert isinstance(changed, RPModelElement)
+            assert isinstance(changed, IRPModelElement)
             assert changed.get_meta_class() == "ClassCategory"
         finally:
             pkg.delete_from_project()
@@ -1050,7 +1050,7 @@ class TestRPModelElementCloningTemplatesIntegration:
             cls = pkg.add_class(self._unique("Plain"))
             of_tmpl = cls.get_of_template()
             assert of_tmpl is not None
-            assert isinstance(of_tmpl, RPModelElement)
+            assert isinstance(of_tmpl, IRPModelElement)
             assert of_tmpl.get_name() == ""
         finally:
             pkg.delete_from_project()
@@ -1087,7 +1087,7 @@ class TestRPModelElementCloningTemplatesIntegration:
             cls = pkg.add_class(self._unique("Plain"))
             params = cls.get_template_parameters()
             assert params is not None
-            assert isinstance(params, RPCollection)
+            assert isinstance(params, IRPCollection)
             assert isinstance(params.get_count(), int)
         finally:
             pkg.delete_from_project()
@@ -1101,7 +1101,7 @@ class TestRPModelElementCloningTemplatesIntegration:
             normal_cls.become_template_instantiation_of(template_cls)
             ti = normal_cls.get_ti()
             assert ti is not None
-            assert isinstance(ti, RPModelElement)
+            assert isinstance(ti, IRPModelElement)
         finally:
             pkg.delete_from_project()
 
@@ -1136,7 +1136,7 @@ class TestRPModelElementCloningTemplatesIntegration:
 
 @pytest.mark.integration
 class TestRPModelElementRedefinesConstraintsIntegration:
-    """Integration tests for RPModelElement redefine and constraint methods."""
+    """Integration tests for IRPModelElement redefine and constraint methods."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
@@ -1160,7 +1160,7 @@ class TestRPModelElementRedefinesConstraintsIntegration:
             new_op.add_redefines(base_op)
 
             redefines = new_op.get_redefines()
-            assert isinstance(redefines, RPCollection)
+            assert isinstance(redefines, IRPCollection)
             assert isinstance(redefines.get_count(), int)
             assert redefines.get_count() >= 1
         finally:
@@ -1177,13 +1177,13 @@ class TestRPModelElementRedefinesConstraintsIntegration:
             new_op.add_redefines(base_op)
 
             redefines_before = new_op.get_redefines()
-            assert isinstance(redefines_before, RPCollection)
+            assert isinstance(redefines_before, IRPCollection)
             assert redefines_before.get_count() >= 1
 
             new_op.remove_redefines(base_op)
 
             redefines_after = new_op.get_redefines()
-            assert isinstance(redefines_after, RPCollection)
+            assert isinstance(redefines_after, IRPCollection)
             assert redefines_after.get_count() == 0
         finally:
             pkg.delete_from_project()
@@ -1194,7 +1194,7 @@ class TestRPModelElementRedefinesConstraintsIntegration:
             cls = pkg.add_class(self._unique("ConstrCls"))
             constraints = cls.get_constraints()
             assert constraints is not None
-            assert isinstance(constraints, RPCollection)
+            assert isinstance(constraints, IRPCollection)
             assert isinstance(constraints.get_count(), int)
         finally:
             pkg.delete_from_project()
@@ -1205,7 +1205,7 @@ class TestRPModelElementRedefinesConstraintsIntegration:
             cls = pkg.add_class(self._unique("ConstrHimCls"))
             constraints = cls.get_constraints_by_him()
             assert constraints is not None
-            assert isinstance(constraints, RPCollection)
+            assert isinstance(constraints, IRPCollection)
             assert isinstance(constraints.get_count(), int)
         finally:
             pkg.delete_from_project()
@@ -1213,7 +1213,7 @@ class TestRPModelElementRedefinesConstraintsIntegration:
 
 @pytest.mark.integration
 class TestRPModelElementOslcRemoteIntegration:
-    """Integration tests for RPModelElement OSLC, remote and requirement traceability methods."""
+    """Integration tests for IRPModelElement OSLC, remote and requirement traceability methods."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
@@ -1239,7 +1239,7 @@ class TestRPModelElementOslcRemoteIntegration:
         try:
             cls = pkg.add_class(self._unique("HyperLinkCls"))
             hyper_links = cls.get_hyper_links()
-            assert isinstance(hyper_links, RPCollection)
+            assert isinstance(hyper_links, IRPCollection)
             assert isinstance(hyper_links.get_count(), int)
             assert hyper_links.get_count() == 0
             assert len(list(hyper_links)) == 0
@@ -1301,7 +1301,7 @@ class TestRPModelElementOslcRemoteIntegration:
 
 @pytest.mark.integration
 class TestRPModelElementMetadataIntegration:
-    """Integration tests for RPModelElement metadata/icon/GUID methods."""
+    """Integration tests for IRPModelElement metadata/icon/GUID methods."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
@@ -1468,7 +1468,7 @@ class TestRPModelElementMetadataIntegration:
 
 @pytest.mark.integration
 class TestRPModelElementDiagnosticsUiIntegration:
-    """Integration tests for RPModelElement diagnostics/annotations/UI-action methods."""
+    """Integration tests for IRPModelElement diagnostics/annotations/UI-action methods."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
@@ -1508,7 +1508,7 @@ class TestRPModelElementDiagnosticsUiIntegration:
         try:
             cls = pkg.add_class(self._unique("AnnCls"))
             annotations = cls.get_annotations()
-            assert isinstance(annotations, RPCollection)
+            assert isinstance(annotations, IRPCollection)
             assert isinstance(annotations.get_count(), int)
             assert annotations.get_count() == 0
             assert len(list(annotations)) == 0
@@ -1520,7 +1520,7 @@ class TestRPModelElementDiagnosticsUiIntegration:
         try:
             cls = pkg.add_class(self._unique("CtrlCls"))
             files = cls.get_controlled_files()
-            assert isinstance(files, RPCollection)
+            assert isinstance(files, IRPCollection)
             assert isinstance(files.get_count(), int)
             assert files.get_count() == 0
             assert len(list(files)) == 0
@@ -1603,7 +1603,7 @@ class TestRPModelElementDiagnosticsUiIntegration:
             cls2 = pkg.add_class(self._unique("LinkTgt"))
             from typing import cast
 
-            none_elem: RPModelElement = cast(RPModelElement, None)
+            none_elem: IRPModelElement = cast(IRPModelElement, None)
             cls1.add_link_to_element(cls2, cast(RPRelation, none_elem), none_elem, none_elem)
         finally:
             pkg.delete_from_project()
@@ -1841,7 +1841,7 @@ class TestRPUnitCrossProjectIntegration:
         try:
             assert isinstance(pkg, RPUnit)
             units = pkg.get_nested_save_units()
-            assert isinstance(units, RPCollection)
+            assert isinstance(units, IRPCollection)
             assert isinstance(units.get_count(), int)
             assert len(list(units)) == 0
         finally:
@@ -1870,7 +1870,7 @@ class TestRPUnitCrossProjectIntegration:
             cls = pkg.add_class(self._unique("StructCls"))
             assert isinstance(cls, RPUnit)
             diagrams = cls.get_structure_diagrams()
-            assert isinstance(diagrams, RPCollection)
+            assert isinstance(diagrams, IRPCollection)
             assert isinstance(diagrams.get_count(), int)
             assert len(list(diagrams)) == 0
         finally:
@@ -1905,7 +1905,7 @@ class TestRPUnitCrossProjectIntegration:
             # Use the second_test_project fixture instead of creating a new one
             copied = src_pkg.copy_to_another_project(second_test_project)
             assert copied is not None
-            assert isinstance(copied, RPModelElement)
+            assert isinstance(copied, IRPModelElement)
             assert copied.get_name() == src_pkg.get_name()
             assert copied.is_reference_unit() == 0  # type: ignore[attr-defined]
         finally:
@@ -1920,7 +1920,7 @@ class TestRPUnitCrossProjectIntegration:
             # Use the second_test_project fixture instead of creating a new one
             moved = src_pkg.move_to_another_project_leave_a_reference(second_test_project)
             assert moved is not None
-            assert isinstance(moved, RPModelElement)
+            assert isinstance(moved, IRPModelElement)
             assert moved.get_name() == src_pkg.get_name()
         finally:
             src_pkg.delete_from_project()
@@ -1934,7 +1934,7 @@ class TestRPUnitCrossProjectIntegration:
             # Use the second_test_project fixture instead of creating a new one
             ref = src_pkg.reference_to_another_project(second_test_project)
             assert ref is not None
-            assert isinstance(ref, RPModelElement)
+            assert isinstance(ref, IRPModelElement)
             assert isinstance(ref, RPUnit)
             assert ref.is_reference_unit() == 1
         finally:

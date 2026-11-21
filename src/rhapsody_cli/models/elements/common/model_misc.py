@@ -1,9 +1,9 @@
 """Miscellaneous model element wrappers — RPComment, RPConstraint, RPEnumerationLiteral."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 
 
-class RPEnumerationLiteral(RPModelElement):
+class RPEnumerationLiteral(IRPModelElement):
     """Wraps ``IRPEnumerationLiteral``: a literal value in an enumeration."""
 
     # IRPEnumerationLiteral method parity checklist:
@@ -38,7 +38,7 @@ class RPEnumerationLiteral(RPModelElement):
 AbstractRPModelElement.register_wrapper("EnumerationLiteral", RPEnumerationLiteral)
 
 
-class RPComment(RPModelElement):
+class RPComment(IRPModelElement):
     """Wraps ``IRPComment``: a free-text comment element."""
 
     # IRPComment method parity checklist:
@@ -51,7 +51,7 @@ class RPComment(RPModelElement):
 AbstractRPModelElement.register_wrapper("Comment", RPComment)
 
 
-class RPConstraint(RPModelElement):
+class RPConstraint(IRPModelElement):
     """Wraps ``IRPConstraint``: a constraint element."""
 
     # IRPConstraint method parity checklist:
@@ -59,16 +59,16 @@ class RPConstraint(RPModelElement):
     # [inherited] irp_model_element methods (covered by rp_model_element checklists)
     # No deprecated IRPConstraint methods.
 
-    def get_constraints_by_me(self) -> RPCollection:
+    def get_constraints_by_me(self) -> IRPCollection:
         """Returns the collection of elements constrained by this constraint.
 
         Returns:
-            An ``RPCollection`` of model elements constrained by this constraint.
+            An ``IRPCollection`` of model elements constrained by this constraint.
 
         Reference:
             com.telelogic.rhapsody.core.IRPConstraint::getConstraintsByMe()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getConstraintsByMe", "constraintsByMe"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getConstraintsByMe", "constraintsByMe"))
 
 
 AbstractRPModelElement.register_wrapper("Constraint", RPConstraint)

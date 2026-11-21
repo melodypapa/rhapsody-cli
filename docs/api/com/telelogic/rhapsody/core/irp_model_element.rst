@@ -1,6 +1,6 @@
 .. _rhapsody-java-interface-IRPModelElement:
 
-RPModelElement
+IRPModelElement
 ==============
 
 The IRPModelElement interface is the base interface for all model elements.
@@ -8,8 +8,8 @@ The IRPModelElement interface is the base interface for all model elements.
 - **Java interface:** IRPModelElement
 - **Java package:** com.telelogic.rhapsody.core
 - **JavaDoc description:** The base interface of all Rhapsody model elements.
-- **Python wrapper:** RPModelElement
-- **Python import:** ``from rhapsody_cli.models.core import RPModelElement``
+- **Python wrapper:** IRPModelElement
+- **Python import:** ``from rhapsody_cli.models.core import IRPModelElement``
 - **Canonical module:** pending — the §2 package move is deferred until the IRPCollection and
   IRPUnit rows leave ``models/core.py`` (see ``docs/reports/sync-todo``).
 

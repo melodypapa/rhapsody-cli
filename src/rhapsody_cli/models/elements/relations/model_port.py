@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 from rhapsody_cli.models.elements.relations.model_instance import RPInstance
 
 if TYPE_CHECKING:
@@ -98,7 +98,7 @@ class RPPort(RPInstance):
         """
         return cast("IRPClass", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getPortContract", "portContract")))
 
-    def set_port_contract(self, port_contract: RPModelElement) -> None:
+    def set_port_contract(self, port_contract: IRPModelElement) -> None:
         """Specifies the contract to use for the port.
 
         Args:
@@ -109,11 +109,11 @@ class RPPort(RPInstance):
         """
         AbstractRPModelElement._set_method_or_property(self._com, "setPortContract", "portContract", port_contract._com)
 
-    def get_provided_interfaces(self) -> RPCollection:
+    def get_provided_interfaces(self) -> IRPCollection:
         """Returns the interfaces provided by the port.
 
         Returns:
-            An ``RPCollection`` of provided interface classes.
+            An ``IRPCollection`` of provided interface classes.
 
         Raises:
             RhapsodyRuntimeException: if the provided interfaces cannot be retrieved.
@@ -121,9 +121,9 @@ class RPPort(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPPort::getProvidedInterfaces()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getProvidedInterfaces", "providedInterfaces"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getProvidedInterfaces", "providedInterfaces"))
 
-    def add_provided_interface(self, new_val: RPModelElement) -> None:
+    def add_provided_interface(self, new_val: IRPModelElement) -> None:
         """Adds a provided interface to the port.
 
         Args:
@@ -137,7 +137,7 @@ class RPPort(RPInstance):
         """
         AbstractRPModelElement.call_com(lambda: self._com.addProvidedInterface(new_val._com))
 
-    def remove_provided_interface(self, new_val: RPModelElement) -> None:
+    def remove_provided_interface(self, new_val: IRPModelElement) -> None:
         """Removes a provided interface from the port.
 
         Args:
@@ -151,11 +151,11 @@ class RPPort(RPInstance):
         """
         AbstractRPModelElement.call_com(lambda: self._com.removeProvidedInterface(new_val._com))
 
-    def get_required_interfaces(self) -> RPCollection:
+    def get_required_interfaces(self) -> IRPCollection:
         """Returns the interfaces required by the port.
 
         Returns:
-            An ``RPCollection`` of required interface classes.
+            An ``IRPCollection`` of required interface classes.
 
         Raises:
             RhapsodyRuntimeException: if the required interfaces cannot be retrieved.
@@ -163,9 +163,9 @@ class RPPort(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPPort::getRequiredInterfaces()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getRequiredInterfaces", "requiredInterfaces"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getRequiredInterfaces", "requiredInterfaces"))
 
-    def add_required_interface(self, new_val: RPModelElement) -> None:
+    def add_required_interface(self, new_val: IRPModelElement) -> None:
         """Adds a required interface to the port.
 
         Args:
@@ -179,7 +179,7 @@ class RPPort(RPInstance):
         """
         AbstractRPModelElement.call_com(lambda: self._com.addRequiredInterface(new_val._com))
 
-    def remove_required_interface(self, new_val: RPModelElement) -> None:
+    def remove_required_interface(self, new_val: IRPModelElement) -> None:
         """Removes a required interface from the port.
 
         Args:
@@ -208,7 +208,7 @@ class RPPort(RPInstance):
         """
         return cast("IRPClass", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getContract", "contract")))
 
-    def set_contract(self, contract: RPModelElement) -> None:
+    def set_contract(self, contract: IRPModelElement) -> None:
         """Specifies the contract to use for the port.
 
         Deprecated:

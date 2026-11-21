@@ -4,7 +4,7 @@ from typing import cast
 
 import pytest
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 from rhapsody_cli.models.elements.classifiers import RPActor, RPClassifier
 from rhapsody_cli.models.elements.interactions import RPEvent
 from tests.unit.models.fakes import make_fake_element
@@ -26,7 +26,7 @@ def test_actor_add_event_reception_with_event_wraps_result() -> None:
     actor = RPActor(fake)
 
     with pytest.raises(NotImplementedError):
-        actor.add_event_reception_with_event("onStart", cast(RPEvent, RPModelElement(event)))
+        actor.add_event_reception_with_event("onStart", cast(RPEvent, IRPModelElement(event)))
 
 
 def test_actor_get_is_behavior_overridden_delegates_to_com() -> None:

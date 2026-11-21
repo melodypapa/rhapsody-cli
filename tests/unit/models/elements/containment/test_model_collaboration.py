@@ -1,6 +1,6 @@
 """Tests for rhapsody_cli.models.elements.containment.RPCollaboration."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, RPUnit
 from rhapsody_cli.models.elements.containment import RPCollaboration
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -55,7 +55,7 @@ def test_collaboration_get_messages_returns_collection() -> None:
     collab = RPCollaboration(fake)
 
     result = collab.get_messages()
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_collaboration_generate_sequence_delegates() -> None:

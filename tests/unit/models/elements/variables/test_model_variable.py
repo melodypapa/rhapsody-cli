@@ -2,7 +2,7 @@
 
 from typing import cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement, RPUnit
 from rhapsody_cli.models.elements.classifiers import RPClassifier
 from rhapsody_cli.models.elements.variables.model_variables import RPVariable
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
@@ -23,7 +23,7 @@ def test_variable_add_element_default_value_wraps_result() -> None:
     fake.addElementDefaultValue.return_value = new_value
     variable = RPVariable(fake)
 
-    result = variable.add_element_default_value(cast(RPModelElement, AbstractRPModelElement.wrap(element)))
+    result = variable.add_element_default_value(cast(IRPModelElement, AbstractRPModelElement.wrap(element)))
 
     fake.addElementDefaultValue.assert_called_once_with(element)
     assert result.get_name() == "Extra"
@@ -73,7 +73,7 @@ def test_variable_get_value_specifications_returns_collection() -> None:
 
     result = variable.get_value_specifications()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
     assert len(result) == 1
 
 

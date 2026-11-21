@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection
 from rhapsody_cli.models.elements.diagrams.model_diagrams import RPDiagram
 
 if TYPE_CHECKING:
@@ -106,7 +106,7 @@ class RPSequenceDiagram(RPDiagram):
         result = AbstractRPModelElement.call_com(lambda: self._com.getLogicalCollaboration())
         return cast("RPCollaboration", AbstractRPModelElement.wrap(result))
 
-    def get_related_use_cases(self) -> "RPCollection":
+    def get_related_use_cases(self) -> "IRPCollection":
         """Returns use cases related to this sequence diagram.
 
         For internal use only.
@@ -117,7 +117,7 @@ class RPSequenceDiagram(RPDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPSequenceDiagram::getRelatedUseCases()
         """
-        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getRelatedUseCases()))
+        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getRelatedUseCases()))
 
 
 class RPStatechartDiagram(RPDiagram):
@@ -132,7 +132,7 @@ class RPStatechartDiagram(RPDiagram):
     # [inherited] irp_unit methods (covered by rp_unit checklist)
     # No deprecated IRPStatechartDiagram methods.
 
-    def add_and_line(self, source_state: "RPGraphNode", x_start_position: int, y_start_position: int, x_end_position: int, y_end_position: int) -> "RPCollection":
+    def add_and_line(self, source_state: "RPGraphNode", x_start_position: int, y_start_position: int, x_end_position: int, y_end_position: int) -> "IRPCollection":
         """Adds an And Line to the specified state.
 
         Args:
@@ -152,7 +152,7 @@ class RPStatechartDiagram(RPDiagram):
                 int xStartPosition, int yStartPosition,
                 int xEndPosition, int yEndPosition)
         """
-        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.addAndLine(source_state._com, x_start_position, y_start_position, y_end_position, y_end_position)))
+        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.addAndLine(source_state._com, x_start_position, y_start_position, y_end_position, y_end_position)))
 
     def create_graphics(self) -> None:
         """Creates the graphical representation of the elements in the statechart.
@@ -258,7 +258,7 @@ class RPActivityDiagram(RPStatechartDiagram):
     # [inherited] irp_unit methods (covered by rp_unit checklist)
     # No deprecated IRPActivityDiagram methods.
 
-    def decompose_swimlane(self, graph_swimlane: "RPGraphElement") -> "RPCollection":
+    def decompose_swimlane(self, graph_swimlane: "RPGraphElement") -> "IRPCollection":
         """Decomposes the specified swimlane into two swimlanes.
 
         Args:
@@ -274,7 +274,7 @@ class RPActivityDiagram(RPStatechartDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPActivityDiagram::decomposeSwimlane(com.telelogic.rhapsody.core.IRPGraphElement graphSwimlane)
         """
-        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.decomposeSwimlane(graph_swimlane._com)))
+        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.decomposeSwimlane(graph_swimlane._com)))
 
     def get_flowchart(self) -> "RPFlowchart":
         """Returns the flowchart object underlying the activity diagram.

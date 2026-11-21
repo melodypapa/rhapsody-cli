@@ -1,7 +1,7 @@
 """Tests for rhapsody_cli.elements.statechart.RPStatechart."""
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 from rhapsody_cli.models.elements.classifiers import RPStatechart
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -49,7 +49,7 @@ def test_statechart_delete_state_delegates_to_com() -> None:
     state = make_fake_element("State", properties={"name": "Idle"})
     statechart = RPStatechart(fake)
 
-    statechart.delete_state(RPModelElement(state))
+    statechart.delete_state(IRPModelElement(state))
 
     fake.deleteState.assert_called_once_with(state)
 
@@ -67,9 +67,9 @@ def test_statechart_get_pictures_with_image_map_delegates_to_com_with_two_args()
     file_names = make_fake_collection([])
     fake.getPicturesWithImageMap.return_value = file_names
     statechart = RPStatechart(fake)
-    diagram_map = RPCollection(make_fake_collection([]))
+    diagram_map = IRPCollection(make_fake_collection([]))
 
     result = statechart.get_pictures_with_image_map("output.emf", diagram_map)
 
     fake.getPicturesWithImageMap.assert_called_once_with("output.emf", diagram_map._com)
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)

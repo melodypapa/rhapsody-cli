@@ -1,6 +1,6 @@
 from typing import cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
 from rhapsody_cli.models.elements.containment.model_package import RPPackage
 from rhapsody_cli.models.support.model_files import (
@@ -64,7 +64,7 @@ class TestRPFile:
         fake = make_fake_element("File")
         target = make_fake_element("X")
         obj = RPFile(fake)
-        obj.add_model_element(cast(RPModelElement, AbstractRPModelElement.wrap(target)), "x")
+        obj.add_model_element(cast(IRPModelElement, AbstractRPModelElement.wrap(target)), "x")
         fake.addModelElement.assert_called_once_with(target, "x")
 
     def test_add_package_to_scope_delegates_to_com(self) -> None:
@@ -93,7 +93,7 @@ class TestRPFile:
         fake.getElements.return_value = make_fake_collection([inner])
         obj = RPFile(fake)
         result = obj.get_elements()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         assert len(result) == 1
 
     def test_get_file_fragments_delegates_to_com(self) -> None:
@@ -102,7 +102,7 @@ class TestRPFile:
         fake.getFileFragments.return_value = make_fake_collection([inner])
         obj = RPFile(fake)
         result = obj.get_file_fragments()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         assert len(result) == 1
 
     def test_get_file_type_delegates_to_com(self) -> None:
@@ -117,7 +117,7 @@ class TestRPFile:
         fake.getFiles.return_value = make_fake_collection([inner])
         obj = RPFile(fake)
         result = obj.get_files()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         assert len(result) == 1
 
     def test_get_imp_name_delegates_to_com(self) -> None:

@@ -24,7 +24,7 @@ from typing import Dict, List, cast
 from rhapsody_cli.actions.abstract_action import ElementManagementAction, SessionAwareAction
 from rhapsody_cli.cli.formatters import OutputFormatter
 from rhapsody_cli.exceptions import CliExecutionError
-from rhapsody_cli.models.core import RPModelElement
+from rhapsody_cli.models.core import IRPModelElement
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +37,7 @@ class AbstractOperationAction(SessionAwareAction, ElementManagementAction):
     SWR_OP_00010: GUID Lookup Support
     """
 
-    def _resolve_classifier(self, path: str) -> RPModelElement:
+    def _resolve_classifier(self, path: str) -> IRPModelElement:
         """Resolve a parent classifier path.
 
         Args:
@@ -52,7 +52,7 @@ class AbstractOperationAction(SessionAwareAction, ElementManagementAction):
         root = self._get_active_root()
         return self._resolve_container_or_element(root, path, resolve_element=True, operation=f"resolve classifier path '{path}'")
 
-    def _resolve_operation(self, classifier: RPModelElement, name: str) -> RPModelElement:
+    def _resolve_operation(self, classifier: IRPModelElement, name: str) -> IRPModelElement:
         """Find an operation by name within a classifier.
 
         Args:
@@ -68,9 +68,9 @@ class AbstractOperationAction(SessionAwareAction, ElementManagementAction):
         operation = classifier.find_interface_item(name)  # type: ignore[attr-defined]
         if operation is None:
             raise CliExecutionError(f"Operation '{name}' not found in classifier")
-        return cast(RPModelElement, operation)
+        return cast(IRPModelElement, operation)
 
-    def _resolve_operation_by_guid(self, guid: str) -> RPModelElement:
+    def _resolve_operation_by_guid(self, guid: str) -> IRPModelElement:
         """Locate an operation by GUID and validate it's an Operation element.
 
         SWR_OP_00010: GUID Lookup Support
@@ -161,7 +161,7 @@ class OperationCreateAction(AbstractOperationAction):
 
         self._report_results(created, errors, len(ops_data))
 
-    def _create_single_operation(self, classifier: RPModelElement, op_attrs: Dict[str, object], parent_path: str) -> str:
+    def _create_single_operation(self, classifier: IRPModelElement, op_attrs: Dict[str, object], parent_path: str) -> str:
         """Create a single operation and set its attributes. Returns the operation name."""
         name = str(op_attrs.get("name", ""))
         if not name:
@@ -207,7 +207,7 @@ class OperationCreateAction(AbstractOperationAction):
         except OSError as e:
             raise CliExecutionError(f"Failed to read file: {e}") from e
 
-    def _set_attributes(self, classifier: RPModelElement, operation: RPModelElement, attrs: Dict[str, object]) -> None:
+    def _set_attributes(self, classifier: IRPModelElement, operation: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Set validated attributes on operation."""
         if "name" in attrs:
             operation.set_name(cast(str, attrs["name"]))
@@ -222,7 +222,7 @@ class OperationCreateAction(AbstractOperationAction):
         self._set_boolean_flags(operation, attrs)
         self._set_returns(classifier, operation, attrs)
 
-    def _set_boolean_flags(self, operation: RPModelElement, attrs: Dict[str, object]) -> None:
+    def _set_boolean_flags(self, operation: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Set boolean flags isAbstract, isStatic, isVirtual.
 
         SWR_OP_00012: Boolean Flag Support
@@ -234,7 +234,7 @@ class OperationCreateAction(AbstractOperationAction):
         if "isVirtual" in attrs:
             operation.set_is_virtual(1 if attrs["isVirtual"] else 0)  # type: ignore[attr-defined]
 
-    def _set_returns(self, classifier: RPModelElement, operation: RPModelElement, attrs: Dict[str, object]) -> None:
+    def _set_returns(self, classifier: IRPModelElement, operation: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Resolve and set the returns type.
 
         SWR_OP_00011: Returns Type Resolution
@@ -333,10 +333,10 @@ class OperationListAction(AbstractOperationAction):
         except Exception as e:
             self._handle_execution_error(e, f"Failed to list operations in '{args.path}'")
 
-    def _collect_operation_names(self, classifier: RPModelElement) -> List[str]:
+    def _collect_operation_names(self, classifier: IRPModelElement) -> List[str]:
         """Collect names of operations on a classifier."""
         operations = classifier.get_operations()  # type: ignore[attr-defined]
-        return [cast(RPModelElement, op).get_name() for op in operations]
+        return [cast(IRPModelElement, op).get_name() for op in operations]
 
     def _format_output(self, op_names: List[str], format_type: str) -> str:
         """Format output based on format parameter."""
@@ -441,13 +441,13 @@ class OperationViewAction(AbstractOperationAction):
         except Exception as e:
             self._handle_execution_error(e, f"Failed to view operation '{args.name or args.guid}'")
 
-    def _collect_operation_data(self, operation: RPModelElement) -> Dict[str, object]:
+    def _collect_operation_data(self, operation: IRPModelElement) -> Dict[str, object]:
         """Collect operation details into a data dictionary.
 
         Normalizes boolean flags to int for clean JSON round-trip.
         """
         returns = operation.get_returns()  # type: ignore[attr-defined]
-        returns_name = cast(RPModelElement, returns).get_name() if returns is not None else ""
+        returns_name = cast(IRPModelElement, returns).get_name() if returns is not None else ""
         arguments = operation.get_arguments()  # type: ignore[attr-defined]
         return {
             "name": operation.get_name(),
@@ -459,7 +459,7 @@ class OperationViewAction(AbstractOperationAction):
             "isVirtual": int(operation.get_is_virtual()),  # type: ignore[attr-defined]
             "returns": returns_name,
             "visibility": operation.get_visibility(),  # type: ignore[attr-defined]
-            "arguments": [cast(RPModelElement, arg).get_name() for arg in arguments],
+            "arguments": [cast(IRPModelElement, arg).get_name() for arg in arguments],
             "metaClass": operation.get_meta_class(),
             "fullPath": operation.get_full_path_name(),
         }
@@ -587,7 +587,7 @@ class OperationUpdateAction(AbstractOperationAction):
         except OSError as e:
             raise CliExecutionError(f"Failed to read file: {e}") from e
 
-    def _set_attributes(self, classifier: RPModelElement, operation: RPModelElement, attrs: Dict[str, object]) -> None:
+    def _set_attributes(self, classifier: IRPModelElement, operation: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Set validated attributes on operation (partial update)."""
         if "name" in attrs:
             operation.set_name(cast(str, attrs["name"]))

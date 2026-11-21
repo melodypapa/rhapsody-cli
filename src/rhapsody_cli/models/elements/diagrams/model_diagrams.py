@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING, Optional, cast
 
 from rhapsody_cli.models.core import (
     AbstractRPModelElement,
-    RPCollection,
-    RPModelElement,
+    IRPCollection,
+    IRPModelElement,
     RPUnit,
 )
 
@@ -79,11 +79,11 @@ class RPDiagram(RPUnit):
         """
         return cast("RPGraphElement", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addTextBox(text, x_position, y_position, width, height))))
 
-    def get_custom_views(self) -> RPCollection:
+    def get_custom_views(self) -> IRPCollection:
         """Gets the custom views that were applied to this diagram view.
 
         Returns:
-            An ``RPCollection`` of custom view elements.
+            An ``IRPCollection`` of custom view elements.
 
         Raises:
             RhapsodyRuntimeException: if the custom views cannot be retrieved.
@@ -91,9 +91,9 @@ class RPDiagram(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::getCustomViews()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getCustomViews", "customViews"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getCustomViews", "customViews"))
 
-    def get_corresponding_graphic_elements(self, model_element: RPModelElement) -> RPCollection:
+    def get_corresponding_graphic_elements(self, model_element: IRPModelElement) -> IRPCollection:
         """Returns the graphical elements that represent the specified model element.
 
         In cases where the same model element appears multiple times in a single
@@ -103,12 +103,12 @@ class RPDiagram(RPUnit):
             model_element: The model element to find graphic representations for.
 
         Returns:
-            An ``RPCollection`` of graphic elements.
+            An ``IRPCollection`` of graphic elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::getCorrespondingGraphicElements(com.telelogic.rhapsody.core.IRPModelElement modelElement)
         """
-        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getCorrespondingGraphicElements(model_element._com)))
+        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getCorrespondingGraphicElements(model_element._com)))
 
     def add_free_shape_by_type(self, type_: str, x: int, y: int, width: int, height: int) -> "RPGraphElement":
         """Adds a free shape to the diagram by type.
@@ -162,7 +162,7 @@ class RPDiagram(RPUnit):
         """
         return cast("RPGraphElement", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewEdgeByType(type_, source._com, target._com))))
 
-    def add_new_edge_for_element(self, element: RPModelElement) -> "RPGraphElement":
+    def add_new_edge_for_element(self, element: IRPModelElement) -> "RPGraphElement":
         """Adds a new edge for the specified element.
 
         Args:
@@ -194,7 +194,7 @@ class RPDiagram(RPUnit):
         """
         return cast("RPGraphElement", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewNodeByType(type_, x, y, width, height))))
 
-    def add_new_node_for_element(self, element: RPModelElement, x: int, y: int, width: int, height: int) -> "RPGraphElement":
+    def add_new_node_for_element(self, element: IRPModelElement, x: int, y: int, width: int, height: int) -> "RPGraphElement":
         """Adds a new node for the specified element.
 
         Args:
@@ -241,16 +241,16 @@ class RPDiagram(RPUnit):
         result = AbstractRPModelElement.call_com(lambda: self._com.getDiagramViewOf(name))
         return cast("RPGraphElement", AbstractRPModelElement.wrap(result)) if result else None
 
-    def get_diagram_views(self) -> RPCollection:
+    def get_diagram_views(self) -> IRPCollection:
         """Returns the diagram views for this diagram.
 
         Returns:
-            An ``RPCollection`` of diagram views.
+            An ``IRPCollection`` of diagram views.
 
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::getDiagramViews()
         """
-        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getDiagramViews()))
+        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getDiagramViews()))
 
     def is_diagram_view(self) -> int:
         """Checks if this is a diagram view.
@@ -282,7 +282,7 @@ class RPDiagram(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.rearrangePorts())
 
-    def set_custom_views(self, views: RPCollection) -> None:
+    def set_custom_views(self, views: IRPCollection) -> None:
         """Sets the custom views for this diagram.
 
         Args:
@@ -309,27 +309,27 @@ class RPDiagram(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.completeRelations())
 
-    def get_elements_in_diagram(self) -> RPCollection:
+    def get_elements_in_diagram(self) -> IRPCollection:
         """Returns the model elements in this diagram.
 
         Returns:
-            An ``RPCollection`` of model elements.
+            An ``IRPCollection`` of model elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::getElementsInDiagram()
         """
-        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getElementsInDiagram()))
+        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getElementsInDiagram()))
 
-    def get_graphical_elements(self) -> RPCollection:
+    def get_graphical_elements(self) -> IRPCollection:
         """Returns the graphical elements in this diagram.
 
         Returns:
-            An ``RPCollection`` of graphical elements.
+            An ``IRPCollection`` of graphical elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::getGraphicalElements()
         """
-        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getGraphicalElements()))
+        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getGraphicalElements()))
 
     def get_last_visualization_modified_time(self) -> str:
         """Returns the last visualization modified time.
@@ -367,16 +367,16 @@ class RPDiagram(RPUnit):
         """
         return cast("RPGraphElement", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.getPictureAs(format_))))
 
-    def get_picture_as_divided_metafiles(self) -> RPCollection:
+    def get_picture_as_divided_metafiles(self) -> IRPCollection:
         """Returns the picture as divided metafiles.
 
         Returns:
-            An ``RPCollection`` of graph elements.
+            An ``IRPCollection`` of graph elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::getPictureAsDividedMetafiles()
         """
-        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getPictureAsDividedMetafiles()))
+        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getPictureAsDividedMetafiles()))
 
     def get_picture_ex(self, x: int, y: int, width: int, height: int) -> "RPGraphElement":
         """Returns a picture for the specified region.
@@ -395,7 +395,7 @@ class RPDiagram(RPUnit):
         """
         return cast("RPGraphElement", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.getPictureEx(x, y, width, height))))
 
-    def get_pictures_with_image_map(self, first_file_name: str, diagram_map: "RPCollection") -> "RPCollection":
+    def get_pictures_with_image_map(self, first_file_name: str, diagram_map: "IRPCollection") -> "IRPCollection":
         """Saves the diagram as EMF file(s) and populates the given collection with image-map info.
 
         Saves the diagram as an EMF format file, breaking the diagram into a number of
@@ -406,12 +406,12 @@ class RPDiagram(RPUnit):
         Args:
             first_file_name: The base name for the created EMF file(s). If multiple files
                 are created, names follow the convention ``firstFileNameZ_X_Y``.
-            diagram_map: An empty ``RPCollection`` (obtainable via
+            diagram_map: An empty ``IRPCollection`` (obtainable via
                 ``RhapsodyApplication.create_new_collection()``) that will be populated
                 with ``IRPImageMap`` objects.
 
         Returns:
-            An ``RPCollection`` containing the names of the files that were created.
+            An ``IRPCollection`` containing the names of the files that were created.
 
         Raises:
             RhapsodyRuntimeException: If the operation fails.
@@ -420,7 +420,7 @@ class RPDiagram(RPUnit):
             com.telelogic.rhapsody.core.IRPDiagram::getPicturesWithImageMap(
                 java.lang.String firstFileName, com.telelogic.rhapsody.core.IRPCollection diagrammap)
         """
-        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.getPicturesWithImageMap(first_file_name, diagram_map._com)))
+        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getPicturesWithImageMap(first_file_name, diagram_map._com)))
 
     def is_open(self) -> int:
         """Checks if the diagram is open.
@@ -460,7 +460,7 @@ class RPDiagram(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.populateDiagram())
 
-    def remove_graph_elements(self, elements: RPCollection) -> None:
+    def remove_graph_elements(self, elements: IRPCollection) -> None:
         """Removes the specified graph elements from the diagram.
 
         Args:

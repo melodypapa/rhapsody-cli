@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement, RPUnit
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.activity.model_activity import RPFlow, RPFlowchart, RPFlowItem
@@ -99,27 +99,27 @@ class RPClassifier(RPUnit):
         """
         return cast("RPOperation", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addOperation(name))))
 
-    def get_attributes(self) -> RPCollection:
+    def get_attributes(self) -> IRPCollection:
         """Returns all attributes defined on the classifier.
 
         Returns:
-            An ``RPCollection`` of ``IRPAttribute`` objects.
+            An ``IRPCollection`` of ``IRPAttribute`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getAttributes()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getAttributes", "attributes"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getAttributes", "attributes"))
 
-    def get_operations(self) -> RPCollection:
+    def get_operations(self) -> IRPCollection:
         """Returns all operations defined on the classifier.
 
         Returns:
-            An ``RPCollection`` of ``IRPOperation`` objects.
+            An ``IRPCollection`` of ``IRPOperation`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getOperations()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getOperations", "operations"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getOperations", "operations"))
 
     def add_generalization(self, base_classifier: "RPClassifier") -> None:
         """Adds a generalization relationship from this classifier to another.
@@ -555,7 +555,7 @@ class RPClassifier(RPUnit):
         """
         return cast("RPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findNestedClassifier(new_val))))
 
-    def find_nested_classifier_recursive(self, new_val: str) -> Optional["RPModelElement"]:
+    def find_nested_classifier_recursive(self, new_val: str) -> Optional["IRPModelElement"]:
         """Searches recursively for the classifier with the name specified.
 
         This method searches all of the levels below the current classifier. To
@@ -617,151 +617,151 @@ class RPClassifier(RPUnit):
         """
         return cast("RPFlowchart", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getActivityDiagram", "activityDiagram")))
 
-    def get_attributes_including_bases(self) -> RPCollection:
+    def get_attributes_including_bases(self) -> IRPCollection:
         """Returns all the classifier's attributes, including inherited ones.
 
         Returns:
-            An ``RPCollection`` of ``IRPAttribute`` objects, including those
+            An ``IRPCollection`` of ``IRPAttribute`` objects, including those
             inherited from the classifier's base classifiers.
 
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getAttributesIncludingBases()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getAttributesIncludingBases", "attributesIncludingBases"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getAttributesIncludingBases", "attributesIncludingBases"))
 
-    def get_base_classifiers(self) -> RPCollection:
+    def get_base_classifiers(self) -> IRPCollection:
         """Returns the classifiers that serve as base classifiers for this classifier.
 
         Returns:
-            An ``RPCollection`` of ``IRPClassifier`` base classifiers.
+            An ``IRPCollection`` of ``IRPClassifier`` base classifiers.
 
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getBaseClassifiers()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getBaseClassifiers", "baseClassifiers"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getBaseClassifiers", "baseClassifiers"))
 
-    def get_behavioral_diagrams(self) -> RPCollection:
+    def get_behavioral_diagrams(self) -> IRPCollection:
         """Returns all the statecharts and activities defined for the classifier.
 
         The returned collection consists of elements of type ``IRPStatechart``.
 
         Returns:
-            An ``RPCollection`` of ``IRPStatechart`` statecharts and activities.
+            An ``IRPCollection`` of ``IRPStatechart`` statecharts and activities.
 
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getBehavioralDiagrams()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getBehavioralDiagrams", "behavioralDiagrams"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getBehavioralDiagrams", "behavioralDiagrams"))
 
-    def get_derived_classifiers(self) -> RPCollection:
+    def get_derived_classifiers(self) -> IRPCollection:
         """Returns all the classifiers derived from this classifier.
 
         Returns:
-            An ``RPCollection`` of ``IRPClassifier`` derived classifiers.
+            An ``IRPCollection`` of ``IRPClassifier`` derived classifiers.
 
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getDerivedClassifiers()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getDerivedClassifiers", "derivedClassifiers"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getDerivedClassifiers", "derivedClassifiers"))
 
-    def get_flow_items(self) -> RPCollection:
+    def get_flow_items(self) -> IRPCollection:
         """Returns all the classifier's item flows.
 
         Returns:
-            An ``RPCollection`` of ``IRPFlowItem`` item flows.
+            An ``IRPCollection`` of ``IRPFlowItem`` item flows.
 
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getFlowItems()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getFlowItems", "flowItems"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getFlowItems", "flowItems"))
 
-    def get_flows(self) -> RPCollection:
+    def get_flows(self) -> IRPCollection:
         """Returns all the classifier's flows.
 
         Returns:
-            An ``RPCollection`` of ``IRPFlow`` flows.
+            An ``IRPCollection`` of ``IRPFlow`` flows.
 
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getFlows()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getFlows", "flows"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getFlows", "flows"))
 
-    def get_generalizations(self) -> RPCollection:
+    def get_generalizations(self) -> IRPCollection:
         """Returns all the classifier's generalization relationships.
 
         Returns:
-            An ``RPCollection`` of ``IRPGeneralization`` generalization relationships.
+            An ``IRPCollection`` of ``IRPGeneralization`` generalization relationships.
 
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getGeneralizations()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getGeneralizations", "generalizations"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getGeneralizations", "generalizations"))
 
-    def get_interface_items(self) -> RPCollection:
+    def get_interface_items(self) -> IRPCollection:
         """Returns the classifier's elements of type IRPInterfaceItem.
 
         This includes operations, triggered operations, and event receptions.
 
         Returns:
-            An ``RPCollection`` of ``IRPInterfaceItem`` elements.
+            An ``IRPCollection`` of ``IRPInterfaceItem`` elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getInterfaceItems()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getInterfaceItems", "interfaceItems"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getInterfaceItems", "interfaceItems"))
 
-    def get_interface_items_including_bases(self) -> RPCollection:
+    def get_interface_items_including_bases(self) -> IRPCollection:
         """Returns the classifier's IRPInterfaceItem elements, including inherited ones.
 
         This includes operations, triggered operations, and event receptions,
         including those inherited from the classifier's base classifier.
 
         Returns:
-            An ``RPCollection`` of ``IRPInterfaceItem`` elements, including
+            An ``IRPCollection`` of ``IRPInterfaceItem`` elements, including
             those inherited from the base classifier.
 
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getInterfaceItemsIncludingBases()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getInterfaceItemsIncludingBases", "interfaceItemsIncludingBases"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getInterfaceItemsIncludingBases", "interfaceItemsIncludingBases"))
 
-    def get_links(self) -> RPCollection:
+    def get_links(self) -> IRPCollection:
         """Returns all the classifier's link relationships.
 
         Returns:
-            An ``RPCollection`` of link relationships.
+            An ``IRPCollection`` of link relationships.
 
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getLinks()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getLinks", "links"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getLinks", "links"))
 
-    def get_nested_classifiers(self) -> RPCollection:
+    def get_nested_classifiers(self) -> IRPCollection:
         """Returns the classifiers nested below the current classifier.
 
         This method is not recursive - it only returns the classifiers at the
         level directly below the current classifier.
 
         Returns:
-            An ``RPCollection`` of ``IRPClassifier`` nested classifiers.
+            An ``IRPCollection`` of ``IRPClassifier`` nested classifiers.
 
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getNestedClassifiers()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getNestedClassifiers", "nestedClassifiers"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getNestedClassifiers", "nestedClassifiers"))
 
-    def get_ports(self) -> RPCollection:
+    def get_ports(self) -> IRPCollection:
         """Returns all the classifier's ports.
 
         Returns:
-            An ``RPCollection`` of ``IRPPort`` ports.
+            An ``IRPCollection`` of ``IRPPort`` ports.
 
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getPorts()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getPorts", "ports"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getPorts", "ports"))
 
-    def add_port(self, name: str) -> RPModelElement:
+    def add_port(self, name: str) -> IRPModelElement:
         """Adds a new port to this classifier.
 
         Convenience method: the Rhapsody Java API has no dedicated
@@ -775,52 +775,52 @@ class RPClassifier(RPUnit):
         Returns:
             The wrapped ``IRPPort`` created.
         """
-        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewAggr("Port", name))))
+        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewAggr("Port", name))))
 
-    def get_relations(self) -> RPCollection:
+    def get_relations(self) -> IRPCollection:
         """Returns all the classifier's associations.
 
         Returns:
-            An ``RPCollection`` of ``IRPRelation`` associations.
+            An ``IRPCollection`` of ``IRPRelation`` associations.
 
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getRelations()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getRelations", "relations"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getRelations", "relations"))
 
-    def get_relations_including_bases(self) -> RPCollection:
+    def get_relations_including_bases(self) -> IRPCollection:
         """Returns all the classifier's associations, including inherited ones.
 
         Returns:
-            An ``RPCollection`` of ``IRPRelation`` associations, including those
+            An ``IRPCollection`` of ``IRPRelation`` associations, including those
             inherited from the classifier's base classifier.
 
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getRelationsIncludingBases()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getRelationsIncludingBases", "relationsIncludingBases"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getRelationsIncludingBases", "relationsIncludingBases"))
 
-    def get_sequence_diagrams(self) -> RPCollection:
+    def get_sequence_diagrams(self) -> IRPCollection:
         """Returns the classifier's sequence diagrams.
 
         Returns:
-            An ``RPCollection`` of sequence diagrams.
+            An ``IRPCollection`` of sequence diagrams.
 
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getSequenceDiagrams()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getSequenceDiagrams", "sequenceDiagrams"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getSequenceDiagrams", "sequenceDiagrams"))
 
-    def get_source_artifacts(self) -> RPCollection:
+    def get_source_artifacts(self) -> IRPCollection:
         """Gets the source artifacts for the classifier.
 
         Returns:
-            An ``RPCollection`` of ``IRPFile`` source artifacts.
+            An ``IRPCollection`` of ``IRPFile`` source artifacts.
 
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getSourceArtifacts()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getSourceArtifacts", "sourceArtifacts"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getSourceArtifacts", "sourceArtifacts"))
 
     def get_statechart(self) -> "RPStatechart":
         """Returns the statechart defined for the classifier.

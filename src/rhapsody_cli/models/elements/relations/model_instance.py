@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 from rhapsody_cli.models.elements.relations.model_relation import RPRelation
 
 if TYPE_CHECKING:
@@ -28,7 +28,7 @@ class RPInstance(RPRelation):
     # [x] update_contained_diagrams_on_server [x] impl [x] docstring [x] unit test  [ ] integration test
     # No deprecated methods in IRPInstance.
 
-    def get_all_nested_elements(self) -> RPCollection:
+    def get_all_nested_elements(self) -> IRPCollection:
         """Returns a collection of all the model elements that are directly under the object.
 
         This method should be used instead of the inherited ``getNestedElements``
@@ -36,7 +36,7 @@ class RPInstance(RPRelation):
         of implicit objects.
 
         Returns:
-            An ``RPCollection`` of nested model elements.
+            An ``IRPCollection`` of nested model elements.
 
         Raises:
             RhapsodyRuntimeException: if the nested elements cannot be retrieved.
@@ -44,7 +44,7 @@ class RPInstance(RPRelation):
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::getAllNestedElements()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getAllNestedElements", "allNestedElements"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getAllNestedElements", "allNestedElements"))
 
     def get_attribute_value(self, attribute_name: str) -> str:
         """Gets the value of an attribute on the instance.
@@ -78,11 +78,11 @@ class RPInstance(RPRelation):
         """
         AbstractRPModelElement.call_com(lambda: self._com.setAttributeValue(attribute_name, attribute_value))
 
-    def get_in_links(self) -> RPCollection:
+    def get_in_links(self) -> IRPCollection:
         """Returns all incoming links to this instance.
 
         Returns:
-            An ``RPCollection`` of incoming link elements.
+            An ``IRPCollection`` of incoming link elements.
 
         Raises:
             RhapsodyRuntimeException: if the incoming links cannot be retrieved.
@@ -90,13 +90,13 @@ class RPInstance(RPRelation):
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::getInLinks()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getInLinks", "inLinks"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getInLinks", "inLinks"))
 
-    def get_out_links(self) -> RPCollection:
+    def get_out_links(self) -> IRPCollection:
         """Returns all outgoing links from this instance.
 
         Returns:
-            An ``RPCollection`` of outgoing link elements.
+            An ``IRPCollection`` of outgoing link elements.
 
         Raises:
             RhapsodyRuntimeException: if the outgoing links cannot be retrieved.
@@ -104,7 +104,7 @@ class RPInstance(RPRelation):
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::getOutLinks()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getOutLinks", "outLinks"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getOutLinks", "outLinks"))
 
     def add_relation_to_the_whole(self, rel_name: str) -> "RPRelation":
         """Adds a relation to the whole for this instance.
@@ -137,11 +137,11 @@ class RPInstance(RPRelation):
         """
         return cast("RPOperation", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getInstantiatedBy", "instantiatedBy")))
 
-    def get_list_of_initializer_arguments(self) -> RPCollection:
+    def get_list_of_initializer_arguments(self) -> IRPCollection:
         """Returns the list of initializer arguments for this instance.
 
         Returns:
-            An ``RPCollection`` of initializer argument elements.
+            An ``IRPCollection`` of initializer argument elements.
 
         Raises:
             RhapsodyRuntimeException: if the initializer arguments cannot be retrieved.
@@ -149,7 +149,7 @@ class RPInstance(RPRelation):
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::getListOfInitializerArguments()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getListOfInitializerArguments", "listOfInitializerArguments"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getListOfInitializerArguments", "listOfInitializerArguments"))
 
     def set_explicit(self) -> None:
         """Sets the instance to be explicit.
@@ -188,7 +188,7 @@ class RPInstance(RPRelation):
         """
         AbstractRPModelElement.call_com(lambda: self._com.setInitializerArgumentValue(arg_name, arg_value))
 
-    def set_instantiated_by(self, instantiated_by: RPModelElement) -> None:
+    def set_instantiated_by(self, instantiated_by: IRPModelElement) -> None:
         """Sets the operation that instantiates this instance.
 
         Args:

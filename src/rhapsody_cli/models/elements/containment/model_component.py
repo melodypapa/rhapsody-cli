@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, RPUnit
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.containment.model_configuration import RPConfiguration
@@ -147,16 +147,16 @@ class RPComponent(RPUnit):
         """
         self.call_com(lambda: self._com.addToScope(element._com))
 
-    def all_elements_in_scope(self) -> "RPCollection":
+    def all_elements_in_scope(self) -> "IRPCollection":
         """Returns all elements in the component's scope.
 
         Returns:
-            An ``RPCollection`` of all elements in scope.
+            An ``IRPCollection`` of all elements in scope.
 
         Reference:
             com.telelogic.rhapsody.core.IRPComponent::allElementsInScope()
         """
-        return RPCollection(self.call_com(lambda: self._com.allElementsInScope()))
+        return IRPCollection(self.call_com(lambda: self._com.allElementsInScope()))
 
     def delete_configuration(self, configuration: "RPConfiguration") -> None:
         """Deletes a configuration from the component.
@@ -230,16 +230,16 @@ class RPComponent(RPUnit):
         """
         return cast("RPConfiguration", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getConfigByDependency())))
 
-    def get_configurations(self) -> "RPCollection":
+    def get_configurations(self) -> "IRPCollection":
         """Returns all configurations in the component.
 
         Returns:
-            An ``RPCollection`` of ``IRPConfiguration`` objects.
+            An ``IRPCollection`` of ``IRPConfiguration`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPComponent::getConfigurations()
         """
-        return RPCollection(self.call_com(lambda: self._com.getConfigurations()))
+        return IRPCollection(self.call_com(lambda: self._com.getConfigurations()))
 
     def get_file(self, name: str) -> "RPUnit":
         """Gets a file by name.
@@ -266,16 +266,16 @@ class RPComponent(RPUnit):
         """
         return str(self._get_method_or_property(self._com, "getFileName", "fileName"))
 
-    def get_files(self) -> "RPCollection":
+    def get_files(self) -> "IRPCollection":
         """Returns all files in the component.
 
         Returns:
-            An ``RPCollection`` of ``IRPUnit`` file objects.
+            An ``IRPCollection`` of ``IRPUnit`` file objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPComponent::getFiles()
         """
-        return RPCollection(self.call_com(lambda: self._com.getFiles()))
+        return IRPCollection(self.call_com(lambda: self._com.getFiles()))
 
     def get_include_path(self) -> str:
         """Returns the include path for the component.
@@ -310,16 +310,16 @@ class RPComponent(RPUnit):
         """
         return str(self._get_method_or_property(self._com, "getModelElementFileName", "modelElementFileName"))
 
-    def get_nested_components(self) -> "RPCollection":
+    def get_nested_components(self) -> "IRPCollection":
         """Returns all nested components in this component.
 
         Returns:
-            An ``RPCollection`` of ``IRPComponent`` objects.
+            An ``IRPCollection`` of ``IRPComponent`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPComponent::getNestedComponents()
         """
-        return RPCollection(self.call_com(lambda: self._com.getNestedComponents()))
+        return IRPCollection(self.call_com(lambda: self._com.getNestedComponents()))
 
     def get_package_file(self) -> str:
         """Returns the package file for the component.
@@ -332,16 +332,16 @@ class RPComponent(RPUnit):
         """
         return str(self._get_method_or_property(self._com, "getPackageFile", "packageFile"))
 
-    def get_panel_diagrams(self) -> "RPCollection":
+    def get_panel_diagrams(self) -> "IRPCollection":
         """Returns all panel diagrams in the component.
 
         Returns:
-            An ``RPCollection`` of ``IRPPanelDiagram`` objects.
+            An ``IRPCollection`` of ``IRPPanelDiagram`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPComponent::getPanelDiagrams()
         """
-        return RPCollection(self.call_com(lambda: self._com.getPanelDiagrams()))
+        return IRPCollection(self.call_com(lambda: self._com.getPanelDiagrams()))
 
     def get_path(self) -> str:
         """Returns the path for the component.
@@ -354,52 +354,52 @@ class RPComponent(RPUnit):
         """
         return str(self._get_method_or_property(self._com, "getPath", "path"))
 
-    def get_possible_variants(self) -> "RPCollection":
+    def get_possible_variants(self) -> "IRPCollection":
         """Returns all possible variants for the component.
 
         Returns:
-            An ``RPCollection`` of variant objects.
+            An ``IRPCollection`` of variant objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPComponent::getPossibleVariants()
         """
-        return RPCollection(self.call_com(lambda: self._com.getPossibleVariants()))
+        return IRPCollection(self.call_com(lambda: self._com.getPossibleVariants()))
 
-    def get_scope_by_selected_elements(self) -> "RPCollection":
+    def get_scope_by_selected_elements(self) -> "IRPCollection":
         """Returns scope elements by selected elements.
 
         Returns:
-            An ``RPCollection`` of scope elements.
+            An ``IRPCollection`` of scope elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPComponent::getScopeBySelectedElements()
         """
-        return RPCollection(self.call_com(lambda: self._com.getScopeBySelectedElements()))
+        return IRPCollection(self.call_com(lambda: self._com.getScopeBySelectedElements()))
 
-    def get_scope_elements(self) -> "RPCollection":
+    def get_scope_elements(self) -> "IRPCollection":
         """Returns all scope elements in the component.
 
         Returns:
-            An ``RPCollection`` of ``IRPUnit`` scope elements.
+            An ``IRPCollection`` of ``IRPUnit`` scope elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPComponent::getScopeElements()
         """
-        return RPCollection(self.call_com(lambda: self._com.getScopeElements()))
+        return IRPCollection(self.call_com(lambda: self._com.getScopeElements()))
 
-    def get_scope_elements_by_category(self, category: str) -> "RPCollection":
+    def get_scope_elements_by_category(self, category: str) -> "IRPCollection":
         """Returns scope elements by category.
 
         Args:
             category: The category to filter by.
 
         Returns:
-            An ``RPCollection`` of scope elements.
+            An ``IRPCollection`` of scope elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPComponent::getScopeElementsByCategory(java.lang.String category)
         """
-        return RPCollection(self.call_com(lambda: self._com.getScopeElementsByCategory(category)))
+        return IRPCollection(self.call_com(lambda: self._com.getScopeElementsByCategory(category)))
 
     def get_standard_headers(self) -> str:
         """Returns the standard headers for the component.
@@ -423,16 +423,16 @@ class RPComponent(RPUnit):
         """
         return str(self._get_method_or_property(self._com, "getVariant", "variant"))
 
-    def get_variation_points(self) -> "RPCollection":
+    def get_variation_points(self) -> "IRPCollection":
         """Returns all variation points for the component.
 
         Returns:
-            An ``RPCollection`` of variation point objects.
+            An ``IRPCollection`` of variation point objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPComponent::getVariationPoints()
         """
-        return RPCollection(self.call_com(lambda: self._com.getVariationPoints()))
+        return IRPCollection(self.call_com(lambda: self._com.getVariationPoints()))
 
     def is_directory_per_model_component(self) -> int:
         """Returns whether directory is per model component.
@@ -511,7 +511,7 @@ class RPComponent(RPUnit):
         """
         self._set_method_or_property(self._com, "setPath", "path", value)
 
-    def set_scope_by_selected_elements(self, elements: "RPCollection") -> None:
+    def set_scope_by_selected_elements(self, elements: "IRPCollection") -> None:
         """Sets the scope by selected elements.
 
         Args:

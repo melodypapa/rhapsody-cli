@@ -13,7 +13,7 @@ from typing import Dict, List, Optional, cast
 from rhapsody_cli.exceptions import CliExecutionError
 from rhapsody_cli.exchange.core import RhapsodyModelHelper
 from rhapsody_cli.exchange.schema import RHAPSODY_MODEL_KEY, SCHEMA_VERSION, VERSION_KEY
-from rhapsody_cli.models.core import RPModelElement
+from rhapsody_cli.models.core import IRPModelElement
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +26,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
     then applies type-specific extras and recurses into children.
     """
 
-    def import_template(self, data: Dict[str, object], root_element: RPModelElement) -> None:
+    def import_template(self, data: Dict[str, object], root_element: IRPModelElement) -> None:
         """Import elements from data['rhapsody-model'] as children of root_element.
 
         Args:
@@ -43,7 +43,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
         for spec in cast(List[Dict[str, object]], data.get(RHAPSODY_MODEL_KEY, [])):
             self._process_element(root_element, spec)
 
-    def _process_element(self, parent: RPModelElement, spec: Dict[str, object]) -> Optional[RPModelElement]:
+    def _process_element(self, parent: IRPModelElement, spec: Dict[str, object]) -> Optional[IRPModelElement]:
         """Dispatch a single element spec to find_or_create_<type>, then apply extras.
 
         Args:
@@ -126,7 +126,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
     # Type-specific extras (YAML spec fields -> element property setters)
     # ------------------------------------------------------------------
 
-    def _apply_operation_extras(self, operation: RPModelElement, spec: Dict[str, object]) -> None:
+    def _apply_operation_extras(self, operation: IRPModelElement, spec: Dict[str, object]) -> None:
         """Apply Operation-specific fields: return_type, is_static, arguments."""
         if "return_type" in spec:
             return_type = cast(str, spec["return_type"])
@@ -145,7 +145,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
             arg = self.find_or_create_argument(operation, cast(str, arg_spec["name"]))
             self._apply_argument_extras(arg, arg_spec)
 
-    def _apply_argument_extras(self, arg: RPModelElement, spec: Dict[str, object]) -> None:
+    def _apply_argument_extras(self, arg: IRPModelElement, spec: Dict[str, object]) -> None:
         """Apply Argument-specific fields: data_type, direction, stereotypes, tags."""
         if "data_type" in spec:
             data_type = cast(str, spec["data_type"])
@@ -164,7 +164,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
         self.apply_stereotypes(arg, cast(List[str], spec.get("stereotypes", [])))
         self.apply_tags(arg, cast(Dict[str, str], spec.get("tags", {})))
 
-    def _apply_attribute_extras(self, attr: RPModelElement, spec: Dict[str, object]) -> None:
+    def _apply_attribute_extras(self, attr: IRPModelElement, spec: Dict[str, object]) -> None:
         """Apply Attribute-specific fields: data_type, visibility, multiplicity, is_static."""
         if "data_type" in spec:
             data_type = cast(str, spec["data_type"])
@@ -184,7 +184,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
         if "is_static" in spec:
             attr.set_is_static(cast(bool, spec["is_static"]))  # type: ignore[attr-defined]
 
-    def _apply_type_extras(self, type_element: RPModelElement, spec: Dict[str, object]) -> None:
+    def _apply_type_extras(self, type_element: IRPModelElement, spec: Dict[str, object]) -> None:
         """Apply Type-specific fields: enumeration literals (kind already set in find_or_create_type)."""
         if spec.get("kind") == "Enumeration":
             for literal_spec in cast(List[Dict[str, object]], spec.get("literals", [])):
@@ -192,7 +192,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
                 self.apply_stereotypes(literal, cast(List[str], literal_spec.get("stereotypes", [])))
                 self.apply_tags(literal, cast(Dict[str, str], literal_spec.get("tags", {})))
 
-    def _apply_object_extras(self, obj: RPModelElement, spec: Dict[str, object]) -> None:
+    def _apply_object_extras(self, obj: IRPModelElement, spec: Dict[str, object]) -> None:
         """Apply Object-specific fields: classifier."""
         if "classifier" in spec:
             classifier_name = cast(str, spec["classifier"])
@@ -206,7 +206,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
                     obj.get_name(),
                 )
 
-    def _apply_dependency_extras(self, dependency: RPModelElement, spec: Dict[str, object], parent: RPModelElement) -> None:
+    def _apply_dependency_extras(self, dependency: IRPModelElement, spec: Dict[str, object], parent: IRPModelElement) -> None:
         """Apply Dependency-specific fields: source (parent) and target (depends_on)."""
         dependency.set_dependent(parent)  # type: ignore[attr-defined]
         if "depends_on" in spec:
@@ -221,7 +221,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
                     dependency.get_name(),
                 )
 
-    def _apply_generalization_extras(self, generalization: RPModelElement, spec: Dict[str, object], parent: RPModelElement) -> None:
+    def _apply_generalization_extras(self, generalization: IRPModelElement, spec: Dict[str, object], parent: IRPModelElement) -> None:
         """Apply Generalization-specific fields: derived_class (parent), base_class, visibility, is_virtual."""
         generalization.set_derived_class(parent)  # type: ignore[attr-defined]
         if "base_class" in spec:
@@ -240,7 +240,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
         if "is_virtual" in spec:
             generalization.set_is_virtual(cast(bool, spec["is_virtual"]))  # type: ignore[attr-defined]
 
-    def _apply_relation_extras(self, relation: RPModelElement, spec: Dict[str, object], parent: RPModelElement) -> None:
+    def _apply_relation_extras(self, relation: IRPModelElement, spec: Dict[str, object], parent: IRPModelElement) -> None:
         """Apply Relation-specific fields: from (source), to (target), relation_type, multiplicity, etc."""
         if "from" in spec:
             from_name = cast(str, spec["from"])
@@ -277,7 +277,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
         if "visibility" in spec:
             relation.set_visibility(cast(str, spec["visibility"]))  # type: ignore[attr-defined]
 
-    def _apply_port_extras(self, port: RPModelElement, spec: Dict[str, object]) -> None:
+    def _apply_port_extras(self, port: IRPModelElement, spec: Dict[str, object]) -> None:
         """Apply Port-specific fields: is_behavioral, is_reversed, contract, provided/required_interfaces."""
         if "is_behavioral" in spec:
             port.set_is_behavioral(cast(bool, spec["is_behavioral"]))  # type: ignore[attr-defined]
@@ -315,7 +315,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
                     port.get_name(),
                 )
 
-    def _apply_event_extras(self, event: RPModelElement, spec: Dict[str, object]) -> None:
+    def _apply_event_extras(self, event: IRPModelElement, spec: Dict[str, object]) -> None:
         """Apply Event-specific fields: base_event, super_event."""
         if "base_event" in spec:
             base_event_name = cast(str, spec["base_event"])
@@ -340,7 +340,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
                     event.get_name(),
                 )
 
-    def _apply_event_reception_extras(self, reception: RPModelElement, spec: Dict[str, object]) -> None:
+    def _apply_event_reception_extras(self, reception: IRPModelElement, spec: Dict[str, object]) -> None:
         """Apply EventReception-specific fields: event reference."""
         if "event" in spec:
             event_name = cast(str, spec["event"])

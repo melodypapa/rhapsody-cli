@@ -8,7 +8,7 @@ from rhapsody_cli.application import RhapsodyApplication
 from rhapsody_cli.cli.formatters import OutputFormatter
 from rhapsody_cli.cli.path_resolver import PathResolver, PathResolverError
 from rhapsody_cli.exceptions import CliExecutionError, RhapsodyConnectionError
-from rhapsody_cli.models.core import RPModelElement
+from rhapsody_cli.models.core import IRPModelElement
 from rhapsody_cli.models.elements.containment import RPProject
 from rhapsody_cli.session import SessionManager
 
@@ -237,7 +237,7 @@ class ElementManagementAction(RhapsodyContextAction):
         except RhapsodyConnectionError as e:
             self._handle_connection_error(e)
 
-    def _get_active_root(self) -> RPModelElement:
+    def _get_active_root(self) -> IRPModelElement:
         """Return the root element of the active project.
 
         Returns:
@@ -245,7 +245,7 @@ class ElementManagementAction(RhapsodyContextAction):
         """
         return self._get_active_project()
 
-    def _resolve_container_or_element(self, root: RPModelElement, path: Optional[str], *, resolve_element: bool, operation: str = "resolve path") -> RPModelElement:
+    def _resolve_container_or_element(self, root: IRPModelElement, path: Optional[str], *, resolve_element: bool, operation: str = "resolve path") -> IRPModelElement:
         """Resolve `path` to a container or element, mapping errors to CliExecutionError.
 
         Args:
@@ -270,8 +270,8 @@ class ElementManagementAction(RhapsodyContextAction):
             if resolve_element:
                 if path is None:
                     raise CliExecutionError(f"A path is required to {operation}")
-                return cast(RPModelElement, PathResolver.resolve_element(root, path))
-            return cast(RPModelElement, PathResolver.resolve_container(root, path))
+                return cast(IRPModelElement, PathResolver.resolve_element(root, path))
+            return cast(IRPModelElement, PathResolver.resolve_container(root, path))
         except PathResolverError as e:
             self.logger.error("%s", e)
             raise CliExecutionError(str(e)) from e

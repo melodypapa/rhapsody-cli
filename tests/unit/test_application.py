@@ -6,7 +6,7 @@ import pytest
 
 from rhapsody_cli.application import RhapsodyApplication
 from rhapsody_cli.exceptions import RhapsodyConnectionError, RhapsodyRuntimeException
-from rhapsody_cli.models.core import RPCollection
+from rhapsody_cli.models.core import IRPCollection
 from rhapsody_cli.models.elements.containment import RPProject
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -305,7 +305,7 @@ def test_generate_elements_passes_collection_com() -> None:
     fake_collection = make_fake_collection([])
     app = RhapsodyApplication(fake_app)
 
-    app.generate_elements(RPCollection(fake_collection))
+    app.generate_elements(IRPCollection(fake_collection))
 
     fake_app.generateElements.assert_called_once_with(fake_collection)
 
@@ -371,7 +371,7 @@ def test_check_model_delegates_to_com() -> None:
 
 
 def test_create_new_collection_returns_rpcollection() -> None:
-    from rhapsody_cli.models.core import RPCollection
+    from rhapsody_cli.models.core import IRPCollection
 
     fake_app = make_fake_element("Application")
     fake_app.createNewCollection.return_value = make_fake_collection([])
@@ -380,7 +380,7 @@ def test_create_new_collection_returns_rpcollection() -> None:
     result = app.create_new_collection()
 
     fake_app.createNewCollection.assert_called_once_with()
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_get_search_manager_returns_wrapped_element() -> None:

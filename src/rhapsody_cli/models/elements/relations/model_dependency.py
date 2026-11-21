@@ -2,13 +2,13 @@
 
 from typing import TYPE_CHECKING, Optional
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 
 if TYPE_CHECKING:
     pass
 
 
-class RPDependency(RPModelElement):
+class RPDependency(IRPModelElement):
     """Wraps ``IRPDependency``: a dependency relationship."""
 
     # IRPDependency method parity checklist:
@@ -22,7 +22,7 @@ class RPDependency(RPModelElement):
     # [inherited] irp_model_element methods (covered by rp_model_element checklists)
     # No deprecated IRPDependency methods.
 
-    def get_dependent(self) -> Optional[RPModelElement]:
+    def get_dependent(self) -> Optional[IRPModelElement]:
         """Returns the model element that is dependent.
 
         Returns:
@@ -33,7 +33,7 @@ class RPDependency(RPModelElement):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getDependent", "dependent"))
 
-    def get_depends_on(self) -> Optional[RPModelElement]:
+    def get_depends_on(self) -> Optional[IRPModelElement]:
         """Returns the model element that is depended upon.
 
         Returns:
@@ -55,7 +55,7 @@ class RPDependency(RPModelElement):
         """
         return int(AbstractRPModelElement.call_com(lambda: self._com.isNeedToMigrate()))
 
-    def set_dependent(self, dependent: RPModelElement) -> None:
+    def set_dependent(self, dependent: IRPModelElement) -> None:
         """Sets the model element that is dependent.
 
         Args:
@@ -66,7 +66,7 @@ class RPDependency(RPModelElement):
         """
         AbstractRPModelElement.call_com(lambda: self._com.setDependent(dependent._com))
 
-    def set_depends_on(self, depends_on: RPModelElement) -> None:
+    def set_depends_on(self, depends_on: IRPModelElement) -> None:
         """Sets the model element that is depended upon.
 
         Args:
@@ -88,7 +88,7 @@ class RPDependency(RPModelElement):
         """
         AbstractRPModelElement.call_com(lambda: self._com.setLinkType(link_type))
 
-    def set_owner_without_changing_dependent(self, owner: RPModelElement) -> None:
+    def set_owner_without_changing_dependent(self, owner: IRPModelElement) -> None:
         """Sets the owner of the dependency without changing the dependent.
 
         Args:

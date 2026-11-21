@@ -7,20 +7,20 @@
 
 ---
 
-## SWR_CORE_00001: RPModelElement Base Class
+## SWR_CORE_00001: IRPModelElement Base Class
 
 **ID:** SWR_CORE_00001
-**Title:** RPModelElement wraps IRPModelElement as the base for all model elements
+**Title:** IRPModelElement wraps IRPModelElement as the base for all model elements
 **Status:** Implemented
 **Priority:** High
 **Description:**
-`RPModelElement` shall be the base class for every wrapped Rhapsody model element,
+`IRPModelElement` shall be the base class for every wrapped Rhapsody model element,
 mirroring `com.telelogic.rhapsody.core.IRPModelElement`. It shall store exactly one
 attribute, `_com`, holding the raw COM object. It shall expose Java-mirrored methods
 `getName()`, `setName(name)`, `getMetaClass()`, and `getGUID()` that delegate to the
 underlying COM object. It shall implement `__eq__` (COM object equality), `__hash__`
 (by COM object identity), and `__repr__` (showing class name and name).
-**Implementation:** src/rhapsody_cli/models/_core.py:RPModelElement
+**Implementation:** src/rhapsody_cli/models/_core.py:IRPModelElement
 **Last Changed:** 2026-07-07
 
 ---
@@ -32,7 +32,7 @@ underlying COM object. It shall implement `__eq__` (COM object equality), `__has
 **Status:** Implemented
 **Priority:** High
 **Description:**
-`RPUnit` shall extend `RPModelElement` to wrap `IRPUnit` (model elements that can be
+`RPUnit` shall extend `IRPModelElement` to wrap `IRPUnit` (model elements that can be
 saved as separate files). It shall expose Java-mirrored methods: `save()`,
 `getFilename()`, `setFilename(filename)`, `isReadOnly()`, and
 `setReadOnly(read_only)`. The `setReadOnly` method shall translate Python booleans to
@@ -42,20 +42,20 @@ COM-style integers (1/0).
 
 ---
 
-## SWR_CORE_00003: RPCollection Iterable Container
+## SWR_CORE_00003: IRPCollection Iterable Container
 
 **ID:** SWR_CORE_00003
-**Title:** RPCollection wraps IRPCollection as an iterable/indexable container
+**Title:** IRPCollection wraps IRPCollection as an iterable/indexable container
 **Status:** Implemented
 **Priority:** High
 **Description:**
-`RPCollection` shall wrap `IRPCollection` and expose Java-mirrored methods `getCount()`,
+`IRPCollection` shall wrap `IRPCollection` and expose Java-mirrored methods `getCount()`,
 `getItem(index)`, and `addItem(element)`. It shall also support Python protocols:
 `__len__` (returns `getCount()`), `__getitem__` (1-based COM indexing via `getItem`,
 raising `IndexError` for negative indices), and `__iter__` (yields each item
 auto-wrapped via `wrap()`). Items returned by `getItem` shall be auto-wrapped via
 `_wrap_if_element`.
-**Implementation:** src/rhapsody_cli/models/_core.py:RPCollection
+**Implementation:** src/rhapsody_cli/models/_core.py:IRPCollection
 **Last Changed:** 2026-07-07
 
 ---
@@ -88,7 +88,7 @@ The `wrap(com_obj)` factory function shall inspect the underlying Rhapsody eleme
 runtime type via `getMetaClass()` and return the correct Python wrapper instance. Type
 resolution shall be driven by a registry dict mapping Rhapsody type names to wrapper
 classes. `wrap()` shall never crash on an unmapped type; unmapped types shall fall back
-to a generic `RPModelElement` wrapper.
+to a generic `IRPModelElement` wrapper.
 **Implementation:** src/rhapsody_cli/models/_core.py:wrap
 **Last Changed:** 2026-07-07
 
@@ -120,22 +120,22 @@ plus one registry entry, with no changes to `wrap()` itself.
 **Description:**
 The `_wrap_if_element(value)` helper shall return `wrap(value)` if `value` exposes a
 `getMetaClass` attribute (i.e., looks like a Rhapsody model element); otherwise it shall
-return `value` unchanged. This is used by `RPCollection.getItem` to auto-wrap collection
+return `value` unchanged. This is used by `IRPCollection.getItem` to auto-wrap collection
 members.
 **Implementation:** src/rhapsody_cli/models/_core.py:_wrap_if_element
 **Last Changed:** 2026-07-07
 
 ---
 
-## SWR_CORE_00008: Registry Fallback to RPModelElement
+## SWR_CORE_00008: Registry Fallback to IRPModelElement
 
 **ID:** SWR_CORE_00008
-**Title:** Unmapped meta classes fall back to generic RPModelElement wrapper
+**Title:** Unmapped meta classes fall back to generic IRPModelElement wrapper
 **Status:** Implemented
 **Priority:** Medium
 **Description:**
 When `wrap()` encounters a COM object whose `getMetaClass()` is not present in the
-wrapper registry, it shall return a generic `RPModelElement` instance rather than
+wrapper registry, it shall return a generic `IRPModelElement` instance rather than
 raising an error. This guarantees navigation code keeps working for element types that
 do not yet have a dedicated wrapper class.
 **Implementation:** src/rhapsody_cli/models/_core.py:wrap
@@ -146,14 +146,14 @@ do not yet have a dedicated wrapper class.
 ## SWR_CORE_00009: Negative Index Rejection
 
 **ID:** SWR_CORE_00009
-**Title:** RPCollection rejects negative indices
+**Title:** IRPCollection rejects negative indices
 **Status:** Implemented
 **Priority:** Low
 **Description:**
-`RPCollection.__getitem__` shall raise `IndexError("negative indices are not supported")`
+`IRPCollection.__getitem__` shall raise `IndexError("negative indices are not supported")`
 when given a negative index, because COM collection indexing is 1-based and does not
 support negative indexing.
-**Implementation:** src/rhapsody_cli/models/_core.py:RPCollection.__getitem__
+**Implementation:** src/rhapsody_cli/models/_core.py:IRPCollection.__getitem__
 **Last Changed:** 2026-07-07
 
 ---

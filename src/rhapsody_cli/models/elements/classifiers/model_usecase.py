@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
 
 if TYPE_CHECKING:
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.elements.interactions.model_interactions import RPEvent, RPEventReception
 
 
-class RPExtensionPoint(RPModelElement):
+class RPExtensionPoint(IRPModelElement):
     """Wraps extension point concept (returned as IRPModelElement from COM)."""
 
     pass
@@ -55,11 +55,11 @@ class RPUseCase(RPClassifier):
         """
         AbstractRPModelElement.call_com(lambda: self._com.addExtensionPoint(entry_point))
 
-    def get_extension_points(self) -> RPCollection:
+    def get_extension_points(self) -> IRPCollection:
         """Returns all extension points defined on the use case.
 
         Returns:
-            An ``RPCollection`` of extension point strings.
+            An ``IRPCollection`` of extension point strings.
 
         Raises:
             RhapsodyRuntimeException: if the extension points cannot be retrieved.
@@ -67,13 +67,13 @@ class RPUseCase(RPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPUseCase::getExtensionPoints()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getExtensionPoints", "extensionPoints"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getExtensionPoints", "extensionPoints"))
 
-    def get_entry_points(self) -> RPCollection:
+    def get_entry_points(self) -> IRPCollection:
         """Returns all entry points defined on the use case.
 
         Returns:
-            An ``RPCollection`` of entry point strings.
+            An ``IRPCollection`` of entry point strings.
 
         Raises:
             RhapsodyRuntimeException: if the entry points cannot be retrieved.
@@ -81,13 +81,13 @@ class RPUseCase(RPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPUseCase::getEntryPoints()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getEntryPoints", "entryPoints"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getEntryPoints", "entryPoints"))
 
-    def get_describing_diagrams(self) -> RPCollection:
+    def get_describing_diagrams(self) -> IRPCollection:
         """Returns all diagrams that describe this use case.
 
         Returns:
-            An ``RPCollection`` of ``IRPDiagram`` objects.
+            An ``IRPCollection`` of ``IRPDiagram`` objects.
 
         Raises:
             RhapsodyRuntimeException: if the describing diagrams cannot be retrieved.
@@ -95,7 +95,7 @@ class RPUseCase(RPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPUseCase::getDescribingDiagrams()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getDescribingDiagrams", "describingDiagrams"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getDescribingDiagrams", "describingDiagrams"))
 
     def add_describing_diagram(self, diagram: "RPDiagram") -> None:
         """Adds a diagram to describe this use case.
@@ -156,7 +156,7 @@ class RPUseCase(RPClassifier):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteExtensionPoint(extension_point))
 
-    def find_entry_point(self, name: str) -> Optional[RPModelElement]:
+    def find_entry_point(self, name: str) -> Optional[IRPModelElement]:
         """Finds an entry point by name.
 
         Args:
@@ -170,7 +170,7 @@ class RPUseCase(RPClassifier):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findEntryPoint(name)))
 
-    def find_extension_point(self, name: str) -> Optional[RPModelElement]:
+    def find_extension_point(self, name: str) -> Optional[IRPModelElement]:
         """Finds an extension point by name.
 
         Args:

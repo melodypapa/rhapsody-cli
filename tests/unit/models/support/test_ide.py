@@ -1,7 +1,7 @@
 from typing import cast
 
 from rhapsody_cli.application import RhapsodyApplication
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection
 from rhapsody_cli.models.support.model_ide import (
     RPAXViewCtrl,
     RPExternalIDERegistry,
@@ -25,7 +25,7 @@ class TestRPAXViewCtrl:
 
     def test_execute_command_delegates_to_com(self) -> None:
         fake = make_fake_element("AXViewCtrl")
-        coll = RPCollection(make_fake_collection([make_fake_element("X")]))
+        coll = IRPCollection(make_fake_collection([make_fake_element("X")]))
         obj = RPAXViewCtrl(fake)
         obj.execute_command("x", coll, coll)
         fake.executeCommand.assert_called_once_with("x", coll._com, coll._com)

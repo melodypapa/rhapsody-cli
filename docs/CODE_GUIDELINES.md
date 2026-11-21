@@ -150,7 +150,7 @@ Method and function arguments should be on the same line as the method name, not
 
 **✅ CORRECT: Arguments on same line**
 ```python
-def get_element(self, name: str, element_type: str) -> Optional[RPModelElement]:
+def get_element(self, name: str, element_type: str) -> Optional[IRPModelElement]:
     return self._find_element(name, element_type)
 
 def connect(self, timeout: int = 30, attach_only: bool = False) -> RhapsodyApplication:
@@ -168,7 +168,7 @@ def get_element(
     self,
     name: str,
     element_type: str
-) -> Optional[RPModelElement]:
+) -> Optional[IRPModelElement]:
     return self._find_element(name, element_type)
 
 def connect(
@@ -206,7 +206,7 @@ def export_to_yaml(
 from typing import Dict, List, Optional, Union
 
 # CORRECT: Concrete types
-def get_element(name: str, element_type: str) -> Optional[RPModelElement]:
+def get_element(name: str, element_type: str) -> Optional[IRPModelElement]:
     return self._find_element(name, element_type)
 
 # CORRECT: Dict with key/value types
@@ -244,7 +244,7 @@ def format_value(value: Any) -> str:
 | Scenario | Use Instead |
 |----------|-------------|
 | Unknown dict structure | `Dict[str, Union[str, int, bool]]` or define a `TypedDict` |
-| Unknown list contents | `List[<concrete_type>]` (e.g., `List[str]`, `List[RPModelElement]`) |
+| Unknown list contents | `List[<concrete_type>]` (e.g., `List[str]`, `List[IRPModelElement]`) |
 | Multiple possible types | `Union[TypeA, TypeB, TypeC]` |
 | Truly unknown object | `object` (still allows isinstance checks; `Any` allows everything silently) |
 | JSON/dynamic data | Define a `TypedDict` or use `Dict[str, Union[...]]` with known value types |
@@ -1014,6 +1014,7 @@ The generated pywin32 interface from the registered `Rhapsody2 1.0` type library
 - Legacy note: `_get_method_or_property` / `_set_method_or_property` (Java-name-first probes) remain only in wrappers not yet migrated; each rhapsody-sync run removes them from the synced class, and the pair is deleted once the last class migrates.
 - Python-facing names follow this document: snake_case methods and UPPERCASE constants. Where a class is migrated to `@property`, its name is the snake_case canonical member name.
 - Remove wrappers calling members absent from pywin32, or keep a documented `NotImplementedError` stub listed in `documented_unavailable`.
+- Wrapper classes are named after the Java interface (`IRPClass`, `IRPModelElement`, ...) — never the legacy `RP*` facade name. Module, test, and per-class document file names use the same Java-derived snake_case. Each rhapsody-sync run renames its class.
 - Property/method refactors are scoped to one class at a time; do not reshape the shared wrapper hierarchy for one interface's deviations.
 - Regenerate the affected report with `python scripts/validate_model_api.py <IRPInterface> --source authority --path docs/reports` and require zero rows under `## Comparison details`.
 

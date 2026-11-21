@@ -1,7 +1,7 @@
 """Tests for rhapsody_cli.models.elements.relations.RPPort."""
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection
 from rhapsody_cli.models.elements.classifiers import RPClassifier
 from rhapsody_cli.models.elements.relations import RPInstance, RPPort
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
@@ -86,7 +86,7 @@ def test_port_get_provided_interfaces_returns_collection() -> None:
 
     result = port.get_provided_interfaces()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
     assert len(result) == 1
     assert result[0].get_name() == "IProvided"
 
@@ -121,7 +121,7 @@ def test_port_get_required_interfaces_returns_collection() -> None:
 
     result = port.get_required_interfaces()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
     assert len(result) == 1
     assert result[0].get_name() == "IRequired"
 

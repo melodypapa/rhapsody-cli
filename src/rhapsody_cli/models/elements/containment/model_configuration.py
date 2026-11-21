@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, RPUnit
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.containment.model_component import RPComponent
@@ -117,16 +117,16 @@ class RPConfiguration(RPUnit):
         """
         return str(self._get_method_or_property(self._com, "getAdditionalSources", "additionalSources"))
 
-    def get_all_elements_in_instrumentation_scope(self) -> "RPCollection":
+    def get_all_elements_in_instrumentation_scope(self) -> "IRPCollection":
         """Returns all elements in instrumentation scope.
 
         Returns:
-            An ``RPCollection`` of all elements in instrumentation scope.
+            An ``IRPCollection`` of all elements in instrumentation scope.
 
         Reference:
             com.telelogic.rhapsody.core.IRPConfiguration::getAllElementsInInstrumentationScope()
         """
-        return RPCollection(self.call_com(lambda: self._com.getAllElementsInInstrumentationScope()))
+        return IRPCollection(self.call_com(lambda: self._com.getAllElementsInInstrumentationScope()))
 
     def get_build_set(self) -> str:
         """Returns the build set for the configuration.
@@ -194,16 +194,16 @@ class RPConfiguration(RPUnit):
         """
         return str(self._get_method_or_property(self._com, "getIncludePath", "includePath"))
 
-    def get_initial_instances(self) -> "RPCollection":
+    def get_initial_instances(self) -> "IRPCollection":
         """Returns all initial instances in the configuration.
 
         Returns:
-            An ``RPCollection`` of ``IRPInstance`` objects.
+            An ``IRPCollection`` of ``IRPInstance`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPConfiguration::getInitialInstances()
         """
-        return RPCollection(self.call_com(lambda: self._com.getInitialInstances()))
+        return IRPCollection(self.call_com(lambda: self._com.getInitialInstances()))
 
     def get_initialization_code(self) -> str:
         """Returns the initialization code for the configuration.
@@ -216,16 +216,16 @@ class RPConfiguration(RPUnit):
         """
         return str(self._get_method_or_property(self._com, "getInitializationCode", "initializationCode"))
 
-    def get_instrumentation_scope(self) -> "RPCollection":
+    def get_instrumentation_scope(self) -> "IRPCollection":
         """Returns the instrumentation scope for the configuration.
 
         Returns:
-            An ``RPCollection`` of elements in instrumentation scope.
+            An ``IRPCollection`` of elements in instrumentation scope.
 
         Reference:
             com.telelogic.rhapsody.core.IRPConfiguration::getInstrumentationScope()
         """
-        return RPCollection(self.call_com(lambda: self._com.getInstrumentationScope()))
+        return IRPCollection(self.call_com(lambda: self._com.getInstrumentationScope()))
 
     def get_instrumentation_type(self) -> int:
         """Returns the instrumentation type for the configuration.
@@ -403,7 +403,7 @@ class RPConfiguration(RPUnit):
         """
         self._set_method_or_property(self._com, "setAdditionalSources", "additionalSources", value)
 
-    def set_all_elements_in_instrumentation_scope(self, elements: "RPCollection") -> None:
+    def set_all_elements_in_instrumentation_scope(self, elements: "IRPCollection") -> None:
         """Sets all elements in instrumentation scope.
 
         Args:

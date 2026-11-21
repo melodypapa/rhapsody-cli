@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, RPUnit
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.containment.model_component_instance import RPComponentInstance
@@ -74,16 +74,16 @@ class RPNode(RPUnit):
         """
         return str(self._get_method_or_property(self._com, "getCPUtype", "CPUtype"))
 
-    def get_component_instances(self) -> "RPCollection":
+    def get_component_instances(self) -> "IRPCollection":
         """Returns all component instances in the node.
 
         Returns:
-            An ``RPCollection`` of ``IRPComponentInstance`` objects.
+            An ``IRPCollection`` of ``IRPComponentInstance`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPNode::getComponentInstances()
         """
-        return RPCollection(self.call_com(lambda: self._com.getComponentInstances()))
+        return IRPCollection(self.call_com(lambda: self._com.getComponentInstances()))
 
     def set_cpu_type(self, value: str) -> None:
         """Sets the CPU type of the node.

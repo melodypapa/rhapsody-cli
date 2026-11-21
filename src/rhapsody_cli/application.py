@@ -25,7 +25,7 @@ except ImportError:  # pragma: no cover - pywin32 is Windows-only
 
 from rhapsody_cli import com_utils
 from rhapsody_cli.exceptions import RhapsodyConnectionError, RhapsodyRuntimeException
-from rhapsody_cli.models.core import RPCollection
+from rhapsody_cli.models.core import IRPCollection
 from rhapsody_cli.models.elements.containment import RPProject
 
 _PROG_ID = "Rhapsody2.Application.1"
@@ -157,11 +157,11 @@ class RhapsodyApplication:
             raise RhapsodyRuntimeException("No active project is open in Rhapsody")
         return RPProject(result)
 
-    def get_projects(self) -> RPCollection:
+    def get_projects(self) -> IRPCollection:
         """Return all open projects in Rhapsody.
 
         Returns:
-            RPCollection: A collection of the open RPProject objects.
+            IRPCollection: A collection of the open RPProject objects.
 
         Raises:
             RhapsodyRuntimeException: If the projects cannot be retrieved.
@@ -169,7 +169,7 @@ class RhapsodyApplication:
         Reference:
             com.telelogic.rhapsody.core.IRPApplication::getProjects()
         """
-        return RPCollection(com_utils._get_method_or_property(self._com, "getProjects", "projects"))
+        return IRPCollection(com_utils._get_method_or_property(self._com, "getProjects", "projects"))
 
     def quit(self) -> None:
         """Quit the Rhapsody application.
@@ -296,7 +296,7 @@ class RhapsodyApplication:
         """
         return str(com_utils.call_com(lambda: self._com.getOMROOT()))
 
-    def create_new_collection(self) -> RPCollection:
+    def create_new_collection(self) -> IRPCollection:
         """Create a new empty ``IRPCollection`` for use with COM calls that require a pre-allocated collection.
 
         Some Rhapsody COM methods (e.g. ``IRPDiagram.getPicturesWithImageMap``) populate a
@@ -304,7 +304,7 @@ class RhapsodyApplication:
         the empty collection, pass it to such methods, then read the results from it.
 
         Returns:
-            RPCollection: A new, empty collection.
+            IRPCollection: A new, empty collection.
 
         Raises:
             RhapsodyRuntimeException: If the underlying COM call fails.
@@ -312,7 +312,7 @@ class RhapsodyApplication:
         Reference:
             com.telelogic.rhapsody.core.IRPApplication::createNewCollection()
         """
-        return RPCollection(com_utils.call_com(lambda: self._com.createNewCollection()))
+        return IRPCollection(com_utils.call_com(lambda: self._com.createNewCollection()))
 
     def get_search_manager(self) -> "RPSearchManager":
         """Return the Rhapsody search manager.
@@ -463,11 +463,11 @@ class RhapsodyApplication:
         """
         com_utils.call_com(lambda: self._com.generate())
 
-    def generate_elements(self, elements: RPCollection) -> None:
+    def generate_elements(self, elements: IRPCollection) -> None:
         """Generate code for the given elements.
 
         Args:
-            elements: An RPCollection of elements to generate code for.
+            elements: An IRPCollection of elements to generate code for.
 
         Raises:
             RhapsodyRuntimeException: If the underlying COM call fails.

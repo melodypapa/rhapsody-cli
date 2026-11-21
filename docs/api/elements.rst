@@ -33,7 +33,7 @@ rhapsody-cli provides wrapper classes for all major Rhapsody element types:
 * RPRequirement - Requirement element
 * RPConnector - Connection between elements
 
-All element types inherit from ``RPModelElement`` and follow the same interface patterns.
+All element types inherit from ``IRPModelElement`` and follow the same interface patterns.
 
 See :doc:`../user_guide/working_with_elements` for usage examples.
 
@@ -48,5 +48,5 @@ Java Package API Reference
    :maxdepth: 1
 
    com/telelogic/rhapsody/core/irp_class
-   com/telelogic/rhapsody/core/rp_model_element
-   com/telelogic/rhapsody/core/rp_collection
+   com/telelogic/rhapsody/core/irp_model_element
+   com/telelogic/rhapsody/core/irp_collection

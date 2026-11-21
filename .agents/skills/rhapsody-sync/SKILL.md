@@ -38,7 +38,7 @@ This checklist is the run's live report. Tick a checkbox in the same response wh
 
 If the interface name is missing or ambiguous, ask for it before editing. Find its JavaDoc in `docs/java_api/`, read the declared package, then resolve the matching wrapper, base class, tests, and current exports. Do not infer the Java package or wrapper mapping from the existing Python folder alone.
 
-The canonical Python package mirrors every Java package segment beneath `rhapsody_cli.models`, and the Python class name matches the Java interface name. For example:
+The canonical Python package mirrors every Java package segment beneath `rhapsody_cli.models`, and the Python class name matches the Java interface name — never the legacy `RP*` facade name. Every derived name uses the Java interface's snake_case too: the module file (`IRPClass` → `irp_class.py`), the mirrored test modules (`test_irp_class.py`), and the per-class requirement/RST documents (`irp_class.md` / `irp_class.rst`). For example:
 
 - Java: `com.telelogic.rhapsody.core.IRPClass`
 - Python import: `from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass`

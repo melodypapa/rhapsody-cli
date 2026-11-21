@@ -7,7 +7,7 @@ import time
 
 import pytest
 
-from rhapsody_cli.models.core import RPModelElement
+from rhapsody_cli.models.core import IRPModelElement
 from rhapsody_cli.models.elements.containment import RPPackage, RPProject
 
 
@@ -30,7 +30,7 @@ class TestRPProjectIntegration:
     def test_project_is_rp_project(self, test_project: RPProject) -> None:
         assert isinstance(test_project, RPProject)
         assert isinstance(test_project, RPPackage)
-        assert isinstance(test_project, RPModelElement)
+        assert isinstance(test_project, IRPModelElement)
 
     def test_add_package_to_project(self, test_project: RPProject) -> None:
         name = self._unique("TopLevelPkg")

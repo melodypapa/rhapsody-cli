@@ -2,14 +2,14 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 from rhapsody_cli.models.elements.variables.model_variables import RPVariable
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
 
 
-class RPTemplateInstantiation(RPModelElement):
+class RPTemplateInstantiation(IRPModelElement):
     """Wraps ``IRPTemplateInstantiation``."""
 
     # IRPTemplateInstantiation method parity checklist:
@@ -17,11 +17,11 @@ class RPTemplateInstantiation(RPModelElement):
     # [inherited] irp_model_element methods (covered by rp_model_element checklist)
     # No deprecated IRPTemplateInstantiation methods.
 
-    def get_template_instantiation_parameters(self) -> "RPCollection":
+    def get_template_instantiation_parameters(self) -> "IRPCollection":
         """Returns the template instantiation parameters of this template instantiation.
 
         Returns:
-            A ``RPCollection`` of the template instantiation parameters.
+            A ``IRPCollection`` of the template instantiation parameters.
 
         Raises:
             RhapsodyRuntimeException: If the property cannot be retrieved.
@@ -29,10 +29,10 @@ class RPTemplateInstantiation(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPTemplateInstantiation::getTemplateInstantiationParameters()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getTemplateInstantiationParameters", "templateInstantiationParameters"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getTemplateInstantiationParameters", "templateInstantiationParameters"))
 
 
-class RPTemplateInstantiationParameter(RPModelElement):
+class RPTemplateInstantiationParameter(IRPModelElement):
     """Wraps ``IRPTemplateInstantiationParameter``."""
 
     # IRPTemplateInstantiationParameter method parity checklist:
@@ -125,7 +125,7 @@ class RPTemplateParameter(RPVariable):
         """
         return str(AbstractRPModelElement._get_method_or_property(self._com, "getParameterKind", "parameterKind"))
 
-    def get_representative(self) -> Optional["RPModelElement"]:
+    def get_representative(self) -> Optional["IRPModelElement"]:
         """Returns the representative of this template parameter.
 
         For internal use only.
@@ -160,7 +160,7 @@ class RPTemplateParameter(RPVariable):
         """
         AbstractRPModelElement._set_method_or_property(self._com, "setParameterKind", "parameterKind", parameter_kind)
 
-    def set_representative(self, representative: "RPModelElement") -> None:
+    def set_representative(self, representative: "IRPModelElement") -> None:
         """Sets the representative of this template parameter.
 
         For internal use only.

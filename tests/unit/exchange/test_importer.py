@@ -37,13 +37,13 @@ import pytest
 
 from rhapsody_cli.exceptions import CliExecutionError
 from rhapsody_cli.exchange.importer import RhapsodyImporter
-from rhapsody_cli.models.core import RPModelElement
+from rhapsody_cli.models.core import IRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.containment import RPProject
 
 
-def _make_importer(project: Optional[RPModelElement] = None) -> RhapsodyImporter:
+def _make_importer(project: Optional[IRPModelElement] = None) -> RhapsodyImporter:
     """Build a RhapsodyImporter with mocked app and project (skips connect)."""
     importer = RhapsodyImporter.__new__(RhapsodyImporter)
     importer.app = MagicMock()

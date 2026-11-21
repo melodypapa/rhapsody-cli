@@ -1,6 +1,6 @@
 """Tests for rhapsody_cli.models.elements.values.model_values classes."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
 from rhapsody_cli.models.elements.values import (
     RPInstanceSlot,
     RPInstanceSpecification,
@@ -15,7 +15,7 @@ class TestRPInstanceSlot:
     def test_is_model_element(self) -> None:
         fake = make_fake_element("InstanceSlot", properties={"name": "Slot1"})
         slot = RPInstanceSlot(fake)
-        assert isinstance(slot, RPModelElement)
+        assert isinstance(slot, IRPModelElement)
         assert slot.get_name() == "Slot1"
 
     def test_is_registered(self) -> None:
@@ -29,7 +29,7 @@ class TestRPInstanceSlot:
         result = make_fake_element("InstanceValue", properties={"name": "IV1"})
         fake.addElementValue.return_value = result
         slot = RPInstanceSlot(fake)
-        wrapped = slot.add_element_value(RPModelElement(val))
+        wrapped = slot.add_element_value(IRPModelElement(val))
         assert wrapped.get_name() == "IV1"
         fake.addElementValue.assert_called_once_with(val)
 
@@ -56,14 +56,14 @@ class TestRPInstanceSlot:
         fake.getValues.return_value = make_fake_collection([v])
         slot = RPInstanceSlot(fake)
         result = slot.get_values()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
 
     def test_set_slot_property_delegates(self) -> None:
         fake = make_fake_element("InstanceSlot")
         prop = make_fake_element("Attribute", properties={"name": "attr1"})
         fake.setSlotProperty.return_value = None
         slot = RPInstanceSlot(fake)
-        slot.set_slot_property(RPModelElement(prop))
+        slot.set_slot_property(IRPModelElement(prop))
         fake.setSlotProperty.assert_called_once_with(prop)
 
 
@@ -71,7 +71,7 @@ class TestRPInstanceSpecification:
     def test_is_model_element(self) -> None:
         fake = make_fake_element("InstanceSpecification", properties={"name": "IS1"})
         spec = RPInstanceSpecification(fake)
-        assert isinstance(spec, RPModelElement)
+        assert isinstance(spec, IRPModelElement)
         assert spec.get_name() == "IS1"
 
     def test_is_registered(self) -> None:
@@ -85,7 +85,7 @@ class TestRPInstanceSpecification:
         slot = make_fake_element("InstanceSlot", properties={"name": "s1"})
         fake.addInstanceSlot.return_value = slot
         spec = RPInstanceSpecification(fake)
-        wrapped = spec.add_instance_slot("s1", RPModelElement(prop))
+        wrapped = spec.add_instance_slot("s1", IRPModelElement(prop))
         assert wrapped.get_name() == "s1"
         fake.addInstanceSlot.assert_called_once_with("s1", prop)
 
@@ -103,7 +103,7 @@ class TestRPInstanceSpecification:
         fake.getInstanceSlots.return_value = make_fake_collection([s])
         spec = RPInstanceSpecification(fake)
         result = spec.get_instance_slots()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
 
     def test_is_root_instance_specification_returns_int(self) -> None:
         fake = make_fake_element("InstanceSpecification", isRootInstanceSpecification=True)
@@ -147,7 +147,7 @@ class TestRPInstanceValue:
         val = make_fake_element("Class", properties={"name": "C1"})
         fake.setValue.return_value = None
         iv = RPInstanceValue(fake)
-        iv.set_value(RPModelElement(val))
+        iv.set_value(IRPModelElement(val))
         fake.setValue.assert_called_once_with(val)
 
 

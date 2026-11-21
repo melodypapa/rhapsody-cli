@@ -8,7 +8,7 @@ import pytest
 
 import rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class as irp_class_module
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 from rhapsody_cli.models.elements.classifiers import RPClassifier
 from rhapsody_cli.models.elements.classifiers.model_operation import RPOperation
 from rhapsody_cli.models.elements.interactions.model_interactions import RPEvent, RPEventReception
@@ -121,11 +121,11 @@ def test_class_add_link_unwraps_all_args_and_wraps_result() -> None:
     klass = IRPClass(fake)
 
     result = klass.add_link(
-        cast(RPModelElement, AbstractRPModelElement.wrap(from_part)),
-        cast(RPModelElement, AbstractRPModelElement.wrap(to_part)),
-        cast(RPModelElement, AbstractRPModelElement.wrap(assoc)),
-        cast(RPModelElement, AbstractRPModelElement.wrap(from_port)),
-        cast(RPModelElement, AbstractRPModelElement.wrap(to_port)),
+        cast(IRPModelElement, AbstractRPModelElement.wrap(from_part)),
+        cast(IRPModelElement, AbstractRPModelElement.wrap(to_part)),
+        cast(IRPModelElement, AbstractRPModelElement.wrap(assoc)),
+        cast(IRPModelElement, AbstractRPModelElement.wrap(from_port)),
+        cast(IRPModelElement, AbstractRPModelElement.wrap(to_port)),
     )
 
     fake.addLink.assert_called_once_with(from_part, to_part, assoc, from_port, to_port)
@@ -143,10 +143,10 @@ def test_class_add_link_to_part_via_port_unwraps_and_wraps() -> None:
     klass = IRPClass(fake)
 
     result = klass.add_link_to_part_via_port(
-        cast(RPModelElement, AbstractRPModelElement.wrap(to_part)),
-        cast(RPModelElement, AbstractRPModelElement.wrap(part_port)),
-        cast(RPModelElement, AbstractRPModelElement.wrap(class_port)),
-        cast(RPModelElement, AbstractRPModelElement.wrap(assoc)),
+        cast(IRPModelElement, AbstractRPModelElement.wrap(to_part)),
+        cast(IRPModelElement, AbstractRPModelElement.wrap(part_port)),
+        cast(IRPModelElement, AbstractRPModelElement.wrap(class_port)),
+        cast(IRPModelElement, AbstractRPModelElement.wrap(assoc)),
     )
 
     fake.addLinkToPartViaPort.assert_called_once_with(to_part, part_port, class_port, assoc)
