@@ -788,7 +788,7 @@ git commit -m "fix: call pywin32-exposed BinaryID, CMHeader and isOfMetaClass me
 
 - [ ] **Step 1: Add the documented exceptions**
 
-Edit `docs/reports/pywin32_authority.json` so the empty maps under `"IRPClass"` become:
+Edit `docs/reports/pywin32_authority.json` so the two exception maps (currently empty `{}` after Task 1) become:
 
 ```json
     "documented_aliases": {
@@ -1011,7 +1011,15 @@ The generated pywin32 interface from the registered `Rhapsody2 1.0` type library
 - Property/method refactoring is scoped to the members visible in the report being fixed (here: IRPClass). Do not reshape the shared wrapper hierarchy for one interface's deviations.
 ```
 
-- [ ] **Step 2: Run the quality gate**
+- [ ] **Step 2: Install dev dependencies (if not already installed)**
+
+```bash
+pip install -e ".[dev,cli]"
+```
+
+The `cli` extra provides `tabulate` and `rich`; without it `pytest tests/unit/` fails during collection on `tests/unit/commands/*`.
+
+- [ ] **Step 3: Run the quality gate**
 
 On Windows/CI:
 
@@ -1027,7 +1035,7 @@ STUB=$(mktemp -d); printf 'class com_error(Exception):\n    def __init__(self, *
 
 Expected: all tests pass; lint/format/type checks clean.
 
-- [ ] **Step 3: Commit and push**
+- [ ] **Step 4: Commit and push**
 
 ```bash
 git add docs/CODE_GUIDELINES.md
