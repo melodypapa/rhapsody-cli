@@ -41,7 +41,7 @@ This plan does **not** refactor property/method handling across the wrapper hier
 | pywin32 member absent (e.g. `updateContainedDiagramsOnServer`, `getRmmUrl`) | remove the wrapper, or keep a documented `NotImplementedError` stub | `RPClass.update_contained_diagrams_on_server` removed in Task 3; inherited `get_rmm_url` documented in Task 5 |
 
 **Explicit non-goals of this scoped consideration:**
-- No descriptors, proxy objects, or generic typed-property helpers — that would touch all 97+ wrappers and invalidate every fake-based unit test.
+- Python-facing names follow `docs/CODE_GUIDELINES.md` — snake_case methods (`get_binary_id`, `get_is_abstract`), UPPERCASE constants. The camelCase/PascalCase COM names in the table (`BinaryID`, `isAbstract`, `getBinaryID`) are **string arguments only**, never Python method or attribute names.
 - No changes to property/method handling for the other 11 interfaces.
 - No new validator status for "property called as method"; a one-off guard in Task 5 verifies the IRPClass-visible case. A generic validator check can be a follow-up in #121.
 
@@ -1004,7 +1004,7 @@ The generated pywin32 interface from the registered `Rhapsody2 1.0` type library
 
 - Confirm each COM member's exact name and kind in `docs/reports/pywin32_authority.json`.
 - Call method-shaped members with `call_com(lambda: self._com.methodName(...))`.
-- Read/write property-shaped members with `_get_method_or_property` / `_set_method_or_property`, Java-style name first and pywin32 name second.
+- Read/write property-shaped members with `_get_method_or_property` / `_set_method_or_property`, Java-style name first and pywin32 name second. COM names are string arguments only; Python-facing names follow `docs/CODE_GUIDELINES.md` (snake_case methods, UPPERCASE constants), e.g. `get_binary_id` wraps `BinaryID`.
 - If pywin32 does not expose a member at all, remove the wrapper that calls it (or keep a documented `NotImplementedError` stub) and add its Java name to `documented_unavailable`.
 - Document intentional Python-name aliases in `documented_aliases` instead of renaming public methods.
 - After changing a wrapper, regenerate its report with `python scripts/validate_model_api.py <IRPInterface> --source authority --path docs/reports` and require zero rows under `## Comparison details`.
