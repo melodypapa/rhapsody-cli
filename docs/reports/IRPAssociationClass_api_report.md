@@ -1,6 +1,7 @@
 # Rhapsody API Validation: IRPAssociationClass
 
 ## Summary
+- Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `RPAssociationClass` (`src/rhapsody_cli/models/elements/classifiers/model_association_class.py`)
 - Members: Python `4`, Java `4`, pywin32 `3`
 - Deviations: `0`

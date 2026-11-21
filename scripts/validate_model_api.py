@@ -14,6 +14,7 @@ if __package__ in (None, ""):  # running as `python scripts/validate_model_api.p
 from scripts.pywin32_authority import AuthorityData, load_authority  # noqa: E402
 
 _TYPELIB_DESCRIPTION = "Rhapsody2 1.0 Type Library"
+JAVA_PACKAGE = "com.telelogic.rhapsody.core"
 _HELPER_NAMES = {"_get_method_or_property", "_set_method_or_property", "get_com_property", "set_com_property"}
 _REFERENCE_MEMBER_PATTERN = re.compile(r"::([A-Za-z_$][A-Za-z0-9_$]*)\s*\(")
 Rows = List[Tuple[str, str, str, str, str]]
@@ -606,6 +607,7 @@ def render_markdown_report(
     backlog_rows: Optional[Rows] = None,
     matched_rows: Optional[Rows] = None,
     documented_counts: Optional[Tuple[int, int]] = None,
+    java_package: str = JAVA_PACKAGE,
 ) -> str:
     """Render a comparison summary, five-column deviation table, and AI repair guidance."""
     status_counts: Dict[str, int] = {}
@@ -617,6 +619,7 @@ def render_markdown_report(
         f"# Rhapsody API Validation: {interface_name}",
         "",
         "## Summary",
+        f"- Java package: `{java_package}`",
         f"- Target wrapper: `{wrapper_class}` (`{wrapper_path}`)",
         f"- Members: Python `{member_counts[0]}`, Java `{member_counts[1]}`, pywin32 `{member_counts[2]}`",
         f"- Deviations: `{len(rows)}`",
@@ -706,7 +709,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     args = build_arg_parser().parse_args(argv)
     authority = load_authority()
     repository_root = Path(__file__).resolve().parents[1]
-    docs_root = repository_root / "docs" / "java_api" / "com" / "telelogic" / "rhapsody" / "core"
+    docs_root = repository_root / "docs" / "java_api" / Path(*JAVA_PACKAGE.split("."))
     models_root = repository_root / "src" / "rhapsody_cli" / "models"
     report_directory = args.path or Path.cwd()
     report_path = report_directory / f"{args.java_interface}_api_report.md"

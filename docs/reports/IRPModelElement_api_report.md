@@ -1,6 +1,7 @@
 # Rhapsody API Validation: IRPModelElement
 
 ## Summary
+- Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `RPModelElement` (`src/rhapsody_cli/models/core.py`)
 - Members: Python `114`, Java `118`, pywin32 `104`
 - Deviations: `1`
@@ -54,7 +55,7 @@
 | delete_dependency() -> deleteDependency | deleteDependency (method) | deleteDependency (method) | MATCH | — |
 | delete_from_project() -> deleteFromProject | deleteFromProject (method) | deleteFromProject (method) | MATCH | — |
 | delete_oslc_link() (no static COM member) | deleteOSLCLink (method) | deleteOSLCLink (method) | MATCH | — |
-| error_message() -> errorMessage; get_error_message() -> errorMessage; get_error_message() -> getErrorMessage | errorMessage (method); getErrorMessage (method) | errorMessage (method); getErrorMessage (method) | MATCH | — |
+| error_message() -> errorMessage; get_error_message() -> getErrorMessage | errorMessage (method); getErrorMessage (method) | errorMessage (method); getErrorMessage (method) | MATCH | — |
 | find_elements_by_full_name() -> findElementsByFullName | findElementsByFullName (method) | findElementsByFullName (method) | MATCH | — |
 | find_nested_element() -> findNestedElement | findNestedElement (method) | findNestedElement (method) | MATCH | — |
 | find_nested_element_recursive() -> findNestedElementRecursive | findNestedElementRecursive (method) | findNestedElementRecursive (method) | MATCH | — |
@@ -70,7 +71,7 @@
 | get_description() -> description; set_description() -> description | getDescription (method); setDescription (method) | description (property) | MATCH | — |
 | get_description_html() -> descriptionHTML; set_description_html() (no static COM member) | getDescriptionHTML (method); setDescriptionHTML (method) | descriptionHTML (property) | MATCH | — |
 | get_description_plain_text() -> descriptionPlainText | getDescriptionPlainText (method) | descriptionPlainText (property) | MATCH | — |
-| get_description_rtf() -> descriptionRTF; is_description_rtf() -> descriptionRTF; set_description_rtf() -> descriptionRTF | getDescriptionRTF (method); setDescriptionRTF (method) | descriptionRTF (property) | MATCH | — |
+| get_description_rtf() -> descriptionRTF; set_description_rtf() -> descriptionRTF | getDescriptionRTF (method); setDescriptionRTF (method) | descriptionRTF (property) | MATCH | — |
 | get_display_name() -> displayName; set_display_name() -> displayName | getDisplayName (method); setDisplayName (method) | displayName (property) | MATCH | — |
 | get_display_name_rtf() -> getDisplayNameRTF; set_display_name_rtf() -> setDisplayNameRTF | getDisplayNameRTF (method); setDisplayNameRTF (method) | getDisplayNameRTF (method); setDisplayNameRTF (method) | MATCH | — |
 | get_full_path_name() -> getFullPathName | getFullPathName (method) | getFullPathName (method) | MATCH | — |

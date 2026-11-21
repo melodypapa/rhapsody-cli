@@ -1,6 +1,7 @@
 # Rhapsody API Validation: IRPClassifier
 
 ## Summary
+- Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `RPClassifier` (`src/rhapsody_cli/models/elements/classifiers/model_classifier.py`)
 - Members: Python `47`, Java `46`, pywin32 `47`
 - Deviations: `1`

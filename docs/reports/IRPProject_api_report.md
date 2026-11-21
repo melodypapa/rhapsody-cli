@@ -1,6 +1,7 @@
 # Rhapsody API Validation: IRPProject
 
 ## Summary
+- Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `RPProject` (`src/rhapsody_cli/models/elements/containment/model_project.py`)
 - Members: Python `74`, Java `70`, pywin32 `73`
 - Deviations: `14`

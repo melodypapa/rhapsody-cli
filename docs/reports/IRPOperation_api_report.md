@@ -1,6 +1,7 @@
 # Rhapsody API Validation: IRPOperation
 
 ## Summary
+- Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `RPOperation` (`src/rhapsody_cli/models/elements/classifiers/model_operation.py`)
 - Members: Python `32`, Java `32`, pywin32 `21`
 - Deviations: `1`

@@ -1,6 +1,7 @@
 # Rhapsody API Validation: IRPCollection
 
 ## Summary
+- Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `RPCollection` (`src/rhapsody_cli/models/core.py`)
 - Members: Python `11`, Java `11`, pywin32 `9`
 - Deviations: `2`

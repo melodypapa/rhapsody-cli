@@ -1,6 +1,7 @@
 # Rhapsody API Validation: IRPUnit
 
 ## Summary
+- Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `RPUnit` (`src/rhapsody_cli/models/core.py`)
 - Members: Python `29`, Java `29`, pywin32 `25`
 - Deviations: `0`

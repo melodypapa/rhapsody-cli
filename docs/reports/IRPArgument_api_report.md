@@ -1,6 +1,7 @@
 # Rhapsody API Validation: IRPArgument
 
 ## Summary
+- Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `RPArgument` (`src/rhapsody_cli/models/elements/variables/model_variables.py`)
 - Members: Python `2`, Java `2`, pywin32 `1`
 - Deviations: `0`

@@ -451,6 +451,19 @@ def test_markdown_report_includes_status_and_recommendation_for_build_no() -> No
     assert "## AI Fix Guidance" in report
 
 
+def test_markdown_report_includes_java_package() -> None:
+    report = render_markdown_report(
+        "IRPClass",
+        [],
+        "IRPClass",
+        "src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_class.py",
+        {},
+        (0, 0, 0),
+    )
+
+    assert "- Java package: `com.telelogic.rhapsody.core`" in report
+
+
 def test_markdown_report_lists_documented_decision_counts(tmp_path: Path) -> None:
     report = render_markdown_report(
         "IRPClass",

@@ -1,6 +1,7 @@
 # Rhapsody API Validation: IRPPort
 
 ## Summary
+- Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `RPPort` (`src/rhapsody_cli/models/elements/relations/model_port.py`)
 - Members: Python `14`, Java `14`, pywin32 `9`
 - Deviations: `1`

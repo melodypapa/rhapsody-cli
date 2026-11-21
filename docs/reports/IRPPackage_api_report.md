@@ -1,6 +1,7 @@
 # Rhapsody API Validation: IRPPackage
 
 ## Summary
+- Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `RPPackage` (`src/rhapsody_cli/models/elements/containment/model_package.py`)
 - Members: Python `101`, Java `100`, pywin32 `94`
 - Deviations: `11`

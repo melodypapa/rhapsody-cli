@@ -1,6 +1,7 @@
 # Rhapsody API Validation: IRPUseCase
 
 ## Summary
+- Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `RPUseCase` (`src/rhapsody_cli/models/elements/classifiers/model_usecase.py`)
 - Members: Python `15`, Java `15`, pywin32 `12`
 - Deviations: `2`

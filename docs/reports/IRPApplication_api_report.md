@@ -1,6 +1,7 @@
 # Rhapsody API Validation: IRPApplication
 
 ## Summary
+- Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `RhapsodyApplication` (`src/rhapsody_cli/application.py`)
 - Members: Python `33`, Java `176`, pywin32 `172`
 - Deviations: `3`

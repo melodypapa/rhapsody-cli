@@ -1,6 +1,7 @@
 # Rhapsody API Validation: IRPAttribute
 
 ## Summary
+- Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `RPAttribute` (`src/rhapsody_cli/models/elements/variables/model_variables.py`)
 - Members: Python `12`, Java `12`, pywin32 `6`
 - Deviations: `0`
