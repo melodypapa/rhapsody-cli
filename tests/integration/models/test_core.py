@@ -1270,7 +1270,7 @@ class TestRPModelElementOslcRemoteIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="IRPModelElement.rmmUrl property not exposed via COM dispatch (AttributeError: addClass.rmmUrl)")
+    @pytest.mark.xfail(strict=False, reason="IRPModelElement.rmmUrl is documented in pywin32 authority documented_unavailable; COM dispatch raises AttributeError")
     def test_get_rmm_url_returns_empty_string(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("RmmUrlPkg"))
         try:
@@ -1342,7 +1342,6 @@ class TestRPModelElementMetadataIntegration:
         finally:
             pkg.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="IRPModelElement.getIsOfMetaClass not exposed via COM dispatch (AttributeError: addClass.getIsOfMetaClass)")
     def test_get_is_of_meta_class_class(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("IsOfPkg"))
         try:

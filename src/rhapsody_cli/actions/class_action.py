@@ -246,11 +246,11 @@ class ClassCreateAction(AbstractClassAction):
         SWR_CLS_00012: Boolean Flag Support
         """
         if "isAbstract" in attrs:
-            cls.set_is_abstract(1 if attrs["isAbstract"] else 0)  # type: ignore[attr-defined]
+            cls.is_abstract = bool(attrs["isAbstract"])  # type: ignore[attr-defined]
         if "isFinal" in attrs:
-            cls.set_is_final(1 if attrs["isFinal"] else 0)  # type: ignore[attr-defined]
+            cls.is_final = 1 if attrs["isFinal"] else 0  # type: ignore[attr-defined]
         if "isActive" in attrs:
-            cls.set_is_active(1 if attrs["isActive"] else 0)  # type: ignore[attr-defined]
+            cls.is_active = 1 if attrs["isActive"] else 0  # type: ignore[attr-defined]
 
     def _set_properties(self, cls: RPModelElement, attrs: Dict[str, object]) -> None:
         """Set custom properties (tags)."""
@@ -482,11 +482,11 @@ class ClassViewAction(AbstractClassAction):
             "name": cls.get_name(),
             "guid": cls.get_guid(),
             "description": cls.get_description(),
-            "isAbstract": int(cls.get_is_abstract()),  # type: ignore[attr-defined]
-            "isActive": int(cls.get_is_active()),  # type: ignore[attr-defined]
-            "isFinal": int(cls.get_is_final()),  # type: ignore[attr-defined]
-            "isComposite": int(cls.get_is_composite()),  # type: ignore[attr-defined]
-            "isReactive": int(cls.get_is_reactive()),  # type: ignore[attr-defined]
+            "isAbstract": int(cls.is_abstract),  # type: ignore[attr-defined]
+            "isActive": int(cls.is_active),  # type: ignore[attr-defined]
+            "isFinal": int(cls.is_final),  # type: ignore[attr-defined]
+            "isComposite": int(cls.is_composite),  # type: ignore[attr-defined]
+            "isReactive": int(cls.is_reactive),  # type: ignore[attr-defined]
             "metaClass": cls.get_meta_class(),
             "fullPath": cls.get_full_path_name(),
             "operations": [cast(RPModelElement, op).get_name() for op in operations],
@@ -685,11 +685,11 @@ class ClassUpdateAction(AbstractClassAction):
             elif key == "description":
                 cls.set_description(cast(str, value))
             elif key == "isAbstract":
-                cls.set_is_abstract(1 if value else 0)  # type: ignore[attr-defined]
+                cls.is_abstract = bool(value)  # type: ignore[attr-defined]
             elif key == "isFinal":
-                cls.set_is_final(1 if value else 0)  # type: ignore[attr-defined]
+                cls.is_final = 1 if value else 0  # type: ignore[attr-defined]
             elif key == "isActive":
-                cls.set_is_active(1 if value else 0)  # type: ignore[attr-defined]
+                cls.is_active = 1 if value else 0  # type: ignore[attr-defined]
             elif key == "stereotypes":
                 for stereotype in cast(List[str], value):
                     cls.add_stereotype(stereotype, "Class")
