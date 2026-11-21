@@ -243,6 +243,55 @@ pytest && ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests
 - **Integration tests** for real COM automation verification
 - **Branch coverage** tracking with 80% minimum threshold
 
+### Generating API Validation Reports (`docs/reports/*_api_report.md`)
+
+Every wrapped interface has a committed parity report — `docs/reports/<IRPInterface>_api_report.md` — that compares three sources for each member: the Java API (`docs/java_api`), the pywin32-exposed COM member (name and method/property shape), and the Python wrapper. The committed catalog `docs/reports/pywin32_authority.json` is the single source of truth for COM member names and shapes; the reports also carry `## Expected Binding Differences` (accepted, informational) and `## Wrapper Backlog` sections so that `## Comparison details` stays at zero actionable rows.
+
+#### Prerequisites
+
+1. `pip install -e ".[dev,cli]"` (from the repository root)
+2. **JavaDoc HTML tree** at `docs/java_api/com/telelogic/rhapsody/core/` — gitignored and machine-local; both `--source` modes need it to resolve Java members
+3. For `--source typelib` only: Windows with a licensed Rhapsody installation (the registered `Rhapsody2 1.0 Type Library`) and `pywin32`
+4. For `--source authority` only: the committed catalog must contain the interface
+
+#### Windows Workflow (authoritative)
+
+```bash
+# 1. Export the pywin32 catalog (name -> method/property kind per interface)
+#    from the registered Rhapsody2 1.0 type library
+python scripts/pywin32_authority.py --source typelib
+
+# 2. Generate/refresh one interface's report (writes
+#    docs/reports/IRPClass_api_report.md and exits per the rules below)
+python scripts/validate_model_api.py IRPClass --source typelib --path docs/reports
+```
+
+#### Offline Workflow (macOS/Linux or no Rhapsody)
+
+```bash
+# Generate/refresh one report using the committed pywin32 catalog
+python scripts/validate_model_api.py IRPClass --source authority --path docs/reports
+
+# If the catalog lacks an interface, rebuild it from the committed reports
+python scripts/pywin32_authority.py --source reports
+```
+
+For a per-class sync run, use the rhapsody-sync wrapper instead — it adds JavaDoc/package resolution and offline-evidence blockers on top of the same validator:
+
+```bash
+python .agents/skills/rhapsody-sync/scripts/validate_interface.py IRPClass --source authority
+```
+
+#### Exit Codes and Commit Rules
+
+| Exit | Meaning |
+|------|---------|
+| `0` | Zero actionable deviations — the goal; commit the report together with the wrapper changes it validates |
+| `1` | Actionable deviations found — fix them (see `## Comparison details` and `## AI Fix Guidance`), then regenerate |
+| `2` | Setup failure — missing JavaDoc tree, missing catalog entry, or (typelib mode) missing registered type library |
+
+Regenerated reports and a refreshed `pywin32_authority.json` are committed in the same change as the wrapper edits they justify. Do not hand-edit the generated `*_api_report.md` files; in `pywin32_authority.json` the `catalog` section is generated, while the `documented_aliases` / `documented_unavailable` exception maps are maintained by hand.
+
 ## Architecture
 
 ### Core Design
