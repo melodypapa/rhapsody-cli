@@ -2,8 +2,12 @@
 
 import argparse
 import json
+import sys
 from pathlib import Path
 from typing import Dict, List, TypedDict
+
+if __package__ in (None, ""):  # running as `python scripts/pywin32_authority.py`
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 AUTHORITY_PATH = REPOSITORY_ROOT / "docs" / "reports" / "pywin32_authority.json"
@@ -48,6 +52,22 @@ def build_authority(reports_dir: Path) -> AuthorityData:
     )
 
 
+def build_authority_from_typelib(reports_dir: Path) -> AuthorityData:
+    """Build a complete snapshot from the registered Rhapsody type library.
+
+    Validation reports list only deviations, so exporting their pywin32 column
+    yields an incomplete catalog. The registered type library is the
+    authoritative source when it is available.
+    """
+    from scripts.validate_model_api import collect_registered_pywin32_members
+
+    catalog = {
+        report_path.name[: -len(_REPORT_SUFFIX)]: collect_registered_pywin32_members(report_path.name[: -len(_REPORT_SUFFIX)])
+        for report_path in sorted(reports_dir.glob("*" + _REPORT_SUFFIX))
+    }
+    return AuthorityData(catalog=catalog, documented_aliases={}, documented_unavailable={})
+
+
 def load_authority(path: Path = AUTHORITY_PATH) -> AuthorityData:
     """Load the committed authority snapshot."""
     data = json.loads(path.read_text(encoding="utf-8"))
@@ -65,11 +85,13 @@ def write_authority(data: AuthorityData, path: Path) -> None:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Export the pywin32 catalog from generated validation reports")
+    parser = argparse.ArgumentParser(description="Export a pywin32 catalog from the registered type library or generated reports")
     parser.add_argument("--reports-dir", type=Path, default=REPOSITORY_ROOT / "docs" / "reports")
+    parser.add_argument("--source", choices=("typelib", "reports"), default="typelib")
     parser.add_argument("--output", type=Path, default=AUTHORITY_PATH)
     args = parser.parse_args()
-    write_authority(build_authority(args.reports_dir), args.output)
+    builder = build_authority_from_typelib if args.source == "typelib" else build_authority
+    write_authority(builder(args.reports_dir), args.output)
     return 0
 
 

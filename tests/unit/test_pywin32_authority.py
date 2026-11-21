@@ -1,8 +1,12 @@
 from pathlib import Path
 
+import pytest
+
+import scripts.validate_model_api as validator
 from scripts.pywin32_authority import (
     AuthorityData,
     build_authority,
+    build_authority_from_typelib,
     export_catalog_from_reports,
     load_authority,
     write_authority,
@@ -33,6 +37,17 @@ def test_build_authority_starts_with_empty_exception_maps(tmp_path: Path) -> Non
     data = build_authority(tmp_path)
 
     assert data["catalog"] == {"IRPExample": {"addItem": "method"}}
+    assert data["documented_aliases"] == {}
+    assert data["documented_unavailable"] == {}
+
+
+def test_build_authority_from_typelib_uses_registered_members(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    (tmp_path / "IRPExample_api_report.md").write_text("", encoding="utf-8")
+    monkeypatch.setattr(validator, "collect_registered_pywin32_members", lambda interface_name: {"isFoo": "method", "Bar": "property"})
+
+    data = build_authority_from_typelib(tmp_path)
+
+    assert data["catalog"] == {"IRPExample": {"isFoo": "method", "Bar": "property"}}
     assert data["documented_aliases"] == {}
     assert data["documented_unavailable"] == {}
 

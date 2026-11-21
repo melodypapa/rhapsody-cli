@@ -424,3 +424,15 @@ def test_main_authority_source_reports_backlog_without_typelib(tmp_path: Path, m
     assert "## Expected Binding Differences" in report
     assert "## Wrapper Backlog" in report
     assert "No deviations require changes." in report
+
+
+def test_irpclass_report_has_no_actionable_deviations() -> None:
+    reports_root = Path(__file__).resolve().parents[2] / "docs" / "reports"
+    text = (reports_root / "IRPClass_api_report.md").read_text(encoding="utf-8")
+    section = text.split("## Comparison details", 1)[1].split("## Expected Binding Differences", 1)[0]
+    rows = [
+        line
+        for line in section.splitlines()
+        if line.startswith("| ") and "Python model wrapper" not in line and "---" not in line
+    ]
+    assert rows == [], rows

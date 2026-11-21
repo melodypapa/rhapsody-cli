@@ -8,7 +8,10 @@ from html.parser import HTMLParser
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
 
-from scripts.pywin32_authority import AuthorityData, load_authority
+if __package__ in (None, ""):  # running as `python scripts/validate_model_api.py`
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from scripts.pywin32_authority import AuthorityData, load_authority  # noqa: E402
 
 _TYPELIB_DESCRIPTION = "Rhapsody2 1.0 Type Library"
 _HELPER_NAMES = {"_get_method_or_property", "_set_method_or_property"}
@@ -508,7 +511,7 @@ def render_markdown_report(
     for row in rows:
         escaped_cells = [cell.replace("|", "\\|").replace("\n", "<br>") for cell in row]
         lines.append("| " + " | ".join(escaped_cells) + " |")
-    if not rows:
+    if not rows and not authoritative:
         lines.append("| — | — | — | PASS | No change needed. |")
 
     if authoritative:
