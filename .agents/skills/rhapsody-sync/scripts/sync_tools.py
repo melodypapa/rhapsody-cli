@@ -178,6 +178,16 @@ def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) ->
         issues.append(f"Wrapper source does not exist: {absolute_wrapper}")
 
     class_stem = absolute_wrapper.stem
+
+    # Unit and integration tests mirror the wrapper's package and must exercise the class.
+    models_root = root / "src" / "rhapsody_cli" / "models"
+    rel_pkg = absolute_wrapper.parent.relative_to(models_root)
+    for label, test_base in (("Unit", "unit"), ("Integration", "integration")):
+        test_path = root / "tests" / test_base / "models" / rel_pkg / f"test_{class_stem}.py"
+        if not test_path.is_file():
+            issues.append(f"{label} test file not found for {simple_name}: {test_path}")
+        elif wrapper_class not in test_path.read_text(encoding="utf-8"):
+            issues.append(f"{label} test file does not exercise {wrapper_class}: {test_path}")
     requirements_path = root / "docs" / "requirements" / package_dir / f"{class_stem}.md"
     if not requirements_path.is_file():
         issues.append(f"Class requirement document not found: {requirements_path}")

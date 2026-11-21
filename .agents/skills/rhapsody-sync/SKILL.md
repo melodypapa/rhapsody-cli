@@ -150,6 +150,7 @@ Verification rules:
 
 - **The report's Java package must be declared and agree with the JavaDoc.** Step 8's `verify_sync.py` fails when the `- Java package: ...` Summary line is missing or mismatched; regenerate the report before claiming success. `IRPClass` already carries this line and serves as the reference case.
 - **Unit tests must pass all the time.** Run the full unit suite after every change and fix any failure before continuing; never finish a sync with a failing unit test.
+- **Unit and integration tests must cover the synced class.** `verify_sync.py` requires the mirrored unit and integration test files (`tests/{unit,integration}/models/.../test_<snake>.py`, mirroring the wrapper's package) to exist and to exercise the wrapper class. Run the focused unit test with coverage on the wrapper module and state the measured coverage in the report.
 - **On Windows, integration tests must pass.** If the current environment is Windows, run the migrated class's focused integration test with live Rhapsody and require a green result. Collection-only is not a live test. If Rhapsody is not available on Windows, report the blocker and leave the corresponding TODO open rather than claiming success.
 - On non-Windows environments, integration tests may be collection-only; state that explicitly in the report.
 

@@ -43,7 +43,7 @@ def _load_sync_tools() -> ModuleType:
     return module
 
 
-def _write_fixture_project(root: Path, rst_deviations: str) -> Path:
+def _write_fixture_project(root: Path, rst_deviations: str, with_tests: bool = True) -> Path:
     package_parts = ("com", "telelogic", "rhapsody", "core")
     java_dir = root / "docs" / "java_api" / Path(*package_parts)
     wrapper_dir = root / "src" / "rhapsody_cli" / "models" / Path(*package_parts)
@@ -56,6 +56,11 @@ def _write_fixture_project(root: Path, rst_deviations: str) -> Path:
     (root / "docs" / "requirements" / Path(*package_parts)).mkdir(parents=True)
     (root / "docs" / "requirements" / Path(*package_parts) / "model_thing.md").write_text("RPThing wraps IRPThing\n", encoding="utf-8")
     (root / "docs" / "api" / Path(*package_parts)).mkdir(parents=True)
+    if with_tests:
+        for test_base in ("unit", "integration"):
+            test_dir = root / "tests" / test_base / "models" / Path(*package_parts)
+            test_dir.mkdir(parents=True)
+            (test_dir / "test_model_thing.py").write_text("RPThing\n", encoding="utf-8")
     package_name = ".".join(package_parts)
     canonical_import = "rhapsody_cli.models." + package_name + ".model_thing"
     rst = (
@@ -237,3 +242,37 @@ def test_offline_blocker_exits_when_snapshot_file_missing(tmp_path: Path) -> Non
 
     assert blocker is not None
     assert "IRPState_api_report.md" in blocker
+
+
+def test_verifier_requires_unit_and_integration_test_files(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = _write_fixture_project(
+        tmp_path / "repo",
+        ".. list-table:: API deviations\n   :header-rows: 1\n\n"
+        "   * - JavaDoc member/signature\n     - COM/pywin32 exposure\n     - Python implementation\n     - Deviation and treatment\n"
+        "   * - ``getValue``\n     - ``getValue (method)``\n     - ``get_value``\n     - Mismatch\n"
+        "   * - ``addExample``\n     - unavailable\n     - no wrapper\n     - JavaDoc-only\n",
+        with_tests=False,
+    )
+    report = _write_report(root)
+
+    issues = tools.verify_sync_artifacts(root, "IRPThing", report)
+
+    assert any("Unit test file not found" in issue for issue in issues)
+    assert any("Integration test file not found" in issue for issue in issues)
+
+
+def test_verifier_accepts_mirror_test_files_exercising_the_class(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = _write_fixture_project(
+        tmp_path / "repo",
+        ".. list-table:: API deviations\n   :header-rows: 1\n\n"
+        "   * - JavaDoc member/signature\n     - COM/pywin32 exposure\n     - Python implementation\n     - Deviation and treatment\n"
+        "   * - ``getValue``\n     - ``getValue (method)``\n     - ``get_value``\n     - Mismatch\n"
+        "   * - ``addExample``\n     - unavailable\n     - no wrapper\n     - JavaDoc-only\n",
+    )
+    report = _write_report(root)
+
+    issues = tools.verify_sync_artifacts(root, "IRPThing", report)
+
+    assert not any("test file" in issue for issue in issues)
