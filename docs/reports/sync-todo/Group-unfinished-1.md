@@ -13,18 +13,18 @@ Per-row binding rules: one pywin32-exposed COM member per call —
 `docs/reports/pywin32_authority.json`; catalog-absent sites are blockers, never blind
 migrations; inherited members wait for their base class's own row.
 
-- [ ] iirp_model_element_api_report (IRPModelElement · IRPModelElement · models/core.py · 1 blocker site left)
-  - Note: re-run 2026-11-21 from a clean slate under the updated skill; class renamed `RPModelElement` → `IRPModelElement` per the Java-class naming rule (same for `RPCollection` → `IRPCollection` and the per-class document file names) (shape-follows-COM, `from __future__ import annotations`, own-members report + Correct Items, Java-package declaration). Prior run's outcome retained in the tree: 67 own-method sites migrated, `wrap()` on the `metaClass` property, python-only `get_oslc_links` removed, 5 inherited-member sites in graphics/codegen migrated. RPUnit (21) + IRPCollection (1) sites remain for their own rows.
-  - [ ] Step 1 — §1 sync TODO published (per-run checklist rendered live at run start)
-  - [ ] Step 2 — §2 resolve target + verify the report's Java-package declaration; canonical package move deferred per standing decision (core.py base classes)
-  - [ ] Step 3 — §3 compare evidence against the regenerated own-members report + catalog
-  - [ ] Step 4 — §4 unit tests (TDD) under the new rules: future annotations + unquoted type references + shape follows the COM definition; full unit suite green
-  - [ ] Step 5 — §5 integration tests (mirrored path; collection-only on macOS)
-  - [ ] Step 6 — §6 SWR class requirement document at the package path
-  - [ ] Step 7 — §7 class RST page at the package path, coverage complete
-  - [ ] Step 8 — §8 verify and report (Windows closeout open unless closed)
+- [ ] irp_model_element_api_report (IRPModelElement · models/core.py · 1 blocker site left)
+  - Note: re-run completed 2026-11-21 under the updated skill (shape-follows-COM, future annotations, own-members report + Correct Items, Java-package declaration). Class renamed `RPModelElement` → `IRPModelElement`; python-only `get_oslc_links` removed (stale premise — `getOSLCLinks` is exposed by pywin32); `core.py` converted to `from __future__ import annotations` with unquoted type references and local runtime imports for `cast()` (25 casts + 84 annotations); `wrap()` reads the `metaClass` property; RPCollection migrated; RPUnit's 21 sites remain for its own row.
+  - [x] Step 1 — §1 sync TODO published (per-run checklist rendered live)
+  - [ ] Step 2 — §2 target resolved; report Java-package declaration verified (`com.telelogic.rhapsody.core`, agrees with JavaDoc); OPEN blocker: canonical package move deferred per standing decision — `core.py` placement
+  - [x] Step 3 — §3 evidence compared offline (committed own-members report + catalog: 1 actionable blocker `get_rmm_url` left unchanged, 96 correct items, 5 backlog rows; python-only `get_oslc_links` removed per §4 — report row disappears at closeout regeneration)
+  - [x] Step 4 — §4 unit tests (structural guard green; future-annotations guard green: no quoted casts/annotations, `from __future__ import annotations` present; full unit suite 1711 green)
+  - [x] Step 5 — §5 integration tests (mirror unit/integration files verified exercising `IRPModelElement` via `test_core.py`; behavior-preserving; Windows live run tracked in Step 8)
+  - [x] Step 6 — §6 SWR update (`docs/requirements/com/telelogic/rhapsody/core/irp_model_element.md` — binding rules, `get_rmm_url` blocker, deferred-move note, future-annotations fact)
+  - [x] Step 7 — §7 RST update (`docs/api/com/telelogic/rhapsody/core/irp_model_element.rst` — 6 deviation rows + 96 Correct-Items rows, coverage complete; get_oslc_links row removed per §7; toctree wired)
+  - [ ] Step 8 — §8 verify and report (unit suite 1711 ✓, ruff/black/mypy ✓, skill tests 15 ✓, mirror test files ✓; OPEN blocker: Windows closeout — regenerate the report (resolves the stale `RPModelElement` target line and the removed `get_oslc_links` row), then `validate_interface.py` + `verify_sync.py` + live integration; the deferred-move blocker also keeps verify_sync's wrapper-placement check red until the dedicated core.py refactor)
 
-- [ ] iirp_collection_api_report (IRPCollection · IRPCollection · models/core.py · 2 blocker sites left)
+- [ ] irp_collection_api_report (IRPCollection · IRPCollection · models/core.py · 2 blocker sites left)
   - Note: run 2026-11-21 — `get_count` migrated to the `Count` property and `get_item` migrated to the direct `Item` method (the legacy `getItem` name-probe removed); `make_fake_collection` exposes both forms (`Count` attribute + `Item` side_effect) keeping the ~163 dependent call sites green; `add_graphical_item` and `to_list` are documented blockers (Java members absent from pywin32).
   - [x] Step 1 — §1 sync TODO published (per-run checklist rendered live at run start)
   - [ ] Step 2 — §2 target resolved (wrapper/exports/tests located); OPEN blocker: canonical package move deferred per standing decision — `IRPCollection` stays in `models/core.py` with the other base classes
