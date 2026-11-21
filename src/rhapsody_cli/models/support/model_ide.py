@@ -2,7 +2,8 @@
 
 from typing import TYPE_CHECKING
 
-from rhapsody_cli.models.core import IRPCollection, IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import IRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.application import RhapsodyApplication

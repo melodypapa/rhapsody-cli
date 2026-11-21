@@ -17,7 +17,6 @@ invoked as methods via `call_com`. Elements returned by `get_item` are wrapped t
 `add_graphical_item` (Java `addGraphicalItem`) and `to_list` (Java `toList`) are documented
 blockers: both members are absent from the committed pywin32 catalog, so their call sites
 stay unchanged until Windows typelib evidence lands.
-**Implementation:** src/rhapsody_cli/models/core.py:IRPCollection (§2 canonical package move
-deferred until the IRPUnit and IRPModelElement rows leave `models/core.py` — see
-`docs/reports/sync-todo`)
+**Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_collection.py:IRPCollection
+(canonical package; re-exported from `rhapsody_cli.models.core` to preserve existing imports)
 **Last Changed:** 2026-11-21

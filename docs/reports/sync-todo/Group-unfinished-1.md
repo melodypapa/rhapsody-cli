@@ -13,7 +13,7 @@ Per-row binding rules: one pywin32-exposed COM member per call —
 `docs/reports/pywin32_authority.json`; catalog-absent sites are blockers, never blind
 migrations; inherited members wait for their base class's own row.
 
-- [ ] iirp_model_element_api_report (IRPModelElement · IRPModelElement · models/core.py · 1 blocker site left)
+- [ ] irp_model_element_api_report (IRPModelElement · IRPModelElement · models/core.py · 1 blocker site left)
   - Note: re-run 2026-11-21 from a clean slate under the updated skill; class renamed `RPModelElement` → `IRPModelElement` per the Java-class naming rule (same for `RPCollection` → `IRPCollection` and the per-class document file names) (shape-follows-COM, `from __future__ import annotations`, own-members report + Correct Items, Java-package declaration). Prior run's outcome retained in the tree: 67 own-method sites migrated, `wrap()` on the `metaClass` property, python-only `get_oslc_links` removed, 5 inherited-member sites in graphics/codegen migrated. RPUnit (21) + IRPCollection (1) sites remain for their own rows.
   - [ ] Step 1 — §1 sync TODO published (per-run checklist rendered live at run start)
   - [ ] Step 2 — §2 resolve target + verify the report's Java-package declaration; canonical package move deferred per standing decision (core.py base classes)
@@ -24,10 +24,7 @@ migrations; inherited members wait for their base class's own row.
   - [ ] Step 7 — §7 class RST page at the package path, coverage complete
   - [ ] Step 8 — §8 verify and report (Windows closeout open unless closed)
 
-- [ ] iirp_collection_api_report (IRPCollection · IRPCollection · models/core.py · 2 blocker sites left)
-  - Note: run 2026-11-21 — `get_count` migrated to the `Count` property and `get_item` migrated to the direct `Item` method (the legacy `getItem` name-probe removed); `make_fake_collection` exposes both forms (`Count` attribute + `Item` side_effect) keeping the ~163 dependent call sites green; `add_graphical_item` and `to_list` are documented blockers (Java members absent from pywin32).
-  - [x] Step 1 — §1 sync TODO published (per-run checklist rendered live at run start)
-  - [ ] Step 2 — §2 target resolved (wrapper/exports/tests located); OPEN blocker: canonical package move deferred per standing decision — `IRPCollection` stays in `models/core.py` with the other base classes
+- [ ] Step 2 — §2 target resolved (wrapper/exports/tests located); OPEN blocker: canonical package move deferred per standing decision — `IRPCollection` stays in `models/core.py` with the other base classes
   - [x] Step 3 — §3 evidence compared (baseline = regenerated own-members report + catalog: 9 Correct Items, 2 PYWIN32_MEMBER_MISSING blockers recorded, zero blind migrations)
   - [x] Step 4 — §4 unit tests (guard test red (legacy helper + hasattr probe) → migration → collection tests flipped to the `Item`/`Count` convention → full unit suite 1710 green; no PYTHON_ONLY_MEMBER rows existed for this class)
   - [x] Step 5 — §5 integration tests (behavior-preserving change; mirrored integration tests collected 128 ✓ — no new coverage required; Windows live run tracked in Step 8)

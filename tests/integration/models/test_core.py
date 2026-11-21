@@ -10,7 +10,8 @@ from typing import cast
 import pytest
 
 from rhapsody_cli import RhapsodyApplication
-from rhapsody_cli.models.core import AddToModelMode, IRPCollection, IRPModelElement, RPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AddToModelMode, IRPModelElement, RPUnit
 from rhapsody_cli.models.elements.containment import RPPackage, RPProject
 from rhapsody_cli.models.elements.diagrams import RPDiagram
 from rhapsody_cli.models.elements.relations import RPRelation

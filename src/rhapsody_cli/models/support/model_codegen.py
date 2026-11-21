@@ -3,7 +3,8 @@
 from typing import TYPE_CHECKING, Optional
 
 from rhapsody_cli.application import RhapsodyApplication
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 from rhapsody_cli.models.elements.graphics.model_graphics import RPTableLayout
 
 if TYPE_CHECKING:

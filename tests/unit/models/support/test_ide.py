@@ -1,7 +1,8 @@
 from typing import cast
 
 from rhapsody_cli.application import RhapsodyApplication
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.support.model_ide import (
     RPAXViewCtrl,
     RPExternalIDERegistry,

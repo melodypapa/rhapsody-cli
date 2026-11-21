@@ -74,7 +74,7 @@ def test_package_is_registered_for_meta_class_package() -> None:
 
 
 def test_package_get_nested_packages_returns_collection() -> None:
-    from rhapsody_cli.models.core import IRPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Package")
     nested1 = make_fake_element("Package", properties={"name": "Nested1"})
@@ -90,7 +90,7 @@ def test_package_get_nested_packages_returns_collection() -> None:
 
 
 def test_package_get_classes_returns_collection() -> None:
-    from rhapsody_cli.models.core import IRPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Package")
     class1 = make_fake_element("Class", properties={"name": "Class1"})
@@ -104,7 +104,7 @@ def test_package_get_classes_returns_collection() -> None:
 
 
 def test_package_get_actors_returns_collection() -> None:
-    from rhapsody_cli.models.core import IRPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Package")
     actor1 = make_fake_element("Actor", properties={"name": "Actor1"})
@@ -117,7 +117,7 @@ def test_package_get_actors_returns_collection() -> None:
 
 
 def test_package_get_use_cases_returns_collection() -> None:
-    from rhapsody_cli.models.core import IRPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Package")
     uc1 = make_fake_element("UseCase", properties={"name": "UC1"})
@@ -166,7 +166,7 @@ def test_package_add_sequence_diagram_delegates_to_com() -> None:
 
 
 def test_package_get_sequence_diagrams_returns_collection() -> None:
-    from rhapsody_cli.models.core import IRPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Package")
     diagram = make_fake_element("SequenceDiagram", properties={"name": "Seq1"})
@@ -222,7 +222,7 @@ def test_package_add_association_delegates_to_com() -> None:
 
 
 def test_package_get_events_returns_collection() -> None:
-    from rhapsody_cli.models.core import IRPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Package")
     event = make_fake_element("Event", properties={"name": "Event1"})
@@ -235,7 +235,7 @@ def test_package_get_events_returns_collection() -> None:
 
 
 def test_package_get_nodes_returns_collection() -> None:
-    from rhapsody_cli.models.core import IRPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Package")
     node = make_fake_element("Node", properties={"name": "Node1"})
@@ -292,7 +292,7 @@ def test_package_delete_flows_delegates_to_com() -> None:
 
 
 def test_package_get_flow_items_returns_collection() -> None:
-    from rhapsody_cli.models.core import IRPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Package")
     flow_item = make_fake_element("FlowItem", properties={"name": "FlowItem1"})
@@ -304,7 +304,7 @@ def test_package_get_flow_items_returns_collection() -> None:
 
 
 def test_package_get_flows_returns_collection() -> None:
-    from rhapsody_cli.models.core import IRPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Package")
     flow = make_fake_element("Flow", properties={"name": "Flow1"})
@@ -326,7 +326,7 @@ def test_package_get_remote_requirements_populate_mode_returns_int() -> None:
 
 
 def test_package_get_root_instance_specifications_returns_collection() -> None:
-    from rhapsody_cli.models.core import IRPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Package")
     instance_spec = make_fake_element("InstanceSpecification", properties={"name": "IS1"})
@@ -414,7 +414,7 @@ def test_package_add_link_between_sysml_ports_delegates_to_com() -> None:
 
 # --- Misc Methods (Task 5) Tests ---
 def test_package_get_all_nested_elements_returns_collection() -> None:
-    from rhapsody_cli.models.core import IRPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Package")
     elem1 = make_fake_element("Class", properties={"name": "Class1"})
@@ -454,7 +454,7 @@ def test_package_get_saved_in_separate_directory_returns_int() -> None:
 
 
 def test_package_get_user_defined_stereotypes_returns_collection() -> None:
-    from rhapsody_cli.models.core import IRPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Package")
     stereotype = make_fake_element("Stereotype", properties={"name": "MyStereotype"})

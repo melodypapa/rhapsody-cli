@@ -9,10 +9,10 @@ import pytest
 
 import rhapsody_cli.models.core as core_module
 from rhapsody_cli.exceptions import RhapsodyRuntimeException
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.core import (
     AbstractRPModelElement,
     AddToModelMode,
-    IRPCollection,
     IRPModelElement,
     RPUnit,
 )
@@ -1781,7 +1781,9 @@ def test_rp_collection_uses_no_legacy_dual_binding_helpers() -> None:
     """IRPCollection's own methods call exactly one pywin32 member — no name probing."""
     import ast as _ast
 
-    source = Path(core_module.__file__).read_text(encoding="utf-8")
+    from rhapsody_cli.models.com.telelogic.rhapsody.core import irp_collection as irp_collection_module
+
+    source = Path(irp_collection_module.__file__).read_text(encoding="utf-8")
     tree = _ast.parse(source)
     collection_cls = next(node for node in tree.body if isinstance(node, _ast.ClassDef) and node.name == "IRPCollection")
     offenders: list[str] = []

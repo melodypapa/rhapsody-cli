@@ -1,6 +1,7 @@
 """Tests for rhapsody_cli.models.elements.containment.RPCollaboration."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, RPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, RPUnit
 from rhapsody_cli.models.elements.containment import RPCollaboration
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 

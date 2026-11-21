@@ -2,13 +2,13 @@
 
 ## Summary
 - Java package: `com.telelogic.rhapsody.core`
-- Target wrapper: `RPModelElement` (`src/rhapsody_cli/models/core.py`)
-- Members: Python `114`, Java `118`, pywin32 `104`
+- Target wrapper: `IRPModelElement` (`src/rhapsody_cli/models/core.py`)
+- Members: Python `113`, Java `118`, pywin32 `104`
 - Deviations: `1`
 - Deviations by status:
   - `PYWIN32_MEMBER_MISSING`: 1
 
-- Informational binding differences (expected): `1`
+- Informational binding differences (expected): `0`
 - Wrapper backlog (supported members without wrappers): `4`
 - Documented aliases: `0`, documented unavailable: `0`
 
@@ -22,7 +22,7 @@
 
 | Python model wrapper | Java API | pywin32 | Status | Recommended change |
 | --- | --- | --- | --- | --- |
-| get_oslc_links() (no static COM member) | — | — | PYTHON_ONLY_MEMBER | Keep this as a local facade helper or map it to a documented API member. |
+| — | — | — | — | — |
 
 ## Wrapper Backlog
 
@@ -137,7 +137,7 @@
 ## AI Fix Guidance
 
 ### Finding 1: PYWIN32_MEMBER_MISSING
-- **Target:** `RPModelElement` in `src/rhapsody_cli/models/core.py`
+- **Target:** `IRPModelElement` in `src/rhapsody_cli/models/core.py`
 - **Current Python wrapper/COM call:** get_rmm_url() -> getRmmUrl; get_rmm_url() -> rmmUrl
 - **Expected Python method(s):** `get_rmm_url`
 - **Java signature(s):** `IRPModelElement.getRmmUrl()`

@@ -1,6 +1,7 @@
 """Tests for rhapsody_cli.models.elements.common.model_other_model.RPClassifierRole."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 from rhapsody_cli.models.elements.classifiers import RPClassifier
 from rhapsody_cli.models.elements.common import RPClassifierRole
 from rhapsody_cli.models.elements.relations import RPInstance

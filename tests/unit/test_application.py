@@ -6,7 +6,7 @@ import pytest
 
 from rhapsody_cli.application import RhapsodyApplication
 from rhapsody_cli.exceptions import RhapsodyConnectionError, RhapsodyRuntimeException
-from rhapsody_cli.models.core import IRPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.elements.containment import RPProject
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -371,7 +371,7 @@ def test_check_model_delegates_to_com() -> None:
 
 
 def test_create_new_collection_returns_rpcollection() -> None:
-    from rhapsody_cli.models.core import IRPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake_app = make_fake_element("Application")
     fake_app.createNewCollection.return_value = make_fake_collection([])

@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Any, Iterator
 from rhapsody_cli import com_utils
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.core import RPModelElement
+    from rhapsody_cli.models.core import IRPModelElement
 
 
 class IRPCollection:
@@ -66,7 +66,7 @@ class IRPCollection:
 
         return AbstractRPModelElement._wrap_if_element(raw_item)
 
-    def add_item(self, element: RPModelElement) -> None:
+    def add_item(self, element: IRPModelElement) -> None:
         """Adds an element to the collection.
 
         Args:
@@ -77,11 +77,11 @@ class IRPCollection:
                 the collection.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPCollection::addItem(com.telelogic.rhapsody.core.IRPModelElement)
+            com.telelogic.rhapsody.core.IRPCollection::addItem(com.telelogic.rhapsody.core.IIRPModelElement)
         """
         com_utils.call_com(lambda: self._com.addItem(element._com))
 
-    def add_graphical_item(self, item: RPModelElement) -> None:
+    def add_graphical_item(self, item: IRPModelElement) -> None:
         """Adds a graphical item to the collection.
 
         Args:
@@ -91,7 +91,7 @@ class IRPCollection:
             RhapsodyRuntimeException: If the operation fails.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPCollection::addGraphicalItem(com.telelogic.rhapsody.core.IRPModelElement)
+            com.telelogic.rhapsody.core.IRPCollection::addGraphicalItem(com.telelogic.rhapsody.core.IIRPModelElement)
         """
         com_utils.call_com(lambda: self._com.addGraphicalItem(item._com))
 
@@ -149,7 +149,7 @@ class IRPCollection:
         """
         com_utils.call_com(lambda: self._com.setString(index, value))
 
-    def set_model_element(self, index: int, element: RPModelElement) -> None:
+    def set_model_element(self, index: int, element: IRPModelElement) -> None:
         """Sets a model element at the specified index.
 
         Args:
@@ -160,7 +160,7 @@ class IRPCollection:
             RhapsodyRuntimeException: If the operation fails.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPCollection::setModelElement(int, com.telelogic.rhapsody.core.IRPModelElement)
+            com.telelogic.rhapsody.core.IRPCollection::setModelElement(int, com.telelogic.rhapsody.core.IIRPModelElement)
         """
         com_utils.call_com(lambda: self._com.setModelElement(index, element._com))
 

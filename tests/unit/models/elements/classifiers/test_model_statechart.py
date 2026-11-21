@@ -1,7 +1,8 @@
 """Tests for rhapsody_cli.elements.statechart.RPStatechart."""
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPCollection, IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 from rhapsody_cli.models.elements.classifiers import RPStatechart
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
