@@ -206,7 +206,7 @@ Example Issue
 
 .. code-block:: text
 
-   Title: RPClass.createAttribute() fails with None type
+   Title: IRPClass.createAttribute() fails with None type
 
    Steps to Reproduce:
    1. Create a class

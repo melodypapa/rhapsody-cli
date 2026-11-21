@@ -1,4 +1,4 @@
-"""Integration tests for RPClass with live Rhapsody COM API.
+"""Integration tests for IRPClass with live Rhapsody COM API.
 
 These tests require a running Rhapsody instance with an open project.
 """
@@ -14,8 +14,8 @@ from rhapsody_cli.models.elements.interactions import RPEventReception
 
 
 @pytest.mark.integration
-class TestRPClassIntegration:
-    """Integration tests for RPClass with real Rhapsody COM API."""
+class TestIRPClassIntegration:
+    """Integration tests for IRPClass with real Rhapsody COM API."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
@@ -64,7 +64,7 @@ class TestRPClassIntegration:
             test_class.delete_from_project()
 
     def test_set_is_abstract_raises_not_implemented(self, test_project: RPProject) -> None:
-        """RPClass.set_is_abstract is marked unimplemented: Rhapsody2.Application.1's automation
+        """IRPClass.set_is_abstract is marked unimplemented: Rhapsody2.Application.1's automation
         server accepts a write to the 'isAbstract' COM property without error (confirmed via
         typelib inspection that both PROPERTYGET and PROPERTYPUT are declared for isAbstract
         under the same DISPID -- it is not read-only at the interface level), but the write does

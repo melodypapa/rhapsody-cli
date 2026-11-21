@@ -1,7 +1,8 @@
 """Tests for rhapsody_cli.elements.statechart.RPStatechart."""
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
 from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
-from rhapsody_cli.models.elements.classifiers import RPClass, RPStatechart
+from rhapsody_cli.models.elements.classifiers import RPStatechart
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
@@ -9,7 +10,7 @@ def test_statechart_is_a_class() -> None:
     fake = make_fake_element("Statechart", getName="Behavior")
     statechart = RPStatechart(fake)
 
-    assert isinstance(statechart, RPClass)
+    assert isinstance(statechart, IRPClass)
     assert statechart.get_name() == "Behavior"
 
 

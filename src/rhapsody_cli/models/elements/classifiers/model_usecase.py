@@ -220,7 +220,7 @@ class RPUseCase(RPClassifier):
                 ``setIsBehaviorOverriden`` method is not exposed in the COM
                 automation type library for use cases (the getter
                 ``getIsBehaviorOverriden`` is exposed and works; the sibling
-                ``RPActor``/``RPClass`` versions of this setter *are* exposed).
+                ``RPActor``/``IRPClass`` versions of this setter *are* exposed).
                 Marked unimplemented rather than failing with a raw COM
                 ``AttributeError`` at runtime.
 

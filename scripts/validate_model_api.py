@@ -144,6 +144,13 @@ def _get_method_com_members(method: ast.FunctionDef) -> Set[str]:
     return members
 
 
+def _wrapper_class_candidates(interface_name: str) -> List[str]:
+    """Return accepted wrapper class names, preferring the exact Java interface name."""
+    if interface_name == "IRPApplication":
+        return ["RhapsodyApplication"]
+    return [interface_name, "RP" + interface_name[3:]]
+
+
 def resolve_python_wrapper(interface_name: str, models_root: Path) -> Tuple[str, Path]:
     """Return the concrete wrapper class and source path for a Java interface."""
     _validate_interface_name(interface_name)
@@ -151,16 +158,17 @@ def resolve_python_wrapper(interface_name: str, models_root: Path) -> Tuple[str,
         raise FileNotFoundError(f"Python model directory not found: {models_root}")
 
     is_application_interface = interface_name == "IRPApplication"
-    target_class = "RhapsodyApplication" if is_application_interface else "RP" + interface_name[3:]
+    candidates = _wrapper_class_candidates(interface_name)
     source_paths = [models_root.parent / "application.py"] if is_application_interface else sorted(models_root.rglob("*.py"))
     for source_path in source_paths:
         try:
             tree = ast.parse(source_path.read_text(encoding="utf-8"), filename=str(source_path))
         except (OSError, SyntaxError) as exc:
             raise ValueError(f"Could not parse wrapper module {source_path}: {exc}") from exc
-        if any(isinstance(node, ast.ClassDef) and node.name == target_class for node in ast.walk(tree)):
-            return target_class, source_path
-    raise ValueError(f"Python wrapper {target_class} for {interface_name} was not found under {models_root}")
+        for candidate in candidates:
+            if any(isinstance(node, ast.ClassDef) and node.name == candidate for node in ast.walk(tree)):
+                return candidate, source_path
+    raise ValueError(f"None of the Python wrappers {candidates} for {interface_name} was found under {models_root}")
 
 
 def collect_python_members(interface_name: str, models_root: Path) -> Dict[str, Set[str]]:
@@ -178,12 +186,12 @@ def collect_python_members(interface_name: str, models_root: Path) -> Dict[str, 
         except (OSError, SyntaxError) as exc:
             raise ValueError(f"Could not parse model module {source_path}: {exc}") from exc
         for node in ast.walk(tree):
-            if isinstance(node, ast.ClassDef) and (node.name.startswith("RP") or node.name == "RhapsodyApplication"):
+            if isinstance(node, ast.ClassDef) and (node.name.startswith(("RP", "IRP")) or node.name == "RhapsodyApplication"):
                 classes.setdefault(node.name, node)
 
-    target_class = "RhapsodyApplication" if is_application_interface else "RP" + interface_name[3:]
-    if target_class not in classes:
-        raise ValueError(f"Python model wrapper {target_class} for {interface_name} was not found under {models_root}")
+    target_class = next((candidate for candidate in _wrapper_class_candidates(interface_name) if candidate in classes), "")
+    if not target_class:
+        raise ValueError(f"None of the Python wrappers {_wrapper_class_candidates(interface_name)} for {interface_name} was found under {models_root}")
 
     members: Dict[str, Set[str]] = {}
     visited: Set[str] = set()

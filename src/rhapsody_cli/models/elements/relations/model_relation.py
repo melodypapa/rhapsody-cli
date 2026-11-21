@@ -6,8 +6,8 @@ from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPMod
 from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
 
 if TYPE_CHECKING:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
     from rhapsody_cli.models.elements.classifiers.model_association_class import RPAssociationClass
-    from rhapsody_cli.models.elements.classifiers.model_class import RPClass
 
 
 class RPRelation(RPUnit):
@@ -134,7 +134,7 @@ class RPRelation(RPUnit):
         """
         return str(AbstractRPModelElement._get_method_or_property(self._com, "getMultiplicity", "multiplicity"))
 
-    def get_object_as_object_type(self) -> "RPClass":
+    def get_object_as_object_type(self) -> "IRPClass":
         """Gets the object's class, treated as the object's type.
 
         Returns:
@@ -146,7 +146,7 @@ class RPRelation(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getObjectAsObjectType()
         """
-        return cast("RPClass", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getObjectAsObjectType", "objectAsObjectType")))
+        return cast("IRPClass", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getObjectAsObjectType", "objectAsObjectType")))
 
     def get_of_class(self) -> "RPClassifier":
         """Gets the classifier that owns this relation.

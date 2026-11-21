@@ -59,20 +59,25 @@ Java-mirrored methods: `addAttribute(name)` (returns wrapped attribute),
 
 ---
 
-## SWR_ELEM_00004: RPClass Wrapper
+## SWR_ELEM_00004: IRPClass Wrapper
 
 **ID:** SWR_ELEM_00004
-**Title:** RPClass wraps IRPClass, a UML/SysML class in the Rhapsody model
+**Title:** IRPClass wraps the IRPClass Java interface, a class in Rhapsody models
 **Status:** Implemented
 **Priority:** High
 **Description:**
-`RPClass` shall extend `RPClassifier` to wrap `IRPClass`. It shall expose Java-mirrored
-methods: `addSuperclass(super_class)` (accepts an `RPClass`), `addConstructor(arguments_data)`
+The `IRPClass` interface represents classes in Rhapsody models. The Python `IRPClass` shall extend
+`RPClassifier` to wrap the Java `IRPClass`. It shall expose Java-mirrored methods:
+`addSuperclass(super_class)` (accepts an `IRPClass`), `addConstructor(arguments_data)`
 (returns wrapped constructor), `addDestructor()` (returns wrapped destructor),
-`getIsAbstract()` (returns bool), and `addClass(name)` (returns wrapped nested class).
+`getIsAbstract()` (returns bool), and `addClass(name)` (returns wrapped class).
 The wrapper shall register itself for the meta class `"Class"`.
-**Implementation:** src/rhapsody_cli/models/elements/classifiers.py:RPClass
-**Last Changed:** 2026-07-07
+Members `addEventReceptionWithEvent` and `updateContainedDiagramsOnServer` are documented
+by JavaDoc but unavailable in the Rhapsody2.Application.1 COM type library; the wrapper
+keeps `add_event_reception_with_event` as an explicit `NotImplementedError` facade and
+omits the server diagram update entirely.
+**Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_class.py:IRPClass
+**Last Changed:** 2026-11-21
 
 ---
 

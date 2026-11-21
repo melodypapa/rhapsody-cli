@@ -5,9 +5,9 @@ from typing import TYPE_CHECKING, Optional, cast
 from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement, RPUnit
 
 if TYPE_CHECKING:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
     from rhapsody_cli.models.elements.activity.model_activity import RPFlow, RPFlowItem
     from rhapsody_cli.models.elements.classifiers.model_actor import RPActor
-    from rhapsody_cli.models.elements.classifiers.model_class import RPClass
     from rhapsody_cli.models.elements.classifiers.model_operation import RPOperation
     from rhapsody_cli.models.elements.classifiers.model_usecase import RPUseCase
     from rhapsody_cli.models.elements.common.model_other_model import RPSysMLPort
@@ -134,7 +134,7 @@ class RPPackage(RPUnit):
     # [inherited] irp_unit / irp_model_element methods (covered by rp_unit / rp_model_element checklists)
     # No deprecated IRPPackage methods.
 
-    def add_class(self, name: str) -> "RPClass":
+    def add_class(self, name: str) -> "IRPClass":
         """Adds a new class to the package.
 
         Args:
@@ -146,7 +146,7 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addClass(java.lang.String name)
         """
-        return cast("RPClass", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addClass(name))))
+        return cast("IRPClass", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addClass(name))))
 
     def add_nested_package(self, name: str) -> "RPPackage":
         """Adds a nested package to this package.
@@ -660,7 +660,7 @@ class RPPackage(RPUnit):
         AbstractRPModelElement.call_com(lambda: self._com.deletePackage(package._com))
 
     # --- Finders (Pattern B) ---
-    def find_class(self, name: str) -> "RPClass":
+    def find_class(self, name: str) -> "IRPClass":
         """Finds a class in the package by name.
 
         Args:
@@ -672,7 +672,7 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::findClass(java.lang.String name)
         """
-        return cast("RPClass", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findClass(name))))
+        return cast("IRPClass", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findClass(name))))
 
     def find_actor(self, name: str) -> "RPActor":
         """Finds an actor in the package by name.

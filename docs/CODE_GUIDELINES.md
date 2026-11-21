@@ -119,19 +119,19 @@ from tabulate import tabulate
 # 3. Local application
 from rhapsody_cli.cli.context import RhapsodyContext
 from rhapsody_cli.exceptions import RhapsodyConnectionError
-from rhapsody_cli.models.elements.classifiers import RPClass
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
 ```
 
 **✅ CORRECT: Full package path**
 ```python
 from rhapsody_cli.actions.abstract_action import AbstractAction
-from rhapsody_cli.models.elements.classifiers.model_class import RPClass
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
 ```
 
 **❌ WRONG: Relative imports**
 ```python
 from .abstract_action import AbstractAction
-from ..models.elements.classifiers.model_class import RPClass
+from ..models.com.telelogic.rhapsody.core import IRPClass
 ```
 
 **Exception:** `TYPE_CHECKING` imports are allowed to be grouped separately for type-hint-only imports.

@@ -1,7 +1,8 @@
 """Cross-wrapper integration tests: factory methods return correct subclasses."""
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
 from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
-from rhapsody_cli.models.elements.classifiers import RPClass, RPClassifier, RPStereotype
+from rhapsody_cli.models.elements.classifiers import RPClassifier, RPStereotype
 from rhapsody_cli.models.elements.common.model_misc import RPComment, RPConstraint, RPEnumerationLiteral
 from rhapsody_cli.models.elements.containment import (
     RPComponent,
@@ -136,7 +137,7 @@ def test_wrap_dispatches_association_class_to_rpassociation_class() -> None:
     result = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(result, RPAssociationClass)
-    assert isinstance(result, RPClass)
+    assert isinstance(result, IRPClass)
 
 
 def test_wrap_dispatches_tag_to_rptag() -> None:
@@ -157,7 +158,7 @@ def test_collection_contains_mixed_element_types() -> None:
     result = RPCollection(coll)
 
     assert len(result) == 2
-    assert isinstance(result[0], RPClass)
+    assert isinstance(result[0], IRPClass)
     assert isinstance(result[1], RPClassifier)
 
 

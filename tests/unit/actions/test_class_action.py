@@ -222,7 +222,7 @@ class TestClassCreateAction:
             mock_class.set_property_value.assert_any_call("level", "3")
 
     def test_create_with_boolean_flags(self) -> None:
-        """UTS_CLS_00005: Test isAbstract/isFinal/isActive set via RPClass properties."""
+        """UTS_CLS_00005: Test isAbstract/isFinal/isActive set via IRPClass properties."""
         action, mock_parent = self._make_action_with_parent()
         mock_class = MagicMock()
         mock_parent.add_class.return_value = mock_class
@@ -866,7 +866,7 @@ class TestClassUpdateAction:
             mock_class.set_name.assert_not_called()
 
     def test_update_class_boolean_flags(self) -> None:
-        """UTS_CLS_00034: Test isAbstract/isFinal/isActive assigned via RPClass properties."""
+        """UTS_CLS_00034: Test isAbstract/isFinal/isActive assigned via IRPClass properties."""
         from rhapsody_cli.actions.class_action import ClassUpdateAction
 
         action = ClassUpdateAction()

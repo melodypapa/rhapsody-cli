@@ -1,7 +1,7 @@
 # Rhapsody API Validation: IRPClass
 
 ## Summary
-- Target wrapper: `RPClass` (`src/rhapsody_cli/models/elements/classifiers/model_class.py`)
+- Target wrapper: `IRPClass` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_class.py`)
 - Members: Python `214`, Java `222`, pywin32 `201`
 - Deviations: `0`
 - Deviations by status:

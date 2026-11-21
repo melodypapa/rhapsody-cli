@@ -8,7 +8,8 @@ from typing import cast
 
 import pytest
 
-from rhapsody_cli.models.elements.classifiers import RPClass, RPClassifier
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
+from rhapsody_cli.models.elements.classifiers import RPClassifier
 from rhapsody_cli.models.elements.containment import RPPackage, RPProject
 
 
@@ -330,7 +331,7 @@ class TestRPClassifierIntegration:
         pkg = self._create_package(test_project, pkg_name)
         outer: RPClassifier = pkg.add_class(outer_name)
         try:
-            inner = cast(RPClass, outer).add_class(inner_name)
+            inner = cast(IRPClass, outer).add_class(inner_name)
             assert inner is not None
             nested = list(outer.get_nested_classifiers())
             assert inner in nested

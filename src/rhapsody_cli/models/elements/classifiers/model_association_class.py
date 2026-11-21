@@ -2,14 +2,14 @@
 
 from typing import TYPE_CHECKING, cast
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
 from rhapsody_cli.models.core import AbstractRPModelElement
-from rhapsody_cli.models.elements.classifiers.model_class import RPClass
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.relations.model_relation import RPRelation
 
 
-class RPAssociationClass(RPClass):
+class RPAssociationClass(IRPClass):
     """Wraps ``IRPAssociationClass``: an association class that extends ``IRPClass``."""
 
     # IRPAssociationClass method parity checklist:

@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.elements.interactions.model_interactions import RPEvent, RPEventReception
 
 
-class RPClass(RPClassifier):
+class IRPClass(RPClassifier):
     """Wraps ``IRPClass``: represents a class in the model."""
 
     # IRPClass method parity checklist:
@@ -43,7 +43,7 @@ class RPClass(RPClassifier):
     # update_contained_diagrams_on_server: unavailable in Rhapsody2.Application.1 type library; wrapper removed.
     # No deprecated methods in IRPClass.
 
-    def add_superclass(self, super_class: "RPClass") -> None:
+    def add_superclass(self, super_class: "IRPClass") -> None:
         """Adds a superclass to this class.
 
         Args:
@@ -87,9 +87,9 @@ class RPClass(RPClassifier):
     @is_abstract.setter
     def is_abstract(self, is_abstract: bool) -> None:
         """Unimplemented: the COM write is accepted but never persists."""
-        raise NotImplementedError("RPClass.is_abstract setter is unimplemented: Rhapsody2.Application.1 accepts the write but never persists it.")
+        raise NotImplementedError("IRPClass.is_abstract setter is unimplemented: Rhapsody2.Application.1 accepts the write but never persists it.")
 
-    def add_class(self, name: str) -> "RPClass":
+    def add_class(self, name: str) -> "IRPClass":
         """Adds a nested class to this class.
 
         Args:
@@ -101,7 +101,7 @@ class RPClass(RPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPClass::addClass(java.lang.String name)
         """
-        return cast("RPClass", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addClass(name))))
+        return cast("IRPClass", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addClass(name))))
 
     def add_event_reception(self, name: str) -> "RPEventReception":
         """Adds an event reception to the current class.
@@ -298,7 +298,7 @@ class RPClass(RPClassifier):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteReception(p_val._com))
 
-    def delete_superclass(self, super_class: "RPClass") -> None:
+    def delete_superclass(self, super_class: "IRPClass") -> None:
         """Removes the inheritance relationship with the specified base class.
 
         Args:
@@ -361,4 +361,4 @@ class RPClass(RPClassifier):
         return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsReactive", "isReactive"))
 
 
-AbstractRPModelElement.register_wrapper("Class", RPClass)
+AbstractRPModelElement.register_wrapper("Class", IRPClass)

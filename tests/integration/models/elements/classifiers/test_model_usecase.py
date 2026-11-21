@@ -70,7 +70,7 @@ class TestRPUseCaseIntegration:
 
     def test_set_is_behavior_overriden_raises_not_implemented(self, test_project: RPProject) -> None:
         # setIsBehaviorOverriden is not exposed in the COM automation type library for UseCase
-        # (getIsBehaviorOverriden is; the sibling RPActor/RPClass setters are exposed), so the
+        # (getIsBehaviorOverriden is; the sibling RPActor/IRPClass setters are exposed), so the
         # wrapper raises NotImplementedError.
         pkg_name = self._unique("UcPkg")
         uc_name = self._unique("MyUseCase")
