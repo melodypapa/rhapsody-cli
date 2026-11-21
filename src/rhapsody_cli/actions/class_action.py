@@ -248,7 +248,7 @@ class ClassCreateAction(AbstractClassAction):
         if "isAbstract" in attrs:
             cls.is_abstract = bool(attrs["isAbstract"])  # type: ignore[attr-defined]
         if "isFinal" in attrs:
-            cls.is_final = 1 if attrs["isFinal"] else 0  # type: ignore[attr-defined]
+            cls.set_is_final(1 if attrs["isFinal"] else 0)  # type: ignore[attr-defined]
         if "isActive" in attrs:
             cls.is_active = 1 if attrs["isActive"] else 0  # type: ignore[attr-defined]
 
@@ -484,7 +484,7 @@ class ClassViewAction(AbstractClassAction):
             "description": cls.get_description(),
             "isAbstract": int(cls.is_abstract),  # type: ignore[attr-defined]
             "isActive": int(cls.is_active),  # type: ignore[attr-defined]
-            "isFinal": int(cls.is_final),  # type: ignore[attr-defined]
+            "isFinal": int(cls.get_is_final()),  # type: ignore[attr-defined]
             "isComposite": int(cls.is_composite),  # type: ignore[attr-defined]
             "isReactive": int(cls.is_reactive),  # type: ignore[attr-defined]
             "metaClass": cls.get_meta_class(),
@@ -687,7 +687,7 @@ class ClassUpdateAction(AbstractClassAction):
             elif key == "isAbstract":
                 cls.is_abstract = bool(value)  # type: ignore[attr-defined]
             elif key == "isFinal":
-                cls.is_final = 1 if value else 0  # type: ignore[attr-defined]
+                cls.set_is_final(1 if value else 0)  # type: ignore[attr-defined]
             elif key == "isActive":
                 cls.is_active = 1 if value else 0  # type: ignore[attr-defined]
             elif key == "stereotypes":

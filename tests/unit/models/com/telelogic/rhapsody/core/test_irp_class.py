@@ -283,12 +283,12 @@ def test_class_is_composite_property_reads_pywin32_property() -> None:
     assert klass.is_composite == 1
 
 
-def test_class_is_final_property_calls_pywin32_method() -> None:
+def test_class_get_is_final_calls_pywin32_method() -> None:
     fake = MagicMock(spec=["getIsFinal"])
     fake.getIsFinal.return_value = 0
     klass = IRPClass(fake)
 
-    assert klass.is_final == 0
+    assert klass.get_is_final() == 0
     fake.getIsFinal.assert_called_once_with()
 
 
@@ -328,11 +328,11 @@ def test_class_is_behavior_overriden_setter_writes_pywin32_property() -> None:
     assert fake.isBehaviorOverriden == 1
 
 
-def test_class_is_final_setter_calls_pywin32_method() -> None:
+def test_class_set_is_final_calls_pywin32_method() -> None:
     fake = MagicMock(spec=["setIsFinal"])
     klass = IRPClass(fake)
 
-    klass.is_final = 1
+    klass.set_is_final(1)
 
     fake.setIsFinal.assert_called_once_with(1)
 

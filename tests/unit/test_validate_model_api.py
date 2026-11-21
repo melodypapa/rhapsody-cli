@@ -9,11 +9,13 @@ from scripts.validate_model_api import (
     _resolve_generated_interface_source,
     build_arg_parser,
     build_deviation_rows,
+    build_matched_rows,
     collect_generated_members,
     collect_java_members,
     collect_java_signatures,
     collect_python_members,
     main,
+    promote_correct_com_bindings,
     render_markdown_report,
     render_report,
     resolve_python_wrapper,
@@ -44,6 +46,46 @@ def test_collect_java_members_includes_superinterfaces(tmp_path: Path) -> None:
         "childCall": {"IRPChild.childCall()"},
         "baseCall": {"IRPBase.baseCall()"},
     }
+
+
+ACTIVE_ROW = (
+    "is_active() -> isActive",
+    "getIsActive (method); setIsActive (method)",
+    "isActive (property)",
+    "ALIAS_DOCUMENTED; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH",
+    "Documented decision: keep the current binding; no change.",
+)
+
+
+def test_promote_correct_com_bindings_moves_property_binding_to_matches() -> None:
+    informational = [ACTIVE_ROW]
+
+    remaining, promoted = promote_correct_com_bindings(informational)
+
+    assert remaining == []
+    assert promoted == [("is_active() -> isActive", "getIsActive (method); setIsActive (method)", "isActive (property)", "MATCH", "—")]
+
+
+def test_promote_correct_com_bindings_keeps_unsupported_and_unexposed_rows() -> None:
+    unsupported = (
+        "—",
+        "updateContainedDiagramsOnServer (method)",
+        "—",
+        "UNAVAILABLE_DOCUMENTED",
+        "Documented decision: intentionally unsupported; no change.",
+    )
+    unexposed = (
+        "get_activity_diagram() -> getActivityDiagram",
+        "getActivityDiagram (method)",
+        "activityDiagram (property)",
+        "ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH",
+        "Use a property-aware fallback.",
+    )
+
+    remaining, promoted = promote_correct_com_bindings([unsupported, unexposed])
+
+    assert promoted == []
+    assert remaining == [unsupported, unexposed]
 
 
 def test_collect_python_members_includes_bases_helpers_and_local_only_methods(tmp_path: Path) -> None:
@@ -80,6 +122,42 @@ def test_collect_python_members_includes_bases_helpers_and_local_only_methods(tm
     assert "local_helper() (no static COM member)" in members["python-only:local_helper"]
 
 
+def test_collect_python_members_own_only_excludes_bases(tmp_path: Path) -> None:
+    models_root = tmp_path / "models"
+    models_root.mkdir()
+    (models_root / "model_base.py").write_text(
+        """class RPBase:
+    def call_base(self):
+        return self._com.baseCall()
+""",
+        encoding="utf-8",
+    )
+    (models_root / "model_child.py").write_text(
+        """class RPChild(RPBase):
+    def call_child(self):
+        return self._com.childCall()
+""",
+        encoding="utf-8",
+    )
+
+    assert "childCall" in collect_python_members("IRPChild", models_root, include_bases=False)
+    assert "baseCall" not in collect_python_members("IRPChild", models_root, include_bases=False)
+    assert "baseCall" in collect_python_members("IRPChild", models_root)
+
+
+def test_collect_java_members_own_only_excludes_superinterfaces(tmp_path: Path) -> None:
+    docs_root = tmp_path / "docs"
+    docs_root.mkdir()
+    (docs_root / "IRPBase.html").write_text('<A NAME="baseCall()"><!-- --></A><H3>baseCall</H3>', encoding="utf-8")
+    (docs_root / "IRPChild.html").write_text(
+        '<DT><B>All Superinterfaces:</B><DD><A HREF="IRPBase.html">IRPBase</A></DD>' '<A NAME="childCall()"><!-- --></A><H3>childCall</H3>',
+        encoding="utf-8",
+    )
+
+    assert collect_java_members("IRPChild", docs_root, include_superinterfaces=False) == {"childCall"}
+    assert collect_java_members("IRPChild", docs_root) == {"childCall", "baseCall"}
+
+
 def test_collect_python_members_records_com_property_helper_names(tmp_path: Path) -> None:
     models_root = tmp_path / "models"
     models_root.mkdir()
@@ -97,6 +175,39 @@ def test_collect_python_members_records_com_property_helper_names(tmp_path: Path
 
     assert "is_abstract() -> isAbstract" in members["isAbstract"]
     assert "set_is_active() -> isActive" in members["isActive"]
+
+
+def test_stub_setter_shares_row_with_getter(tmp_path: Path) -> None:
+    models_root = tmp_path / "models"
+    models_root.mkdir()
+    (models_root / "model_accessors.py").write_text(
+        """class RPAccessors:
+    def get_description_html(self):
+        return _get_method_or_property(self._com, 'getDescriptionHTML', 'descriptionHTML')
+    def set_description_html(self, description_html):
+        \"\"\"Not implemented in the COM binding.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPModelElement::setDescriptionHTML(java.lang.String descriptionHTML)
+        \"\"\"
+        raise NotImplementedError
+    def local_helper(self):
+        return 'local'
+""",
+        encoding="utf-8",
+    )
+
+    members = collect_python_members("IRPAccessors", models_root)
+    rows = build_deviation_rows(members, {"getDescriptionHTML", "setDescriptionHTML"}, {"descriptionHTML": "property"})
+
+    assert "set_description_html() (no static COM member)" in members["setDescriptionHTML"]
+    assert "python-only:set_description_html" not in members
+    assert "local_helper() (no static COM member)" in members["python-only:local_helper"]
+    accessor_rows = [row for row in rows if "set_description_html()" in row[0]]
+    assert len(accessor_rows) == 1, rows
+    assert "get_description_html() -> descriptionHTML" in accessor_rows[0][0]
+    assert "set_description_html() (no static COM member)" in accessor_rows[0][0]
+    assert "getDescriptionHTML (method); setDescriptionHTML (method)" == accessor_rows[0][1]
 
 
 def test_collect_python_members_maps_application_interface_to_application_facade(tmp_path: Path) -> None:
@@ -163,6 +274,26 @@ def test_resolve_generated_interface_source_handles_package_and_monolithic_layou
     assert _resolve_generated_interface_source(monolithic_source, "IRPClass") == monolithic_source
 
 
+def test_build_matched_rows_lists_complete_matches() -> None:
+    rows = build_matched_rows(
+        {"addClass": {"add_class() -> addClass"}},
+        {"addClass"},
+        {"addClass": "method"},
+    )
+
+    assert rows == [("add_class() -> addClass", "addClass (method)", "addClass (method)", "MATCH", "—")]
+
+
+def test_build_matched_rows_excludes_deviations() -> None:
+    rows = build_matched_rows(
+        {"getBuildNo": {"get_build_no() -> getBuildNo"}},
+        {"getBuildNo"},
+        {"BuildNo": "property"},
+    )
+
+    assert rows == []
+
+
 def test_build_deviation_rows_omits_only_complete_matches() -> None:
     python_members = {"sameCall": {"same_call() -> sameCall"}, "python-only:local": {"local() (no static COM member)"}}
     java_members = {"sameCall", "javaOnly"}
@@ -216,6 +347,25 @@ def test_build_deviation_rows_reports_python_method_name_mismatch() -> None:
             "Rename the Python method to the snake_case Java API name or document the alias.",
         )
     ]
+
+
+def test_build_deviation_rows_prefers_com_exposed_member_over_java_probe_name() -> None:
+    rows = build_deviation_rows(
+        {
+            "getMainDiagram": {"get_main_diagram() -> getMainDiagram"},
+            "mainDiagram": {"get_main_diagram() -> mainDiagram", "set_main_diagram() -> mainDiagram"},
+            "setMainDiagram": {"set_main_diagram() -> setMainDiagram"},
+        },
+        {"getMainDiagram", "setMainDiagram"},
+        {"mainDiagram": "property"},
+    )
+
+    assert len(rows) == 1, rows
+    python_cell = rows[0][0]
+    assert "get_main_diagram() -> mainDiagram" in python_cell
+    assert "set_main_diagram() -> mainDiagram" in python_cell
+    assert "getMainDiagram" not in python_cell
+    assert "setMainDiagram" not in python_cell
 
 
 def test_build_deviation_rows_reports_build_no_method_property_deviation() -> None:
@@ -319,9 +469,9 @@ def test_markdown_report_lists_documented_decision_counts(tmp_path: Path) -> Non
 def test_main_writes_markdown_report_to_default_and_requested_directories(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(validator, "resolve_python_wrapper", lambda interface_name, models_root: ("RhapsodyApplication", models_root.parent / "application.py"))
-    monkeypatch.setattr(validator, "collect_java_signatures", lambda interface_name, docs_root: {"version": {"IRPApplication.version()"}})
-    monkeypatch.setattr(validator, "collect_java_members", lambda interface_name, docs_root: {"version"})
-    monkeypatch.setattr(validator, "collect_python_members", lambda interface_name, models_root: {"version": {"version() -> version"}})
+    monkeypatch.setattr(validator, "collect_java_signatures", lambda interface_name, docs_root, **kwargs: {"version": {"IRPApplication.version()"}})
+    monkeypatch.setattr(validator, "collect_java_members", lambda interface_name, docs_root, **kwargs: {"version"})
+    monkeypatch.setattr(validator, "collect_python_members", lambda interface_name, models_root, **kwargs: {"version": {"version() -> version"}})
     monkeypatch.setattr(validator, "collect_registered_pywin32_members", lambda interface_name: {"version": "method"})
 
     assert main(["IRPApplication"]) == 0
@@ -548,9 +698,9 @@ def test_apply_pywin32_authority_keeps_unexposed_member_as_deviation() -> None:
 def test_main_authority_source_reports_backlog_without_typelib(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(validator, "load_authority", lambda: _authority(catalog={"IRPClass": {"isAbstract": "property"}}))
-    monkeypatch.setattr(validator, "collect_java_signatures", lambda interface_name, docs_root: {"isAbstract": {"IRPClass.isAbstract()"}})
-    monkeypatch.setattr(validator, "collect_java_members", lambda interface_name, docs_root: {"isAbstract"})
-    monkeypatch.setattr(validator, "collect_python_members", lambda interface_name, models_root: {"isAbstract": {"is_abstract() -> isAbstract"}})
+    monkeypatch.setattr(validator, "collect_java_signatures", lambda interface_name, docs_root, **kwargs: {"isAbstract": {"IRPClass.isAbstract()"}})
+    monkeypatch.setattr(validator, "collect_java_members", lambda interface_name, docs_root, **kwargs: {"isAbstract"})
+    monkeypatch.setattr(validator, "collect_python_members", lambda interface_name, models_root, **kwargs: {"isAbstract": {"is_abstract() -> isAbstract"}})
 
     assert validator.main(["IRPClass", "--source", "authority"]) == 0
 

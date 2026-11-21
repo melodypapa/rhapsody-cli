@@ -208,10 +208,6 @@ the Rhapsody2.Application.1 type library; no direct COM call is added for such m
      - isBehaviorOverriden (property)
      - is_behavior_overriden() -> isBehaviorOverriden
      - ALIAS_DOCUMENTED; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH; Documented decision: keep the current binding; no change.
-   * - getIsFinal (method); setIsFinal (method)
-     - getIsFinal (method); setIsFinal (method)
-     - is_final() -> getIsFinal
-     - ALIAS_DOCUMENTED; Documented decision: keep the current binding; no change.
    * - getIsComposite (method)
      - isComposite (property)
      - is_composite() -> isComposite

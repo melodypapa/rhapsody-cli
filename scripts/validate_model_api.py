@@ -15,6 +15,7 @@ from scripts.pywin32_authority import AuthorityData, load_authority  # noqa: E40
 
 _TYPELIB_DESCRIPTION = "Rhapsody2 1.0 Type Library"
 _HELPER_NAMES = {"_get_method_or_property", "_set_method_or_property", "get_com_property", "set_com_property"}
+_REFERENCE_MEMBER_PATTERN = re.compile(r"::([A-Za-z_$][A-Za-z0-9_$]*)\s*\(")
 Rows = List[Tuple[str, str, str, str, str]]
 _AUTHORITY_INFO_STATUSES = {"ACCESSOR_ALIAS_MISMATCH", "METHOD_PROPERTY_MISMATCH", "PYTHON_ONLY_MEMBER", "JAVA_ONLY_MEMBER"}
 _AUTHORITY_BACKLOG_STATUSES = {"MISSING_PYTHON_WRAPPER", "PYWIN32_ONLY_MEMBER"}
@@ -70,8 +71,8 @@ def _validate_interface_name(interface_name: str) -> None:
         raise ValueError(f"Invalid Java interface name {interface_name!r}; expected a name such as IRPClass")
 
 
-def collect_java_members(interface_name: str, docs_root: Path) -> Set[str]:
-    """Return methods declared by an interface and all documented superinterfaces."""
+def collect_java_members(interface_name: str, docs_root: Path, include_superinterfaces: bool = True) -> Set[str]:
+    """Return methods declared by an interface, optionally including superinterfaces."""
     _validate_interface_name(interface_name)
     visited: Set[str] = set()
 
@@ -86,15 +87,16 @@ def collect_java_members(interface_name: str, docs_root: Path) -> Set[str]:
         parser = _InterfacePageParser()
         parser.feed(page_path.read_text(encoding="utf-8", errors="replace"))
         members = set(parser.method_names)
-        for parent_name in sorted(parser.superinterfaces):
-            members.update(visit(parent_name))
+        if include_superinterfaces:
+            for parent_name in sorted(parser.superinterfaces):
+                members.update(visit(parent_name))
         return members
 
     return visit(interface_name)
 
 
-def collect_java_signatures(interface_name: str, docs_root: Path) -> Dict[str, Set[str]]:
-    """Return documented method signatures, including those from superinterfaces."""
+def collect_java_signatures(interface_name: str, docs_root: Path, include_superinterfaces: bool = True) -> Dict[str, Set[str]]:
+    """Return documented method signatures, optionally including those from superinterfaces."""
     _validate_interface_name(interface_name)
     visited: Set[str] = set()
     signatures: Dict[str, Set[str]] = {}
@@ -111,8 +113,9 @@ def collect_java_signatures(interface_name: str, docs_root: Path) -> Dict[str, S
         parser.feed(page_path.read_text(encoding="utf-8", errors="replace"))
         for method_name, method_anchors in parser.method_signatures.items():
             signatures.setdefault(method_name, set()).update(f"{current_name}.{anchor}" for anchor in method_anchors)
-        for parent_name in sorted(parser.superinterfaces):
-            visit(parent_name)
+        if include_superinterfaces:
+            for parent_name in sorted(parser.superinterfaces):
+                visit(parent_name)
 
     visit(interface_name)
     return signatures
@@ -147,6 +150,15 @@ def _get_method_com_members(method: ast.FunctionDef) -> Set[str]:
     return members
 
 
+def _get_referenced_member_name(method: ast.FunctionDef) -> Optional[str]:
+    """Return the Java/COM member named in a method's Reference docstring, if present."""
+    docstring = ast.get_docstring(method)
+    if not docstring:
+        return None
+    match = _REFERENCE_MEMBER_PATTERN.search(docstring)
+    return match.group(1) if match else None
+
+
 def _wrapper_class_candidates(interface_name: str) -> List[str]:
     """Return accepted wrapper class names, preferring the exact Java interface name."""
     if interface_name == "IRPApplication":
@@ -174,8 +186,8 @@ def resolve_python_wrapper(interface_name: str, models_root: Path) -> Tuple[str,
     raise ValueError(f"None of the Python wrappers {candidates} for {interface_name} was found under {models_root}")
 
 
-def collect_python_members(interface_name: str, models_root: Path) -> Dict[str, Set[str]]:
-    """Map exact COM member names to Python wrapper labels, including wrapper bases."""
+def collect_python_members(interface_name: str, models_root: Path, include_bases: bool = True) -> Dict[str, Set[str]]:
+    """Map exact COM member names to Python wrapper labels, optionally including wrapper bases."""
     _validate_interface_name(interface_name)
     if not models_root.is_dir():
         raise FileNotFoundError(f"Python model directory not found: {models_root}")
@@ -219,13 +231,15 @@ def collect_python_members(interface_name: str, models_root: Path) -> Dict[str, 
                 for member_name in com_members:
                     members.setdefault(member_name, set()).add(f"{method.name}() -> {member_name}")
             else:
-                local_key = f"python-only:{method.name}"
-                members.setdefault(local_key, set()).add(f"{method.name}() (no static COM member)")
+                referenced_member = _get_referenced_member_name(method)
+                member_key = referenced_member or f"python-only:{method.name}"
+                members.setdefault(member_key, set()).add(f"{method.name}() (no static COM member)")
 
-        for base in class_node.bases:
-            base_name = _class_base_name(base)
-            if base_name and base_name.startswith("RP"):
-                visit(base_name)
+        if include_bases:
+            for base in class_node.bases:
+                base_name = _class_base_name(base)
+                if base_name and base_name.startswith("RP"):
+                    visit(base_name)
 
     visit(target_class)
     return members
@@ -423,8 +437,30 @@ def apply_pywin32_authority(rows: Rows, interface_name: str, authority: Authorit
     return deviations, informational, backlog
 
 
+def _drop_unexposed_probe_names(python_members: Dict[str, Set[str]], pywin32_members: Dict[str, str]) -> Dict[str, Set[str]]:
+    """Drop Java-style probe names when the same wrapper method also names a COM-exposed member."""
+    candidates: Dict[str, Set[str]] = {}
+    for member_name, labels in python_members.items():
+        for label in labels:
+            method_name = label.split("()", maxsplit=1)[0]
+            candidates.setdefault(method_name, set()).add(member_name)
+
+    filtered: Dict[str, Set[str]] = {}
+    for member_name, labels in python_members.items():
+        kept_labels = {
+            label
+            for label in labels
+            if member_name in pywin32_members
+            or not any(name in pywin32_members for name in candidates[label.split("()", maxsplit=1)[0]])
+        }
+        if kept_labels:
+            filtered[member_name] = kept_labels
+    return filtered
+
+
 def build_deviation_rows(python_members: Dict[str, Set[str]], java_members: Set[str], pywin32_members: Dict[str, str]) -> List[Tuple[str, str, str, str, str]]:
     """Group accessor/property aliases and report missing or differently shaped API families."""
+    python_members = _drop_unexposed_probe_names(python_members, pywin32_members)
     python_names: Dict[str, Set[str]] = {}
     python_labels: Dict[str, Set[str]] = {}
     java_names: Dict[str, Set[str]] = {}
@@ -457,6 +493,78 @@ def build_deviation_rows(python_members: Dict[str, Set[str]], java_members: Set[
         java_cell = "; ".join(f"{name} (method)" for name in sorted(java_member_names)) or "—"
         pywin32_cell = "; ".join(f"{name} ({kind})" for name, kind in sorted(pywin32_member_names.items())) or "—"
         rows.append((python_cell, java_cell, pywin32_cell, statuses, recommendation))
+    return rows
+
+
+_CORRECT_BINDING_STATUSES = {"ALIAS_DOCUMENTED", "ACCESSOR_ALIAS_MISMATCH", "METHOD_PROPERTY_MISMATCH"}
+
+
+def _python_com_names(cell: str) -> Set[str]:
+    if cell == "—":
+        return set()
+    return {label.rsplit(" -> ", maxsplit=1)[1] for label in cell.split("; ") if " -> " in label}
+
+
+def _pywin32_cell_names(cell: str) -> Set[str]:
+    if cell == "—":
+        return set()
+    return {entry[: entry.rfind(" (")] for entry in cell.split("; ") if " (" in entry}
+
+
+def _is_correct_com_binding(row: Tuple[str, str, str, str, str]) -> bool:
+    """A wrapper that calls exactly the COM-exposed members is correct despite Java naming/shape differences."""
+    python_cell, _, pywin32_cell, statuses, _ = row
+    status_set = set(statuses.split("; "))
+    if not status_set or not status_set.issubset(_CORRECT_BINDING_STATUSES):
+        return False
+    python_names = _python_com_names(python_cell)
+    com_names = _pywin32_cell_names(pywin32_cell)
+    return bool(python_names) and bool(com_names) and python_names.issubset(com_names)
+
+
+def promote_correct_com_bindings(informational_rows: Rows) -> Tuple[Rows, Rows]:
+    """Split informational rows into (remaining, correct bindings rendered as MATCH)."""
+    remaining: Rows = []
+    promoted: Rows = []
+    for row in informational_rows:
+        if _is_correct_com_binding(row):
+            promoted.append((row[0], row[1], row[2], "MATCH", "—"))
+        else:
+            remaining.append(row)
+    return remaining, promoted
+
+
+def build_matched_rows(python_members: Dict[str, Set[str]], java_members: Set[str], pywin32_members: Dict[str, str]) -> List[Tuple[str, str, str, str, str]]:
+    """Return families where the Python wrapper, Java API, and pywin32 binding all agree."""
+    python_members = _drop_unexposed_probe_names(python_members, pywin32_members)
+    python_names: Dict[str, Set[str]] = {}
+    python_labels: Dict[str, Set[str]] = {}
+    java_names: Dict[str, Set[str]] = {}
+    pywin32_names: Dict[str, Dict[str, str]] = {}
+
+    for member_name, labels in python_members.items():
+        key = _canonical_member_name(member_name)
+        python_names.setdefault(key, set()).add(member_name)
+        python_labels.setdefault(key, set()).update(labels)
+    for member_name in java_members:
+        java_names.setdefault(_canonical_member_name(member_name), set()).add(member_name)
+    for member_name, kind in pywin32_members.items():
+        pywin32_names.setdefault(_canonical_member_name(member_name), {})[member_name] = kind
+
+    rows: List[Tuple[str, str, str, str, str]] = []
+    for family in sorted(set(python_names) | set(java_names) | set(pywin32_names)):
+        statuses, _ = _classify_deviation(
+            python_names.get(family, set()),
+            python_labels.get(family, set()),
+            java_names.get(family, set()),
+            pywin32_names.get(family, {}),
+        )
+        if statuses:
+            continue
+        python_cell = "; ".join(sorted(python_labels[family])) if python_labels.get(family) else "—"
+        java_cell = "; ".join(f"{name} (method)" for name in sorted(java_names.get(family, set()))) or "—"
+        pywin32_cell = "; ".join(f"{name} ({kind})" for name, kind in sorted(pywin32_names.get(family, {}).items())) or "—"
+        rows.append((python_cell, java_cell, pywin32_cell, "MATCH", "—"))
     return rows
 
 
@@ -496,6 +604,7 @@ def render_markdown_report(
     authoritative: bool = False,
     informational_rows: Optional[Rows] = None,
     backlog_rows: Optional[Rows] = None,
+    matched_rows: Optional[Rows] = None,
     documented_counts: Optional[Tuple[int, int]] = None,
 ) -> str:
     """Render a comparison summary, five-column deviation table, and AI repair guidance."""
@@ -547,6 +656,8 @@ def render_markdown_report(
     if authoritative:
         _append_report_table(lines, "## Expected Binding Differences", informational_rows or [])
         _append_report_table(lines, "## Wrapper Backlog", backlog_rows or [])
+
+    _append_report_table(lines, "## Correct Items", matched_rows or [])
 
     lines.extend(["", "## AI Fix Guidance"])
     if not rows:
@@ -602,15 +713,17 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     try:
         wrapper_class, wrapper_source = resolve_python_wrapper(args.java_interface, models_root)
-        java_members = collect_java_members(args.java_interface, docs_root)
-        java_signatures = collect_java_signatures(args.java_interface, docs_root)
-        python_members = collect_python_members(args.java_interface, models_root)
+        java_members = collect_java_members(args.java_interface, docs_root, include_superinterfaces=False)
+        java_signatures = collect_java_signatures(args.java_interface, docs_root, include_superinterfaces=False)
+        python_members = collect_python_members(args.java_interface, models_root, include_bases=False)
         if args.source == "authority":
             pywin32_members = authority["catalog"].get(args.java_interface)
             if pywin32_members is None:
                 raise ValueError(f"No pywin32 authority snapshot for {args.java_interface}")
         else:
             pywin32_members = collect_registered_pywin32_members(args.java_interface)
+        owned_families = {_canonical_member_name(name) for name in python_members} | {_canonical_member_name(name) for name in java_members}
+        pywin32_members = {name: kind for name, kind in pywin32_members.items() if _canonical_member_name(name) in owned_families}
     except (OSError, ValueError, RuntimeError) as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 2
@@ -630,6 +743,10 @@ def main(argv: Optional[List[str]] = None) -> int:
         report_path.parent.mkdir(parents=True, exist_ok=True)
         python_method_names = {label.split("()", maxsplit=1)[0] for labels in python_members.values() for label in labels}
         member_counts = (len(python_method_names), len(java_members), len(pywin32_members))
+        matched_rows = build_matched_rows(python_members, java_members, pywin32_members)
+        if args.source == "authority":
+            informational_rows, correct_bindings = promote_correct_com_bindings(informational_rows)
+            matched_rows = sorted(matched_rows + correct_bindings, key=lambda row: row[0])
         wrapper_path = wrapper_source.relative_to(repository_root).as_posix()
         markdown = render_markdown_report(
             args.java_interface,
@@ -641,6 +758,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             authoritative=(args.source == "authority"),
             informational_rows=informational_rows,
             backlog_rows=backlog_rows,
+            matched_rows=matched_rows,
             documented_counts=documented_counts,
         )
         report_path.write_text(markdown, encoding="utf-8")
