@@ -8,20 +8,19 @@ all eight steps pass and the run's commit exists.
 
 ## Layout (2026-11-21)
 
-All 16 open rows live in [Group-unfinished-1.md](Group-unfinished-1.md); completed rows
+The 13 open rows live in [Group-unfinished-1.md](Group-unfinished-1.md); completed rows
 archive to [Group-finished.md](Group-finished.md) (a batch file is deleted when its last row
 archives). Queue order: core.py base classes first (their migration removes the inherited
 dual-binding fallback for every subclass), then leaves.
 
 | Batch file | Rows | Legacy sites | Interface span | Status |
 | --- | --- | --- | --- | --- |
-| [Group-unfinished-1.md](Group-unfinished-1.md) | 16 | ~249 | IRPClass → IRPUseCase | ⬜ 0/16 archived (pilot 5/6 steps) |
-| [Group-finished.md](Group-finished.md) | 0 | 0 | archive | ✅ 0 |
+| [Group-unfinished-1.md](Group-unfinished-1.md) | 13 | ~219 | IRPModelElement → IRPUseCase | ⬜ 13 open |
+| [Group-finished.md](Group-finished.md) | 3 | ~3 blockers | IRPClass, IRPCollection, IRPUnit | ✅ 3 archived |
 
-Progress: **0/16 rows archived**; IRPUnit 8/8 (all steps green, awaiting its commit to
-archive), IRPClass 7/8, IRPModelElement 6/8, IRPCollection 6/8. IRPUnit completed the §2
-canonical move under the revised local-import rule; the remaining base rows carry the old
-deferral note until their own runs.
+Progress: **3/16 rows archived** — IRPClass, IRPCollection and IRPUnit (commit `1c81084`
+closed IRPUnit at 8/8). The remaining 13 rows are open; IRPModelElement is 6/8. IRPCollection
+and IRPUnit completed their §2 canonical moves under the revised local-import rule.
 Refreshed 2026-11-21 (site counts re-surveyed at each run start).
 
 ## Resume rule

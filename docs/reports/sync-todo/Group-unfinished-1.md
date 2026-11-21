@@ -1,7 +1,7 @@
-# Sync todo: `docs/reports` — `Group-unfinished-1` (IRPClass → IRPUseCase)
+# Sync todo: `docs/reports` — `Group-unfinished-1` (IRPModelElement → IRPUseCase)
 
-Baseline: 16 committed reports · 16 rows · ~249 legacy sites (2026-11-21 survey; queue order =
-core.py base classes first, then leaves)
+Baseline: 16 committed reports · 13 open rows · ~219 legacy sites (2026-11-21 survey; 3 rows
+archived; queue order = core.py base classes first, then leaves)
 (Resume = the first row still `[ ]`; a row archives to [Group-finished.md](Group-finished.md)
 only when all 8 steps are `[x]` and its commit exists)
 Steps = SKILL.md §1–§8, enumerated per row: ① §1 sync TODO · ② §2 resolve target ·
@@ -23,17 +23,6 @@ migrations; inherited members wait for their base class's own row.
   - [x] Step 6 — §6 SWR update (`docs/requirements/com/telelogic/rhapsody/core/irp_model_element.md` — binding rules, `get_rmm_url` blocker, deferred-move note, future-annotations fact)
   - [x] Step 7 — §7 RST update (`docs/api/com/telelogic/rhapsody/core/irp_model_element.rst` — 6 deviation rows + 96 Correct-Items rows, coverage complete; get_oslc_links row removed per §7; toctree wired)
   - [ ] Step 8 — §8 verify and report (unit suite 1711 ✓, ruff/black/mypy ✓, skill tests 15 ✓, mirror test files ✓; OPEN blocker: Windows closeout — regenerate the report (resolves the stale `RPModelElement` target line and the removed `get_oslc_links` row), then `validate_interface.py` + `verify_sync.py` + live integration; the pending canonical move keeps verify_sync's wrapper-placement check red until this row performs its §2 move; the rule no longer requires waiting for a dedicated core.py refactor)
-
-- [ ] irp_unit_api_report (IRPUnit · canonical `models/com/telelogic/rhapsody/core/irp_unit.py`) — 8/8, awaiting commit to archive
-  - Note: unit-family members — catalog kinds: methods `getAddToModelMode`/`getCMState`/`getLanguage`/`getLastModifiedTime`/`getNestedSaveUnits`/`getNestedSaveUnitsCount`/`isReadOnly`/`isReferenceUnit`/`isSeparateSaveUnit`/`setReadOnly`/`setSeparateSaveUnit`/`setUnitPath`; properties `CMHeader`/`currentDirectory`/`filename`/`includeInNextLoad`/`isStub`/`structureDiagrams`; landing this row resolves IRPModelElement's cross-catalog blockers.
-  - [x] Step 1 — §1 sync TODO published: 7 shared step tasks + 29-member inventory (all owned; inherited `IRPModelElement` members kept separate)
-  - [x] Step 2 — §2 target resolved and canonical move completed: report Java package `com.telelogic.rhapsody.core` agrees with `IRPUnit.html`; `RPUnit` → `IRPUnit` renamed, then wrapper + `AddToModelMode` moved to `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_unit.py`; mirrored tests at `tests/{unit,integration}/models/com/telelogic/rhapsody/core/test_irp_unit.py`; canonical `__init__.py` lazy exports; all internal imports updated; `core.py:get_save_unit()` imports locally before `cast()` (no cycle; quoted types unnecessary under `from __future__ import annotations`); no compatibility shim. Doubled-prefix artifacts from the bulk rename were fixed repo-wide.
-  - [x] Step 3 — §3 evidence compared offline (regenerated report: 0 deviations, 29 owned members; 21 legacy dual-binding sites mapped one-to-one to pywin32 members; catalog-absent `getUnitPath` left unchanged as expected informational difference; no python-only members)
-  - [x] Step 4 — §4 unit tests (TDD): 10 tests red → green; structural guard (21 offenders → 0) + future-annotations guard added; full unit suite 1714 green; canonical `irp_unit.py` coverage 100% (68/68 statements, 40/40 branches)
-  - [x] Step 5 — §5 integration tests: mirrored canonical path, 22 tests collected; Windows live run 15 passed / 3 skipped (pre-existing `second_test_project` TODO fixture) / 4 xfailed (pre-existing getUnitPath COM gaps), no failures
-  - [x] Step 6 — §6 SWR update: `docs/requirements/com/telelogic/rhapsody/core/irp_unit.md` (SWR_CORE_00002 moved out of `swr_core_requirements.md`, no duplicate; canonical implementation path)
-  - [x] Step 7 — §7 RST update: `docs/api/com/telelogic/rhapsody/core/irp_unit.rst` (anchor + 7-row deviation list-table covering getUnitPath/setUnitPath and method-vs-property shapes; canonical import; toctree wired in `docs/api/elements.rst`)
-  - [x] Step 8 — §8 verify and report: `validate_interface.py` ✓ (0 deviations), `verify_sync.py` ✓ (artifacts verified), skill self-tests 15 ✓, full unit suite 1714 ✓, ruff/black/mypy ✓, Windows live integration ✓
 
 - [ ] irp_classifier_api_report (IRPClassifier · RPClassifier · models/elements/classifiers/model_classifier.py · 20 sites)
   - Note: 3 method-shaped (`getAttributesIncludingBases`, `getInterfaceItemsIncludingBases`, `getRelationsIncludingBases`), rest property-shaped.
