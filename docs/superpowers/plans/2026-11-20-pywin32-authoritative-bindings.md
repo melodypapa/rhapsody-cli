@@ -1,87 +1,64 @@
-# IRPClass Pywin32 Binding Cleanup Implementation Plan
+# IRPClass Binding Fixes and Python Property Migration — Combined Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Bring `docs/reports/IRPClass_api_report.md` to zero actionable deviations, removing wrappers that call COM members the authenticated pywin32 interface does not expose **first**, then fixing the members it does expose under different names.
+**Goal:** Bring `docs/reports/IRPClass_api_report.md` to zero actionable deviations under pywin32-authoritative rules, and in the same deliverable replace `RPClass`'s own `get_is_*` / `set_is_*` methods with snake_case Python `@property` accessors.
 
-**Architecture:** The validator (`scripts/validate_model_api.py`) compares Java Javadoc, wrapper AST, and the pywin32 generated interface. This plan adds a committed authority snapshot (pywin32 name → kind per interface, plus documented aliases and documented-unavailable members) and an offline `--source authority` mode. `IRPClass` (`src/rhapsody_cli/models/elements/classifiers/model_class.py`) is the only target report; several root causes live in the inherited `RPModelElement` (`src/rhapsody_cli/models/core.py`) and are fixed there because they cannot be fixed in the child class.
+**Architecture:** A committed pywin32 authority snapshot (name → kind per interface, plus documented aliases and unavailable members) plus an offline `--source authority` validator mode classify expected Java-vs-pywin32 differences as informational. Wrapper COM calls are corrected to use exposed members, the one IRPClass-owned wrapper calling an unavailable COM member is removed, and RPClass's 10 own flag methods become 6 properties. Callers in the CLI layer, unit tests, and integration tests migrate together so the tree stays green.
 
-**Tech Stack:** Python 3.8+ stdlib (`ast`, `json`, `argparse`, `pathlib`, `typing.TypedDict`), pytest, ruff/black/mypy, Markdown reports. Windows CI has pywin32 and live Rhapsody; macOS/Linux needs the temporary `pywintypes` stub documented in Task 7.
+**Tech Stack:** Python 3.8+ stdlib (`ast`, `json`, `argparse`, `pathlib`, `typing.TypedDict`, `@property`), pytest, ruff/black/mypy strict, Markdown reports.
 
 ---
 
-## IRPClass deviation inventory and proposed solution by type
+## Deviation inventory and proposal by type
 
-`docs/reports/IRPClass_api_report.md` has **83 deviation rows**. Each row type and its proposed treatment:
+`docs/reports/IRPClass_api_report.md` has **83 deviation rows**:
 
-| # | Rows | Deviation type | Root cause (IRPClass-specific) | Proposed solution |
-|---|---:|---|---|---|
-| 1 | 56 | `ACCESSOR_ALIAS_MISMATCH` + `METHOD_PROPERTY_MISMATCH` | Java `getX`/`setX` methods vs pywin32 `x` properties; wrappers already use `_get_method_or_property` | **No code change.** Classify as informational — expected once pywin32 is authoritative. |
-| 2 | 10 | `PYTHON_ONLY_MEMBER` | 4 local helpers (`is_a_template`, `is_modified`, `is_reference_unit`, `is_remote`); 5 `NotImplementedError` stubs (`add_event_reception_with_event`, `create_oslc_link`, `delete_oslc_link`, `get_oslc_links`, `set_description_html`); `set_is_abstract` documented stub | Keep as-is; classify informational. Stubs are deliberate, documented unavailable APIs — **do not delete** the rationale. List their Java names in `documented_unavailable`. |
-| 3 | 5 | `MISSING_PYTHON_WRAPPER` | pywin32 exposes `createOSLCLink`, `deleteOSLCLink`, `getOSLCLinks`, `lockOnDesignManager`, `unlockOnDesignManager`; no callable wrapper | Do **not** add wrappers in this plan. The three OSLC members are already documented as unsupported (see #2); `lockOnDesignManager`/`unlockOnDesignManager` go to the wrapper backlog with signature verification on Windows. |
-| 4 | 2 | `COM_MEMBER_NOT_EXPOSED` + alias/property | `get_binary_id` falls back to `binaryID` but pywin32 exposes `BinaryID`; `get_cm_header`/`set_cm_header` fall back to `cMHeader` but pywin32 exposes `CMHeader` | **Fix** the fallback names in `core.py` to `BinaryID` / `CMHeader` (TDD in Task 4). |
-| 5 | 2 | `PYWIN32_ONLY_MEMBER` | pywin32 exposes `deleteActivityDiagram`, `deleteStatechart`; no wrapper | Wrapper backlog — signatures must be verified against generated makepy source. No change now. |
-| 6 | 2 | `PYTHON_METHOD_NAME_MISMATCH` + alias/property | `get_description_html` and `get_is_abstract` are snake_case of the Java getters, but canonicalisation expects the property-shaped names `description_html` / `is_abstract` | **Document aliases** in the authority file; no public rename (breaking change). Task 5. |
-| 7 | 2 | `PYWIN32_MEMBER_MISSING` | `RPClass.update_contained_diagrams_on_server` calls `updateContainedDiagramsOnServer` (not in pywin32); inherited `RPModelElement.get_rmm_url` calls `getRmmUrl` (not in pywin32) | **Remove first:** delete `RPClass.update_contained_diagrams_on_server` and its unit test (Task 3). `get_rmm_url` lives on the shared base — cannot be removed in an IRPClass-only change; list `getRmmUrl` in `documented_unavailable` and track base removal in #121. |
-| 8 | 1 | `JAVA_ONLY_MEMBER` | `addEventReceptionWithEvent` exists only in Java | Already covered by #2: wrapper is a documented `NotImplementedError` stub. Classify informational, no wrapper added. |
-| 9 | 1 | `COM_MEMBER_NOT_EXPOSED` + alias | `get_is_of_meta_class` calls `getIsOfMetaClass`; pywin32 exposes `isOfMetaClass (method)` | **Fix** to call `self._com.isOfMetaClass(meta_class)` directly (Task 4). A getter/property helper would return the bound method without invoking it. |
-| 10 | 1 | `MISSING_PYTHON_WRAPPER` + alias/property | Java `getStereotype`/`setStereotype` vs pywin32 `stereotype` property; no wrapper | Backlog: add a `get_stereotype` wrapper only after verifying the pywin32 property is readable. No change now. |
-| 11 | 1 | `ACCESSOR_ALIAS_MISMATCH` | `get_unit_path` calls `getUnitPath` (not in pywin32); `set_unit_path` matches pywin32 `setUnitPath (method)` | Keep setter; getter is unavailable on the authenticated binding. Document `getUnitPath` in `documented_unavailable`. Informational. |
+| Rows | Deviation type | Proposed solution |
+|---:|---|---|
+| 56 | `ACCESSOR_ALIAS_MISMATCH` + `METHOD_PROPERTY_MISMATCH` | Informational — Java getters vs pywin32 properties, already handled by the binding helpers. |
+| 10 | `PYTHON_ONLY_MEMBER` | Keep documented stubs/helpers; informational. |
+| 6 | `MISSING_PYTHON_WRAPPER` | OSLC members documented unsupported; design-manager members go to backlog #121. |
+| 3 | `COM_MEMBER_NOT_EXPOSED` | Fix `BinaryID`, `CMHeader`, and call `isOfMetaClass` directly (Task 4). |
+| 2 | `PYWIN32_ONLY_MEMBER` | Backlog (signatures need makepy verification). |
+| 2 | `PYTHON_METHOD_NAME_MISMATCH` | `get_description_html` documented as alias; `get_is_abstract` disappears in the property migration. |
+| 2 | `PYWIN32_MEMBER_MISSING` | Remove `RPClass.update_contained_diagrams_on_server`; inherited `get_rmm_url` documented unavailable. |
+| 1 | `JAVA_ONLY_MEMBER` | Covered by the existing documented `NotImplementedError` stub. |
+| 1 | `MISSING_PYTHON_WRAPPER` (stereotype) | Backlog. |
+| 1 | `ACCESSOR_ALIAS_MISMATCH` (`getUnitPath`) | Document getter as unavailable; keep setter. |
 
-**Priority:** Task 3 (removal of the unavailable RPClass member) runs before any fix or backlog work.
-
-## Property vs method refactor — IRPClass only
-
-This plan does **not** refactor property/method handling across the wrapper hierarchy. The shared helpers (`com_utils._get_method_or_property` / `_set_method_or_property`, `com_utils.py:31-58`) already implement the dual binding correctly, and the 56 getter/property rows in the IRPClass report are that pattern working as intended. Scope is limited to COM call sites **visible in the IRPClass report**.
-
-| Shape in `IRPClass_api_report.md` | Correct wrapper form | IRPClass application |
-|---|---|---|
-| pywin32 member is a `property` (e.g. `BinaryID`, `CMHeader`, `isAbstract`, `activityDiagram`) | `_get_method_or_property(self._com, "getX", "x")` / `_set_method_or_property(...)`, Java name first, pywin32 name second | Already used by the 56 rows; only `BinaryID` and `CMHeader` have the wrong pywin32 name and are fixed in Task 4 |
-| pywin32 member is a `method` (e.g. `isOfMetaClass`) | direct `com_utils.call_com(lambda: self._com.isOfMetaClass(...))` | `get_is_of_meta_class` is fixed in Task 4 — a getter/property helper would return the bound method without calling it |
-| pywin32 member absent (e.g. `updateContainedDiagramsOnServer`, `getRmmUrl`) | remove the wrapper, or keep a documented `NotImplementedError` stub | `RPClass.update_contained_diagrams_on_server` removed in Task 3; inherited `get_rmm_url` documented in Task 5 |
-
-**Explicit non-goals of this scoped consideration:**
-- Python-facing names follow `docs/CODE_GUIDELINES.md` — snake_case methods (`get_binary_id`, `get_is_abstract`), UPPERCASE constants. The camelCase/PascalCase COM names in the table (`BinaryID`, `isAbstract`, `getBinaryID`) are **string arguments only**, never Python method or attribute names.
-- No changes to property/method handling for the other 11 interfaces.
-- No new validator status for "property called as method"; a one-off guard in Task 5 verifies the IRPClass-visible case. A generic validator check can be a follow-up in #121.
+**Ordering:** removal (Task 3) → COM fixes (Task 4) → property migration (Tasks 5–7) → report regeneration (Task 8). Regenerating last ensures the final report reflects property names.
 
 ## Scope and non-goals
 
-**In scope:**
-- Offline pywin32 authority snapshot and validator authority mode (needed to classify the IRPClass report).
-- Remove the IRPClass-owned wrapper that calls a pywin32-unavailable COM member.
-- Fix the three IRPClass-visible COM calls that pywin32 exposes under different names (`BinaryID`, `CMHeader`, `isOfMetaClass`).
-- Document intentional aliases and documented-unavailable members so IRPClass has zero actionable rows.
-- Regenerate and guard `docs/reports/IRPClass_api_report.md`.
+**In scope:** IRPClass report; RPClass's 10 own flag methods → 6 properties; CLI `class_action.py`; unit and integration tests for RPClass; validator authority mode and authority snapshot.
 
-**Out of scope:**
-- The other 11 interfaces and their reports.
-- Deleting `RPModelElement` stubs (`create_oslc_link`, `delete_oslc_link`, `get_oslc_links`, `set_description_html`, `get_rmm_url`) — shared base class, tracked in #121.
-- Removing `RPClass.set_is_abstract` — it is an intentional, documented `NotImplementedError` backed by a verified Rhapsody persistence bug.
-- Adding any of the 8 new wrappers (`lockOnDesignManager`, `unlockOnDesignManager`, `getStereotype`, `deleteActivityDiagram`, `deleteStatechart`, etc.) — signature verification required; backlog in #121.
-- Renaming public methods.
+**Out of scope:** the other 11 interfaces; `RPModelElement`/`RPUnit` inherited methods; other classes' getters/setters; adding the 8 backlog wrappers; renaming public methods to COM names.
+
+**Python naming rule:** snake_case methods and UPPERCASE constants per `docs/CODE_GUIDELINES.md`. COM names (`BinaryID`, `isAbstract`, `getBinaryID`) are **string arguments only**, never Python identifiers.
 
 ## File structure
 
 | File | Responsibility |
 |---|---|
-| `scripts/pywin32_authority.py` (new) | Load/write authority JSON; export catalog from generated reports. |
-| `docs/reports/pywin32_authority.json` (new, generated + edited) | pywin32 name→kind per interface, documented aliases, documented-unavailable Java names. |
-| `scripts/validate_model_api.py` (modify) | `--source authority`, row split into deviations/informational/backlog, new report sections. |
-| `tests/unit/test_pywin32_authority.py` (new) | Catalog export and authority round-trip tests. |
-| `tests/unit/test_validate_model_api.py` (modify) | Authority post-processing tests and IRPClass report guard. |
-| `src/rhapsody_cli/models/elements/classifiers/model_class.py` (modify) | Remove `update_contained_diagrams_on_server`; update parity checklist. |
-| `tests/unit/models/elements/classifiers/test_model_class.py` (modify) | Remove old delegation test; add removal guard. |
+| `scripts/pywin32_authority.py` (new) | Load/write authority JSON; export catalog from reports. |
+| `docs/reports/pywin32_authority.json` (new) | pywin32 name → kind, documented aliases and unavailable Java names. |
+| `scripts/validate_model_api.py` (modify) | `--source authority`, deviation/informational/backlog split, report sections. |
+| `tests/unit/test_pywin32_authority.py` (new) | Catalog export and authority round-trip. |
+| `tests/unit/test_validate_model_api.py` (modify) | Authority post-processing and report guard. |
 | `src/rhapsody_cli/models/core.py` (modify) | `BinaryID`, `CMHeader`, `isOfMetaClass` call sites. |
-| `tests/unit/models/test_core.py` (modify) | TDD tests for the three call-site changes. |
-| `tests/integration/models/elements/classifiers/test_model_class.py` (modify) | Remove the integration test for the deleted IRPClass method. |
-| `tests/integration/models/test_core.py` (modify) | Remove obsolete xfail, retitle documented-unavailable xfail; live verification of Task 4 call sites. |
-| `docs/reports/IRPClass_api_report.md` (regenerate) | Proof of zero actionable deviations. |
-| `docs/CODE_GUIDELINES.md` (modify) | "pywin32 Bindings Are Authoritative" rule. |
+| `tests/unit/models/test_core.py` (modify) | TDD tests for those call sites. |
+| `src/rhapsody_cli/models/elements/classifiers/model_class.py` (modify) | Remove one unavailable method; 10 flag methods → 6 properties; checklist. |
+| `tests/unit/models/elements/classifiers/test_model_class.py` (modify) | Removal guard; property tests. |
+| `src/rhapsody_cli/actions/class_action.py` (modify) | Attribute access instead of flag methods. |
+| `tests/integration/models/elements/classifiers/test_model_class.py` (modify) | Remove obsolete test; property attribute access. |
+| `tests/integration/models/test_core.py` (modify) | xfail updates for binding fixes. |
+| `docs/reports/IRPClass_api_report.md` (regenerate) | Final proof of zero actionable deviations. |
+| `docs/CODE_GUIDELINES.md` (modify) | pywin32-authoritative rule and scoped refactor rule. |
 
 ## Preflight
 
-The feature branch `docs/pywin32-authoritative-bindings` already exists and PR #122 is open. Continue on it:
+Work on branch `docs/pywin32-authoritative-bindings` (PR #122). The separate property branch/plan is retired; tracking issue #123 points back here.
 
 ```bash
 git switch docs/pywin32-authoritative-bindings
@@ -92,9 +69,7 @@ git fetch origin
 
 ### Task 1: Committed pywin32 authority module and snapshot
 
-**Files:**
-- Create: `scripts/pywin32_authority.py`, `tests/unit/test_pywin32_authority.py`
-- Generate: `docs/reports/pywin32_authority.json`
+**Files:** `scripts/pywin32_authority.py`, `tests/unit/test_pywin32_authority.py`, `docs/reports/pywin32_authority.json`
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -153,10 +128,9 @@ def test_load_authority_round_trip(tmp_path: Path) -> None:
     assert load_authority(target) == data
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [ ] **Step 2: Run tests to verify failure**
 
-Run: `python -m pytest tests/unit/test_pywin32_authority.py -q`
-Expected: `ModuleNotFoundError: No module named 'scripts.pywin32_authority'`.
+`pytest tests/unit/test_pywin32_authority.py -q` → `ModuleNotFoundError`.
 
 - [ ] **Step 3: Implement the module**
 
@@ -242,31 +216,26 @@ if __name__ == "__main__":
     raise SystemExit(main())
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [ ] **Step 4: Run tests to verify they pass**
 
-Run: `python -m pytest tests/unit/test_pywin32_authority.py -q`
-Expected: 3 passed.
+`pytest tests/unit/test_pywin32_authority.py -q` → 3 passed.
 
-- [ ] **Step 5: Generate and commit the snapshot**
+- [ ] **Step 5: Generate, verify and commit**
 
 ```bash
 python scripts/pywin32_authority.py
 python -c 'import json; d=json.load(open("docs/reports/pywin32_authority.json")); print(d["catalog"]["IRPClass"]["isAbstract"], d["catalog"]["IRPClass"]["BinaryID"])'
-```
-
-Expected: `property property`.
-
-```bash
 git add scripts/pywin32_authority.py tests/unit/test_pywin32_authority.py docs/reports/pywin32_authority.json
 git commit -m "feat: add committed pywin32 authority snapshot"
 ```
+
+Expected print: `property property`.
 
 ---
 
 ### Task 2: Validator authority mode and classification
 
-**Files:**
-- Modify: `scripts/validate_model_api.py`, `tests/unit/test_validate_model_api.py`
+**Files:** `scripts/validate_model_api.py`, `tests/unit/test_validate_model_api.py`
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -310,16 +279,16 @@ def test_apply_pywin32_authority_demotes_expected_differences() -> None:
 def test_apply_pywin32_authority_suppresses_documented_alias() -> None:
     rows = [
         (
-            "get_is_abstract() -> getIsAbstract; get_is_abstract() -> isAbstract",
-            "getIsAbstract (method)",
-            "isAbstract (property)",
+            "get_description_html() -> descriptionHTML; get_description_html() -> getDescriptionHTML",
+            "getDescriptionHTML (method)",
+            "descriptionHTML (property)",
             "PYTHON_METHOD_NAME_MISMATCH; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH",
             "Rename the Python method.",
         )
     ]
 
     deviations, informational, backlog = validator.apply_pywin32_authority(
-        rows, "IRPClass", _authority(aliases={"IRPClass": {"get_is_abstract": "is_abstract"}})
+        rows, "IRPClass", _authority(aliases={"IRPClass": {"get_description_html": "description_html"}})
     )
 
     assert deviations == []
@@ -386,20 +355,15 @@ def test_main_authority_source_reports_backlog_without_typelib(tmp_path: Path, m
     assert "No deviations require changes." in report
 ```
 
-Extend the existing parser test `test_argument_parser_requires_one_interface_and_optional_report_directory` with:
+Extend the existing parser test with `assert default_args.source == "typelib"`.
 
-```python
-    assert default_args.source == "typelib"
-```
+- [ ] **Step 2: Run tests to verify failure**
 
-- [ ] **Step 2: Run the tests to verify they fail**
+`pytest tests/unit/test_validate_model_api.py -q -k 'authority or argument_parser'` → failures.
 
-Run: `python -m pytest tests/unit/test_validate_model_api.py -q -k 'authority or argument_parser'`
-Expected: failures for missing `apply_pywin32_authority` and `source`.
+- [ ] **Step 3: Add the authority import and post-processing**
 
-- [ ] **Step 3: Add imports, aliases, and post-processing**
-
-Add after the existing `scripts` import in `scripts/validate_model_api.py`:
+Add after the existing scripts import:
 
 ```python
 from scripts.pywin32_authority import AuthorityData, load_authority
@@ -481,7 +445,7 @@ def render_markdown_report(
 ) -> str:
 ```
 
-After the `Deviations by status` block, insert:
+After the `Deviations by status` block insert:
 
 ```python
     if authoritative:
@@ -494,7 +458,7 @@ After the `Deviations by status` block, insert:
         )
 ```
 
-After the comparison-table rows / empty placeholder, insert:
+After the comparison table insert:
 
 ```python
     if authoritative:
@@ -504,7 +468,7 @@ After the comparison-table rows / empty placeholder, insert:
 
 - [ ] **Step 5: Add `--source` and rewire `main`**
 
-Add to `build_arg_parser` before the `--path` argument:
+Add to `build_arg_parser` before `--path`:
 
 ```python
     parser.add_argument(
@@ -574,8 +538,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 
 - [ ] **Step 6: Run tests and commit**
 
-Run: `python -m pytest tests/unit/test_validate_model_api.py -q`
-Expected: all tests pass.
+`pytest tests/unit/test_validate_model_api.py -q` → all pass.
 
 ```bash
 git add scripts/validate_model_api.py tests/unit/test_validate_model_api.py
@@ -584,29 +547,26 @@ git commit -m "feat: validate wrappers against committed pywin32 authority"
 
 ---
 
-### Task 3: Remove the IRPClass wrapper that calls an unavailable pywin32 member
+### Task 3: Remove the IRPClass wrapper calling an unavailable member
 
-**Files:**
-- Modify: `src/rhapsody_cli/models/elements/classifiers/model_class.py:448-464` and its checklist at `:40`
-- Modify: `tests/unit/models/elements/classifiers/test_model_class.py:331-336`
+**Files:** `model_class.py`, `tests/unit/models/elements/classifiers/test_model_class.py`
 
-- [ ] **Step 1: Write the failing removal guard**
+- [ ] **Step 1: Write the failing guard**
 
-Add to `tests/unit/models/elements/classifiers/test_model_class.py`:
+Add to `test_model_class.py`:
 
 ```python
 def test_class_does_not_expose_unavailable_server_diagram_update() -> None:
     assert not hasattr(RPClass, "update_contained_diagrams_on_server")
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [ ] **Step 2: Run it to verify failure**
 
-Run: `python -m pytest tests/unit/models/elements/classifiers/test_model_class.py -q -k unavailable_server_diagram`
-Expected: 1 failure — the method still exists.
+`pytest tests/unit/models/elements/classifiers/test_model_class.py -q -k unavailable_server_diagram` → 1 failure.
 
-- [ ] **Step 3: Remove the method, its old test, and its checklist entry**
+- [ ] **Step 3: Remove the method, old test and checklist row**
 
-Delete this method from `model_class.py`:
+Delete from `model_class.py`:
 
 ```python
     def update_contained_diagrams_on_server(self, enforce_update: int) -> int:
@@ -628,7 +588,7 @@ Delete this method from `model_class.py`:
         return int(AbstractRPModelElement.call_com(lambda: self._com.updateContainedDiagramsOnServer(enforce_update)))
 ```
 
-Delete this test from `test_model_class.py`:
+Delete from `test_model_class.py`:
 
 ```python
 def test_class_update_contained_diagrams_on_server_delegates_to_com() -> None:
@@ -640,24 +600,15 @@ def test_class_update_contained_diagrams_on_server_delegates_to_com() -> None:
     fake.updateContainedDiagramsOnServer.assert_called_once_with(1)
 ```
 
-Delete this checklist line from `model_class.py`:
-
-```python
-    # [x] update_contained_diagrams_on_server [x] impl [x] docstring [x] unit test  [x] integration test
-```
-
-Replace it with:
+Replace the checklist row with:
 
 ```python
     # update_contained_diagrams_on_server: unavailable in Rhapsody2.Application.1 type library; wrapper removed.
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [ ] **Step 4: Verify and commit**
 
-Run: `python -m pytest tests/unit/models/elements/classifiers/test_model_class.py -q`
-Expected: all tests pass.
-
-- [ ] **Step 5: Commit**
+`pytest tests/unit/models/elements/classifiers/test_model_class.py -q` → pass.
 
 ```bash
 git add src/rhapsody_cli/models/elements/classifiers/model_class.py tests/unit/models/elements/classifiers/test_model_class.py
@@ -666,15 +617,13 @@ git commit -m "fix: remove RPClass update_contained_diagrams_on_server (not in p
 
 ---
 
-### Task 4: Fix the three IRPClass-visible COM calls that pywin32 exposes under different names
+### Task 4: Fix the three COM calls exposed under different names
 
-**Files:**
-- Modify: `tests/unit/models/test_core.py:708-713`, `:875-880`, plus new CMHeader tests
-- Modify: `src/rhapsody_cli/models/core.py:661-671`, `:1861-1871`, `:2102-2111`, `:882-894`
+**Files:** `src/rhapsody_cli/models/core.py`, `tests/unit/models/test_core.py`
 
-- [ ] **Step 1: Write the failing tests**
+- [ ] **Step 1: Write failing tests**
 
-Replace the existing `test_model_element_get_binary_id_returns_bytes` (lines 708-713) with:
+Replace `test_model_element_get_binary_id_returns_bytes` with:
 
 ```python
 def test_model_element_get_binary_id_falls_back_to_pywin32_binaryid_property() -> None:
@@ -685,7 +634,7 @@ def test_model_element_get_binary_id_falls_back_to_pywin32_binaryid_property() -
     assert element.get_binary_id() == b"\x01\x02\x03"
 ```
 
-Add next to it:
+Add:
 
 ```python
 def test_model_element_get_cm_header_falls_back_to_pywin32_cmheader_property() -> None:
@@ -705,7 +654,7 @@ def test_model_element_set_cm_header_falls_back_to_pywin32_cmheader_property() -
     assert fake.CMHeader == "header-2"
 ```
 
-Replace the existing `test_model_element_get_is_of_meta_class_returns_int` (lines 875-880) with:
+Replace `test_model_element_get_is_of_meta_class_returns_int` with:
 
 ```python
 def test_model_element_get_is_of_meta_class_calls_pywin32_member() -> None:
@@ -717,60 +666,41 @@ def test_model_element_get_is_of_meta_class_calls_pywin32_member() -> None:
     fake.isOfMetaClass.assert_called_once_with("Class")
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [ ] **Step 2: Run tests to verify failure**
 
-Run: `python -m pytest tests/unit/models/test_core.py -q -k 'binary_id or cm_header or is_of_meta_class'`
-Expected: 4 failures — no `BinaryID`, `CMHeader`, or `isOfMetaClass` attributes on the fakes.
+`pytest tests/unit/models/test_core.py -q -k 'binary_id or cm_header or is_of_meta_class'` → 4 failures.
 
-- [ ] **Step 3: Implement the call-site changes**
+- [ ] **Step 3: Implement**
 
-In `get_binary_id` (`core.py:671`), replace the return with:
+In `get_binary_id` replace the return with:
 
 ```python
         return bytes(AbstractRPModelElement._get_method_or_property(self._com, "getBinaryID", "BinaryID"))
 ```
 
-Add to its docstring:
-
-```python
-        The authenticated pywin32 type library exposes this as the
-        ``BinaryID`` property; ``getBinaryID`` is tried first for other bindings.
-```
-
-In `get_cm_header` (`core.py:1871`), replace the return with:
+In `get_cm_header` replace the return with:
 
 ```python
         return str(AbstractRPModelElement._get_method_or_property(self._com, "getCMHeader", "CMHeader"))
 ```
 
-In `set_cm_header` (`core.py:2111`), replace the call with:
+In `set_cm_header` replace the call with:
 
 ```python
         AbstractRPModelElement._set_method_or_property(self._com, "setCMHeader", "CMHeader", cm_header)
 ```
 
-Add the same pywin32-name note to both docstrings.
-
-In `get_is_of_meta_class` (`core.py:894`), replace the return with:
+In `get_is_of_meta_class` replace the return with:
 
 ```python
         return int(AbstractRPModelElement.call_com(lambda: self._com.isOfMetaClass(meta_class)))
 ```
 
-Add to its docstring:
+A getter/property helper is not usable for `isOfMetaClass`: pywin32 exposes it as a method, so the helper would return the bound method without invoking it.
 
-```python
-        The pywin32 binding exposes ``isOfMetaClass`` as a method. A getter/
-        property helper is not usable here because it would return the bound
-        method without calling it.
-```
+- [ ] **Step 4: Verify and commit**
 
-- [ ] **Step 4: Run the tests to verify they pass**
-
-Run: `python -m pytest tests/unit/models/test_core.py -q`
-Expected: all tests pass.
-
-- [ ] **Step 5: Commit**
+`pytest tests/unit/models/test_core.py -q` → pass.
 
 ```bash
 git add src/rhapsody_cli/models/core.py tests/unit/models/test_core.py
@@ -779,50 +709,278 @@ git commit -m "fix: call pywin32-exposed BinaryID, CMHeader and isOfMetaClass me
 
 ---
 
-### Task 5: Document IRPClass aliases/unavailable members and regenerate the report
+### Task 5: Failing unit tests for RPClass properties
 
-**Files:**
-- Modify: `docs/reports/pywin32_authority.json`
-- Regenerate: `docs/reports/IRPClass_api_report.md`
-- Modify: `tests/unit/test_validate_model_api.py` (guard test)
+**Files:** `tests/unit/models/elements/classifiers/test_model_class.py`
 
-- [ ] **Step 1: Add the documented exceptions**
+- [ ] **Step 1: Replace the flag-method tests with property tests**
 
-Edit `docs/reports/pywin32_authority.json` so the two exception maps (currently empty `{}` after Task 1) become:
+Replace `test_class_get_is_abstract_delegates_to_com` with:
 
-```json
-    "documented_aliases": {
-      "IRPClass": {
-        "get_description_html": "description_html",
-        "get_is_abstract": "is_abstract"
-      }
-    },
-    "documented_unavailable": {
-      "IRPClass": [
-        "addEventReceptionWithEvent",
-        "createOSLCLink",
-        "deleteOSLCLink",
-        "getOSLCLinks",
-        "getRmmUrl",
-        "getUnitPath",
-        "setDescriptionHTML",
-        "setIsAbstract",
-        "updateContainedDiagramsOnServer"
-      ]
-    }
+```python
+def test_class_is_abstract_property_delegates_to_com() -> None:
+    fake = make_fake_element("Class", getIsAbstract=1)
+    klass = RPClass(fake)
+
+    assert klass.is_abstract is True
 ```
 
-Do not edit the `catalog` map.
+Replace the five `test_class_get_is_*_delegates_to_com` tests (active, behavior_overriden, composite, final, reactive) with:
 
-- [ ] **Step 2: Regenerate the IRPClass report offline**
+```python
+def test_class_is_active_property_delegates_to_com() -> None:
+    fake = make_fake_element("Class", getIsActive=1)
+    klass = RPClass(fake)
+
+    assert klass.is_active == 1
+
+
+def test_class_is_behavior_overriden_property_delegates_to_com() -> None:
+    fake = make_fake_element("Class", getIsBehaviorOverriden=0)
+    klass = RPClass(fake)
+
+    assert klass.is_behavior_overriden == 0
+
+
+def test_class_is_composite_property_delegates_to_com() -> None:
+    fake = make_fake_element("Class", getIsComposite=1)
+    klass = RPClass(fake)
+
+    assert klass.is_composite == 1
+
+
+def test_class_is_final_property_delegates_to_com() -> None:
+    fake = make_fake_element("Class", getIsFinal=0)
+    klass = RPClass(fake)
+
+    assert klass.is_final == 0
+
+
+def test_class_is_reactive_property_delegates_to_com() -> None:
+    fake = make_fake_element("Class", getIsReactive=1)
+    klass = RPClass(fake)
+
+    assert klass.is_reactive == 1
+```
+
+Replace the four setter tests with:
+
+```python
+def test_class_is_abstract_setter_raises_not_implemented() -> None:
+    fake = make_fake_element("Class")
+    klass = RPClass(fake)
+
+    with pytest.raises(NotImplementedError):
+        klass.is_abstract = True
+
+    fake.setIsAbstract.assert_not_called()
+
+
+def test_class_is_active_setter_delegates_to_com() -> None:
+    fake = make_fake_element("Class")
+    klass = RPClass(fake)
+
+    klass.is_active = 0
+
+    fake.setIsActive.assert_called_once_with(0)
+
+
+def test_class_is_behavior_overriden_setter_delegates_to_com() -> None:
+    fake = make_fake_element("Class")
+    klass = RPClass(fake)
+
+    klass.is_behavior_overriden = 1
+
+    fake.setIsBehaviorOverriden.assert_called_once_with(1)
+
+
+def test_class_is_final_setter_delegates_to_com() -> None:
+    fake = make_fake_element("Class")
+    klass = RPClass(fake)
+
+    klass.is_final = 1
+
+    fake.setIsFinal.assert_called_once_with(1)
+```
+
+- [ ] **Step 2: Run tests to verify failure**
+
+`pytest tests/unit/models/elements/classifiers/test_model_class.py -q -k 'is_abstract or is_active or is_behavior_overriden or is_composite or is_final or is_reactive'` → failures.
+
+- [ ] **Step 3: Commit the failing tests**
+
+```bash
+git add tests/unit/models/elements/classifiers/test_model_class.py
+git commit -m "test(unit): expect RPClass boolean flags as properties"
+```
+
+---
+
+### Task 6: Implement the six RPClass properties
+
+**Files:** `src/rhapsody_cli/models/elements/classifiers/model_class.py`
+
+- [ ] **Step 1: Replace `get_is_abstract` and `set_is_abstract`**
+
+```python
+    @property
+    def is_abstract(self) -> bool:
+        """Checks whether this class is abstract."""
+        return bool(AbstractRPModelElement._get_method_or_property(self._com, "getIsAbstract", "isAbstract"))
+
+    @is_abstract.setter
+    def is_abstract(self, is_abstract: bool) -> None:
+        """Unimplemented: the COM write is accepted but never persists."""
+        raise NotImplementedError("RPClass.is_abstract setter is unimplemented: Rhapsody2.Application.1 accepts the write but never persists it.")
+```
+
+`bool` is used for both getter and setter because mypy strict requires a compatible setter type; the Java-style `int` callers are migrated in Task 7.
+
+- [ ] **Step 2: Replace the other getter/setter pairs**
+
+```python
+    @property
+    def is_active(self) -> int:
+        """``1`` if the class runs on its own thread, ``0`` if sequential."""
+        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsActive", "isActive"))
+
+    @is_active.setter
+    def is_active(self, is_active: int) -> None:
+        """Set to ``1`` for active, ``0`` for sequential."""
+        AbstractRPModelElement._set_method_or_property(self._com, "setIsActive", "isActive", is_active)
+
+    @property
+    def is_behavior_overriden(self) -> int:
+        """``1`` if the class does not inherit its base statechart behavior, else ``0``."""
+        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsBehaviorOverriden", "isBehaviorOverriden"))
+
+    @is_behavior_overriden.setter
+    def is_behavior_overriden(self, is_behavior_overriden: int) -> None:
+        """Set to ``1`` to not inherit the base statechart behavior, ``0`` to inherit."""
+        AbstractRPModelElement._set_method_or_property(self._com, "setIsBehaviorOverriden", "isBehaviorOverriden", is_behavior_overriden)
+
+    @property
+    def is_composite(self) -> int:
+        """``1`` if the class is a composite class, ``0`` otherwise."""
+        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsComposite", "isComposite"))
+
+    @property
+    def is_final(self) -> int:
+        """``1`` if the class is final, ``0`` otherwise."""
+        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsFinal", "isFinal"))
+
+    @is_final.setter
+    def is_final(self, new_val: int) -> None:
+        """Set to ``1`` to make the class final, ``0`` otherwise."""
+        AbstractRPModelElement._set_method_or_property(self._com, "setIsFinal", "isFinal", new_val)
+
+    @property
+    def is_reactive(self) -> int:
+        """``1`` if the class has a statechart or activity diagram, ``0`` otherwise."""
+        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsReactive", "isReactive"))
+```
+
+- [ ] **Step 3: Update the parity checklist**
+
+Replace the ten `get_is_*` / `set_is_*` checklist rows with six `is_*` rows marked `[x] impl (property)`.
+
+- [ ] **Step 4: Verify and commit**
+
+`pytest tests/unit/models/elements/classifiers/test_model_class.py -q` → pass.
+
+```bash
+git add src/rhapsody_cli/models/elements/classifiers/model_class.py
+git commit -m "refactor: expose RPClass boolean flags as Python properties"
+```
+
+---
+
+### Task 7: Migrate CLI and integration call sites
+
+**Files:** `src/rhapsody_cli/actions/class_action.py`, `tests/integration/models/elements/classifiers/test_model_class.py`, `tests/integration/models/test_core.py`
+
+- [ ] **Step 1: Migrate `class_action.py`**
+
+Apply these replacements (keep existing `# type: ignore[attr-defined]` comments):
+
+```python
+cls.set_is_abstract(1 if attrs["isAbstract"] else 0)  →  cls.is_abstract = bool(attrs["isAbstract"])
+cls.set_is_final(1 if attrs["isFinal"] else 0)        →  cls.is_final = 1 if attrs["isFinal"] else 0
+cls.set_is_active(1 if attrs["isActive"] else 0)      →  cls.is_active = 1 if attrs["isActive"] else 0
+cls.set_is_abstract(1 if value else 0)                →  cls.is_abstract = bool(value)
+cls.set_is_final(1 if value else 0)                   →  cls.is_final = 1 if value else 0
+cls.set_is_active(1 if value else 0)                  →  cls.is_active = 1 if value else 0
+int(cls.get_is_abstract())                            →  int(cls.is_abstract)
+int(cls.get_is_active())                              →  int(cls.is_active)
+int(cls.get_is_final())                               →  int(cls.is_final)
+int(cls.get_is_composite())                           →  int(cls.is_composite)
+int(cls.get_is_reactive())                            →  int(cls.is_reactive)
+```
+
+Do not touch `operation_action.py` — `RPOperation` keeps its methods.
+
+- [ ] **Step 2: Migrate RPClass integration tests**
+
+In `tests/integration/models/elements/classifiers/test_model_class.py`, replace `test_class.get_is_abstract()` → `test_class.is_abstract`, `get_is_active()` → `is_active`, `get_is_behavior_overriden()` → `is_behavior_overriden`, `get_is_composite()` → `is_composite`, `get_is_final()` → `is_final`, `get_is_reactive()` → `is_reactive`, and setter calls with assignments. For abstract, keep the failure expectation:
+
+```python
+            with pytest.raises(NotImplementedError):
+                test_class.is_abstract = True
+```
+
+- [ ] **Step 3: Update binding-related integration tests**
+
+Delete the xfailed `test_update_contained_diagrams_on_server` test from the RPClass integration file. In `tests/integration/models/test_core.py`: remove the xfail decorator from `test_get_is_of_meta_class_class`, and retitle the `get_rmm_url` xfail reason to reference `documented_unavailable`.
+
+- [ ] **Step 4: Verify and commit**
+
+```bash
+pytest tests/unit/actions -q
+pytest tests/integration/models/elements/classifiers/test_model_class.py tests/integration/models/test_core.py --collect-only -q
+git add src/rhapsody_cli/actions/class_action.py tests/integration/models/elements/classifiers/test_model_class.py tests/integration/models/test_core.py
+git commit -m "refactor: migrate CLI and integration tests to RPClass properties"
+```
+
+---
+
+### Task 8: Document exceptions, regenerate the final report, and guard it
+
+**Files:** `docs/reports/pywin32_authority.json`, `docs/reports/IRPClass_api_report.md`, `tests/unit/test_validate_model_api.py`
+
+- [ ] **Step 1: Fill the authority exceptions**
+
+Edit the two exception maps (currently `{}` after Task 1):
+
+```json
+  "documented_aliases": {
+    "IRPClass": {
+      "get_description_html": "description_html"
+    }
+  },
+  "documented_unavailable": {
+    "IRPClass": [
+      "addEventReceptionWithEvent",
+      "createOSLCLink",
+      "deleteOSLCLink",
+      "getOSLCLinks",
+      "getRmmUrl",
+      "getUnitPath",
+      "setDescriptionHTML",
+      "setIsAbstract",
+      "updateContainedDiagramsOnServer"
+    ]
+  }
+```
+
+No `get_is_abstract` alias: after Task 6 the Python name is already the canonical `is_abstract`.
+
+- [ ] **Step 2: Regenerate the report**
 
 ```bash
 python scripts/validate_model_api.py IRPClass --source authority --path docs/reports
 ```
 
-Expected: exit code `0`.
-
-Verify with:
+Expected exit `0`. Verify zero actionable rows:
 
 ```bash
 python - <<'PY'
@@ -835,9 +993,7 @@ print("IRPClass: zero actionable deviations")
 PY
 ```
 
-Expected: `IRPClass: zero actionable deviations`.
-
-Then guard the IRPClass-visible property/method shapes (no generic validator change):
+- [ ] **Step 3: Guard the property/method shape**
 
 ```bash
 python - <<'PY'
@@ -847,10 +1003,7 @@ from pathlib import Path
 
 catalog = json.loads(Path("docs/reports/pywin32_authority.json").read_text(encoding="utf-8"))["catalog"]["IRPClass"]
 properties = {name for name, kind in catalog.items() if "property" in kind}
-sources = [
-    Path("src/rhapsody_cli/models/core.py"),
-    Path("src/rhapsody_cli/models/elements/classifiers/model_class.py"),
-]
+sources = [Path("src/rhapsody_cli/models/core.py"), Path("src/rhapsody_cli/models/elements/classifiers/model_class.py")]
 violations: list = []
 for source in sources:
     tree = ast.parse(source.read_text(encoding="utf-8"))
@@ -858,24 +1011,14 @@ for source in sources:
         if not isinstance(node, ast.Call) or not isinstance(node.func, ast.Attribute):
             continue
         base = node.func.value
-        if (
-            isinstance(base, ast.Attribute)
-            and base.attr == "_com"
-            and isinstance(base.value, ast.Name)
-            and base.value.id == "self"
-            and node.func.attr in properties
-        ):
+        if isinstance(base, ast.Attribute) and base.attr == "_com" and isinstance(base.value, ast.Name) and base.value.id == "self" and node.func.attr in properties:
             violations.append(f"{source}:{node.lineno}: {node.func.attr}()")
 assert not violations, violations
 print("IRPClass: no property-shaped pywin32 member called as a method")
 PY
 ```
 
-Expected: `IRPClass: no property-shaped pywin32 member called as a method`. If it fails, the listed call site must use `_get_method_or_property` instead of `self._com.X()`.
-
-- [ ] **Step 3: Add the guard test**
-
-Add to `tests/unit/test_validate_model_api.py`:
+- [ ] **Step 4: Add the report guard test**
 
 ```python
 def test_irpclass_report_has_no_actionable_deviations() -> None:
@@ -890,171 +1033,68 @@ def test_irpclass_report_has_no_actionable_deviations() -> None:
     assert rows == [], rows
 ```
 
-Run: `python -m pytest tests/unit/test_validate_model_api.py -q -k irpclass_report`
-Expected: 1 passed.
+`pytest tests/unit/test_validate_model_api.py -q -k irpclass_report` → 1 passed.
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 5: Commit**
 
 ```bash
 git add docs/reports/pywin32_authority.json docs/reports/IRPClass_api_report.md tests/unit/test_validate_model_api.py
-git commit -m "docs: regenerate IRPClass report with zero binding deviations"
+git commit -m "docs: regenerate IRPClass report after binding and property fixes"
 ```
 
 ---
 
-### Task 6: Integration tests for IRPClass and live COM verification
+### Task 9: Guidelines, quality gate and push
 
-**Files:**
-- Modify: `tests/integration/models/elements/classifiers/test_model_class.py:309-317`
-- Modify: `tests/integration/models/test_core.py:1344-1359` and `:1273`
-- Verify only (no edit): `tests/integration/models/test_core.py:1321-1330`, `:1760-1771`
+**Files:** `docs/CODE_GUIDELINES.md`
 
-- [ ] **Step 1: Delete the integration test for the removed method**
+- [ ] **Step 1: Add the rule**
 
-Delete this xfailed test from `tests/integration/models/elements/classifiers/test_model_class.py`:
-
-```python
-    @pytest.mark.xfail(strict=False, reason="IRPClass COM dispatch does not expose updateContainedDiagramsOnServer (AttributeError) though declared in the Java API")
-    def test_update_contained_diagrams_on_server(self, test_project: RPProject) -> None:
-        pkg_name = self._unique("SrvPkg")
-        class_name = self._unique("SrvCls")
-        pkg = self._create_package(test_project, pkg_name)
-        test_class = pkg.add_class(class_name)
-        try:
-            test_class.update_contained_diagrams_on_server(0)
-        finally:
-            test_class.delete_from_project()
-```
-
-This is required by the integration scope rule: the file targets `RPClass` and asserts only its own methods; the method no longer exists.
-
-- [ ] **Step 2: Remove the now-obsolete xfail on `get_is_of_meta_class`**
-
-Task 4 changes the COM call to `isOfMetaClass`, which is the member pywin32 actually exposes. Replace the decorator line:
-
-```python
-    @pytest.mark.xfail(strict=False, reason="IRPModelElement.getIsOfMetaClass not exposed via COM dispatch (AttributeError: addClass.getIsOfMetaClass)")
-```
-
-with nothing, leaving the test body unchanged:
-
-```python
-    def test_get_is_of_meta_class_class(self, test_project: RPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("IsOfPkg"))
-        try:
-            cls = pkg.add_class(self._unique("IsOfCls"))
-            result = cls.get_is_of_meta_class("Class")
-            assert result
-
-            not_result = cls.get_is_of_meta_class("Package")
-            assert not not_result
-        finally:
-            pkg.delete_from_project()
-```
-
-- [ ] **Step 3: Retitle the xfail for `get_rmm_url`**
-
-`get_rmm_url` is inherited and intentionally retained as a documented-unavailable wrapper (Task 5), so the live call still cannot succeed. Replace only the reason string:
-
-```python
-    @pytest.mark.xfail(strict=False, reason="getRmmUrl is listed in documented_unavailable; the pywin32 interface does not expose it")
-```
-
-Keep the test body unchanged.
-
-- [ ] **Step 4: Collection verification (no Rhapsody required)**
-
-```bash
-pytest tests/integration/models/elements/classifiers/test_model_class.py tests/integration/models/test_core.py --collect-only -q
-```
-
-Expected: collection succeeds; `test_update_contained_diagrams_on_server` is absent from the collected list.
-
-- [ ] **Step 5: Live verification on Windows/CI only**
-
-These are the real proof that the pywin32 names chosen in Task 4 work against a live Rhapsody instance; they cannot run on macOS/Linux:
-
-```bash
-pytest tests/integration/models/test_core.py -k "get_binary_id or get_cm_header or get_is_of_meta_class" -v
-pytest tests/integration/models/elements/classifiers/test_model_class.py -k "get_is_abstract" -v
-```
-
-Expected: `test_get_binary_id`, `test_set_and_get_cm_header_roundtrip`, and `test_get_is_of_meta_class_class` pass (the last one as a normal pass, not `xfail`); `get_is_abstract` is unaffected.
-
-- [ ] **Step 6: Commit**
-
-```bash
-git add tests/integration/models/elements/classifiers/test_model_class.py tests/integration/models/test_core.py
-git commit -m "test: align IRPClass integration tests with pywin32 bindings"
-```
-
----
-
-### Task 7: Record the rule and run the quality gate
-
-**Files:**
-- Modify: `docs/CODE_GUIDELINES.md` (insert before `## Questions?`)
-
-- [ ] **Step 1: Add the guideline**
+Insert before `## Questions?`:
 
 ```markdown
 ## pywin32 Bindings Are Authoritative
 
-The generated pywin32 interface from the registered `Rhapsody2 1.0` type library is the source of truth for COM member names and shapes. Java Javadoc may show `getX`/`setX` methods where pywin32 exposes a bare `X` property; those differences are informational, not defects.
+The generated pywin32 interface from the registered `Rhapsody2 1.0` type library is the source of truth for COM member names and shapes. Java getters vs pywin32 properties are informational, not defects.
 
-- Confirm each COM member's exact name and kind in `docs/reports/pywin32_authority.json`.
+- Confirm COM member names and kinds in `docs/reports/pywin32_authority.json`.
 - Call method-shaped members with `call_com(lambda: self._com.methodName(...))`.
-- Read/write property-shaped members with `_get_method_or_property` / `_set_method_or_property`, Java-style name first and pywin32 name second. COM names are string arguments only; Python-facing names follow `docs/CODE_GUIDELINES.md` (snake_case methods, UPPERCASE constants), e.g. `get_binary_id` wraps `BinaryID`.
-- If pywin32 does not expose a member at all, remove the wrapper that calls it (or keep a documented `NotImplementedError` stub) and add its Java name to `documented_unavailable`.
-- Document intentional Python-name aliases in `documented_aliases` instead of renaming public methods.
-- After changing a wrapper, regenerate its report with `python scripts/validate_model_api.py <IRPInterface> --source authority --path docs/reports` and require zero rows under `## Comparison details`.
-- Property/method refactoring is scoped to the members visible in the report being fixed (here: IRPClass). Do not reshape the shared wrapper hierarchy for one interface's deviations.
+- Read/write property-shaped members with `_get_method_or_property` / `_set_method_or_property`, Java name first and pywin32 name second. COM names are string arguments only.
+- Python-facing names follow this document: snake_case methods and UPPERCASE constants. Where a class is migrated to `@property`, its name is the snake_case canonical member name.
+- Remove wrappers calling members absent from pywin32, or keep a documented `NotImplementedError` stub listed in `documented_unavailable`.
+- Property/method refactors are scoped to one class at a time; do not reshape the shared wrapper hierarchy for one interface's deviations.
+- Regenerate the affected report with `python scripts/validate_model_api.py <IRPInterface> --source authority --path docs/reports` and require zero rows under `## Comparison details`.
 ```
 
-- [ ] **Step 2: Install dev dependencies (if not already installed)**
+- [ ] **Step 2: Install deps and run the gate**
 
 ```bash
 pip install -e ".[dev,cli]"
-```
-
-The `cli` extra provides `tabulate` and `rich`; without it `pytest tests/unit/` fails during collection on `tests/unit/commands/*`.
-
-- [ ] **Step 3: Run the quality gate**
-
-On Windows/CI:
-
-```bash
 ruff check src/ tests/ scripts/ && black --check src/ tests/ scripts/ && mypy src/ tests/ scripts/ && pytest tests/unit/
 ```
 
-On macOS/Linux (temporary stub, no repo changes):
+On macOS/Linux use a temporary `pywintypes` stub:
 
 ```bash
 STUB=$(mktemp -d); printf 'class com_error(Exception):\n    def __init__(self, *args):\n        self.args = args\n        super().__init__(*args)\n' > "$STUB/pywintypes.py"; PYTHONPATH="${STUB}:src" python -m pytest tests/unit/ -q; rm -rf "$STUB"
 ```
 
-Expected: all tests pass; lint/format/type checks clean.
-
-- [ ] **Step 4: Commit and push**
+- [ ] **Step 3: Commit and push**
 
 ```bash
 git add docs/CODE_GUIDELINES.md
-git commit -m "docs: document pywin32-authoritative binding rule"
+git commit -m "docs: document pywin32-authoritative bindings and scoped property migration"
 git push
 ```
-
-Expected: PR #122 updates automatically.
 
 ---
 
 ## Self-review
 
-**Spec coverage:** IRPClass is the only target report. All 11 deviation types from the inventory have an explicit proposal (table above) and a task that implements or consciously defers it. The "remove unavailable first" instruction is Task 3, ahead of all fixes. The property/method consideration is explicitly scoped to IRPClass-visible call sites, with a decision table and a one-off guard in Task 5 — no hierarchy-wide refactor. Shared-base limitations (`get_rmm_url`, OSLC stubs, `setDescriptionHTML`) are documented rather than silently left broken, and tracked in #121.
+**Coverage:** all 83 IRPClass deviation rows have a treatment; removal precedes fixes; property migration precedes final report regeneration so the report reflects the final API; unit, CLI, integration, and report tests are all included.
 
-**Placeholder scan:** No TBD/TODO steps. Every code-changing step contains the complete code. Generated JSON is produced by a committed script with a verification command.
+**Placeholder scan:** every code-changing step includes complete replacement code; no TBD steps.
 
-**Test coverage:** Unit tests cover every code change (validator classification, authority round-trip, removal guard, three call-site fixes, IRPClass report guard). Integration tests are explicitly handled in Task 6: the removed method's integration test is deleted, the obsolete `get_is_of_meta_class` xfail is removed, the `get_rmm_url` xfail reason is retitled, and the live `BinaryID`/`CMHeader` tests are the Windows-only proof of Task 4. Collection is verifiable offline; execution is CI-only per the project rules.
+**Type consistency:** `AuthorityData` is defined once and used identically in Tasks 1, 2, 8. `is_abstract` is `bool` on getter and setter (mypy strict), other flags are `int` on both sides; CLI output keeps `int(...)`. No `Any` annotations and no Python 3.9-only APIs.
 
-**Type consistency:** `AuthorityData` (catalog, documented_aliases, documented_unavailable) is defined once in Task 1 and used unchanged in Tasks 2 and 5. `apply_pywin32_authority(rows, interface_name, authority)` has one signature used by all tests and `main`. `Rows` matches `build_deviation_rows`' return type. No `Any` annotations; no Python 3.9-only APIs (py3.8 target honored).
-
-**Deferred work:** The 8 new wrappers and the shared-base removals stay in tracking issue #121. The plan does not claim IRPClass functionality is complete — only that its report has zero actionable deviations under the pywin32-authoritative classification.
+**Breaking change:** callers of the ten removed RPClass methods must use attributes. This is intentional, tracked in issue #123, and scoped to one class; the other 11 interfaces and the shared base are untouched.
