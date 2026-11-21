@@ -49,6 +49,12 @@ not re-derive scope or decisions already recorded in the row's Notes.
   the package move (wrapper, imports/exports/registration, unit + integration tests to the
   mirrored `tests/{unit,integration}/models/com/telelogic/rhapsody/core/` paths, snake_case
   test module names, `__init__.py` at every level, no compatibility shim).
+- **Per-class documents (SKILL §6/§7):** requirement and RST artifacts live at the class's
+  package path — `docs/requirements/<java.package.path>/<snake_case>.md` and
+  `docs/api/<java.package.path>/<snake_case>.rst` — not in the legacy monoliths
+  (`swr_elem_requirements.md`, `elements.rst`). Each run moves its class's entries out of the
+  monoliths into the per-class files (no duplicates); `elements.rst` lists per-class pages in
+  its toctree. `verify_sync.py` checks the per-class paths strictly (no legacy fallback).
 - **core.py split:** `models/core.py` holds `AbstractRPModelElement` (2 forwarder
   definitions), `RPModelElement`, `RPCollection`, `RPUnit` — 92 legacy sites total. Survey and
   split per class at each row's start. IRPModelElement's 22 unit-family names (`CMHeader`,

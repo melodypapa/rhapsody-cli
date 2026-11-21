@@ -25,8 +25,8 @@ Before any analysis or edit, publish the TODO list: use an available task-list t
 - [ ] §3 Compare every owned member across JavaDoc, COM exposure, and Python implementation.
 - [ ] §4 Write/upgrade the fake-COM unit tests first (red), then migrate the binding call sites (green).
 - [ ] §5 Add/update integration tests in the mirrored test package.
-- [ ] §6 Update the SWR requirement entry.
-- [ ] §7 Update the package-organized RST entry and list each verified deviation.
+- [ ] §6 Update the class requirement document (per-class, package path).
+- [ ] §7 Update the class RST page (per-class, package path) and list each verified deviation.
 - [ ] §8 Run validation (unit suite, gate, validate_interface, verify_sync); summarize unresolved items.
 - [ ] Render this checklist as the final sync report.
 - [ ] Member: addExample() — [ ] JavaDoc [ ] COM [ ] wrapper [ ] disposition
@@ -91,15 +91,36 @@ Run the full unit suite after the change and fix any failure before continuing; 
 
 Add or update integration coverage only for supported behavior owned by this wrapper; inherited methods may set up fixtures but are not child assertions. Respect the integration-test ownership rules in `AGENTS.md`, including child overrides with different return contracts. Integration tests live in the mirrored test path from section 2 — do not leave them under an old domain folder.
 
-## 6. Update the SWR requirement entry
+## 6. Update the class requirement document
 
-Update the selected class in `docs/requirements/swr_elem_requirements.md`. Use the JavaDoc class description for the summary, but retain project-specific requirements and implementation facts that JavaDoc cannot express. Add an entry in the existing format if one is missing.
+Create or update the class's own requirement file at
+`docs/requirements/<java.package.path>/<snake_case>.md` — the same package path as the
+wrapper (for example `docs/requirements/com/telelogic/rhapsody/core/irp_class.md` for
+`IRPClass`). Use the JavaDoc class description for the summary, but retain project-specific
+requirements and implementation facts that JavaDoc cannot express. Keep the existing SWR
+entry format (`ID`, `Title`, `Status`, `Priority`, `Description`, `Implementation`,
+`Last Changed`); the `ID` stays stable when the entry moves. When migrating a class out of
+the legacy monolith `docs/requirements/swr_elem_requirements.md`, move its entry into the
+per-class file — do not duplicate it; leave unrelated and not-yet-migrated entries in the
+monolith until their own sync run moves them.
 
-## 7. Update the package-organized RST
+## 7. Update the class RST document
 
-Update `docs/api/elements.rst` under the Java package heading, not the current Python domain grouping. Start the class entry with the verifier-recognized anchor `.. _rhapsody-java-interface-<INTERFACE>:`. Include the Java interface, Java package, JavaDoc-derived description, Python wrapper, and canonical import path.
+Create or update the class's API page at `docs/api/<java.package.path>/<snake_case>.rst` —
+for example `docs/api/com/telelogic/rhapsody/core/irp_class.rst` for `IRPClass`. Start the
+page with the verifier-recognized anchor `.. _rhapsody-java-interface-<INTERFACE>:` and
+include the Java interface, Java package, JavaDoc-derived description, Python wrapper, and
+canonical import path. Promote the class heading to the page title.
 
-List each verified deviation between JavaDoc, COM/pywin32, and Python implementation in a valid reStructuredText `list-table` with headers `JavaDoc member/signature`, `COM/pywin32 exposure`, `Python implementation`, and `Deviation and treatment`. Include method-vs-property shape and evidence-backed resolution; if there are no deviations, say so explicitly. The verifier checks that the section contains every member reported by the API validator. If the class is already listed under a legacy domain heading, move its entry to the Java-package section instead of duplicating it; leave unrelated and not-yet-migrated classes unchanged. Keep RST navigation valid.
+List each verified deviation between JavaDoc, COM/pywin32, and Python implementation in a
+valid reStructuredText `list-table` with headers `JavaDoc member/signature`,
+`COM/pywin32 exposure`, `Python implementation`, and `Deviation and treatment`. Include
+method-vs-property shape and evidence-backed resolution; if there are no deviations, say so
+explicitly. The verifier checks that the page contains every member reported by the API
+validator. Keep the page reachable by listing it in `docs/api/elements.rst`'s toctree under
+the Java package heading (one entry per synced class). When migrating a class out of the
+legacy `elements.rst` sections, move its section — do not duplicate it; leave unrelated and
+not-yet-migrated classes unchanged. Keep RST navigation valid.
 
 ## 8. Verify and report
 

@@ -156,21 +156,23 @@ def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) ->
         absolute_wrapper, canonical_import = _canonical_import(root, source_path)
     except ValueError as exc:
         return [str(exc)]
-    expected_package_dir = root / "src" / "rhapsody_cli" / "models" / Path(*java_package.split("."))
+    package_dir = Path(*java_package.split("."))
+    expected_package_dir = root / "src" / "rhapsody_cli" / "models" / package_dir
     if absolute_wrapper.parent.resolve() != expected_package_dir.resolve():
         issues.append(f"Wrapper package mismatch: expected {expected_package_dir}, found {absolute_wrapper.parent}")
     if not absolute_wrapper.is_file():
         issues.append(f"Wrapper source does not exist: {absolute_wrapper}")
 
-    requirements_path = root / "docs" / "requirements" / "swr_elem_requirements.md"
+    class_stem = absolute_wrapper.stem
+    requirements_path = root / "docs" / "requirements" / package_dir / f"{class_stem}.md"
     if not requirements_path.is_file():
-        issues.append(f"Requirement document not found: {requirements_path}")
+        issues.append(f"Class requirement document not found: {requirements_path}")
     else:
         requirement_text = requirements_path.read_text(encoding="utf-8")
         if simple_name not in requirement_text or wrapper_class not in requirement_text:
             issues.append(f"Requirement document does not identify both {simple_name} and {wrapper_class}")
 
-    rst_path = root / "docs" / "api" / "elements.rst"
+    rst_path = root / "docs" / "api" / package_dir / f"{class_stem}.rst"
     if not rst_path.is_file():
         issues.append(f"RST API document not found: {rst_path}")
         return issues

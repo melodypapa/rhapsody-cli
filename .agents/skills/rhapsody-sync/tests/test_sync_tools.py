@@ -35,9 +35,9 @@ def _write_fixture_project(root: Path, rst_deviations: str) -> Path:
     (root / "scripts" / "validate_model_api.py").write_text("", encoding="utf-8")
     (java_dir / "IRPThing.html").write_text("<html>IRPThing</html>", encoding="utf-8")
     (wrapper_dir / "model_thing.py").write_text("class RPThing: pass\n", encoding="utf-8")
-    (root / "docs" / "requirements").mkdir()
-    (root / "docs" / "requirements" / "swr_elem_requirements.md").write_text("RPThing wraps IRPThing\n", encoding="utf-8")
-    (root / "docs" / "api").mkdir()
+    (root / "docs" / "requirements" / Path(*package_parts)).mkdir(parents=True)
+    (root / "docs" / "requirements" / Path(*package_parts) / "model_thing.md").write_text("RPThing wraps IRPThing\n", encoding="utf-8")
+    (root / "docs" / "api" / Path(*package_parts)).mkdir(parents=True)
     package_name = ".".join(package_parts)
     canonical_import = "rhapsody_cli.models." + package_name + ".model_thing"
     rst = (
@@ -50,7 +50,7 @@ def _write_fixture_project(root: Path, rst_deviations: str) -> Path:
         f"Canonical Python import: ``{canonical_import}``\n\n"
         f"{rst_deviations}\n"
     )
-    (root / "docs" / "api" / "elements.rst").write_text(rst, encoding="utf-8")
+    (root / "docs" / "api" / Path(*package_parts) / "model_thing.rst").write_text(rst, encoding="utf-8")
     return root
 
 

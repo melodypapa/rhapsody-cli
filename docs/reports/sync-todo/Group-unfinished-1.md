@@ -20,8 +20,8 @@ migrations; inherited members wait for their base class's own row.
   - [x] Step 3 — §3 evidence compared (7 legacy sites identified, all property-shaped per catalog; offline proof: six flag families ALIAS_DOCUMENTED/informational, 78+5 matching committed summary)
   - [x] Step 4 — §4 unit tests (2 setter tests + structural guard red → 34/34 green in `test_irp_class.py`)
   - [x] Step 5 — §5 integration tests (behavior-preserving change; existing mirrored integration file collected 17 tests ✓ — no new coverage required)
-  - [x] Step 6 — §6 SWR update (`docs/requirements/swr_elem_requirements.md` SWR_ELEM_00004: property mention + pywin32-direct binding statement)
-  - [x] Step 7 — §7 RST update (`docs/api/elements.rst`: six flag rows rewritten, two pre-existing malformations fixed)
+  - [x] Step 6 — §6 SWR update (`docs/requirements/com/telelogic/rhapsody/core/irp_class.md` — SWR_ELEM_00004 moved from the legacy monolith; property mention + pywin32-direct binding statement)
+  - [x] Step 7 — §7 RST update (`docs/api/com/telelogic/rhapsody/core/irp_class.rst` — section moved from `elements.rst`, six flag rows rewritten, two malformations fixed; toctree entry added)
   - [ ] Step 8 — §8 verify and report (unit suite 1699 ✓, ruff/black/mypy ✓, skill tests 9 ✓; OPEN blocker: Windows closeout — `validate_interface.py IRPClass --source authority` + `verify_sync.py IRPClass` + live integration, then archive)
 
 - [ ] irp_model_element_api_report (IRPModelElement · RPModelElement · models/core.py · ~86 sites)
@@ -31,8 +31,8 @@ migrations; inherited members wait for their base class's own row.
   - [ ] Step 3 — §3 compare evidence: baseline `validate_interface.py IRPModelElement --source authority`; reconcile every owned member across JavaDoc/COM/Python; one pywin32 member per call; catalog-absent sites = blockers
   - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first (`make_fake_element` method kwargs / `properties=` channel), then migrate every legacy helper site in own methods; full unit suite green
   - [ ] Step 5 — §5 integration tests: add/update integration coverage for owned behavior in the mirrored test path (`tests/integration/models/com/telelogic/rhapsody/core/`); Windows = live run, macOS = collection-only noted
-  - [ ] Step 6 — §6 SWR update: requirement entry in `docs/requirements/swr_elem_requirements.md` (JavaDoc-derived description, deviations, implementation facts)
-  - [ ] Step 7 — §7 RST update: package-organized entry in `docs/api/elements.rst` (anchor `.. _rhapsody-java-interface-IRPModelElement:` + deviation list-table)
+  - [ ] Step 6 — §6 SWR update: class requirement document `docs/requirements/com/telelogic/rhapsody/core/<snake_case>.md` (moved out of the legacy monolith) (JavaDoc-derived description, deviations, implementation facts)
+  - [ ] Step 7 — §7 RST update: class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPModelElement:` + deviation list-table)
   - [ ] Step 8 — §8 verify and report: `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
 
 - [ ] irp_collection_api_report (IRPCollection · RPCollection · models/core.py · ~2 sites)
@@ -42,8 +42,8 @@ migrations; inherited members wait for their base class's own row.
   - [ ] Step 3 — §3 compare evidence: baseline `validate_interface.py IRPCollection --source authority`; reconcile every owned member; one pywin32 member per call; catalog-absent sites = blockers
   - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy helper sites in own methods; full unit suite green
   - [ ] Step 5 — §5 integration tests: add/update integration coverage for owned behavior (mirrored test path); Windows = live run, macOS = collection-only noted
-  - [ ] Step 6 — §6 SWR update: requirement entry in `docs/requirements/swr_elem_requirements.md`
-  - [ ] Step 7 — §7 RST update: package-organized entry in `docs/api/elements.rst` (anchor `.. _rhapsody-java-interface-IRPCollection:` + deviation list-table)
+  - [ ] Step 6 — §6 SWR update: class requirement document `docs/requirements/com/telelogic/rhapsody/core/<snake_case>.md` (moved out of the legacy monolith)
+  - [ ] Step 7 — §7 RST update: class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPCollection:` + deviation list-table)
   - [ ] Step 8 — §8 verify and report: `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
 
 - [ ] irp_unit_api_report (IRPUnit · RPUnit · models/core.py · within core.py's 92)
@@ -53,8 +53,8 @@ migrations; inherited members wait for their base class's own row.
   - [ ] Step 3 — §3 compare evidence: baseline `validate_interface.py IRPUnit --source authority`; reconcile every owned member; one pywin32 member per call; catalog-absent sites = blockers
   - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy helper sites in own methods; full unit suite green
   - [ ] Step 5 — §5 integration tests: add/update integration coverage for owned behavior (mirrored test path); Windows = live run, macOS = collection-only noted
-  - [ ] Step 6 — §6 SWR update: requirement entry in `docs/requirements/swr_elem_requirements.md`
-  - [ ] Step 7 — §7 RST update: package-organized entry in `docs/api/elements.rst` (anchor `.. _rhapsody-java-interface-IRPUnit:` + deviation list-table)
+  - [ ] Step 6 — §6 SWR update: class requirement document `docs/requirements/com/telelogic/rhapsody/core/<snake_case>.md` (moved out of the legacy monolith)
+  - [ ] Step 7 — §7 RST update: class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPUnit:` + deviation list-table)
   - [ ] Step 8 — §8 verify and report: `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
 
 - [ ] irp_classifier_api_report (IRPClassifier · RPClassifier · models/elements/classifiers/model_classifier.py · 20 sites)
@@ -64,8 +64,8 @@ migrations; inherited members wait for their base class's own row.
   - [ ] Step 3 — §3 compare evidence: baseline `validate_interface.py IRPClassifier --source authority`; reconcile every owned member; one pywin32 member per call; catalog-absent sites = blockers
   - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy helper sites in own methods; full unit suite green
   - [ ] Step 5 — §5 integration tests: add/update integration coverage for owned behavior (mirrored test path); Windows = live run, macOS = collection-only noted
-  - [ ] Step 6 — §6 SWR update: requirement entry in `docs/requirements/swr_elem_requirements.md`
-  - [ ] Step 7 — §7 RST update: package-organized entry in `docs/api/elements.rst` (anchor `.. _rhapsody-java-interface-IRPClassifier:` + deviation list-table)
+  - [ ] Step 6 — §6 SWR update: class requirement document `docs/requirements/com/telelogic/rhapsody/core/<snake_case>.md` (moved out of the legacy monolith)
+  - [ ] Step 7 — §7 RST update: class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPClassifier:` + deviation list-table)
   - [ ] Step 8 — §8 verify and report: `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
 
 - [ ] irp_operation_api_report (IRPOperation · RPOperation · models/elements/classifiers/model_operation.py · 25 sites)
@@ -75,8 +75,8 @@ migrations; inherited members wait for their base class's own row.
   - [ ] Step 3 — §3 compare evidence: baseline `validate_interface.py IRPOperation --source authority`; reconcile every owned member; one pywin32 member per call; catalog-absent sites = blockers
   - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy helper sites in own methods; full unit suite green
   - [ ] Step 5 — §5 integration tests: add/update integration coverage for owned behavior (mirrored test path); Windows = live run, macOS = collection-only noted
-  - [ ] Step 6 — §6 SWR update: requirement entry in `docs/requirements/swr_elem_requirements.md`
-  - [ ] Step 7 — §7 RST update: package-organized entry in `docs/api/elements.rst` (anchor `.. _rhapsody-java-interface-IRPOperation:` + deviation list-table)
+  - [ ] Step 6 — §6 SWR update: class requirement document `docs/requirements/com/telelogic/rhapsody/core/<snake_case>.md` (moved out of the legacy monolith)
+  - [ ] Step 7 — §7 RST update: class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPOperation:` + deviation list-table)
   - [ ] Step 8 — §8 verify and report: `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
 
 - [ ] irp_attribute_api_report (IRPAttribute · RPAttribute · models/elements/variables/model_variables.py · within shared 14)
@@ -86,8 +86,8 @@ migrations; inherited members wait for their base class's own row.
   - [ ] Step 3 — §3 compare evidence: baseline `validate_interface.py IRPAttribute --source authority`; reconcile every owned member; one pywin32 member per call; catalog-absent sites = blockers
   - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy helper sites in own methods; full unit suite green
   - [ ] Step 5 — §5 integration tests: add/update integration coverage for owned behavior (mirrored test path); Windows = live run, macOS = collection-only noted
-  - [ ] Step 6 — §6 SWR update: requirement entry in `docs/requirements/swr_elem_requirements.md`
-  - [ ] Step 7 — §7 RST update: package-organized entry in `docs/api/elements.rst` (anchor `.. _rhapsody-java-interface-IRPAttribute:` + deviation list-table)
+  - [ ] Step 6 — §6 SWR update: class requirement document `docs/requirements/com/telelogic/rhapsody/core/<snake_case>.md` (moved out of the legacy monolith)
+  - [ ] Step 7 — §7 RST update: class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPAttribute:` + deviation list-table)
   - [ ] Step 8 — §8 verify and report: `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
 
 - [ ] irp_port_api_report (IRPPort · RPPort · models/elements/relations/model_port.py · 10 sites)
@@ -97,8 +97,8 @@ migrations; inherited members wait for their base class's own row.
   - [ ] Step 3 — §3 compare evidence: baseline `validate_interface.py IRPPort --source authority`; reconcile every owned member; one pywin32 member per call; catalog-absent sites = blockers
   - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy helper sites in own methods; full unit suite green
   - [ ] Step 5 — §5 integration tests: add/update integration coverage for owned behavior (mirrored test path); Windows = live run, macOS = collection-only noted
-  - [ ] Step 6 — §6 SWR update: requirement entry in `docs/requirements/swr_elem_requirements.md`
-  - [ ] Step 7 — §7 RST update: package-organized entry in `docs/api/elements.rst` (anchor `.. _rhapsody-java-interface-IRPPort:` + deviation list-table)
+  - [ ] Step 6 — §6 SWR update: class requirement document `docs/requirements/com/telelogic/rhapsody/core/<snake_case>.md` (moved out of the legacy monolith)
+  - [ ] Step 7 — §7 RST update: class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPPort:` + deviation list-table)
   - [ ] Step 8 — §8 verify and report: `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
 
 - [ ] irp_package_api_report (IRPPackage · RPPackage · models/elements/containment/model_package.py · 36 sites)
@@ -108,8 +108,8 @@ migrations; inherited members wait for their base class's own row.
   - [ ] Step 3 — §3 compare evidence: baseline `validate_interface.py IRPPackage --source authority`; reconcile every owned member; one pywin32 member per call; catalog-absent sites = blockers
   - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy helper sites in own methods; full unit suite green
   - [ ] Step 5 — §5 integration tests: add/update integration coverage for owned behavior (mirrored test path); Windows = live run, macOS = collection-only noted
-  - [ ] Step 6 — §6 SWR update: requirement entry in `docs/requirements/swr_elem_requirements.md`
-  - [ ] Step 7 — §7 RST update: package-organized entry in `docs/api/elements.rst` (anchor `.. _rhapsody-java-interface-IRPPackage:` + deviation list-table)
+  - [ ] Step 6 — §6 SWR update: class requirement document `docs/requirements/com/telelogic/rhapsody/core/<snake_case>.md` (moved out of the legacy monolith)
+  - [ ] Step 7 — §7 RST update: class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPPackage:` + deviation list-table)
   - [ ] Step 8 — §8 verify and report: `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
 
 - [ ] irp_project_api_report (IRPProject · RPProject · models/elements/containment/model_project.py · 24 sites)
@@ -119,8 +119,8 @@ migrations; inherited members wait for their base class's own row.
   - [ ] Step 3 — §3 compare evidence: baseline `validate_interface.py IRPProject --source authority`; reconcile every owned member; one pywin32 member per call; catalog-absent sites = blockers
   - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy helper sites in own methods; full unit suite green
   - [ ] Step 5 — §5 integration tests: add/update integration coverage for owned behavior (mirrored test path); Windows = live run, macOS = collection-only noted
-  - [ ] Step 6 — §6 SWR update: requirement entry in `docs/requirements/swr_elem_requirements.md`
-  - [ ] Step 7 — §7 RST update: package-organized entry in `docs/api/elements.rst` (anchor `.. _rhapsody-java-interface-IRPProject:` + deviation list-table)
+  - [ ] Step 6 — §6 SWR update: class requirement document `docs/requirements/com/telelogic/rhapsody/core/<snake_case>.md` (moved out of the legacy monolith)
+  - [ ] Step 7 — §7 RST update: class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPProject:` + deviation list-table)
   - [ ] Step 8 — §8 verify and report: `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
 
 - [ ] irp_type_api_report (IRPType · RPType · models/elements/common/model_other_model.py · 9 sites)
@@ -130,8 +130,8 @@ migrations; inherited members wait for their base class's own row.
   - [ ] Step 3 — §3 compare evidence: baseline `validate_interface.py IRPType --source authority`; reconcile every owned member; one pywin32 member per call; catalog-absent sites = blockers
   - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy helper sites in own methods; full unit suite green
   - [ ] Step 5 — §5 integration tests: add/update integration coverage for owned behavior (mirrored test path); Windows = live run, macOS = collection-only noted
-  - [ ] Step 6 — §6 SWR update: requirement entry in `docs/requirements/swr_elem_requirements.md`
-  - [ ] Step 7 — §7 RST update: package-organized entry in `docs/api/elements.rst` (anchor `.. _rhapsody-java-interface-IRPType:` + deviation list-table)
+  - [ ] Step 6 — §6 SWR update: class requirement document `docs/requirements/com/telelogic/rhapsody/core/<snake_case>.md` (moved out of the legacy monolith)
+  - [ ] Step 7 — §7 RST update: class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPType:` + deviation list-table)
   - [ ] Step 8 — §8 verify and report: `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
 
 - [ ] irp_argument_api_report (IRPArgument · RPArgument · models/elements/variables/model_variables.py · within shared 14)
@@ -141,8 +141,8 @@ migrations; inherited members wait for their base class's own row.
   - [ ] Step 3 — §3 compare evidence: baseline `validate_interface.py IRPArgument --source authority`; reconcile every owned member; one pywin32 member per call; catalog-absent sites = blockers
   - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy helper sites in own methods; full unit suite green
   - [ ] Step 5 — §5 integration tests: add/update integration coverage for owned behavior (mirrored test path); Windows = live run, macOS = collection-only noted
-  - [ ] Step 6 — §6 SWR update: requirement entry in `docs/requirements/swr_elem_requirements.md`
-  - [ ] Step 7 — §7 RST update: package-organized entry in `docs/api/elements.rst` (anchor `.. _rhapsody-java-interface-IRPArgument:` + deviation list-table)
+  - [ ] Step 6 — §6 SWR update: class requirement document `docs/requirements/com/telelogic/rhapsody/core/<snake_case>.md` (moved out of the legacy monolith)
+  - [ ] Step 7 — §7 RST update: class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPArgument:` + deviation list-table)
   - [ ] Step 8 — §8 verify and report: `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
 
 - [ ] irp_application_api_report (IRPApplication · RhapsodyApplication · application.py · 3 sites)
@@ -152,8 +152,8 @@ migrations; inherited members wait for their base class's own row.
   - [ ] Step 3 — §3 compare evidence: baseline `validate_interface.py IRPApplication --source authority`; reconcile every owned member; one pywin32 member per call; catalog-absent sites = blockers
   - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first (`tests/unit/test_application.py`), then migrate the 3 sites; full unit suite green
   - [ ] Step 5 — §5 integration tests: add/update integration coverage for owned behavior; Windows = live run, macOS = collection-only noted
-  - [ ] Step 6 — §6 SWR update: requirement entry in `docs/requirements/swr_elem_requirements.md`
-  - [ ] Step 7 — §7 RST update: package-organized entry in `docs/api/elements.rst` (anchor `.. _rhapsody-java-interface-IRPApplication:` + deviation list-table)
+  - [ ] Step 6 — §6 SWR update: class requirement document `docs/requirements/com/telelogic/rhapsody/core/<snake_case>.md` (moved out of the legacy monolith)
+  - [ ] Step 7 — §7 RST update: class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPApplication:` + deviation list-table)
   - [ ] Step 8 — §8 verify and report: `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
 
 - [ ] irp_association_class_api_report (IRPAssociationClass · RPAssociationClass · models/elements/classifiers/model_association_class.py · 3 sites)
@@ -163,8 +163,8 @@ migrations; inherited members wait for their base class's own row.
   - [ ] Step 3 — §3 compare evidence: baseline `validate_interface.py IRPAssociationClass --source authority`; reconcile every owned member; one pywin32 member per call; catalog-absent sites = blockers
   - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy helper sites in own methods; full unit suite green
   - [ ] Step 5 — §5 integration tests: add/update integration coverage for owned behavior only (own-method assertions; mirrored test path); Windows = live run, macOS = collection-only noted
-  - [ ] Step 6 — §6 SWR update: requirement entry in `docs/requirements/swr_elem_requirements.md`
-  - [ ] Step 7 — §7 RST update: package-organized entry in `docs/api/elements.rst` (anchor `.. _rhapsody-java-interface-IRPAssociationClass:` + deviation list-table)
+  - [ ] Step 6 — §6 SWR update: class requirement document `docs/requirements/com/telelogic/rhapsody/core/<snake_case>.md` (moved out of the legacy monolith)
+  - [ ] Step 7 — §7 RST update: class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPAssociationClass:` + deviation list-table)
   - [ ] Step 8 — §8 verify and report: `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
 
 - [ ] irp_interface_item_api_report (IRPInterfaceItem · RPInterfaceItem · models/elements/classifiers/model_interface_item.py · 4 sites)
@@ -174,8 +174,8 @@ migrations; inherited members wait for their base class's own row.
   - [ ] Step 3 — §3 compare evidence: baseline `validate_interface.py IRPInterfaceItem --source authority`; reconcile every owned member; one pywin32 member per call; catalog-absent sites = blockers
   - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy helper sites in own methods; full unit suite green
   - [ ] Step 5 — §5 integration tests: add/update integration coverage for owned behavior (mirrored test path); Windows = live run, macOS = collection-only noted
-  - [ ] Step 6 — §6 SWR update: requirement entry in `docs/requirements/swr_elem_requirements.md`
-  - [ ] Step 7 — §7 RST update: package-organized entry in `docs/api/elements.rst` (anchor `.. _rhapsody-java-interface-IRPInterfaceItem:` + deviation list-table)
+  - [ ] Step 6 — §6 SWR update: class requirement document `docs/requirements/com/telelogic/rhapsody/core/<snake_case>.md` (moved out of the legacy monolith)
+  - [ ] Step 7 — §7 RST update: class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPInterfaceItem:` + deviation list-table)
   - [ ] Step 8 — §8 verify and report: `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
 
 - [ ] irp_usecase_api_report (IRPUseCase · RPUseCase · models/elements/classifiers/model_usecase.py · 4 sites)
@@ -185,6 +185,6 @@ migrations; inherited members wait for their base class's own row.
   - [ ] Step 3 — §3 compare evidence: baseline `validate_interface.py IRPUseCase --source authority`; reconcile every owned member; one pywin32 member per call; catalog-absent sites = blockers
   - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy helper sites in own methods; full unit suite green
   - [ ] Step 5 — §5 integration tests: add/update integration coverage for owned behavior (mirrored test path); Windows = live run, macOS = collection-only noted
-  - [ ] Step 6 — §6 SWR update: requirement entry in `docs/requirements/swr_elem_requirements.md`
-  - [ ] Step 7 — §7 RST update: package-organized entry in `docs/api/elements.rst` (anchor `.. _rhapsody-java-interface-IRPUseCase:` + deviation list-table)
+  - [ ] Step 6 — §6 SWR update: class requirement document `docs/requirements/com/telelogic/rhapsody/core/<snake_case>.md` (moved out of the legacy monolith)
+  - [ ] Step 7 — §7 RST update: class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPUseCase:` + deviation list-table)
   - [ ] Step 8 — §8 verify and report: `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
