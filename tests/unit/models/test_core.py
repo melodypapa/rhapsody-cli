@@ -1,7 +1,7 @@
 """Tests for rhapsody_cli._core class-based wrapping utilities."""
 
-from pathlib import Path
 import re
+from pathlib import Path
 from typing import cast
 from unittest.mock import MagicMock, call
 
