@@ -328,10 +328,5 @@ def test_class_set_is_final_delegates_to_com() -> None:
     fake.setIsFinal.assert_called_once_with(1)
 
 
-def test_class_update_contained_diagrams_on_server_delegates_to_com() -> None:
-    fake = make_fake_element("Class", updateContainedDiagramsOnServer=3)
-    klass = RPClass(fake)
-
-    assert klass.update_contained_diagrams_on_server(1) == 3
-
-    fake.updateContainedDiagramsOnServer.assert_called_once_with(1)
+def test_class_does_not_expose_unavailable_server_diagram_update() -> None:
+    assert not hasattr(RPClass, "update_contained_diagrams_on_server")

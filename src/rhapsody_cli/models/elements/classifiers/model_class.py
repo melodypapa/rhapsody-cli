@@ -44,7 +44,7 @@ class RPClass(RPClassifier):
     # [x] set_is_active              [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] set_is_behavior_overriden   [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] set_is_final               [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] update_contained_diagrams_on_server [x] impl [x] docstring [x] unit test  [x] integration test
+    # update_contained_diagrams_on_server: unavailable in Rhapsody2.Application.1 type library; wrapper removed.
     # No deprecated methods in IRPClass.
 
     def add_superclass(self, super_class: "RPClass") -> None:
@@ -444,24 +444,6 @@ class RPClass(RPClassifier):
             com.telelogic.rhapsody.core.IRPClass::setIsFinal(int newVal)
         """
         AbstractRPModelElement._set_method_or_property(self._com, "setIsFinal", "isFinal", new_val)
-
-    def update_contained_diagrams_on_server(self, enforce_update: int) -> int:
-        """Updates the views on the Rhapsody Model Manager server for all diagrams.
-
-        Args:
-            enforce_update: ``0`` to update only if changes were made,
-                ``1`` to update regardless.
-
-        Returns:
-            The number of views updated, ``0`` if no update needed, ``-1`` on failure.
-
-        Raises:
-            RhapsodyRuntimeException: if the server update fails.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPClass::updateContainedDiagramsOnServer(int enforceUpdate)
-        """
-        return int(AbstractRPModelElement.call_com(lambda: self._com.updateContainedDiagramsOnServer(enforce_update)))
 
 
 AbstractRPModelElement.register_wrapper("Class", RPClass)
