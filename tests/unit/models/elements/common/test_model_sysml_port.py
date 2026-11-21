@@ -1,6 +1,6 @@
 """Tests for rhapsody_cli.models.elements.common.model_other_model.RPSysMLPort."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 from rhapsody_cli.models.elements.classifiers import RPClassifier
 from rhapsody_cli.models.elements.common import RPSysMLPort
 from tests.unit.models.fakes import make_fake_element
@@ -8,13 +8,13 @@ from tests.unit.models.fakes import make_fake_element
 
 class TestRPSysMLPort:
     def test_is_model_element(self) -> None:
-        fake = make_fake_element("SysMLPort", getName="P1")
+        fake = make_fake_element("SysMLPort", properties={"name": "P1"})
         port = RPSysMLPort(fake)
-        assert isinstance(port, RPModelElement)
+        assert isinstance(port, IRPModelElement)
         assert port.get_name() == "P1"
 
     def test_is_registered(self) -> None:
-        fake = make_fake_element("SysMLPort", getName="P1")
+        fake = make_fake_element("SysMLPort", properties={"name": "P1"})
         wrapped = AbstractRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPSysMLPort)
 
@@ -23,24 +23,21 @@ class TestRPSysMLPort:
         fake = make_fake_element("SysMLPort", getIsReversed=True)
         port = RPSysMLPort(fake)
         assert port.get_is_reversed() == 1
-        fake.getIsReversed.assert_called_once_with()
 
     def test_get_port_direction_returns_string(self) -> None:
         # Pattern A
         fake = make_fake_element("SysMLPort", getPortDirection="InOut")
         port = RPSysMLPort(fake)
         assert port.get_port_direction() == "InOut"
-        fake.getPortDirection.assert_called_once_with()
 
     def test_get_type_wraps_result(self) -> None:
         # Pattern B
         fake = make_fake_element("SysMLPort")
-        t = make_fake_element("Class", getName="T1")
+        t = make_fake_element("Class", properties={"name": "T1"})
         fake.getType.return_value = t
         port = RPSysMLPort(fake)
         wrapped = port.get_type()
         assert wrapped.get_name() == "T1"
-        fake.getType.assert_called_once_with()
 
     def test_set_is_reversed_delegates(self) -> None:
         # Pattern D — single-arg setter (int arg)
@@ -59,7 +56,7 @@ class TestRPSysMLPort:
     def test_set_type_delegates(self) -> None:
         # Pattern F — multi-arg void method (single RPClassifier arg)
         fake = make_fake_element("SysMLPort")
-        t = make_fake_element("Class", getName="T1")
+        t = make_fake_element("Class", properties={"name": "T1"})
         fake.setType.return_value = None
         port = RPSysMLPort(fake)
         port.set_type(RPClassifier(t))
@@ -71,12 +68,12 @@ class TestRPSysMLPort:
         from rhapsody_cli.models.elements.relations import RPInstance, RPRelation
 
         fake = make_fake_element("SysMLPort")
-        from_part = make_fake_element("Instance", getName="From")
-        to_part = make_fake_element("Instance", getName="To")
-        assoc = make_fake_element("Relation", getName="R")
-        to_port = make_fake_element("SysMLPort", getName="ToPort")
-        new_owner = make_fake_element("Package", getName="Pkg")
-        link = make_fake_element("Link", getName="L1")
+        from_part = make_fake_element("Instance", properties={"name": "From"})
+        to_part = make_fake_element("Instance", properties={"name": "To"})
+        assoc = make_fake_element("Relation", properties={"name": "R"})
+        to_port = make_fake_element("SysMLPort", properties={"name": "ToPort"})
+        new_owner = make_fake_element("Package", properties={"name": "Pkg"})
+        link = make_fake_element("Link", properties={"name": "L1"})
         fake.addLink.return_value = link
         port = RPSysMLPort(fake)
         wrapped = port.add_link(

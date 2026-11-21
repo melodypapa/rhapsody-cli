@@ -249,15 +249,15 @@ Pass if `isinstance(result, RPProject)`, `result._com is fake_project`, and `fak
 
 ---
 
-## UTS_APP_00011: Get All Open Projects Returns RPCollection
+## UTS_APP_00011: Get All Open Projects Returns IRPCollection
 
 **ID:** UTS_APP_00011
 **Traces-To:** SWR_APP_00006
-**Title:** getProjects() delegates to COM and returns an RPCollection
+**Title:** getProjects() delegates to COM and returns an IRPCollection
 **Type:** Unit
 **Priority:** Medium
 **Description:**
-Verifies that `getProjects()` calls `self._com.getProjects()` and returns an `RPCollection` wrapping the returned COM collection object.
+Verifies that `getProjects()` calls `self._com.getProjects()` and returns an `IRPCollection` wrapping the returned COM collection object.
 **Pre-conditions:**
 - A fake COM collection built via `tests.fakes.make_fake_collection([])` (empty is fine for this test).
 - A fake COM application whose `getProjects` returns that fake collection.
@@ -268,9 +268,9 @@ Verifies that `getProjects()` calls `self._com.getProjects()` and returns an `RP
 3. Inspect the type and `_com` of the result.
 4. Verify `fake_app.getProjects` was called once with no arguments.
 **Expected Result:**
-The result is an `RPCollection` whose `_com` is the fake collection. `fake_app.getProjects` was called once.
+The result is an `IRPCollection` whose `_com` is the fake collection. `fake_app.getProjects` was called once.
 **Verification Criteria:**
-Pass if `isinstance(result, RPCollection)`, `result._com is fake_collection`, and `fake_app.getProjects.call_count == 1`.
+Pass if `isinstance(result, IRPCollection)`, `result._com is fake_collection`, and `fake_app.getProjects.call_count == 1`.
 **Last Changed:** 2026-07-07
 
 ---
@@ -636,7 +636,7 @@ Verifies that `generateElements()` passes `elements._com` to `self._com.generate
 - A fake COM collection built via `make_fake_collection([])`.
 **Test Steps:**
 1. Build `RhapsodyApplication(fake_app)`.
-2. Call `app.generateElements(RPCollection(fake_collection))`.
+2. Call `app.generateElements(IRPCollection(fake_collection))`.
 **Expected Result:**
 `fake_app.generateElements` is called once with `fake_collection`.
 **Verification Criteria:**
@@ -774,4 +774,4 @@ Verifies that `checkModel()` calls `self._com.checkModel()`.
 **Verification Criteria:**
 Pass if `fake_app.checkModel.call_count == 1`.
 **Last Changed:** 2026-07-11
-
+

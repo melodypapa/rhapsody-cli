@@ -2,15 +2,12 @@
 from com.telelogic.rhapsody.core.
 """
 
-from rhapsody_cli.models.core import (
-    AbstractRPModelElement,
-    RPCollection,
-    RPModelElement,
-    RPUnit,
-)
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 
 
-class RPAnnotation(RPUnit):
+class RPAnnotation(IRPUnit):
     """Wraps ``IRPAnnotation``: the base interface for free-text annotation
     elements (such as requirements and notes) that can be anchored to other
     model elements.
@@ -30,7 +27,7 @@ class RPAnnotation(RPUnit):
     # [inherited] irp_unit / irp_model_element methods (covered by rp_unit / rp_model_element checklists)
     # No deprecated IRPAnnotation methods.
 
-    def add_anchor(self, target: RPModelElement) -> None:
+    def add_anchor(self, target: IRPModelElement) -> None:
         """Adds an anchor from the annotation to the specified model element.
 
         Args:
@@ -41,16 +38,16 @@ class RPAnnotation(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.addAnchor(target._com))
 
-    def get_anchored_by_me(self) -> RPCollection:
+    def get_anchored_by_me(self) -> IRPCollection:
         """Gets the list of model elements that are anchored to the annotation.
 
         Returns:
-            An ``RPCollection`` of the anchored model elements.
+            An ``IRPCollection`` of the anchored model elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPAnnotation::getAnchoredByMe()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getAnchoredByMe", "anchoredByMe"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getAnchoredByMe", "anchoredByMe"))
 
     def get_body(self) -> str:
         """Gets the text of the specification for the annotation.
@@ -96,7 +93,7 @@ class RPAnnotation(RPUnit):
         """
         return bool(AbstractRPModelElement._get_method_or_property(self._com, "isSpecificationRTF", "specificationRTF"))
 
-    def remove_anchor(self, target: RPModelElement) -> None:
+    def remove_anchor(self, target: IRPModelElement) -> None:
         """Removes the anchor to the specified model element.
 
         Args:

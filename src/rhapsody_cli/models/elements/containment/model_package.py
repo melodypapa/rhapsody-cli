@@ -2,7 +2,9 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement, RPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
@@ -27,7 +29,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.elements.relations.model_relation import RPRelation
 
 
-class RPPackage(RPUnit):
+class RPPackage(IRPUnit):
     """Wraps ``IRPPackage``: represents a package that contains model elements."""
 
     # IRPPackage method parity checklist:
@@ -218,46 +220,46 @@ class RPPackage(RPUnit):
         """
         return cast("RPFlow", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addFlows(name))))
 
-    def get_nested_packages(self) -> "RPCollection":
+    def get_nested_packages(self) -> "IRPCollection":
         """Returns all nested packages in this package.
 
         Returns:
-            An ``RPCollection`` of ``IRPPackage`` objects.
+            An ``IRPCollection`` of ``IRPPackage`` objects.
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getPackages", "packages"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getPackages", "packages"))
 
-    def get_classes(self) -> "RPCollection":
+    def get_classes(self) -> "IRPCollection":
         """Returns all classes contained in this package.
 
         Returns:
-            An ``RPCollection`` of ``IRPClass`` objects.
+            An ``IRPCollection`` of ``IRPClass`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getClasses()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getClasses", "classes"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getClasses", "classes"))
 
-    def get_actors(self) -> "RPCollection":
+    def get_actors(self) -> "IRPCollection":
         """Returns all actors contained in this package.
 
         Returns:
-            An ``RPCollection`` of ``IRPActor`` objects.
+            An ``IRPCollection`` of ``IRPActor`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getActors()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getActors", "actors"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getActors", "actors"))
 
-    def get_use_cases(self) -> "RPCollection":
+    def get_use_cases(self) -> "IRPCollection":
         """Returns all use cases contained in this package.
 
         Returns:
-            An ``RPCollection`` of ``IRPUseCase`` objects.
+            An ``IRPCollection`` of ``IRPUseCase`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getUseCases()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getUseCases", "useCases"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getUseCases", "useCases"))
 
     def add_use_case(self, name: str) -> "RPUseCase":
         """Adds a new use case to the package.
@@ -400,7 +402,7 @@ class RPPackage(RPUnit):
         """
         return cast("RPTimingDiagram", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addTimingDiagram(name))))
 
-    def add_panel_diagram(self, name: str) -> RPModelElement:
+    def add_panel_diagram(self, name: str) -> IRPModelElement:
         """Adds a new panel diagram to the package.
 
         Args:
@@ -412,99 +414,99 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addPanelDiagram(java.lang.String name)
         """
-        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addPanelDiagram(name))))
+        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addPanelDiagram(name))))
 
     # --- Diagram getters (Pattern C) ---
-    def get_sequence_diagrams(self) -> "RPCollection":
+    def get_sequence_diagrams(self) -> "IRPCollection":
         """Returns all sequence diagrams contained in this package.
 
         Returns:
-            An ``RPCollection`` of ``IRPSequenceDiagram`` objects.
+            An ``IRPCollection`` of ``IRPSequenceDiagram`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getSequenceDiagrams()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getSequenceDiagrams", "sequenceDiagrams"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getSequenceDiagrams", "sequenceDiagrams"))
 
-    def get_use_case_diagrams(self) -> "RPCollection":
+    def get_use_case_diagrams(self) -> "IRPCollection":
         """Returns all use case diagrams contained in this package.
 
         Returns:
-            An ``RPCollection`` of ``IRPUseCaseDiagram`` objects.
+            An ``IRPCollection`` of ``IRPUseCaseDiagram`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getUseCaseDiagrams()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getUseCaseDiagrams", "useCaseDiagrams"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getUseCaseDiagrams", "useCaseDiagrams"))
 
-    def get_collaboration_diagrams(self) -> "RPCollection":
+    def get_collaboration_diagrams(self) -> "IRPCollection":
         """Returns all collaboration diagrams contained in this package.
 
         Returns:
-            An ``RPCollection`` of ``IRPCollaborationDiagram`` objects.
+            An ``IRPCollection`` of ``IRPCollaborationDiagram`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getCollaborationDiagrams()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getCollaborationDiagrams", "collaborationDiagrams"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getCollaborationDiagrams", "collaborationDiagrams"))
 
-    def get_component_diagrams(self) -> "RPCollection":
+    def get_component_diagrams(self) -> "IRPCollection":
         """Returns all component diagrams contained in this package.
 
         Returns:
-            An ``RPCollection`` of ``IRPComponentDiagram`` objects.
+            An ``IRPCollection`` of ``IRPComponentDiagram`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getComponentDiagrams()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getComponentDiagrams", "componentDiagrams"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getComponentDiagrams", "componentDiagrams"))
 
-    def get_deployment_diagrams(self) -> "RPCollection":
+    def get_deployment_diagrams(self) -> "IRPCollection":
         """Returns all deployment diagrams contained in this package.
 
         Returns:
-            An ``RPCollection`` of ``IRPDeploymentDiagram`` objects.
+            An ``IRPCollection`` of ``IRPDeploymentDiagram`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getDeploymentDiagrams()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getDeploymentDiagrams", "deploymentDiagrams"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getDeploymentDiagrams", "deploymentDiagrams"))
 
-    def get_object_model_diagrams(self) -> "RPCollection":
+    def get_object_model_diagrams(self) -> "IRPCollection":
         """Returns all object model diagrams contained in this package.
 
         Returns:
-            An ``RPCollection`` of ``IRPObjectModelDiagram`` objects.
+            An ``IRPCollection`` of ``IRPObjectModelDiagram`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getObjectModelDiagrams()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getObjectModelDiagrams", "objectModelDiagrams"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getObjectModelDiagrams", "objectModelDiagrams"))
 
-    def get_timing_diagrams(self) -> "RPCollection":
+    def get_timing_diagrams(self) -> "IRPCollection":
         """Returns all timing diagrams contained in this package.
 
         Returns:
-            An ``RPCollection`` of ``IRPTimingDiagram`` objects.
+            An ``IRPCollection`` of ``IRPTimingDiagram`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getTimingDiagrams()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getTimingDiagrams", "timingDiagrams"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getTimingDiagrams", "timingDiagrams"))
 
-    def get_panel_diagrams(self) -> "RPCollection":
+    def get_panel_diagrams(self) -> "IRPCollection":
         """Returns all panel diagrams contained in this package.
 
         Returns:
-            An ``RPCollection`` of panel diagram elements.
+            An ``IRPCollection`` of panel diagram elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getPanelDiagrams()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getPanelDiagrams", "panelDiagrams"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getPanelDiagrams", "panelDiagrams"))
 
     # --- Diagram deleters (Pattern F) ---
-    def delete_sequence_diagram(self, diagram: RPModelElement) -> None:
+    def delete_sequence_diagram(self, diagram: IRPModelElement) -> None:
         """Deletes a sequence diagram from the package.
 
         Args:
@@ -515,7 +517,7 @@ class RPPackage(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteSequenceDiagram(diagram._com))
 
-    def delete_use_case_diagram(self, diagram: RPModelElement) -> None:
+    def delete_use_case_diagram(self, diagram: IRPModelElement) -> None:
         """Deletes a use case diagram from the package.
 
         Args:
@@ -526,7 +528,7 @@ class RPPackage(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteUseCaseDiagram(diagram._com))
 
-    def delete_collaboration_diagram(self, diagram: RPModelElement) -> None:
+    def delete_collaboration_diagram(self, diagram: IRPModelElement) -> None:
         """Deletes a collaboration diagram from the package.
 
         Args:
@@ -537,7 +539,7 @@ class RPPackage(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteCollaborationDiagram(diagram._com))
 
-    def delete_component_diagram(self, diagram: RPModelElement) -> None:
+    def delete_component_diagram(self, diagram: IRPModelElement) -> None:
         """Deletes a component diagram from the package.
 
         Args:
@@ -548,7 +550,7 @@ class RPPackage(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteComponentDiagram(diagram._com))
 
-    def delete_deployment_diagram(self, diagram: RPModelElement) -> None:
+    def delete_deployment_diagram(self, diagram: IRPModelElement) -> None:
         """Deletes a deployment diagram from the package.
 
         Args:
@@ -559,7 +561,7 @@ class RPPackage(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteDeploymentDiagram(diagram._com))
 
-    def delete_object_model_diagram(self, diagram: RPModelElement) -> None:
+    def delete_object_model_diagram(self, diagram: IRPModelElement) -> None:
         """Deletes an object model diagram from the package.
 
         Args:
@@ -570,7 +572,7 @@ class RPPackage(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteObjectModelDiagram(diagram._com))
 
-    def delete_timing_diagram(self, diagram: RPModelElement) -> None:
+    def delete_timing_diagram(self, diagram: IRPModelElement) -> None:
         """Deletes a timing diagram from the package.
 
         Args:
@@ -581,7 +583,7 @@ class RPPackage(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteTimingDiagram(diagram._com))
 
-    def delete_panel_diagram(self, diagram: RPModelElement) -> None:
+    def delete_panel_diagram(self, diagram: IRPModelElement) -> None:
         """Deletes a panel diagram from the package.
 
         Args:
@@ -593,7 +595,7 @@ class RPPackage(RPUnit):
         AbstractRPModelElement.call_com(lambda: self._com.deletePanelDiagram(diagram._com))
 
     # --- Classifier deleters (Pattern F) ---
-    def delete_class(self, cls: RPModelElement) -> None:
+    def delete_class(self, cls: IRPModelElement) -> None:
         """Deletes a class from the package.
 
         Args:
@@ -604,7 +606,7 @@ class RPPackage(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteClass(cls._com))
 
-    def delete_actor(self, actor: RPModelElement) -> None:
+    def delete_actor(self, actor: IRPModelElement) -> None:
         """Deletes an actor from the package.
 
         Args:
@@ -615,7 +617,7 @@ class RPPackage(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteActor(actor._com))
 
-    def delete_use_case(self, use_case: RPModelElement) -> None:
+    def delete_use_case(self, use_case: IRPModelElement) -> None:
         """Deletes a use case from the package.
 
         Args:
@@ -648,7 +650,7 @@ class RPPackage(RPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.deleteFlows(flow._com))
 
-    def delete_package(self, package: RPModelElement) -> None:
+    def delete_package(self, package: IRPModelElement) -> None:
         """Deletes a nested package from this package.
 
         Args:
@@ -718,7 +720,7 @@ class RPPackage(RPUnit):
         return cast("RPRelation", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addAssociation(name))))
 
     # --- Event methods ---
-    def add_event(self, name: str) -> RPModelElement:
+    def add_event(self, name: str) -> IRPModelElement:
         """Adds a new event to the package.
 
         Args:
@@ -730,42 +732,42 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addEvent(java.lang.String name)
         """
-        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addEvent(name))))
+        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addEvent(name))))
 
-    def get_events(self) -> "RPCollection":
+    def get_events(self) -> "IRPCollection":
         """Returns all events contained in this package.
 
         Returns:
-            An ``RPCollection`` of event elements.
+            An ``IRPCollection`` of event elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getEvents()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getEvents", "events"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getEvents", "events"))
 
-    def get_flow_items(self) -> "RPCollection":
+    def get_flow_items(self) -> "IRPCollection":
         """Returns all flow items contained in this package.
 
         Returns:
-            An ``RPCollection`` of flow item elements.
+            An ``IRPCollection`` of flow item elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getFlowItems()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getFlowItems", "flowItems"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getFlowItems", "flowItems"))
 
-    def get_flows(self) -> "RPCollection":
+    def get_flows(self) -> "IRPCollection":
         """Returns all flows contained in this package.
 
         Returns:
-            An ``RPCollection`` of flow elements.
+            An ``IRPCollection`` of flow elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getFlows()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getFlows", "flows"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getFlows", "flows"))
 
-    def find_event(self, name: str) -> Optional[RPModelElement]:
+    def find_event(self, name: str) -> Optional[IRPModelElement]:
         """Finds an event in the package by name.
 
         Args:
@@ -779,7 +781,7 @@ class RPPackage(RPUnit):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findEvent(name)))
 
-    def delete_event(self, event: RPModelElement) -> None:
+    def delete_event(self, event: IRPModelElement) -> None:
         """Deletes an event from the package.
 
         Args:
@@ -791,7 +793,7 @@ class RPPackage(RPUnit):
         AbstractRPModelElement.call_com(lambda: self._com.deleteEvent(event._com))
 
     # --- Node methods ---
-    def add_node(self, name: str) -> RPModelElement:
+    def add_node(self, name: str) -> IRPModelElement:
         """Adds a new node to the package.
 
         Args:
@@ -803,20 +805,20 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addNode(java.lang.String name)
         """
-        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNode(name))))
+        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNode(name))))
 
-    def get_nodes(self) -> "RPCollection":
+    def get_nodes(self) -> "IRPCollection":
         """Returns all nodes contained in this package.
 
         Returns:
-            An ``RPCollection`` of node elements.
+            An ``IRPCollection`` of node elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getNodes()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getNodes", "nodes"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getNodes", "nodes"))
 
-    def find_node(self, name: str) -> Optional[RPModelElement]:
+    def find_node(self, name: str) -> Optional[IRPModelElement]:
         """Finds a node in the package by name.
 
         Args:
@@ -830,7 +832,7 @@ class RPPackage(RPUnit):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findNode(name)))
 
-    def delete_node(self, node: RPModelElement) -> None:
+    def delete_node(self, node: IRPModelElement) -> None:
         """Deletes a node from the package.
 
         Args:
@@ -842,7 +844,7 @@ class RPPackage(RPUnit):
         AbstractRPModelElement.call_com(lambda: self._com.deleteNode(node._com))
 
     # --- Module methods ---
-    def add_module(self, name: str) -> RPModelElement:
+    def add_module(self, name: str) -> IRPModelElement:
         """Adds a new module to the package.
 
         Args:
@@ -854,21 +856,21 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addModule(java.lang.String name)
         """
-        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addModule(name))))
+        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addModule(name))))
 
-    def get_modules(self) -> "RPCollection":
+    def get_modules(self) -> "IRPCollection":
         """Returns all modules contained in this package.
 
         Returns:
-            An ``RPCollection`` of module elements.
+            An ``IRPCollection`` of module elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getModules()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getModules", "modules"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getModules", "modules"))
 
     # --- Type methods ---
-    def add_type(self, name: str) -> RPModelElement:
+    def add_type(self, name: str) -> IRPModelElement:
         """Adds a new type to the package.
 
         Args:
@@ -880,20 +882,20 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addType(java.lang.String name)
         """
-        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addType(name))))
+        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addType(name))))
 
-    def get_types(self) -> "RPCollection":
+    def get_types(self) -> "IRPCollection":
         """Returns all types contained in this package.
 
         Returns:
-            An ``RPCollection`` of type elements.
+            An ``IRPCollection`` of type elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getTypes()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getTypes", "types"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getTypes", "types"))
 
-    def find_type(self, name: str) -> Optional[RPModelElement]:
+    def find_type(self, name: str) -> Optional[IRPModelElement]:
         """Finds a type in the package by name.
 
         Args:
@@ -907,7 +909,7 @@ class RPPackage(RPUnit):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findType(name)))
 
-    def delete_type(self, type_elem: RPModelElement) -> None:
+    def delete_type(self, type_elem: IRPModelElement) -> None:
         """Deletes a type from the package.
 
         Args:
@@ -933,18 +935,18 @@ class RPPackage(RPUnit):
         """
         return cast("RPOperation", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findGlobalFunction(name))))
 
-    def get_global_functions(self) -> "RPCollection":
+    def get_global_functions(self) -> "IRPCollection":
         """Returns all global functions contained in this package.
 
         Returns:
-            An ``RPCollection`` of operation elements.
+            An ``IRPCollection`` of operation elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getGlobalFunctions()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getGlobalFunctions", "globalFunctions"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getGlobalFunctions", "globalFunctions"))
 
-    def delete_global_function(self, func: RPModelElement) -> None:
+    def delete_global_function(self, func: IRPModelElement) -> None:
         """Deletes a global function from the package.
 
         Args:
@@ -956,7 +958,7 @@ class RPPackage(RPUnit):
         AbstractRPModelElement.call_com(lambda: self._com.deleteGlobalFunction(func._com))
 
     # --- Global object methods ---
-    def add_global_object(self, name: str) -> RPModelElement:
+    def add_global_object(self, name: str) -> IRPModelElement:
         """Adds a new global object to the package.
 
         Args:
@@ -968,20 +970,20 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addGlobalObject(java.lang.String name)
         """
-        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addGlobalObject(name))))
+        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addGlobalObject(name))))
 
-    def get_global_objects(self) -> "RPCollection":
+    def get_global_objects(self) -> "IRPCollection":
         """Returns all global objects contained in this package.
 
         Returns:
-            An ``RPCollection`` of global object elements.
+            An ``IRPCollection`` of global object elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getGlobalObjects()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getGlobalObjects", "globalObjects"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getGlobalObjects", "globalObjects"))
 
-    def find_global_object(self, name: str) -> Optional[RPModelElement]:
+    def find_global_object(self, name: str) -> Optional[IRPModelElement]:
         """Finds a global object in the package by name.
 
         Args:
@@ -995,7 +997,7 @@ class RPPackage(RPUnit):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findGlobalObject(name)))
 
-    def delete_global_object(self, obj: RPModelElement) -> None:
+    def delete_global_object(self, obj: IRPModelElement) -> None:
         """Deletes a global object from the package.
 
         Args:
@@ -1007,7 +1009,7 @@ class RPPackage(RPUnit):
         AbstractRPModelElement.call_com(lambda: self._com.deleteGlobalObject(obj._com))
 
     # --- Global variable methods ---
-    def add_global_variable(self, name: str) -> RPModelElement:
+    def add_global_variable(self, name: str) -> IRPModelElement:
         """Adds a new global variable to the package.
 
         Args:
@@ -1019,20 +1021,20 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addGlobalVariable(java.lang.String name)
         """
-        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addGlobalVariable(name))))
+        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addGlobalVariable(name))))
 
-    def get_global_variables(self) -> "RPCollection":
+    def get_global_variables(self) -> "IRPCollection":
         """Returns all global variables contained in this package.
 
         Returns:
-            An ``RPCollection`` of global variable elements.
+            An ``IRPCollection`` of global variable elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getGlobalVariables()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getGlobalVariables", "globalVariables"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getGlobalVariables", "globalVariables"))
 
-    def find_global_variable(self, name: str) -> Optional[RPModelElement]:
+    def find_global_variable(self, name: str) -> Optional[IRPModelElement]:
         """Finds a global variable in the package by name.
 
         Args:
@@ -1046,7 +1048,7 @@ class RPPackage(RPUnit):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findGlobalVariable(name)))
 
-    def delete_global_variable(self, var: RPModelElement) -> None:
+    def delete_global_variable(self, var: IRPModelElement) -> None:
         """Deletes a global variable from the package.
 
         Args:
@@ -1058,30 +1060,30 @@ class RPPackage(RPUnit):
         AbstractRPModelElement.call_com(lambda: self._com.deleteGlobalVariable(var._com))
 
     # --- Nested classifier methods ---
-    def get_nested_classifiers(self) -> "RPCollection":
+    def get_nested_classifiers(self) -> "IRPCollection":
         """Returns all nested classifiers in this package.
 
         Returns:
-            An ``RPCollection`` of classifier elements.
+            An ``IRPCollection`` of classifier elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getNestedClassifiers()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getNestedClassifiers", "nestedClassifiers"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getNestedClassifiers", "nestedClassifiers"))
 
-    def get_nested_components(self) -> "RPCollection":
+    def get_nested_components(self) -> "IRPCollection":
         """Returns all nested components in this package.
 
         Returns:
-            An ``RPCollection`` of component elements.
+            An ``IRPCollection`` of component elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getNestedComponents()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getNestedComponents", "nestedComponents"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getNestedComponents", "nestedComponents"))
 
     # --- Instance specification methods ---
-    def add_instance_specification(self, name: str) -> RPModelElement:
+    def add_instance_specification(self, name: str) -> IRPModelElement:
         """Adds a new instance specification to the package.
 
         Args:
@@ -1093,21 +1095,21 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addInstanceSpecification(java.lang.String name)
         """
-        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addInstanceSpecification(name))))
+        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addInstanceSpecification(name))))
 
-    def get_instance_specifications(self) -> "RPCollection":
+    def get_instance_specifications(self) -> "IRPCollection":
         """Returns all instance specifications contained in this package.
 
         Returns:
-            An ``RPCollection`` of instance specification elements.
+            An ``IRPCollection`` of instance specification elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getInstanceSpecifications()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getInstanceSpecifications", "instanceSpecifications"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getInstanceSpecifications", "instanceSpecifications"))
 
     # --- Link methods ---
-    def add_link(self, name: str) -> RPModelElement:
+    def add_link(self, name: str) -> IRPModelElement:
         """Adds a new link to the package.
 
         Args:
@@ -1119,72 +1121,72 @@ class RPPackage(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addLink(java.lang.String name)
         """
-        return cast(RPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addLink(name))))
+        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addLink(name))))
 
-    def get_links(self) -> "RPCollection":
+    def get_links(self) -> "IRPCollection":
         """Returns all links contained in this package.
 
         Returns:
-            An ``RPCollection`` of link elements.
+            An ``IRPCollection`` of link elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getLinks()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getLinks", "links"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getLinks", "links"))
 
     # --- Find all by name ---
-    def find_all_by_name(self, name: str) -> "RPCollection":
+    def find_all_by_name(self, name: str) -> "IRPCollection":
         """Finds all elements with the given name in this package.
 
         Args:
             name: The name to search for.
 
         Returns:
-            An ``RPCollection`` of matching elements.
+            An ``IRPCollection`` of matching elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::findAllByName(java.lang.String name)
         """
-        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.findAllByName(name)))
+        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.findAllByName(name)))
 
     # --- Behavioral diagrams ---
-    def get_behavioral_diagrams(self) -> "RPCollection":
+    def get_behavioral_diagrams(self) -> "IRPCollection":
         """Returns all behavioral diagrams contained in this package.
 
         Returns:
-            An ``RPCollection`` of behavioral diagram elements.
+            An ``IRPCollection`` of behavioral diagram elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getBehavioralDiagrams()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getBehavioralDiagrams", "behavioralDiagrams"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getBehavioralDiagrams", "behavioralDiagrams"))
 
     # --- Source artifacts ---
-    def get_source_artifacts(self) -> "RPCollection":
+    def get_source_artifacts(self) -> "IRPCollection":
         """Returns all source artifacts contained in this package.
 
         Returns:
-            An ``RPCollection`` of source artifact elements.
+            An ``IRPCollection`` of source artifact elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getSourceArtifacts()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getSourceArtifacts", "sourceArtifacts"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getSourceArtifacts", "sourceArtifacts"))
 
     # --- Find usage ---
-    def find_usage(self, element: RPModelElement) -> "RPCollection":
+    def find_usage(self, element: IRPModelElement) -> "IRPCollection":
         """Finds all usages of an element in this package.
 
         Args:
             element: The element to find usages for.
 
         Returns:
-            An ``RPCollection`` of elements that use the given element.
+            An ``IRPCollection`` of elements that use the given element.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::findUsage(com.telelogic.rhapsody.core.IRPModelElement element)
         """
-        return RPCollection(AbstractRPModelElement.call_com(lambda: self._com.findUsage(element._com)))
+        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.findUsage(element._com)))
 
     # --- Remote Requirements Methods (Task 3) ---
     def get_remote_requirements_populate_mode(self) -> int:
@@ -1198,16 +1200,16 @@ class RPPackage(RPUnit):
         """
         return int(AbstractRPModelElement._get_method_or_property(self._com, "getRemoteRequirementsPopulateMode", "remoteRequirementsPopulateMode"))
 
-    def get_root_instance_specifications(self) -> "RPCollection":
+    def get_root_instance_specifications(self) -> "IRPCollection":
         """Returns all root instance specifications in this package.
 
         Returns:
-            An ``RPCollection`` of instance specification elements.
+            An ``IRPCollection`` of instance specification elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getRootInstanceSpecifications()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getRootInstanceSpecifications", "rootInstanceSpecifications"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getRootInstanceSpecifications", "rootInstanceSpecifications"))
 
     def login_to_remote_artifact_server(self, server_url: str, username: str, password: str) -> None:
         """Logs in to the remote artifact server.
@@ -1290,16 +1292,16 @@ class RPPackage(RPUnit):
         return cast("RPLink", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addLinkBetweenSYSMLPorts(port1._com, port2._com))))
 
     # --- Misc Methods (Task 5) ---
-    def get_all_nested_elements(self) -> "RPCollection":
+    def get_all_nested_elements(self) -> "IRPCollection":
         """Returns all nested elements in this package.
 
         Returns:
-            An ``RPCollection`` of nested elements.
+            An ``IRPCollection`` of nested elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getAllNestedElements()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getAllNestedElements", "allNestedElements"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getAllNestedElements", "allNestedElements"))
 
     def get_events_base_id(self) -> str:
         """Returns the events base ID for this package.
@@ -1334,16 +1336,16 @@ class RPPackage(RPUnit):
         """
         return int(AbstractRPModelElement._get_method_or_property(self._com, "getSavedInSeperateDirectory", "savedInSeperateDirectory"))
 
-    def get_user_defined_stereotypes(self) -> "RPCollection":
+    def get_user_defined_stereotypes(self) -> "IRPCollection":
         """Returns all user-defined stereotypes in this package.
 
         Returns:
-            An ``RPCollection`` of stereotype elements.
+            An ``IRPCollection`` of stereotype elements.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getUserDefinedStereotypes()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getUserDefinedStereotypes", "userDefinedStereotypes"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getUserDefinedStereotypes", "userDefinedStereotypes"))
 
     def set_saved_in_separate_directory(self, value: int) -> None:
         """Sets whether the package is saved in a separate directory.

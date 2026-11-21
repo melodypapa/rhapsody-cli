@@ -41,6 +41,11 @@ def _get_method_or_property(com_obj: object, method_name: str, prop_name: str) -
     Returns ``Any`` because COM property values are dynamically typed
     (strings, ints, booleans, or nested COM objects); callers wrap the
     result in ``str()``/``int()``/``bool()``/``wrap()`` as needed.
+
+    .. deprecated::
+        Legacy dual-binding probe. Synced wrappers call the single pywin32-exposed
+        member instead: :func:`call_com` for method-shaped members and
+        :func:`get_com_property` / :func:`set_com_property` for property-shaped ones.
     """
     if hasattr(com_obj, method_name):
         return call_com(lambda: getattr(com_obj, method_name)())
@@ -51,8 +56,32 @@ def _set_method_or_property(com_obj: object, method_name: str, prop_name: str, v
     """Write a value to ``com_obj``, preferring the Java-style setter method.
 
     See :func:`_get_method_or_property` for why both forms exist.
+
+    .. deprecated::
+        Legacy dual-binding probe. Synced wrappers call the single pywin32-exposed
+        member instead: :func:`call_com` for method-shaped members and
+        :func:`get_com_property` / :func:`set_com_property` for property-shaped ones.
     """
     if hasattr(com_obj, method_name):
         call_com(lambda: getattr(com_obj, method_name)(value))
     else:
         call_com(lambda: setattr(com_obj, prop_name, value))
+
+
+def get_com_property(com_obj: object, prop_name: str) -> Any:
+    """Read one pywin32-exposed COM property.
+
+    The generated pywin32 interface (``docs/reports/pywin32_authority.json``) is
+    the single source of truth for the member name and shape, so this helper
+    reads exactly ``prop_name`` — there is no Java-style method probe and no
+    name fallback.
+    """
+    return call_com(lambda: getattr(com_obj, prop_name))
+
+
+def set_com_property(com_obj: object, prop_name: str, value: object) -> None:
+    """Write one pywin32-exposed COM property.
+
+    See :func:`get_com_property` for the pywin32-authoritative naming rule.
+    """
+    call_com(lambda: setattr(com_obj, prop_name, value))

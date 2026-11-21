@@ -6,7 +6,7 @@ from tests.unit.models.fakes import make_fake_element
 
 
 def test_tag_is_a_variable() -> None:
-    fake = make_fake_element("Tag", getName="MyTag")
+    fake = make_fake_element("Tag", properties={"name": "MyTag"})
     tag = RPTag(fake)
 
     assert isinstance(tag, RPVariable)
@@ -14,7 +14,7 @@ def test_tag_is_a_variable() -> None:
 
 
 def test_tag_is_registered_for_meta_class_tag() -> None:
-    fake = make_fake_element("Tag", getName="MyTag")
+    fake = make_fake_element("Tag", properties={"name": "MyTag"})
 
     wrapped = AbstractRPModelElement.wrap(fake)
 

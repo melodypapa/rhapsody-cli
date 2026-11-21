@@ -38,7 +38,7 @@ The approved spec (`docs/superpowers/specs/2026-07-19-yaml-import-export-design.
 
 5. **Tag creation (import)**: Spec uses `element.add_tag(name)` then `tag.set_value(value)`. **Actual:** `add_tag` does NOT exist; `set_value` does NOT exist on tags. Use `element.set_property_value(key, val)` (existing convention in `package_action.py:283`). Task 3 uses `set_property_value`.
 
-6. **Tag enumeration (export)**: Spec uses `element.get_tags()`. **Actual:** `get_tags` does NOT exist. Use `element.get_all_tags()` (returns `RPCollection` of tag elements). Each tag has `get_name()` and `get_value()`. Task 7 uses `get_all_tags`.
+6. **Tag enumeration (export)**: Spec uses `element.get_tags()`. **Actual:** `get_tags` does NOT exist. Use `element.get_all_tags()` (returns `IRPCollection` of tag elements). Each tag has `get_name()` and `get_value()`. Task 7 uses `get_all_tags`.
 
 7. **Tag value setting**: Spec uses `tag.set_value(value)`. **Actual:** Use `element.set_tag_value(tag_element, val)` (takes a wrapped tag element, not a name) OR `element.set_property_value(key, val)` for property-style tags. Task 3 uses `set_property_value` for simplicity and idempotency.
 
@@ -503,7 +503,7 @@ SWR_XCH_005."
 - Test: `tests/unit/exchange/test_core.py`
 
 **Interfaces:**
-- Consumes: `RhapsodyApplication` (for `connect` classmethod), `RPModelElement`, `RPCollection` from `rhapsody_cli.models.core`, `RPProject` from `rhapsody_cli.models.elements.containment`
+- Consumes: `RhapsodyApplication` (for `connect` classmethod), `RPModelElement`, `IRPCollection` from `rhapsody_cli.models.core`, `RPProject` from `rhapsody_cli.models.elements.containment`
 - Produces: `RhapsodyModelHelper` class with:
   - `__init__(self, app: Optional[RhapsodyApplication] = None) -> None`
   - `find_or_create_package(parent, name) -> RPModelElement`
@@ -5706,7 +5706,7 @@ Cross-task signature audit:
 | `get_classifier_name(classifier) -> Optional[str]` | Task 3 | Tasks 6, 8 | ✓ |
 | `SCHEMA_VERSION`, `VERSION_KEY`, `PROJECT_KEY`, `RHAPSODY_MODEL_KEY` | Task 1 | Tasks 5, 7 | ✓ |
 | `RPModelElement.wrap(com_obj)` | Codebase (`AbstractRPModelElement.wrap`) | Task 7 (`_wrap_if_needed`) | ✓ |
-| `RPCollection` iteration (1-based `getItem`) | Codebase | Tasks 3 (`_collect_children`), 7 (exporter iteration) | ✓ |
+| `IRPCollection` iteration (1-based `getItem`) | Codebase | Tasks 3 (`_collect_children`), 7 (exporter iteration) | ✓ |
 | Tag value access via `tag.call_com(lambda: tag._com.getValue())` | Reconciliation #6, #7 | Task 7 (`_export_tags`) | ✓ |
 
 **All cross-task signatures are consistent. No mismatches found.**

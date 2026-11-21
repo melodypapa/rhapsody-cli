@@ -97,7 +97,7 @@ wrapped `RPProject` instance.
 **Status:** Implemented
 **Priority:** Medium
 **Description:**
-The `getProjects()` method shall return an `RPCollection` containing all currently open
+The `getProjects()` method shall return an `IRPCollection` containing all currently open
 Rhapsody projects.
 **Implementation:** src/rhapsody_cli/application.py:RhapsodyApplication.getProjects
 **Last Changed:** 2026-07-07
@@ -249,7 +249,7 @@ currently active Rhapsody project.
 **Status:** Implemented
 **Priority:** Medium
 **Description:**
-The `generateElements(elements: RPCollection)` method shall generate code for the
+The `generateElements(elements: IRPCollection)` method shall generate code for the
 specified model elements.
 **Implementation:** src/rhapsody_cli/application.py:RhapsodyApplication.generateElements
 **Last Changed:** 2026-07-11

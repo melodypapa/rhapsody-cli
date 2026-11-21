@@ -2,7 +2,9 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement, RPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 from rhapsody_cli.models.elements.interactions.model_interactions import RPMessage
 from rhapsody_cli.models.elements.statemachine.model_statemachine import RPStateVertex
 
@@ -90,7 +92,7 @@ class RPConnector(RPStateVertex):
         """
         return str(self._get_method_or_property(self._com, "getConnectorType", "connectorType"))
 
-    def get_derived_in_edges(self) -> RPCollection:
+    def get_derived_in_edges(self) -> IRPCollection:
         """Returns a collection of the transitions coming into the connector.
 
         Returns:
@@ -100,7 +102,7 @@ class RPConnector(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPConnector::getDerivedInEdges()
         """
-        return RPCollection(self.call_com(lambda: self._com.getDerivedInEdges()))
+        return IRPCollection(self.call_com(lambda: self._com.getDerivedInEdges()))
 
     def get_derived_out_edge(self) -> "RPTransition":
         """Returns the transition exiting the connector.
@@ -247,7 +249,7 @@ class RPConnector(RPStateVertex):
         self.call_com(lambda: self._com.setOfState(of_state._com))
 
 
-class RPGraphElement(RPModelElement):
+class RPGraphElement(IRPModelElement):
     """Wraps ``IRPGraphElement``."""
 
     # IRPGraphElement method parity checklist:
@@ -302,7 +304,7 @@ class RPGraphElement(RPModelElement):
         """
         self.call_com(lambda: self._com.applyDefaultFormat())
 
-    def get_all_graphical_properties(self) -> RPCollection:
+    def get_all_graphical_properties(self) -> IRPCollection:
         """Returns all graphical properties of this graph element.
 
         Returns:
@@ -314,9 +316,9 @@ class RPGraphElement(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPGraphElement::getAllGraphicalProperties()
         """
-        return RPCollection(self.call_com(lambda: self._com.getAllGraphicalProperties()))
+        return IRPCollection(self.call_com(lambda: self._com.getAllGraphicalProperties()))
 
-    def get_all_properties(self) -> RPCollection:
+    def get_all_properties(self) -> IRPCollection:
         """Returns all properties of this graph element.
 
         Returns:
@@ -328,7 +330,7 @@ class RPGraphElement(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPGraphElement::getAllProperties()
         """
-        return RPCollection(self.call_com(lambda: self._com.getAllProperties()))
+        return IRPCollection(self.call_com(lambda: self._com.getAllProperties()))
 
     def get_associated_image(self) -> str:
         """Returns the associated image of this graph element.
@@ -431,9 +433,9 @@ class RPGraphElement(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPGraphElement::getInterfaceName()
         """
-        return str(self._get_method_or_property(self._com, "getInterfaceName", "interfaceName"))
+        return str(self.get_com_property(self._com, "interfaceName"))
 
-    def get_local_properties(self) -> RPCollection:
+    def get_local_properties(self) -> IRPCollection:
         """Returns the local properties of this graph element.
 
         Returns:
@@ -445,9 +447,9 @@ class RPGraphElement(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPGraphElement::getLocalProperties()
         """
-        return RPCollection(self.call_com(lambda: self._com.getLocalProperties()))
+        return IRPCollection(self.call_com(lambda: self._com.getLocalProperties()))
 
-    def get_model_object(self) -> Optional["RPModelElement"]:
+    def get_model_object(self) -> Optional["IRPModelElement"]:
         """Returns the model object associated with this graph element.
 
         Returns:
@@ -583,7 +585,7 @@ class RPGraphElement(RPModelElement):
         self._set_method_or_property(self._com, "setSelectedImage", "selectedImage", selected_image)
 
 
-class RPGraphicalProperty(RPModelElement):
+class RPGraphicalProperty(IRPModelElement):
     """Wraps ``IRPGraphicalProperty``."""
 
     # IRPGraphicalProperty method parity checklist:
@@ -604,7 +606,7 @@ class RPGraphicalProperty(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPGraphicalProperty::getInterfaceName()
         """
-        return str(self._get_method_or_property(self._com, "getInterfaceName", "interfaceName"))
+        return str(self.get_com_property(self._com, "interfaceName"))
 
     def get_key(self) -> str:
         """Returns the key of this graphical property.
@@ -635,7 +637,7 @@ class RPGraphicalProperty(RPModelElement):
         return str(self._get_method_or_property(self._com, "getValue", "value"))
 
 
-class RPImageMap(RPModelElement):
+class RPImageMap(IRPModelElement):
     """Wraps ``IRPImageMap``."""
 
     # IRPImageMap method parity checklist:
@@ -660,7 +662,7 @@ class RPImageMap(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPImageMap::getInterfaceName()
         """
-        return str(self._get_method_or_property(self._com, "getInterfaceName", "interfaceName"))
+        return str(self.get_com_property(self._com, "interfaceName"))
 
     def get_is_guid(self) -> int:
         """Returns whether this image map uses a GUID.
@@ -688,7 +690,7 @@ class RPImageMap(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPImageMap::getName()
         """
-        return str(self._get_method_or_property(self._com, "getName", "name"))
+        return str(self.get_com_property(self._com, "name"))
 
     def get_picture_file_name(self) -> str:
         """Returns the picture file name of this image map.
@@ -747,7 +749,7 @@ class RPImageMap(RPModelElement):
         return str(self._get_method_or_property(self._com, "getTarget", "target"))
 
 
-class RPLink(RPUnit):
+class RPLink(IRPUnit):
     """Wraps ``IRPLink``: represents links in Rhapsody models."""
 
     # IRPLink method parity checklist:
@@ -844,7 +846,7 @@ class RPLink(RPUnit):
         """
         return cast("RPInstance", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getFrom())))
 
-    def get_from_element(self) -> Optional["RPModelElement"]:
+    def get_from_element(self) -> Optional["IRPModelElement"]:
         """Returns the source element of this link.
 
         Returns:
@@ -925,7 +927,7 @@ class RPLink(RPUnit):
         """
         return cast("RPInstance", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getTo())))
 
-    def get_to_element(self) -> Optional["RPModelElement"]:
+    def get_to_element(self) -> Optional["IRPModelElement"]:
         """Returns the target element of this link.
 
         Returns:
@@ -1035,7 +1037,7 @@ class RPLink(RPUnit):
         self.call_com(lambda: self._com.setInstantiates(p_val._com))
 
 
-class RPMatrixLayout(RPUnit):
+class RPMatrixLayout(IRPUnit):
     """Wraps ``IRPMatrixLayout``."""
 
     # IRPMatrixLayout method parity checklist:
@@ -1057,7 +1059,7 @@ class RPMatrixLayout(RPUnit):
     # [inherited] irp_unit methods (covered by rp_unit checklist)
     # No deprecated IRPMatrixLayout methods.
 
-    def get_cell_element_types(self) -> RPCollection:
+    def get_cell_element_types(self) -> IRPCollection:
         """Returns a collection of the element types that were specified to be displayed in the cells of the matrix.
 
         Returns:
@@ -1067,9 +1069,9 @@ class RPMatrixLayout(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPMatrixLayout::getCellElementTypes()
         """
-        return RPCollection(self.call_com(lambda: self._com.getCellElementTypes()))
+        return IRPCollection(self.call_com(lambda: self._com.getCellElementTypes()))
 
-    def get_from_element_types(self) -> RPCollection:
+    def get_from_element_types(self) -> IRPCollection:
         """Returns a collection of the "from" element types specified to be displayed in the matrix.
 
         Returns:
@@ -1078,7 +1080,7 @@ class RPMatrixLayout(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPMatrixLayout::getFromElementTypes()
         """
-        return RPCollection(self.call_com(lambda: self._com.getFromElementTypes()))
+        return IRPCollection(self.call_com(lambda: self._com.getFromElementTypes()))
 
     def get_from_element_types_query_to_use(self) -> "RPTableLayout":
         """Returns the query that was specified to determine the "from" element types.
@@ -1105,7 +1107,7 @@ class RPMatrixLayout(RPUnit):
         """
         return int(self.call_com(lambda: self._com.getFromElementTypesUseQueryOrElementsList()))
 
-    def get_to_element_types(self) -> RPCollection:
+    def get_to_element_types(self) -> IRPCollection:
         """Returns a collection of the "to" element types specified to be displayed in the matrix.
 
         Returns:
@@ -1114,7 +1116,7 @@ class RPMatrixLayout(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPMatrixLayout::getToElementTypes()
         """
-        return RPCollection(self.call_com(lambda: self._com.getToElementTypes()))
+        return IRPCollection(self.call_com(lambda: self._com.getToElementTypes()))
 
     def get_to_element_types_query_to_use(self) -> "RPTableLayout":
         """Returns the query that was specified to determine the "to" element types.
@@ -1141,7 +1143,7 @@ class RPMatrixLayout(RPUnit):
         """
         return int(self.call_com(lambda: self._com.getToElementTypesUseQueryOrElementsList()))
 
-    def set_cell_element_types(self, p_collection: RPCollection) -> None:
+    def set_cell_element_types(self, p_collection: IRPCollection) -> None:
         """Specifies the element types to display in the cells of the matrix.
 
         Args:
@@ -1152,7 +1154,7 @@ class RPMatrixLayout(RPUnit):
         """
         self.call_com(lambda: self._com.setCellElementTypes(p_collection._com))
 
-    def set_from_element_types(self, p_collection: RPCollection) -> None:
+    def set_from_element_types(self, p_collection: IRPCollection) -> None:
         """Specifies the "from" element types that should be displayed in the matrix.
 
         Args:
@@ -1190,7 +1192,7 @@ class RPMatrixLayout(RPUnit):
         """
         self.call_com(lambda: self._com.setFromElementTypesUseQueryOrElementsList(query_or_elements_list))
 
-    def set_to_element_types(self, p_collection: RPCollection) -> None:
+    def set_to_element_types(self, p_collection: IRPCollection) -> None:
         """Specifies the "to" element types that should be displayed in the matrix.
 
         Args:
@@ -1229,7 +1231,7 @@ class RPMatrixLayout(RPUnit):
         self.call_com(lambda: self._com.setToElementTypesUseQueryOrElementsList(query_or_elements_list))
 
 
-class RPMatrixView(RPUnit):
+class RPMatrixView(IRPUnit):
     """Wraps ``IRPMatrixView``: represents Matrix View elements in Rhapsody models."""
 
     # IRPMatrixView method parity checklist:
@@ -1256,7 +1258,7 @@ class RPMatrixView(RPUnit):
     # [inherited] irp_unit methods (covered by rp_unit checklist)
     # No deprecated IRPMatrixView methods.
 
-    def get_cell_elements(self, row: int, column: int) -> RPCollection:
+    def get_cell_elements(self, row: int, column: int) -> IRPCollection:
         """Returns the model elements contained in the specified cell.
 
         Args:
@@ -1274,7 +1276,7 @@ class RPMatrixView(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPMatrixView::getCellElements(int row, int column)
         """
-        return RPCollection(self.call_com(lambda: self._com.getCellElements(row, column)))
+        return IRPCollection(self.call_com(lambda: self._com.getCellElements(row, column)))
 
     def get_cell_string(self, row: int, column: int) -> str:
         """Returns the text contained in the specified cell.
@@ -1326,7 +1328,7 @@ class RPMatrixView(RPUnit):
         """
         return str(self.call_com(lambda: self._com.getContent(format_)))
 
-    def get_from_scope(self) -> RPCollection:
+    def get_from_scope(self) -> IRPCollection:
         """Returns the "from" scope of this matrix view.
 
         Returns:
@@ -1338,7 +1340,7 @@ class RPMatrixView(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPMatrixView::getFromScope()
         """
-        return RPCollection(self.call_com(lambda: self._com.getFromScope()))
+        return IRPCollection(self.call_com(lambda: self._com.getFromScope()))
 
     def get_html_content(self) -> str:
         """Returns the content of the matrix as HTML.
@@ -1351,7 +1353,7 @@ class RPMatrixView(RPUnit):
         """
         return str(self._get_method_or_property(self._com, "getHTMLContent", "hTMLContent"))
 
-    def get_image_collection(self, s_folder: str, s_filename: str, s_extension: str) -> RPCollection:
+    def get_image_collection(self, s_folder: str, s_filename: str, s_extension: str) -> IRPCollection:
         """Returns a collection of images for the matrix view.
 
         Args:
@@ -1368,7 +1370,7 @@ class RPMatrixView(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPMatrixView::getImageCollection(java.lang.String sFolder, java.lang.String sFilename, java.lang.String sExtension)
         """
-        return RPCollection(self.call_com(lambda: self._com.getImageCollection(s_folder, s_filename, s_extension)))
+        return IRPCollection(self.call_com(lambda: self._com.getImageCollection(s_folder, s_filename, s_extension)))
 
     def get_its_matrix_layout(self) -> "RPMatrixLayout":
         """Returns the matrix layout used by this matrix view.
@@ -1398,7 +1400,7 @@ class RPMatrixView(RPUnit):
         """
         return int(self._get_method_or_property(self._com, "getRowCount", "rowCount"))
 
-    def get_to_scope(self) -> RPCollection:
+    def get_to_scope(self) -> IRPCollection:
         """Returns the "to" scope of this matrix view.
 
         Returns:
@@ -1410,9 +1412,9 @@ class RPMatrixView(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPMatrixView::getToScope()
         """
-        return RPCollection(self.call_com(lambda: self._com.getToScope()))
+        return IRPCollection(self.call_com(lambda: self._com.getToScope()))
 
-    def set_from_scope(self, p_collection: RPCollection) -> None:
+    def set_from_scope(self, p_collection: IRPCollection) -> None:
         """Specifies the "from" scope to use for this matrix view.
 
         Args:
@@ -1436,7 +1438,7 @@ class RPMatrixView(RPUnit):
         """
         self.call_com(lambda: self._com.setItsMatrixLayout(p_val._com))
 
-    def set_to_scope(self, p_collection: RPCollection) -> None:
+    def set_to_scope(self, p_collection: IRPCollection) -> None:
         """Specifies the "to" scope to use for this matrix view.
 
         Args:
@@ -1539,7 +1541,7 @@ class RPMatrixView(RPUnit):
         self._set_method_or_property(self._com, "setIncludeDescendantsToScope", "includeDescendantsToScope", include_descendants_to_scope)
 
 
-class RPMessagePoint(RPModelElement):
+class RPMessagePoint(IRPModelElement):
     """Wraps ``IRPMessagePoint``."""
 
     # IRPMessagePoint method parity checklist:
@@ -1622,7 +1624,7 @@ class RPMessagePoint(RPModelElement):
         return str(self._get_method_or_property(self._com, "getType", "type"))
 
 
-class RPTableLayout(RPUnit):
+class RPTableLayout(IRPUnit):
     """Wraps ``IRPTableLayout``."""
 
     # IRPTableLayout method parity checklist:
@@ -1977,11 +1979,11 @@ class RPTableLayout(RPUnit):
         """
         return str(self.call_com(lambda: self._com.getColumnType(index)))
 
-    def get_columns(self) -> RPCollection:
+    def get_columns(self) -> IRPCollection:
         """Returns a collection of the columns in this table layout.
 
         Returns:
-            An RPCollection of the columns in this table layout.
+            An IRPCollection of the columns in this table layout.
 
         Raises:
             RhapsodyRuntimeException: If the operation fails.
@@ -1989,35 +1991,35 @@ class RPTableLayout(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPTableLayout::getColumns()
         """
-        return RPCollection(self.call_com(lambda: self._com.getColumns()))
+        return IRPCollection(self.call_com(lambda: self._com.getColumns()))
 
-    def get_element_types(self) -> RPCollection:
+    def get_element_types(self) -> IRPCollection:
         """Returns a collection of the element types displayed in the table.
 
         The collection consists of strings (from the list of types displayed on the
         ElementTypes tab of the Features window for table layouts).
 
         Returns:
-            An RPCollection of the element types that were specified to be displayed in the table.
+            An IRPCollection of the element types that were specified to be displayed in the table.
 
         Reference:
             com.telelogic.rhapsody.core.IRPTableLayout::getElementTypes()
         """
-        return RPCollection(self.call_com(lambda: self._com.getElementTypes()))
+        return IRPCollection(self.call_com(lambda: self._com.getElementTypes()))
 
-    def get_from_element_types(self) -> RPCollection:
+    def get_from_element_types(self) -> IRPCollection:
         """Returns the "from" element types for "relation tables".
 
         Returns a collection of the element types specified as the "from" element types. The
         collection consists of strings (from the From Element Types tab of the Features window).
 
         Returns:
-            An RPCollection of the types specified as the "from" element types for the table layout.
+            An IRPCollection of the types specified as the "from" element types for the table layout.
 
         Reference:
             com.telelogic.rhapsody.core.IRPTableLayout::getFromElementTypes()
         """
-        return RPCollection(self.call_com(lambda: self._com.getFromElementTypes()))
+        return IRPCollection(self.call_com(lambda: self._com.getFromElementTypes()))
 
     def get_from_element_types_query_to_use(self) -> "RPTableLayout":
         """Returns the query used to determine the "from" element types for "relation tables".
@@ -2057,7 +2059,7 @@ class RPTableLayout(RPUnit):
         """
         return int(self._get_method_or_property(self._com, "getRelationTable", "relationTable"))
 
-    def get_result_list(self, scope: "RPModelElement") -> RPCollection:
+    def get_result_list(self, scope: "IRPModelElement") -> IRPCollection:
         """Returns the result list for the given scope.
 
         Args:
@@ -2069,21 +2071,21 @@ class RPTableLayout(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPTableLayout::getResultList(com.telelogic.rhapsody.core.IRPModelElement scope)
         """
-        return RPCollection(self.call_com(lambda: self._com.getResultList(scope._com)))
+        return IRPCollection(self.call_com(lambda: self._com.getResultList(scope._com)))
 
-    def get_to_element_types(self) -> RPCollection:
+    def get_to_element_types(self) -> IRPCollection:
         """Returns the "to" element types for "relation tables".
 
         Returns a collection of the element types specified as the "to" element types. The
         collection consists of strings (from the To Element Types tab of the Features window).
 
         Returns:
-            An RPCollection of the types specified as the "to" element types for the table layout.
+            An IRPCollection of the types specified as the "to" element types for the table layout.
 
         Reference:
             com.telelogic.rhapsody.core.IRPTableLayout::getToElementTypes()
         """
-        return RPCollection(self.call_com(lambda: self._com.getToElementTypes()))
+        return IRPCollection(self.call_com(lambda: self._com.getToElementTypes()))
 
     def get_to_element_types_query_to_use(self) -> "RPTableLayout":
         """Returns the query used to determine the "to" element types for "relation tables".
@@ -2369,7 +2371,7 @@ class RPTableLayout(RPUnit):
         """
         self.call_com(lambda: self._com.setColumnType(index, type_))
 
-    def set_element_types(self, elements: RPCollection) -> None:
+    def set_element_types(self, elements: IRPCollection) -> None:
         """Specifies the element types displayed in the table.
 
         The parameter must be a collection of strings (from the list of types displayed on the
@@ -2383,7 +2385,7 @@ class RPTableLayout(RPUnit):
         """
         self.call_com(lambda: self._com.setElementTypes(elements._com))
 
-    def set_from_element_types(self, elements: RPCollection) -> None:
+    def set_from_element_types(self, elements: IRPCollection) -> None:
         """Specifies the "from" element types for "relation tables".
 
         For "relation tables", specifies the list of element types to use as the "from" element
@@ -2438,7 +2440,7 @@ class RPTableLayout(RPUnit):
         """
         self._set_method_or_property(self._com, "setRelationTable", "relationTable", relation)
 
-    def set_to_element_types(self, elements: RPCollection) -> None:
+    def set_to_element_types(self, elements: IRPCollection) -> None:
         """Specifies the "to" element types for "relation tables".
 
         For "relation tables", specifies the list of element types to use as the "to" element
@@ -2496,7 +2498,7 @@ class RPTableLayout(RPUnit):
         return int(self._get_method_or_property(self._com, "getColumnCount", "columnCount"))
 
 
-class RPTableView(RPUnit):
+class RPTableView(IRPUnit):
     """Wraps ``IRPTableView``: represents Table View elements in Rhapsody models."""
 
     # IRPTableView method parity checklist:
@@ -2521,7 +2523,7 @@ class RPTableView(RPUnit):
     # [inherited] irp_unit methods (covered by rp_unit checklist)
     # No deprecated IRPTableView methods.
 
-    def get_cell_elements(self, row: int, column: int) -> RPCollection:
+    def get_cell_elements(self, row: int, column: int) -> IRPCollection:
         """Returns the model elements contained in the specified cell.
 
         Args:
@@ -2539,7 +2541,7 @@ class RPTableView(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPTableView::getCellElements(int row, int column)
         """
-        return RPCollection(self.call_com(lambda: self._com.getCellElements(row, column)))
+        return IRPCollection(self.call_com(lambda: self._com.getCellElements(row, column)))
 
     def get_cell_string(self, row: int, column: int) -> str:
         """Returns the text contained in the specified cell.
@@ -2602,7 +2604,7 @@ class RPTableView(RPUnit):
         """
         return str(self._get_method_or_property(self._com, "getHTMLContent", "hTMLContent"))
 
-    def get_image_collection(self, s_folder: str, s_filename: str, s_extension: str) -> RPCollection:
+    def get_image_collection(self, s_folder: str, s_filename: str, s_extension: str) -> IRPCollection:
         """Returns a collection of images for the table view.
 
         Args:
@@ -2619,7 +2621,7 @@ class RPTableView(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPTableView::getImageCollection(java.lang.String sFolder, java.lang.String sFilename, java.lang.String sExtension)
         """
-        return RPCollection(self.call_com(lambda: self._com.getImageCollection(s_folder, s_filename, s_extension)))
+        return IRPCollection(self.call_com(lambda: self._com.getImageCollection(s_folder, s_filename, s_extension)))
 
     def get_its_table_layout(self) -> "RPTableLayout":
         """Returns the table layout used by this table view.
@@ -2649,7 +2651,7 @@ class RPTableView(RPUnit):
         """
         return int(self._get_method_or_property(self._com, "getRowCount", "rowCount"))
 
-    def get_scope(self) -> RPCollection:
+    def get_scope(self) -> IRPCollection:
         """Returns the scope of this table view.
 
         Returns:
@@ -2661,7 +2663,7 @@ class RPTableView(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPTableView::getScope()
         """
-        return RPCollection(self.call_com(lambda: self._com.getScope()))
+        return IRPCollection(self.call_com(lambda: self._com.getScope()))
 
     def get_use_owner_scope(self) -> int:
         """Checks whether the scope of the table view was defined as including the "owner" of the table view.
@@ -2689,7 +2691,7 @@ class RPTableView(RPUnit):
         """
         self.call_com(lambda: self._com.setItsTableLayout(p_val._com))
 
-    def set_scope(self, p_collection: RPCollection) -> None:
+    def set_scope(self, p_collection: IRPCollection) -> None:
         """Specifies the scope to use for this table view.
 
         Args:
@@ -2990,7 +2992,7 @@ class RPGraphNode(RPGraphElement):
         """
         return int(self._get_method_or_property(self._com, "getIsPanelWidget", "isPanelWidget"))
 
-    def get_panel_widget_instance_path(self) -> RPCollection:
+    def get_panel_widget_instance_path(self) -> IRPCollection:
         """Returns the panel widget instance path of this graph node.
 
         Returns:
@@ -3002,7 +3004,7 @@ class RPGraphNode(RPGraphElement):
         Reference:
             com.telelogic.rhapsody.core.IRPGraphNode::getPanelWidgetInstancePath()
         """
-        return RPCollection(self.call_com(lambda: self._com.getPanelWidgetInstancePath()))
+        return IRPCollection(self.call_com(lambda: self._com.getPanelWidgetInstancePath()))
 
     def hide_all_ports(self) -> None:
         """Hides all ports of this graph node.
@@ -3026,7 +3028,7 @@ class RPGraphNode(RPGraphElement):
         """
         self.call_com(lambda: self._com.sendToBack())
 
-    def set_panel_widget_instance_path(self, panel_widget_instance_path: RPCollection) -> None:
+    def set_panel_widget_instance_path(self, panel_widget_instance_path: IRPCollection) -> None:
         """Specifies the panel widget instance path of this graph node.
 
         Args:

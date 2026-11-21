@@ -2805,7 +2805,6 @@
       "is_active": "get_is_active",
       "is_behavior_overriden": "get_is_behavior_overriden",
       "is_composite": "get_is_composite",
-      "is_final": "get_is_final",
       "is_reactive": "get_is_reactive"
     }
   },

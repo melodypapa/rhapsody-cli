@@ -285,7 +285,7 @@ Project Structure
    │   └── core.py                   # RhapsodyConnectionError, RhapsodyRuntimeException
    ├── models/                        # Element wrappers
    │   ├── __init__.py
-   │   ├── core.py                   # RPModelElement, RPCollection, wrap(), call_com()
+   │   ├── core.py                   # RPModelElement, IRPCollection, wrap(), call_com()
    │   ├── application.py            # RhapsodyApplication COM wrapper
    │   ├── com/                      # Java-mirrored packages (IRPClass at com/telelogic/rhapsody/core/)
    │   └── elements/                 # Specific element types

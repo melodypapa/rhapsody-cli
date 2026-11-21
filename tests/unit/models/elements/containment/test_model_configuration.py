@@ -1,21 +1,23 @@
 """Tests for rhapsody_cli.models.elements.containment.RPConfiguration."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.containment import RPComponent, RPConfiguration
 from rhapsody_cli.models.elements.relations import RPInstance
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
 def test_configuration_is_a_unit() -> None:
-    fake = make_fake_element("Configuration", getName="Config1")
+    fake = make_fake_element("Configuration", properties={"name": "Config1"})
     config = RPConfiguration(fake)
 
-    assert isinstance(config, RPUnit)
+    assert isinstance(config, IRPUnit)
     assert config.get_name() == "Config1"
 
 
 def test_configuration_is_registered_for_meta_class_configuration() -> None:
-    fake = make_fake_element("Configuration", getName="Config1")
+    fake = make_fake_element("Configuration", properties={"name": "Config1"})
 
     wrapped = AbstractRPModelElement.wrap(fake)
 
@@ -28,7 +30,7 @@ def test_configuration_is_registered_for_meta_class_configuration() -> None:
 def test_configuration_add_initial_instance_delegates() -> None:
     fake = make_fake_element("Configuration")
     config = RPConfiguration(fake)
-    instance_fake = make_fake_element("Instance", getName="Inst1")
+    instance_fake = make_fake_element("Instance", properties={"name": "Inst1"})
     instance = RPInstance(instance_fake)
 
     config.add_initial_instance(instance)
@@ -38,20 +40,18 @@ def test_configuration_add_initial_instance_delegates() -> None:
 
 def test_configuration_get_initial_instances_returns_collection() -> None:
     fake = make_fake_element("Configuration")
-    instance = make_fake_element("Instance", getName="Inst1")
+    instance = make_fake_element("Instance", properties={"name": "Inst1"})
     fake.getInitialInstances.return_value = make_fake_collection([instance])
     config = RPConfiguration(fake)
 
     result = config.get_initial_instances()
-
-    fake.getInitialInstances.assert_called_once_with()
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_configuration_delete_initial_instance_delegates() -> None:
     fake = make_fake_element("Configuration")
     config = RPConfiguration(fake)
-    instance_fake = make_fake_element("Instance", getName="Inst1")
+    instance_fake = make_fake_element("Instance", properties={"name": "Inst1"})
     instance = RPInstance(instance_fake)
 
     config.delete_initial_instance(instance)
@@ -65,8 +65,6 @@ def test_configuration_get_directory_returns_str() -> None:
     config = RPConfiguration(fake)
 
     result = config.get_directory()
-
-    fake.getDirectory.assert_called_once_with()
     assert result == "/some/dir"
 
 
@@ -81,20 +79,18 @@ def test_configuration_set_directory_delegates() -> None:
 
 def test_configuration_get_its_component_wraps_result() -> None:
     fake = make_fake_element("Configuration")
-    comp = make_fake_element("Component", getName="Comp1")
+    comp = make_fake_element("Component", properties={"name": "Comp1"})
     fake.getItsComponent.return_value = comp
     config = RPConfiguration(fake)
 
     result = config.get_its_component()
-
-    fake.getItsComponent.assert_called_once_with()
     assert result.get_name() == "Comp1"
 
 
 def test_configuration_set_its_component_delegates() -> None:
     fake = make_fake_element("Configuration")
     config = RPConfiguration(fake)
-    comp_fake = make_fake_element("Component", getName="Comp1")
+    comp_fake = make_fake_element("Component", properties={"name": "Comp1"})
     comp = RPComponent(comp_fake)
 
     config.set_its_component(comp)

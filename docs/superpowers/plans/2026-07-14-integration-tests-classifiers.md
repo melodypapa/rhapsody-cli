@@ -344,7 +344,7 @@ For the remaining methods in this task, follow the same pattern (one test per be
 - `find_interface_item` and `get_interface_items`/`get_interface_items_including_bases` use an operation's signature string (e.g. `"myOp()"`).
 - `find_trigger` needs a statechart with a triggered operation/event reception; assert the trigger name matches.
 - `add_port`/`get_ports` create a port via `add_port(name)` and assert it appears in `get_ports()`.
-- `get_source_artifacts`/`get_sequence_diagrams`/`get_links` on a freshly created classifier should return empty `RPCollection` objects (assert `list(...) == []`) since no diagrams/artifacts have been added.
+- `get_source_artifacts`/`get_sequence_diagrams`/`get_links` on a freshly created classifier should return empty `IRPCollection` objects (assert `list(...) == []`) since no diagrams/artifacts have been added.
 
 - [ ] **Step 2: Run the new tests against live Rhapsody**
 
@@ -820,7 +820,7 @@ def test_get_its_class_and_root_state(self, test_project: RPProject) -> None:
 ```
 
 For the remaining methods in this task, follow the same pattern (one test per behavior, or shared test for tightly-coupled getter/setter pairs). Notably:
-- `get_all_triggers`/`get_elements_in_diagram`/`get_graphical_elements` on a freshly created statechart should return `RPCollection` objects convertible to a `list` (possibly empty); after `create_graphics()` and a node addition, assert the node appears in `get_elements_in_diagram()`/`get_graphical_elements()`.
+- `get_all_triggers`/`get_elements_in_diagram`/`get_graphical_elements` on a freshly created statechart should return `IRPCollection` objects convertible to a `list` (possibly empty); after `create_graphics()` and a node addition, assert the node appears in `get_elements_in_diagram()`/`get_graphical_elements()`.
 - `get_is_main_behavior`/`set_as_main_behavior` follow the roundtrip pattern: assert initial value, set to `1`, assert `1`.
 - `get_inherits_from`/`get_is_overridden`/`override_inheritance`/`unoverride_inheritance` require a parent class with a statechart and a child class inheriting from it (`add_superclass`); assert the child's statechart's `get_inherits_from()` returns the parent statechart, call `override_inheritance()` and assert `get_is_overridden() == 1`, then `unoverride_inheritance()` and assert `get_is_overridden() == 0`.
 

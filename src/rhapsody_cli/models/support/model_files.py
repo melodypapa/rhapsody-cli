@@ -2,14 +2,16 @@
 
 from typing import TYPE_CHECKING, Optional
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement, RPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
     from rhapsody_cli.models.elements.containment.model_package import RPPackage
 
 
-class RPASCIIFile(RPModelElement):
+class RPASCIIFile(IRPModelElement):
     """Wraps ``IRPASCIIFile``."""
 
     # IRPASCIIFile method parity checklist:
@@ -59,7 +61,7 @@ class RPASCIIFile(RPModelElement):
         self.call_com(lambda: self._com.write(data))
 
 
-class RPControlledFile(RPUnit):
+class RPControlledFile(IRPUnit):
     """Wraps ``IRPControlledFile``: represents a controlled file in a Rhapsody model.
 
     To access an element's controlled files, use the method
@@ -108,7 +110,7 @@ class RPControlledFile(RPUnit):
         self._set_method_or_property(self._com, "setTarget", "target", filename)
 
 
-class RPFile(RPUnit):
+class RPFile(IRPUnit):
     """Wraps ``IRPFile``: represents a file or folder to be generated during code generation."""
 
     # IRPFile method parity checklist:
@@ -147,7 +149,7 @@ class RPFile(RPUnit):
         """
         self.call_com(lambda: self._com.addElement(element._com, file_fragment_type))
 
-    def add_model_element(self, element: "RPModelElement", file_fragment_type: str) -> None:
+    def add_model_element(self, element: "IRPModelElement", file_fragment_type: str) -> None:
         """Adds a model element to the file with the specified fragment type.
 
         Args:
@@ -205,7 +207,7 @@ class RPFile(RPUnit):
         """
         self.call_com(lambda: self._com.addToScope(element._com))
 
-    def get_elements(self) -> "RPCollection":
+    def get_elements(self) -> "IRPCollection":
         """Gets the elements property.
 
         Returns:
@@ -217,9 +219,9 @@ class RPFile(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPFile::getElements()
         """
-        return RPCollection(self._get_method_or_property(self._com, "getElements", "elements"))
+        return IRPCollection(self._get_method_or_property(self._com, "getElements", "elements"))
 
-    def get_file_fragments(self) -> "RPCollection":
+    def get_file_fragments(self) -> "IRPCollection":
         """Gets the fileFragments property.
 
         Returns:
@@ -231,7 +233,7 @@ class RPFile(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPFile::getFileFragments()
         """
-        return RPCollection(self._get_method_or_property(self._com, "getFileFragments", "fileFragments"))
+        return IRPCollection(self._get_method_or_property(self._com, "getFileFragments", "fileFragments"))
 
     def get_file_type(self) -> str:
         """Gets the fileType property.
@@ -247,7 +249,7 @@ class RPFile(RPUnit):
         """
         return str(self._get_method_or_property(self._com, "getFileType", "fileType"))
 
-    def get_files(self) -> "RPCollection":
+    def get_files(self) -> "IRPCollection":
         """Gets the files property.
 
         Returns:
@@ -259,7 +261,7 @@ class RPFile(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPFile::getFiles()
         """
-        return RPCollection(self._get_method_or_property(self._com, "getFiles", "files"))
+        return IRPCollection(self._get_method_or_property(self._com, "getFiles", "files"))
 
     def get_imp_name(self, including_path: int) -> str:
         """Gets the implementation name.
@@ -355,7 +357,7 @@ class RPFile(RPUnit):
         self._set_method_or_property(self._com, "setPath", "path", path)
 
 
-class RPFileFragment(RPModelElement):
+class RPFileFragment(IRPModelElement):
     """Wraps ``IRPFileFragment``."""
 
     # IRPFileFragment method parity checklist:
@@ -367,7 +369,7 @@ class RPFileFragment(RPModelElement):
     # [inherited] irp_model_element methods (covered by rp_model_element checklist)
     # No deprecated IRPFileFragment methods.
 
-    def get_fragment_element(self) -> Optional["RPModelElement"]:
+    def get_fragment_element(self) -> Optional["IRPModelElement"]:
         """Gets the fragmentElement property.
 
         Returns:

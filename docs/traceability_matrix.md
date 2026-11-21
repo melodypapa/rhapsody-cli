@@ -54,7 +54,7 @@ Three-layer traceability for the rhapsody-cli project:
 |----------------|-------|-----|-----|------|-----|
 | SWR_CORE_00001 | RPModelElement base class | UTS_CORE_00001-00003 | ITS_CORE_00001 | SYTS_CORE_00001 | ATS_CORE_00001 |
 | SWR_CORE_00002 | RPUnit save/file ops | UTS_CORE_00004-00005 | ITS_CORE_00002 | SYTS_CORE_00002 | ATS_CORE_00002 |
-| SWR_CORE_00003 | RPCollection iterable | UTS_CORE_00006-00008 | ITS_CORE_00003 | SYTS_CORE_00002 | ATS_CORE_00003 |
+| SWR_CORE_00003 | IRPCollection iterable | UTS_CORE_00006-00008 | ITS_CORE_00003 | SYTS_CORE_00002 | ATS_CORE_00003 |
 | SWR_CORE_00004 | call_com error translation | UTS_CORE_00009-00010 | ITS_CORE_00004 | SYTS_CORE_00003 | ATS_CORE_00004 |
 | SWR_CORE_00005 | wrap factory function | UTS_CORE_00011-00012 | ITS_CORE_00005 | SYTS_CORE_00004 | ATS_CORE_00005 |
 | SWR_CORE_00006 | register_wrapper registry | UTS_CORE_00013-00014 | ITS_CORE_00005 | SYTS_CORE_00004 | ATS_CORE_00005 |
@@ -149,13 +149,13 @@ Three-layer traceability for the rhapsody-cli project:
 |----------------|----------------|
 | SWR_CORE_00001 | src/rhapsody_cli/models/_core.py:RPModelElement |
 | SWR_CORE_00002 | src/rhapsody_cli/models/_core.py:RPUnit |
-| SWR_CORE_00003 | src/rhapsody_cli/models/_core.py:RPCollection |
+| SWR_CORE_00003 | src/rhapsody_cli/models/_core.py:IRPCollection |
 | SWR_CORE_00004 | src/rhapsody_cli/models/_core.py:call_com |
 | SWR_CORE_00005 | src/rhapsody_cli/models/_core.py:wrap |
 | SWR_CORE_00006 | src/rhapsody_cli/models/_core.py:register_wrapper |
 | SWR_CORE_00007 | src/rhapsody_cli/models/_core.py:_wrap_if_element |
 | SWR_CORE_00008 | src/rhapsody_cli/models/_core.py:wrap |
-| SWR_CORE_00009 | src/rhapsody_cli/models/_core.py:RPCollection.__getitem__ |
+| SWR_CORE_00009 | src/rhapsody_cli/models/_core.py:IRPCollection.__getitem__ |
 | SWR_CORE_00010 | src/rhapsody_cli/models/_core.py |
 
 ### ELEM (Model Element Wrappers)

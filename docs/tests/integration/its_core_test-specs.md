@@ -40,15 +40,15 @@ preserved on `_com` for every dispatch.
 
 ---
 
-## ITS_CORE_00002: RPCollection iteration auto-wraps mixed element types
+## ITS_CORE_00002: IRPCollection iteration auto-wraps mixed element types
 
 **ID:** ITS_CORE_00002
 **Traces-To:** SWR_CORE_00003, SWR_CORE_00007
-**Title:** Iterating an RPCollection of mixed element types yields properly wrapped instances
+**Title:** Iterating an IRPCollection of mixed element types yields properly wrapped instances
 **Type:** Integration
 **Priority:** High
 **Description:**
-Verifies integration between `RPCollection.__iter__`, `RPCollection.getItem`, and
+Verifies integration between `IRPCollection.__iter__`, `IRPCollection.getItem`, and
 `_wrap_if_element`/`wrap`. A collection containing heterogeneous raw COM elements (e.g., a Class,
 an Attribute, and an Operation) must iterate as their respective wrapper subclasses without
 caller intervention.
@@ -57,7 +57,7 @@ caller intervention.
 - A mock `IRPCollection` whose `getCount()` returns 3 and `getItem(i)` returns, in order, mock
   COM objects reporting meta classes `"Class"`, `"Attribute"`, `"Operation"`.
 **Test Steps:**
-1. Construct `coll = RPCollection(mock_irp_collection)`.
+1. Construct `coll = IRPCollection(mock_irp_collection)`.
 2. Iterate `coll` and collect items into a list.
 3. Assert the list length is 3.
 4. Assert item[0] is an `RPClass`, item[1] is an `RPAttribute`, item[2] is an `RPOperation`.
@@ -138,22 +138,22 @@ Unmapped types yield a generic `RPModelElement` whose COM delegation methods sti
 
 ---
 
-## ITS_CORE_00005: RPCollection rejects negative indices with IndexError
+## ITS_CORE_00005: IRPCollection rejects negative indices with IndexError
 
 **ID:** ITS_CORE_00005
 **Traces-To:** SWR_CORE_00003, SWR_CORE_00009
-**Title:** RPCollection.__getitem__ raises IndexError("negative indices are not supported") for negatives
+**Title:** IRPCollection.__getitem__ raises IndexError("negative indices are not supported") for negatives
 **Type:** Integration
 **Priority:** Low
 **Description:**
-Verifies that the Python protocol layer on `RPCollection` integrates safely with the 1-based COM
+Verifies that the Python protocol layer on `IRPCollection` integrates safely with the 1-based COM
 indexing model: negative indices (Python-style from-end access) must be rejected with a specific
 `IndexError` message rather than being passed to `getItem`, which would misbehave.
 **Pre-conditions:**
 - A mock `IRPCollection` whose `getCount()` returns 3 and `getItem(i)` returns a mock element.
 - `rhapsody_cli.models.elements` imported.
 **Test Steps:**
-1. Construct `coll = RPCollection(mock_irp_collection)`.
+1. Construct `coll = IRPCollection(mock_irp_collection)`.
 2. Assert `coll[-1]` raises `IndexError` with message `"negative indices are not supported"`.
 3. Assert `coll[-100]` raises the same `IndexError`.
 4. Assert `mock_irp_collection.getItem` was NOT called for either negative-index attempt.
@@ -274,4 +274,4 @@ not equal even if their names match. `repr` exposes both class and name.
 - `len({a, b}) == 1`.
 - `repr(a)` contains `"RPClass"` and `"Foo"`.
 **Last Changed:** 2026-07-07
-
+

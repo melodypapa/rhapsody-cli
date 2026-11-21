@@ -92,13 +92,13 @@ on the context for subsequent commands.
 **Priority:** Medium
 **Description:**
 Verifies integration of `ListProjectsCommand.execute` with `RhapsodyContext.connect`,
-`RhapsodyApplication.getProjects` (returning an `RPCollection` of `RPProject`), and
+`RhapsodyApplication.getProjects` (returning an `IRPCollection` of `RPProject`), and
 `OutputFormatter.table`. The default `--output table` format must produce an ASCII grid table
 containing each project's name and path.
 **Pre-conditions:**
 - `CliRunner` available.
 - `RhapsodyApplication.connect` patched to return an app whose `getProjects` returns an
-  `RPCollection` of two mock `RPProject` objects with names `"P1"` and `"P2"`.
+  `IRPCollection` of two mock `RPProject` objects with names `"P1"` and `"P2"`.
 - `rhapsody_cli.models.elements` imported.
 **Test Steps:**
 1. `result = runner.invoke(cli, ["project", "list"])`.
@@ -126,12 +126,12 @@ an ASCII grid containing both project entries.
 **Priority:** Low
 **Description:**
 Verifies the empty-collection branch of `ListProjectsCommand.execute`: when
-`RhapsodyApplication.getProjects()` returns an `RPCollection` of length 0, the command must echo
+`RhapsodyApplication.getProjects()` returns an `IRPCollection` of length 0, the command must echo
 `"No open projects"` and exit cleanly without invoking the formatter.
 **Pre-conditions:**
 - `CliRunner` available.
 - `RhapsodyApplication.connect` patched to return an app whose `getProjects` returns an
-  `RPCollection` with `getCount() == 0`.
+  `IRPCollection` with `getCount() == 0`.
 - `rhapsody_cli.models.elements` imported.
 **Test Steps:**
 1. `result = runner.invoke(cli, ["project", "list"])`.
@@ -374,4 +374,4 @@ to `click.Abort`; `CliRunner` reports a non-zero exit code.
   `RhapsodyConnectionError`.
 - `openProject` spy call count is 0.
 **Last Changed:** 2026-07-07
-
+

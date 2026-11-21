@@ -456,9 +456,9 @@ def test_remove_graph_elements(self, test_project: RPProject) -> None:
     diagram = pkg.add_object_model_diagram(self._unique("MyDiagram"))
     try:
         node = diagram.add_new_node_for_element(cls, 0, 0, 100, 60)
-        from rhapsody_cli.models.core import RPCollection
+        from rhapsody_cli.models.core import IRPCollection
 
-        to_remove = RPCollection([node])  # verify RPCollection accepts a list; else build via get_graphical_elements() filter
+        to_remove = IRPCollection([node])  # verify IRPCollection accepts a list; else build via get_graphical_elements() filter
         diagram.remove_graph_elements(to_remove)
         remaining = diagram.get_graphical_elements()
         assert node not in list(remaining)
@@ -484,7 +484,7 @@ def test_get_last_visualization_modified_time(self, test_project: RPProject) -> 
         diagram.delete_from_project()
 ```
 
-Note: verify the exact `RPCollection` construction pattern used elsewhere in the codebase for building a collection from a Python list (check `RPCollection.__init__` in `src/rhapsody_cli/models/core.py`); adjust `test_remove_graph_elements` to match the real constructor signature — it may require going through the underlying COM collection object rather than a raw Python list.
+Note: verify the exact `IRPCollection` construction pattern used elsewhere in the codebase for building a collection from a Python list (check `IRPCollection.__init__` in `src/rhapsody_cli/models/core.py`); adjust `test_remove_graph_elements` to match the real constructor signature — it may require going through the underlying COM collection object rather than a raw Python list.
 
 - [ ] **Step 2: Run the new tests against live Rhapsody**
 

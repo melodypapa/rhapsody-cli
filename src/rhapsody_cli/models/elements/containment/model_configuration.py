@@ -2,14 +2,16 @@
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.containment.model_component import RPComponent
     from rhapsody_cli.models.elements.relations.model_instance import RPInstance
 
 
-class RPConfiguration(RPUnit):
+class RPConfiguration(IRPUnit):
     """Wraps ``IRPConfiguration``: a configuration that extends ``IRPUnit``."""
 
     # IRPConfiguration method parity checklist:
@@ -73,7 +75,7 @@ class RPConfiguration(RPUnit):
         """
         self.call_com(lambda: self._com.addInitialInstance(instance._com))
 
-    def add_package_to_instrumentation_scope(self, package: RPUnit) -> None:
+    def add_package_to_instrumentation_scope(self, package: IRPUnit) -> None:
         """Adds a package to the instrumentation scope.
 
         Args:
@@ -84,7 +86,7 @@ class RPConfiguration(RPUnit):
         """
         self.call_com(lambda: self._com.addPackageToInstrumentationScope(package._com))
 
-    def add_to_instrumentation_scope(self, element: RPUnit) -> None:
+    def add_to_instrumentation_scope(self, element: IRPUnit) -> None:
         """Adds an element to the instrumentation scope.
 
         Args:
@@ -117,16 +119,16 @@ class RPConfiguration(RPUnit):
         """
         return str(self._get_method_or_property(self._com, "getAdditionalSources", "additionalSources"))
 
-    def get_all_elements_in_instrumentation_scope(self) -> "RPCollection":
+    def get_all_elements_in_instrumentation_scope(self) -> "IRPCollection":
         """Returns all elements in instrumentation scope.
 
         Returns:
-            An ``RPCollection`` of all elements in instrumentation scope.
+            An ``IRPCollection`` of all elements in instrumentation scope.
 
         Reference:
             com.telelogic.rhapsody.core.IRPConfiguration::getAllElementsInInstrumentationScope()
         """
-        return RPCollection(self.call_com(lambda: self._com.getAllElementsInInstrumentationScope()))
+        return IRPCollection(self.call_com(lambda: self._com.getAllElementsInInstrumentationScope()))
 
     def get_build_set(self) -> str:
         """Returns the build set for the configuration.
@@ -194,16 +196,16 @@ class RPConfiguration(RPUnit):
         """
         return str(self._get_method_or_property(self._com, "getIncludePath", "includePath"))
 
-    def get_initial_instances(self) -> "RPCollection":
+    def get_initial_instances(self) -> "IRPCollection":
         """Returns all initial instances in the configuration.
 
         Returns:
-            An ``RPCollection`` of ``IRPInstance`` objects.
+            An ``IRPCollection`` of ``IRPInstance`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPConfiguration::getInitialInstances()
         """
-        return RPCollection(self.call_com(lambda: self._com.getInitialInstances()))
+        return IRPCollection(self.call_com(lambda: self._com.getInitialInstances()))
 
     def get_initialization_code(self) -> str:
         """Returns the initialization code for the configuration.
@@ -216,16 +218,16 @@ class RPConfiguration(RPUnit):
         """
         return str(self._get_method_or_property(self._com, "getInitializationCode", "initializationCode"))
 
-    def get_instrumentation_scope(self) -> "RPCollection":
+    def get_instrumentation_scope(self) -> "IRPCollection":
         """Returns the instrumentation scope for the configuration.
 
         Returns:
-            An ``RPCollection`` of elements in instrumentation scope.
+            An ``IRPCollection`` of elements in instrumentation scope.
 
         Reference:
             com.telelogic.rhapsody.core.IRPConfiguration::getInstrumentationScope()
         """
-        return RPCollection(self.call_com(lambda: self._com.getInstrumentationScope()))
+        return IRPCollection(self.call_com(lambda: self._com.getInstrumentationScope()))
 
     def get_instrumentation_type(self) -> int:
         """Returns the instrumentation type for the configuration.
@@ -370,7 +372,7 @@ class RPConfiguration(RPUnit):
         """
         return int(self.call_com(lambda: self._com.needsCodeGeneration()))
 
-    def remove_from_instrumentation_scope(self, element: RPUnit) -> None:
+    def remove_from_instrumentation_scope(self, element: IRPUnit) -> None:
         """Removes an element from instrumentation scope.
 
         Args:
@@ -381,7 +383,7 @@ class RPConfiguration(RPUnit):
         """
         self.call_com(lambda: self._com.removeFromInstrumentationScope(element._com))
 
-    def remove_package_from_instrumentation_scope(self, package: RPUnit) -> None:
+    def remove_package_from_instrumentation_scope(self, package: IRPUnit) -> None:
         """Removes a package from instrumentation scope.
 
         Args:
@@ -403,7 +405,7 @@ class RPConfiguration(RPUnit):
         """
         self._set_method_or_property(self._com, "setAdditionalSources", "additionalSources", value)
 
-    def set_all_elements_in_instrumentation_scope(self, elements: "RPCollection") -> None:
+    def set_all_elements_in_instrumentation_scope(self, elements: "IRPCollection") -> None:
         """Sets all elements in instrumentation scope.
 
         Args:

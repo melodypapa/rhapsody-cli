@@ -262,7 +262,7 @@ Integration tests will validate **every wrapper method** in every model class:
 
 1. Implement `tests/integration/models/test_core.py`
 2. Create tests for `RPModelElement` base class methods
-3. Create tests for `RPCollection` wrapper
+3. Create tests for `IRPCollection` wrapper
 4. Create tests for `RPUnit` wrapper
 
 ### Phase 3: Element Wrapper Integration Tests

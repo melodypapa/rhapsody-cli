@@ -114,7 +114,7 @@ against a known target.
   is propagated, Then a `RhapsodyRuntimeException` (not a raw `pywintypes.com_error`) is
   raised with the original COM message preserved.
 - Given one or more projects are open, When I call `app.getProjects()`, Then an
-  `RPCollection` is returned whose length equals the number of open projects and whose
+  `IRPCollection` is returned whose length equals the number of open projects and whose
   items are wrapped `RPProject` instances.
 - Given a project has been opened and made active, When I call `app.activeProject()`, Then
   the returned `RPProject` matches the project most recently made active.
@@ -181,4 +181,4 @@ Open two different fixture projects, one in each app, and assert
 then assert `app_b.activeProject()` still returns the expected project (i.e., `app_b` is
 unaffected). Finally call `app_b.quit()` to clean up.
 **Last Changed:** 2026-07-07
-
+

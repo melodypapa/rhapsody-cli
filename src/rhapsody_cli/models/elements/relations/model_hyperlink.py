@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING, Optional
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 from rhapsody_cli.models.elements.relations.model_dependency import RPDependency
 
 if TYPE_CHECKING:
@@ -24,7 +24,7 @@ class RPHyperLink(RPDependency):
     # [inherited] irp_dependency / irp_model_element methods (covered by rp_dependency / rp_model_element checklists)
     # Deprecated IRPHyperLink methods listed above.
 
-    def get_target(self) -> Optional[RPModelElement]:
+    def get_target(self) -> Optional[IRPModelElement]:
         """Returns the target element of the hyperlink.
 
         Returns:
@@ -57,7 +57,7 @@ class RPHyperLink(RPDependency):
         """
         AbstractRPModelElement.call_com(lambda: self._com.setDisplayOption(display_option))
 
-    def set_target(self, target: RPModelElement) -> None:
+    def set_target(self, target: IRPModelElement) -> None:
         """Sets the target element of the hyperlink.
 
         Args:

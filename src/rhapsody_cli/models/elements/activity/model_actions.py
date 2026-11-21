@@ -2,7 +2,8 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 from rhapsody_cli.models.elements.interactions.model_interactions import RPMessage
 from rhapsody_cli.models.elements.statemachine.model_statemachine import RPState
 from rhapsody_cli.models.elements.values.model_values import RPValueSpecification
@@ -81,7 +82,7 @@ class RPAcceptTimeEvent(RPState):
         AbstractRPModelElement._set_method_or_property(self._com, "setDurationTime", "durationTime", duration_time)
 
 
-class RPAction(RPModelElement):
+class RPAction(IRPModelElement):
     """Wraps ``IRPAction``: represents the action defined for a transition in a statechart."""
 
     # IRPAction method parity checklist:
@@ -198,34 +199,34 @@ class RPContextSpecification(RPValueSpecification):
     # [inherited] irp_value_specification methods (covered by rp_value_specification checklist)
     # No deprecated IRPContextSpecification methods.
 
-    def get_multiplicities(self) -> "RPCollection":
+    def get_multiplicities(self) -> "IRPCollection":
         """Returns the collection of relevant indices for each of the model elements in the "value" collection.
 
         Returns:
-            A ``RPCollection`` of indices (integers provided as strings) for the
+            A ``IRPCollection`` of indices (integers provided as strings) for the
             model elements in the "value" collection.
 
         Reference:
             com.telelogic.rhapsody.core.IRPContextSpecification::getMultiplicities()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getMultiplicities", "multiplicities"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getMultiplicities", "multiplicities"))
 
-    def get_value(self) -> "RPCollection":
+    def get_value(self) -> "IRPCollection":
         """Returns the collection of strings that represents the model elements constituting the full path to the element.
 
         Returns:
-            A ``RPCollection`` of strings representing the full path to the element.
+            A ``IRPCollection`` of strings representing the full path to the element.
 
         Reference:
             com.telelogic.rhapsody.core.IRPContextSpecification::getValue()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getValue", "value"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getValue", "value"))
 
-    def set_multiplicities(self, multiplicities: "RPCollection") -> None:
+    def set_multiplicities(self, multiplicities: "IRPCollection") -> None:
         """Specifies the collection of indices to use for the model elements in the "value" collection.
 
         Args:
-            multiplicities: A ``RPCollection`` of indices (integers provided as
+            multiplicities: A ``IRPCollection`` of indices (integers provided as
                 strings) for the model elements in the "value" collection.
 
         Reference:
@@ -233,11 +234,11 @@ class RPContextSpecification(RPValueSpecification):
         """
         AbstractRPModelElement.call_com(lambda: self._com.setMultiplicities(multiplicities._com))
 
-    def set_value(self, value: "RPCollection") -> None:
+    def set_value(self, value: "IRPCollection") -> None:
         """Specifies the collection of strings that represents the model elements constituting the full path to the element.
 
         Args:
-            value: A ``RPCollection`` of strings representing the full path to the
+            value: A ``IRPCollection`` of strings representing the full path to the
                 element.
 
         Reference:
@@ -274,17 +275,17 @@ class RPSendAction(RPAction):
         """
         AbstractRPModelElement.call_com(lambda: self._com.addArgumentValue(value, position))
 
-    def get_arg_vals(self) -> "RPCollection":
+    def get_arg_vals(self) -> "IRPCollection":
         """Returns a collection of the argument values set for the event associated with the Send Action element.
 
         Returns:
-            A ``RPCollection`` of strings representing the argument values that
+            A ``IRPCollection`` of strings representing the argument values that
             were set for the event.
 
         Reference:
             com.telelogic.rhapsody.core.IRPSendAction::getArgVals()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getArgVals", "argVals"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getArgVals", "argVals"))
 
     def get_event(self) -> "RPEvent":
         """Gets the event sent by the Send Action element.
@@ -308,7 +309,7 @@ class RPSendAction(RPAction):
         """
         return cast("RPInterfaceItem", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getInvokedOperation", "invokedOperation")))
 
-    def get_target(self) -> Optional["RPModelElement"]:
+    def get_target(self) -> Optional["IRPModelElement"]:
         """Gets the event target of the Send Action element.
 
         Returns:
@@ -344,7 +345,7 @@ class RPSendAction(RPAction):
         """
         AbstractRPModelElement._set_method_or_property(self._com, "setInvokedOperation", "invokedOperation", invoked_operation._com)
 
-    def set_target(self, target: "RPModelElement") -> None:
+    def set_target(self, target: "IRPModelElement") -> None:
         """Sets the specified model element to be the target of the Send Action element.
 
         Args:

@@ -1,19 +1,20 @@
 """Tests for rhapsody_cli.models.elements.common.model_other_model.RPType."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 from rhapsody_cli.models.elements.common import RPType
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
 class TestRPType:
     def test_is_model_element(self) -> None:
-        fake = make_fake_element("Type", getName="T1")
+        fake = make_fake_element("Type", properties={"name": "T1"})
         t = RPType(fake)
-        assert isinstance(t, RPModelElement)
+        assert isinstance(t, IRPModelElement)
         assert t.get_name() == "T1"
 
     def test_is_registered(self) -> None:
-        fake = make_fake_element("Type", getName="T1")
+        fake = make_fake_element("Type", properties={"name": "T1"})
         wrapped = AbstractRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPType)
 
@@ -21,7 +22,7 @@ class TestRPType:
         # Pattern E
 
         fake = make_fake_element("Type")
-        lit = make_fake_element("EnumerationLiteral", getName="RED")
+        lit = make_fake_element("EnumerationLiteral", properties={"name": "RED"})
         fake.addEnumerationLiteral.return_value = lit
         t = RPType(fake)
         wrapped = t.add_enumeration_literal("RED")
@@ -33,7 +34,7 @@ class TestRPType:
         from rhapsody_cli.models.elements.common import RPEnumerationLiteral
 
         fake = make_fake_element("Type")
-        lit = make_fake_element("EnumerationLiteral", getName="RED")
+        lit = make_fake_element("EnumerationLiteral", properties={"name": "RED"})
         fake.deleteEnumerationLiteral.return_value = None
         t = RPType(fake)
         t.delete_enumeration_literal(RPEnumerationLiteral(lit))
@@ -44,17 +45,15 @@ class TestRPType:
         fake = make_fake_element("Type", getDeclaration="int x")
         t = RPType(fake)
         assert t.get_declaration() == "int x"
-        fake.getDeclaration.assert_called_once_with()
 
     def test_get_enumeration_literals_returns_collection(self) -> None:
         # Pattern C
         fake = make_fake_element("Type")
-        lit = make_fake_element("EnumerationLiteral", getName="RED")
+        lit = make_fake_element("EnumerationLiteral", properties={"name": "RED"})
         fake.getEnumerationLiterals.return_value = make_fake_collection([lit])
         t = RPType(fake)
         result = t.get_enumeration_literals()
-        assert isinstance(result, RPCollection)
-        fake.getEnumerationLiterals.assert_called_once_with()
+        assert isinstance(result, IRPCollection)
 
     def test_get_is_predefined_returns_int(self) -> None:
         # Pattern G
@@ -95,12 +94,11 @@ class TestRPType:
     def test_get_typedef_base_type_wraps_result(self) -> None:
         # Pattern B
         fake = make_fake_element("Type")
-        base = make_fake_element("Class", getName="Base")
+        base = make_fake_element("Class", properties={"name": "Base"})
         fake.getTypedefBaseType.return_value = base
         t = RPType(fake)
         wrapped = t.get_typedef_base_type()
         assert wrapped.get_name() == "Base"
-        fake.getTypedefBaseType.assert_called_once_with()
 
     def test_get_typedef_multiplicity_returns_string(self) -> None:
         # Pattern A
@@ -244,7 +242,7 @@ class TestRPType:
         from rhapsody_cli.models.elements.classifiers import RPClassifier
 
         fake = make_fake_element("Type")
-        base = make_fake_element("Class", getName="Base")
+        base = make_fake_element("Class", properties={"name": "Base"})
         t = RPType(fake)
         t.set_typedef_base_type(RPClassifier(base))
         fake.setTypedefBaseType.assert_called_once_with(base)

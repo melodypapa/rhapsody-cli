@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Add integration tests for the 142 remaining untested methods of `RPModelElement`, `RPUnit`, and `RPCollection` in `src/rhapsody_cli/models/core.py`, and flip their in-source `[ ] integration test` checklist markers to `[x]`.
+**Goal:** Add integration tests for the 142 remaining untested methods of `RPModelElement`, `RPUnit`, and `IRPCollection` in `src/rhapsody_cli/models/core.py`, and flip their in-source `[ ] integration test` checklist markers to `[x]`.
 
 **Architecture:** Extends `tests/integration/models/test_core.py` with additional test methods/classes, using the existing `rhapsody_app`/`test_project` fixtures from `tests/integration/conftest.py`. Tests exercise real COM objects, asserting both return type and read-back persisted state.
 
@@ -19,7 +19,7 @@
 - After each task's tests pass, flip the corresponding `[ ] integration test` to `[x] integration test` in `src/rhapsody_cli/models/core.py` for every method that task covers
 - Quality gate after each task: `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ && pytest tests/unit` (integration tests themselves are run separately with `pytest tests/integration -m integration`, which requires a live, attached Rhapsody instance — do not assume CI runs them)
 - Follow the exact style of `tests/integration/models/elements/classifiers/test_model_class.py`
-- **Exception for RPCollection:** 8 of the `IRPCollection` checklist rows (`addGraphicalItem`, `toList`, `setSize`, `remove`, `setString`, `setModelElement`, `empty`, `setInteger`) are marked `[ ] impl` — they have no implementation yet. Task 16 below is the one deliberate exception to the "no behavior change" rule: it implements these 8 methods (following the exact patterns already used elsewhere in `RPCollection`/`RPModelElement`), adds unit tests (with fakes, per `tests/unit/models/fakes.py`), and adds integration tests, before flipping their checklist boxes. All other 17 tasks are integration-test-only additions with zero behavior change to `core.py`.
+- **Exception for IRPCollection:** 8 of the `IRPCollection` checklist rows (`addGraphicalItem`, `toList`, `setSize`, `remove`, `setString`, `setModelElement`, `empty`, `setInteger`) are marked `[ ] impl` — they have no implementation yet. Task 16 below is the one deliberate exception to the "no behavior change" rule: it implements these 8 methods (following the exact patterns already used elsewhere in `IRPCollection`/`RPModelElement`), adds unit tests (with fakes, per `tests/unit/models/fakes.py`), and adds integration tests, before flipping their checklist boxes. All other 17 tasks are integration-test-only additions with zero behavior change to `core.py`.
 
 ---
 
@@ -38,7 +38,7 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.core import RPCollection, RPModelElement
+from rhapsody_cli.models.core import IRPCollection, RPModelElement
 from rhapsody_cli.models.elements.containment import RPPackage, RPProject
 
 
@@ -67,7 +67,7 @@ class TestRPModelElementDependenciesIntegration:
             assert isinstance(dependency, RPModelElement)
 
             deps = source.get_dependencies()
-            assert isinstance(deps, RPCollection)
+            assert isinstance(deps, IRPCollection)
             assert len(list(deps)) >= 1
 
             source.delete_dependency(dependency)
@@ -213,7 +213,7 @@ class TestRPModelElementDescriptionDisplayNameIntegration:
 For the remaining methods, follow the same pattern:
 - `set_description_rtf`/`get_description_rtf`/`is_description_rtf` — set an RTF-formatted string (e.g. `r"{\rtf1 Hello}"`), then verify `is_description_rtf()` returns truthy and `get_description_rtf()` round-trips.
 - `set_description_html`/`get_description_html` — the docstring notes the Java API documents this as "not implemented"; verify actual live behavior and mark `xfail(reason="Rhapsody documents setDescriptionHTML as unimplemented", strict=False)` if it silently no-ops.
-- `set_description_and_hyperlinks` needs an `RPCollection` of target elements — build one with two classes and assert the description text is applied (hyperlink target verification can be skipped if the Java API does not expose a getter for created hyperlinks distinctly from `get_hyper_links`).
+- `set_description_and_hyperlinks` needs an `IRPCollection` of target elements — build one with two classes and assert the description text is applied (hyperlink target verification can be skipped if the Java API does not expose a getter for created hyperlinks distinctly from `get_hyper_links`).
 - `set_display_name`/`get_display_name`, `set_display_name_rtf`/`get_display_name_rtf`/`is_display_name_rtf` follow the identical roundtrip pattern as descriptions, substituting the display name accessors.
 
 - [ ] **Step 2: Run the new tests against live Rhapsody**
@@ -280,7 +280,7 @@ class TestRPModelElementPropertiesIntegration:
 
 For the remaining methods, follow the same pattern:
 - `add_property` creates a brand-new custom property (`property_key`, `property_type`, `property_value`) that does not exist on the metaclass by default; verify via `get_property_value` after adding, then `remove_property` and confirm `get_property_value_explicit` no longer returns the explicit value (falls back to default/empty).
-- `get_property_value_conditional`/`get_property_value_conditional_explicit` need `formal_key`/`actual_values` `RPCollection` arguments — build empty `RPCollection`s (via an existing collection-returning call, e.g. `cls.get_all_tags()`, cleared, or a helper that wraps a raw COM collection) if the live property is non-conditional, and assert the returned value matches the unconditional value.
+- `get_property_value_conditional`/`get_property_value_conditional_explicit` need `formal_key`/`actual_values` `IRPCollection` arguments — build empty `IRPCollection`s (via an existing collection-returning call, e.g. `cls.get_all_tags()`, cleared, or a helper that wraps a raw COM collection) if the live property is non-conditional, and assert the returned value matches the unconditional value.
 - `get_overridden_properties_by_pattern` should use a pattern string matching the property key set above (e.g. `"*ShowNumbering*"`) and assert the property is found with `localy_overriden_only=1`.
 
 - [ ] **Step 2: Run the new tests against live Rhapsody**
@@ -410,7 +410,7 @@ class TestRPModelElementCloningTemplatesIntegration:
 For the remaining methods, follow the same pattern:
 - `change_to` should change a class into another compatible metaclass (e.g. `"Class"` -> `"ClassCategory"` or a documented safe conversion) and assert `get_meta_class()` reflects the new type; capture the returned handle since the original is invalidated.
 - `become_template_instantiation_of`/`get_of_template`/`set_of_template`/`get_ti`/`set_ti`/`synchronize_template_instantiation` require a template class (`is_a_template()` returns `1`, achieved via `add_stereotype`/property, or via a class with template parameters) and an instantiation class; assert `get_of_template().get_name()` matches after `become_template_instantiation_of`.
-- `get_template_parameters` should be called on the template class and assert the returned `RPCollection` is empty or contains parameters if any were added.
+- `get_template_parameters` should be called on the template class and assert the returned `IRPCollection` is empty or contains parameters if any were added.
 - `is_a_template` should assert `0` for a plain class and `1` once configured as a template (via the project's template mechanism, e.g. adding a template parameter or applying the relevant metatype flag).
 - If constructing a true template/instantiation pair proves impractical with the base `RPModelElement`/`RPClass` API alone, mark the template-pair-dependent tests `xfail(reason="requires template parameter API from classifiers subpackage", strict=False)` and note the dependency for the classifiers subpackage's own plan.
 
@@ -475,8 +475,8 @@ class TestRPModelElementRedefinesConstraintsIntegration:
 ```
 
 For the remaining methods, follow the same pattern:
-- `get_constraints` should be exercised on an element that has at least one constraint annotation attached (create via the annotations/constraints element API if available, else assert the call succeeds and returns an empty `RPCollection` on a plain class).
-- `get_constraints_by_him` is documented "for internal use only" — assert it returns an `RPCollection` without raising; if it consistently mirrors `get_constraints`, assert equality of counts.
+- `get_constraints` should be exercised on an element that has at least one constraint annotation attached (create via the annotations/constraints element API if available, else assert the call succeeds and returns an empty `IRPCollection` on a plain class).
+- `get_constraints_by_him` is documented "for internal use only" — assert it returns an `IRPCollection` without raising; if it consistently mirrors `get_constraints`, assert equality of counts.
 
 - [ ] **Step 2: Run the new tests against live Rhapsody**
 
@@ -532,7 +532,7 @@ class TestRPModelElementOslcRemoteIntegration:
 
 For the remaining methods, follow the same pattern:
 - `delete_oslc_link` and `get_oslc_links` both raise `NotImplementedError` per the docstrings (Rhapsody2.Application.1 does not expose these) — assert `pytest.raises(NotImplementedError)` for each, confirming live behavior matches the documented limitation.
-- `get_hyper_links` should be exercised on an element with a hyperlink set via `set_description_and_hyperlinks` (Task 3) and assert the collection is non-empty; on a plain element assert it returns an empty `RPCollection`.
+- `get_hyper_links` should be exercised on an element with a hyperlink set via `set_description_and_hyperlinks` (Task 3) and assert the collection is non-empty; on a plain element assert it returns an empty `IRPCollection`.
 - `get_remote_uri`/`is_remote` should assert an empty string / `0` respectively for a normal (non-DOORS, non-RMM) model element.
 - `get_rmm_url` should assert an empty string (or a valid URL if the live test project is RMM-connected) without raising.
 - `get_requirement_traceability_handle`/`set_requirement_traceability_handle` should be exercised on a requirement-capable element (create via the requirements subpackage if available, else on a plain class if the property still applies) with a roundtrip: set an int handle, read it back.
@@ -663,8 +663,8 @@ class TestRPModelElementDiagnosticsUiIntegration:
 
 For the remaining methods, follow the same pattern:
 - `get_error_message` mirrors `error_message` — assert the same empty-string behavior after a successful call.
-- `get_annotations` should assert an empty `RPCollection` for a plain class (annotation-attaching helpers likely live in the annotations subpackage; coordinate if a fixture is needed).
-- `get_controlled_files` should assert an empty `RPCollection` for a project not under configuration management.
+- `get_annotations` should assert an empty `IRPCollection` for a plain class (annotation-attaching helpers likely live in the annotations subpackage; coordinate if a fixture is needed).
+- `get_controlled_files` should assert an empty `IRPCollection` for a project not under configuration management.
 - `get_save_unit` should assert the returned wrapped unit's `get_name()` matches the owning package/unit name (classes are typically saved as part of their owning unit).
 - `get_main_diagram`/`set_main_diagram` should roundtrip: create a diagram (via the package/class's diagram-adding API), `set_main_diagram(diagram)`, then assert `get_main_diagram().get_guid() == diagram.get_guid()`.
 - `has_panel_widget` should assert `0` for an element not bound to a panel diagram widget.
@@ -864,7 +864,7 @@ class TestRPUnitCrossProjectIntegration:
 For the remaining methods, follow the same pattern:
 - `copy_to_another_project` requires a second open project as the target — if only one project is available via the session fixture, either create a second `RPProject` inline via `rhapsody_app.create_new_project(...)` in a temp directory (cleaning it up in `finally`) or mark `xfail(reason="requires a second live project", strict=False)`.
 - `move_to_another_project_leave_a_reference`/`reference_to_another_project` follow the same two-project setup as `copy_to_another_project`; assert `is_reference_unit()` returns `1` on the resulting reference unit where applicable.
-- `get_structure_diagrams` should assert an empty `RPCollection` for a class with no structure diagrams (or non-empty after adding one via the diagram-adding API).
+- `get_structure_diagrams` should assert an empty `IRPCollection` for a class with no structure diagrams (or non-empty after adding one via the diagram-adding API).
 - `get_add_to_model_mode` should assert the returned `int` matches `AddToModelMode.AS_UNIT_WITH_COPY` (or the appropriate constant) for a locally-created unit.
 - `is_reference_unit` should assert `0` for a locally-owned unit and `1` for a unit created via `reference_to_another_project`.
 
@@ -891,7 +891,7 @@ git commit -m "test: add integration tests for RPUnit cross-project/nesting meth
 
 ---
 
-## Task 14: RPCollection Direct Access — `add_item`
+## Task 14: IRPCollection Direct Access — `add_item`
 
 **Files:**
 - Modify: `tests/integration/models/test_core.py`
@@ -902,12 +902,12 @@ git commit -m "test: add integration tests for RPUnit cross-project/nesting meth
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-from rhapsody_cli.models.core import RPCollection
+from rhapsody_cli.models.core import IRPCollection
 
 
 @pytest.mark.integration
-class TestRPCollectionAddItemIntegration:
-    """Integration tests for RPCollection.add_item with real Rhapsody COM API."""
+class TestIRPCollectionAddItemIntegration:
+    """Integration tests for IRPCollection.add_item with real Rhapsody COM API."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
@@ -922,7 +922,7 @@ class TestRPCollectionAddItemIntegration:
             existing = pkg.get_nested_elements()
             before_count = len(list(existing))
 
-            collection = RPCollection(existing._com)
+            collection = IRPCollection(existing._com)
             collection.add_item(cls_b)
 
             assert collection.get_count() >= before_count
@@ -932,7 +932,7 @@ class TestRPCollectionAddItemIntegration:
             pkg.delete_from_project()
 ```
 
-Note: `IRPCollection::addItem` semantics vary by the underlying collection's mutability (some Rhapsody collections returned by getters are read-only snapshots). If the live COM object rejects the mutation, assert the specific `RhapsodyRuntimeException` is raised instead, or construct a genuinely mutable collection (e.g. one built fresh via `RPCollection` wrapping a raw `IRPApplication`-created collection, if such a factory exists elsewhere in the codebase) and mark the read-only case `xfail(reason="live Rhapsody collection returned by getNestedElements is read-only", strict=False)` if confirmed.
+Note: `IRPCollection::addItem` semantics vary by the underlying collection's mutability (some Rhapsody collections returned by getters are read-only snapshots). If the live COM object rejects the mutation, assert the specific `RhapsodyRuntimeException` is raised instead, or construct a genuinely mutable collection (e.g. one built fresh via `IRPCollection` wrapping a raw `IRPApplication`-created collection, if such a factory exists elsewhere in the codebase) and mark the read-only case `xfail(reason="live Rhapsody collection returned by getNestedElements is read-only", strict=False)` if confirmed.
 
 - [ ] **Step 2: Run the new tests against live Rhapsody**
 
@@ -952,23 +952,23 @@ Expected: all pass
 
 ```bash
 git add tests/integration/models/test_core.py src/rhapsody_cli/models/core.py
-git commit -m "test: add integration test for RPCollection.add_item"
+git commit -m "test: add integration test for IRPCollection.add_item"
 ```
 
 ---
 
-## Task 15: RPCollection Mutation Methods — Implement & Test (exception to no-behavior-change rule)
+## Task 15: IRPCollection Mutation Methods — Implement & Test (exception to no-behavior-change rule)
 
 **Files:**
-- Modify: `src/rhapsody_cli/models/core.py` (implement 8 new `RPCollection` methods, following the existing `add_item`/`get_item` patterns; flip `[ ] impl`, `[ ] docstring` and checklist boxes for these methods)
+- Modify: `src/rhapsody_cli/models/core.py` (implement 8 new `IRPCollection` methods, following the existing `add_item`/`get_item` patterns; flip `[ ] impl`, `[ ] docstring` and checklist boxes for these methods)
 - Modify: `tests/unit/models/test_core.py` (or equivalent unit test module — verify exact path with `glob` before editing) — add unit tests using `make_fake_collection`/fakes
 - Modify: `tests/integration/models/test_core.py` — add integration tests
 
 **Methods covered:** `add_graphical_item` (`addGraphicalItem`), `to_list` (`toList`), `set_size` (`setSize`), `remove` (`remove`), `set_string` (`setString`), `set_model_element` (`setModelElement`), `empty` (`empty`), `set_integer` (`setInteger`)
 
-- [ ] **Step 1: Implement the 8 missing `RPCollection` methods**
+- [ ] **Step 1: Implement the 8 missing `IRPCollection` methods**
 
-Add snake_case wrapper methods to `RPCollection` in `core.py`, mirroring the existing `add_item`/`get_item` implementation style:
+Add snake_case wrapper methods to `IRPCollection` in `core.py`, mirroring the existing `add_item`/`get_item` implementation style:
 
 ```python
 def set_size(self, size: int) -> None:
@@ -1052,7 +1052,7 @@ def to_list(self) -> "list[Any]":
 
 ```python
 def test_empty_removes_all_elements(make_fake_collection):
-    collection = RPCollection(make_fake_collection([make_fake_element(name="A")]))
+    collection = IRPCollection(make_fake_collection([make_fake_element(name="A")]))
     collection.empty()
     assert collection.get_count() == 0
 ```
@@ -1063,8 +1063,8 @@ Follow the same pattern for `set_size`, `remove`, `set_model_element`, `set_stri
 
 ```python
 @pytest.mark.integration
-class TestRPCollectionMutationIntegration:
-    """Integration tests for the newly implemented RPCollection mutation methods."""
+class TestIRPCollectionMutationIntegration:
+    """Integration tests for the newly implemented IRPCollection mutation methods."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
@@ -1086,7 +1086,7 @@ Follow the same pattern for `set_size`, `remove`, `set_model_element`, `set_stri
 
 - [ ] **Step 4: Run unit and integration tests**
 
-Run: `pytest tests/unit -k RPCollection -v` then `pytest tests/integration/models/test_core.py -m integration -v`
+Run: `pytest tests/unit -k IRPCollection -v` then `pytest tests/integration/models/test_core.py -m integration -v`
 Expected: all PASS (or documented `xfail`)
 
 - [ ] **Step 5: Flip checklist boxes**
@@ -1102,7 +1102,7 @@ Expected: all pass
 
 ```bash
 git add src/rhapsody_cli/models/core.py tests/unit/models/test_core.py tests/integration/models/test_core.py
-git commit -m "feat: implement and test remaining RPCollection mutation methods"
+git commit -m "feat: implement and test remaining IRPCollection mutation methods"
 ```
 
 ---
@@ -1125,7 +1125,7 @@ Expected: all tests PASS (or documented `xfail`), with no unexpected failures or
 grep -n "\[ \] integration test" src/rhapsody_cli/models/core.py
 ```
 
-Expected: no output (empty result) — every `RPModelElement`, `RPUnit`, and `RPCollection` checklist row now shows `[x] integration test`. Also verify no `[ ] impl` / `[ ] docstring` / `[ ] unit test` boxes remain for `RPCollection`'s previously-unimplemented methods:
+Expected: no output (empty result) — every `RPModelElement`, `RPUnit`, and `IRPCollection` checklist row now shows `[x] integration test`. Also verify no `[ ] impl` / `[ ] docstring` / `[ ] unit test` boxes remain for `IRPCollection`'s previously-unimplemented methods:
 
 ```bash
 grep -n "\[ \] impl\|\[ \] docstring\|\[ \] unit test" src/rhapsody_cli/models/core.py

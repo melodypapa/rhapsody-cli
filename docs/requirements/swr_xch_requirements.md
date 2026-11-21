@@ -209,10 +209,10 @@ The exchange module
 **Priority:** Medium
 **Description:**
 The `RhapsodyModelHelper` base class
-- SHALL expose `find_child_by_name(parent, name) -> Optional[RPModelElement]` (PUBLIC) that iterates `parent.get_nested_elements()` and returns the first child whose `get_name()` matches, else `None`.
+- SHALL expose `find_child_by_name(parent, name) -> Optional[IRPModelElement]` (PUBLIC) that iterates `parent.get_nested_elements()` and returns the first child whose `get_name()` matches, else `None`.
 - SHALL expose `_set_type_kind(type_element, kind) -> None` (PRIVATE) that calls `type_element.set_kind(kind)` with try/except.
 - SHALL expose `apply_stereotypes(element, stereotypes)` and `apply_tags(element, tags)` (PUBLIC).
-- SHALL expose `resolve_classifier(name) -> Optional[RPModelElement]` (PUBLIC) that recursively searches the project for a classifier by name.
+- SHALL expose `resolve_classifier(name) -> Optional[IRPModelElement]` (PUBLIC) that recursively searches the project for a classifier by name.
 - SHALL expose `get_classifier_name(classifier) -> Optional[str]` (PUBLIC) — None-safe wrapper around `classifier.get_name()`.
 - SHALL expose private helpers `_collect_children(container)`, `_get_project_name(element)`, `_wrap_if_needed(element)`.
 - SHALL be subclassed by `RhapsodyImporter` and `RhapsodyExporter`; the base class itself SHALL NOT perform YAML I/O.

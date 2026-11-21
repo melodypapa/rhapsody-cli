@@ -8,20 +8,21 @@ Pythonic wrapper around the IBM Rhapsody COM API. All method names use snake_cas
 
 | Layer | Path | Purpose |
 |-------|------|---------|
-| Models | `src/rhapsody_cli/models/` | COM wrappers for 97+ element types. `elements/` has 13 domain subpackages (`activity/`, `classifiers/`, `common/`, `containment/`, `diagrams/`, `graphics/`, `interactions/`, `relations/`, `requirements/`, `statemachine/`, `templates/`, `values/`, `variables/`). `support/` wraps codegen/IDE/file APIs. `core.py` = `AbstractRPModelElement`, `RPModelElement`, `RPCollection`, `RPUnit`. |
+| Models | `src/rhapsody_cli/models/` | COM wrappers for 97+ element types. `elements/` has 13 domain subpackages (`activity/`, `classifiers/`, `common/`, `containment/`, `diagrams/`, `graphics/`, `interactions/`, `relations/`, `requirements/`, `statemachine/`, `templates/`, `values/`, `variables/`). `support/` wraps codegen/IDE/file APIs. `core.py` = `AbstractRPModelElement`, `IRPModelElement`, `IRPCollection`, `RPUnit`. |
 | Application | `src/rhapsody_cli/application.py` | `RhapsodyApplication` — attach/launch/connect to Rhapsody. Prog ID: `Rhapsody2.Application.1`. |
 | CLI | `src/rhapsody_cli/cli/` + `commands/` + `actions/` | argparse (stdlib), "PanGu style": `AbstractCommand` → `AbstractAction`. Dispatch: `main()` → `AbstractCommand.execute()` → `AbstractAction.execute()`. **Actual command groups:** `class`, `attribute`, `operation`, `package`, `port`, `project` (not `element`/`io` — older docs are stale). |
 
 ## COM Wrapping Rules (critical)
 
-- Standalone COM utilities in `com_utils.py`: `call_com()`, `_get_method_or_property()`, `_set_method_or_property()`. Used by both `RhapsodyApplication` and element wrappers.
-- All COM calls → `call_com(lambda: self._com.methodName(...))` (translates `com_error` → `RhapsodyRuntimeException`). On elements, use `self.call_com(...)` (classmethod on `AbstractRPModelElement` forwards to `com_utils.call_com`).
-- No-arg getters → `_get_method_or_property(self._com, "getX", "x")` (prefers method, falls back to property; strings are COM identifiers, not Python names)
-- Parameterized getters → MUST use `call_com` directly (`_get_method_or_property` drops extra args)
-- Single-arg setters → `_set_method_or_property(self._com, "setX", "x", value)`
-- Multi-arg setters → MUST use `call_com` directly
+- The generated pywin32 interface is authoritative: the member name and method/property shape for every COM call come from `docs/reports/pywin32_authority.json`. COM names (`BinaryID`, `isAbstract`, `getIsFinal`) are **string arguments only**, never Python identifiers.
+- Standalone COM utilities in `com_utils.py`: `call_com()`, `get_com_property()`, `set_com_property()` (used by both `RhapsodyApplication` and element wrappers). Legacy fallback pair `_get_method_or_property()` / `_set_method_or_property()` remains only in wrappers not yet migrated.
+- **No runtime name probing or fallback**: never "try the Java-style method name first". A wrapper calls exactly one pywin32-exposed member.
+- All method-shaped COM calls → `call_com(lambda: self._com.methodName(...))` (translates `com_error` → `RhapsodyRuntimeException`). On elements, use `self.call_com(...)` (classmethod on `AbstractRPModelElement` forwards to `com_utils.call_com`). Parameterized/multi-arg calls MUST use this form.
+- Property-shaped members → `AbstractRPModelElement.get_com_property(self._com, "propName")` / `set_com_property(self._com, "propName", value)` (read/write exactly the authoritative name).
 - Return wrapped element → `AbstractRPModelElement.wrap(...)` or specific wrapper constructor
-- Return collection → `RPCollection(self.call_com(...))`
+- Return collection → `IRPCollection(self.call_com(...))`
+- Migration is per-class via rhapsody-sync runs: each synced class's own methods drop the legacy helpers; the legacy pair is deleted after the last class migrates.
+- **Wrapper classes are named after the Java interface** (`IRPClass`, `IRPModelElement`, `IRPCollection`, ...) — never the legacy `RP*` facade name. The class's module, mirrored test modules, and per-class requirement/RST documents use the same Java-derived snake_case (`irp_class.py`, `test_irp_class.py`, `irp_class.md`). Each sync run renames its class; `AbstractRPModelElement` (infrastructure, not a Java interface) keeps its name.
 
 ## Testing
 
@@ -44,7 +45,7 @@ Write failing test first, then implement. Coverage target 80% min, 90%+ preferre
 
 Each file under `tests/integration/models/elements/` targets **exactly one wrapper class** and asserts only on methods that class **owns**. Parent-class methods are **setup only**, never the subject of an assertion.
 
-**Why:** `RPModelElement` methods (`get_name`, `get_meta_class`, `get_owner`, `delete_from_project`) and `RPClassifier` methods (`add_attribute`, `add_operation`, `add_relation_to`, `add_statechart`, …) are already covered in `test_core.py` and `test_model_classifier.py`. Re-testing them in a child's file is noise and hides the child's own (often untested) methods.
+**Why:** `IRPModelElement` methods (`get_name`, `get_meta_class`, `get_owner`, `delete_from_project`) and `RPClassifier` methods (`add_attribute`, `add_operation`, `add_relation_to`, `add_statechart`, …) are already covered in `test_core.py` and `test_model_classifier.py`. Re-testing them in a child's file is noise and hides the child's own (often untested) methods.
 
 **Rules:**
 
@@ -81,7 +82,6 @@ See [docs/CODE_GUIDELINES.md](docs/CODE_GUIDELINES.md) for detailed coding stand
 
 ## Forbidden
 
-- `from __future__ import annotations` (use string-quoted forward refs or `TYPE_CHECKING` imports instead)
 - `Any` type in type annotations (use accurate concrete types, `Union`, `TypedDict`, or `object` instead — see [docs/CODE_GUIDELINES.md](docs/CODE_GUIDELINES.md#type-annotations))
 - `element._com.delete()` (use `element.delete_from_project()` instead)
 - `Co-authored-by: Copilot` or any AI attribution
@@ -92,7 +92,7 @@ See [docs/CODE_GUIDELINES.md](docs/CODE_GUIDELINES.md) for detailed coding stand
 **Read `docs/java_api` (HTML dir) first** — javadoc-generated, documents Java model classes with exact method names/signatures. Authoritative for "does this method exist on this IRP* interface".
 
 1. Create `src/rhapsody_cli/models/elements/<subpackage>/model_<class>.py`
-2. Subclass `RPModelElement`, add methods using snake_case names mirroring Java API
+2. Subclass `IRPModelElement`, add methods using snake_case names mirroring Java API
 3. `AbstractRPModelElement.register_wrapper("MetaClass", RPMyClass)` at module level
 4. Add import in the subpackage's `__init__.py`
 5. Write tests using `make_fake_element` / `make_fake_collection` (mock exact Java method names from `docs/java_api` HTML docs)

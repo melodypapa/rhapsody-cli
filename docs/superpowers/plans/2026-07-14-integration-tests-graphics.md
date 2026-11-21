@@ -31,7 +31,7 @@
 
 ### Flagged: `RPImageMap` creation path
 
-`RPImageMap` (7 methods) — **Creation path now available:** `RhapsodyApplication.create_new_collection() -> RPCollection` creates an empty collection, then `diagram.get_pictures_with_image_map(file_name, collection)` populates it with `IRPImageMap` objects. The wrapper bug (0-arg signature) has been fixed in Tasks 1-2 of the xfail-improvements plan. Task for RPImageMap should: (1) create a diagram with at least one graph element, (2) call `app.create_new_collection()`, (3) call `diagram.get_pictures_with_image_map("test.emf", collection)`, (4) iterate `collection` to get `RPImageMap` objects, (5) exercise all 7 getter methods. Use real assertions, not xfail.
+`RPImageMap` (7 methods) — **Creation path now available:** `RhapsodyApplication.create_new_collection() -> IRPCollection` creates an empty collection, then `diagram.get_pictures_with_image_map(file_name, collection)` populates it with `IRPImageMap` objects. The wrapper bug (0-arg signature) has been fixed in Tasks 1-2 of the xfail-improvements plan. Task for RPImageMap should: (1) create a diagram with at least one graph element, (2) call `app.create_new_collection()`, (3) call `diagram.get_pictures_with_image_map("test.emf", collection)`, (4) iterate `collection` to get `RPImageMap` objects, (5) exercise all 7 getter methods. Use real assertions, not xfail.
 
 ---
 
@@ -41,7 +41,7 @@
 - All test classes use `@pytest.mark.integration`
 - All tests consume the `test_project: RPProject` fixture
 - Use `_unique(prefix)` with `uuid.uuid4().hex[:8]` (see `tests/integration/models/elements/classifiers/test_model_actor.py` for the canonical pattern)
-- Always `try/finally` cleanup using the correct delete/remove method verified from source (`element.delete_from_project()` for model elements/units; `diagram.remove_graph_elements(RPCollection)` for pure graphics-only elements that have no `delete_from_project`)
+- Always `try/finally` cleanup using the correct delete/remove method verified from source (`element.delete_from_project()` for model elements/units; `diagram.remove_graph_elements(IRPCollection)` for pure graphics-only elements that have no `delete_from_project`)
 - Assert both `isinstance()` and read-back values
 - Flip `[ ] integration test` to `[x]` per task in `model_graphics.py`
 - Quality gate after each task: `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ && pytest tests/unit`
@@ -238,7 +238,7 @@ class TestRPGraphElementIntegrationPartA:
 
     # For remaining methods, follow the same pattern:
     # - test_apply_default_format: node.apply_default_format() -> no exception raised
-    # - test_get_all_properties: node.get_all_properties() -> RPCollection, contains added property
+    # - test_get_all_properties: node.get_all_properties() -> IRPCollection, contains added property
     # - test_get_associated_image / get_image_layout / get_selected_image (Task 3 counterpart setters):
     #   read-only getters here just assert type/None-or-str without raising
     # - test_get_graphical_parent: nest a node inside another graphical container (e.g. a state within
@@ -405,7 +405,7 @@ git commit -m "test: add integration tests for RPGraphicalProperty"
 
 **Methods covered:** `getInterfaceName`, `getIsGUID`, `getName`, `getPictureFileName`, `getPoints`, `getShape`, `getTarget` (7)
 
-**Note:** A creation path is now available via the xfail-improvements plan: `RhapsodyApplication.create_new_collection()` produces an empty `RPCollection`, and `RPDiagram.get_pictures_with_image_map(file_name, collection)` (now correctly taking `(firstFileName, diagrammap)`) populates that collection with `IRPImageMap` objects. The test below should use real assertions, not `xfail`.
+**Note:** A creation path is now available via the xfail-improvements plan: `RhapsodyApplication.create_new_collection()` produces an empty `IRPCollection`, and `RPDiagram.get_pictures_with_image_map(file_name, collection)` (now correctly taking `(firstFileName, diagrammap)`) populates that collection with `IRPImageMap` objects. The test below should use real assertions, not `xfail`.
 
 - [ ] **Step 1: Write the failing/new integration tests**
 
@@ -643,7 +643,7 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.core import RPCollection
+from rhapsody_cli.models.core import IRPCollection
 from rhapsody_cli.models.elements.containment import RPPackage, RPProject
 from rhapsody_cli.models.elements.graphics import RPMatrixLayout, RPTableLayout
 
@@ -666,11 +666,11 @@ class TestRPMatrixLayoutIntegration:
             matrix = pkg.add_new_aggr("MatrixLayout", self._unique("Matrix"))
             assert isinstance(matrix, RPMatrixLayout)
             from_types = matrix.get_from_element_types()
-            assert isinstance(from_types, RPCollection)
+            assert isinstance(from_types, IRPCollection)
             to_types = matrix.get_to_element_types()
-            assert isinstance(to_types, RPCollection)
+            assert isinstance(to_types, IRPCollection)
             cell_types = matrix.get_cell_element_types()
-            assert isinstance(cell_types, RPCollection)
+            assert isinstance(cell_types, IRPCollection)
             assert matrix.get_from_element_types_use_query_or_elements_list() in (0, 1)
             assert matrix.get_to_element_types_use_query_or_elements_list() in (0, 1)
         finally:
@@ -678,7 +678,7 @@ class TestRPMatrixLayoutIntegration:
 
     # For remaining methods, follow the same pattern:
     # - test_set_cell_element_types / set_from_element_types / set_to_element_types: build a
-    #   RPCollection of metaclass-name strings (or model elements, per COM contract — verify live)
+    #   IRPCollection of metaclass-name strings (or model elements, per COM contract — verify live)
     #   and roundtrip via the matching getter
     # - test_from_element_types_query_to_use roundtrip: create an RPTableLayout via
     #   pkg.add_new_aggr("TableLayout", name) as query, matrix.set_from_element_types_query_to_use(query),
@@ -766,7 +766,7 @@ class TestRPMatrixViewIntegrationPartA:
     #   element types (Task 8), call view.get_cell_elements(0, 0) / view.get_cell_string(0, 0)
     # - test_get_content: view.get_content("HTML") or another ContentFormat constant
     # - test_get_html_content: view.get_html_content() -> str
-    # - test_get_image_collection: view.get_image_collection() -> RPCollection
+    # - test_get_image_collection: view.get_image_collection() -> IRPCollection
     # - test_get_from_scope / get_to_scope: view.get_from_scope() / get_to_scope() -> wrapped scope
     #   element or None
 ```
@@ -1169,7 +1169,7 @@ class TestRPTableLayoutIntegrationPartD:
     # For remaining methods, follow the same pattern:
     # - test_set_column_property: layout.set_column_property(0, "SomeKey", "SomeValue") -> read back
     #   via get_column_property (Task 13 getter)
-    # - test_set_element_types / set_from_element_types / set_to_element_types: build an RPCollection
+    # - test_set_element_types / set_from_element_types / set_to_element_types: build an IRPCollection
     #   of metaclass-name strings and roundtrip via the matching Task 13 getters
     # - test_set_from/to_element_types_query_to_use: build a second RPTableLayout as a sub-query,
     #   set via setter, verify via Task 13's getter
@@ -1255,7 +1255,7 @@ class TestRPTableViewIntegrationPartA:
     #   content via view.get_cell_elements(0, 0) / view.get_cell_string(0, 0)
     # - test_get_content: view.get_content("HTML") or another ContentFormat constant
     # - test_get_html_content: view.get_html_content() -> str
-    # - test_get_image_collection: view.get_image_collection() -> RPCollection
+    # - test_get_image_collection: view.get_image_collection() -> IRPCollection
     # - test_get_scope: view.get_scope() -> wrapped scope element or None
 ```
 

@@ -2,38 +2,40 @@
 
 from typing import cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement, RPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 from rhapsody_cli.models.elements.requirements.model_requirements import RPAnnotation
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
 def test_annotation_is_a_unit() -> None:
-    fake = make_fake_element("Annotation", getName="Note1")
+    fake = make_fake_element("Annotation", properties={"name": "Note1"})
     annotation = RPAnnotation(fake)
 
-    assert isinstance(annotation, RPUnit)
+    assert isinstance(annotation, IRPUnit)
     assert annotation.get_name() == "Note1"
 
 
 def test_annotation_add_anchor_delegates_to_com() -> None:
     fake = make_fake_element("Annotation")
-    target = make_fake_element("Class", getName="Widget")
+    target = make_fake_element("Class", properties={"name": "Widget"})
     annotation = RPAnnotation(fake)
 
-    annotation.add_anchor(cast(RPModelElement, AbstractRPModelElement.wrap(target)))
+    annotation.add_anchor(cast(IRPModelElement, AbstractRPModelElement.wrap(target)))
 
     fake.addAnchor.assert_called_once_with(target)
 
 
 def test_annotation_get_anchored_by_me_returns_collection() -> None:
-    inner = make_fake_element("Class", getName="Widget")
+    inner = make_fake_element("Class", properties={"name": "Widget"})
     fake = make_fake_element("Annotation")
     fake.getAnchoredByMe.return_value = make_fake_collection([inner])
     annotation = RPAnnotation(fake)
 
     result = annotation.get_anchored_by_me()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
     assert len(result) == 1
 
 
@@ -67,10 +69,10 @@ def test_annotation_is_specification_rtf_delegates_to_com() -> None:
 
 def test_annotation_remove_anchor_delegates_to_com() -> None:
     fake = make_fake_element("Annotation")
-    target = make_fake_element("Class", getName="Widget")
+    target = make_fake_element("Class", properties={"name": "Widget"})
     annotation = RPAnnotation(fake)
 
-    annotation.remove_anchor(cast(RPModelElement, AbstractRPModelElement.wrap(target)))
+    annotation.remove_anchor(cast(IRPModelElement, AbstractRPModelElement.wrap(target)))
 
     fake.removeAnchor.assert_called_once_with(target)
 

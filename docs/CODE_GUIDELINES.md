@@ -48,44 +48,41 @@ supported_formats = ("json", "csv")  # ❌ Lowercase for constants
 
 ## Python Compatibility & Imports
 
-### ❌ DO NOT USE: `from __future__ import annotations`
+### ✅ USE: `from __future__ import annotations`
 
-**This import is FORBIDDEN.** Remove it from all files immediately if found.
+**This import is REQUIRED** in files that reference not-yet-defined types (including self-references).
 
-### Why?
+It lets type annotations be written without string quotes, e.g. `-> IRPClass` instead of `-> "IRPClass"`. Place it as the first statement after the module docstring.
 
-- **Already fixed once:** This issue has been resolved across the entire codebase. Do not reintroduce it.
-- **Runtime overhead:** Defers all annotations, causing issues with type checkers and runtime reflection.
-- **Unnecessary complexity:** We support Python 3.8+ with explicit type hints—no need to defer evaluation.
-- **Breaks mypy strict mode:** Type checking becomes unreliable.
+- `cast(Type, value)` still evaluates its first argument at runtime, so types used only in `cast()` must be imported at runtime (a local import inside the method avoids circular imports).
+- `TYPE_CHECKING` imports remain valid for names referenced only in annotations.
 
 ### ❌ WRONG:
 ```python
-from __future__ import annotations
-
-def my_function() -> str:
-    return "hello"
-```
-
-### ✅ CORRECT:
-```python
-def my_function() -> str:
-    return "hello"
-```
-
-### Handling Forward References (When Needed)
-
-If you need forward references to undefined types, use string quotes:
-
-```python
 class Node:
-    def __init__(self, value: int, next_node: 'Node | None' = None):
+    def __init__(self, value: int, next_node: "Node | None" = None):
         self.value = value
         self.next_node = next_node
 ```
+### ✅ CORRECT:
+```python
+from __future__ import annotations
 
-Or use conditional imports and `TYPE_CHECKING`:
+class Node:
+    def __init__(self, value: int, next_node: Node | None = None):
+        self.value = value
+        self.next_node = next_node
+```
+### Handling Forward References (When Needed)Use `from __future__ import annotations` and write the type without quotes:
+```python
+from __future__ import annotations
 
+class Node:
+    def __init__(self, value: int, next_node: Node | None = None):
+        self.value = value
+        self.next_node = next_node
+```
+`TYPE_CHECKING` imports remain valid for names used only in annotations:
 ```python
 from typing import TYPE_CHECKING
 
@@ -93,7 +90,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.cli.context import RhapsodyContext
 
 class MyAction:
-    def __init__(self, ctx: 'RhapsodyContext'):
+    def __init__(self, ctx: RhapsodyContext):
         self.ctx = ctx
 ```
 
@@ -153,7 +150,7 @@ Method and function arguments should be on the same line as the method name, not
 
 **✅ CORRECT: Arguments on same line**
 ```python
-def get_element(self, name: str, element_type: str) -> Optional[RPModelElement]:
+def get_element(self, name: str, element_type: str) -> Optional[IRPModelElement]:
     return self._find_element(name, element_type)
 
 def connect(self, timeout: int = 30, attach_only: bool = False) -> RhapsodyApplication:
@@ -171,7 +168,7 @@ def get_element(
     self,
     name: str,
     element_type: str
-) -> Optional[RPModelElement]:
+) -> Optional[IRPModelElement]:
     return self._find_element(name, element_type)
 
 def connect(
@@ -209,7 +206,7 @@ def export_to_yaml(
 from typing import Dict, List, Optional, Union
 
 # CORRECT: Concrete types
-def get_element(name: str, element_type: str) -> Optional[RPModelElement]:
+def get_element(name: str, element_type: str) -> Optional[IRPModelElement]:
     return self._find_element(name, element_type)
 
 # CORRECT: Dict with key/value types
@@ -247,7 +244,7 @@ def format_value(value: Any) -> str:
 | Scenario | Use Instead |
 |----------|-------------|
 | Unknown dict structure | `Dict[str, Union[str, int, bool]]` or define a `TypedDict` |
-| Unknown list contents | `List[<concrete_type>]` (e.g., `List[str]`, `List[RPModelElement]`) |
+| Unknown list contents | `List[<concrete_type>]` (e.g., `List[str]`, `List[IRPModelElement]`) |
 | Multiple possible types | `Union[TypeA, TypeB, TypeC]` |
 | Truly unknown object | `object` (still allows isinstance checks; `Any` allows everything silently) |
 | JSON/dynamic data | Define a `TypedDict` or use `Dict[str, Union[...]]` with known value types |
@@ -937,7 +934,7 @@ def test_something_with_context(mock_context):
 All code reviews must verify:
 
 ### Python Compatibility
-- [ ] **NO `from __future__ import annotations`** (this is forbidden)
+- [ ] **`from __future__ import annotations`** present (if forward refs are used), with no quoted type annotations
 - [ ] All imports organized (stdlib → third-party → local)
 - [ ] No unused imports?
 
@@ -1013,9 +1010,11 @@ The generated pywin32 interface from the registered `Rhapsody2 1.0` type library
 
 - Confirm COM member names and kinds in `docs/reports/pywin32_authority.json`.
 - Call method-shaped members with `call_com(lambda: self._com.methodName(...))`.
-- Read/write property-shaped members with `_get_method_or_property` / `_set_method_or_property`, Java name first and pywin32 name second. COM names are string arguments only.
+- Read/write property-shaped members with `get_com_property` / `set_com_property`, calling the exact authoritative name. COM names are string arguments only. There is no runtime name probing or Java-name fallback: every wrapper member depends on exactly one pywin32-exposed COM member.
+- Legacy note: `_get_method_or_property` / `_set_method_or_property` (Java-name-first probes) remain only in wrappers not yet migrated; each rhapsody-sync run removes them from the synced class, and the pair is deleted once the last class migrates.
 - Python-facing names follow this document: snake_case methods and UPPERCASE constants. Where a class is migrated to `@property`, its name is the snake_case canonical member name.
 - Remove wrappers calling members absent from pywin32, or keep a documented `NotImplementedError` stub listed in `documented_unavailable`.
+- Wrapper classes are named after the Java interface (`IRPClass`, `IRPModelElement`, ...) — never the legacy `RP*` facade name. Module, test, and per-class document file names use the same Java-derived snake_case. Each rhapsody-sync run renames its class.
 - Property/method refactors are scoped to one class at a time; do not reshape the shared wrapper hierarchy for one interface's deviations.
 - Regenerate the affected report with `python scripts/validate_model_api.py <IRPInterface> --source authority --path docs/reports` and require zero rows under `## Comparison details`.
 

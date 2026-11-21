@@ -2,7 +2,8 @@
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.relations.model_instance import RPInstance
 
 if TYPE_CHECKING:
@@ -19,27 +20,27 @@ class RPAssociationRole(RPInstance):
     # [inherited] irp_instance / irp_relation / irp_unit / irp_model_element methods (covered by rp_instance / rp_relation / rp_unit / rp_model_element checklists)
     # No deprecated IRPAssociationRole methods.
 
-    def get_classifier_roles(self) -> RPCollection:
+    def get_classifier_roles(self) -> IRPCollection:
         """Returns the classifier roles associated with this association role.
 
         Returns:
-            An ``RPCollection`` of classifier roles.
+            An ``IRPCollection`` of classifier roles.
 
         Reference:
             com.telelogic.rhapsody.core.IRPAssociationRole::getClassifierRoles()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getClassifierRoles", "classifierRoles"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getClassifierRoles", "classifierRoles"))
 
-    def get_formal_relations(self) -> RPCollection:
+    def get_formal_relations(self) -> IRPCollection:
         """Returns the formal relations for this association role.
 
         Returns:
-            An ``RPCollection`` of relations.
+            An ``IRPCollection`` of relations.
 
         Reference:
             com.telelogic.rhapsody.core.IRPAssociationRole::getFormalRelations()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getFormalRelations", "formalRelations"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getFormalRelations", "formalRelations"))
 
     def get_role_type(self) -> "RPClassifier":
         """Returns the role type (classifier) for this association role.

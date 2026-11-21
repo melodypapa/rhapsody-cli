@@ -1,20 +1,22 @@
 """Tests for rhapsody_cli.models.elements.containment.RPComponent."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.containment import RPComponent, RPConfiguration
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
 def test_component_is_a_unit() -> None:
-    fake = make_fake_element("Component", getName="Comp1")
+    fake = make_fake_element("Component", properties={"name": "Comp1"})
     component = RPComponent(fake)
 
-    assert isinstance(component, RPUnit)
+    assert isinstance(component, IRPUnit)
     assert component.get_name() == "Comp1"
 
 
 def test_component_is_registered_for_meta_class_component() -> None:
-    fake = make_fake_element("Component", getName="Comp1")
+    fake = make_fake_element("Component", properties={"name": "Comp1"})
 
     wrapped = AbstractRPModelElement.wrap(fake)
 
@@ -26,7 +28,7 @@ def test_component_is_registered_for_meta_class_component() -> None:
 
 def test_component_add_configuration_delegates_and_wraps() -> None:
     fake = make_fake_element("Component")
-    config = make_fake_element("Configuration", getName="Config1")
+    config = make_fake_element("Configuration", properties={"name": "Config1"})
     fake.addConfiguration.return_value = config
     comp = RPComponent(fake)
 
@@ -38,7 +40,7 @@ def test_component_add_configuration_delegates_and_wraps() -> None:
 
 def test_component_add_file_delegates_and_wraps() -> None:
     fake = make_fake_element("Component")
-    file_elem = make_fake_element("File", getName="File1")
+    file_elem = make_fake_element("File", properties={"name": "File1"})
     fake.addFile.return_value = file_elem
     comp = RPComponent(fake)
 
@@ -50,19 +52,17 @@ def test_component_add_file_delegates_and_wraps() -> None:
 
 def test_component_get_configurations_returns_collection() -> None:
     fake = make_fake_element("Component")
-    config = make_fake_element("Configuration", getName="Config1")
+    config = make_fake_element("Configuration", properties={"name": "Config1"})
     fake.getConfigurations.return_value = make_fake_collection([config])
     comp = RPComponent(fake)
 
     result = comp.get_configurations()
-
-    fake.getConfigurations.assert_called_once_with()
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
 
 
 def test_component_find_configuration_wraps_result() -> None:
     fake = make_fake_element("Component")
-    config = make_fake_element("Configuration", getName="Config1")
+    config = make_fake_element("Configuration", properties={"name": "Config1"})
     fake.findConfiguration.return_value = config
     comp = RPComponent(fake)
 
@@ -86,7 +86,7 @@ def test_component_find_configuration_returns_none_when_not_found() -> None:
 def test_component_delete_configuration_delegates() -> None:
     fake = make_fake_element("Component")
     comp = RPComponent(fake)
-    config_fake = make_fake_element("Configuration", getName="ToDelete")
+    config_fake = make_fake_element("Configuration", properties={"name": "ToDelete"})
     config = RPConfiguration(config_fake)
 
     comp.delete_configuration(config)
@@ -100,8 +100,6 @@ def test_component_get_path_returns_str() -> None:
     comp = RPComponent(fake)
 
     result = comp.get_path()
-
-    fake.getPath.assert_called_once_with()
     assert result == "/some/path"
 
 

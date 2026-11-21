@@ -4,13 +4,13 @@ These fakes stand in for real win32com dispatch objects so tests can run
 without a licensed Rhapsody installation.
 """
 
-from typing import Any, List
+from typing import Any, Dict, List, Optional
 from unittest.mock import MagicMock
 
 import pywintypes
 
 
-def make_fake_element(meta_class: str, **method_returns: Any) -> MagicMock:
+def make_fake_element(meta_class: str, properties: Optional[Dict[str, Any]] = None, **method_returns: Any) -> MagicMock:
     """Build a fake COM object representing an IRPModelElement subtype.
 
     ``meta_class`` is the string returned by ``getMetaClass()`` (e.g.
@@ -20,11 +20,20 @@ def make_fake_element(meta_class: str, **method_returns: Any) -> MagicMock:
     ``method_returns`` maps method names to the value that mock method
     should return when called, e.g. ``getName="Foo"`` configures
     ``fake.getName()`` to return ``"Foo"``.
+
+    ``properties`` maps pywin32 property names to the plain value a
+    bare attribute read should return, e.g.
+    ``properties={"isAbstract": 1}`` makes ``fake.isAbstract`` read as
+    ``1`` (not a callable mock). Property-shaped wrappers read these
+    via ``get_com_property`` / ``set_com_property``.
     """
     fake = MagicMock(name=f"FakeCom[{meta_class}]")
     fake.getMetaClass.return_value = meta_class
+    fake.metaClass = meta_class  # plain attribute: wrappers migrated to get_com_property
     for method_name, return_value in method_returns.items():
         getattr(fake, method_name).return_value = return_value
+    for prop_name, prop_value in (properties or {}).items():
+        setattr(fake, prop_name, prop_value)
     return fake
 
 
@@ -38,7 +47,9 @@ def make_fake_collection(items: List[Any]) -> MagicMock:
 
     fake = MagicMock(name="FakeCollection")
     fake.getCount.return_value = len(items)
+    fake.Count = len(items)  # plain attribute: wrappers migrated to get_com_property
     fake.getItem.side_effect = get_item
+    fake.Item.side_effect = get_item  # method form: wrappers migrated to call_com(Item)
     return fake
 
 

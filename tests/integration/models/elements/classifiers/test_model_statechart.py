@@ -11,7 +11,7 @@ import uuid
 import pytest
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
-from rhapsody_cli.models.core import RPModelElement
+from rhapsody_cli.models.core import IRPModelElement
 from rhapsody_cli.models.elements.classifiers import RPStatechart
 from rhapsody_cli.models.elements.containment import RPPackage, RPProject
 
@@ -64,7 +64,7 @@ class TestRPStatechartIntegration:
             sc = test_class.add_statechart()
             root = sc.get_root_state()
             assert root is not None
-            assert isinstance(root, RPModelElement)
+            assert isinstance(root, IRPModelElement)
         finally:
             test_class.delete_from_project()
 

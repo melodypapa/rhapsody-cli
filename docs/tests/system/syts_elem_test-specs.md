@@ -64,7 +64,7 @@ with the right arguments.
 **Description:**
 This test verifies end-to-end diagram operations through the `RPDiagram` wrapper: adding a
 text box with positional arguments, closing the diagram, retrieving custom views as an
-`RPCollection`, and retrieving the graphic elements corresponding to a model element.
+`IRPCollection`, and retrieving the graphic elements corresponding to a model element.
 **Pre-conditions:**
 - A fake `IRPDiagram` COM object (meta class "ActivityDiagram") whose `addTextBox(text,
   x, y, w, h)` returns a fake text-box element, whose `getCustomViews()` returns a fake
@@ -77,9 +77,9 @@ text box with positional arguments, closing the diagram, retrieving custom views
 1. Wrap the fake diagram COM object and assert an `RPDiagram` is returned.
 2. Call `diagram.addTextBox("Note", 10, 20, 100, 50)` and assert a wrapped element is
    returned.
-3. Call `diagram.getCustomViews()` and assert an `RPCollection` of length 2 is returned.
+3. Call `diagram.getCustomViews()` and assert an `IRPCollection` of length 2 is returned.
 4. Wrap a fake model element and pass it to
-   `diagram.getCorrespondingGraphicElements(model_element)`; assert an `RPCollection` is
+   `diagram.getCorrespondingGraphicElements(model_element)`; assert an `IRPCollection` is
    returned.
 5. Call `diagram.closeDiagram()` and assert the fake's `closeDiagram` was called once.
 6. Inspect the fake call recorder to confirm `addTextBox` received the positional
@@ -87,7 +87,7 @@ text box with positional arguments, closing the diagram, retrieving custom views
 **Expected Result:**
 - `addTextBox` returns a wrapped element and forwards all positional arguments to the COM
   method in order.
-- `getCustomViews` and `getCorrespondingGraphicElements` return `RPCollection` instances.
+- `getCustomViews` and `getCorrespondingGraphicElements` return `IRPCollection` instances.
 - `closeDiagram` delegates to the fake COM method exactly once.
 **Verification Criteria:**
 - Pass if all return-type assertions hold, the `addTextBox` arguments are forwarded
@@ -170,12 +170,12 @@ methods.
 5. Wrap the fake use case and call `usecase.addExtensionPoint("EP1")`; assert the fake
    received "EP1".
 6. Call `getExtensionPoints()`, `getEntryPoints()`, and `getDescribingDiagrams()` and
-   assert each returns an `RPCollection`.
+   assert each returns an `IRPCollection`.
 **Expected Result:**
 - `addEventReceptionWithEvent` returns a wrapped reception and forwards the event's raw
   COM object.
 - `setIsBehaviorOverriden(True)` -> 1, and `getIsBehaviorOverriden()` returns a bool.
-- All three use-case collection methods return `RPCollection` instances.
+- All three use-case collection methods return `IRPCollection` instances.
 **Verification Criteria:**
 - Pass if all return types are correct, the event COM object is forwarded (not the
   wrapper), and bool translation works.
@@ -195,7 +195,7 @@ methods.
 **Description:**
 This test verifies end-to-end operations on `RPRequirement` and `RPInstance` wrappers:
 getting and setting the requirement ID, and on an instance retrieving nested elements,
-attribute values, and in/out links as `RPCollection`s.
+attribute values, and in/out links as `IRPCollection`s.
 **Pre-conditions:**
 - A fake `IRPRequirement` ("Requirement") whose `getRequirementID()` returns "REQ-001"
   and which records `setRequirementID(id)`.
@@ -208,19 +208,19 @@ attribute values, and in/out links as `RPCollection`s.
    "REQ-001".
 2. Call `req.setRequirementID("REQ-002")` and assert the fake received "REQ-002".
 3. Wrap the fake instance and call `inst.getAllNestedElements()`; assert an
-   `RPCollection` is returned.
+   `IRPCollection` is returned.
 4. Call `inst.getAttributeValue("foo")` and assert it returns "value1".
 5. Call `inst.setAttributeValue("foo", "bar")` and assert the fake received both
    arguments.
 6. Call `inst.getInLinks()` and `inst.getOutLinks()`; assert each returns an
-   `RPCollection`.
+   `IRPCollection`.
 **Expected Result:**
 - Requirement ID get/set delegate correctly with string arguments.
-- Instance collection methods return `RPCollection` instances.
+- Instance collection methods return `IRPCollection` instances.
 - `getAttributeValue` / `setAttributeValue` delegate string arguments correctly.
 **Verification Criteria:**
 - Pass if all return values and recorded arguments match expectations.
-- Fail if any method fails to delegate, or if collection methods return a non-`RPCollection`
+- Fail if any method fails to delegate, or if collection methods return a non-`IRPCollection`
   type.
 **Last Changed:** 2026-07-07
 
@@ -261,4 +261,4 @@ returned.
 - Fail if any meta class is missing from the registry (returns the generic
   `RPModelElement` fallback) or if `wrap()` raises.
 **Last Changed:** 2026-07-07
-
+

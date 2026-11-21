@@ -1,7 +1,8 @@
 from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.application import RhapsodyApplication
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 from rhapsody_cli.models.elements.diagrams.model_diagram_types import RPSequenceDiagram
 from rhapsody_cli.models.elements.graphics.model_graphics import RPTableLayout
 from rhapsody_cli.models.support.model_codegen import (
@@ -53,23 +54,23 @@ class TestRPCodeGenerator:
     def test_get_code_annotations_delegates_to_com(self) -> None:
         fake = make_fake_element("CodeGenerator")
         target = make_fake_element("X")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getCodeAnnotations.return_value = make_fake_collection([inner])
         obj = RPCodeGenerator(fake)
-        result = obj.get_code_annotations(cast(RPModelElement, AbstractRPModelElement.wrap(target)), 1)
+        result = obj.get_code_annotations(cast(IRPModelElement, AbstractRPModelElement.wrap(target)), 1)
         fake.getCodeAnnotations.assert_called_once_with(target, 1)
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         assert len(result) == 1
 
     def test_get_generated_file_names_delegates_to_com(self) -> None:
         fake = make_fake_element("CodeGenerator")
         target = make_fake_element("X")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getGeneratedFileNames.return_value = make_fake_collection([inner])
         obj = RPCodeGenerator(fake)
-        result = obj.get_generated_file_names(cast(RPModelElement, AbstractRPModelElement.wrap(target)))
+        result = obj.get_generated_file_names(cast(IRPModelElement, AbstractRPModelElement.wrap(target)))
         fake.getGeneratedFileNames.assert_called_once_with(target)
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         assert len(result) == 1
 
 
@@ -182,19 +183,19 @@ class TestRPRhapsodyServer:
 class TestRPRoundTrip:
     def test_roundtrip_file_delegates_to_com(self) -> None:
         fake = make_fake_element("RoundTrip")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.roundtripFile.return_value = make_fake_collection([inner])
         obj = RPRoundTrip(fake)
         result = obj.roundtrip_file("x", 1)
         fake.roundtripFile.assert_called_once_with("x", 1)
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         assert len(result) == 1
 
 
 class TestRPSearchManager:
     def test_create_search_query_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchManager")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.createSearchQuery.return_value = inner
         obj = RPSearchManager(fake)
         result = obj.create_search_query()
@@ -204,12 +205,12 @@ class TestRPSearchManager:
     def test_search_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchManager")
         target = make_fake_element("X")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.search.return_value = make_fake_collection([inner])
         obj = RPSearchManager(fake)
         result = obj.search(cast(RPSearchQuery, AbstractRPModelElement.wrap(target)))
         fake.search.assert_called_once_with(target)
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         assert len(result) == 1
 
     def test_search_and_show_results_delegates_to_com(self) -> None:
@@ -276,7 +277,7 @@ class TestRPSearchQuery:
         fake = make_fake_element("SearchQuery")
         target = make_fake_element("X")
         obj = RPSearchQuery(fake)
-        obj.add_search_scope(cast(RPModelElement, AbstractRPModelElement.wrap(target)))
+        obj.add_search_scope(cast(IRPModelElement, AbstractRPModelElement.wrap(target)))
         fake.addSearchScope.assert_called_once_with(target)
 
     def test_add_table_to_views_list_delegates_to_com(self) -> None:
@@ -290,11 +291,11 @@ class TestRPSearchQuery:
 
     def test_get_filter_element_types_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchQuery")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getFilterElementTypes.return_value = make_fake_collection([inner])
         obj = RPSearchQuery(fake)
         result = obj.get_filter_element_types()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         assert len(result) == 1
 
     def test_get_filter_reference_include_referenced_elements_in_search_results_delegates_to_com(self) -> None:
@@ -341,29 +342,29 @@ class TestRPSearchQuery:
 
     def test_get_filter_search_in_fields_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchQuery")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getFilterSearchInFields.return_value = make_fake_collection([inner])
         obj = RPSearchQuery(fake)
         result = obj.get_filter_search_in_fields()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         assert len(result) == 1
 
     def test_get_filter_stereotypes_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchQuery")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getFilterStereotypes.return_value = make_fake_collection([inner])
         obj = RPSearchQuery(fake)
         result = obj.get_filter_stereotypes()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         assert len(result) == 1
 
     def test_get_filter_sub_queries_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchQuery")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getFilterSubQueries.return_value = make_fake_collection([inner])
         obj = RPSearchQuery(fake)
         result = obj.get_filter_sub_queries()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         assert len(result) == 1
 
     def test_get_filter_sub_query_use_with_not_operator_delegates_to_com(self) -> None:
@@ -405,16 +406,16 @@ class TestRPSearchQuery:
 
     def test_get_search_scope_elements_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchQuery")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getSearchScopeElements.return_value = make_fake_collection([inner])
         obj = RPSearchQuery(fake)
         result = obj.get_search_scope_elements()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         assert len(result) == 1
 
     def test_get_view_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchQuery")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getView.return_value = inner
         obj = RPSearchQuery(fake)
         result = obj.get_view(0)
@@ -485,7 +486,7 @@ class TestRPSearchQuery:
         fake.removeSearchScopeElement.return_value = 1
         obj = RPSearchQuery(fake)
         wrapped = AbstractRPModelElement.wrap(target)
-        result = obj.remove_search_scope_element(cast(RPModelElement, wrapped))
+        result = obj.remove_search_scope_element(cast(IRPModelElement, wrapped))
         fake.removeSearchScopeElement.assert_called_once_with(target)
         assert result == 1
 
@@ -504,7 +505,7 @@ class TestRPSearchQuery:
     def test_save_as_query_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchQuery")
         target = make_fake_element("X")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.saveAsQuery.return_value = inner
         obj = RPSearchQuery(fake)
         wrapped = AbstractRPModelElement.wrap(target)
@@ -574,7 +575,7 @@ class TestRPSearchQuery:
 
     def test_get_search_scope_object_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchQuery")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getSearchScopeObject.return_value = inner
         obj = RPSearchQuery(fake)
         result = obj.get_search_scope_object()
@@ -657,7 +658,7 @@ class TestRPSearchQuery:
         target = make_fake_element("X")
         obj = RPSearchQuery(fake)
         wrapped = AbstractRPModelElement.wrap(target)
-        obj.set_search_scope_object(cast(RPModelElement, wrapped))
+        obj.set_search_scope_object(cast(IRPModelElement, wrapped))
         fake.setSearchScopeObject.assert_called_once_with(target)
 
     def test_set_search_text_delegates_to_com(self) -> None:
@@ -688,16 +689,16 @@ class TestRPSearchResult:
 
     def test_get_matched_fields_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchResult")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getMatchedFields.return_value = make_fake_collection([inner])
         obj = RPSearchResult(fake)
         result = obj.get_matched_fields()
-        assert isinstance(result, RPCollection)
+        assert isinstance(result, IRPCollection)
         assert len(result) == 1
 
     def test_get_matched_object_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchResult")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getMatchedObject.return_value = inner
         obj = RPSearchResult(fake)
         result = obj.get_matched_object()
@@ -705,7 +706,7 @@ class TestRPSearchResult:
 
     def test_get_name_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchResult")
-        fake.getName.return_value = "value"
+        fake.name = "value"
         obj = RPSearchResult(fake)
         assert obj.get_name() == "value"
 

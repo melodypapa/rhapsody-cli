@@ -18,7 +18,7 @@
 inheritance where `IRPProject` extends `IRPPackage`. It shall expose Java-mirrored
 methods: `addPackage(name)` (returns wrapped new package), `close()`,
 `becomeActiveProject()`, `findComponent(name)` (returns wrapped component), and
-`getPackages()` (returns `RPCollection`). The wrapper shall register itself for the
+`getPackages()` (returns `IRPCollection`). The wrapper shall register itself for the
 meta class `"Project"`.
 **Implementation:** src/rhapsody_cli/models/elements/containment.py:RPProject
 **Last Changed:** 2026-07-07
@@ -32,7 +32,7 @@ meta class `"Project"`.
 **Status:** Implemented
 **Priority:** High
 **Description:**
-`RPPackage` shall extend `RPUnit` to wrap `IRPPackage`. It shall expose Java-mirrored
+`RPPackage` shall extend `IRPUnit` to wrap `IRPPackage`. It shall expose Java-mirrored
 creation methods that return wrapped new elements: `addClass(name)`,
 `addNestedPackage(name)`, `addActor(name)`, and `addGlobalFunction(name)`. The wrapper
 shall register itself for the meta class `"Package"`.
@@ -48,36 +48,14 @@ shall register itself for the meta class `"Package"`.
 **Status:** Implemented
 **Priority:** High
 **Description:**
-`RPClassifier` shall extend `RPUnit` to wrap `IRPClassifier`. It shall expose
+`RPClassifier` shall extend `IRPUnit` to wrap `IRPClassifier`. It shall expose
 Java-mirrored methods: `addAttribute(name)` (returns wrapped attribute),
 `addOperation(name)` (returns wrapped operation), `getAttributes()` (returns
-`RPCollection`), `getOperations()` (returns `RPCollection`),
+`IRPCollection`), `getOperations()` (returns `IRPCollection`),
 `addGeneralization(base_classifier)` (accepts an `RPClassifier` and delegates its
 `_com`), and `addStatechart()` (returns wrapped statechart).
 **Implementation:** src/rhapsody_cli/models/elements/classifiers.py:RPClassifier
 **Last Changed:** 2026-07-07
-
----
-
-## SWR_ELEM_00004: IRPClass Wrapper
-
-**ID:** SWR_ELEM_00004
-**Title:** IRPClass wraps the IRPClass Java interface, a class in Rhapsody models
-**Status:** Implemented
-**Priority:** High
-**Description:**
-The `IRPClass` interface represents classes in Rhapsody models. The Python `IRPClass` shall extend
-`RPClassifier` to wrap the Java `IRPClass`. It shall expose Java-mirrored methods:
-`addSuperclass(super_class)` (accepts an `IRPClass`), `addConstructor(arguments_data)`
-(returns wrapped constructor), `addDestructor()` (returns wrapped destructor),
-`getIsAbstract()` (returns bool), and `addClass(name)` (returns wrapped class).
-The wrapper shall register itself for the meta class `"Class"`.
-Members `addEventReceptionWithEvent` and `updateContainedDiagramsOnServer` are documented
-by JavaDoc but unavailable in the Rhapsody2.Application.1 COM type library; the wrapper
-keeps `add_event_reception_with_event` as an explicit `NotImplementedError` facade and
-omits the server diagram update entirely.
-**Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_class.py:IRPClass
-**Last Changed:** 2026-11-21
 
 ---
 
@@ -89,7 +67,7 @@ omits the server diagram update entirely.
 **Priority:** Medium
 **Description:**
 `RPActor` shall extend `RPClassifier` to wrap `IRPActor`. It shall expose Java-mirrored
-methods: `addEventReceptionWithEvent(name, event)` (accepts an `RPModelElement` event,
+methods: `addEventReceptionWithEvent(name, event)` (accepts an `IRPModelElement` event,
 returns wrapped reception), `getIsBehaviorOverriden()` (returns bool), and
 `setIsBehaviorOverriden(is_overridden)` (translates Python bool to 1/0). The wrapper
 shall register itself for the meta class `"Actor"`.
@@ -105,7 +83,7 @@ shall register itself for the meta class `"Actor"`.
 **Status:** Implemented
 **Priority:** High
 **Description:**
-`RPOperation` shall extend `RPUnit` to wrap `IRPOperation`. It shall expose Java-mirrored
+`RPOperation` shall extend `IRPUnit` to wrap `IRPOperation`. It shall expose Java-mirrored
 methods: `getBody()` (returns str), `getIsAbstract()` (returns bool), `getIsStatic()`
 (returns bool), `getIsVirtual()` (returns bool), `getReturns()` (returns wrapped
 element), and `createAutoFlowChart()`. The wrapper shall register itself for the meta
@@ -122,7 +100,7 @@ class `"Operation"`.
 **Status:** Implemented
 **Priority:** High
 **Description:**
-`RPAttribute` shall extend `RPUnit` to wrap `IRPAttribute`. It shall expose Java-mirrored
+`RPAttribute` shall extend `IRPUnit` to wrap `IRPAttribute`. It shall expose Java-mirrored
 methods: `getMultiplicity()` / `setMultiplicity(multiplicity)` (str), `getIsStatic()` /
 `setIsStatic(is_static)` (bool, translated to 1/0), `getVisibility()` /
 `setVisibility(visibility)` (str), and `getDefaultValue()` / `setDefaultValue(default_value)`
@@ -139,11 +117,11 @@ methods: `getMultiplicity()` / `setMultiplicity(multiplicity)` (str), `getIsStat
 **Status:** Implemented
 **Priority:** Medium
 **Description:**
-`RPDiagram` shall extend `RPUnit` to wrap `IRPDiagram`. It shall expose Java-mirrored
+`RPDiagram` shall extend `IRPUnit` to wrap `IRPDiagram`. It shall expose Java-mirrored
 methods: `closeDiagram()`, `addTextBox(text, x_position, y_position, width, height)`
-(returns wrapped text box), `getCustomViews()` (returns `RPCollection`), and
-`getCorrespondingGraphicElements(model_element)` (accepts an `RPModelElement`, returns
-`RPCollection`). The wrapper shall register itself for the meta class
+(returns wrapped text box), `getCustomViews()` (returns `IRPCollection`), and
+`getCorrespondingGraphicElements(model_element)` (accepts an `IRPModelElement`, returns
+`IRPCollection`). The wrapper shall register itself for the meta class
 `"ActivityDiagram"`.
 **Implementation:** src/rhapsody_cli/models/elements/diagrams.py:RPDiagram
 **Last Changed:** 2026-07-07
@@ -159,9 +137,9 @@ methods: `closeDiagram()`, `addTextBox(text, x_position, y_position, width, heig
 **Description:**
 `RPInstance` shall extend `RPRelation` to wrap `IRPInstance`, matching the Java API
 inheritance where `IRPInstance` extends `IRPRelation`. It shall expose Java-mirrored
-methods: `getAllNestedElements()` (returns `RPCollection`), `getAttributeValue(attribute_name)`
+methods: `getAllNestedElements()` (returns `IRPCollection`), `getAttributeValue(attribute_name)`
 (returns str), `setAttributeValue(attribute_name, attribute_value)` (str args),
-`getInLinks()` (returns `RPCollection`), and `getOutLinks()` (returns `RPCollection`).
+`getInLinks()` (returns `IRPCollection`), and `getOutLinks()` (returns `IRPCollection`).
 The wrapper shall register itself for the meta class `"Instance"`.
 **Implementation:** src/rhapsody_cli/models/elements/relations.py:RPInstance
 **Last Changed:** 2026-07-07
@@ -175,7 +153,7 @@ The wrapper shall register itself for the meta class `"Instance"`.
 **Status:** Implemented
 **Priority:** Medium
 **Description:**
-`RPRequirement` shall extend `RPUnit` to wrap `IRPRequirement`. It shall expose
+`RPRequirement` shall extend `IRPUnit` to wrap `IRPRequirement`. It shall expose
 Java-mirrored methods: `getRequirementID()` (returns str) and
 `setRequirementID(requirement_id)` (str). The wrapper shall register itself for the
 meta class `"Requirement"`.
@@ -191,10 +169,10 @@ meta class `"Requirement"`.
 **Status:** Implemented
 **Priority:** Medium
 **Description:**
-`RPStatechart` shall extend `RPUnit` to wrap `IRPStatechart`. It shall expose
+`RPStatechart` shall extend `IRPUnit` to wrap `IRPStatechart`. It shall expose
 Java-mirrored methods: `addNewNodeByType(meta_type, x_position, y_position, width, height)`
 (returns wrapped node), `createGraphics()`, `closeDiagram()`, and `deleteState(state)`
-(accepts an `RPModelElement`). The wrapper shall register itself for the meta class
+(accepts an `IRPModelElement`). The wrapper shall register itself for the meta class
 `"Statechart"`.
 **Implementation:** src/rhapsody_cli/models/elements/classifiers.py:RPStatechart
 **Last Changed:** 2026-07-07
@@ -210,8 +188,8 @@ Java-mirrored methods: `addNewNodeByType(meta_type, x_position, y_position, widt
 **Description:**
 `RPUseCase` shall extend `RPClassifier` to wrap `IRPUseCase`. It shall expose
 Java-mirrored methods: `addExtensionPoint(entry_point)` (str),
-`getExtensionPoints()` (returns `RPCollection`), `getEntryPoints()` (returns
-`RPCollection`), and `getDescribingDiagrams()` (returns `RPCollection`). The wrapper
+`getExtensionPoints()` (returns `IRPCollection`), `getEntryPoints()` (returns
+`IRPCollection`), and `getDescribingDiagrams()` (returns `IRPCollection`). The wrapper
 shall register itself for the meta class `"UseCase"`.
 **Implementation:** src/rhapsody_cli/models/elements/classifiers.py:RPUseCase
 **Last Changed:** 2026-07-07

@@ -1,9 +1,9 @@
 """Exception model-element wrapper."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 
 
-class RPException(RPModelElement):
+class RPException(IRPModelElement):
     """Wraps ``IRPException``."""
 
 

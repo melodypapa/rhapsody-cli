@@ -24,7 +24,7 @@ from typing import Dict, List, Union, cast
 from rhapsody_cli.actions.abstract_action import ElementManagementAction, SessionAwareAction
 from rhapsody_cli.cli.formatters import OutputFormatter
 from rhapsody_cli.exceptions import CliExecutionError
-from rhapsody_cli.models.core import RPModelElement
+from rhapsody_cli.models.core import IRPModelElement
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +37,7 @@ class AbstractPortAction(SessionAwareAction, ElementManagementAction):
     SWR_PORT_00010: GUID Lookup Support
     """
 
-    def _resolve_classifier(self, path: str) -> RPModelElement:
+    def _resolve_classifier(self, path: str) -> IRPModelElement:
         """Resolve a parent classifier path.
 
         Args:
@@ -52,7 +52,7 @@ class AbstractPortAction(SessionAwareAction, ElementManagementAction):
         root = self._get_active_root()
         return self._resolve_container_or_element(root, path, resolve_element=True, operation=f"resolve classifier path '{path}'")
 
-    def _resolve_port(self, classifier: RPModelElement, name: str) -> RPModelElement:
+    def _resolve_port(self, classifier: IRPModelElement, name: str) -> IRPModelElement:
         """Find a port by name within a classifier by iterating getPorts().
 
         Args:
@@ -67,11 +67,11 @@ class AbstractPortAction(SessionAwareAction, ElementManagementAction):
         """
         ports = classifier.get_ports()  # type: ignore[attr-defined]
         for port in ports:
-            if cast(RPModelElement, port).get_name() == name:
-                return cast(RPModelElement, port)
+            if cast(IRPModelElement, port).get_name() == name:
+                return cast(IRPModelElement, port)
         raise CliExecutionError(f"Port '{name}' not found in classifier")
 
-    def _resolve_port_by_guid(self, guid: str) -> RPModelElement:
+    def _resolve_port_by_guid(self, guid: str) -> IRPModelElement:
         """Locate a port by GUID and validate it's a Port element.
 
         SWR_PORT_00010: GUID Lookup Support
@@ -158,7 +158,7 @@ class PortCreateAction(AbstractPortAction):
 
         self._report_results(created, errors, len(ports_data))
 
-    def _create_single_port(self, classifier: RPModelElement, port_attrs: Dict[str, object], parent_path: str) -> str:
+    def _create_single_port(self, classifier: IRPModelElement, port_attrs: Dict[str, object], parent_path: str) -> str:
         """Create a single port and set its attributes. Returns the port name."""
         name = str(port_attrs.get("name", ""))
         if not name:
@@ -204,7 +204,7 @@ class PortCreateAction(AbstractPortAction):
         except OSError as e:
             raise CliExecutionError(f"Failed to read file: {e}") from e
 
-    def _set_attributes(self, classifier: RPModelElement, port: RPModelElement, attrs: Dict[str, object]) -> None:
+    def _set_attributes(self, classifier: IRPModelElement, port: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Set validated attributes on port."""
         if "name" in attrs:
             port.set_name(cast(str, attrs["name"]))
@@ -213,7 +213,7 @@ class PortCreateAction(AbstractPortAction):
         self._set_boolean_flags(port, attrs)
         self._set_port_contract(classifier, port, attrs)
 
-    def _set_boolean_flags(self, port: RPModelElement, attrs: Dict[str, object]) -> None:
+    def _set_boolean_flags(self, port: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Set boolean flags isBehavioral, isReversed.
 
         SWR_PORT_00012: IsBehavioral and IsReversed Support
@@ -223,7 +223,7 @@ class PortCreateAction(AbstractPortAction):
         if "isReversed" in attrs:
             port.set_is_reversed(int(cast(Union[str, int], attrs["isReversed"])))  # type: ignore[attr-defined]
 
-    def _set_port_contract(self, classifier: RPModelElement, port: RPModelElement, attrs: Dict[str, object]) -> None:
+    def _set_port_contract(self, classifier: IRPModelElement, port: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Resolve and set the portContract.
 
         SWR_PORT_00011: PortContract Resolution
@@ -321,10 +321,10 @@ class PortListAction(AbstractPortAction):
         except Exception as e:
             self._handle_execution_error(e, f"Failed to list ports in '{args.path}'")
 
-    def _collect_port_names(self, classifier: RPModelElement) -> List[str]:
+    def _collect_port_names(self, classifier: IRPModelElement) -> List[str]:
         """Collect names of ports on a classifier."""
         ports = classifier.get_ports()  # type: ignore[attr-defined]
-        return [cast(RPModelElement, port).get_name() for port in ports]
+        return [cast(IRPModelElement, port).get_name() for port in ports]
 
     def _format_output(self, port_names: List[str], format_type: str) -> str:
         """Format output based on format parameter."""
@@ -421,13 +421,13 @@ class PortViewAction(AbstractPortAction):
         except Exception as e:
             self._handle_execution_error(e, f"Failed to view port '{args.name or args.guid}'")
 
-    def _collect_port_data(self, port: RPModelElement) -> Dict[str, object]:
+    def _collect_port_data(self, port: IRPModelElement) -> Dict[str, object]:
         """Collect port details into a data dictionary.
 
         Normalizes boolean flags to int for clean JSON round-trip.
         """
         contract = port.get_port_contract()  # type: ignore[attr-defined]
-        contract_name = cast(RPModelElement, contract).get_name() if contract is not None else ""
+        contract_name = cast(IRPModelElement, contract).get_name() if contract is not None else ""
         return {
             "name": port.get_name(),
             "guid": port.get_guid(),
@@ -554,7 +554,7 @@ class PortUpdateAction(AbstractPortAction):
         except OSError as e:
             raise CliExecutionError(f"Failed to read file: {e}") from e
 
-    def _set_attributes(self, classifier: RPModelElement, port: RPModelElement, attrs: Dict[str, object]) -> None:
+    def _set_attributes(self, classifier: IRPModelElement, port: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Set validated attributes on port (partial update)."""
         if "name" in attrs:
             port.set_name(cast(str, attrs["name"]))

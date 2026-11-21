@@ -374,7 +374,7 @@ def test_tag_multiplicity_roundtrip(self, test_project: RPProject) -> None:
 ```
 
 For the remaining method, follow the same pattern:
-- `test_tag_set_context_value` — call `tag.set_tag_context_value(tag, RPCollection(...), RPCollection(...))` per the `IRPModelElement::setTagContextValue` signature in `core.py:1670`; construct minimal empty/singleton `RPCollection` arguments as accepted by the live COM API (inspect `core.py:1670` docstring for exact parameter semantics before writing assertions). If the live COM object rejects the call signature (`AttributeError`/`com_error`), mark `xfail` with a reason describing the discovered COM behavior, and leave the checklist row unflipped.
+- `test_tag_set_context_value` — call `tag.set_tag_context_value(tag, IRPCollection(...), IRPCollection(...))` per the `IRPModelElement::setTagContextValue` signature in `core.py:1670`; construct minimal empty/singleton `IRPCollection` arguments as accepted by the live COM API (inspect `core.py:1670` docstring for exact parameter semantics before writing assertions). If the live COM object rejects the call signature (`AttributeError`/`com_error`), mark `xfail` with a reason describing the discovered COM behavior, and leave the checklist row unflipped.
 
 - [ ] **Step 2: Run the new tests against live Rhapsody**
 

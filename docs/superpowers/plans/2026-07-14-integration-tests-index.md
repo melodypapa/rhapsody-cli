@@ -16,7 +16,7 @@ Recommended order follows dependency/value: base classes and highest-reuse class
 
 | # | Plan | Methods planned | Tasks | Key classes | Notes |
 |---|------|-----------------:|------:|--------------|-------|
-| 1 | [`2026-07-14-integration-tests-core.md`](2026-07-14-integration-tests-core.md) | 142 | 16 | `RPModelElement`, `RPUnit`, `RPCollection` | Base class for every other wrapper — do first, other plans' tests indirectly exercise this file too. |
+| 1 | [`2026-07-14-integration-tests-core.md`](2026-07-14-integration-tests-core.md) | 142 | 16 | `RPModelElement`, `RPUnit`, `IRPCollection` | Base class for every other wrapper — do first, other plans' tests indirectly exercise this file too. |
 | 2 | [`2026-07-14-integration-tests-classifiers.md`](2026-07-14-integration-tests-classifiers.md) | 148 | 17 | `RPClass`, `RPOperation`, `RPClassifier`, `RPActor`, `RPStereotype`, `RPUseCase`, `RPStatechart`, `RPAssociationClass`, `RPInterfaceItem`, +3 inheritance-only | Highest existing partial coverage; establishes class/operation patterns reused everywhere. |
 | 3 | [`2026-07-14-integration-tests-containment.md`](2026-07-14-integration-tests-containment.md) | 260 | 23 | `RPProject`, `RPPackage` (largest single-class surface), `RPComponent`, `RPComponentInstance`, `RPConfiguration`, `RPCollaboration`, `RPNode` | Largest plan by method count — `RPPackage` alone has ~82 untested methods (diagram/element factories). |
 | 4 | [`2026-07-14-integration-tests-variables.md`](2026-07-14-integration-tests-variables.md) | 31 | 8 | `RPVariable`, `RPAttribute`, `RPTag`, `RPArgument` | Small, builds on Task 1/2 patterns. |

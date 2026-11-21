@@ -95,11 +95,11 @@ matches the one that was opened. It exercises `connect()`, `openProject(filename
 
 **ID:** SYTS_APP_00003
 **Traces-To:** SWR_APP_00006, SWR_APP_00007
-**Title:** Retrieve all open projects via RPCollection and quit the application
+**Title:** Retrieve all open projects via IRPCollection and quit the application
 **Type:** System
 **Priority:** Medium
 **Description:**
-This test verifies that `getProjects()` returns an `RPCollection` of all currently open
+This test verifies that `getProjects()` returns an `IRPCollection` of all currently open
 projects and that `quit()` terminates the wrapped COM instance. It exercises these
 end-to-end via the CLI's `project list` command and an explicit disconnect.
 **Pre-conditions:**
@@ -196,4 +196,4 @@ which echoes the error to stderr and aborts with a non-zero exit code.
 - Fail if the CLI exits 0, if the raw com_error leaks to the user, or if no error is
   written to stderr.
 **Last Changed:** 2026-07-07
-
+

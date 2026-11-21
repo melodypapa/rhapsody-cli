@@ -11,12 +11,12 @@ __version__ = "0.2.1"
 from rhapsody_cli import models  # noqa: F401
 from rhapsody_cli.application import RhapsodyApplication
 from rhapsody_cli.exceptions import RhapsodyConnectionError, RhapsodyRuntimeException
-from rhapsody_cli.models import RPCollection, RPModelElement, RPUnit
+from rhapsody_cli.models import IRPCollection, IRPModelElement, IRPUnit
 
 __all__ = [
-    "RPCollection",
-    "RPModelElement",
-    "RPUnit",
+    "IRPCollection",
+    "IRPModelElement",
+    "IRPUnit",
     "RhapsodyApplication",
     "RhapsodyConnectionError",
     "RhapsodyRuntimeException",

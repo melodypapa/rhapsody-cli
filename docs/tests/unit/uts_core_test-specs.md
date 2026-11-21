@@ -104,19 +104,19 @@ Pass if all returned values match and `fake.setReadOnly` was called with `1` the
 
 ---
 
-## UTS_CORE_00005: RPCollection getCount/getItem/addItem Delegate to COM
+## UTS_CORE_00005: IRPCollection getCount/getItem/addItem Delegate to COM
 
 **ID:** UTS_CORE_00005
 **Traces-To:** SWR_CORE_00003
-**Title:** RPCollection.getCount/getItem/addItem delegate to the underlying IRPCollection
+**Title:** IRPCollection.getCount/getItem/addItem delegate to the underlying IRPCollection
 **Type:** Unit
 **Priority:** High
 **Description:**
-Verifies that `RPCollection` exposes `getCount()`, `getItem(index)`, and `addItem(element)`, with `addItem` unwrapping the supplied `RPModelElement` and passing its `_com` to the COM `addItem`.
+Verifies that `IRPCollection` exposes `getCount()`, `getItem(index)`, and `addItem(element)`, with `addItem` unwrapping the supplied `RPModelElement` and passing its `_com` to the COM `addItem`.
 **Pre-conditions:**
 - A fake collection built via `tests.fakes.make_fake_collection([fake_elem_a, fake_elem_b])` where each `fake_elem_*` is built via `make_fake_element`.
 **Test Steps:**
-1. Construct `coll = RPCollection(fake_coll)`.
+1. Construct `coll = IRPCollection(fake_coll)`.
 2. Call `coll.getCount()` and assert it returns `2`.
 3. Call `coll.getItem(1)` and assert it returns a wrapped element.
 4. Construct `wrapper = RPModelElement(fake_elem_c)` and call `coll.addItem(wrapper)`.
@@ -129,11 +129,11 @@ Pass if counts/values match and `fake_coll.addItem.call_args == call(fake_elem_c
 
 ---
 
-## UTS_CORE_00006: RPCollection Python Protocols len/getitem/iter
+## UTS_CORE_00006: IRPCollection Python Protocols len/getitem/iter
 
 **ID:** UTS_CORE_00006
 **Traces-To:** SWR_CORE_00003
-**Title:** RPCollection __len__/__getitem__/__iter__ use 1-based COM indexing
+**Title:** IRPCollection __len__/__getitem__/__iter__ use 1-based COM indexing
 **Type:** Unit
 **Priority:** High
 **Description:**
@@ -141,7 +141,7 @@ Verifies that `len(coll)` returns `getCount()`; `coll[i]` translates 0-based Pyt
 **Pre-conditions:**
 - A fake collection built via `tests.fakes.make_fake_collection([fake_a, fake_b, fake_c])` (three fake elements, each with `getMetaClass` so they auto-wrap).
 **Test Steps:**
-1. Construct `coll = RPCollection(fake_coll)`.
+1. Construct `coll = IRPCollection(fake_coll)`.
 2. Assert `len(coll) == 3`.
 3. Assert `coll[0]._com is fake_a` and `coll[2]._com is fake_c` (0-based Python indexing).
 4. Iterate `list(coll)` and assert each yielded item is a wrapped `RPModelElement` whose `_com` matches the order `fake_a, fake_b, fake_c`.
@@ -153,11 +153,11 @@ Pass if `len(coll) == 3`, `coll[0]._com is fake_a`, `coll[2]._com is fake_c`, an
 
 ---
 
-## UTS_CORE_00007: RPCollection getitem Wraps Items via _wrap_if_element
+## UTS_CORE_00007: IRPCollection getitem Wraps Items via _wrap_if_element
 
 **ID:** UTS_CORE_00007
 **Traces-To:** SWR_CORE_00003
-**Title:** RPCollection.getItem auto-wraps elements that expose getMetaClass
+**Title:** IRPCollection.getItem auto-wraps elements that expose getMetaClass
 **Type:** Unit
 **Priority:** High
 **Description:**
@@ -166,7 +166,7 @@ Verifies that `getItem` passes its return value through `_wrap_if_element`, so c
 - A fake collection built with one element-like object (a `MagicMock` with `getMetaClass`) and one plain value (e.g., the integer `42`).
 **Test Steps:**
 1. Build `fake_coll = make_fake_collection([fake_elem, 42])`.
-2. Construct `coll = RPCollection(fake_coll)`.
+2. Construct `coll = IRPCollection(fake_coll)`.
 3. Call `coll.getItem(1)` and assert the result is an `RPModelElement` subclass instance.
 4. Call `coll.getItem(2)` and assert the result is the integer `42` unchanged.
 **Expected Result:**
@@ -374,19 +374,19 @@ Pass if `type(result) is RPModelElement` and `result._com is fake`.
 
 ---
 
-## UTS_CORE_00016: RPCollection Rejects Negative Indices
+## UTS_CORE_00016: IRPCollection Rejects Negative Indices
 
 **ID:** UTS_CORE_00016
 **Traces-To:** SWR_CORE_00009
-**Title:** RPCollection.__getitem__ raises IndexError with a specific message for negative indices
+**Title:** IRPCollection.__getitem__ raises IndexError with a specific message for negative indices
 **Type:** Unit
 **Priority:** Low
 **Description:**
-Verifies that `RPCollection.__getitem__(-1)` (and any negative index) raises `IndexError` with the message `"negative indices are not supported"`, because COM collection indexing is 1-based.
+Verifies that `IRPCollection.__getitem__(-1)` (and any negative index) raises `IndexError` with the message `"negative indices are not supported"`, because COM collection indexing is 1-based.
 **Pre-conditions:**
 - A fake collection built via `tests.fakes.make_fake_collection([fake_a])`.
 **Test Steps:**
-1. Construct `coll = RPCollection(fake_coll)`.
+1. Construct `coll = IRPCollection(fake_coll)`.
 2. Call `coll[-1]` inside `assertRaises(IndexError)`.
 3. Inspect the exception message.
 4. (Boundary) Call `coll[-100]` and confirm the same `IndexError` is raised.
@@ -398,11 +398,11 @@ Pass if `IndexError` is raised for both negative indices, the message equals the
 
 ---
 
-## UTS_CORE_00017: RPCollection getitem Boundary at Zero Index
+## UTS_CORE_00017: IRPCollection getitem Boundary at Zero Index
 
 **ID:** UTS_CORE_00017
 **Traces-To:** SWR_CORE_00009
-**Title:** RPCollection.__getitem__(0) translates to COM getItem(1) and does not raise
+**Title:** IRPCollection.__getitem__(0) translates to COM getItem(1) and does not raise
 **Type:** Unit
 **Priority:** Low
 **Description:**
@@ -410,7 +410,7 @@ Verifies the boundary between negative-index rejection (covered by SWR_CORE_0000
 **Pre-conditions:**
 - A fake collection built via `tests.fakes.make_fake_collection([fake_a, fake_b])`.
 **Test Steps:**
-1. Construct `coll = RPCollection(fake_coll)`.
+1. Construct `coll = IRPCollection(fake_coll)`.
 2. Call `coll[0]` and inspect the result and the recorded call to `fake_coll.getItem`.
 **Expected Result:**
 `coll[0]._com is fake_a` and `fake_coll.getItem` was called once with the integer `1`.
@@ -442,4 +442,4 @@ The module imports without error; `_core.pywintypes is None`; `call_com` on a `V
 **Verification Criteria:**
 Pass if the re-import succeeds, `_core.pywintypes is None`, and a non-COM exception is re-raised unchanged.
 **Last Changed:** 2026-07-07
-
+

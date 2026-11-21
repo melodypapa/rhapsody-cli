@@ -17,7 +17,7 @@ from rhapsody_cli.actions.abstract_action import (
 )
 from rhapsody_cli.cli.path_resolver import PathResolver, PathResolverError
 from rhapsody_cli.exceptions import CliExecutionError, RhapsodyConnectionError
-from rhapsody_cli.models.core import RPModelElement
+from rhapsody_cli.models.core import IRPModelElement
 
 
 class TestAbstractActionAddVerboseArgument:
@@ -187,7 +187,7 @@ class TestElementManagementActionResolveContainer:
         pkg = _FakeElement("pkg")
         root = _make_root_with(pkg)
 
-        result = action._resolve_container_or_element(cast(RPModelElement, root), "pkg", resolve_element=False)
+        result = action._resolve_container_or_element(cast(IRPModelElement, root), "pkg", resolve_element=False)
 
         assert cast(_FakeElement, result) is pkg
 
@@ -196,7 +196,7 @@ class TestElementManagementActionResolveContainer:
         action = _FakeElementAction(command_id="fake")
         root = _make_root_with()
 
-        result = action._resolve_container_or_element(cast(RPModelElement, root), None, resolve_element=False)
+        result = action._resolve_container_or_element(cast(IRPModelElement, root), None, resolve_element=False)
 
         assert cast(_FakeElement, result) is root
 
@@ -206,7 +206,7 @@ class TestElementManagementActionResolveContainer:
         root = _make_root_with()
 
         with pytest.raises(CliExecutionError) as exc_info:
-            action._resolve_container_or_element(cast(RPModelElement, root), "missing", resolve_element=False)
+            action._resolve_container_or_element(cast(IRPModelElement, root), "missing", resolve_element=False)
 
         assert exc_info.value.__cause__ is not None
         assert isinstance(exc_info.value.__cause__, PathResolverError)
@@ -223,7 +223,7 @@ class TestElementManagementActionResolveContainer:
         PathResolver.resolve_container = staticmethod(boom)  # type: ignore[method-assign,assignment]
         try:
             with pytest.raises(CliExecutionError):
-                action._resolve_container_or_element(cast(RPModelElement, root), "pkg", resolve_element=False)
+                action._resolve_container_or_element(cast(IRPModelElement, root), "pkg", resolve_element=False)
         finally:
             PathResolver.resolve_container = staticmethod(original)  # type: ignore[method-assign,assignment]
 
@@ -238,7 +238,7 @@ class TestElementManagementActionResolveElement:
         pkg = _FakeElement("pkg", [cls])
         root = _make_root_with(pkg)
 
-        result = action._resolve_container_or_element(cast(RPModelElement, root), "pkg/MyClass", resolve_element=True)
+        result = action._resolve_container_or_element(cast(IRPModelElement, root), "pkg/MyClass", resolve_element=True)
 
         assert cast(_FakeElement, result) is cls
 
@@ -248,7 +248,7 @@ class TestElementManagementActionResolveElement:
         root = _make_root_with()
 
         with pytest.raises(CliExecutionError) as exc_info:
-            action._resolve_container_or_element(cast(RPModelElement, root), "missing", resolve_element=True)
+            action._resolve_container_or_element(cast(IRPModelElement, root), "missing", resolve_element=True)
 
         assert isinstance(exc_info.value.__cause__, PathResolverError)
 
@@ -264,7 +264,7 @@ class TestElementManagementActionResolveElement:
         PathResolver.resolve_element = staticmethod(boom)  # type: ignore[method-assign,assignment]
         try:
             with pytest.raises(CliExecutionError):
-                action._resolve_container_or_element(cast(RPModelElement, root), "pkg", resolve_element=True)
+                action._resolve_container_or_element(cast(IRPModelElement, root), "pkg", resolve_element=True)
         finally:
             PathResolver.resolve_element = staticmethod(original)  # type: ignore[method-assign,assignment]
 

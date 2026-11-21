@@ -1,15 +1,17 @@
 """Tests for rhapsody_cli.elements.diagram.RPDiagram."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement, RPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 from rhapsody_cli.models.elements.diagrams.model_diagrams import RPDiagram
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
 def test_diagram_is_a_unit() -> None:
-    fake = make_fake_element("ActivityDiagram", getName="MainFlow")
+    fake = make_fake_element("ActivityDiagram", properties={"name": "MainFlow"})
     diagram = RPDiagram(fake)
 
-    assert isinstance(diagram, RPUnit)
+    assert isinstance(diagram, IRPUnit)
     assert diagram.get_name() == "MainFlow"
 
 
@@ -24,7 +26,7 @@ def test_diagram_close_diagram_delegates_to_com() -> None:
 
 def test_diagram_add_text_box_delegates_to_com_and_wraps_result() -> None:
     fake = make_fake_element("ActivityDiagram")
-    text_box = make_fake_element("GraphElement", getName="Note1")
+    text_box = make_fake_element("GraphElement", properties={"name": "Note1"})
     fake.addTextBox.return_value = text_box
     diagram = RPDiagram(fake)
 
@@ -36,7 +38,7 @@ def test_diagram_add_text_box_delegates_to_com_and_wraps_result() -> None:
 
 def test_diagram_get_custom_views_returns_collection() -> None:
     fake = make_fake_element("ActivityDiagram")
-    view = make_fake_element("Package", getName="CustomView1")
+    view = make_fake_element("Package", properties={"name": "CustomView1"})
     fake.getCustomViews.return_value = make_fake_collection([view])
     diagram = RPDiagram(fake)
 
@@ -48,12 +50,12 @@ def test_diagram_get_custom_views_returns_collection() -> None:
 
 def test_diagram_get_corresponding_graphic_elements_returns_collection() -> None:
     fake = make_fake_element("ActivityDiagram")
-    graphic = make_fake_element("GraphElement", getName="Shape1")
+    graphic = make_fake_element("GraphElement", properties={"name": "Shape1"})
     fake.getCorrespondingGraphicElements.return_value = make_fake_collection([graphic])
     diagram = RPDiagram(fake)
-    model_element = make_fake_element("Class", getName="Widget")
+    model_element = make_fake_element("Class", properties={"name": "Widget"})
 
-    elements = diagram.get_corresponding_graphic_elements(RPModelElement(model_element))
+    elements = diagram.get_corresponding_graphic_elements(IRPModelElement(model_element))
 
     fake.getCorrespondingGraphicElements.assert_called_once_with(model_element)
     assert len(elements) == 1
@@ -61,7 +63,7 @@ def test_diagram_get_corresponding_graphic_elements_returns_collection() -> None
 
 
 def test_diagram_is_registered_for_meta_class_activity_diagram() -> None:
-    fake = make_fake_element("ActivityDiagram", getName="MainFlow")
+    fake = make_fake_element("ActivityDiagram", properties={"name": "MainFlow"})
 
     wrapped = AbstractRPModelElement.wrap(fake)
 
@@ -73,9 +75,9 @@ def test_diagram_get_pictures_with_image_map_delegates_to_com_with_two_args() ->
     file_names = make_fake_collection([])
     fake.getPicturesWithImageMap.return_value = file_names
     diagram = RPDiagram(fake)
-    diagram_map = RPCollection(make_fake_collection([]))
+    diagram_map = IRPCollection(make_fake_collection([]))
 
     result = diagram.get_pictures_with_image_map("output.emf", diagram_map)
 
     fake.getPicturesWithImageMap.assert_called_once_with("output.emf", diagram_map._com)
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)

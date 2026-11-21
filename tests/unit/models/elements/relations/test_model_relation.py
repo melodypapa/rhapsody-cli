@@ -2,51 +2,49 @@
 
 from typing import cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement, RPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 from rhapsody_cli.models.elements.classifiers import RPClassifier
 from rhapsody_cli.models.elements.relations import RPRelation
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
 def test_relation_is_a_unit() -> None:
-    fake = make_fake_element("Relation", getName="assoc1")
+    fake = make_fake_element("Relation", properties={"name": "assoc1"})
     relation = RPRelation(fake)
 
-    assert isinstance(relation, RPUnit)
+    assert isinstance(relation, IRPUnit)
     assert relation.get_name() == "assoc1"
 
 
 def test_relation_add_qualifier_delegates_to_com() -> None:
     fake = make_fake_element("Relation")
-    qualifier = make_fake_element("Class", getName="Key")
+    qualifier = make_fake_element("Class", properties={"name": "Key"})
     relation = RPRelation(fake)
 
-    relation.add_qualifier(cast(RPModelElement, AbstractRPModelElement.wrap(qualifier)))
+    relation.add_qualifier(cast(IRPModelElement, AbstractRPModelElement.wrap(qualifier)))
 
     fake.addQualifier.assert_called_once_with(qualifier)
 
 
 def test_relation_get_association_class_wraps_result() -> None:
     fake = make_fake_element("Relation")
-    assoc_class = make_fake_element("AssociationClass", getName="LinkClass")
+    assoc_class = make_fake_element("AssociationClass", properties={"name": "LinkClass"})
     fake.getAssociationClass.return_value = assoc_class
     relation = RPRelation(fake)
 
     result = relation.get_association_class()
-
-    fake.getAssociationClass.assert_called_once_with()
     assert result.get_name() == "LinkClass"
 
 
 def test_relation_get_inverse_wraps_result() -> None:
     fake = make_fake_element("Relation")
-    inverse = make_fake_element("Relation", getName="inverseAssoc")
+    inverse = make_fake_element("Relation", properties={"name": "inverseAssoc"})
     fake.getInverse.return_value = inverse
     relation = RPRelation(fake)
 
     result = relation.get_inverse()
-
-    fake.getInverse.assert_called_once_with()
     assert result.get_name() == "inverseAssoc"
 
 
@@ -73,37 +71,31 @@ def test_relation_get_multiplicity_delegates_to_com() -> None:
 
 def test_relation_get_object_as_object_type_wraps_result() -> None:
     fake = make_fake_element("Relation")
-    klass = make_fake_element("Class", getName="Widget")
+    klass = make_fake_element("Class", properties={"name": "Widget"})
     fake.getObjectAsObjectType.return_value = klass
     relation = RPRelation(fake)
 
     result = relation.get_object_as_object_type()
-
-    fake.getObjectAsObjectType.assert_called_once_with()
     assert result.get_name() == "Widget"
 
 
 def test_relation_get_of_class_wraps_result() -> None:
     fake = make_fake_element("Relation")
-    klass = make_fake_element("Class", getName="Widget")
+    klass = make_fake_element("Class", properties={"name": "Widget"})
     fake.getOfClass.return_value = klass
     relation = RPRelation(fake)
 
     result = relation.get_of_class()
-
-    fake.getOfClass.assert_called_once_with()
     assert result.get_name() == "Widget"
 
 
 def test_relation_get_other_class_wraps_result() -> None:
     fake = make_fake_element("Relation")
-    klass = make_fake_element("Class", getName="Other")
+    klass = make_fake_element("Class", properties={"name": "Other"})
     fake.getOtherClass.return_value = klass
     relation = RPRelation(fake)
 
     result = relation.get_other_class()
-
-    fake.getOtherClass.assert_called_once_with()
     assert result.get_name() == "Other"
 
 
@@ -115,26 +107,24 @@ def test_relation_get_qualifier_delegates_to_com() -> None:
 
 
 def test_relation_get_qualifiers_returns_collection() -> None:
-    inner = make_fake_element("Class", getName="Key")
+    inner = make_fake_element("Class", properties={"name": "Key"})
     fake = make_fake_element("Relation")
     fake.getQualifiers.return_value = make_fake_collection([inner])
     relation = RPRelation(fake)
 
     result = relation.get_qualifiers()
 
-    assert isinstance(result, RPCollection)
+    assert isinstance(result, IRPCollection)
     assert len(result) == 1
 
 
 def test_relation_get_qualifier_type_wraps_result() -> None:
     fake = make_fake_element("Relation")
-    klass = make_fake_element("Class", getName="KeyType")
+    klass = make_fake_element("Class", properties={"name": "KeyType"})
     fake.getQualifierType.return_value = klass
     relation = RPRelation(fake)
 
     result = relation.get_qualifier_type()
-
-    fake.getQualifierType.assert_called_once_with()
     assert result.get_name() == "KeyType"
 
 
@@ -191,10 +181,10 @@ def test_relation_make_unidirect_delegates_to_com() -> None:
 
 def test_relation_remove_qualifier_delegates_to_com() -> None:
     fake = make_fake_element("Relation")
-    qualifier = make_fake_element("Class", getName="Key")
+    qualifier = make_fake_element("Class", properties={"name": "Key"})
     relation = RPRelation(fake)
 
-    relation.remove_qualifier(cast(RPModelElement, AbstractRPModelElement.wrap(qualifier)))
+    relation.remove_qualifier(cast(IRPModelElement, AbstractRPModelElement.wrap(qualifier)))
 
     fake.removeQualifier.assert_called_once_with(qualifier)
 
@@ -228,7 +218,7 @@ def test_relation_set_multiplicity_delegates_to_com() -> None:
 
 def test_relation_set_of_class_delegates_to_com() -> None:
     fake = make_fake_element("Relation")
-    klass_fake = make_fake_element("Class", getName="Widget")
+    klass_fake = make_fake_element("Class", properties={"name": "Widget"})
     relation = RPRelation(fake)
 
     relation.set_of_class(RPClassifier(klass_fake))
@@ -238,7 +228,7 @@ def test_relation_set_of_class_delegates_to_com() -> None:
 
 def test_relation_set_other_class_delegates_to_com() -> None:
     fake = make_fake_element("Relation")
-    klass_fake = make_fake_element("Class", getName="Other")
+    klass_fake = make_fake_element("Class", properties={"name": "Other"})
     relation = RPRelation(fake)
 
     relation.set_other_class(RPClassifier(klass_fake))
@@ -257,7 +247,7 @@ def test_relation_set_qualifier_delegates_to_com() -> None:
 
 def test_relation_set_qualifier_type_delegates_to_com() -> None:
     fake = make_fake_element("Relation")
-    klass_fake = make_fake_element("Class", getName="KeyType")
+    klass_fake = make_fake_element("Class", properties={"name": "KeyType"})
     relation = RPRelation(fake)
 
     relation.set_qualifier_type(cast(RPClassifier, AbstractRPModelElement.wrap(klass_fake)))

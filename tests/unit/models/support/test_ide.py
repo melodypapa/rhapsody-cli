@@ -1,7 +1,8 @@
 from typing import cast
 
 from rhapsody_cli.application import RhapsodyApplication
-from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.support.model_ide import (
     RPAXViewCtrl,
     RPExternalIDERegistry,
@@ -25,7 +26,7 @@ class TestRPAXViewCtrl:
 
     def test_execute_command_delegates_to_com(self) -> None:
         fake = make_fake_element("AXViewCtrl")
-        coll = RPCollection(make_fake_collection([make_fake_element("X")]))
+        coll = IRPCollection(make_fake_collection([make_fake_element("X")]))
         obj = RPAXViewCtrl(fake)
         obj.execute_command("x", coll, coll)
         fake.executeCommand.assert_called_once_with("x", coll._com, coll._com)
@@ -321,7 +322,7 @@ class TestRPowPaneMgr:
 
     def test_get_o_w_list_listener_delegates_to_com(self) -> None:
         fake = make_fake_element("owPaneMgr")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getOWListListener.return_value = inner
         obj = RPowPaneMgr(fake)
         result = obj.get_ow_list_listener("x")
@@ -329,7 +330,7 @@ class TestRPowPaneMgr:
 
     def test_get_o_w_text_listener_delegates_to_com(self) -> None:
         fake = make_fake_element("owPaneMgr")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getOWTextListener.return_value = inner
         obj = RPowPaneMgr(fake)
         result = obj.get_ow_text_listener("x")

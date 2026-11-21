@@ -4,12 +4,9 @@ com.telelogic.rhapsody.core.
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.core import (
-    AbstractRPModelElement,
-    RPCollection,
-    RPModelElement,
-    RPUnit,
-)
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 from rhapsody_cli.models.elements.classifiers import RPClassifier
 
 if TYPE_CHECKING:
@@ -20,7 +17,7 @@ if TYPE_CHECKING:
     )
 
 
-class RPVariable(RPUnit):
+class RPVariable(IRPUnit):
     """Wraps ``IRPVariable``: the base interface for typed elements (such as
     attributes and parameters) that carry a type and default value.
     """
@@ -39,7 +36,7 @@ class RPVariable(RPUnit):
     # [inherited] irp_unit / irp_model_element methods (covered by rp_unit / rp_model_element checklists)
     # No deprecated IRPVariable methods.
 
-    def add_element_default_value(self, new_default_val: RPModelElement) -> "RPInstanceValue":
+    def add_element_default_value(self, new_default_val: IRPModelElement) -> "RPInstanceValue":
         """For tags with multiplicity greater than 1, adds a model element as an additional value.
 
         Args:
@@ -100,16 +97,16 @@ class RPVariable(RPUnit):
         """
         return cast("RPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getType", "type")))
 
-    def get_value_specifications(self) -> RPCollection:
+    def get_value_specifications(self) -> IRPCollection:
         """Returns the initial values declared for elements with multiplicity greater than one.
 
         Returns:
-            An ``RPCollection`` of the declared initial value specifications.
+            An ``IRPCollection`` of the declared initial value specifications.
 
         Reference:
             com.telelogic.rhapsody.core.IRPVariable::getValueSpecifications()
         """
-        return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getValueSpecifications", "valueSpecifications"))
+        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getValueSpecifications", "valueSpecifications"))
 
     def set_declaration(self, declaration: str) -> None:
         """Specifies an on-the-fly declaration for the type of the element.
