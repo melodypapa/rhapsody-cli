@@ -18,8 +18,8 @@ dual-binding fallback for every subclass), then leaves.
 | [Group-unfinished-1.md](Group-unfinished-1.md) | 16 | ~249 | IRPClass → IRPUseCase | ⬜ 0/16 archived (pilot 5/6 steps) |
 | [Group-finished.md](Group-finished.md) | 0 | 0 | archive | ✅ 0 |
 
-Progress: **0/16 rows fully done**; IRPClass pilot 7/8 (Windows closeout open, `7163149`);
-IRPModelElement 6/8 (Steps 2/8 open: deferred §2 move + Windows closeout, run of 2026-11-21).
+Progress: **0/16 rows fully done**; IRPClass 7/8, IRPModelElement 6/8, IRPCollection 6/8
+(each awaiting the Windows closeout; the two base rows also carry the deferred §2 move).
 Refreshed 2026-11-21 (site counts re-surveyed at each run start).
 
 ## Resume rule
