@@ -18,6 +18,9 @@ _HELPER_NAMES = {"_get_method_or_property", "_set_method_or_property"}
 Rows = List[Tuple[str, str, str, str, str]]
 _AUTHORITY_INFO_STATUSES = {"ACCESSOR_ALIAS_MISMATCH", "METHOD_PROPERTY_MISMATCH", "PYTHON_ONLY_MEMBER", "JAVA_ONLY_MEMBER"}
 _AUTHORITY_BACKLOG_STATUSES = {"MISSING_PYTHON_WRAPPER", "PYWIN32_ONLY_MEMBER"}
+_UNAVAILABLE_RESOLVED_STATUSES = {"PYWIN32_MEMBER_MISSING", "JAVA_ONLY_MEMBER", "MISSING_PYTHON_WRAPPER", "PYWIN32_ONLY_MEMBER"}
+_DOCUMENTED_ALIAS_RECOMMENDATION = "Documented decision: keep the current binding; no change."
+_DOCUMENTED_UNAVAILABLE_RECOMMENDATION = "Documented decision: intentionally unsupported; no change."
 
 
 class _InterfacePageParser(HTMLParser):
@@ -378,15 +381,21 @@ def apply_pywin32_authority(rows: Rows, interface_name: str, authority: Authorit
     aliases = authority["documented_aliases"].get(interface_name, {})
     unavailable = set(authority["documented_unavailable"].get(interface_name, []))
 
+    def _documented_unavailable(row: Tuple[str, str, str, str, str]) -> bool:
+        java_names = {entry[: -len(" (method)")] for entry in row[1].split("; ") if entry.endswith(" (method)")}
+        return bool(java_names) and java_names.issubset(unavailable)
+
     for row in rows:
         statuses = row[3].split("; ")
         remaining: List[str] = []
+        alias_documented = False
         for status in statuses:
             if status in _AUTHORITY_INFO_STATUSES:
                 continue
             if status == "PYTHON_METHOD_NAME_MISMATCH":
                 wrapper_names = {label.split("()", maxsplit=1)[0] for label in row[0].split("; ") if label != "—"}
                 if wrapper_names and all(name in aliases for name in wrapper_names):
+                    alias_documented = True
                     continue
             if status == "PYWIN32_MEMBER_MISSING":
                 java_names = {entry[: -len(" (method)")] for entry in row[1].split("; ") if entry.endswith(" (method)")}
@@ -394,10 +403,20 @@ def apply_pywin32_authority(rows: Rows, interface_name: str, authority: Authorit
                     continue
             remaining.append(status)
 
-        if any(status in _AUTHORITY_BACKLOG_STATUSES for status in remaining):
-            backlog.append(row)
-        elif remaining:
+        actionable = [status for status in remaining if status not in _AUTHORITY_BACKLOG_STATUSES]
+
+        if alias_documented and not actionable:
+            resolved = ["ALIAS_DOCUMENTED" if status == "PYTHON_METHOD_NAME_MISMATCH" else status for status in statuses]
+            informational.append((row[0], row[1], row[2], "; ".join(resolved), _DOCUMENTED_ALIAS_RECOMMENDATION))
+            continue
+        if _documented_unavailable(row) and not actionable:
+            resolved = ["UNAVAILABLE_DOCUMENTED" if status in _UNAVAILABLE_RESOLVED_STATUSES else status for status in statuses]
+            informational.append((row[0], row[1], row[2], "; ".join(resolved), _DOCUMENTED_UNAVAILABLE_RECOMMENDATION))
+            continue
+        if actionable:
             deviations.append((row[0], row[1], row[2], "; ".join(remaining), row[4]))
+        elif remaining:
+            backlog.append(row)
         elif any(status in _AUTHORITY_INFO_STATUSES for status in statuses):
             informational.append(row)
 
@@ -477,6 +496,7 @@ def render_markdown_report(
     authoritative: bool = False,
     informational_rows: Optional[Rows] = None,
     backlog_rows: Optional[Rows] = None,
+    documented_counts: Optional[Tuple[int, int]] = None,
 ) -> str:
     """Render a comparison summary, five-column deviation table, and AI repair guidance."""
     status_counts: Dict[str, int] = {}
@@ -506,6 +526,8 @@ def render_markdown_report(
                 f"- Wrapper backlog (supported members without wrappers): `{len(backlog_rows or [])}`",
             ]
         )
+        if documented_counts is not None:
+            lines.append(f"- Documented aliases: `{documented_counts[0]}`, documented unavailable: `{documented_counts[1]}`")
 
     lines.extend(
         [
@@ -594,8 +616,13 @@ def main(argv: Optional[List[str]] = None) -> int:
         return 2
 
     raw_rows = build_deviation_rows(python_members, java_members, pywin32_members)
+    documented_counts: Optional[Tuple[int, int]] = None
     if args.source == "authority":
         rows, informational_rows, backlog_rows = apply_pywin32_authority(raw_rows, args.java_interface, authority)
+        documented_counts = (
+            len(authority["documented_aliases"].get(args.java_interface, {})),
+            len(authority["documented_unavailable"].get(args.java_interface, {})),
+        )
     else:
         rows, informational_rows, backlog_rows = raw_rows, [], []
 
@@ -614,6 +641,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             authoritative=(args.source == "authority"),
             informational_rows=informational_rows,
             backlog_rows=backlog_rows,
+            documented_counts=documented_counts,
         )
         report_path.write_text(markdown, encoding="utf-8")
     except OSError as exc:

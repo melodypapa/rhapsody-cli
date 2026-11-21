@@ -11,6 +11,7 @@
 
 - Informational binding differences (expected): `66`
 - Wrapper backlog (supported members without wrappers): `6`
+- Documented aliases: `0`, documented unavailable: `0`
 
 ## Comparison details
 

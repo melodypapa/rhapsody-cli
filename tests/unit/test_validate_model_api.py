@@ -282,6 +282,21 @@ def test_markdown_report_includes_status_and_recommendation_for_build_no() -> No
     assert "## AI Fix Guidance" in report
 
 
+def test_markdown_report_lists_documented_decision_counts(tmp_path: Path) -> None:
+    report = render_markdown_report(
+        "IRPClass",
+        [],
+        "IRPClass",
+        "src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_class.py",
+        {},
+        (214, 222, 201),
+        authoritative=True,
+        documented_counts=(7, 9),
+    )
+
+    assert "- Documented aliases: `7`, documented unavailable: `9`" in report
+
+
 def test_main_writes_markdown_report_to_default_and_requested_directories(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(validator, "resolve_python_wrapper", lambda interface_name, models_root: ("RhapsodyApplication", models_root.parent / "application.py"))
@@ -347,7 +362,7 @@ def test_apply_pywin32_authority_demotes_expected_differences() -> None:
     assert backlog == []
 
 
-def test_apply_pywin32_authority_suppresses_documented_alias() -> None:
+def test_apply_pywin32_authority_marks_documented_alias_in_row() -> None:
     rows = [
         (
             "get_description_html() -> descriptionHTML; get_description_html() -> getDescriptionHTML",
@@ -361,11 +376,19 @@ def test_apply_pywin32_authority_suppresses_documented_alias() -> None:
     deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPClass", _authority(aliases={"IRPClass": {"get_description_html": "description_html"}}))
 
     assert deviations == []
-    assert informational == rows
     assert backlog == []
+    assert informational == [
+        (
+            "get_description_html() -> descriptionHTML; get_description_html() -> getDescriptionHTML",
+            "getDescriptionHTML (method)",
+            "descriptionHTML (property)",
+            "ALIAS_DOCUMENTED; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH",
+            "Documented decision: keep the current binding; no change.",
+        )
+    ]
 
 
-def test_apply_pywin32_authority_suppresses_documented_unavailable_member() -> None:
+def test_apply_pywin32_authority_marks_documented_unavailable_member() -> None:
     rows = [
         (
             "get_rmm_url() -> getRmmUrl; get_rmm_url() -> rmmUrl",
@@ -378,7 +401,102 @@ def test_apply_pywin32_authority_suppresses_documented_unavailable_member() -> N
 
     deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPClass", _authority(unavailable={"IRPClass": ["getRmmUrl"]}))
 
-    assert (deviations, informational, backlog) == ([], [], [])
+    assert deviations == []
+    assert backlog == []
+    assert informational == [
+        (
+            "get_rmm_url() -> getRmmUrl; get_rmm_url() -> rmmUrl",
+            "getRmmUrl (method)",
+            "—",
+            "UNAVAILABLE_DOCUMENTED",
+            "Documented decision: intentionally unsupported; no change.",
+        )
+    ]
+
+
+def test_apply_pywin32_authority_marks_documented_unavailable_java_only_member() -> None:
+    rows = [
+        (
+            "—",
+            "addEventReceptionWithEvent (method)",
+            "—",
+            "JAVA_ONLY_MEMBER",
+            "Verify the Java documentation against the installed COM type library.",
+        )
+    ]
+
+    deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPClass", _authority(unavailable={"IRPClass": ["addEventReceptionWithEvent"]}))
+
+    assert deviations == []
+    assert backlog == []
+    assert informational == [
+        (
+            "—",
+            "addEventReceptionWithEvent (method)",
+            "—",
+            "UNAVAILABLE_DOCUMENTED",
+            "Documented decision: intentionally unsupported; no change.",
+        )
+    ]
+
+
+def test_apply_pywin32_authority_moves_documented_unavailable_backlog_to_informational() -> None:
+    rows = [
+        (
+            "—",
+            "createOSLCLink (method)",
+            "createOSLCLink (method)",
+            "MISSING_PYTHON_WRAPPER",
+            "Implement the Python wrapper or mark this API member intentionally unsupported.",
+        ),
+        (
+            "—",
+            "deleteStatechart (method)",
+            "deleteStatechart (method)",
+            "MISSING_PYTHON_WRAPPER",
+            "Implement the Python wrapper or mark this API member intentionally unsupported.",
+        ),
+    ]
+
+    deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPClass", _authority(unavailable={"IRPClass": ["createOSLCLink"]}))
+
+    assert deviations == []
+    assert informational == [
+        (
+            "—",
+            "createOSLCLink (method)",
+            "createOSLCLink (method)",
+            "UNAVAILABLE_DOCUMENTED",
+            "Documented decision: intentionally unsupported; no change.",
+        )
+    ]
+    assert backlog == [rows[1]]
+
+
+def test_apply_pywin32_authority_keeps_actionable_deviation_alongside_documented_alias() -> None:
+    rows = [
+        (
+            "get_binary_id() -> binaryID; get_binary_id() -> getBinaryID",
+            "getBinaryID (method)",
+            "BinaryID (property)",
+            "COM_MEMBER_NOT_EXPOSED; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH",
+            "Use the BinaryID property.",
+        )
+    ]
+
+    deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPClass", _authority(aliases={"IRPClass": {"get_binary_id": "binary_id"}}))
+
+    assert deviations == [
+        (
+            "get_binary_id() -> binaryID; get_binary_id() -> getBinaryID",
+            "getBinaryID (method)",
+            "BinaryID (property)",
+            "COM_MEMBER_NOT_EXPOSED",
+            "Use the BinaryID property.",
+        )
+    ]
+    assert informational == []
+    assert backlog == []
 
 
 def test_apply_pywin32_authority_keeps_unexposed_member_as_deviation() -> None:

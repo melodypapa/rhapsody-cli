@@ -207,6 +207,10 @@ the Rhapsody2.Application.1 type library; no direct COM call is added for such m
    * - getIsBehaviorOverriden (method); setIsBehaviorOverriden (method)
      - isBehaviorOverriden (property)
      - is_behavior_overriden() -> getIsBehaviorOverriden; is_behavior_overriden() -> isBehaviorOverriden
+   * - getIsFinal (method); setIsFinal (method)
+     - getIsFinal (method); setIsFinal (method)
+     - is_final() -> getIsFinal
+     - ALIAS_DOCUMENTED; Documented decision: keep the current binding; no change.
      - PYTHON_METHOD_NAME_MISMATCH; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH; Rename the Python method to the snake_case Java API name or document the alias.
    * - getIsComposite (method)
      - isComposite (property)
@@ -311,6 +315,10 @@ the Rhapsody2.Application.1 type library; no direct COM call is added for such m
    * - getReferences (method)
      - references (property)
      - get_references() -> getReferences; get_references() -> references
+   * - getRmmUrl (method)
+     - —
+     - get_rmm_url() -> getRmmUrl; get_rmm_url() -> rmmUrl
+     - UNAVAILABLE_DOCUMENTED; Documented decision: intentionally unsupported; no change.
      - ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH; Use a property-aware getter/setter fallback or document the binding mismatch.
    * - getRelations (method)
      - relations (property)
