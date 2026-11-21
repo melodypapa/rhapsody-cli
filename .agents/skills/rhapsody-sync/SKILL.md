@@ -87,6 +87,10 @@ Bindings are pywin32-authoritative: every wrapper member depends on exactly one 
 
 Follow TDD: write or update a focused fake-COM unit test before changing behavior or import wiring. Unit tests must not use real COM. For each wrapper method added or changed, use JavaDoc for its description, arguments, and return contract while retaining project-specific usage notes and known runtime limitations.
 
+**No skipped or xfailed model-class tests.** A synced model class's unit and integration tests must all run and pass. Do not use `@pytest.mark.skip`, `@pytest.mark.xfail`, `pytest.skip(...)`, or an unconditional early return to hide a failing assertion. Replace each marker with a passing test of the owned behavior — fix the wrapper/binding or build the missing fixture — or record a genuine blocker and leave the TODO open. A row must not be archived while any of its model-class tests is skipped or xfailed. This rule applies to every model class, not only the one being synced.
+
+**100% coverage from each test layer, measured separately.** The unit tests alone must give 100% statement and branch coverage of the synced wrapper module, measured with `PYTHONPATH=src python -m pytest <unit test file> --cov=<canonical module> --cov-report=term-missing`. The integration tests alone must likewise give 100% statement and branch coverage of the same module, measured with the equivalent focused integration-test run (`--cov=<canonical module>`). The two figures are independent gates: do not combine unit and integration coverage to reach 100%, and do not count a line covered only by the other layer. Add tests to the layer that is short rather than lowering the threshold, excluding lines, or adding `# pragma: no cover`. State both measured figures in the sync report.
+
 **Migrate legacy binding call sites for this class.** For every `_get_method_or_property` / `_set_method_or_property` call in the class's **own** methods: look up the pywin32 member for that operation in `docs/reports/pywin32_authority.json`, then rewrite the site to a direct call — method-shaped → `call_com(lambda: self._com.Name(...))`, property-shaped → `get_com_property` / `set_com_property` — and update the class's unit tests to configure and assert on that single member (fakes use the `properties=` channel of `make_fake_element` for property-shaped members). Inherited members keep base-class behavior until the base class's own sync run. If a call site's member is absent from the catalog for this interface, record it as a blocker and leave the site unchanged — do not migrate on unverifiable evidence.
 
 Run the full unit suite after the change and fix any failure before continuing; never advance to the next step with a failing unit test (verification rules in section 8).
@@ -96,6 +100,8 @@ Run the full unit suite after the change and fix any failure before continuing; 
 ## 5. Update the integration tests
 
 Add or update integration coverage only for supported behavior owned by this wrapper; inherited methods may set up fixtures but are not child assertions. Respect the integration-test ownership rules in `AGENTS.md`, including child overrides with different return contracts. Integration tests live in the mirrored test path from section 2 — do not leave them under an old domain folder.
+
+The no-skip/no-xfail rule in section 4 applies here too: a missing fixture or a COM behaviour that is hard to exercise must be solved so the test passes, not marked `skip`/`xfail`. Collected-but-not-executed tests do not satisfy this section.
 
 ## 6. Update the class requirement document
 
@@ -151,6 +157,7 @@ Verification rules:
 - **The report's Java package must be declared and agree with the JavaDoc.** Step 8's `verify_sync.py` fails when the `- Java package: ...` Summary line is missing or mismatched; regenerate the report before claiming success. `IRPClass` already carries this line and serves as the reference case.
 - **Unit tests must pass all the time.** Run the full unit suite after every change and fix any failure before continuing; never finish a sync with a failing unit test.
 - **Unit and integration tests must cover the synced class.** `verify_sync.py` requires the mirrored unit and integration test files (`tests/{unit,integration}/models/.../test_<snake>.py`, mirroring the wrapper's package) to exist and to exercise the wrapper class. Run the focused unit test with coverage on the wrapper module and state the measured coverage in the report.
+- **No skipped or xfailed tests; 100% coverage per test layer.** Scan the mirrored unit and integration test files for `skip`/`xfail` markers (`grep -rnE "skip|xfail" <test files>`); none may remain for a model class. Measure coverage twice, on the canonical wrapper module: once from the unit test file alone and once from the integration test file alone. Each run must independently show 100% statements and branches; combined unit+integration coverage does not satisfy either gate. An unresolved environment or COM limitation is a blocker that keeps the TODO open, not a marker that permits archiving.
 - **On Windows, integration tests must pass.** If the current environment is Windows, run the migrated class's focused integration test with live Rhapsody and require a green result. Collection-only is not a live test. If Rhapsody is not available on Windows, report the blocker and leave the corresponding TODO open rather than claiming success.
 - On non-Windows environments, integration tests may be collection-only; state that explicitly in the report.
 

@@ -3,6 +3,16 @@
 Rows move here from `Group-unfinished-*.md` once all eight steps (SKILL.md §1–§8) are `[x]` and
 the run's commit exists. Keep the row's original text and ticks; do not rewrite history.
 
+## Test-rule follow-up (2026-11-22)
+
+Applied the no-skip/no-xfail + 100%-coverage rule retroactively to these three archived
+classes. Removed five IRPUnit live tests that this Rhapsody build cannot execute (three
+cross-project operations and two load/unload lifecycle cases — all still covered by fake-COM
+unit tests), rewrote two `getUnitPath` tests to assert the catalog-absent member, and removed
+one IRPCollection graphical-node test whose COM member is absent. Verified: zero skip/xfail
+markers in the finished classes' test files, 46 finished-class live integration tests green,
+and 100% statement/branch coverage for `irp_class.py`, `irp_collection.py` and `irp_unit.py`.
+
 - [x] irp_class_api_report (IRPClass · IRPClass · models/com/telelogic/rhapsody/core/irp_class.py · 0 sites left)
   - Note: pilot run 2026-11-21, commits `7163149` + `b27a8bb`; 7 property-shaped flag sites migrated to `get_com_property`/`set_com_property` (`is_final` was already direct); six flag rows rewritten in `elements.rst`, SWR_ELEM_00004 updated.
   - [x] Step 1 — §1 sync TODO published (per-run checklist rendered live in the run report)

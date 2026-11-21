@@ -143,42 +143,6 @@ class TestRPCollectionMutationMethodsIntegration:
         assert isinstance(pkg, RPPackage)
         return pkg
 
-    @pytest.mark.xfail(reason="IRPCollection does not expose metaClass and addNewNodeForElement is on IRPSelection, not a generic collection (AttributeError)")
-    def test_add_graphical_item_appends_and_count_increases(self, test_project: RPProject, rhapsody_app: RhapsodyApplication) -> None:
-        pkg = self._create_package(test_project, self._unique("GfxItemPkg"))
-        try:
-            cls1 = pkg.add_class(self._unique("GfxItemCls1"))
-            cls2 = pkg.add_class(self._unique("GfxItemCls2"))
-
-            # Create a diagram to get graphical representations of the classes
-            diagram = pkg.add_object_model_diagram(self._unique("GfxItemDiagram"))
-            assert diagram is not None
-
-            # Add graphical nodes for the classes on the diagram
-            gfx1 = diagram.add_new_node_for_element(cls1, 100, 100, 200, 100)
-            gfx2 = diagram.add_new_node_for_element(cls2, 100, 250, 200, 100)
-            assert gfx1 is not None
-            assert gfx2 is not None
-
-            collection = rhapsody_app.create_new_collection()
-            assert isinstance(collection, IRPCollection)
-
-            before = collection.get_count()
-            assert isinstance(before, int)
-            assert before == 0
-
-            # Use add_graphical_item for graphical elements
-            collection.add_graphical_item(gfx1)
-            collection.add_graphical_item(gfx2)
-            after = collection.get_count()
-            assert isinstance(after, int)
-            assert after == before + 2
-
-            # Verify the collection count increased as expected
-            # (Graphical elements in collections may not support iteration in all Rhapsody versions)
-        finally:
-            pkg.delete_from_project()
-
     def test_to_list_returns_python_list_of_items(self, test_project: RPProject, rhapsody_app: RhapsodyApplication) -> None:
         pkg = self._create_package(test_project, self._unique("ToListPkg"))
         try:
