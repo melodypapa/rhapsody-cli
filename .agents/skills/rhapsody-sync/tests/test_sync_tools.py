@@ -183,7 +183,13 @@ def test_verifier_reports_java_package_mismatch(tmp_path: Path) -> None:
 
 def test_irpclass_report_declares_java_package() -> None:
     tools = _load_sync_tools()
-    root = tools.find_project_root(SYNC_TOOLS_PATH)
+    # Resolve the repo root without the docs/java_api marker: this check validates a
+    # committed offline artifact and must run on machines without the JavaDoc tree.
+    root = next(
+        candidate
+        for candidate in SYNC_TOOLS_PATH.parents
+        if (candidate / "scripts" / "validate_model_api.py").is_file() and (candidate / "docs" / "reports" / "IRPClass_api_report.md").is_file()
+    )
     report = root / "docs" / "reports" / "IRPClass_api_report.md"
 
     assert tools.parse_report_java_package(report.read_text(encoding="utf-8")) == "com.telelogic.rhapsody.core"
