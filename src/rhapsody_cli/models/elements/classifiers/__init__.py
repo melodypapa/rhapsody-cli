@@ -4,7 +4,6 @@ from rhapsody_cli.models.elements.classifiers.model_actor import RPActor  # noqa
 from rhapsody_cli.models.elements.classifiers.model_association_class import (  # noqa: F401
     RPAssociationClass,
 )
-from rhapsody_cli.models.elements.classifiers.model_class import RPClass  # noqa: F401
 from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier  # noqa: F401
 from rhapsody_cli.models.elements.classifiers.model_exception import RPException  # noqa: F401
 from rhapsody_cli.models.elements.classifiers.model_interface_item import (  # noqa: F401
@@ -18,7 +17,6 @@ from rhapsody_cli.models.elements.classifiers.model_usecase import RPUseCase  # 
 __all__ = [
     "RPActor",
     "RPAssociationClass",
-    "RPClass",
     "RPClassifier",
     "RPException",
     "RPInterfaceItem",

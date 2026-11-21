@@ -1,7 +1,8 @@
 """Tests for rhapsody_cli.models.elements.relations.RPPort."""
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
 from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection
-from rhapsody_cli.models.elements.classifiers import RPClass, RPClassifier
+from rhapsody_cli.models.elements.classifiers import RPClassifier
 from rhapsody_cli.models.elements.relations import RPInstance, RPPort
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -66,13 +67,13 @@ def test_port_get_port_contract_wraps_result() -> None:
 
     result = port.get_port_contract()
 
-    assert isinstance(result, RPClass)
+    assert isinstance(result, IRPClass)
     assert result.get_name() == "IEngine"
 
 
 def test_port_set_port_contract_delegates_to_com() -> None:
     contract_fake = make_fake_element("Class", getName="IEngine")
-    contract = RPClass(contract_fake)
+    contract = IRPClass(contract_fake)
     fake = make_fake_element("Port")
     port = RPPort(fake)
 
@@ -96,7 +97,7 @@ def test_port_get_provided_interfaces_returns_collection() -> None:
 
 def test_port_add_provided_interface_delegates_to_com() -> None:
     interface_fake = make_fake_element("Class", getName="IProvided")
-    interface = RPClass(interface_fake)
+    interface = IRPClass(interface_fake)
     fake = make_fake_element("Port")
     port = RPPort(fake)
 
@@ -107,7 +108,7 @@ def test_port_add_provided_interface_delegates_to_com() -> None:
 
 def test_port_remove_provided_interface_delegates_to_com() -> None:
     interface_fake = make_fake_element("Class", getName="IProvided")
-    interface = RPClass(interface_fake)
+    interface = IRPClass(interface_fake)
     fake = make_fake_element("Port")
     port = RPPort(fake)
 
@@ -131,7 +132,7 @@ def test_port_get_required_interfaces_returns_collection() -> None:
 
 def test_port_add_required_interface_delegates_to_com() -> None:
     interface_fake = make_fake_element("Class", getName="IRequired")
-    interface = RPClass(interface_fake)
+    interface = IRPClass(interface_fake)
     fake = make_fake_element("Port")
     port = RPPort(fake)
 
@@ -142,7 +143,7 @@ def test_port_add_required_interface_delegates_to_com() -> None:
 
 def test_port_remove_required_interface_delegates_to_com() -> None:
     interface_fake = make_fake_element("Class", getName="IRequired")
-    interface = RPClass(interface_fake)
+    interface = IRPClass(interface_fake)
     fake = make_fake_element("Port")
     port = RPPort(fake)
 
@@ -159,13 +160,13 @@ def test_port_get_contract_wraps_result() -> None:
 
     result = port.get_contract()
 
-    assert isinstance(result, RPClass)
+    assert isinstance(result, IRPClass)
     assert result.get_name() == "IEngine"
 
 
 def test_port_set_contract_delegates_to_com() -> None:
     contract_fake = make_fake_element("Class", getName="IEngine")
-    contract = RPClass(contract_fake)
+    contract = IRPClass(contract_fake)
     fake = make_fake_element("Port")
     port = RPPort(fake)
 

@@ -1,0 +1,22 @@
+[
+  {"query": "Can you sync IRPAttribute to its JavaDoc API? The wrapper seems to be missing a couple of methods and I want the COM differences documented too.", "should_trigger": true},
+  {"query": "IRPActor needs to match the Java interface; please separate inherited methods and update the package and RST entry.", "should_trigger": true},
+  {"query": "Please audit IRPClass for JavaDoc/pywin32/Python API parity and fix the deviations that are safe to fix.", "should_trigger": true},
+  {"query": "Move the Rhapsody wrapper for IRPPort into the JavaDoc package path but keep old imports working.", "should_trigger": true},
+  {"query": "The RST API docs list classes by domain. Can you sync this interface and document its Java package and COM mismatches?", "should_trigger": true},
+  {"query": "I added a wrapper for IRPThing. Check its JavaDoc, actual COM binding, tests, and package layout before calling it done.", "should_trigger": true},
+  {"query": "Sync the Java methods for IRPClass, but don't call anything that the pywin32 binding doesn't expose.", "should_trigger": true},
+  {"query": "Could you bring the Python wrapper for this Rhapsody interface in line with its JavaDoc and update the requirements description from the docs?", "should_trigger": true},
+  {"query": "We're syncing Rhapsody classes one at a time. Start with IRPAttribute and create a TODO list for all the checks.", "should_trigger": true},
+  {"query": "Compare the JavaDoc for IRPClass with the wrapper implementation and report every member mismatch in the Sphinx RST page.", "should_trigger": true},
+  {"query": "How do I create a class in my Rhapsody project with the CLI? Show me the command and JSON fields.", "should_trigger": false},
+  {"query": "What does IRPClass.getName() return according to the Java API docs?", "should_trigger": false},
+  {"query": "Please fix a spelling mistake in the JavaDoc HTML page for IRPAttribute; don't change the wrapper.", "should_trigger": false},
+  {"query": "Add a new `class clone` CLI subcommand that duplicates a model class and its attributes.", "should_trigger": false},
+  {"query": "Can you explain how inheritance works in Rhapsody models? I only need a conceptual overview.", "should_trigger": false},
+  {"query": "Update the user guide with an example of creating a class from the command line.", "should_trigger": false},
+  {"query": "The Python package layout is confusing. Write a proposal for a new package architecture, but don't sync any API class yet.", "should_trigger": false},
+  {"query": "Generate a table of JavaDoc methods for IRPClass; don't inspect the Python wrapper or make code changes.", "should_trigger": false},
+  {"query": "My Rhapsody COM connection fails with a permission error. Help me troubleshoot the connection.", "should_trigger": false},
+  {"query": "Change the type annotation on RPClass.is_final from int to bool and update its unit test.", "should_trigger": false}
+]

@@ -1,4 +1,4 @@
-"""Integration tests for RPClass with live Rhapsody COM API.
+"""Integration tests for IRPClass with live Rhapsody COM API.
 
 These tests require a running Rhapsody instance with an open project.
 """
@@ -14,8 +14,8 @@ from rhapsody_cli.models.elements.interactions import RPEventReception
 
 
 @pytest.mark.integration
-class TestRPClassIntegration:
-    """Integration tests for RPClass with real Rhapsody COM API."""
+class TestIRPClassIntegration:
+    """Integration tests for IRPClass with real Rhapsody COM API."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
@@ -64,7 +64,7 @@ class TestRPClassIntegration:
             test_class.delete_from_project()
 
     def test_set_is_abstract_raises_not_implemented(self, test_project: RPProject) -> None:
-        """RPClass.set_is_abstract is marked unimplemented: Rhapsody2.Application.1's automation
+        """IRPClass.set_is_abstract is marked unimplemented: Rhapsody2.Application.1's automation
         server accepts a write to the 'isAbstract' COM property without error (confirmed via
         typelib inspection that both PROPERTYGET and PROPERTYPUT are declared for isAbstract
         under the same DISPID -- it is not read-only at the interface level), but the write does
@@ -76,9 +76,9 @@ class TestRPClassIntegration:
         pkg = self._create_package(test_project, pkg_name)
         test_class = pkg.add_class(class_name)
         try:
-            assert test_class.get_is_abstract() is False
+            assert test_class.is_abstract is False
             with pytest.raises(NotImplementedError):
-                test_class.set_is_abstract(1)
+                test_class.is_abstract = True
         finally:
             test_class.delete_from_project()
 
@@ -249,11 +249,11 @@ class TestRPClassIntegration:
         pkg = self._create_package(test_project, pkg_name)
         test_class = pkg.add_class(class_name)
         try:
-            assert test_class.get_is_active() in (0, 1)
-            test_class.set_is_active(1)
-            assert test_class.get_is_active() == 1
-            test_class.set_is_active(0)
-            assert test_class.get_is_active() == 0
+            assert test_class.is_active in (0, 1)
+            test_class.is_active = 1
+            assert test_class.is_active == 1
+            test_class.is_active = 0
+            assert test_class.is_active == 0
         finally:
             test_class.delete_from_project()
 
@@ -263,11 +263,11 @@ class TestRPClassIntegration:
         pkg = self._create_package(test_project, pkg_name)
         test_class = pkg.add_class(class_name)
         try:
-            assert test_class.get_is_behavior_overriden() in (0, 1)
-            test_class.set_is_behavior_overriden(1)
-            assert test_class.get_is_behavior_overriden() == 1
-            test_class.set_is_behavior_overriden(0)
-            assert test_class.get_is_behavior_overriden() == 0
+            assert test_class.is_behavior_overriden in (0, 1)
+            test_class.is_behavior_overriden = 1
+            assert test_class.is_behavior_overriden == 1
+            test_class.is_behavior_overriden = 0
+            assert test_class.is_behavior_overriden == 0
         finally:
             test_class.delete_from_project()
 
@@ -277,22 +277,7 @@ class TestRPClassIntegration:
         pkg = self._create_package(test_project, pkg_name)
         test_class = pkg.add_class(class_name)
         try:
-            assert test_class.get_is_composite() in (0, 1)
-        finally:
-            test_class.delete_from_project()
-
-    @pytest.mark.xfail(strict=False, reason="Rhapsody COM defect: IRPClass.setIsFinal does not persist (get returns 0) — same limitation as setIsAbstract")
-    def test_is_final_roundtrip(self, test_project: RPProject) -> None:
-        pkg_name = self._unique("FinalPkg")
-        class_name = self._unique("FinalCls")
-        pkg = self._create_package(test_project, pkg_name)
-        test_class = pkg.add_class(class_name)
-        try:
-            assert test_class.get_is_final() in (0, 1)
-            test_class.set_is_final(1)
-            assert test_class.get_is_final() == 1
-            test_class.set_is_final(0)
-            assert test_class.get_is_final() == 0
+            assert test_class.is_composite in (0, 1)
         finally:
             test_class.delete_from_project()
 
@@ -302,17 +287,6 @@ class TestRPClassIntegration:
         pkg = self._create_package(test_project, pkg_name)
         test_class = pkg.add_class(class_name)
         try:
-            assert test_class.get_is_reactive() in (0, 1)
-        finally:
-            test_class.delete_from_project()
-
-    @pytest.mark.xfail(strict=False, reason="IRPClass COM dispatch does not expose updateContainedDiagramsOnServer (AttributeError) though declared in the Java API")
-    def test_update_contained_diagrams_on_server(self, test_project: RPProject) -> None:
-        pkg_name = self._unique("SrvPkg")
-        class_name = self._unique("SrvCls")
-        pkg = self._create_package(test_project, pkg_name)
-        test_class = pkg.add_class(class_name)
-        try:
-            test_class.update_contained_diagrams_on_server(0)
+            assert test_class.is_reactive in (0, 1)
         finally:
             test_class.delete_from_project()

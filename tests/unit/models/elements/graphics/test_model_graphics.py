@@ -334,10 +334,10 @@ class TestRPPinTask15:
         fake = make_fake_element("Pin")
         classifier = make_fake_element("Class", getName="DataType")
         fake.setPinType.return_value = None
-        from rhapsody_cli.models.elements.classifiers.model_class import RPClass
+        from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
 
         pin = RPPin(fake)
-        pin.set_pin_type(RPClass(classifier))
+        pin.set_pin_type(IRPClass(classifier))
         fake.setPinType.assert_called_once_with(classifier)
 
 

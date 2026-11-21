@@ -1,11 +1,13 @@
-"""Tests for rhapsody_cli.elements.class_.RPClass."""
+"""Unit tests for rhapsody_cli.models.com.telelogic.rhapsody.core.IRPClass."""
 
 from typing import cast
+from unittest.mock import MagicMock
 
 import pytest
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
 from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
-from rhapsody_cli.models.elements.classifiers import RPClass, RPClassifier
+from rhapsody_cli.models.elements.classifiers import RPClassifier
 from rhapsody_cli.models.elements.classifiers.model_operation import RPOperation
 from rhapsody_cli.models.elements.interactions.model_interactions import RPEvent, RPEventReception
 from tests.unit.models.fakes import make_fake_element
@@ -13,7 +15,7 @@ from tests.unit.models.fakes import make_fake_element
 
 def test_class_is_a_classifier() -> None:
     fake = make_fake_element("Class", getName="Widget")
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
     assert isinstance(klass, RPClassifier)
     assert klass.get_name() == "Widget"
@@ -22,9 +24,9 @@ def test_class_is_a_classifier() -> None:
 def test_class_add_superclass_delegates_to_com() -> None:
     fake = make_fake_element("Class")
     base = make_fake_element("Class", getName="Base")
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
-    klass.add_superclass(RPClass(base))
+    klass.add_superclass(IRPClass(base))
 
     fake.addSuperclass.assert_called_once_with(base)
 
@@ -33,7 +35,7 @@ def test_class_add_constructor_wraps_result() -> None:
     fake = make_fake_element("Class")
     ctor = make_fake_element("Operation", getName="Widget")
     fake.addConstructor.return_value = ctor
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
     result = klass.add_constructor("int x")
 
@@ -45,7 +47,7 @@ def test_class_add_destructor_wraps_result() -> None:
     fake = make_fake_element("Class")
     dtor = make_fake_element("Operation", getName="~Widget")
     fake.addDestructor.return_value = dtor
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
     result = klass.add_destructor()
 
@@ -53,18 +55,18 @@ def test_class_add_destructor_wraps_result() -> None:
     assert result.get_name() == "~Widget"
 
 
-def test_class_get_is_abstract_delegates_to_com() -> None:
+def test_class_is_abstract_property_delegates_to_com() -> None:
     fake = make_fake_element("Class", getIsAbstract=1)
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
-    assert klass.get_is_abstract() is True
+    assert klass.is_abstract is True
 
 
 def test_class_add_class_nested_wraps_result() -> None:
     fake = make_fake_element("Class")
     nested = make_fake_element("Class", getName="Inner")
     fake.addClass.return_value = nested
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
     result = klass.add_class("Inner")
 
@@ -77,14 +79,14 @@ def test_class_is_registered_for_meta_class_class() -> None:
 
     wrapped = AbstractRPModelElement.wrap(fake)
 
-    assert isinstance(wrapped, RPClass)
+    assert isinstance(wrapped, IRPClass)
 
 
 def test_class_add_event_reception_wraps_result() -> None:
     fake = make_fake_element("Class")
     reception = make_fake_element("EventReception", getName="onEvent")
     fake.addEventReception.return_value = reception
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
     result = klass.add_event_reception("onEvent")
 
@@ -97,7 +99,7 @@ def test_class_add_event_reception_with_event_unwraps_and_wraps() -> None:
     event = make_fake_element("Event", getName="Tick")
     reception = make_fake_element("EventReception", getName="onTick")
     fake.addEventReceptionWithEvent.return_value = reception
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
     with pytest.raises(NotImplementedError):
         wrapped_event = AbstractRPModelElement.wrap(event)
@@ -113,7 +115,7 @@ def test_class_add_link_unwraps_all_args_and_wraps_result() -> None:
     to_port = make_fake_element("Port", getName="port2")
     link = make_fake_element("Link", getName="link1")
     fake.addLink.return_value = link
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
     result = klass.add_link(
         cast(RPModelElement, AbstractRPModelElement.wrap(from_part)),
@@ -135,7 +137,7 @@ def test_class_add_link_to_part_via_port_unwraps_and_wraps() -> None:
     assoc = make_fake_element("Relation", getName="r1")
     link = make_fake_element("Link", getName="link1")
     fake.addLinkToPartViaPort.return_value = link
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
     result = klass.add_link_to_part_via_port(
         cast(RPModelElement, AbstractRPModelElement.wrap(to_part)),
@@ -152,7 +154,7 @@ def test_class_add_reception_wraps_result() -> None:
     fake = make_fake_element("Class")
     reception = make_fake_element("EventReception", getName="onSignal")
     fake.addReception.return_value = reception
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
     result = klass.add_reception("onSignal")
 
@@ -164,7 +166,7 @@ def test_class_add_triggered_operation_wraps_result() -> None:
     fake = make_fake_element("Class")
     op = make_fake_element("Operation", getName="handle")
     fake.addTriggeredOperation.return_value = op
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
     result = klass.add_triggered_operation("handle")
 
@@ -176,7 +178,7 @@ def test_class_add_type_wraps_result() -> None:
     fake = make_fake_element("Class")
     typ = make_fake_element("Type", getName="Color")
     fake.addType.return_value = typ
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
     result = klass.add_type("Color")
 
@@ -186,7 +188,7 @@ def test_class_add_type_wraps_result() -> None:
 
 def test_class_delete_class_delegates_to_com() -> None:
     fake = make_fake_element("Class")
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
     klass.delete_class("Inner")
 
@@ -196,7 +198,7 @@ def test_class_delete_class_delegates_to_com() -> None:
 def test_class_delete_constructor_unwraps_arg() -> None:
     fake = make_fake_element("Class")
     ctor = make_fake_element("Operation", getName="Widget")
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
     wrapped_ctor = AbstractRPModelElement.wrap(ctor)
     klass.delete_constructor(cast(RPOperation, wrapped_ctor))
@@ -206,7 +208,7 @@ def test_class_delete_constructor_unwraps_arg() -> None:
 
 def test_class_delete_destructor_delegates_to_com() -> None:
     fake = make_fake_element("Class")
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
     klass.delete_destructor()
 
@@ -216,7 +218,7 @@ def test_class_delete_destructor_delegates_to_com() -> None:
 def test_class_delete_event_reception_unwraps_arg() -> None:
     fake = make_fake_element("Class")
     reception = make_fake_element("EventReception", getName="onEvent")
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
     wrapped_reception = AbstractRPModelElement.wrap(reception)
     klass.delete_event_reception(cast(RPEventReception, wrapped_reception))
@@ -227,7 +229,7 @@ def test_class_delete_event_reception_unwraps_arg() -> None:
 def test_class_delete_reception_unwraps_arg() -> None:
     fake = make_fake_element("Class")
     reception = make_fake_element("EventReception", getName="onSignal")
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
     wrapped_reception = AbstractRPModelElement.wrap(reception)
     klass.delete_reception(cast(RPEventReception, wrapped_reception))
@@ -238,100 +240,109 @@ def test_class_delete_reception_unwraps_arg() -> None:
 def test_class_delete_superclass_unwraps_arg() -> None:
     fake = make_fake_element("Class")
     base = make_fake_element("Class", getName="Base")
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
-    klass.delete_superclass(RPClass(base))
+    klass.delete_superclass(IRPClass(base))
 
     fake.deleteSuperclass.assert_called_once_with(base)
 
 
 def test_class_delete_type_delegates_to_com() -> None:
     fake = make_fake_element("Class")
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
     klass.delete_type("Color")
 
     fake.deleteType.assert_called_once_with("Color")
 
 
-def test_class_get_is_active_delegates_to_com() -> None:
+def test_class_is_active_property_delegates_to_com() -> None:
     fake = make_fake_element("Class", getIsActive=1)
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
-    assert klass.get_is_active() == 1
+    assert klass.is_active == 1
 
 
-def test_class_get_is_behavior_overriden_delegates_to_com() -> None:
+def test_class_is_behavior_overriden_property_delegates_to_com() -> None:
     fake = make_fake_element("Class", getIsBehaviorOverriden=0)
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
-    assert klass.get_is_behavior_overriden() == 0
+    assert klass.is_behavior_overriden == 0
 
 
-def test_class_get_is_composite_delegates_to_com() -> None:
+def test_class_is_composite_property_delegates_to_com() -> None:
     fake = make_fake_element("Class", getIsComposite=1)
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
-    assert klass.get_is_composite() == 1
-
-
-def test_class_get_is_final_delegates_to_com() -> None:
-    fake = make_fake_element("Class", getIsFinal=0)
-    klass = RPClass(fake)
-
-    assert klass.get_is_final() == 0
+    assert klass.is_composite == 1
 
 
-def test_class_get_is_reactive_delegates_to_com() -> None:
+def test_class_is_final_property_calls_pywin32_method() -> None:
+    fake = MagicMock(spec=["getIsFinal"])
+    fake.getIsFinal.return_value = 0
+    klass = IRPClass(fake)
+
+    assert klass.is_final == 0
+    fake.getIsFinal.assert_called_once_with()
+
+
+def test_class_is_reactive_property_delegates_to_com() -> None:
     fake = make_fake_element("Class", getIsReactive=1)
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
-    assert klass.get_is_reactive() == 1
+    assert klass.is_reactive == 1
 
 
-def test_class_set_is_abstract_raises_not_implemented() -> None:
-    """RPClass.set_is_abstract is marked unimplemented: Rhapsody2.Application.1 accepts the
-    write without error but never persists it, so it raises rather than silently no-opping."""
+def test_class_is_abstract_setter_raises_not_implemented() -> None:
     fake = make_fake_element("Class")
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
     with pytest.raises(NotImplementedError):
-        klass.set_is_abstract(1)
+        klass.is_abstract = True
 
     fake.setIsAbstract.assert_not_called()
 
 
-def test_class_set_is_active_delegates_to_com() -> None:
+def test_class_is_active_setter_delegates_to_com() -> None:
     fake = make_fake_element("Class")
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
-    klass.set_is_active(0)
+    klass.is_active = 0
 
     fake.setIsActive.assert_called_once_with(0)
 
 
-def test_class_set_is_behavior_overriden_delegates_to_com() -> None:
+def test_class_is_behavior_overriden_setter_delegates_to_com() -> None:
     fake = make_fake_element("Class")
-    klass = RPClass(fake)
+    klass = IRPClass(fake)
 
-    klass.set_is_behavior_overriden(1)
+    klass.is_behavior_overriden = 1
 
     fake.setIsBehaviorOverriden.assert_called_once_with(1)
 
 
-def test_class_set_is_final_delegates_to_com() -> None:
-    fake = make_fake_element("Class")
-    klass = RPClass(fake)
+def test_class_is_final_setter_calls_pywin32_method() -> None:
+    fake = MagicMock(spec=["setIsFinal"])
+    klass = IRPClass(fake)
 
-    klass.set_is_final(1)
+    klass.is_final = 1
 
     fake.setIsFinal.assert_called_once_with(1)
 
 
-def test_class_update_contained_diagrams_on_server_delegates_to_com() -> None:
-    fake = make_fake_element("Class", updateContainedDiagramsOnServer=3)
-    klass = RPClass(fake)
+def test_class_does_not_expose_unavailable_server_diagram_update() -> None:
+    assert not hasattr(IRPClass, "update_contained_diagrams_on_server")
 
-    assert klass.update_contained_diagrams_on_server(1) == 3
 
-    fake.updateContainedDiagramsOnServer.assert_called_once_with(1)
+def test_class_canonical_package_exports_same_class() -> None:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass as PackageRPClass
+
+    assert PackageRPClass is IRPClass
+
+
+def test_class_canonical_module_registers_wrapper() -> None:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass as CanonicalRPClass
+
+    fake = make_fake_element("Class")
+
+    assert isinstance(AbstractRPModelElement.wrap(fake), CanonicalRPClass)

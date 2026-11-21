@@ -1,8 +1,10 @@
 from pathlib import Path
+from typing import Dict, List, Optional
 
 import pytest
 
 import scripts.validate_model_api as validator
+from scripts.pywin32_authority import AuthorityData
 from scripts.validate_model_api import (
     _resolve_generated_interface_source,
     build_arg_parser,
@@ -280,6 +282,21 @@ def test_markdown_report_includes_status_and_recommendation_for_build_no() -> No
     assert "## AI Fix Guidance" in report
 
 
+def test_markdown_report_lists_documented_decision_counts(tmp_path: Path) -> None:
+    report = render_markdown_report(
+        "IRPClass",
+        [],
+        "IRPClass",
+        "src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_class.py",
+        {},
+        (214, 222, 201),
+        authoritative=True,
+        documented_counts=(7, 9),
+    )
+
+    assert "- Documented aliases: `7`, documented unavailable: `9`" in report
+
+
 def test_main_writes_markdown_report_to_default_and_requested_directories(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(validator, "resolve_python_wrapper", lambda interface_name, models_root: ("RhapsodyApplication", models_root.parent / "application.py"))
@@ -305,6 +322,7 @@ def test_argument_parser_requires_one_interface_and_optional_report_directory() 
     default_args = parser.parse_args(["IRPClass"])
     assert default_args.java_interface == "IRPClass"
     assert default_args.path is None
+    assert default_args.source == "typelib"
     args = parser.parse_args(["IRPApplication", "--path", "out"])
     assert args.java_interface == "IRPApplication"
     assert args.path == Path("out")
@@ -312,3 +330,220 @@ def test_argument_parser_requires_one_interface_and_optional_report_directory() 
         parser.parse_args([])
     with pytest.raises(SystemExit):
         parser.parse_args(["IRPClass", "IRPActor"])
+
+
+def _authority(
+    catalog: Optional[Dict[str, Dict[str, str]]] = None,
+    aliases: Optional[Dict[str, Dict[str, str]]] = None,
+    unavailable: Optional[Dict[str, List[str]]] = None,
+) -> AuthorityData:
+    """Build an AuthorityData carrying only the documented-decision maps under test."""
+    return AuthorityData(
+        catalog=catalog or {},
+        documented_aliases=aliases or {},
+        documented_unavailable=unavailable or {},
+    )
+
+
+def test_apply_pywin32_authority_demotes_expected_differences() -> None:
+    rows = [
+        (
+            "get_activity_diagram() -> activityDiagram; get_activity_diagram() -> getActivityDiagram",
+            "getActivityDiagram (method)",
+            "activityDiagram (property)",
+            "ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH",
+            "Use a property-aware getter/setter fallback.",
+        )
+    ]
+
+    deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPClass", _authority())
+
+    assert deviations == []
+    assert informational == rows
+    assert backlog == []
+
+
+def test_apply_pywin32_authority_marks_documented_alias_in_row() -> None:
+    rows = [
+        (
+            "get_description_html() -> descriptionHTML; get_description_html() -> getDescriptionHTML",
+            "getDescriptionHTML (method)",
+            "descriptionHTML (property)",
+            "PYTHON_METHOD_NAME_MISMATCH; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH",
+            "Rename the Python method.",
+        )
+    ]
+
+    deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPClass", _authority(aliases={"IRPClass": {"get_description_html": "description_html"}}))
+
+    assert deviations == []
+    assert backlog == []
+    assert informational == [
+        (
+            "get_description_html() -> descriptionHTML; get_description_html() -> getDescriptionHTML",
+            "getDescriptionHTML (method)",
+            "descriptionHTML (property)",
+            "ALIAS_DOCUMENTED; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH",
+            "Documented decision: keep the current binding; no change.",
+        )
+    ]
+
+
+def test_apply_pywin32_authority_marks_documented_unavailable_member() -> None:
+    rows = [
+        (
+            "get_rmm_url() -> getRmmUrl; get_rmm_url() -> rmmUrl",
+            "getRmmUrl (method)",
+            "—",
+            "PYWIN32_MEMBER_MISSING",
+            "Use a member exposed by the registered type library.",
+        )
+    ]
+
+    deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPClass", _authority(unavailable={"IRPClass": ["getRmmUrl"]}))
+
+    assert deviations == []
+    assert backlog == []
+    assert informational == [
+        (
+            "get_rmm_url() -> getRmmUrl; get_rmm_url() -> rmmUrl",
+            "getRmmUrl (method)",
+            "—",
+            "UNAVAILABLE_DOCUMENTED",
+            "Documented decision: intentionally unsupported; no change.",
+        )
+    ]
+
+
+def test_apply_pywin32_authority_marks_documented_unavailable_java_only_member() -> None:
+    rows = [
+        (
+            "—",
+            "addEventReceptionWithEvent (method)",
+            "—",
+            "JAVA_ONLY_MEMBER",
+            "Verify the Java documentation against the installed COM type library.",
+        )
+    ]
+
+    deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPClass", _authority(unavailable={"IRPClass": ["addEventReceptionWithEvent"]}))
+
+    assert deviations == []
+    assert backlog == []
+    assert informational == [
+        (
+            "—",
+            "addEventReceptionWithEvent (method)",
+            "—",
+            "UNAVAILABLE_DOCUMENTED",
+            "Documented decision: intentionally unsupported; no change.",
+        )
+    ]
+
+
+def test_apply_pywin32_authority_moves_documented_unavailable_backlog_to_informational() -> None:
+    rows = [
+        (
+            "—",
+            "createOSLCLink (method)",
+            "createOSLCLink (method)",
+            "MISSING_PYTHON_WRAPPER",
+            "Implement the Python wrapper or mark this API member intentionally unsupported.",
+        ),
+        (
+            "—",
+            "deleteStatechart (method)",
+            "deleteStatechart (method)",
+            "MISSING_PYTHON_WRAPPER",
+            "Implement the Python wrapper or mark this API member intentionally unsupported.",
+        ),
+    ]
+
+    deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPClass", _authority(unavailable={"IRPClass": ["createOSLCLink"]}))
+
+    assert deviations == []
+    assert informational == [
+        (
+            "—",
+            "createOSLCLink (method)",
+            "createOSLCLink (method)",
+            "UNAVAILABLE_DOCUMENTED",
+            "Documented decision: intentionally unsupported; no change.",
+        )
+    ]
+    assert backlog == [rows[1]]
+
+
+def test_apply_pywin32_authority_keeps_actionable_deviation_alongside_documented_alias() -> None:
+    rows = [
+        (
+            "get_binary_id() -> binaryID; get_binary_id() -> getBinaryID",
+            "getBinaryID (method)",
+            "BinaryID (property)",
+            "COM_MEMBER_NOT_EXPOSED; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH",
+            "Use the BinaryID property.",
+        )
+    ]
+
+    deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPClass", _authority(aliases={"IRPClass": {"get_binary_id": "binary_id"}}))
+
+    assert deviations == [
+        (
+            "get_binary_id() -> binaryID; get_binary_id() -> getBinaryID",
+            "getBinaryID (method)",
+            "BinaryID (property)",
+            "COM_MEMBER_NOT_EXPOSED",
+            "Use the BinaryID property.",
+        )
+    ]
+    assert informational == []
+    assert backlog == []
+
+
+def test_apply_pywin32_authority_keeps_unexposed_member_as_deviation() -> None:
+    rows = [
+        (
+            "get_binary_id() -> binaryID; get_binary_id() -> getBinaryID",
+            "getBinaryID (method)",
+            "BinaryID (property)",
+            "COM_MEMBER_NOT_EXPOSED; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH",
+            "Use the BinaryID property.",
+        )
+    ]
+
+    deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPClass", _authority())
+
+    assert deviations == [
+        (
+            "get_binary_id() -> binaryID; get_binary_id() -> getBinaryID",
+            "getBinaryID (method)",
+            "BinaryID (property)",
+            "COM_MEMBER_NOT_EXPOSED",
+            "Use the BinaryID property.",
+        )
+    ]
+    assert informational == []
+    assert backlog == []
+
+
+def test_main_authority_source_reports_backlog_without_typelib(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(validator, "load_authority", lambda: _authority(catalog={"IRPClass": {"isAbstract": "property"}}))
+    monkeypatch.setattr(validator, "collect_java_signatures", lambda interface_name, docs_root: {"isAbstract": {"IRPClass.isAbstract()"}})
+    monkeypatch.setattr(validator, "collect_java_members", lambda interface_name, docs_root: {"isAbstract"})
+    monkeypatch.setattr(validator, "collect_python_members", lambda interface_name, models_root: {"isAbstract": {"is_abstract() -> isAbstract"}})
+
+    assert validator.main(["IRPClass", "--source", "authority"]) == 0
+
+    report = (tmp_path / "IRPClass_api_report.md").read_text(encoding="utf-8")
+    assert "## Expected Binding Differences" in report
+    assert "## Wrapper Backlog" in report
+    assert "No deviations require changes." in report
+
+
+def test_irpclass_report_has_no_actionable_deviations() -> None:
+    reports_root = Path(__file__).resolve().parents[2] / "docs" / "reports"
+    text = (reports_root / "IRPClass_api_report.md").read_text(encoding="utf-8")
+    section = text.split("## Comparison details", 1)[1].split("## Expected Binding Differences", 1)[0]
+    rows = [line for line in section.splitlines() if line.startswith("| ") and "Python model wrapper" not in line and "---" not in line]
+    assert rows == [], rows

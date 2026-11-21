@@ -1,7 +1,8 @@
 """Tests for rhapsody_cli.models.elements.classifiers.RPAssociationClass."""
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
 from rhapsody_cli.models.core import AbstractRPModelElement
-from rhapsody_cli.models.elements.classifiers import RPAssociationClass, RPClass
+from rhapsody_cli.models.elements.classifiers import RPAssociationClass
 from tests.unit.models.fakes import make_fake_element
 
 
@@ -9,7 +10,7 @@ def test_association_class_is_a_class() -> None:
     fake = make_fake_element("AssociationClass", getName="MyAssoc")
     ac = RPAssociationClass(fake)
 
-    assert isinstance(ac, RPClass)
+    assert isinstance(ac, IRPClass)
     assert ac.get_name() == "MyAssoc"
 
 

@@ -287,9 +287,10 @@ Project Structure
    │   ├── __init__.py
    │   ├── core.py                   # RPModelElement, RPCollection, wrap(), call_com()
    │   ├── application.py            # RhapsodyApplication COM wrapper
+   │   ├── com/                      # Java-mirrored packages (IRPClass at com/telelogic/rhapsody/core/)
    │   └── elements/                 # Specific element types
    │       ├── __init__.py
-   │       ├── classifiers/          # RPClass, RPActor, RPOperation, RPAttribute, etc.
+   │       ├── classifiers/          # RPActor, RPOperation, RPAttribute, etc.
    │       ├── containment/          # RPPackage, RPProject, RPComponent, etc.
    │       ├── relations/            # RPRelation, RPGeneralization, RPPort, etc.
    │       ├── diagrams/             # RPDiagram and subclasses

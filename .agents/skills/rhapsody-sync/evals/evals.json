@@ -1,0 +1,23 @@
+{
+  "skill_name": "rhapsody-sync",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Sync IRPClass from its JavaDoc. Keep the change scoped to that interface, point imports at the canonical Java-mirrored path, and report any JavaDoc/COM/Python differences in the RST docs.",
+      "expected_output": "A visible class-specific TODO list created before any analysis, ticked in the same response where each step's evidence lands, and rendered as the final sync report with per-member dispositions and open blockers stated; a complete comparison of IRPClass-owned members, safe package/import updates, focused tests and documentation updates, use of the bundled validator/verifier, and explicit unresolved deviations.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Please sync IRPActor. Some methods come from IRPClassifier, so don't reimplement or test those as RPActor-owned methods. Use the package declared in JavaDoc for the Python path.",
+      "expected_output": "Inherited methods are distinguished from actor-owned members, package placement follows JavaDoc, every internal reference is updated to the canonical import with no compatibility shim left at the old path, and the bundled verifier reports only genuine missing package/docs artifacts.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Sync IRPClass, but there is a JavaDoc member that pywin32 doesn't expose. Please don't add a COM call that will fail; record the mismatch and evidence in the package-organized RST page.",
+      "expected_output": "The skill checks JavaDoc and COM exposure separately, avoids unsupported calls, records the three-layer deviation and treatment in RST, and uses the bundled verifier to confirm each reported member is documented.",
+      "files": []
+    }
+  ]
+}

@@ -11,7 +11,8 @@ from typing import Tuple
 
 import pytest
 
-from rhapsody_cli.models.elements.classifiers import RPClass, RPStereotype
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
+from rhapsody_cli.models.elements.classifiers import RPStereotype
 from rhapsody_cli.models.elements.containment import RPPackage, RPProject
 
 
@@ -29,7 +30,7 @@ class TestRPStereotypeIntegration:
         assert pkg is not None and isinstance(pkg, RPPackage)
         return pkg
 
-    def _create_stereotype(self, pkg: RPPackage, stereo_name: str) -> Tuple[RPClass, RPStereotype]:
+    def _create_stereotype(self, pkg: RPPackage, stereo_name: str) -> Tuple[IRPClass, RPStereotype]:
         # addStereotype(name, "Class") succeeds when applied to a Class element; applying a
         # "Class"-scoped stereotype directly to a Package raises a COM error in this build.
         # The owning class is returned so cleanup can delete it before the stereotype
@@ -60,7 +61,7 @@ class TestRPStereotypeIntegration:
 
     def test_set_is_new_term_raises_not_implemented(self, test_project: RPProject) -> None:
         # setIsNewTerm is not exposed in the COM automation type library for stereotypes
-        # (getIsNewTerm is), so the wrapper raises NotImplementedError — mirrors RPClass.set_is_abstract.
+        # (getIsNewTerm is), so the wrapper raises NotImplementedError — mirrors IRPClass.set_is_abstract.
         pkg_name = self._unique("SterPkg")
         stereo_name = self._unique("MyStereotype")
         pkg = self._create_package(test_project, pkg_name)

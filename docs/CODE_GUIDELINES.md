@@ -119,19 +119,19 @@ from tabulate import tabulate
 # 3. Local application
 from rhapsody_cli.cli.context import RhapsodyContext
 from rhapsody_cli.exceptions import RhapsodyConnectionError
-from rhapsody_cli.models.elements.classifiers import RPClass
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
 ```
 
 **✅ CORRECT: Full package path**
 ```python
 from rhapsody_cli.actions.abstract_action import AbstractAction
-from rhapsody_cli.models.elements.classifiers.model_class import RPClass
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
 ```
 
 **❌ WRONG: Relative imports**
 ```python
 from .abstract_action import AbstractAction
-from ..models.elements.classifiers.model_class import RPClass
+from ..models.com.telelogic.rhapsody.core import IRPClass
 ```
 
 **Exception:** `TYPE_CHECKING` imports are allowed to be grouped separately for type-hint-only imports.
@@ -1004,6 +1004,20 @@ See the following for before/after refactoring:
 ### Future Examples
 
 After refactoring completes, this directory will contain exemplary class-based, test-first code for reference.
+
+---
+
+## pywin32 Bindings Are Authoritative
+
+The generated pywin32 interface from the registered `Rhapsody2 1.0` type library is the source of truth for COM member names and shapes. Java getters vs pywin32 properties are informational, not defects.
+
+- Confirm COM member names and kinds in `docs/reports/pywin32_authority.json`.
+- Call method-shaped members with `call_com(lambda: self._com.methodName(...))`.
+- Read/write property-shaped members with `_get_method_or_property` / `_set_method_or_property`, Java name first and pywin32 name second. COM names are string arguments only.
+- Python-facing names follow this document: snake_case methods and UPPERCASE constants. Where a class is migrated to `@property`, its name is the snake_case canonical member name.
+- Remove wrappers calling members absent from pywin32, or keep a documented `NotImplementedError` stub listed in `documented_unavailable`.
+- Property/method refactors are scoped to one class at a time; do not reshape the shared wrapper hierarchy for one interface's deviations.
+- Regenerate the affected report with `python scripts/validate_model_api.py <IRPInterface> --source authority --path docs/reports` and require zero rows under `## Comparison details`.
 
 ---
 

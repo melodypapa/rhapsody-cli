@@ -6,7 +6,7 @@ from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPMod
 from rhapsody_cli.models.elements.relations.model_instance import RPInstance
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.elements.classifiers.model_class import RPClass
+    from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
 
 
 class RPPort(RPInstance):
@@ -84,7 +84,7 @@ class RPPort(RPInstance):
         """
         AbstractRPModelElement._set_method_or_property(self._com, "setIsReversed", "isReversed", is_reversed)
 
-    def get_port_contract(self) -> "RPClass":
+    def get_port_contract(self) -> "IRPClass":
         """Returns the contract defined for the port.
 
         Returns:
@@ -96,7 +96,7 @@ class RPPort(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPPort::getPortContract()
         """
-        return cast("RPClass", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getPortContract", "portContract")))
+        return cast("IRPClass", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getPortContract", "portContract")))
 
     def set_port_contract(self, port_contract: RPModelElement) -> None:
         """Specifies the contract to use for the port.
@@ -193,7 +193,7 @@ class RPPort(RPInstance):
         """
         AbstractRPModelElement.call_com(lambda: self._com.removeRequiredInterface(new_val._com))
 
-    def get_contract(self) -> "RPClass":
+    def get_contract(self) -> "IRPClass":
         """Returns the contract defined for the port.
 
         Deprecated:
@@ -206,7 +206,7 @@ class RPPort(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPPort::getContract()
         """
-        return cast("RPClass", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getContract", "contract")))
+        return cast("IRPClass", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getContract", "contract")))
 
     def set_contract(self, contract: RPModelElement) -> None:
         """Specifies the contract to use for the port.

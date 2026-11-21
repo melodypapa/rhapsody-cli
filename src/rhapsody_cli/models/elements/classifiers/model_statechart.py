@@ -2,15 +2,15 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
 from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPModelElement
-from rhapsody_cli.models.elements.classifiers.model_class import RPClass
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.diagrams.model_diagram_types import RPStatechartDiagram
     from rhapsody_cli.models.elements.graphics.model_graphics import RPGraphEdge, RPGraphNode
 
 
-class RPStatechart(RPClass):
+class RPStatechart(IRPClass):
     """Wraps ``IRPStatechart``: represents a statechart behavior."""
 
     # IRPStatechart method parity checklist:
@@ -311,7 +311,7 @@ class RPStatechart(RPClass):
         """
         return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsOverridden", "isOverridden"))
 
-    def get_its_class(self) -> "RPClass":
+    def get_its_class(self) -> "IRPClass":
         """Returns the class that owns this statechart.
 
         Returns:
@@ -320,7 +320,7 @@ class RPStatechart(RPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getItsClass()
         """
-        return cast("RPClass", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getItsClass", "itsClass")))
+        return cast("IRPClass", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getItsClass", "itsClass")))
 
     def get_picture(self) -> object:
         """Returns the picture representation of the statechart.

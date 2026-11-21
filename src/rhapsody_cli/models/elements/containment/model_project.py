@@ -6,8 +6,8 @@ from rhapsody_cli.models.core import AbstractRPModelElement, RPCollection, RPMod
 from rhapsody_cli.models.elements.containment.model_package import RPPackage
 
 if TYPE_CHECKING:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
     from rhapsody_cli.models.elements.classifiers.model_actor import RPActor
-    from rhapsody_cli.models.elements.classifiers.model_class import RPClass
     from rhapsody_cli.models.elements.containment.model_collaboration import RPCollaboration
     from rhapsody_cli.models.elements.containment.model_component import RPComponent
     from rhapsody_cli.models.elements.containment.model_configuration import RPConfiguration
@@ -159,7 +159,7 @@ class RPProject(RPPackage):
         """
         return RPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getPackages", "packages"))
 
-    def add_class(self, name: str) -> "RPClass":
+    def add_class(self, name: str) -> "IRPClass":
         """Adds a new class to the project's top level.
 
         Args:
@@ -171,7 +171,7 @@ class RPProject(RPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addClass(java.lang.String name)
         """
-        return cast("RPClass", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addClass(name))))
+        return cast("IRPClass", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addClass(name))))
 
     def add_actor(self, name: str) -> "RPActor":
         """Adds a new actor to the project's top level.

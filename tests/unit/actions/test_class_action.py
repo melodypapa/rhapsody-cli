@@ -222,7 +222,7 @@ class TestClassCreateAction:
             mock_class.set_property_value.assert_any_call("level", "3")
 
     def test_create_with_boolean_flags(self) -> None:
-        """UTS_CLS_00005: Test isAbstract/isFinal/isActive set via setIsX(1/0)."""
+        """UTS_CLS_00005: Test isAbstract/isFinal/isActive set via IRPClass properties."""
         action, mock_parent = self._make_action_with_parent()
         mock_class = MagicMock()
         mock_parent.add_class.return_value = mock_class
@@ -235,9 +235,9 @@ class TestClassCreateAction:
 
             action.execute(args)
 
-            mock_class.set_is_abstract.assert_called_once_with(1)
-            mock_class.set_is_final.assert_called_once_with(0)
-            mock_class.set_is_active.assert_called_once_with(1)
+            assert mock_class.is_abstract is True
+            assert mock_class.is_final == 0
+            assert mock_class.is_active == 1
 
     def test_create_with_operations(self) -> None:
         """UTS_CLS_00006: Test operations added via addOperation."""
@@ -437,11 +437,11 @@ class TestClassViewAction:
         mock_class.get_name.return_value = "TemperatureSensor"
         mock_class.get_guid.return_value = "12345678-1234-1234-1234-123456789abc"
         mock_class.get_description.return_value = "Temperature sensor"
-        mock_class.get_is_abstract.return_value = True  # bool
-        mock_class.get_is_active.return_value = 1
-        mock_class.get_is_final.return_value = 0
-        mock_class.get_is_composite.return_value = 0
-        mock_class.get_is_reactive.return_value = 0
+        mock_class.is_abstract = True  # bool
+        mock_class.is_active = 1
+        mock_class.is_final = 0
+        mock_class.is_composite = 0
+        mock_class.is_reactive = 0
         mock_class.get_full_path_name.return_value = "Sensors/TemperatureSensor"
 
         op1 = MagicMock()
@@ -861,12 +861,12 @@ class TestClassUpdateAction:
 
             action.execute(args)
 
-            mock_class.set_is_abstract.assert_called_once_with(1)
+            assert mock_class.is_abstract is True
             mock_class.set_description.assert_not_called()
             mock_class.set_name.assert_not_called()
 
     def test_update_class_boolean_flags(self) -> None:
-        """UTS_CLS_00034: Test isAbstract/isFinal/isActive converted to int (1/0)."""
+        """UTS_CLS_00034: Test isAbstract/isFinal/isActive assigned via IRPClass properties."""
         from rhapsody_cli.actions.class_action import ClassUpdateAction
 
         action = ClassUpdateAction()
@@ -881,9 +881,9 @@ class TestClassUpdateAction:
 
             action.execute(args)
 
-            mock_class.set_is_abstract.assert_called_once_with(1)
-            mock_class.set_is_final.assert_called_once_with(0)
-            mock_class.set_is_active.assert_called_once_with(1)
+            assert mock_class.is_abstract is True
+            assert mock_class.is_final == 0
+            assert mock_class.is_active == 1
 
     def test_update_class_skips_unknown_fields(self) -> None:
         """UTS_CLS_00035: Test unknown field triggers warning, known field still applied."""

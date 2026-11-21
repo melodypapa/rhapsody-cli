@@ -18,7 +18,7 @@ def test_importing_package_registers_all_core_element_wrappers() -> None:
     for meta_class, expected_name in [
         ("Project", "RPProject"),
         ("Package", "RPPackage"),
-        ("Class", "RPClass"),
+        ("Class", "IRPClass"),
         ("Attribute", "RPAttribute"),
         ("Operation", "RPOperation"),
         ("Actor", "RPActor"),
