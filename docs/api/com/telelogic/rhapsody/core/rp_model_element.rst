@@ -34,10 +34,6 @@ Python-implementation column reflects the post-migration single-member labels.
      - —
      - get_rmm_url() -> getRmmUrl; get_rmm_url() -> rmmUrl
      - PYWIN32_MEMBER_MISSING; Use a member exposed by the registered type library or verify the Rhapsody version.
-   * - —
-     - —
-     - get_oslc_links() (no static COM member)
-     - PYTHON_ONLY_MEMBER; Keep this as a local facade helper or map it to a documented API member.
    * - lockOnDesignManager (method)
      - lockOnDesignManager (method)
      - —

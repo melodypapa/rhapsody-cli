@@ -180,7 +180,6 @@ class RPModelElement(AbstractRPModelElement):
     # [x] get_nested_elements_recursive      [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_new_term_stereotype            [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_of_template                   [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_oslc_links                    [x] impl  [x] docstring  [x] unit test  [x] integration test  (not_implemented_error)
     # [x] get_overlay_icon_file_name          [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_overridden_properties         [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_overridden_properties_by_pattern [x] impl  [x] docstring  [x] unit test  [x] integration test
@@ -1022,21 +1021,6 @@ class RPModelElement(AbstractRPModelElement):
             com.telelogic.rhapsody.core.IRPModelElement::getOfTemplate()
         """
         return cast("RPModelElement", AbstractRPModelElement.wrap(AbstractRPModelElement.get_com_property(self._com, "ofTemplate")))
-
-    def get_oslc_links(self) -> "RPCollection":
-        """Returns a collection of all the element's OSLC links.
-
-        Each item in the collection is a string using the format
-        ``Type=<<link type>>`` (newline) ``URL=<<linked item URL>>``.
-
-        Returns:
-            An ``RPCollection`` of OSLC links.
-
-        Raises:
-            NotImplementedError: Rhapsody2.Application.1 does not expose
-                getOSLCLinks; the method is defined for Java API parity only.
-        """
-        raise NotImplementedError("Rhapsody2.Application.1 does not expose getOSLCLinks; method is defined for Java API parity only.")
 
     def get_overlay_icon_file_name(self) -> str:
         """Returns the full path of the graphic file used as an overlay on this specific model element.

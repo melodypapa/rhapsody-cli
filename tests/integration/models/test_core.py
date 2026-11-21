@@ -1234,10 +1234,6 @@ class TestRPModelElementOslcRemoteIntegration:
         with pytest.raises(NotImplementedError):
             test_project.delete_oslc_link("someType", "http://example.com")
 
-    def test_get_oslc_links_raises_not_implemented(self, test_project: RPProject) -> None:
-        with pytest.raises(NotImplementedError):
-            test_project.get_oslc_links()
-
     def test_get_hyper_links_returns_empty_collection(self, test_project: RPProject) -> None:
         pkg = self._create_package(test_project, self._unique("HyperLinkPkg"))
         try:

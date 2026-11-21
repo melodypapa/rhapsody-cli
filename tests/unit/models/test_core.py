@@ -991,13 +991,6 @@ def test_model_element_get_of_template_wraps_result() -> None:
     assert result.get_name() == "Template"
 
 
-def test_model_element_get_oslc_links_raises_not_implemented() -> None:
-    element = RPModelElement(make_fake_element("Class"))
-
-    with pytest.raises(NotImplementedError):
-        element.get_oslc_links()
-
-
 def test_model_element_get_overlay_icon_file_name_returns_str() -> None:
     fake = make_fake_element("Class", getOverlayIconFileName="D:\\icons\\overlay.gif")
     element = RPModelElement(fake)
