@@ -4,12 +4,9 @@ com.telelogic.rhapsody.core.
 
 from typing import TYPE_CHECKING, cast
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import (
-    AbstractRPModelElement,
-    IRPModelElement,
-    RPUnit,
-)
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 from rhapsody_cli.models.elements.classifiers import RPClassifier
 
 if TYPE_CHECKING:
@@ -20,7 +17,7 @@ if TYPE_CHECKING:
     )
 
 
-class RPVariable(RPUnit):
+class RPVariable(IRPUnit):
     """Wraps ``IRPVariable``: the base interface for typed elements (such as
     attributes and parameters) that carry a type and default value.
     """

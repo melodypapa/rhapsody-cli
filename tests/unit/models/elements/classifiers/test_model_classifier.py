@@ -2,7 +2,8 @@
 
 from typing import cast
 
-from rhapsody_cli.models.core import IRPModelElement, RPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
+from rhapsody_cli.models.core import IRPModelElement
 from rhapsody_cli.models.elements.activity import RPFlow, RPFlowItem
 from rhapsody_cli.models.elements.classifiers import RPClassifier, RPOperation
 from rhapsody_cli.models.elements.relations import RPPort, RPRelation
@@ -14,7 +15,7 @@ def test_classifier_is_a_unit() -> None:
     fake = make_fake_element("Class", properties={"name": "Widget"})
     classifier = RPClassifier(fake)
 
-    assert isinstance(classifier, RPUnit)
+    assert isinstance(classifier, IRPUnit)
     assert classifier.get_name() == "Widget"
 
 

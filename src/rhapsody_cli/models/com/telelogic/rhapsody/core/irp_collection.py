@@ -77,7 +77,7 @@ class IRPCollection:
                 the collection.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPCollection::addItem(com.telelogic.rhapsody.core.IIRPModelElement)
+            com.telelogic.rhapsody.core.IRPCollection::addItem(com.telelogic.rhapsody.core.IRPModelElement)
         """
         com_utils.call_com(lambda: self._com.addItem(element._com))
 
@@ -91,7 +91,7 @@ class IRPCollection:
             RhapsodyRuntimeException: If the operation fails.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPCollection::addGraphicalItem(com.telelogic.rhapsody.core.IIRPModelElement)
+            com.telelogic.rhapsody.core.IRPCollection::addGraphicalItem(com.telelogic.rhapsody.core.IRPModelElement)
         """
         com_utils.call_com(lambda: self._com.addGraphicalItem(item._com))
 
@@ -160,7 +160,7 @@ class IRPCollection:
             RhapsodyRuntimeException: If the operation fails.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPCollection::setModelElement(int, com.telelogic.rhapsody.core.IIRPModelElement)
+            com.telelogic.rhapsody.core.IRPCollection::setModelElement(int, com.telelogic.rhapsody.core.IRPModelElement)
         """
         com_utils.call_com(lambda: self._com.setModelElement(index, element._com))
 

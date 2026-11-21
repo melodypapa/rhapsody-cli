@@ -2,8 +2,9 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
@@ -28,7 +29,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.elements.relations.model_relation import RPRelation
 
 
-class RPPackage(RPUnit):
+class RPPackage(IRPUnit):
     """Wraps ``IRPPackage``: represents a package that contains model elements."""
 
     # IRPPackage method parity checklist:

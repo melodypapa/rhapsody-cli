@@ -10,13 +10,16 @@ from typing import TYPE_CHECKING, cast
 if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class import IRPClass
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_unit import AddToModelMode, IRPUnit
 
 _EXPORT_MODULES = {
+    "AddToModelMode": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_unit",
     "IRPClass": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class",
     "IRPCollection": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection",
+    "IRPUnit": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_unit",
 }
 
-__all__ = ["IRPClass", "IRPCollection"]
+__all__ = ["AddToModelMode", "IRPClass", "IRPCollection", "IRPUnit"]
 
 
 def __getattr__(name: str) -> object:

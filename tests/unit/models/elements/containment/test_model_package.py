@@ -2,7 +2,8 @@
 
 from typing import cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement, RPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 from rhapsody_cli.models.elements.activity import RPFlow, RPFlowItem
 from rhapsody_cli.models.elements.common import RPSysMLPort
 from rhapsody_cli.models.elements.containment import RPPackage
@@ -13,7 +14,7 @@ def test_package_is_a_unit() -> None:
     fake = make_fake_element("Package", properties={"name": "MyPkg"})
     package = RPPackage(fake)
 
-    assert isinstance(package, RPUnit)
+    assert isinstance(package, IRPUnit)
     assert package.get_name() == "MyPkg"
 
 
@@ -182,7 +183,7 @@ def test_package_delete_class_delegates_to_com() -> None:
     package = RPPackage(fake)
     cls_fake = make_fake_element("Class", properties={"name": "ToDelete"})
 
-    package.delete_class(RPUnit(cls_fake))
+    package.delete_class(IRPUnit(cls_fake))
 
     fake.deleteClass.assert_called_once_with(cls_fake)
 
@@ -192,7 +193,7 @@ def test_package_delete_package_delegates_to_com() -> None:
     package = RPPackage(fake)
     nested_fake = make_fake_element("Package", properties={"name": "Nested"})
 
-    package.delete_package(RPUnit(nested_fake))
+    package.delete_package(IRPUnit(nested_fake))
 
     fake.deletePackage.assert_called_once_with(nested_fake)
 

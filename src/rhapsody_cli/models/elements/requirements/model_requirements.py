@@ -2,15 +2,12 @@
 from com.telelogic.rhapsody.core.
 """
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import (
-    AbstractRPModelElement,
-    IRPModelElement,
-    RPUnit,
-)
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 
 
-class RPAnnotation(RPUnit):
+class RPAnnotation(IRPUnit):
     """Wraps ``IRPAnnotation``: the base interface for free-text annotation
     elements (such as requirements and notes) that can be anchored to other
     model elements.

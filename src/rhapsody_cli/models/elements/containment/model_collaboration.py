@@ -2,8 +2,9 @@
 
 from typing import TYPE_CHECKING, cast
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.common import RPClassifierRole
@@ -11,7 +12,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.elements.interactions.model_interactions import RPInteractionOccurrence, RPInteractionOperator, RPMessage
 
 
-class RPCollaboration(RPUnit):
+class RPCollaboration(IRPUnit):
     """Wraps ``IRPCollaboration``: a collaboration that extends ``IRPUnit``."""
 
     # IRPCollaboration method parity checklist:
@@ -58,7 +59,7 @@ class RPCollaboration(RPUnit):
     # [inherited] irp_unit / irp_model_element methods (covered by rp_unit / rp_model_element checklists)
     # No deprecated IRPCollaboration methods.
 
-    def add_action_block(self, name: str) -> "RPUnit":
+    def add_action_block(self, name: str) -> "IRPUnit":
         """Adds an action block to the collaboration.
 
         Args:
@@ -70,9 +71,9 @@ class RPCollaboration(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPCollaboration::addActionBlock(java.lang.String name)
         """
-        return cast("RPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addActionBlock(name))))
+        return cast("IRPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addActionBlock(name))))
 
-    def add_cancelled_timeout(self, name: str) -> "RPUnit":
+    def add_cancelled_timeout(self, name: str) -> "IRPUnit":
         """Adds a cancelled timeout to the collaboration.
 
         Args:
@@ -84,7 +85,7 @@ class RPCollaboration(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPCollaboration::addCancelledTimeout(java.lang.String name)
         """
-        return cast("RPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addCancelledTimeout(name))))
+        return cast("IRPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addCancelledTimeout(name))))
 
     def add_classifier_role(self, name: str) -> "RPClassifierRole":
         """Adds a classifier role to the collaboration.
@@ -114,7 +115,7 @@ class RPCollaboration(RPUnit):
         """
         return cast("RPClassifierRole", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addClassifierRoleByName(name))))
 
-    def add_classifier_role_for_instance(self, instance: RPUnit) -> "RPClassifierRole":
+    def add_classifier_role_for_instance(self, instance: IRPUnit) -> "RPClassifierRole":
         """Adds a classifier role for an instance to the collaboration.
 
         Args:
@@ -142,7 +143,7 @@ class RPCollaboration(RPUnit):
         """
         return cast("RPConditionMark", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addConditionMark(name))))
 
-    def add_ctor(self, name: str) -> "RPUnit":
+    def add_ctor(self, name: str) -> "IRPUnit":
         """Adds a constructor to the collaboration.
 
         Args:
@@ -154,9 +155,9 @@ class RPCollaboration(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPCollaboration::addCtor(java.lang.String name)
         """
-        return cast("RPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addCtor(name))))
+        return cast("IRPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addCtor(name))))
 
-    def add_data_flow(self, name: str) -> "RPUnit":
+    def add_data_flow(self, name: str) -> "IRPUnit":
         """Adds a data flow to the collaboration.
 
         Args:
@@ -168,9 +169,9 @@ class RPCollaboration(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPCollaboration::addDataFlow(java.lang.String name)
         """
-        return cast("RPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addDataFlow(name))))
+        return cast("IRPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addDataFlow(name))))
 
-    def add_destruction_event(self, name: str) -> "RPUnit":
+    def add_destruction_event(self, name: str) -> "IRPUnit":
         """Adds a destruction event to the collaboration.
 
         Args:
@@ -182,9 +183,9 @@ class RPCollaboration(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPCollaboration::addDestructionEvent(java.lang.String name)
         """
-        return cast("RPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addDestructionEvent(name))))
+        return cast("IRPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addDestructionEvent(name))))
 
-    def add_dtor(self, name: str) -> "RPUnit":
+    def add_dtor(self, name: str) -> "IRPUnit":
         """Adds a destructor to the collaboration.
 
         Args:
@@ -196,9 +197,9 @@ class RPCollaboration(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPCollaboration::addDtor(java.lang.String name)
         """
-        return cast("RPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addDtor(name))))
+        return cast("IRPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addDtor(name))))
 
-    def add_duration_constraint(self, name: str) -> "RPUnit":
+    def add_duration_constraint(self, name: str) -> "IRPUnit":
         """Adds a duration constraint to the collaboration.
 
         Args:
@@ -210,9 +211,9 @@ class RPCollaboration(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPCollaboration::addDurationConstraint(java.lang.String name)
         """
-        return cast("RPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addDurationConstraint(name))))
+        return cast("IRPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addDurationConstraint(name))))
 
-    def add_duration_observation(self, name: str) -> "RPUnit":
+    def add_duration_observation(self, name: str) -> "IRPUnit":
         """Adds a duration observation to the collaboration.
 
         Args:
@@ -224,7 +225,7 @@ class RPCollaboration(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPCollaboration::addDurationObservation(java.lang.String name)
         """
-        return cast("RPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addDurationObservation(name))))
+        return cast("IRPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addDurationObservation(name))))
 
     def add_found_message(self, name: str) -> "RPMessage":
         """Adds a found message to the collaboration.
@@ -310,7 +311,7 @@ class RPCollaboration(RPUnit):
         """
         return cast("RPMessage", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addReplyMessage(name))))
 
-    def add_state_invariant(self, name: str) -> "RPUnit":
+    def add_state_invariant(self, name: str) -> "IRPUnit":
         """Adds a state invariant to the collaboration.
 
         Args:
@@ -322,9 +323,9 @@ class RPCollaboration(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPCollaboration::addStateInvariant(java.lang.String name)
         """
-        return cast("RPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addStateInvariant(name))))
+        return cast("IRPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addStateInvariant(name))))
 
-    def add_system_border(self, name: str) -> "RPUnit":
+    def add_system_border(self, name: str) -> "IRPUnit":
         """Adds a system border to the collaboration.
 
         Args:
@@ -336,9 +337,9 @@ class RPCollaboration(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPCollaboration::addSystemBorder(java.lang.String name)
         """
-        return cast("RPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addSystemBorder(name))))
+        return cast("IRPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addSystemBorder(name))))
 
-    def add_time_constraint(self, name: str) -> "RPUnit":
+    def add_time_constraint(self, name: str) -> "IRPUnit":
         """Adds a time constraint to the collaboration.
 
         Args:
@@ -350,9 +351,9 @@ class RPCollaboration(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPCollaboration::addTimeConstraint(java.lang.String name)
         """
-        return cast("RPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addTimeConstraint(name))))
+        return cast("IRPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addTimeConstraint(name))))
 
-    def add_time_interval(self, name: str) -> "RPUnit":
+    def add_time_interval(self, name: str) -> "IRPUnit":
         """Adds a time interval to the collaboration.
 
         Args:
@@ -364,9 +365,9 @@ class RPCollaboration(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPCollaboration::addTimeInterval(java.lang.String name)
         """
-        return cast("RPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addTimeInterval(name))))
+        return cast("IRPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addTimeInterval(name))))
 
-    def add_time_observation(self, name: str) -> "RPUnit":
+    def add_time_observation(self, name: str) -> "IRPUnit":
         """Adds a time observation to the collaboration.
 
         Args:
@@ -378,9 +379,9 @@ class RPCollaboration(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPCollaboration::addTimeObservation(java.lang.String name)
         """
-        return cast("RPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addTimeObservation(name))))
+        return cast("IRPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addTimeObservation(name))))
 
-    def add_timeout(self, name: str) -> "RPUnit":
+    def add_timeout(self, name: str) -> "IRPUnit":
         """Adds a timeout to the collaboration.
 
         Args:
@@ -392,7 +393,7 @@ class RPCollaboration(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPCollaboration::addTimeout(java.lang.String name)
         """
-        return cast("RPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addTimeout(name))))
+        return cast("IRPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addTimeout(name))))
 
     def generate_sequence(self) -> None:
         """Generates sequence diagram from collaboration.
@@ -424,7 +425,7 @@ class RPCollaboration(RPUnit):
         """
         return int(self.call_com(lambda: self._com.getActivationMode()))
 
-    def get_activator(self) -> "RPUnit | None":
+    def get_activator(self) -> "IRPUnit | None":
         """Returns the activator of the collaboration.
 
         Returns:
@@ -436,7 +437,7 @@ class RPCollaboration(RPUnit):
         result = self.call_com(lambda: self._com.getActivator())
         if result is None:
             return None
-        return cast("RPUnit", AbstractRPModelElement.wrap(result))
+        return cast("IRPUnit", AbstractRPModelElement.wrap(result))
 
     def get_associations(self) -> "IRPCollection":
         """Returns all associations in the collaboration.
@@ -449,7 +450,7 @@ class RPCollaboration(RPUnit):
         """
         return IRPCollection(self.call_com(lambda: self._com.getAssociations()))
 
-    def get_classifier(self) -> "RPUnit | None":
+    def get_classifier(self) -> "IRPUnit | None":
         """Returns the classifier of the collaboration.
 
         Returns:
@@ -461,7 +462,7 @@ class RPCollaboration(RPUnit):
         result = self.call_com(lambda: self._com.getClassifier())
         if result is None:
             return None
-        return cast("RPUnit", AbstractRPModelElement.wrap(result))
+        return cast("IRPUnit", AbstractRPModelElement.wrap(result))
 
     def get_concurrent_group(self) -> int:
         """Returns the concurrent group of the collaboration.
@@ -540,7 +541,7 @@ class RPCollaboration(RPUnit):
         """
         return int(self.call_com(lambda: self._com.getMode()))
 
-    def get_predecessor(self) -> "RPUnit | None":
+    def get_predecessor(self) -> "IRPUnit | None":
         """Returns the predecessor of the collaboration.
 
         Returns:
@@ -552,9 +553,9 @@ class RPCollaboration(RPUnit):
         result = self.call_com(lambda: self._com.getPredecessor())
         if result is None:
             return None
-        return cast("RPUnit", AbstractRPModelElement.wrap(result))
+        return cast("IRPUnit", AbstractRPModelElement.wrap(result))
 
-    def get_successor(self) -> "RPUnit | None":
+    def get_successor(self) -> "IRPUnit | None":
         """Returns the successor of the collaboration.
 
         Returns:
@@ -566,7 +567,7 @@ class RPCollaboration(RPUnit):
         result = self.call_com(lambda: self._com.getSuccessor())
         if result is None:
             return None
-        return cast("RPUnit", AbstractRPModelElement.wrap(result))
+        return cast("IRPUnit", AbstractRPModelElement.wrap(result))
 
 
 AbstractRPModelElement.register_wrapper("Collaboration", RPCollaboration)

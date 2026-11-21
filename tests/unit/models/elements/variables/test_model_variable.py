@@ -2,8 +2,9 @@
 
 from typing import cast
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 from rhapsody_cli.models.elements.classifiers import RPClassifier
 from rhapsody_cli.models.elements.variables.model_variables import RPVariable
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
@@ -13,7 +14,7 @@ def test_variable_is_a_unit() -> None:
     fake = make_fake_element("Variable", properties={"name": "count"})
     variable = RPVariable(fake)
 
-    assert isinstance(variable, RPUnit)
+    assert isinstance(variable, IRPUnit)
     assert variable.get_name() == "count"
 
 

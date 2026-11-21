@@ -2,8 +2,9 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 from rhapsody_cli.models.elements.interactions.model_interactions import RPMessage
 from rhapsody_cli.models.elements.statemachine.model_statemachine import RPStateVertex
 
@@ -748,7 +749,7 @@ class RPImageMap(IRPModelElement):
         return str(self._get_method_or_property(self._com, "getTarget", "target"))
 
 
-class RPLink(RPUnit):
+class RPLink(IRPUnit):
     """Wraps ``IRPLink``: represents links in Rhapsody models."""
 
     # IRPLink method parity checklist:
@@ -1036,7 +1037,7 @@ class RPLink(RPUnit):
         self.call_com(lambda: self._com.setInstantiates(p_val._com))
 
 
-class RPMatrixLayout(RPUnit):
+class RPMatrixLayout(IRPUnit):
     """Wraps ``IRPMatrixLayout``."""
 
     # IRPMatrixLayout method parity checklist:
@@ -1230,7 +1231,7 @@ class RPMatrixLayout(RPUnit):
         self.call_com(lambda: self._com.setToElementTypesUseQueryOrElementsList(query_or_elements_list))
 
 
-class RPMatrixView(RPUnit):
+class RPMatrixView(IRPUnit):
     """Wraps ``IRPMatrixView``: represents Matrix View elements in Rhapsody models."""
 
     # IRPMatrixView method parity checklist:
@@ -1623,7 +1624,7 @@ class RPMessagePoint(IRPModelElement):
         return str(self._get_method_or_property(self._com, "getType", "type"))
 
 
-class RPTableLayout(RPUnit):
+class RPTableLayout(IRPUnit):
     """Wraps ``IRPTableLayout``."""
 
     # IRPTableLayout method parity checklist:
@@ -2497,7 +2498,7 @@ class RPTableLayout(RPUnit):
         return int(self._get_method_or_property(self._com, "getColumnCount", "columnCount"))
 
 
-class RPTableView(RPUnit):
+class RPTableView(IRPUnit):
     """Wraps ``IRPTableView``: represents Table View elements in Rhapsody models."""
 
     # IRPTableView method parity checklist:

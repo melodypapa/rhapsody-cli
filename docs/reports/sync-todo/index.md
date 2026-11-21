@@ -18,8 +18,10 @@ dual-binding fallback for every subclass), then leaves.
 | [Group-unfinished-1.md](Group-unfinished-1.md) | 16 | ~249 | IRPClass → IRPUseCase | ⬜ 0/16 archived (pilot 5/6 steps) |
 | [Group-finished.md](Group-finished.md) | 0 | 0 | archive | ✅ 0 |
 
-Progress: **0/16 rows fully done**; IRPClass 7/8, IRPModelElement 6/8, IRPCollection 6/8
-(each awaiting the Windows closeout; the two base rows also carry the deferred §2 move).
+Progress: **0/16 rows archived**; IRPUnit 8/8 (all steps green, awaiting its commit to
+archive), IRPClass 7/8, IRPModelElement 6/8, IRPCollection 6/8. IRPUnit completed the §2
+canonical move under the revised local-import rule; the remaining base rows carry the old
+deferral note until their own runs.
 Refreshed 2026-11-21 (site counts re-surveyed at each run start).
 
 ## Resume rule
@@ -44,16 +46,19 @@ not re-derive scope or decisions already recorded in the row's Notes.
   an offline proof substituting for regeneration checks); Step 8's Windows closeout —
   `validate_interface.py <IFACE> --source authority`, `verify_sync.py <IFACE>`, live
   integration run — stays open with the blocker recorded on the row.
-- **Canonical package (SKILL §4):** only `IRPClass` lives in
-  `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` so far; every other row starts with
-  the package move (wrapper, imports/exports/registration, unit + integration tests to the
+- **Canonical package (SKILL §4):** `IRPClass`, `IRPCollection` and `IRPUnit` live in
+  `src/rhapsody_cli/models/com/telelogic/rhapsody/core/`; every other row starts with the
+  package move (wrapper, imports/exports/registration, unit + integration tests to the
   mirrored `tests/{unit,integration}/models/com/telelogic/rhapsody/core/` paths, snake_case
-  test module names, `__init__.py` at every level, no compatibility shim).
-- **core.py base rows defer the §2 move (user decision 2026-11-21):** `IRPModelElement`,
-  `IRPCollection`, `RPUnit` and `AbstractRPModelElement` share `models/core.py`; moving one
-  base class alone creates import cycles (`RPUnit(IRPModelElement)`). Each base row runs its
-  binding migration at the current location and records the §2 move as an open blocker; the
-  moves land as a small dedicated refactor once the rows have emptied `core.py`.
+  test module names, `__init__.py` at every level, no compatibility shim). The canonical
+  `__init__.py` uses lazy `__getattr__` exports to keep package import acyclic.
+- **core.py base rows (revised user decision 2026-11-21):** the earlier deferral is lifted —
+  the only cycle risk was a module-level import of a moved class back into `models/core.py`.
+  With `from __future__ import annotations` already in `core.py`, annotations never evaluate at
+  runtime (quoted types are therefore unnecessary); a runtime `cast()` target imports locally
+  inside the method, the pattern already used at `core.py:314` for `RPAssociationClass`. A
+  moved class imports its bases from `core.py` one-way, so each base row does the full §2 move
+  in its own run and `verify_sync.py` can go green.
 - **Python-only members are removed (SKILL §3/§4, added 2026-11-21):** a wrapper member with
   no static COM member (`PYTHON_ONLY_MEMBER` — facade helpers, unbacked conveniences) is
   deleted from the class during its sync: method, unit tests, integration references,
@@ -69,7 +74,7 @@ not re-derive scope or decisions already recorded in the row's Notes.
   monoliths into the per-class files (no duplicates); `elements.rst` lists per-class pages in
   its toctree. `verify_sync.py` checks the per-class paths strictly (no legacy fallback).
 - **core.py split:** `models/core.py` holds `AbstractRPModelElement` (2 forwarder
-  definitions), `IRPModelElement`, `IRPCollection`, `RPUnit` — 92 legacy sites total. Survey and
+  definitions), `IRPModelElement`, `IRPCollection`, `IRPUnit` — 92 legacy sites total. Survey and
   split per class at each row's start. IRPModelElement's 22 unit-family names (`CMHeader`,
   `filename`, `isReadOnly`, ...) exist only in other interfaces' catalogs: resolve against
   IRPUnit's catalog entry during the IRPUnit row, or record a blocker in the IRPModelElement

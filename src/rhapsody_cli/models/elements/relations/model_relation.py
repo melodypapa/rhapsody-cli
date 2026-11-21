@@ -2,8 +2,9 @@
 
 from typing import TYPE_CHECKING, cast
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
 
 if TYPE_CHECKING:
@@ -11,7 +12,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.elements.classifiers.model_association_class import RPAssociationClass
 
 
-class RPRelation(RPUnit):
+class RPRelation(IRPUnit):
     """Wraps ``IRPRelation``: the base interface for relationships between
     classifiers (such as associations, and the instance links derived from
     them).

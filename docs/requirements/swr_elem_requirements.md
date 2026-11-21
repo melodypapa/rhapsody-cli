@@ -32,7 +32,7 @@ meta class `"Project"`.
 **Status:** Implemented
 **Priority:** High
 **Description:**
-`RPPackage` shall extend `RPUnit` to wrap `IRPPackage`. It shall expose Java-mirrored
+`RPPackage` shall extend `IRPUnit` to wrap `IRPPackage`. It shall expose Java-mirrored
 creation methods that return wrapped new elements: `addClass(name)`,
 `addNestedPackage(name)`, `addActor(name)`, and `addGlobalFunction(name)`. The wrapper
 shall register itself for the meta class `"Package"`.
@@ -48,7 +48,7 @@ shall register itself for the meta class `"Package"`.
 **Status:** Implemented
 **Priority:** High
 **Description:**
-`RPClassifier` shall extend `RPUnit` to wrap `IRPClassifier`. It shall expose
+`RPClassifier` shall extend `IRPUnit` to wrap `IRPClassifier`. It shall expose
 Java-mirrored methods: `addAttribute(name)` (returns wrapped attribute),
 `addOperation(name)` (returns wrapped operation), `getAttributes()` (returns
 `IRPCollection`), `getOperations()` (returns `IRPCollection`),
@@ -83,7 +83,7 @@ shall register itself for the meta class `"Actor"`.
 **Status:** Implemented
 **Priority:** High
 **Description:**
-`RPOperation` shall extend `RPUnit` to wrap `IRPOperation`. It shall expose Java-mirrored
+`RPOperation` shall extend `IRPUnit` to wrap `IRPOperation`. It shall expose Java-mirrored
 methods: `getBody()` (returns str), `getIsAbstract()` (returns bool), `getIsStatic()`
 (returns bool), `getIsVirtual()` (returns bool), `getReturns()` (returns wrapped
 element), and `createAutoFlowChart()`. The wrapper shall register itself for the meta
@@ -100,7 +100,7 @@ class `"Operation"`.
 **Status:** Implemented
 **Priority:** High
 **Description:**
-`RPAttribute` shall extend `RPUnit` to wrap `IRPAttribute`. It shall expose Java-mirrored
+`RPAttribute` shall extend `IRPUnit` to wrap `IRPAttribute`. It shall expose Java-mirrored
 methods: `getMultiplicity()` / `setMultiplicity(multiplicity)` (str), `getIsStatic()` /
 `setIsStatic(is_static)` (bool, translated to 1/0), `getVisibility()` /
 `setVisibility(visibility)` (str), and `getDefaultValue()` / `setDefaultValue(default_value)`
@@ -117,7 +117,7 @@ methods: `getMultiplicity()` / `setMultiplicity(multiplicity)` (str), `getIsStat
 **Status:** Implemented
 **Priority:** Medium
 **Description:**
-`RPDiagram` shall extend `RPUnit` to wrap `IRPDiagram`. It shall expose Java-mirrored
+`RPDiagram` shall extend `IRPUnit` to wrap `IRPDiagram`. It shall expose Java-mirrored
 methods: `closeDiagram()`, `addTextBox(text, x_position, y_position, width, height)`
 (returns wrapped text box), `getCustomViews()` (returns `IRPCollection`), and
 `getCorrespondingGraphicElements(model_element)` (accepts an `IRPModelElement`, returns
@@ -153,7 +153,7 @@ The wrapper shall register itself for the meta class `"Instance"`.
 **Status:** Implemented
 **Priority:** Medium
 **Description:**
-`RPRequirement` shall extend `RPUnit` to wrap `IRPRequirement`. It shall expose
+`RPRequirement` shall extend `IRPUnit` to wrap `IRPRequirement`. It shall expose
 Java-mirrored methods: `getRequirementID()` (returns str) and
 `setRequirementID(requirement_id)` (str). The wrapper shall register itself for the
 meta class `"Requirement"`.
@@ -169,7 +169,7 @@ meta class `"Requirement"`.
 **Status:** Implemented
 **Priority:** Medium
 **Description:**
-`RPStatechart` shall extend `RPUnit` to wrap `IRPStatechart`. It shall expose
+`RPStatechart` shall extend `IRPUnit` to wrap `IRPStatechart`. It shall expose
 Java-mirrored methods: `addNewNodeByType(meta_type, x_position, y_position, width, height)`
 (returns wrapped node), `createGraphics()`, `closeDiagram()`, and `deleteState(state)`
 (accepts an `IRPModelElement`). The wrapper shall register itself for the meta class

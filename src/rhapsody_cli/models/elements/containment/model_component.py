@@ -2,14 +2,15 @@
 
 from typing import TYPE_CHECKING, cast
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.containment.model_configuration import RPConfiguration
 
 
-class RPComponent(RPUnit):
+class RPComponent(IRPUnit):
     """Wraps ``IRPComponent``: a component that extends ``IRPUnit``."""
 
     # IRPComponent method parity checklist:
@@ -73,7 +74,7 @@ class RPComponent(RPUnit):
         """
         return cast("RPConfiguration", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addConfiguration(name))))
 
-    def add_file(self, name: str) -> "RPUnit":
+    def add_file(self, name: str) -> "IRPUnit":
         """Adds a new file to the component.
 
         Args:
@@ -85,9 +86,9 @@ class RPComponent(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPComponent::addFile(java.lang.String name)
         """
-        return cast("RPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addFile(name))))
+        return cast("IRPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addFile(name))))
 
-    def add_folder(self, name: str) -> "RPUnit":
+    def add_folder(self, name: str) -> "IRPUnit":
         """Adds a new folder to the component.
 
         Args:
@@ -99,7 +100,7 @@ class RPComponent(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPComponent::addFolder(java.lang.String name)
         """
-        return cast("RPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addFolder(name))))
+        return cast("IRPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addFolder(name))))
 
     def add_nested_component(self, name: str) -> "RPComponent":
         """Adds a nested component to this component.
@@ -115,7 +116,7 @@ class RPComponent(RPUnit):
         """
         return cast("RPComponent", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addNestedComponent(name))))
 
-    def add_scope_element(self, element: RPUnit) -> None:
+    def add_scope_element(self, element: IRPUnit) -> None:
         """Adds a scope element to the component.
 
         Args:
@@ -126,7 +127,7 @@ class RPComponent(RPUnit):
         """
         self.call_com(lambda: self._com.addScopeElement(element._com))
 
-    def add_scope_element_without_aggregates(self, element: RPUnit) -> None:
+    def add_scope_element_without_aggregates(self, element: IRPUnit) -> None:
         """Adds a scope element without aggregates to the component.
 
         Args:
@@ -137,7 +138,7 @@ class RPComponent(RPUnit):
         """
         self.call_com(lambda: self._com.addScopeElementWithoutAggregates(element._com))
 
-    def add_to_scope(self, element: RPUnit) -> None:
+    def add_to_scope(self, element: IRPUnit) -> None:
         """Adds an element to the component's scope.
 
         Args:
@@ -170,7 +171,7 @@ class RPComponent(RPUnit):
         """
         self.call_com(lambda: self._com.deleteConfiguration(configuration._com))
 
-    def delete_file(self, file: RPUnit) -> None:
+    def delete_file(self, file: IRPUnit) -> None:
         """Deletes a file from the component.
 
         Args:
@@ -242,7 +243,7 @@ class RPComponent(RPUnit):
         """
         return IRPCollection(self.call_com(lambda: self._com.getConfigurations()))
 
-    def get_file(self, name: str) -> "RPUnit":
+    def get_file(self, name: str) -> "IRPUnit":
         """Gets a file by name.
 
         Args:
@@ -254,7 +255,7 @@ class RPComponent(RPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPComponent::getFile(java.lang.String name)
         """
-        return cast("RPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getFile(name))))
+        return cast("IRPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getFile(name))))
 
     def get_file_name(self) -> str:
         """Returns the file name for the component.
@@ -446,7 +447,7 @@ class RPComponent(RPUnit):
         """
         return int(self.call_com(lambda: self._com.isDirectoryPerModelComponent()))
 
-    def remove_scope_element(self, element: RPUnit) -> None:
+    def remove_scope_element(self, element: IRPUnit) -> None:
         """Removes a scope element from the component.
 
         Args:

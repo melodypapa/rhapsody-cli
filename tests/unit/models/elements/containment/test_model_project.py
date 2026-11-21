@@ -144,13 +144,13 @@ def test_project_add_component_delegates_to_com() -> None:
 
 
 def test_project_delete_component_delegates_to_com() -> None:
-    from rhapsody_cli.models.core import RPUnit
+    from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 
     fake = make_fake_element("Project")
     project = RPProject(fake)
     comp_fake = make_fake_element("Component", properties={"name": "ToDelete"})
 
-    project.delete_component(RPUnit(comp_fake))
+    project.delete_component(IRPUnit(comp_fake))
 
     fake.deleteComponent.assert_called_once_with(comp_fake)
 

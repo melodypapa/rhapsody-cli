@@ -50,3 +50,4 @@ Java Package API Reference
    com/telelogic/rhapsody/core/irp_class
    com/telelogic/rhapsody/core/irp_model_element
    com/telelogic/rhapsody/core/irp_collection
+   com/telelogic/rhapsody/core/irp_unit

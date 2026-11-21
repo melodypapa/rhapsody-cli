@@ -2,8 +2,9 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.activity.model_activity import RPFlow, RPFlowchart, RPFlowItem
@@ -15,7 +16,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.elements.variables.model_variables import RPAttribute
 
 
-class RPClassifier(RPUnit):
+class RPClassifier(IRPUnit):
     """Wraps ``IRPClassifier``: the base class for all classifiable elements."""
 
     # IRPClassifier method parity checklist:

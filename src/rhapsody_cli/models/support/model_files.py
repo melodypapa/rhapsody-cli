@@ -2,8 +2,9 @@
 
 from typing import TYPE_CHECKING, Optional
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
@@ -60,7 +61,7 @@ class RPASCIIFile(IRPModelElement):
         self.call_com(lambda: self._com.write(data))
 
 
-class RPControlledFile(RPUnit):
+class RPControlledFile(IRPUnit):
     """Wraps ``IRPControlledFile``: represents a controlled file in a Rhapsody model.
 
     To access an element's controlled files, use the method
@@ -109,7 +110,7 @@ class RPControlledFile(RPUnit):
         self._set_method_or_property(self._com, "setTarget", "target", filename)
 
 
-class RPFile(RPUnit):
+class RPFile(IRPUnit):
     """Wraps ``IRPFile``: represents a file or folder to be generated during code generation."""
 
     # IRPFile method parity checklist:

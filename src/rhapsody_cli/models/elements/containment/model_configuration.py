@@ -2,15 +2,16 @@
 
 from typing import TYPE_CHECKING, cast
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.containment.model_component import RPComponent
     from rhapsody_cli.models.elements.relations.model_instance import RPInstance
 
 
-class RPConfiguration(RPUnit):
+class RPConfiguration(IRPUnit):
     """Wraps ``IRPConfiguration``: a configuration that extends ``IRPUnit``."""
 
     # IRPConfiguration method parity checklist:
@@ -74,7 +75,7 @@ class RPConfiguration(RPUnit):
         """
         self.call_com(lambda: self._com.addInitialInstance(instance._com))
 
-    def add_package_to_instrumentation_scope(self, package: RPUnit) -> None:
+    def add_package_to_instrumentation_scope(self, package: IRPUnit) -> None:
         """Adds a package to the instrumentation scope.
 
         Args:
@@ -85,7 +86,7 @@ class RPConfiguration(RPUnit):
         """
         self.call_com(lambda: self._com.addPackageToInstrumentationScope(package._com))
 
-    def add_to_instrumentation_scope(self, element: RPUnit) -> None:
+    def add_to_instrumentation_scope(self, element: IRPUnit) -> None:
         """Adds an element to the instrumentation scope.
 
         Args:
@@ -371,7 +372,7 @@ class RPConfiguration(RPUnit):
         """
         return int(self.call_com(lambda: self._com.needsCodeGeneration()))
 
-    def remove_from_instrumentation_scope(self, element: RPUnit) -> None:
+    def remove_from_instrumentation_scope(self, element: IRPUnit) -> None:
         """Removes an element from instrumentation scope.
 
         Args:
@@ -382,7 +383,7 @@ class RPConfiguration(RPUnit):
         """
         self.call_com(lambda: self._com.removeFromInstrumentationScope(element._com))
 
-    def remove_package_from_instrumentation_scope(self, package: RPUnit) -> None:
+    def remove_package_from_instrumentation_scope(self, package: IRPUnit) -> None:
         """Removes a package from instrumentation scope.
 
         Args:

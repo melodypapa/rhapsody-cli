@@ -2,8 +2,9 @@
 
 from typing import cast
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 from rhapsody_cli.models.elements.requirements.model_requirements import RPAnnotation
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -12,7 +13,7 @@ def test_annotation_is_a_unit() -> None:
     fake = make_fake_element("Annotation", properties={"name": "Note1"})
     annotation = RPAnnotation(fake)
 
-    assert isinstance(annotation, RPUnit)
+    assert isinstance(annotation, IRPUnit)
     assert annotation.get_name() == "Note1"
 
 

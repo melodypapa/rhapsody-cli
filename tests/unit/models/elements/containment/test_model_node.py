@@ -1,7 +1,8 @@
 """Tests for rhapsody_cli.models.elements.containment.RPNode."""
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.containment import RPComponentInstance, RPNode
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -10,7 +11,7 @@ def test_node_is_a_unit() -> None:
     fake = make_fake_element("Node", properties={"name": "Node1"})
     node = RPNode(fake)
 
-    assert isinstance(node, RPUnit)
+    assert isinstance(node, IRPUnit)
     assert node.get_name() == "Node1"
 
 

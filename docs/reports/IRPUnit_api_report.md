@@ -2,7 +2,7 @@
 
 ## Summary
 - Java package: `com.telelogic.rhapsody.core`
-- Target wrapper: `RPUnit` (`src/rhapsody_cli/models/core.py`)
+- Target wrapper: `IRPUnit` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_unit.py`)
 - Members: Python `29`, Java `29`, pywin32 `25`
 - Deviations: `0`
 - Deviations by status:

@@ -20,6 +20,6 @@ dual-binding call site stays unchanged until Windows typelib evidence lands. The
 with unquoted type references; names used only in `cast()` are imported locally inside the
 method to avoid circular imports.
 **Implementation:** src/rhapsody_cli/models/core.py:IRPModelElement (§2 canonical package move
-deferred until the IRPCollection and IRPUnit rows leave `models/core.py` — see
-`docs/reports/sync-todo`)
+pending; the old cycle blocker is lifted by the revised rule — local imports before `cast()`
+plus `from __future__ import annotations` make the move safe; see `docs/reports/sync-todo`)
 **Last Changed:** 2026-11-21

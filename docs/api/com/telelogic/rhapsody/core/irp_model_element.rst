@@ -10,8 +10,9 @@ The IRPModelElement interface is the base interface for all model elements.
 - **JavaDoc description:** The base interface of all Rhapsody model elements.
 - **Python wrapper:** IRPModelElement
 - **Python import:** ``from rhapsody_cli.models.core import IRPModelElement``
-- **Canonical module:** pending — the §2 package move is deferred until the IRPCollection and
-  IRPUnit rows leave ``models/core.py`` (see ``docs/reports/sync-todo``).
+- **Canonical module:** pending — the §2 move is unblocked by the revised rule (local imports
+  before ``cast()``, with ``from __future__ import annotations`` making annotations lazy).
+  Scheduled for the dedicated ``core.py`` cleanup; see ``docs/reports/sync-todo``.
 
 
 Zero actionable deviations require code changes. Every migrated member calls exactly one

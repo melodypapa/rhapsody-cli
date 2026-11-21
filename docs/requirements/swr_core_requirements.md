@@ -25,23 +25,6 @@ underlying COM object. It shall implement `__eq__` (COM object equality), `__has
 
 ---
 
-## SWR_CORE_00002: RPUnit Save and File Operations
-
-**ID:** SWR_CORE_00002
-**Title:** RPUnit wraps IRPUnit for elements that can be saved as separate files
-**Status:** Implemented
-**Priority:** High
-**Description:**
-`RPUnit` shall extend `IRPModelElement` to wrap `IRPUnit` (model elements that can be
-saved as separate files). It shall expose Java-mirrored methods: `save()`,
-`getFilename()`, `setFilename(filename)`, `isReadOnly()`, and
-`setReadOnly(read_only)`. The `setReadOnly` method shall translate Python booleans to
-COM-style integers (1/0).
-**Implementation:** src/rhapsody_cli/models/_core.py:RPUnit
-**Last Changed:** 2026-07-07
-
----
-
 ## SWR_CORE_00003: IRPCollection Iterable Container
 
 **ID:** SWR_CORE_00003

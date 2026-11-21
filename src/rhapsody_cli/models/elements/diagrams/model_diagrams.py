@@ -2,18 +2,15 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import (
-    AbstractRPModelElement,
-    IRPModelElement,
-    RPUnit,
-)
+from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.graphics.model_graphics import RPGraphElement
 
 
-class RPDiagram(RPUnit):
+class RPDiagram(IRPUnit):
     """Wraps ``IRPDiagram``: represents a diagram in the model."""
 
     # IRPDiagram method parity checklist:

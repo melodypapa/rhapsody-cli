@@ -2,14 +2,15 @@
 
 from typing import TYPE_CHECKING, cast
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, RPUnit
+from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.containment.model_component_instance import RPComponentInstance
 
 
-class RPNode(RPUnit):
+class RPNode(IRPUnit):
     """Wraps ``IRPNode``: a node that extends ``IRPUnit``."""
 
     # IRPNode method parity checklist:
