@@ -70,7 +70,12 @@ The `IRPClass` interface represents classes in Rhapsody models. The Python `IRPC
 `RPClassifier` to wrap the Java `IRPClass`. It shall expose Java-mirrored methods:
 `addSuperclass(super_class)` (accepts an `IRPClass`), `addConstructor(arguments_data)`
 (returns wrapped constructor), `addDestructor()` (returns wrapped destructor),
-`getIsAbstract()` (returns bool), and `addClass(name)` (returns wrapped class).
+`is_abstract` (property returning bool), and `addClass(name)` (returns wrapped class).
+Every COM call shall target exactly one pywin32-exposed member from
+`docs/reports/pywin32_authority.json` with no runtime name probing: property-shaped
+flags (`isAbstract`, `isActive`, `isBehaviorOverriden`, `isComposite`, `isReactive`)
+are read/written via `get_com_property`/`set_com_property`, and method-shaped members
+(`getIsFinal`, `setIsFinal`, `addClass`, ...) are invoked via `call_com`.
 The wrapper shall register itself for the meta class `"Class"`.
 Members `addEventReceptionWithEvent` and `updateContainedDiagramsOnServer` are documented
 by JavaDoc but unavailable in the Rhapsody2.Application.1 COM type library; the wrapper

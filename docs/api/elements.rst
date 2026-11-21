@@ -198,24 +198,24 @@ the Rhapsody2.Application.1 type library; no direct COM call is added for such m
      - ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH; Use a property-aware getter/setter fallback or document the binding mismatch.
    * - getIsAbstract (method); setIsAbstract (method)
      - isAbstract (property)
-     - is_abstract() -> getIsAbstract; is_abstract() -> isAbstract
-     - PYTHON_METHOD_NAME_MISMATCH; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH; Rename the Python method to the snake_case Java API name or document the alias.
+     - is_abstract() -> isAbstract
+     - ALIAS_DOCUMENTED; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH; Documented decision: keep the current binding; no change.
    * - getIsActive (method); setIsActive (method)
      - isActive (property)
-     - is_active() -> getIsActive; is_active() -> isActive
-     - PYTHON_METHOD_NAME_MISMATCH; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH; Rename the Python method to the snake_case Java API name or document the alias.
+     - is_active() -> isActive
+     - ALIAS_DOCUMENTED; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH; Documented decision: keep the current binding; no change.
    * - getIsBehaviorOverriden (method); setIsBehaviorOverriden (method)
      - isBehaviorOverriden (property)
-     - is_behavior_overriden() -> getIsBehaviorOverriden; is_behavior_overriden() -> isBehaviorOverriden
+     - is_behavior_overriden() -> isBehaviorOverriden
+     - ALIAS_DOCUMENTED; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH; Documented decision: keep the current binding; no change.
    * - getIsFinal (method); setIsFinal (method)
      - getIsFinal (method); setIsFinal (method)
      - is_final() -> getIsFinal
      - ALIAS_DOCUMENTED; Documented decision: keep the current binding; no change.
-     - PYTHON_METHOD_NAME_MISMATCH; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH; Rename the Python method to the snake_case Java API name or document the alias.
    * - getIsComposite (method)
      - isComposite (property)
-     - is_composite() -> getIsComposite; is_composite() -> isComposite
-     - PYTHON_METHOD_NAME_MISMATCH; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH; Rename the Python method to the snake_case Java API name or document the alias.
+     - is_composite() -> isComposite
+     - ALIAS_DOCUMENTED; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH; Documented decision: keep the current binding; no change.
    * - getIsExternal (method)
      - isExternal (property)
      - get_is_external() -> getIsExternal; get_is_external() -> isExternal
@@ -226,8 +226,8 @@ the Rhapsody2.Application.1 type library; no direct COM call is added for such m
      - ACCESSOR_ALIAS_MISMATCH; Review the related API spellings and document the intended mapping.
    * - getIsReactive (method)
      - isReactive (property)
-     - is_reactive() -> getIsReactive; is_reactive() -> isReactive
-     - PYTHON_METHOD_NAME_MISMATCH; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH; Rename the Python method to the snake_case Java API name or document the alias.
+     - is_reactive() -> isReactive
+     - ALIAS_DOCUMENTED; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH; Documented decision: keep the current binding; no change.
    * - getIsShowDisplayName (method); setIsShowDisplayName (method)
      - isShowDisplayName (property)
      - get_is_show_display_name() -> getIsShowDisplayName; get_is_show_display_name() -> isShowDisplayName; set_is_show_display_name() -> isShowDisplayName; set_is_show_display_name() -> setIsShowDisplayName
