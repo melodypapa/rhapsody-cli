@@ -2,14 +2,14 @@
 
 ## Summary
 - Target wrapper: `RhapsodyApplication` (`src/rhapsody_cli/application.py`)
-- Members: Python `33`, Java `176`, pywin32 `193`
+- Members: Python `33`, Java `176`, pywin32 `172`
 - Deviations: `3`
 - Deviations by status:
   - `COM_MEMBER_NOT_EXPOSED`: 2
   - `PYTHON_METHOD_NAME_MISMATCH`: 1
 
-- Informational binding differences (expected): `7`
-- Wrapper backlog (supported members without wrappers): `158`
+- Informational binding differences (expected): `5`
+- Wrapper backlog (supported members without wrappers): `139`
 - Documented aliases: `0`, documented unavailable: `0`
 
 ## Comparison details
@@ -25,9 +25,7 @@
 | Python model wrapper | Java API | pywin32 | Status | Recommended change |
 | --- | --- | --- | --- | --- |
 | close_all_projects() -> closeAllProjects | — | — | PYTHON_ONLY_MEMBER | Keep this as a local facade helper or map it to a documented API member. |
-| get_is_hidden_ui() -> getIsHiddenUI; get_is_hidden_ui() -> isHiddenUI; set_hidden_ui() -> isHiddenUI | getIsHiddenUI (method) | isHiddenUI (property) | ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Use a property-aware getter/setter fallback or document the binding mismatch. |
 | — | getPlugInWindow (method) | — | JAVA_ONLY_MEMBER | Verify the Java documentation against the installed COM type library. |
-| get_projects() -> getProjects; get_projects() -> projects | getProjects (method) | projects (property) | ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Use a property-aware getter/setter fallback or document the binding mismatch. |
 | connect() (no static COM member) | — | — | PYTHON_ONLY_MEMBER | Keep this as a local facade helper or map it to a documented API member. |
 | disconnect() (no static COM member) | — | — | PYTHON_ONLY_MEMBER | Keep this as a local facade helper or map it to a documented API member. |
 | get_rhapsody_dir() -> getRhapsodyDir | — | — | PYTHON_ONLY_MEMBER | Keep this as a local facade helper or map it to a documented API member. |
@@ -43,13 +41,11 @@
 | — | addUnitsToModel (method) | addUnitsToModel (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | allowBrowserRefresh (method) | allowBrowserRefresh (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | allowGERefresh (method) | allowGERefresh (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | — | allowRmmRemoteOslcLinksLoad (method) | PYWIN32_ONLY_MEMBER | Confirm this version-specific member should be wrapped; otherwise classify it as unsupported. |
 | — | getApplicationConnectionString (method) | getApplicationConnectionString (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | getApplicationName (method) | getApplicationName (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | getApplicationRoot (method) | ApplicationRoot (property) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | getApplicationStatus (method); setApplicationStatus (method) | getApplicationStatus (method); setApplicationStatus (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | applyNewTermsProfile (method) | applyNewTermsProfile (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | — | applyWindowLayout (method) | PYWIN32_ONLY_MEMBER | Confirm this version-specific member should be wrapped; otherwise classify it as unsupported. |
 | — | arcCheckOut (method) | arcCheckOut (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | build (method) | build (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | buildEntireProject (method) | buildEntireProject (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
@@ -69,8 +65,6 @@
 | — | connectToTarget (method) | connectToTarget (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | createAndInsertProject (method) | createAndInsertProject (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | createDomainFromProfile (method) | createDomainFromProfile (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | — | createEmbeddedWebViewWindow (method) | PYWIN32_ONLY_MEMBER | Confirm this version-specific member should be wrapped; otherwise classify it as unsupported. |
-| — | — | createProgressBar (method) | PYWIN32_ONLY_MEMBER | Confirm this version-specific member should be wrapped; otherwise classify it as unsupported. |
 | — | getDMBoolProperty (method); setDMBoolProperty (method) | getDMBoolProperty (method); setDMBoolProperty (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | getDMModelWorkspaceFolder (method) | getDMModelWorkspaceFolder (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | getDMProperty (method); setDMProperty (method) | getDMProperty (method); setDMProperty (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
@@ -80,7 +74,6 @@
 | — | dbgCheckComOut (method) | dbgCheckComOut (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | deferredAddToModel (method) | deferredAddToModel (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | deleteProjectFromList (method) | deleteProjectFromList (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | — | deleteWindowLayout (method) | PYWIN32_ONLY_MEMBER | Confirm this version-specific member should be wrapped; otherwise classify it as unsupported. |
 | — | getDiagramOfSelectedElement (method) | getDiagramOfSelectedElement (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | disconnectFromTarget (method) | disconnectFromTarget (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | downloadToTarget (method) | downloadToTarget (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
@@ -92,23 +85,18 @@
 | — | executeCommandLine (method) | executeCommandLine (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | executeTransformationSequence (method) | executeTransformationSequence (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | expandStringKeywords (method) | expandStringKeywords (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | — | exportWindowLayout (method) | PYWIN32_ONLY_MEMBER | Confirm this version-specific member should be wrapped; otherwise classify it as unsupported. |
 | — | fixpack (method) | fixpack (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | forceOutput2Console (method) | forceOutput2Console (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | forceRoundtrip (method) | forceRoundtrip (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | forceRoundtripElements (method) | forceRoundtripElements (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | generateMainAndMakeFiles (method) | generateMainAndMakeFiles (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | generateWithDependencies (method) | generateWithDependencies (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | — | GetPlugInWindow (method) | PYWIN32_ONLY_MEMBER | Confirm this version-specific member should be wrapped; otherwise classify it as unsupported. |
-| — | — | getHelperStatus (method); setHelperStatus (method) | PYWIN32_ONLY_MEMBER | Confirm this version-specific member should be wrapped; otherwise classify it as unsupported. |
 | — | highLightElement (method) | highLightElement (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | highlightByHandle (method) | highlightByHandle (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | importClasses (method) | importClasses (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | importDesignManagerModel (method) | importDesignManagerModel (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | — | importSyncSimulinkBlock (method) | PYWIN32_ONLY_MEMBER | Confirm this version-specific member should be wrapped; otherwise classify it as unsupported. |
 | — | importSyncSimulinkBlock2 (method) | importSyncSimulinkBlock2 (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | importTlb (method) | importTlb (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | — | importWindowLayout (method) | PYWIN32_ONLY_MEMBER | Confirm this version-specific member should be wrapped; otherwise classify it as unsupported. |
 | — | getIniFileParameterValue (method) | getIniFileParameterValue (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | insertProject (method) | insertProject (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | insertProjectFromDesignManager (method) | insertProjectFromDesignManager (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
@@ -118,7 +106,6 @@
 | — | getIsLoadOnDemand (method); setIsLoadOnDemand (method) | isLoadOnDemand (property) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | isRhapsodyCL (method) | isRhapsodyCL (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | isRhapsodyFileType (method) | isRhapsodyFileType (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | — | isValidWebView (method) | PYWIN32_ONLY_MEMBER | Confirm this version-specific member should be wrapped; otherwise classify it as unsupported. |
 | — | getLanguage (method); setLanguage (method) | Language (property) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | getListOfFactoryProperties (method) | getListOfFactoryProperties (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | getListOfSelectedElements (method) | getListOfSelectedElements (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
@@ -143,7 +130,6 @@
 | — | openProjectWithLastSession (method) | openProjectWithLastSession (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | openProjectWithoutSubUnits (method) | openProjectWithoutSubUnits (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | getOutputWindowText (method) | getOutputWindowText (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | — | getProgressBar (method) | PYWIN32_ONLY_MEMBER | Confirm this version-specific member should be wrapped; otherwise classify it as unsupported. |
 | — | rebuild (method) | rebuild (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | rebuildEntireProject (method) | rebuildEntireProject (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | rebuildWithDependencies (method) | rebuildWithDependencies (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
@@ -154,10 +140,7 @@
 | — | regenerateEntireProject (method) | regenerateEntireProject (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | regenerateWithDependencies (method) | regenerateWithDependencies (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | registerCOMClient (method) | registerCOMClient (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | — | removeProgressBar (method) | PYWIN32_ONLY_MEMBER | Confirm this version-specific member should be wrapped; otherwise classify it as unsupported. |
-| — | — | renameWindowLayout (method) | PYWIN32_ONLY_MEMBER | Confirm this version-specific member should be wrapped; otherwise classify it as unsupported. |
 | — | report (method) | report (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | — | resetWindowLayout (method) | PYWIN32_ONLY_MEMBER | Confirm this version-specific member should be wrapped; otherwise classify it as unsupported. |
 | — | getRhapsodyHandleErrorFunction (method) | getRhapsodyHandleErrorFunction (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | getRhapsodyHandleErrorFunctionLong (method) | getRhapsodyHandleErrorFunctionLong (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | rhpCheckinLicense (method) | RhpCheckinLicense (method) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
@@ -167,8 +150,6 @@
 | — | runApplication (method) | runApplication (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | runHelper (method) | runHelper (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | runHelperWithParameters (method) | runHelperWithParameters (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | — | saveCheckModelResult (method) | PYWIN32_ONLY_MEMBER | Confirm this version-specific member should be wrapped; otherwise classify it as unsupported. |
-| — | — | saveWindowLayout (method) | PYWIN32_ONLY_MEMBER | Confirm this version-specific member should be wrapped; otherwise classify it as unsupported. |
 | — | selectGraphElements (method) | selectGraphElements (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | selectModelElements (method) | selectModelElements (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | getSelectedElement (method) | getSelectedElement (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
@@ -191,9 +172,38 @@
 | — | getUserDataRoot (method) | UserDataRoot (property) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | getUserOMROOT (method) | UserOMROOT (property) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | versionNumberLong (method) | versionNumberLong (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | — | getWebViewURL (method); setWebViewURL (method) | PYWIN32_ONLY_MEMBER | Confirm this version-specific member should be wrapped; otherwise classify it as unsupported. |
-| — | — | getWindowLayoutList (method) | PYWIN32_ONLY_MEMBER | Confirm this version-specific member should be wrapped; otherwise classify it as unsupported. |
 | — | writeToOutputWindow (method) | writeToOutputWindow (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
+
+## Correct Items
+
+| Python model wrapper | Java API | pywin32 | Status | Recommended change |
+| --- | --- | --- | --- | --- |
+| active_project() -> activeProject | activeProject (method) | activeProject (method) | MATCH | — |
+| add_to_model() -> addToModel | addToModel (method) | addToModel (method) | MATCH | — |
+| add_to_model_ex() -> addToModelEx | addToModelEx (method) | addToModelEx (method) | MATCH | — |
+| bring_window_to_top() -> bringWindowToTop | bringWindowToTop (method) | bringWindowToTop (method) | MATCH | — |
+| check_model() -> checkModel | checkModel (method) | checkModel (method) | MATCH | — |
+| create_new_collection() -> createNewCollection | createNewCollection (method) | createNewCollection (method) | MATCH | — |
+| create_new_project() -> createNewProject | createNewProject (method) | createNewProject (method) | MATCH | — |
+| generate() -> generate | generate (method) | generate (method) | MATCH | — |
+| generate_elements() -> generateElements | generateElements (method) | generateElements (method) | MATCH | — |
+| generate_entire_project() -> generateEntireProject | generateEntireProject (method) | generateEntireProject (method) | MATCH | — |
+| get_code_gen_simplifiers_registry() -> getCodeGenSimplifiersRegistry | getCodeGenSimplifiersRegistry (method) | getCodeGenSimplifiersRegistry (method) | MATCH | — |
+| get_diag_synth_api() -> getDiagSynthAPI | getDiagSynthAPI (method) | getDiagSynthAPI (method) | MATCH | — |
+| get_external_checker_registry() -> getExternalCheckerRegistry | getExternalCheckerRegistry (method) | getExternalCheckerRegistry (method) | MATCH | — |
+| get_external_ide_registry() -> getExternalIDERegistry | getExternalIDERegistry (method) | getExternalIDERegistry (method) | MATCH | — |
+| get_external_roundtrip_invoker() -> getExternalRoundtripInvoker | getExternalRoundtripInvoker (method) | getExternalRoundtripInvoker (method) | MATCH | — |
+| get_is_hidden_ui() -> isHiddenUI; set_hidden_ui() -> isHiddenUI | getIsHiddenUI (method) | isHiddenUI (property) | MATCH | — |
+| get_ow_pane_mgr() -> getOWPaneMgr | getOWPaneMgr (method) | getOWPaneMgr (method) | MATCH | — |
+| get_projects() -> projects | getProjects (method) | projects (property) | MATCH | — |
+| get_search_manager() -> getSearchManager | getSearchManager (method) | getSearchManager (method) | MATCH | — |
+| get_selection() -> getSelection | getSelection (method) | getSelection (method) | MATCH | — |
+| open_project() -> openProject | openProject (method) | openProject (method) | MATCH | — |
+| quit() -> quit | quit (method) | quit (method) | MATCH | — |
+| regenerate() -> regenerate | regenerate (method) | regenerate (method) | MATCH | — |
+| save_all() -> saveAll | saveAll (method) | saveAll (method) | MATCH | — |
+| set_hidden_ui() -> setHiddenUI | setHiddenUI (method) | setHiddenUI (method) | MATCH | — |
+| set_log() -> setLog | setLog (method) | setLog (method) | MATCH | — |
 
 ## AI Fix Guidance
 

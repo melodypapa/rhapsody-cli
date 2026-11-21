@@ -48,44 +48,41 @@ supported_formats = ("json", "csv")  # ❌ Lowercase for constants
 
 ## Python Compatibility & Imports
 
-### ❌ DO NOT USE: `from __future__ import annotations`
+### ✅ USE: `from __future__ import annotations`
 
-**This import is FORBIDDEN.** Remove it from all files immediately if found.
+**This import is REQUIRED** in files that reference not-yet-defined types (including self-references).
 
-### Why?
+It lets type annotations be written without string quotes, e.g. `-> IRPClass` instead of `-> "IRPClass"`. Place it as the first statement after the module docstring.
 
-- **Already fixed once:** This issue has been resolved across the entire codebase. Do not reintroduce it.
-- **Runtime overhead:** Defers all annotations, causing issues with type checkers and runtime reflection.
-- **Unnecessary complexity:** We support Python 3.8+ with explicit type hints—no need to defer evaluation.
-- **Breaks mypy strict mode:** Type checking becomes unreliable.
+- `cast(Type, value)` still evaluates its first argument at runtime, so types used only in `cast()` must be imported at runtime (a local import inside the method avoids circular imports).
+- `TYPE_CHECKING` imports remain valid for names referenced only in annotations.
 
 ### ❌ WRONG:
 ```python
-from __future__ import annotations
-
-def my_function() -> str:
-    return "hello"
-```
-
-### ✅ CORRECT:
-```python
-def my_function() -> str:
-    return "hello"
-```
-
-### Handling Forward References (When Needed)
-
-If you need forward references to undefined types, use string quotes:
-
-```python
 class Node:
-    def __init__(self, value: int, next_node: 'Node | None' = None):
+    def __init__(self, value: int, next_node: "Node | None" = None):
         self.value = value
         self.next_node = next_node
 ```
+### ✅ CORRECT:
+```python
+from __future__ import annotations
 
-Or use conditional imports and `TYPE_CHECKING`:
+class Node:
+    def __init__(self, value: int, next_node: Node | None = None):
+        self.value = value
+        self.next_node = next_node
+```
+### Handling Forward References (When Needed)Use `from __future__ import annotations` and write the type without quotes:
+```python
+from __future__ import annotations
 
+class Node:
+    def __init__(self, value: int, next_node: Node | None = None):
+        self.value = value
+        self.next_node = next_node
+```
+`TYPE_CHECKING` imports remain valid for names used only in annotations:
 ```python
 from typing import TYPE_CHECKING
 
@@ -93,7 +90,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.cli.context import RhapsodyContext
 
 class MyAction:
-    def __init__(self, ctx: 'RhapsodyContext'):
+    def __init__(self, ctx: RhapsodyContext):
         self.ctx = ctx
 ```
 
@@ -937,7 +934,7 @@ def test_something_with_context(mock_context):
 All code reviews must verify:
 
 ### Python Compatibility
-- [ ] **NO `from __future__ import annotations`** (this is forbidden)
+- [ ] **`from __future__ import annotations`** present (if forward refs are used), with no quoted type annotations
 - [ ] All imports organized (stdlib → third-party → local)
 - [ ] No unused imports?
 

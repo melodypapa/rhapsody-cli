@@ -23,7 +23,7 @@ Before any analysis or edit, publish the TODO list: use an available task-list t
 ## Sync TODO — IRPClass (`com.telelogic.rhapsody.core`)
 - [ ] §2 Resolve JavaDoc package, class description, and member inventory; move wrapper + tests to the canonical package.
 - [ ] §3 Compare every owned member across JavaDoc, COM exposure, and Python implementation.
-- [ ] §4 Write/upgrade the fake-COM unit tests first (red), then migrate the binding call sites (green).
+- [ ] §4 Write/upgrade the fake-COM unit tests first (red), then migrate the binding call sites (green) — each Python member's shape (method vs `@property`) follows the COM shape, and synced wrappers use `from __future__ import annotations` with unquoted type references.
 - [ ] §5 Add/update integration tests in the mirrored test package.
 - [ ] §6 Update the class requirement document (per-class, package path).
 - [ ] §7 Update the class RST page (per-class, package path) and list each verified deviation.
@@ -75,9 +75,11 @@ Reconcile every member declared by the target interface against the validator in
 
 For each target-owned JavaDoc member, track: Java name/signature and description; inherited vs owned; COM method/property/alias/unavailable status; Python method and actual COM call; result type/wrapping; and a disposition. Use concise dispositions such as matched, inherited, binding mismatch, JavaDoc-only, COM-only, missing wrapper, intentionally unsupported, or unresolved. There is no "facade helper" disposition: a wrapper member with no static COM member is python-only and is removed (see section 4).
 
-Never add a direct COM call for a member absent from the binding. Keep exact camelCase COM identifiers and snake_case Python names. Follow `AGENTS.md` for `call_com`, property helpers, argument unwrapping, result wrapping, collection handling, annotations, and exception handling. In particular, do not add `Any` or `from __future__ import annotations`.
+Never add a direct COM call for a member absent from the binding. Keep exact camelCase COM identifiers and snake_case Python names. Follow `AGENTS.md` for `call_com`, property helpers, argument unwrapping, result wrapping, collection handling, annotations, and exception handling. In particular, do not add `Any`. Synced wrappers use `from __future__ import annotations` and write type references unquoted (e.g. `-> IRPClass`, not `-> "IRPClass"`); a name used only in `cast()` must be imported at runtime (a local import inside the method avoids circular imports).
 
 Bindings are pywin32-authoritative: every wrapper member depends on exactly one pywin32-exposed COM member, with no runtime name probing or Java-name fallback. Method-shaped members are called with `call_com(lambda: self._com.Name(...))`; property-shaped members are read/written with `get_com_property` / `set_com_property` (name confirmed against `docs/reports/pywin32_authority.json`). Legacy dual-binding call sites (`_get_method_or_property` / `_set_method_or_property`) are migrated as part of the sync — see section 4.
+
+**The Python-facing shape follows the COM shape recorded in `docs/reports/<INTERFACE>_api_report.md`.** The report's pywin32 column is the authority for whether a member is a method or a property: a member listed as `method` is exposed as a snake_case Python method that calls `call_com(lambda: self._com.Name(...))`; a member listed as `property` is exposed as a Python `@property` backed by `get_com_property` / `set_com_property`. Do not turn a COM method into a Python `@property` (or a COM property into a method) for style reasons — the Python surface mirrors the COM definition in the report. A documented deviation (for example a binding mismatch resolved as `ALIAS_DOCUMENTED`) may keep the existing shape, but the disposition must name the COM shape and the reason for the exception.
 
 ## 4. Write the unit tests first (TDD)
 
