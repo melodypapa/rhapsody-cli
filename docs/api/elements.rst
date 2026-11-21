@@ -48,3 +48,4 @@ Java Package API Reference
    :maxdepth: 1
 
    com/telelogic/rhapsody/core/irp_class
+   com/telelogic/rhapsody/core/rp_model_element
