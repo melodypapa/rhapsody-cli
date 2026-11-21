@@ -47,7 +47,9 @@ def make_fake_collection(items: List[Any]) -> MagicMock:
 
     fake = MagicMock(name="FakeCollection")
     fake.getCount.return_value = len(items)
+    fake.Count = len(items)  # plain attribute: wrappers migrated to get_com_property
     fake.getItem.side_effect = get_item
+    fake.Item.side_effect = get_item  # method form: wrappers migrated to call_com(Item)
     return fake
 
 

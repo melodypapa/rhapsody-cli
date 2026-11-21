@@ -2,7 +2,7 @@
 
 from typing import Any, Dict
 
-from tests.unit.models.fakes import make_fake_element
+from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
 def test_make_fake_element_method_returns_stay_method_shaped() -> None:
@@ -31,3 +31,9 @@ def test_make_fake_element_property_writes_are_observable() -> None:
     fake.isActive = 0
 
     assert fake.isActive == 0
+
+
+def test_make_fake_collection_exposes_count_property() -> None:
+    fake = make_fake_collection(["a", "b"])
+
+    assert fake.Count == 2

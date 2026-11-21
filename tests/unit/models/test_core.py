@@ -277,7 +277,7 @@ def test_collection_getitem_wraps_model_elements() -> None:
 
     assert isinstance(item, RPModelElement)
     assert item.get_name() == "Widget"
-    fake.getItem.assert_called_once_with(1)
+    fake.Item.assert_called_once_with(1)
 
 
 def test_collection_getitem_passes_through_non_element_values() -> None:
@@ -314,7 +314,7 @@ def test_collection_iter_yields_all_items() -> None:
     names = [item.get_name() for item in collection]
 
     assert names == ["A", "B"]
-    assert fake.getItem.call_args_list == [call(1), call(2)]
+    assert fake.Item.call_args_list == [call(1), call(2)]
 
 
 def test_collection_add_item_delegates_to_com() -> None:
@@ -1780,4 +1780,28 @@ def test_rp_model_element_uses_no_legacy_dual_binding_helpers() -> None:
                 if isinstance(sub, _ast.Call) and isinstance(sub.func, _ast.Attribute):
                     if sub.func.attr in ("_get_method_or_property", "_set_method_or_property"):
                         offenders.append(f"{node.name}.{fn.name}:{sub.lineno}")
+    assert offenders == []
+
+
+def test_rp_collection_uses_no_legacy_dual_binding_helpers() -> None:
+    """RPCollection's own methods call exactly one pywin32 member — no name probing."""
+    import ast as _ast
+
+    source = Path(core_module.__file__).read_text(encoding="utf-8")
+    tree = _ast.parse(source)
+    collection_cls = next(node for node in tree.body if isinstance(node, _ast.ClassDef) and node.name == "RPCollection")
+    offenders: list[str] = []
+    for fn in collection_cls.body:
+        if not isinstance(fn, _ast.FunctionDef):
+            continue
+        for sub in _ast.walk(fn):
+            if isinstance(sub, _ast.Call) and isinstance(sub.func, _ast.Attribute):
+                if sub.func.attr in ("_get_method_or_property", "_set_method_or_property"):
+                    offenders.append(f"{fn.name}:{sub.lineno}:legacy-helper")
+    for fn in collection_cls.body:
+        if not isinstance(fn, _ast.FunctionDef):
+            continue
+        for sub in _ast.walk(fn):
+            if isinstance(sub, _ast.Call) and isinstance(sub.func, _ast.Name) and sub.func.id == "hasattr":
+                offenders.append(f"{fn.name}:{sub.lineno}:hasattr-probe")
     assert offenders == []
