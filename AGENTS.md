@@ -14,14 +14,14 @@ Pythonic wrapper around the IBM Rhapsody COM API. All method names use snake_cas
 
 ## COM Wrapping Rules (critical)
 
-- Standalone COM utilities in `com_utils.py`: `call_com()`, `_get_method_or_property()`, `_set_method_or_property()`. Used by both `RhapsodyApplication` and element wrappers.
-- All COM calls → `call_com(lambda: self._com.methodName(...))` (translates `com_error` → `RhapsodyRuntimeException`). On elements, use `self.call_com(...)` (classmethod on `AbstractRPModelElement` forwards to `com_utils.call_com`).
-- No-arg getters → `_get_method_or_property(self._com, "getX", "x")` (prefers method, falls back to property; strings are COM identifiers, not Python names)
-- Parameterized getters → MUST use `call_com` directly (`_get_method_or_property` drops extra args)
-- Single-arg setters → `_set_method_or_property(self._com, "setX", "x", value)`
-- Multi-arg setters → MUST use `call_com` directly
+- The generated pywin32 interface is authoritative: the member name and method/property shape for every COM call come from `docs/reports/pywin32_authority.json`. COM names (`BinaryID`, `isAbstract`, `getIsFinal`) are **string arguments only**, never Python identifiers.
+- Standalone COM utilities in `com_utils.py`: `call_com()`, `get_com_property()`, `set_com_property()` (used by both `RhapsodyApplication` and element wrappers). Legacy fallback pair `_get_method_or_property()` / `_set_method_or_property()` remains only in wrappers not yet migrated.
+- **No runtime name probing or fallback**: never "try the Java-style method name first". A wrapper calls exactly one pywin32-exposed member.
+- All method-shaped COM calls → `call_com(lambda: self._com.methodName(...))` (translates `com_error` → `RhapsodyRuntimeException`). On elements, use `self.call_com(...)` (classmethod on `AbstractRPModelElement` forwards to `com_utils.call_com`). Parameterized/multi-arg calls MUST use this form.
+- Property-shaped members → `AbstractRPModelElement.get_com_property(self._com, "propName")` / `set_com_property(self._com, "propName", value)` (read/write exactly the authoritative name).
 - Return wrapped element → `AbstractRPModelElement.wrap(...)` or specific wrapper constructor
 - Return collection → `RPCollection(self.call_com(...))`
+- Migration is per-class via rhapsody-sync runs: each synced class's own methods drop the legacy helpers; the legacy pair is deleted after the last class migrates.
 
 ## Testing
 

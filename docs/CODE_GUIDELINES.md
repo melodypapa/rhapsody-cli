@@ -1013,7 +1013,8 @@ The generated pywin32 interface from the registered `Rhapsody2 1.0` type library
 
 - Confirm COM member names and kinds in `docs/reports/pywin32_authority.json`.
 - Call method-shaped members with `call_com(lambda: self._com.methodName(...))`.
-- Read/write property-shaped members with `_get_method_or_property` / `_set_method_or_property`, Java name first and pywin32 name second. COM names are string arguments only.
+- Read/write property-shaped members with `get_com_property` / `set_com_property`, calling the exact authoritative name. COM names are string arguments only. There is no runtime name probing or Java-name fallback: every wrapper member depends on exactly one pywin32-exposed COM member.
+- Legacy note: `_get_method_or_property` / `_set_method_or_property` (Java-name-first probes) remain only in wrappers not yet migrated; each rhapsody-sync run removes them from the synced class, and the pair is deleted once the last class migrates.
 - Python-facing names follow this document: snake_case methods and UPPERCASE constants. Where a class is migrated to `@property`, its name is the snake_case canonical member name.
 - Remove wrappers calling members absent from pywin32, or keep a documented `NotImplementedError` stub listed in `documented_unavailable`.
 - Property/method refactors are scoped to one class at a time; do not reshape the shared wrapper hierarchy for one interface's deviations.
