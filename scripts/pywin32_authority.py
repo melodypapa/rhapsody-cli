@@ -61,10 +61,7 @@ def build_authority_from_typelib(reports_dir: Path) -> AuthorityData:
     """
     from scripts.validate_model_api import collect_registered_pywin32_members
 
-    catalog = {
-        report_path.name[: -len(_REPORT_SUFFIX)]: collect_registered_pywin32_members(report_path.name[: -len(_REPORT_SUFFIX)])
-        for report_path in sorted(reports_dir.glob("*" + _REPORT_SUFFIX))
-    }
+    catalog = {report_path.name[: -len(_REPORT_SUFFIX)]: collect_registered_pywin32_members(report_path.name[: -len(_REPORT_SUFFIX)]) for report_path in sorted(reports_dir.glob("*" + _REPORT_SUFFIX))}
     return AuthorityData(catalog=catalog, documented_aliases={}, documented_unavailable={})
 
 

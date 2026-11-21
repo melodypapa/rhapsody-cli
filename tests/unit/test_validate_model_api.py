@@ -358,9 +358,7 @@ def test_apply_pywin32_authority_suppresses_documented_alias() -> None:
         )
     ]
 
-    deviations, informational, backlog = validator.apply_pywin32_authority(
-        rows, "IRPClass", _authority(aliases={"IRPClass": {"get_description_html": "description_html"}})
-    )
+    deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPClass", _authority(aliases={"IRPClass": {"get_description_html": "description_html"}}))
 
     assert deviations == []
     assert informational == rows
@@ -378,9 +376,7 @@ def test_apply_pywin32_authority_suppresses_documented_unavailable_member() -> N
         )
     ]
 
-    deviations, informational, backlog = validator.apply_pywin32_authority(
-        rows, "IRPClass", _authority(unavailable={"IRPClass": ["getRmmUrl"]})
-    )
+    deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPClass", _authority(unavailable={"IRPClass": ["getRmmUrl"]}))
 
     assert (deviations, informational, backlog) == ([], [], [])
 
@@ -430,9 +426,5 @@ def test_irpclass_report_has_no_actionable_deviations() -> None:
     reports_root = Path(__file__).resolve().parents[2] / "docs" / "reports"
     text = (reports_root / "IRPClass_api_report.md").read_text(encoding="utf-8")
     section = text.split("## Comparison details", 1)[1].split("## Expected Binding Differences", 1)[0]
-    rows = [
-        line
-        for line in section.splitlines()
-        if line.startswith("| ") and "Python model wrapper" not in line and "---" not in line
-    ]
+    rows = [line for line in section.splitlines() if line.startswith("| ") and "Python model wrapper" not in line and "---" not in line]
     assert rows == [], rows
