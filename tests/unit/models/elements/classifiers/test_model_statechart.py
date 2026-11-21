@@ -7,7 +7,7 @@ from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
 def test_statechart_is_a_class() -> None:
-    fake = make_fake_element("Statechart", getName="Behavior")
+    fake = make_fake_element("Statechart", properties={"name": "Behavior"})
     statechart = RPStatechart(fake)
 
     assert isinstance(statechart, IRPClass)
@@ -16,7 +16,7 @@ def test_statechart_is_a_class() -> None:
 
 def test_statechart_add_new_node_by_type_wraps_result() -> None:
     fake = make_fake_element("Statechart")
-    node = make_fake_element("State", getName="Idle")
+    node = make_fake_element("State", properties={"name": "Idle"})
     fake.addNewNodeByType.return_value = node
     statechart = RPStatechart(fake)
 
@@ -46,7 +46,7 @@ def test_statechart_close_diagram_delegates_to_com() -> None:
 
 def test_statechart_delete_state_delegates_to_com() -> None:
     fake = make_fake_element("Statechart")
-    state = make_fake_element("State", getName="Idle")
+    state = make_fake_element("State", properties={"name": "Idle"})
     statechart = RPStatechart(fake)
 
     statechart.delete_state(RPModelElement(state))
@@ -55,7 +55,7 @@ def test_statechart_delete_state_delegates_to_com() -> None:
 
 
 def test_statechart_is_registered_for_meta_class_statechart() -> None:
-    fake = make_fake_element("Statechart", getName="Behavior")
+    fake = make_fake_element("Statechart", properties={"name": "Behavior"})
 
     wrapped = AbstractRPModelElement.wrap(fake)
 

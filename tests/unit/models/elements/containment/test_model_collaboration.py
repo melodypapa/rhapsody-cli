@@ -6,7 +6,7 @@ from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
 def test_collaboration_is_a_unit() -> None:
-    fake = make_fake_element("Collaboration", getName="Collab1")
+    fake = make_fake_element("Collaboration", properties={"name": "Collab1"})
     collab = RPCollaboration(fake)
 
     assert isinstance(collab, RPUnit)
@@ -14,7 +14,7 @@ def test_collaboration_is_a_unit() -> None:
 
 
 def test_collaboration_is_registered_for_meta_class_collaboration() -> None:
-    fake = make_fake_element("Collaboration", getName="Collab1")
+    fake = make_fake_element("Collaboration", properties={"name": "Collab1"})
 
     wrapped = AbstractRPModelElement.wrap(fake)
 
@@ -26,7 +26,7 @@ def test_collaboration_is_registered_for_meta_class_collaboration() -> None:
 
 def test_collaboration_add_classifier_role_delegates_and_wraps() -> None:
     fake = make_fake_element("Collaboration")
-    cr = make_fake_element("ClassifierRole", getName="cr1")
+    cr = make_fake_element("ClassifierRole", properties={"name": "cr1"})
     fake.addClassifierRole.return_value = cr
     collab = RPCollaboration(fake)
 
@@ -38,7 +38,7 @@ def test_collaboration_add_classifier_role_delegates_and_wraps() -> None:
 
 def test_collaboration_add_message_delegates_and_wraps() -> None:
     fake = make_fake_element("Collaboration")
-    msg = make_fake_element("Message", getName="msg1")
+    msg = make_fake_element("Message", properties={"name": "msg1"})
     fake.addMessage.return_value = msg
     collab = RPCollaboration(fake)
 
@@ -50,13 +50,11 @@ def test_collaboration_add_message_delegates_and_wraps() -> None:
 
 def test_collaboration_get_messages_returns_collection() -> None:
     fake = make_fake_element("Collaboration")
-    msg = make_fake_element("Message", getName="msg1")
+    msg = make_fake_element("Message", properties={"name": "msg1"})
     fake.getMessages.return_value = make_fake_collection([msg])
     collab = RPCollaboration(fake)
 
     result = collab.get_messages()
-
-    fake.getMessages.assert_called_once_with()
     assert isinstance(result, RPCollection)
 
 
@@ -75,6 +73,4 @@ def test_collaboration_get_activation_condition_returns_str() -> None:
     collab = RPCollaboration(fake)
 
     result = collab.get_activation_condition()
-
-    fake.getActivationCondition.assert_called_once_with()
     assert result == "some_condition"

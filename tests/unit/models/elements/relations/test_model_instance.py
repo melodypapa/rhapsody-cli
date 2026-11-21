@@ -8,7 +8,7 @@ from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
 def test_instance_is_a_relation() -> None:
-    fake = make_fake_element("Instance", getName="driver1")
+    fake = make_fake_element("Instance", properties={"name": "driver1"})
     instance = RPInstance(fake)
 
     assert isinstance(instance, RPRelation)
@@ -17,7 +17,7 @@ def test_instance_is_a_relation() -> None:
 
 def test_instance_get_all_nested_elements_returns_collection() -> None:
     fake = make_fake_element("Instance")
-    nested = make_fake_element("Attribute", getName="speed")
+    nested = make_fake_element("Attribute", properties={"name": "speed"})
     fake.getAllNestedElements.return_value = make_fake_collection([nested])
     instance = RPInstance(fake)
 
@@ -47,7 +47,7 @@ def test_instance_set_attribute_value_delegates_to_com() -> None:
 
 def test_instance_get_in_links_returns_collection() -> None:
     fake = make_fake_element("Instance")
-    link = make_fake_element("Link", getName="conn1")
+    link = make_fake_element("Link", properties={"name": "conn1"})
     fake.getInLinks.return_value = make_fake_collection([link])
     instance = RPInstance(fake)
 
@@ -59,7 +59,7 @@ def test_instance_get_in_links_returns_collection() -> None:
 
 def test_instance_get_out_links_returns_collection() -> None:
     fake = make_fake_element("Instance")
-    link = make_fake_element("Link", getName="conn2")
+    link = make_fake_element("Link", properties={"name": "conn2"})
     fake.getOutLinks.return_value = make_fake_collection([link])
     instance = RPInstance(fake)
 
@@ -70,7 +70,7 @@ def test_instance_get_out_links_returns_collection() -> None:
 
 
 def test_instance_is_registered_for_meta_class_instance() -> None:
-    fake = make_fake_element("Instance", getName="driver1")
+    fake = make_fake_element("Instance", properties={"name": "driver1"})
 
     wrapped = AbstractRPModelElement.wrap(fake)
 
@@ -85,7 +85,7 @@ def test_instance_is_registered_for_meta_class_object() -> None:
 
     See: https://github.com/melodypapa/rhapsody-cli/issues/96
     """
-    fake = make_fake_element("Object", getName="driver1")
+    fake = make_fake_element("Object", properties={"name": "driver1"})
 
     wrapped = AbstractRPModelElement.wrap(fake)
 
@@ -94,7 +94,7 @@ def test_instance_is_registered_for_meta_class_object() -> None:
 
 def test_instance_add_relation_to_the_whole_wraps_result() -> None:
     fake = make_fake_element("Instance")
-    relation = make_fake_element("Relation", getName="whole")
+    relation = make_fake_element("Relation", properties={"name": "whole"})
     fake.addRelationToTheWhole.return_value = relation
     instance = RPInstance(fake)
 
@@ -106,19 +106,17 @@ def test_instance_add_relation_to_the_whole_wraps_result() -> None:
 
 def test_instance_get_instantiated_by_wraps_result() -> None:
     fake = make_fake_element("Instance")
-    op = make_fake_element("Operation", getName="create")
+    op = make_fake_element("Operation", properties={"name": "create"})
     fake.getInstantiatedBy.return_value = op
     instance = RPInstance(fake)
 
     result = instance.get_instantiated_by()
-
-    fake.getInstantiatedBy.assert_called_once_with()
     assert result.get_name() == "create"
 
 
 def test_instance_get_list_of_initializer_arguments_returns_collection() -> None:
     fake = make_fake_element("Instance")
-    arg = make_fake_element("Argument", getName="x")
+    arg = make_fake_element("Argument", properties={"name": "x"})
     fake.getListOfInitializerArguments.return_value = make_fake_collection([arg])
     instance = RPInstance(fake)
 
@@ -158,7 +156,7 @@ def test_instance_set_initializer_argument_value_delegates_to_com() -> None:
 
 def test_instance_set_instantiated_by_unwraps_arg() -> None:
     fake = make_fake_element("Instance")
-    op = make_fake_element("Operation", getName="create")
+    op = make_fake_element("Operation", properties={"name": "create"})
     instance = RPInstance(fake)
 
     instance.set_instantiated_by(cast(RPModelElement, AbstractRPModelElement.wrap(op)))

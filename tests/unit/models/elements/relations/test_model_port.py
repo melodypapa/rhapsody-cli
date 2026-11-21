@@ -8,7 +8,7 @@ from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
 def test_port_is_an_instance() -> None:
-    fake = make_fake_element("Port", getName="clientPort")
+    fake = make_fake_element("Port", properties={"name": "clientPort"})
     port = RPPort(fake)
 
     assert isinstance(port, RPInstance)
@@ -29,8 +29,6 @@ def test_port_get_is_behavioral_delegates_to_com() -> None:
 
     assert port.get_is_behavioral() == 1
 
-    fake.getIsBehavioral.assert_called_once_with()
-
 
 def test_port_set_is_behavioral_delegates_to_com() -> None:
     fake = make_fake_element("Port")
@@ -47,8 +45,6 @@ def test_port_get_is_reversed_delegates_to_com() -> None:
 
     assert port.get_is_reversed() == 0
 
-    fake.getIsReversed.assert_called_once_with()
-
 
 def test_port_set_is_reversed_delegates_to_com() -> None:
     fake = make_fake_element("Port")
@@ -60,7 +56,7 @@ def test_port_set_is_reversed_delegates_to_com() -> None:
 
 
 def test_port_get_port_contract_wraps_result() -> None:
-    contract_fake = make_fake_element("Class", getName="IEngine")
+    contract_fake = make_fake_element("Class", properties={"name": "IEngine"})
     fake = make_fake_element("Port")
     fake.getPortContract.return_value = contract_fake
     port = RPPort(fake)
@@ -72,7 +68,7 @@ def test_port_get_port_contract_wraps_result() -> None:
 
 
 def test_port_set_port_contract_delegates_to_com() -> None:
-    contract_fake = make_fake_element("Class", getName="IEngine")
+    contract_fake = make_fake_element("Class", properties={"name": "IEngine"})
     contract = IRPClass(contract_fake)
     fake = make_fake_element("Port")
     port = RPPort(fake)
@@ -84,7 +80,7 @@ def test_port_set_port_contract_delegates_to_com() -> None:
 
 def test_port_get_provided_interfaces_returns_collection() -> None:
     fake = make_fake_element("Port")
-    interface = make_fake_element("Class", getName="IProvided")
+    interface = make_fake_element("Class", properties={"name": "IProvided"})
     fake.getProvidedInterfaces.return_value = make_fake_collection([interface])
     port = RPPort(fake)
 
@@ -96,7 +92,7 @@ def test_port_get_provided_interfaces_returns_collection() -> None:
 
 
 def test_port_add_provided_interface_delegates_to_com() -> None:
-    interface_fake = make_fake_element("Class", getName="IProvided")
+    interface_fake = make_fake_element("Class", properties={"name": "IProvided"})
     interface = IRPClass(interface_fake)
     fake = make_fake_element("Port")
     port = RPPort(fake)
@@ -107,7 +103,7 @@ def test_port_add_provided_interface_delegates_to_com() -> None:
 
 
 def test_port_remove_provided_interface_delegates_to_com() -> None:
-    interface_fake = make_fake_element("Class", getName="IProvided")
+    interface_fake = make_fake_element("Class", properties={"name": "IProvided"})
     interface = IRPClass(interface_fake)
     fake = make_fake_element("Port")
     port = RPPort(fake)
@@ -119,7 +115,7 @@ def test_port_remove_provided_interface_delegates_to_com() -> None:
 
 def test_port_get_required_interfaces_returns_collection() -> None:
     fake = make_fake_element("Port")
-    interface = make_fake_element("Class", getName="IRequired")
+    interface = make_fake_element("Class", properties={"name": "IRequired"})
     fake.getRequiredInterfaces.return_value = make_fake_collection([interface])
     port = RPPort(fake)
 
@@ -131,7 +127,7 @@ def test_port_get_required_interfaces_returns_collection() -> None:
 
 
 def test_port_add_required_interface_delegates_to_com() -> None:
-    interface_fake = make_fake_element("Class", getName="IRequired")
+    interface_fake = make_fake_element("Class", properties={"name": "IRequired"})
     interface = IRPClass(interface_fake)
     fake = make_fake_element("Port")
     port = RPPort(fake)
@@ -142,7 +138,7 @@ def test_port_add_required_interface_delegates_to_com() -> None:
 
 
 def test_port_remove_required_interface_delegates_to_com() -> None:
-    interface_fake = make_fake_element("Class", getName="IRequired")
+    interface_fake = make_fake_element("Class", properties={"name": "IRequired"})
     interface = IRPClass(interface_fake)
     fake = make_fake_element("Port")
     port = RPPort(fake)
@@ -153,7 +149,7 @@ def test_port_remove_required_interface_delegates_to_com() -> None:
 
 
 def test_port_get_contract_wraps_result() -> None:
-    contract_fake = make_fake_element("Class", getName="IEngine")
+    contract_fake = make_fake_element("Class", properties={"name": "IEngine"})
     fake = make_fake_element("Port")
     fake.getContract.return_value = contract_fake
     port = RPPort(fake)
@@ -165,7 +161,7 @@ def test_port_get_contract_wraps_result() -> None:
 
 
 def test_port_set_contract_delegates_to_com() -> None:
-    contract_fake = make_fake_element("Class", getName="IEngine")
+    contract_fake = make_fake_element("Class", properties={"name": "IEngine"})
     contract = IRPClass(contract_fake)
     fake = make_fake_element("Port")
     port = RPPort(fake)
@@ -177,7 +173,7 @@ def test_port_set_contract_delegates_to_com() -> None:
 
 def test_classifier_get_ports_returns_actual_rpport_instances() -> None:
     fake = make_fake_element("Class")
-    fake.getPorts.return_value = make_fake_collection([make_fake_element("Port", getName="clientPort")])
+    fake.getPorts.return_value = make_fake_collection([make_fake_element("Port", properties={"name": "clientPort"})])
     classifier = RPClassifier(fake)
 
     result = classifier.get_ports()

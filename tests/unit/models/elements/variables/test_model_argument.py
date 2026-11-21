@@ -6,7 +6,7 @@ from tests.unit.models.fakes import make_fake_element
 
 
 def test_argument_is_a_variable() -> None:
-    fake = make_fake_element("Argument", getName="id")
+    fake = make_fake_element("Argument", properties={"name": "id"})
     argument = RPArgument(fake)
 
     assert isinstance(argument, RPVariable)
@@ -30,7 +30,7 @@ def test_argument_set_argument_direction_delegates_to_com() -> None:
 
 
 def test_argument_is_registered_for_meta_class_argument() -> None:
-    fake = make_fake_element("Argument", getName="id")
+    fake = make_fake_element("Argument", properties={"name": "id"})
 
     wrapped = AbstractRPModelElement.wrap(fake)
 

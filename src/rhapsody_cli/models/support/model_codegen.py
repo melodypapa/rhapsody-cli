@@ -1704,7 +1704,7 @@ class RPSearchResult(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPSearchResult::getName()
         """
-        return str(self._get_method_or_property(self._com, "getName", "name"))
+        return str(self.get_com_property(self._com, "name"))
 
 
 class RPCodeGenSimplifiersRegistry(RPBaseExternalCodeGeneratorTool):

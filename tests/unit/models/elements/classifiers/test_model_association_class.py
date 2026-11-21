@@ -7,7 +7,7 @@ from tests.unit.models.fakes import make_fake_element
 
 
 def test_association_class_is_a_class() -> None:
-    fake = make_fake_element("AssociationClass", getName="MyAssoc")
+    fake = make_fake_element("AssociationClass", properties={"name": "MyAssoc"})
     ac = RPAssociationClass(fake)
 
     assert isinstance(ac, IRPClass)
@@ -15,7 +15,7 @@ def test_association_class_is_a_class() -> None:
 
 
 def test_association_class_is_registered_for_meta_class_association_class() -> None:
-    fake = make_fake_element("AssociationClass", getName="MyAssoc")
+    fake = make_fake_element("AssociationClass", properties={"name": "MyAssoc"})
 
     wrapped = AbstractRPModelElement.wrap(fake)
 

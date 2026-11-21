@@ -6,7 +6,7 @@ from tests.unit.models.fakes import make_fake_element
 
 
 def test_attribute_is_a_variable() -> None:
-    fake = make_fake_element("Attribute", getName="count")
+    fake = make_fake_element("Attribute", properties={"name": "count"})
     attribute = RPAttribute(fake)
 
     assert isinstance(attribute, RPVariable)
@@ -62,7 +62,7 @@ def test_attribute_set_visibility_delegates_to_com() -> None:
 
 
 def test_attribute_is_registered_for_meta_class_attribute() -> None:
-    fake = make_fake_element("Attribute", getName="count")
+    fake = make_fake_element("Attribute", properties={"name": "count"})
 
     wrapped = AbstractRPModelElement.wrap(fake)
 

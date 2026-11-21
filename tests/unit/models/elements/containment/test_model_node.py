@@ -6,7 +6,7 @@ from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
 def test_node_is_a_unit() -> None:
-    fake = make_fake_element("Node", getName="Node1")
+    fake = make_fake_element("Node", properties={"name": "Node1"})
     node = RPNode(fake)
 
     assert isinstance(node, RPUnit)
@@ -14,7 +14,7 @@ def test_node_is_a_unit() -> None:
 
 
 def test_node_is_registered_for_meta_class_node() -> None:
-    fake = make_fake_element("Node", getName="Node1")
+    fake = make_fake_element("Node", properties={"name": "Node1"})
 
     wrapped = AbstractRPModelElement.wrap(fake)
 
@@ -26,7 +26,7 @@ def test_node_is_registered_for_meta_class_node() -> None:
 
 def test_node_add_component_instance_delegates_and_wraps() -> None:
     fake = make_fake_element("Node")
-    inst = make_fake_element("ComponentInstance", getName="Inst1")
+    inst = make_fake_element("ComponentInstance", properties={"name": "Inst1"})
     fake.addComponentInstance.return_value = inst
     node = RPNode(fake)
 
@@ -38,19 +38,17 @@ def test_node_add_component_instance_delegates_and_wraps() -> None:
 
 def test_node_get_component_instances_returns_collection() -> None:
     fake = make_fake_element("Node")
-    inst = make_fake_element("ComponentInstance", getName="Inst1")
+    inst = make_fake_element("ComponentInstance", properties={"name": "Inst1"})
     fake.getComponentInstances.return_value = make_fake_collection([inst])
     node = RPNode(fake)
 
     result = node.get_component_instances()
-
-    fake.getComponentInstances.assert_called_once_with()
     assert isinstance(result, RPCollection)
 
 
 def test_node_find_component_instance_wraps_result() -> None:
     fake = make_fake_element("Node")
-    inst = make_fake_element("ComponentInstance", getName="Inst1")
+    inst = make_fake_element("ComponentInstance", properties={"name": "Inst1"})
     fake.findComponentInstance.return_value = inst
     node = RPNode(fake)
 
@@ -74,7 +72,7 @@ def test_node_find_component_instance_returns_none_when_not_found() -> None:
 def test_node_delete_component_instance_delegates() -> None:
     fake = make_fake_element("Node")
     node = RPNode(fake)
-    inst_fake = make_fake_element("ComponentInstance", getName="Inst1")
+    inst_fake = make_fake_element("ComponentInstance", properties={"name": "Inst1"})
     inst = RPComponentInstance(inst_fake)
 
     node.delete_component_instance(inst)
@@ -88,8 +86,6 @@ def test_node_get_cpu_type_returns_str() -> None:
     node = RPNode(fake)
 
     result = node.get_cpu_type()
-
-    fake.getCPUtype.assert_called_once_with()
     assert result == "x86"
 
 

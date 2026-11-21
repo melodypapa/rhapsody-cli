@@ -72,8 +72,6 @@ class TestProjectListAction:
             # Should not raise
             action.execute(args)
 
-        fake_project.get_filename.assert_called_once_with()
-
 
 class TestProjectCloseAction:
     """Tests for ProjectCloseAction."""

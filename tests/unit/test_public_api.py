@@ -28,6 +28,6 @@ def test_importing_package_registers_all_core_element_wrappers() -> None:
         ("Requirement", "RPRequirement"),
         ("ActivityDiagram", "RPDiagram"),
     ]:
-        fake = make_fake_element(meta_class, getName="X")
+        fake = make_fake_element(meta_class, properties={"name": "X"})
         wrapped = AbstractRPModelElement.wrap(fake)
         assert type(wrapped).__name__ == expected_name, meta_class

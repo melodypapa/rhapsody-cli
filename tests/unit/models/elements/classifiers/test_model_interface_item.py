@@ -6,7 +6,7 @@ from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
 def test_interface_item_is_a_classifier() -> None:
-    fake = make_fake_element("InterfaceItem", getName="doIt")
+    fake = make_fake_element("InterfaceItem", properties={"name": "doIt"})
     item = RPInterfaceItem(fake)
 
     assert isinstance(item, RPClassifier)
@@ -15,7 +15,7 @@ def test_interface_item_is_a_classifier() -> None:
 
 def test_interface_item_add_argument_wraps_result() -> None:
     fake = make_fake_element("InterfaceItem")
-    argument = make_fake_element("Argument", getName="x")
+    argument = make_fake_element("Argument", properties={"name": "x"})
     fake.addArgument.return_value = argument
     item = RPInterfaceItem(fake)
 
@@ -27,7 +27,7 @@ def test_interface_item_add_argument_wraps_result() -> None:
 
 def test_interface_item_add_argument_before_position_wraps_result() -> None:
     fake = make_fake_element("InterfaceItem")
-    argument = make_fake_element("Argument", getName="y")
+    argument = make_fake_element("Argument", properties={"name": "y"})
     fake.addArgumentBeforePosition.return_value = argument
     item = RPInterfaceItem(fake)
 
@@ -38,7 +38,7 @@ def test_interface_item_add_argument_before_position_wraps_result() -> None:
 
 
 def test_interface_item_get_arguments_returns_collection() -> None:
-    inner = make_fake_element("Argument", getName="x")
+    inner = make_fake_element("Argument", properties={"name": "x"})
     fake = make_fake_element("InterfaceItem")
     fake.getArguments.return_value = make_fake_collection([inner])
     item = RPInterfaceItem(fake)

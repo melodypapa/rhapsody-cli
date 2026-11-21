@@ -7,7 +7,7 @@ from tests.unit.models.fakes import make_fake_element
 
 
 def test_module_is_an_instance() -> None:
-    fake = make_fake_element("Module", getName="Module1")
+    fake = make_fake_element("Module", properties={"name": "Module1"})
     module = RPModule(fake)
 
     assert isinstance(module, RPInstance)
@@ -15,7 +15,7 @@ def test_module_is_an_instance() -> None:
 
 
 def test_module_is_registered_for_meta_class_module() -> None:
-    fake = make_fake_element("Module", getName="Module1")
+    fake = make_fake_element("Module", properties={"name": "Module1"})
 
     wrapped = AbstractRPModelElement.wrap(fake)
 

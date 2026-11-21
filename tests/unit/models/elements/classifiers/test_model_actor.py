@@ -11,7 +11,7 @@ from tests.unit.models.fakes import make_fake_element
 
 
 def test_actor_is_a_classifier() -> None:
-    fake = make_fake_element("Actor", getName="Driver")
+    fake = make_fake_element("Actor", properties={"name": "Driver"})
     actor = RPActor(fake)
 
     assert isinstance(actor, RPClassifier)
@@ -20,8 +20,8 @@ def test_actor_is_a_classifier() -> None:
 
 def test_actor_add_event_reception_with_event_wraps_result() -> None:
     fake = make_fake_element("Actor")
-    event = make_fake_element("Event", getName="Start")
-    reception = make_fake_element("EventReception", getName="onStart")
+    event = make_fake_element("Event", properties={"name": "Start"})
+    reception = make_fake_element("EventReception", properties={"name": "onStart"})
     fake.addEventReceptionWithEvent.return_value = reception
     actor = RPActor(fake)
 
@@ -55,7 +55,7 @@ def test_actor_update_contained_diagrams_on_server_delegates_to_com() -> None:
 
 
 def test_actor_is_registered_for_meta_class_actor() -> None:
-    fake = make_fake_element("Actor", getName="Driver")
+    fake = make_fake_element("Actor", properties={"name": "Driver"})
 
     wrapped = AbstractRPModelElement.wrap(fake)
 

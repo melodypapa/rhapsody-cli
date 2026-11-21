@@ -53,7 +53,7 @@ class TestRPCodeGenerator:
     def test_get_code_annotations_delegates_to_com(self) -> None:
         fake = make_fake_element("CodeGenerator")
         target = make_fake_element("X")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getCodeAnnotations.return_value = make_fake_collection([inner])
         obj = RPCodeGenerator(fake)
         result = obj.get_code_annotations(cast(RPModelElement, AbstractRPModelElement.wrap(target)), 1)
@@ -64,7 +64,7 @@ class TestRPCodeGenerator:
     def test_get_generated_file_names_delegates_to_com(self) -> None:
         fake = make_fake_element("CodeGenerator")
         target = make_fake_element("X")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getGeneratedFileNames.return_value = make_fake_collection([inner])
         obj = RPCodeGenerator(fake)
         result = obj.get_generated_file_names(cast(RPModelElement, AbstractRPModelElement.wrap(target)))
@@ -182,7 +182,7 @@ class TestRPRhapsodyServer:
 class TestRPRoundTrip:
     def test_roundtrip_file_delegates_to_com(self) -> None:
         fake = make_fake_element("RoundTrip")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.roundtripFile.return_value = make_fake_collection([inner])
         obj = RPRoundTrip(fake)
         result = obj.roundtrip_file("x", 1)
@@ -194,7 +194,7 @@ class TestRPRoundTrip:
 class TestRPSearchManager:
     def test_create_search_query_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchManager")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.createSearchQuery.return_value = inner
         obj = RPSearchManager(fake)
         result = obj.create_search_query()
@@ -204,7 +204,7 @@ class TestRPSearchManager:
     def test_search_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchManager")
         target = make_fake_element("X")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.search.return_value = make_fake_collection([inner])
         obj = RPSearchManager(fake)
         result = obj.search(cast(RPSearchQuery, AbstractRPModelElement.wrap(target)))
@@ -290,7 +290,7 @@ class TestRPSearchQuery:
 
     def test_get_filter_element_types_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchQuery")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getFilterElementTypes.return_value = make_fake_collection([inner])
         obj = RPSearchQuery(fake)
         result = obj.get_filter_element_types()
@@ -341,7 +341,7 @@ class TestRPSearchQuery:
 
     def test_get_filter_search_in_fields_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchQuery")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getFilterSearchInFields.return_value = make_fake_collection([inner])
         obj = RPSearchQuery(fake)
         result = obj.get_filter_search_in_fields()
@@ -350,7 +350,7 @@ class TestRPSearchQuery:
 
     def test_get_filter_stereotypes_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchQuery")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getFilterStereotypes.return_value = make_fake_collection([inner])
         obj = RPSearchQuery(fake)
         result = obj.get_filter_stereotypes()
@@ -359,7 +359,7 @@ class TestRPSearchQuery:
 
     def test_get_filter_sub_queries_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchQuery")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getFilterSubQueries.return_value = make_fake_collection([inner])
         obj = RPSearchQuery(fake)
         result = obj.get_filter_sub_queries()
@@ -405,7 +405,7 @@ class TestRPSearchQuery:
 
     def test_get_search_scope_elements_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchQuery")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getSearchScopeElements.return_value = make_fake_collection([inner])
         obj = RPSearchQuery(fake)
         result = obj.get_search_scope_elements()
@@ -414,7 +414,7 @@ class TestRPSearchQuery:
 
     def test_get_view_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchQuery")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getView.return_value = inner
         obj = RPSearchQuery(fake)
         result = obj.get_view(0)
@@ -504,7 +504,7 @@ class TestRPSearchQuery:
     def test_save_as_query_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchQuery")
         target = make_fake_element("X")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.saveAsQuery.return_value = inner
         obj = RPSearchQuery(fake)
         wrapped = AbstractRPModelElement.wrap(target)
@@ -574,7 +574,7 @@ class TestRPSearchQuery:
 
     def test_get_search_scope_object_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchQuery")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getSearchScopeObject.return_value = inner
         obj = RPSearchQuery(fake)
         result = obj.get_search_scope_object()
@@ -688,7 +688,7 @@ class TestRPSearchResult:
 
     def test_get_matched_fields_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchResult")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getMatchedFields.return_value = make_fake_collection([inner])
         obj = RPSearchResult(fake)
         result = obj.get_matched_fields()
@@ -697,7 +697,7 @@ class TestRPSearchResult:
 
     def test_get_matched_object_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchResult")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getMatchedObject.return_value = inner
         obj = RPSearchResult(fake)
         result = obj.get_matched_object()
@@ -705,7 +705,7 @@ class TestRPSearchResult:
 
     def test_get_name_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchResult")
-        fake.getName.return_value = "value"
+        fake.name = "value"
         obj = RPSearchResult(fake)
         assert obj.get_name() == "value"
 

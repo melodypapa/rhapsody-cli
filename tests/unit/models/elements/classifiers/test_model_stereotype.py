@@ -8,7 +8,7 @@ from tests.unit.models.fakes import make_fake_element
 
 
 def test_stereotype_is_a_classifier() -> None:
-    fake = make_fake_element("Stereotype", getName="MyStereo")
+    fake = make_fake_element("Stereotype", properties={"name": "MyStereo"})
     stereo = RPStereotype(fake)
 
     assert isinstance(stereo, RPClassifier)
@@ -16,7 +16,7 @@ def test_stereotype_is_a_classifier() -> None:
 
 
 def test_stereotype_is_registered_for_meta_class_stereotype() -> None:
-    fake = make_fake_element("Stereotype", getName="MyStereo")
+    fake = make_fake_element("Stereotype", properties={"name": "MyStereo"})
 
     wrapped = AbstractRPModelElement.wrap(fake)
 

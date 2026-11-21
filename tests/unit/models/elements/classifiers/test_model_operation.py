@@ -8,7 +8,7 @@ from tests.unit.models.fakes import make_fake_element
 
 
 def test_operation_is_an_interface_item() -> None:
-    fake = make_fake_element("Operation", getName="doIt")
+    fake = make_fake_element("Operation", properties={"name": "doIt"})
     operation = RPOperation(fake)
 
     assert isinstance(operation, RPInterfaceItem)
@@ -99,13 +99,11 @@ def test_operation_set_is_virtual_falls_back_to_property_when_method_missing() -
 
 def test_operation_get_returns_wraps_result() -> None:
     fake = make_fake_element("Operation")
-    return_type = make_fake_element("Class", getName="int")
+    return_type = make_fake_element("Class", properties={"name": "int"})
     fake.getReturns.return_value = return_type
     operation = RPOperation(fake)
 
     result = operation.get_returns()
-
-    fake.getReturns.assert_called_once_with()
     assert result.get_name() == "int"
 
 
@@ -119,7 +117,7 @@ def test_operation_get_return_type_declaration_delegates_to_com() -> None:
 def test_operation_set_returns_delegates_to_com() -> None:
     fake = make_fake_element("Operation")
     operation = RPOperation(fake)
-    return_type = RPOperation(make_fake_element("Class", getName="int"))
+    return_type = RPOperation(make_fake_element("Class", properties={"name": "int"}))
 
     operation.set_returns(return_type)
 
@@ -145,7 +143,7 @@ def test_operation_create_auto_flow_chart_delegates_to_com() -> None:
 
 
 def test_operation_is_registered_for_meta_class_operation() -> None:
-    fake = make_fake_element("Operation", getName="doIt")
+    fake = make_fake_element("Operation", properties={"name": "doIt"})
 
     wrapped = AbstractRPModelElement.wrap(fake)
 

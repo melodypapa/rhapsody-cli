@@ -431,7 +431,7 @@ class RPGraphElement(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPGraphElement::getInterfaceName()
         """
-        return str(self._get_method_or_property(self._com, "getInterfaceName", "interfaceName"))
+        return str(self.get_com_property(self._com, "interfaceName"))
 
     def get_local_properties(self) -> RPCollection:
         """Returns the local properties of this graph element.
@@ -604,7 +604,7 @@ class RPGraphicalProperty(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPGraphicalProperty::getInterfaceName()
         """
-        return str(self._get_method_or_property(self._com, "getInterfaceName", "interfaceName"))
+        return str(self.get_com_property(self._com, "interfaceName"))
 
     def get_key(self) -> str:
         """Returns the key of this graphical property.
@@ -660,7 +660,7 @@ class RPImageMap(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPImageMap::getInterfaceName()
         """
-        return str(self._get_method_or_property(self._com, "getInterfaceName", "interfaceName"))
+        return str(self.get_com_property(self._com, "interfaceName"))
 
     def get_is_guid(self) -> int:
         """Returns whether this image map uses a GUID.
@@ -688,7 +688,7 @@ class RPImageMap(RPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPImageMap::getName()
         """
-        return str(self._get_method_or_property(self._com, "getName", "name"))
+        return str(self.get_com_property(self._com, "name"))
 
     def get_picture_file_name(self) -> str:
         """Returns the picture file name of this image map.

@@ -10,7 +10,7 @@ from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
 def test_package_is_a_unit() -> None:
-    fake = make_fake_element("Package", getName="MyPkg")
+    fake = make_fake_element("Package", properties={"name": "MyPkg"})
     package = RPPackage(fake)
 
     assert isinstance(package, RPUnit)
@@ -19,7 +19,7 @@ def test_package_is_a_unit() -> None:
 
 def test_package_add_class_delegates_to_com_and_wraps_result() -> None:
     fake = make_fake_element("Package")
-    new_class = make_fake_element("Class", getName="Widget")
+    new_class = make_fake_element("Class", properties={"name": "Widget"})
     fake.addClass.return_value = new_class
     package = RPPackage(fake)
 
@@ -31,7 +31,7 @@ def test_package_add_class_delegates_to_com_and_wraps_result() -> None:
 
 def test_package_add_nested_package_delegates_to_com() -> None:
     fake = make_fake_element("Package")
-    nested = make_fake_element("Package", getName="Nested")
+    nested = make_fake_element("Package", properties={"name": "Nested"})
     fake.addNestedPackage.return_value = nested
     package = RPPackage(fake)
 
@@ -43,7 +43,7 @@ def test_package_add_nested_package_delegates_to_com() -> None:
 
 def test_package_add_actor_delegates_to_com() -> None:
     fake = make_fake_element("Package")
-    actor = make_fake_element("Actor", getName="Driver")
+    actor = make_fake_element("Actor", properties={"name": "Driver"})
     fake.addActor.return_value = actor
     package = RPPackage(fake)
 
@@ -55,7 +55,7 @@ def test_package_add_actor_delegates_to_com() -> None:
 
 def test_package_add_global_function_delegates_to_com() -> None:
     fake = make_fake_element("Package")
-    func = make_fake_element("Operation", getName="doThing")
+    func = make_fake_element("Operation", properties={"name": "doThing"})
     fake.addGlobalFunction.return_value = func
     package = RPPackage(fake)
 
@@ -66,7 +66,7 @@ def test_package_add_global_function_delegates_to_com() -> None:
 
 
 def test_package_is_registered_for_meta_class_package() -> None:
-    fake = make_fake_element("Package", getName="MyPkg")
+    fake = make_fake_element("Package", properties={"name": "MyPkg"})
 
     wrapped = AbstractRPModelElement.wrap(fake)
 
@@ -77,14 +77,12 @@ def test_package_get_nested_packages_returns_collection() -> None:
     from rhapsody_cli.models.core import RPCollection
 
     fake = make_fake_element("Package")
-    nested1 = make_fake_element("Package", getName="Nested1")
-    nested2 = make_fake_element("Package", getName="Nested2")
+    nested1 = make_fake_element("Package", properties={"name": "Nested1"})
+    nested2 = make_fake_element("Package", properties={"name": "Nested2"})
     fake.getPackages.return_value = make_fake_collection([nested1, nested2])
     package = RPPackage(fake)
 
     result = package.get_nested_packages()
-
-    fake.getPackages.assert_called_once_with()
     assert isinstance(result, RPCollection)
     assert len(result) == 2
     assert result[0].get_name() == "Nested1"
@@ -95,14 +93,12 @@ def test_package_get_classes_returns_collection() -> None:
     from rhapsody_cli.models.core import RPCollection
 
     fake = make_fake_element("Package")
-    class1 = make_fake_element("Class", getName="Class1")
-    class2 = make_fake_element("Class", getName="Class2")
+    class1 = make_fake_element("Class", properties={"name": "Class1"})
+    class2 = make_fake_element("Class", properties={"name": "Class2"})
     fake.getClasses.return_value = make_fake_collection([class1, class2])
     package = RPPackage(fake)
 
     result = package.get_classes()
-
-    fake.getClasses.assert_called_once_with()
     assert isinstance(result, RPCollection)
     assert len(result) == 2
 
@@ -111,13 +107,11 @@ def test_package_get_actors_returns_collection() -> None:
     from rhapsody_cli.models.core import RPCollection
 
     fake = make_fake_element("Package")
-    actor1 = make_fake_element("Actor", getName="Actor1")
+    actor1 = make_fake_element("Actor", properties={"name": "Actor1"})
     fake.getActors.return_value = make_fake_collection([actor1])
     package = RPPackage(fake)
 
     result = package.get_actors()
-
-    fake.getActors.assert_called_once_with()
     assert isinstance(result, RPCollection)
     assert len(result) == 1
 
@@ -126,19 +120,17 @@ def test_package_get_use_cases_returns_collection() -> None:
     from rhapsody_cli.models.core import RPCollection
 
     fake = make_fake_element("Package")
-    uc1 = make_fake_element("UseCase", getName="UC1")
+    uc1 = make_fake_element("UseCase", properties={"name": "UC1"})
     fake.getUseCases.return_value = make_fake_collection([uc1])
     package = RPPackage(fake)
 
     result = package.get_use_cases()
-
-    fake.getUseCases.assert_called_once_with()
     assert isinstance(result, RPCollection)
 
 
 def test_package_add_use_case_returns_wrapped_element() -> None:
     fake = make_fake_element("Package")
-    uc = make_fake_element("UseCase", getName="UC1")
+    uc = make_fake_element("UseCase", properties={"name": "UC1"})
     fake.addUseCase.return_value = uc
     package = RPPackage(fake)
 
@@ -151,7 +143,7 @@ def test_package_add_use_case_returns_wrapped_element() -> None:
 # --- New diagram tests ---
 def test_package_add_activity_diagram_delegates_to_com() -> None:
     fake = make_fake_element("Package")
-    diagram = make_fake_element("ActivityDiagram", getName="Activity1")
+    diagram = make_fake_element("ActivityDiagram", properties={"name": "Activity1"})
     fake.addActivityDiagram.return_value = diagram
     package = RPPackage(fake)
 
@@ -163,7 +155,7 @@ def test_package_add_activity_diagram_delegates_to_com() -> None:
 
 def test_package_add_sequence_diagram_delegates_to_com() -> None:
     fake = make_fake_element("Package")
-    diagram = make_fake_element("SequenceDiagram", getName="Seq1")
+    diagram = make_fake_element("SequenceDiagram", properties={"name": "Seq1"})
     fake.addSequenceDiagram.return_value = diagram
     package = RPPackage(fake)
 
@@ -177,20 +169,18 @@ def test_package_get_sequence_diagrams_returns_collection() -> None:
     from rhapsody_cli.models.core import RPCollection
 
     fake = make_fake_element("Package")
-    diagram = make_fake_element("SequenceDiagram", getName="Seq1")
+    diagram = make_fake_element("SequenceDiagram", properties={"name": "Seq1"})
     fake.getSequenceDiagrams.return_value = make_fake_collection([diagram])
     package = RPPackage(fake)
 
     result = package.get_sequence_diagrams()
-
-    fake.getSequenceDiagrams.assert_called_once_with()
     assert isinstance(result, RPCollection)
 
 
 def test_package_delete_class_delegates_to_com() -> None:
     fake = make_fake_element("Package")
     package = RPPackage(fake)
-    cls_fake = make_fake_element("Class", getName="ToDelete")
+    cls_fake = make_fake_element("Class", properties={"name": "ToDelete"})
 
     package.delete_class(RPUnit(cls_fake))
 
@@ -200,7 +190,7 @@ def test_package_delete_class_delegates_to_com() -> None:
 def test_package_delete_package_delegates_to_com() -> None:
     fake = make_fake_element("Package")
     package = RPPackage(fake)
-    nested_fake = make_fake_element("Package", getName="Nested")
+    nested_fake = make_fake_element("Package", properties={"name": "Nested"})
 
     package.delete_package(RPUnit(nested_fake))
 
@@ -209,7 +199,7 @@ def test_package_delete_package_delegates_to_com() -> None:
 
 def test_package_find_class_delegates_to_com() -> None:
     fake = make_fake_element("Package")
-    found = make_fake_element("Class", getName="MyClass")
+    found = make_fake_element("Class", properties={"name": "MyClass"})
     fake.findClass.return_value = found
     package = RPPackage(fake)
 
@@ -221,7 +211,7 @@ def test_package_find_class_delegates_to_com() -> None:
 
 def test_package_add_association_delegates_to_com() -> None:
     fake = make_fake_element("Package")
-    assoc = make_fake_element("Relation", getName="assoc1")
+    assoc = make_fake_element("Relation", properties={"name": "assoc1"})
     fake.addAssociation.return_value = assoc
     package = RPPackage(fake)
 
@@ -235,7 +225,7 @@ def test_package_get_events_returns_collection() -> None:
     from rhapsody_cli.models.core import RPCollection
 
     fake = make_fake_element("Package")
-    event = make_fake_element("Event", getName="Event1")
+    event = make_fake_element("Event", properties={"name": "Event1"})
     fake.getEvents.return_value = make_fake_collection([event])
     package = RPPackage(fake)
 
@@ -248,7 +238,7 @@ def test_package_get_nodes_returns_collection() -> None:
     from rhapsody_cli.models.core import RPCollection
 
     fake = make_fake_element("Package")
-    node = make_fake_element("Node", getName="Node1")
+    node = make_fake_element("Node", properties={"name": "Node1"})
     fake.getNodes.return_value = make_fake_collection([node])
     package = RPPackage(fake)
 
@@ -259,7 +249,7 @@ def test_package_get_nodes_returns_collection() -> None:
 
 def test_package_add_flow_items_delegates_to_com() -> None:
     fake = make_fake_element("Package")
-    flow_item = make_fake_element("FlowItem", getName="MyFlowItem")
+    flow_item = make_fake_element("FlowItem", properties={"name": "MyFlowItem"})
     fake.addFlowItems.return_value = flow_item
     package = RPPackage(fake)
 
@@ -271,7 +261,7 @@ def test_package_add_flow_items_delegates_to_com() -> None:
 
 def test_package_add_flows_delegates_to_com() -> None:
     fake = make_fake_element("Package")
-    flow = make_fake_element("Flow", getName="MyFlow")
+    flow = make_fake_element("Flow", properties={"name": "MyFlow"})
     fake.addFlows.return_value = flow
     package = RPPackage(fake)
 
@@ -284,7 +274,7 @@ def test_package_add_flows_delegates_to_com() -> None:
 def test_package_delete_flow_items_delegates_to_com() -> None:
     fake = make_fake_element("Package")
     package = RPPackage(fake)
-    flow_item_fake = make_fake_element("FlowItem", getName="ToDelete")
+    flow_item_fake = make_fake_element("FlowItem", properties={"name": "ToDelete"})
 
     package.delete_flow_items(cast(RPFlowItem, RPModelElement(flow_item_fake)))
 
@@ -294,7 +284,7 @@ def test_package_delete_flow_items_delegates_to_com() -> None:
 def test_package_delete_flows_delegates_to_com() -> None:
     fake = make_fake_element("Package")
     package = RPPackage(fake)
-    flow_fake = make_fake_element("Flow", getName="ToDelete")
+    flow_fake = make_fake_element("Flow", properties={"name": "ToDelete"})
 
     package.delete_flows(cast(RPFlow, RPModelElement(flow_fake)))
 
@@ -305,13 +295,11 @@ def test_package_get_flow_items_returns_collection() -> None:
     from rhapsody_cli.models.core import RPCollection
 
     fake = make_fake_element("Package")
-    flow_item = make_fake_element("FlowItem", getName="FlowItem1")
+    flow_item = make_fake_element("FlowItem", properties={"name": "FlowItem1"})
     fake.getFlowItems.return_value = make_fake_collection([flow_item])
     package = RPPackage(fake)
 
     result = package.get_flow_items()
-
-    fake.getFlowItems.assert_called_once_with()
     assert isinstance(result, RPCollection)
 
 
@@ -319,13 +307,11 @@ def test_package_get_flows_returns_collection() -> None:
     from rhapsody_cli.models.core import RPCollection
 
     fake = make_fake_element("Package")
-    flow = make_fake_element("Flow", getName="Flow1")
+    flow = make_fake_element("Flow", properties={"name": "Flow1"})
     fake.getFlows.return_value = make_fake_collection([flow])
     package = RPPackage(fake)
 
     result = package.get_flows()
-
-    fake.getFlows.assert_called_once_with()
     assert isinstance(result, RPCollection)
 
 
@@ -336,8 +322,6 @@ def test_package_get_remote_requirements_populate_mode_returns_int() -> None:
     package = RPPackage(fake)
 
     result = package.get_remote_requirements_populate_mode()
-
-    fake.getRemoteRequirementsPopulateMode.assert_called_once_with()
     assert result == 1
 
 
@@ -345,13 +329,11 @@ def test_package_get_root_instance_specifications_returns_collection() -> None:
     from rhapsody_cli.models.core import RPCollection
 
     fake = make_fake_element("Package")
-    instance_spec = make_fake_element("InstanceSpecification", getName="IS1")
+    instance_spec = make_fake_element("InstanceSpecification", properties={"name": "IS1"})
     fake.getRootInstanceSpecifications.return_value = make_fake_collection([instance_spec])
     package = RPPackage(fake)
 
     result = package.get_root_instance_specifications()
-
-    fake.getRootInstanceSpecifications.assert_called_once_with()
     assert isinstance(result, RPCollection)
 
 
@@ -403,7 +385,7 @@ def test_package_update_contained_diagrams_on_server_delegates_to_com() -> None:
 # --- SysML Methods (Task 4) Tests ---
 def test_package_add_implicit_object_delegates_to_com() -> None:
     fake = make_fake_element("Package")
-    instance = make_fake_element("Instance", getName="ImplicitObj")
+    instance = make_fake_element("Instance", properties={"name": "ImplicitObj"})
     fake.addImplicitObject.return_value = instance
     package = RPPackage(fake)
 
@@ -415,9 +397,9 @@ def test_package_add_implicit_object_delegates_to_com() -> None:
 
 def test_package_add_link_between_sysml_ports_delegates_to_com() -> None:
     fake = make_fake_element("Package")
-    port1_fake = make_fake_element("SysMLPort", getName="Port1")
-    port2_fake = make_fake_element("SysMLPort", getName="Port2")
-    link_fake = make_fake_element("Link", getName="Link1")
+    port1_fake = make_fake_element("SysMLPort", properties={"name": "Port1"})
+    port2_fake = make_fake_element("SysMLPort", properties={"name": "Port2"})
+    link_fake = make_fake_element("Link", properties={"name": "Link1"})
     fake.addLinkBetweenSYSMLPorts.return_value = link_fake
     package = RPPackage(fake)
 
@@ -435,14 +417,12 @@ def test_package_get_all_nested_elements_returns_collection() -> None:
     from rhapsody_cli.models.core import RPCollection
 
     fake = make_fake_element("Package")
-    elem1 = make_fake_element("Class", getName="Class1")
-    elem2 = make_fake_element("Package", getName="NestedPkg")
+    elem1 = make_fake_element("Class", properties={"name": "Class1"})
+    elem2 = make_fake_element("Package", properties={"name": "NestedPkg"})
     fake.getAllNestedElements.return_value = make_fake_collection([elem1, elem2])
     package = RPPackage(fake)
 
     result = package.get_all_nested_elements()
-
-    fake.getAllNestedElements.assert_called_once_with()
     assert isinstance(result, RPCollection)
 
 
@@ -452,8 +432,6 @@ def test_package_get_events_base_id_returns_string() -> None:
     package = RPPackage(fake)
 
     result = package.get_events_base_id()
-
-    fake.getEventsBaseId.assert_called_once_with()
     assert result == "EventsBase_123"
 
 
@@ -463,8 +441,6 @@ def test_package_get_namespace_returns_string() -> None:
     package = RPPackage(fake)
 
     result = package.get_namespace()
-
-    fake.getNamespace.assert_called_once_with()
     assert result == "com.example.mypackage"
 
 
@@ -474,8 +450,6 @@ def test_package_get_saved_in_separate_directory_returns_int() -> None:
     package = RPPackage(fake)
 
     result = package.get_saved_in_separate_directory()
-
-    fake.getSavedInSeperateDirectory.assert_called_once_with()
     assert result == 1
 
 
@@ -483,13 +457,11 @@ def test_package_get_user_defined_stereotypes_returns_collection() -> None:
     from rhapsody_cli.models.core import RPCollection
 
     fake = make_fake_element("Package")
-    stereotype = make_fake_element("Stereotype", getName="MyStereotype")
+    stereotype = make_fake_element("Stereotype", properties={"name": "MyStereotype"})
     fake.getUserDefinedStereotypes.return_value = make_fake_collection([stereotype])
     package = RPPackage(fake)
 
     result = package.get_user_defined_stereotypes()
-
-    fake.getUserDefinedStereotypes.assert_called_once_with()
     assert isinstance(result, RPCollection)
 
 

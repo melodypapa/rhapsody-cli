@@ -89,7 +89,7 @@ class TestRPFile:
 
     def test_get_elements_delegates_to_com(self) -> None:
         fake = make_fake_element("File")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getElements.return_value = make_fake_collection([inner])
         obj = RPFile(fake)
         result = obj.get_elements()
@@ -98,7 +98,7 @@ class TestRPFile:
 
     def test_get_file_fragments_delegates_to_com(self) -> None:
         fake = make_fake_element("File")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getFileFragments.return_value = make_fake_collection([inner])
         obj = RPFile(fake)
         result = obj.get_file_fragments()
@@ -113,7 +113,7 @@ class TestRPFile:
 
     def test_get_files_delegates_to_com(self) -> None:
         fake = make_fake_element("File")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getFiles.return_value = make_fake_collection([inner])
         obj = RPFile(fake)
         result = obj.get_files()
@@ -162,7 +162,7 @@ class TestRPFile:
 class TestRPFileFragment:
     def test_get_fragment_element_delegates_to_com(self) -> None:
         fake = make_fake_element("FileFragment")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getFragmentElement.return_value = inner
         obj = RPFileFragment(fake)
         result = obj.get_fragment_element()

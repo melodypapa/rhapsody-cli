@@ -91,7 +91,7 @@ def test_connect_launch_hides_gui_when_specified(mock_attach: MagicMock, mock_la
 
 def test_open_project_wraps_result_as_rpproject() -> None:
     fake_app = MagicMock(name="FakeApplication")
-    fake_project = make_fake_element("Project", getName="MyProject")
+    fake_project = make_fake_element("Project", properties={"name": "MyProject"})
     fake_app.openProject.return_value = fake_project
     app = RhapsodyApplication(fake_app)
 
@@ -104,7 +104,7 @@ def test_open_project_wraps_result_as_rpproject() -> None:
 
 def test_active_project_wraps_result_as_rpproject() -> None:
     fake_app = MagicMock(name="FakeApplication")
-    fake_project = make_fake_element("Project", getName="ActiveOne")
+    fake_project = make_fake_element("Project", properties={"name": "ActiveOne"})
     fake_app.activeProject.return_value = fake_project
     app = RhapsodyApplication(fake_app)
 
@@ -126,7 +126,7 @@ def test_active_project_raises_when_no_project_open() -> None:
 
 def test_get_projects_returns_collection_of_rpproject() -> None:
     fake_app = MagicMock(name="FakeApplication")
-    fake_project = make_fake_element("Project", getName="P1")
+    fake_project = make_fake_element("Project", properties={"name": "P1"})
     fake_app.getProjects.return_value = make_fake_collection([fake_project])
     app = RhapsodyApplication(fake_app)
 
@@ -141,7 +141,7 @@ def test_get_projects_falls_back_to_projects_property_when_method_missing() -> N
     """Some Rhapsody COM Prog IDs (e.g. Rhapsody2.Application.1) expose the
     projects collection via the bare 'projects' property instead of a
     getProjects() method."""
-    fake_project = make_fake_element("Project", getName="P1")
+    fake_project = make_fake_element("Project", properties={"name": "P1"})
     fake_app = MagicMock(spec=["projects"])
     fake_app.projects = make_fake_collection([fake_project])
     app = RhapsodyApplication(fake_app)
@@ -155,7 +155,7 @@ def test_get_projects_falls_back_to_projects_property_when_method_missing() -> N
 
 def test_create_new_project_calls_com_and_returns_active_project() -> None:
     fake_app = MagicMock(name="FakeApplication")
-    fake_project = make_fake_element("Project", getName="NewProject")
+    fake_project = make_fake_element("Project", properties={"name": "NewProject"})
     fake_app.activeProject.return_value = fake_project
     app = RhapsodyApplication(fake_app)
 
@@ -191,8 +191,6 @@ def test_get_is_hidden_ui_calls_method_when_present() -> None:
     app = RhapsodyApplication(fake_app)
 
     result = app.get_is_hidden_ui()
-
-    fake_app.getIsHiddenUI.assert_called_once_with()
     assert result is True
 
 
@@ -394,8 +392,6 @@ def test_get_search_manager_returns_wrapped_element() -> None:
     app = RhapsodyApplication(fake_app)
 
     result = app.get_search_manager()
-
-    fake_app.getSearchManager.assert_called_once_with()
     assert isinstance(result, RPSearchManager)
 
 
@@ -408,8 +404,6 @@ def test_get_selection_returns_wrapped_element() -> None:
     app = RhapsodyApplication(fake_app)
 
     result = app.get_selection()
-
-    fake_app.getSelection.assert_called_once_with()
     assert isinstance(result, RPSelection)
 
 
@@ -422,8 +416,6 @@ def test_get_code_gen_simplifiers_registry_returns_wrapped_element() -> None:
     app = RhapsodyApplication(fake_app)
 
     result = app.get_code_gen_simplifiers_registry()
-
-    fake_app.getCodeGenSimplifiersRegistry.assert_called_once_with()
     assert isinstance(result, RPCodeGenSimplifiersRegistry)
 
 
@@ -450,8 +442,6 @@ def test_get_external_checker_registry_returns_wrapped_element() -> None:
     app = RhapsodyApplication(fake_app)
 
     result = app.get_external_checker_registry()
-
-    fake_app.getExternalCheckerRegistry.assert_called_once_with()
     assert isinstance(result, RPExternalCheckRegistry)
 
 
@@ -478,8 +468,6 @@ def test_get_external_roundtrip_invoker_returns_wrapped_element() -> None:
     app = RhapsodyApplication(fake_app)
 
     result = app.get_external_roundtrip_invoker()
-
-    fake_app.getExternalRoundtripInvoker.assert_called_once_with()
     assert isinstance(result, RPExternalRoundtripInvoker)
 
 

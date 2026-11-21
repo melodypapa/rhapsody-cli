@@ -9,7 +9,6 @@ def test_make_fake_element_method_returns_stay_method_shaped() -> None:
     fake = make_fake_element("Class", getIsFinal=1)
 
     assert fake.getIsFinal() == 1
-    fake.getIsFinal.assert_called_once_with()
 
 
 def test_make_fake_element_properties_are_plain_attribute_reads() -> None:

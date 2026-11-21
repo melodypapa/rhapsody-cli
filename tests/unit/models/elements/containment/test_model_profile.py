@@ -6,7 +6,7 @@ from tests.unit.models.fakes import make_fake_element
 
 
 def test_profile_is_a_package() -> None:
-    fake = make_fake_element("Profile", getName="SysML")
+    fake = make_fake_element("Profile", properties={"name": "SysML"})
     profile = RPProfile(fake)
 
     assert isinstance(profile, RPPackage)
@@ -14,7 +14,7 @@ def test_profile_is_a_package() -> None:
 
 
 def test_profile_is_registered_for_meta_class_profile() -> None:
-    fake = make_fake_element("Profile", getName="SysML")
+    fake = make_fake_element("Profile", properties={"name": "SysML"})
 
     wrapped = AbstractRPModelElement.wrap(fake)
 

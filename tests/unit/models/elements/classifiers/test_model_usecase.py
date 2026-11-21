@@ -8,7 +8,7 @@ from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
 def test_usecase_is_a_classifier() -> None:
-    fake = make_fake_element("UseCase", getName="Login")
+    fake = make_fake_element("UseCase", properties={"name": "Login"})
     usecase = RPUseCase(fake)
 
     assert isinstance(usecase, RPClassifier)
@@ -48,7 +48,7 @@ def test_usecase_get_entry_points_returns_collection() -> None:
 
 def test_usecase_get_describing_diagrams_returns_collection() -> None:
     fake = make_fake_element("UseCase")
-    diagram = make_fake_element("StatechartDiagram", getName="Flow")
+    diagram = make_fake_element("StatechartDiagram", properties={"name": "Flow"})
     fake.getDescribingDiagrams.return_value = make_fake_collection([diagram])
     usecase = RPUseCase(fake)
 
@@ -59,7 +59,7 @@ def test_usecase_get_describing_diagrams_returns_collection() -> None:
 
 
 def test_usecase_is_registered_for_meta_class_usecase() -> None:
-    fake = make_fake_element("UseCase", getName="Login")
+    fake = make_fake_element("UseCase", properties={"name": "Login"})
 
     wrapped = AbstractRPModelElement.wrap(fake)
 

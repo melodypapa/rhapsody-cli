@@ -321,7 +321,7 @@ class TestRPowPaneMgr:
 
     def test_get_o_w_list_listener_delegates_to_com(self) -> None:
         fake = make_fake_element("owPaneMgr")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getOWListListener.return_value = inner
         obj = RPowPaneMgr(fake)
         result = obj.get_ow_list_listener("x")
@@ -329,7 +329,7 @@ class TestRPowPaneMgr:
 
     def test_get_o_w_text_listener_delegates_to_com(self) -> None:
         fake = make_fake_element("owPaneMgr")
-        inner = make_fake_element("X", getName="y")
+        inner = make_fake_element("X", properties={"name": "y"})
         fake.getOWTextListener.return_value = inner
         obj = RPowPaneMgr(fake)
         result = obj.get_ow_text_listener("x")

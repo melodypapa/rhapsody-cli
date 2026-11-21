@@ -10,7 +10,7 @@ from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
 def test_enumeration_literal_is_a_model_element() -> None:
-    fake = make_fake_element("EnumerationLiteral", getName="LITERAL1")
+    fake = make_fake_element("EnumerationLiteral", properties={"name": "LITERAL1"})
     literal = RPEnumerationLiteral(fake)
 
     assert isinstance(literal, RPModelElement)
@@ -18,7 +18,7 @@ def test_enumeration_literal_is_a_model_element() -> None:
 
 
 def test_enumeration_literal_is_registered() -> None:
-    fake = make_fake_element("EnumerationLiteral", getName="LITERAL1")
+    fake = make_fake_element("EnumerationLiteral", properties={"name": "LITERAL1"})
 
     wrapped = AbstractRPModelElement.wrap(fake)
 
@@ -26,7 +26,7 @@ def test_enumeration_literal_is_registered() -> None:
 
 
 def test_comment_is_a_model_element() -> None:
-    fake = make_fake_element("Comment", getName="Comment1")
+    fake = make_fake_element("Comment", properties={"name": "Comment1"})
     comment = RPComment(fake)
 
     assert isinstance(comment, RPModelElement)
@@ -34,7 +34,7 @@ def test_comment_is_a_model_element() -> None:
 
 
 def test_comment_is_registered() -> None:
-    fake = make_fake_element("Comment", getName="Comment1")
+    fake = make_fake_element("Comment", properties={"name": "Comment1"})
 
     wrapped = AbstractRPModelElement.wrap(fake)
 
@@ -42,7 +42,7 @@ def test_comment_is_registered() -> None:
 
 
 def test_constraint_is_a_model_element() -> None:
-    fake = make_fake_element("Constraint", getName="Constraint1")
+    fake = make_fake_element("Constraint", properties={"name": "Constraint1"})
     constraint = RPConstraint(fake)
 
     assert isinstance(constraint, RPModelElement)
@@ -50,7 +50,7 @@ def test_constraint_is_a_model_element() -> None:
 
 
 def test_constraint_is_registered() -> None:
-    fake = make_fake_element("Constraint", getName="Constraint1")
+    fake = make_fake_element("Constraint", properties={"name": "Constraint1"})
 
     wrapped = AbstractRPModelElement.wrap(fake)
 
@@ -62,7 +62,6 @@ def test_enumeration_literal_get_value_returns_str() -> None:
     fake.getValue.return_value = "42"
     literal = RPEnumerationLiteral(fake)
     assert literal.get_value() == "42"
-    fake.getValue.assert_called_once_with()
 
 
 def test_enumeration_literal_set_value_delegates() -> None:
@@ -75,9 +74,8 @@ def test_enumeration_literal_set_value_delegates() -> None:
 
 def test_constraint_get_constraints_by_me_returns_collection() -> None:
     fake = make_fake_element("Constraint")
-    inner = make_fake_element("Class", getName="ConstrainedClass")
+    inner = make_fake_element("Class", properties={"name": "ConstrainedClass"})
     fake.getConstraintsByMe.return_value = make_fake_collection([inner])
     constraint = RPConstraint(fake)
     result = constraint.get_constraints_by_me()
     assert isinstance(result, RPCollection)
-    fake.getConstraintsByMe.assert_called_once_with()

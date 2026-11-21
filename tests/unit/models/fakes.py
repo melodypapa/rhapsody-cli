@@ -29,6 +29,7 @@ def make_fake_element(meta_class: str, properties: Optional[Dict[str, Any]] = No
     """
     fake = MagicMock(name=f"FakeCom[{meta_class}]")
     fake.getMetaClass.return_value = meta_class
+    fake.metaClass = meta_class  # plain attribute: wrappers migrated to get_com_property
     for method_name, return_value in method_returns.items():
         getattr(fake, method_name).return_value = return_value
     for prop_name, prop_value in (properties or {}).items():

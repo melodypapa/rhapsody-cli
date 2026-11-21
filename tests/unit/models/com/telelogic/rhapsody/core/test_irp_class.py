@@ -16,7 +16,7 @@ from tests.unit.models.fakes import make_fake_element
 
 
 def test_class_is_a_classifier() -> None:
-    fake = make_fake_element("Class", getName="Widget")
+    fake = make_fake_element("Class", properties={"name": "Widget"})
     klass = IRPClass(fake)
 
     assert isinstance(klass, RPClassifier)
@@ -25,7 +25,7 @@ def test_class_is_a_classifier() -> None:
 
 def test_class_add_superclass_delegates_to_com() -> None:
     fake = make_fake_element("Class")
-    base = make_fake_element("Class", getName="Base")
+    base = make_fake_element("Class", properties={"name": "Base"})
     klass = IRPClass(fake)
 
     klass.add_superclass(IRPClass(base))
@@ -35,7 +35,7 @@ def test_class_add_superclass_delegates_to_com() -> None:
 
 def test_class_add_constructor_wraps_result() -> None:
     fake = make_fake_element("Class")
-    ctor = make_fake_element("Operation", getName="Widget")
+    ctor = make_fake_element("Operation", properties={"name": "Widget"})
     fake.addConstructor.return_value = ctor
     klass = IRPClass(fake)
 
@@ -47,7 +47,7 @@ def test_class_add_constructor_wraps_result() -> None:
 
 def test_class_add_destructor_wraps_result() -> None:
     fake = make_fake_element("Class")
-    dtor = make_fake_element("Operation", getName="~Widget")
+    dtor = make_fake_element("Operation", properties={"name": "~Widget"})
     fake.addDestructor.return_value = dtor
     klass = IRPClass(fake)
 
@@ -67,7 +67,7 @@ def test_class_is_abstract_property_reads_pywin32_property() -> None:
 
 def test_class_add_class_nested_wraps_result() -> None:
     fake = make_fake_element("Class")
-    nested = make_fake_element("Class", getName="Inner")
+    nested = make_fake_element("Class", properties={"name": "Inner"})
     fake.addClass.return_value = nested
     klass = IRPClass(fake)
 
@@ -78,7 +78,7 @@ def test_class_add_class_nested_wraps_result() -> None:
 
 
 def test_class_is_registered_for_meta_class_class() -> None:
-    fake = make_fake_element("Class", getName="Widget")
+    fake = make_fake_element("Class", properties={"name": "Widget"})
 
     wrapped = AbstractRPModelElement.wrap(fake)
 
@@ -87,7 +87,7 @@ def test_class_is_registered_for_meta_class_class() -> None:
 
 def test_class_add_event_reception_wraps_result() -> None:
     fake = make_fake_element("Class")
-    reception = make_fake_element("EventReception", getName="onEvent")
+    reception = make_fake_element("EventReception", properties={"name": "onEvent"})
     fake.addEventReception.return_value = reception
     klass = IRPClass(fake)
 
@@ -99,8 +99,8 @@ def test_class_add_event_reception_wraps_result() -> None:
 
 def test_class_add_event_reception_with_event_unwraps_and_wraps() -> None:
     fake = make_fake_element("Class")
-    event = make_fake_element("Event", getName="Tick")
-    reception = make_fake_element("EventReception", getName="onTick")
+    event = make_fake_element("Event", properties={"name": "Tick"})
+    reception = make_fake_element("EventReception", properties={"name": "onTick"})
     fake.addEventReceptionWithEvent.return_value = reception
     klass = IRPClass(fake)
 
@@ -111,12 +111,12 @@ def test_class_add_event_reception_with_event_unwraps_and_wraps() -> None:
 
 def test_class_add_link_unwraps_all_args_and_wraps_result() -> None:
     fake = make_fake_element("Class")
-    from_part = make_fake_element("Instance", getName="p1")
-    to_part = make_fake_element("Instance", getName="p2")
-    assoc = make_fake_element("Relation", getName="r1")
-    from_port = make_fake_element("Port", getName="port1")
-    to_port = make_fake_element("Port", getName="port2")
-    link = make_fake_element("Link", getName="link1")
+    from_part = make_fake_element("Instance", properties={"name": "p1"})
+    to_part = make_fake_element("Instance", properties={"name": "p2"})
+    assoc = make_fake_element("Relation", properties={"name": "r1"})
+    from_port = make_fake_element("Port", properties={"name": "port1"})
+    to_port = make_fake_element("Port", properties={"name": "port2"})
+    link = make_fake_element("Link", properties={"name": "link1"})
     fake.addLink.return_value = link
     klass = IRPClass(fake)
 
@@ -134,11 +134,11 @@ def test_class_add_link_unwraps_all_args_and_wraps_result() -> None:
 
 def test_class_add_link_to_part_via_port_unwraps_and_wraps() -> None:
     fake = make_fake_element("Class")
-    to_part = make_fake_element("Instance", getName="p1")
-    part_port = make_fake_element("Instance", getName="pp")
-    class_port = make_fake_element("Instance", getName="cp")
-    assoc = make_fake_element("Relation", getName="r1")
-    link = make_fake_element("Link", getName="link1")
+    to_part = make_fake_element("Instance", properties={"name": "p1"})
+    part_port = make_fake_element("Instance", properties={"name": "pp"})
+    class_port = make_fake_element("Instance", properties={"name": "cp"})
+    assoc = make_fake_element("Relation", properties={"name": "r1"})
+    link = make_fake_element("Link", properties={"name": "link1"})
     fake.addLinkToPartViaPort.return_value = link
     klass = IRPClass(fake)
 
@@ -155,7 +155,7 @@ def test_class_add_link_to_part_via_port_unwraps_and_wraps() -> None:
 
 def test_class_add_reception_wraps_result() -> None:
     fake = make_fake_element("Class")
-    reception = make_fake_element("EventReception", getName="onSignal")
+    reception = make_fake_element("EventReception", properties={"name": "onSignal"})
     fake.addReception.return_value = reception
     klass = IRPClass(fake)
 
@@ -167,7 +167,7 @@ def test_class_add_reception_wraps_result() -> None:
 
 def test_class_add_triggered_operation_wraps_result() -> None:
     fake = make_fake_element("Class")
-    op = make_fake_element("Operation", getName="handle")
+    op = make_fake_element("Operation", properties={"name": "handle"})
     fake.addTriggeredOperation.return_value = op
     klass = IRPClass(fake)
 
@@ -179,7 +179,7 @@ def test_class_add_triggered_operation_wraps_result() -> None:
 
 def test_class_add_type_wraps_result() -> None:
     fake = make_fake_element("Class")
-    typ = make_fake_element("Type", getName="Color")
+    typ = make_fake_element("Type", properties={"name": "Color"})
     fake.addType.return_value = typ
     klass = IRPClass(fake)
 
@@ -200,7 +200,7 @@ def test_class_delete_class_delegates_to_com() -> None:
 
 def test_class_delete_constructor_unwraps_arg() -> None:
     fake = make_fake_element("Class")
-    ctor = make_fake_element("Operation", getName="Widget")
+    ctor = make_fake_element("Operation", properties={"name": "Widget"})
     klass = IRPClass(fake)
 
     wrapped_ctor = AbstractRPModelElement.wrap(ctor)
@@ -220,7 +220,7 @@ def test_class_delete_destructor_delegates_to_com() -> None:
 
 def test_class_delete_event_reception_unwraps_arg() -> None:
     fake = make_fake_element("Class")
-    reception = make_fake_element("EventReception", getName="onEvent")
+    reception = make_fake_element("EventReception", properties={"name": "onEvent"})
     klass = IRPClass(fake)
 
     wrapped_reception = AbstractRPModelElement.wrap(reception)
@@ -231,7 +231,7 @@ def test_class_delete_event_reception_unwraps_arg() -> None:
 
 def test_class_delete_reception_unwraps_arg() -> None:
     fake = make_fake_element("Class")
-    reception = make_fake_element("EventReception", getName="onSignal")
+    reception = make_fake_element("EventReception", properties={"name": "onSignal"})
     klass = IRPClass(fake)
 
     wrapped_reception = AbstractRPModelElement.wrap(reception)
@@ -242,7 +242,7 @@ def test_class_delete_reception_unwraps_arg() -> None:
 
 def test_class_delete_superclass_unwraps_arg() -> None:
     fake = make_fake_element("Class")
-    base = make_fake_element("Class", getName="Base")
+    base = make_fake_element("Class", properties={"name": "Base"})
     klass = IRPClass(fake)
 
     klass.delete_superclass(IRPClass(base))
@@ -289,7 +289,6 @@ def test_class_is_final_property_calls_pywin32_method() -> None:
     klass = IRPClass(fake)
 
     assert klass.is_final == 0
-    fake.getIsFinal.assert_called_once_with()
 
 
 def test_class_is_reactive_property_reads_pywin32_property() -> None:

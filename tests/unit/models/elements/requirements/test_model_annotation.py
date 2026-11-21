@@ -8,7 +8,7 @@ from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
 def test_annotation_is_a_unit() -> None:
-    fake = make_fake_element("Annotation", getName="Note1")
+    fake = make_fake_element("Annotation", properties={"name": "Note1"})
     annotation = RPAnnotation(fake)
 
     assert isinstance(annotation, RPUnit)
@@ -17,7 +17,7 @@ def test_annotation_is_a_unit() -> None:
 
 def test_annotation_add_anchor_delegates_to_com() -> None:
     fake = make_fake_element("Annotation")
-    target = make_fake_element("Class", getName="Widget")
+    target = make_fake_element("Class", properties={"name": "Widget"})
     annotation = RPAnnotation(fake)
 
     annotation.add_anchor(cast(RPModelElement, AbstractRPModelElement.wrap(target)))
@@ -26,7 +26,7 @@ def test_annotation_add_anchor_delegates_to_com() -> None:
 
 
 def test_annotation_get_anchored_by_me_returns_collection() -> None:
-    inner = make_fake_element("Class", getName="Widget")
+    inner = make_fake_element("Class", properties={"name": "Widget"})
     fake = make_fake_element("Annotation")
     fake.getAnchoredByMe.return_value = make_fake_collection([inner])
     annotation = RPAnnotation(fake)
@@ -67,7 +67,7 @@ def test_annotation_is_specification_rtf_delegates_to_com() -> None:
 
 def test_annotation_remove_anchor_delegates_to_com() -> None:
     fake = make_fake_element("Annotation")
-    target = make_fake_element("Class", getName="Widget")
+    target = make_fake_element("Class", properties={"name": "Widget"})
     annotation = RPAnnotation(fake)
 
     annotation.remove_anchor(cast(RPModelElement, AbstractRPModelElement.wrap(target)))

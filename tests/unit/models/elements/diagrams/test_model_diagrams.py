@@ -6,7 +6,7 @@ from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
 def test_diagram_is_a_unit() -> None:
-    fake = make_fake_element("ActivityDiagram", getName="MainFlow")
+    fake = make_fake_element("ActivityDiagram", properties={"name": "MainFlow"})
     diagram = RPDiagram(fake)
 
     assert isinstance(diagram, RPUnit)
@@ -24,7 +24,7 @@ def test_diagram_close_diagram_delegates_to_com() -> None:
 
 def test_diagram_add_text_box_delegates_to_com_and_wraps_result() -> None:
     fake = make_fake_element("ActivityDiagram")
-    text_box = make_fake_element("GraphElement", getName="Note1")
+    text_box = make_fake_element("GraphElement", properties={"name": "Note1"})
     fake.addTextBox.return_value = text_box
     diagram = RPDiagram(fake)
 
@@ -36,7 +36,7 @@ def test_diagram_add_text_box_delegates_to_com_and_wraps_result() -> None:
 
 def test_diagram_get_custom_views_returns_collection() -> None:
     fake = make_fake_element("ActivityDiagram")
-    view = make_fake_element("Package", getName="CustomView1")
+    view = make_fake_element("Package", properties={"name": "CustomView1"})
     fake.getCustomViews.return_value = make_fake_collection([view])
     diagram = RPDiagram(fake)
 
@@ -48,10 +48,10 @@ def test_diagram_get_custom_views_returns_collection() -> None:
 
 def test_diagram_get_corresponding_graphic_elements_returns_collection() -> None:
     fake = make_fake_element("ActivityDiagram")
-    graphic = make_fake_element("GraphElement", getName="Shape1")
+    graphic = make_fake_element("GraphElement", properties={"name": "Shape1"})
     fake.getCorrespondingGraphicElements.return_value = make_fake_collection([graphic])
     diagram = RPDiagram(fake)
-    model_element = make_fake_element("Class", getName="Widget")
+    model_element = make_fake_element("Class", properties={"name": "Widget"})
 
     elements = diagram.get_corresponding_graphic_elements(RPModelElement(model_element))
 
@@ -61,7 +61,7 @@ def test_diagram_get_corresponding_graphic_elements_returns_collection() -> None
 
 
 def test_diagram_is_registered_for_meta_class_activity_diagram() -> None:
-    fake = make_fake_element("ActivityDiagram", getName="MainFlow")
+    fake = make_fake_element("ActivityDiagram", properties={"name": "MainFlow"})
 
     wrapped = AbstractRPModelElement.wrap(fake)
 
