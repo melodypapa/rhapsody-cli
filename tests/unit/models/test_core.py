@@ -1560,19 +1560,19 @@ def test_unit_get_cm_header_returns_str() -> None:
     fake.getCMHeader.assert_called_once_with()
 
 
-def test_model_element_get_cm_header_falls_back_to_pywin32_cmheader_property() -> None:
+def test_unit_get_cm_header_falls_back_to_pywin32_cmheader_property() -> None:
     fake = MagicMock(spec=["CMHeader"])
     fake.CMHeader = "header-1"
-    element = RPModelElement(fake)
+    unit = RPUnit(fake)
 
-    assert element.get_cm_header() == "header-1"
+    assert unit.get_cm_header() == "header-1"
 
 
-def test_model_element_set_cm_header_falls_back_to_pywin32_cmheader_property() -> None:
+def test_unit_set_cm_header_falls_back_to_pywin32_cmheader_property() -> None:
     fake = MagicMock(spec=[])
-    element = RPModelElement(fake)
+    unit = RPUnit(fake)
 
-    element.set_cm_header("header-2")
+    unit.set_cm_header("header-2")
 
     assert fake.CMHeader == "header-2"
 
