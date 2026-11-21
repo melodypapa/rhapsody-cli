@@ -1,10 +1,12 @@
 """Unit tests for rhapsody_cli.models.com.telelogic.rhapsody.core.IRPClass."""
 
+from pathlib import Path
 from typing import cast
 from unittest.mock import MagicMock
 
 import pytest
 
+import rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class as irp_class_module
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
 from rhapsody_cli.models.core import AbstractRPModelElement, RPModelElement
 from rhapsody_cli.models.elements.classifiers import RPClassifier
@@ -55,8 +57,9 @@ def test_class_add_destructor_wraps_result() -> None:
     assert result.get_name() == "~Widget"
 
 
-def test_class_is_abstract_property_delegates_to_com() -> None:
-    fake = make_fake_element("Class", getIsAbstract=1)
+def test_class_is_abstract_property_reads_pywin32_property() -> None:
+    fake = MagicMock(spec=["isAbstract"])
+    fake.isAbstract = 1
     klass = IRPClass(fake)
 
     assert klass.is_abstract is True
@@ -256,22 +259,25 @@ def test_class_delete_type_delegates_to_com() -> None:
     fake.deleteType.assert_called_once_with("Color")
 
 
-def test_class_is_active_property_delegates_to_com() -> None:
-    fake = make_fake_element("Class", getIsActive=1)
+def test_class_is_active_property_reads_pywin32_property() -> None:
+    fake = MagicMock(spec=["isActive"])
+    fake.isActive = 1
     klass = IRPClass(fake)
 
     assert klass.is_active == 1
 
 
-def test_class_is_behavior_overriden_property_delegates_to_com() -> None:
-    fake = make_fake_element("Class", getIsBehaviorOverriden=0)
+def test_class_is_behavior_overriden_property_reads_pywin32_property() -> None:
+    fake = MagicMock(spec=["isBehaviorOverriden"])
+    fake.isBehaviorOverriden = 0
     klass = IRPClass(fake)
 
     assert klass.is_behavior_overriden == 0
 
 
-def test_class_is_composite_property_delegates_to_com() -> None:
-    fake = make_fake_element("Class", getIsComposite=1)
+def test_class_is_composite_property_reads_pywin32_property() -> None:
+    fake = MagicMock(spec=["isComposite"])
+    fake.isComposite = 1
     klass = IRPClass(fake)
 
     assert klass.is_composite == 1
@@ -286,8 +292,9 @@ def test_class_is_final_property_calls_pywin32_method() -> None:
     fake.getIsFinal.assert_called_once_with()
 
 
-def test_class_is_reactive_property_delegates_to_com() -> None:
-    fake = make_fake_element("Class", getIsReactive=1)
+def test_class_is_reactive_property_reads_pywin32_property() -> None:
+    fake = MagicMock(spec=["isReactive"])
+    fake.isReactive = 1
     klass = IRPClass(fake)
 
     assert klass.is_reactive == 1
@@ -303,22 +310,22 @@ def test_class_is_abstract_setter_raises_not_implemented() -> None:
     fake.setIsAbstract.assert_not_called()
 
 
-def test_class_is_active_setter_delegates_to_com() -> None:
+def test_class_is_active_setter_writes_pywin32_property() -> None:
     fake = make_fake_element("Class")
     klass = IRPClass(fake)
 
     klass.is_active = 0
 
-    fake.setIsActive.assert_called_once_with(0)
+    assert fake.isActive == 0
 
 
-def test_class_is_behavior_overriden_setter_delegates_to_com() -> None:
+def test_class_is_behavior_overriden_setter_writes_pywin32_property() -> None:
     fake = make_fake_element("Class")
     klass = IRPClass(fake)
 
     klass.is_behavior_overriden = 1
 
-    fake.setIsBehaviorOverriden.assert_called_once_with(1)
+    assert fake.isBehaviorOverriden == 1
 
 
 def test_class_is_final_setter_calls_pywin32_method() -> None:
@@ -332,6 +339,13 @@ def test_class_is_final_setter_calls_pywin32_method() -> None:
 
 def test_class_does_not_expose_unavailable_server_diagram_update() -> None:
     assert not hasattr(IRPClass, "update_contained_diagrams_on_server")
+
+
+def test_class_module_has_no_legacy_dual_binding_helpers() -> None:
+    source = Path(irp_class_module.__file__).read_text(encoding="utf-8")
+
+    assert "_get_method_or_property" not in source
+    assert "_set_method_or_property" not in source
 
 
 def test_class_canonical_package_exports_same_class() -> None:

@@ -82,7 +82,7 @@ class IRPClass(RPClassifier):
     @property
     def is_abstract(self) -> bool:
         """Checks whether this class is abstract."""
-        return bool(AbstractRPModelElement._get_method_or_property(self._com, "getIsAbstract", "isAbstract"))
+        return bool(AbstractRPModelElement.get_com_property(self._com, "isAbstract"))
 
     @is_abstract.setter
     def is_abstract(self, is_abstract: bool) -> None:
@@ -323,27 +323,27 @@ class IRPClass(RPClassifier):
     @property
     def is_active(self) -> int:
         """``1`` if the class runs on its own thread, ``0`` if sequential."""
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsActive", "isActive"))
+        return int(AbstractRPModelElement.get_com_property(self._com, "isActive"))
 
     @is_active.setter
     def is_active(self, is_active: int) -> None:
         """Set to ``1`` for active, ``0`` for sequential."""
-        AbstractRPModelElement._set_method_or_property(self._com, "setIsActive", "isActive", is_active)
+        AbstractRPModelElement.set_com_property(self._com, "isActive", is_active)
 
     @property
     def is_behavior_overriden(self) -> int:
         """``1`` if the class does not inherit its base statechart behavior, else ``0``."""
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsBehaviorOverriden", "isBehaviorOverriden"))
+        return int(AbstractRPModelElement.get_com_property(self._com, "isBehaviorOverriden"))
 
     @is_behavior_overriden.setter
     def is_behavior_overriden(self, is_behavior_overriden: int) -> None:
         """Set to ``1`` to not inherit the base statechart behavior, ``0`` to inherit."""
-        AbstractRPModelElement._set_method_or_property(self._com, "setIsBehaviorOverriden", "isBehaviorOverriden", is_behavior_overriden)
+        AbstractRPModelElement.set_com_property(self._com, "isBehaviorOverriden", is_behavior_overriden)
 
     @property
     def is_composite(self) -> int:
         """``1`` if the class is a composite class, ``0`` otherwise."""
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsComposite", "isComposite"))
+        return int(AbstractRPModelElement.get_com_property(self._com, "isComposite"))
 
     @property
     def is_final(self) -> int:
@@ -358,7 +358,7 @@ class IRPClass(RPClassifier):
     @property
     def is_reactive(self) -> int:
         """``1`` if the class has a statechart or activity diagram, ``0`` otherwise."""
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsReactive", "isReactive"))
+        return int(AbstractRPModelElement.get_com_property(self._com, "isReactive"))
 
 
 AbstractRPModelElement.register_wrapper("Class", IRPClass)
