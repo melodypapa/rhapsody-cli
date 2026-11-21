@@ -4,7 +4,7 @@
     {
       "id": 1,
       "prompt": "Sync IRPClass from its JavaDoc. Keep the change scoped to that interface, point imports at the canonical Java-mirrored path, and report any JavaDoc/COM/Python differences in the RST docs.",
-      "expected_output": "A visible class-specific TODO list, a complete comparison of IRPClass-owned members, safe package/import updates, focused tests and documentation updates, use of the bundled validator/verifier, and explicit unresolved deviations.",
+      "expected_output": "A visible class-specific TODO list created before any analysis, ticked in the same response where each step's evidence lands, and rendered as the final sync report with per-member dispositions and open blockers stated; a complete comparison of IRPClass-owned members, safe package/import updates, focused tests and documentation updates, use of the bundled validator/verifier, and explicit unresolved deviations.",
       "files": []
     },
     {

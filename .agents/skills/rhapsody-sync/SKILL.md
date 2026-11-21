@@ -15,11 +15,9 @@ agents: [pi]
 
 Sync one requested Java API interface with its Python wrapper in this project. The input is the JavaDoc interface name (such as `IRPClass`), not a hard-coded Python class. The Python class keeps the same name as the Java interface, so treat `IRPClass` as the example pattern, never as the default target.
 
-## 1. Resolve the target and publish its TODOs
+## 1. Create the sync TODO list
 
-If the interface name is missing or ambiguous, ask for it before editing. Find its JavaDoc in `docs/java_api/`, read the declared package, then resolve the matching wrapper, base class, tests, and current exports. Do not infer the Java package or wrapper mapping from the existing Python folder alone.
-
-Before analysis, create a visible TODO list using an available task-list tool; otherwise show a Markdown checklist in the response and keep it current. Keep the shared steps concise, then add a subtask for every target-owned JavaDoc member so no method is silently skipped:
+Before any analysis or edit, publish the TODO list: use an available task-list tool, otherwise show the Markdown checklist in the response. Keep the shared steps concise, then add a subtask for every target-owned JavaDoc member so no method is silently skipped:
 
 ```markdown
 ## Sync TODO — IRPClass (`com.telelogic.rhapsody.core`)
@@ -32,12 +30,17 @@ Before analysis, create a visible TODO list using an available task-list tool; o
 - [ ] Update package-organized RST entry and list each verified deviation.
 - [ ] Unit tests pass; on Windows, integration tests pass too.
 - [ ] Run focused validation and summarize unresolved items.
+- [ ] Render this checklist as the final sync report.
 - [ ] Member: addExample() — [ ] JavaDoc [ ] COM [ ] wrapper [ ] disposition
 ```
 
-Only mark a task done after checking its evidence. Keep inherited-member notes separate from owned-member tasks.
+This checklist is the run's live report. Tick a checkbox in the same response where its evidence lands — a command result, a test count, a documented disposition — and never batch-tick at the end. A box ends the run either ticked or open with the blocker and reason stated next to it. Only mark a task done after checking its evidence. Keep inherited-member notes separate from owned-member tasks.
 
-## 2. Compare evidence efficiently, without skipping coverage
+## 2. Resolve the target
+
+If the interface name is missing or ambiguous, ask for it before editing. Find its JavaDoc in `docs/java_api/`, read the declared package, then resolve the matching wrapper, base class, tests, and current exports. Do not infer the Java package or wrapper mapping from the existing Python folder alone.
+
+## 3. Compare evidence efficiently, without skipping coverage
 
 Run the skill-local wrapper once for a baseline and use its report as the member-by-member index:
 
@@ -61,7 +64,7 @@ For each target-owned JavaDoc member, track: Java name/signature and description
 
 Never add a direct COM call for a member absent from the binding. Keep exact camelCase COM identifiers and snake_case Python names. Follow `AGENTS.md` for `call_com`, method/property helpers, argument unwrapping, result wrapping, collection handling, annotations, and exception handling. In particular, do not add `Any` or `from __future__ import annotations`.
 
-## 3. Apply the smallest safe class change
+## 4. Apply the smallest safe class change
 
 Follow TDD: write or update a focused fake-COM unit test before changing behavior or import wiring. Unit tests must not use real COM. For each wrapper method added or changed, use JavaDoc for its description, arguments, and return contract while retaining project-specific usage notes and known runtime limitations. Add integration coverage only for supported behavior owned by this wrapper; inherited methods may set up fixtures but are not child assertions. Respect the integration-test ownership rules in `AGENTS.md`, including child overrides with different return contracts.
 
@@ -80,7 +83,7 @@ The canonical Python package mirrors every Java package segment beneath `rhapsod
 
 Move the wrapper only if it is not already in the canonical package. Add package `__init__.py` exports, preserve registration/import side effects, and update every internal reference to the canonical import. Keep the existing module naming convention where practical. Do not leave a compatibility shim at the old path for the migrated interface. Migrate only the requested interface; avoid unrelated package moves and refactors. If moving it safely requires broad changes or would break public imports, stop and ask before expanding scope.
 
-## 4. Update the two class documents
+## 5. Update the two class documents
 
 ### Requirement entry
 
@@ -92,7 +95,7 @@ Update `docs/api/elements.rst` under the Java package heading, not the current P
 
 List each verified deviation between JavaDoc, COM/pywin32, and Python implementation in a valid reStructuredText `list-table` with headers `JavaDoc member/signature`, `COM/pywin32 exposure`, `Python implementation`, and `Deviation and treatment`. Include method-vs-property shape and evidence-backed resolution; if there are no deviations, say so explicitly. The verifier checks that the section contains every member reported by the API validator. If the class is already listed under a legacy domain heading, move its entry to the Java-package section instead of duplicating it; leave unrelated and not-yet-migrated classes unchanged. Keep RST navigation valid.
 
-## 5. Verify and report
+## 6. Verify and report
 
 After edits, run final validation and artifact checks:
 
@@ -112,4 +115,4 @@ Verification rules:
 
 Leave TODO items open when blocked, with the reason.
 
-Finish with a compact report: Java interface/package, old and canonical Python paths, files changed, checks run, and remaining deviations. Sync one interface per run; complete and review it before starting another.
+Finish by rendering the TODO checklist as the sync report: every shared step ticked with its key evidence (command result, test counts, files changed) or left open with the blocker and reason next to it, and every member line showing its final disposition. Lead the report with the Java interface/package, the old and canonical Python paths, and the files changed, followed by the completed checklist. Sync one interface per run; complete and review it before starting another.
