@@ -281,21 +281,6 @@ class TestRPClassIntegration:
         finally:
             test_class.delete_from_project()
 
-    @pytest.mark.xfail(strict=False, reason="Rhapsody COM defect: IRPClass.setIsFinal does not persist (get returns 0) — same limitation as setIsAbstract")
-    def test_is_final_roundtrip(self, test_project: RPProject) -> None:
-        pkg_name = self._unique("FinalPkg")
-        class_name = self._unique("FinalCls")
-        pkg = self._create_package(test_project, pkg_name)
-        test_class = pkg.add_class(class_name)
-        try:
-            assert test_class.is_final in (0, 1)
-            test_class.is_final = 1
-            assert test_class.is_final == 1
-            test_class.is_final = 0
-            assert test_class.is_final == 0
-        finally:
-            test_class.delete_from_project()
-
     def test_is_reactive_readonly(self, test_project: RPProject) -> None:
         pkg_name = self._unique("ReactPkg")
         class_name = self._unique("ReactCls")

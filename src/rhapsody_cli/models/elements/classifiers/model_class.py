@@ -38,7 +38,7 @@ class RPClass(RPClassifier):
     # [x] is_active                  [x] impl (property)  [x] docstring  [x] unit test  [x] integration test
     # [x] is_behavior_overriden      [x] impl (property)  [x] docstring  [x] unit test  [x] integration test
     # [x] is_composite               [x] impl (property)  [x] docstring  [x] unit test  [x] integration test
-    # [x] is_final                   [x] impl (property)  [x] docstring  [x] unit test  [x] integration test
+    # [x] is_final                   [x] impl (property)  [x] docstring  [x] unit test  [ ] integration test (removed: setIsFinal does not persist in Rhapsody COM)
     # [x] is_reactive                [x] impl (property)  [x] docstring  [x] unit test  [x] integration test
     # update_contained_diagrams_on_server: unavailable in Rhapsody2.Application.1 type library; wrapper removed.
     # No deprecated methods in IRPClass.
