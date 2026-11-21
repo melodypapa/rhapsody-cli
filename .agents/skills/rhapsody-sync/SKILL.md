@@ -73,7 +73,7 @@ Use these sources for different questions:
 
 Reconcile every member declared by the target interface against the validator inventory. To save time, inspect implementation bodies and secondary references deeply for deviations, missing coverage, unsupported members, and code you will change; do not reread unrelated wrappers or inherited implementations. Check JavaDoc descriptions for the class and each method being added or changed. If evidence conflicts, record the sources and ask rather than guessing.
 
-For each target-owned JavaDoc member, track: Java name/signature and description; inherited vs owned; COM method/property/alias/unavailable status; Python method and actual COM call; result type/wrapping; and a disposition. Use concise dispositions such as matched, inherited, intentional facade helper, binding mismatch, JavaDoc-only, COM-only, missing wrapper, intentionally unsupported, or unresolved.
+For each target-owned JavaDoc member, track: Java name/signature and description; inherited vs owned; COM method/property/alias/unavailable status; Python method and actual COM call; result type/wrapping; and a disposition. Use concise dispositions such as matched, inherited, binding mismatch, JavaDoc-only, COM-only, missing wrapper, intentionally unsupported, or unresolved. There is no "facade helper" disposition: a wrapper member with no static COM member is python-only and is removed (see section 4).
 
 Never add a direct COM call for a member absent from the binding. Keep exact camelCase COM identifiers and snake_case Python names. Follow `AGENTS.md` for `call_com`, property helpers, argument unwrapping, result wrapping, collection handling, annotations, and exception handling. In particular, do not add `Any` or `from __future__ import annotations`.
 
@@ -86,6 +86,8 @@ Follow TDD: write or update a focused fake-COM unit test before changing behavio
 **Migrate legacy binding call sites for this class.** For every `_get_method_or_property` / `_set_method_or_property` call in the class's **own** methods: look up the pywin32 member for that operation in `docs/reports/pywin32_authority.json`, then rewrite the site to a direct call — method-shaped → `call_com(lambda: self._com.Name(...))`, property-shaped → `get_com_property` / `set_com_property` — and update the class's unit tests to configure and assert on that single member (fakes use the `properties=` channel of `make_fake_element` for property-shaped members). Inherited members keep base-class behavior until the base class's own sync run. If a call site's member is absent from the catalog for this interface, record it as a blocker and leave the site unchanged — do not migrate on unverifiable evidence.
 
 Run the full unit suite after the change and fix any failure before continuing; never advance to the next step with a failing unit test (verification rules in section 8).
+
+**Remove python-only members from the class.** Every wrapper member the validator reports as `PYTHON_ONLY_MEMBER` ("no static COM member" — facade helpers, unbacked conveniences, convenience aliases) shall be deleted in the same run: remove the method from the class, its unit tests and integration references, its checklist row, and its row in the class's RST table, so the regenerated report carries no `PYTHON_ONLY_MEMBER` row for this class. The sole exception is a documented-unavailable `NotImplementedError` stub for a Java member the COM binding cannot serve — it stays, listed in `documented_unavailable`. Before deleting a member, check its in-repository callers (`grep -rn "<python_name>" src/rhapsody_cli`): migrate callers to a backed member first, or record the removal as a blocker if no backed member can serve them — never remove a member that still has live callers.
 
 ## 5. Update the integration tests
 
@@ -117,7 +119,9 @@ valid reStructuredText `list-table` with headers `JavaDoc member/signature`,
 `COM/pywin32 exposure`, `Python implementation`, and `Deviation and treatment`. Include
 method-vs-property shape and evidence-backed resolution; if there are no deviations, say so
 explicitly. The verifier checks that the page contains every member reported by the API
-validator. Keep the page reachable by listing it in `docs/api/elements.rst`'s toctree under
+validator. Rows for python-only members removed in section 4 disappear at report
+regeneration — do not keep them in the table. Keep the page reachable by listing it in
+`docs/api/elements.rst`'s toctree under
 the Java package heading (one entry per synced class). When migrating a class out of the
 legacy `elements.rst` sections, move its section — do not duplicate it; leave unrelated and
 not-yet-migrated classes unchanged. Keep RST navigation valid.

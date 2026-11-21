@@ -54,6 +54,14 @@ not re-derive scope or decisions already recorded in the row's Notes.
   base class alone creates import cycles (`RPUnit(RPModelElement)`). Each base row runs its
   binding migration at the current location and records the §2 move as an open blocker; the
   moves land as a small dedicated refactor once the rows have emptied `core.py`.
+- **Python-only members are removed (SKILL §3/§4, added 2026-11-21):** a wrapper member with
+  no static COM member (`PYTHON_ONLY_MEMBER` — facade helpers, unbacked conveniences) is
+  deleted from the class during its sync: method, unit tests, integration references,
+  checklist row, RST row. Sole exception: documented-unavailable `NotImplementedError` stubs
+  for Java members the COM cannot serve (they stay, listed in `documented_unavailable`).
+  In-repo callers must be migrated (or the removal blocked) before deletion. Classes synced
+  before this rule (IRPClass, RPModelElement) still carry python-only rows; their removal
+  folds into the Step 8 closeout pass before those rows archive.
 - **Per-class documents (SKILL §6/§7):** requirement and RST artifacts live at the class's
   package path — `docs/requirements/<java.package.path>/<snake_case>.md` and
   `docs/api/<java.package.path>/<snake_case>.rst` — not in the legacy monoliths
