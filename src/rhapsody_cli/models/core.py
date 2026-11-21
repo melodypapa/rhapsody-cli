@@ -90,8 +90,26 @@ class AbstractRPModelElement:
         """Write a value to ``com_obj``, preferring the Java-style setter method.
 
         Forwards to :func:`rhapsody_cli.com_utils._set_method_or_property`.
+
+        .. deprecated:: Legacy dual-binding probe; synced wrappers use :meth:`get_com_property` / :meth:`set_com_property`.
         """
         com_utils._set_method_or_property(com_obj, method_name, prop_name, value)
+
+    @classmethod
+    def get_com_property(cls, com_obj: object, prop_name: str) -> Any:
+        """Read one pywin32-exposed COM property (authoritative name; no fallback).
+
+        Forwards to :func:`rhapsody_cli.com_utils.get_com_property`.
+        """
+        return com_utils.get_com_property(com_obj, prop_name)
+
+    @classmethod
+    def set_com_property(cls, com_obj: object, prop_name: str, value: object) -> None:
+        """Write one pywin32-exposed COM property (authoritative name; no fallback).
+
+        Forwards to :func:`rhapsody_cli.com_utils.set_com_property`.
+        """
+        com_utils.set_com_property(com_obj, prop_name, value)
 
 
 class RPModelElement(AbstractRPModelElement):

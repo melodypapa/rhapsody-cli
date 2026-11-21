@@ -48,6 +48,45 @@ def test_call_com_does_not_translate_other_exceptions() -> None:
         AbstractRPModelElement.call_com(failing)
 
 
+def test_get_com_property_reads_the_pywin32_property_directly() -> None:
+    fake = MagicMock(spec=["isAbstract"])
+    fake.isAbstract = 1
+
+    assert AbstractRPModelElement.get_com_property(fake, "isAbstract") == 1
+
+
+def test_get_com_property_translates_com_error() -> None:
+    class _FailingCom:
+        @property
+        def isAbstract(self) -> int:  # noqa: N802 - mirrors the camelCase COM identifier
+            raise make_com_error("isAbstract read failed")
+
+    with pytest.raises(RhapsodyRuntimeException, match="isAbstract read failed"):
+        AbstractRPModelElement.get_com_property(_FailingCom(), "isAbstract")
+
+
+def test_set_com_property_writes_the_pywin32_property_directly() -> None:
+    fake = MagicMock(spec=["isActive"])
+
+    AbstractRPModelElement.set_com_property(fake, "isActive", 0)
+
+    assert fake.isActive == 0
+
+
+def test_set_com_property_translates_com_error() -> None:
+    class _FailingCom:
+        @property
+        def isActive(self) -> int:  # noqa: N802 - mirrors the camelCase COM identifier
+            return 0
+
+        @isActive.setter
+        def isActive(self, value: int) -> None:  # noqa: N802 - mirrors the camelCase COM identifier
+            raise make_com_error("isActive write failed")
+
+    with pytest.raises(RhapsodyRuntimeException, match="isActive write failed"):
+        AbstractRPModelElement.set_com_property(_FailingCom(), "isActive", 1)
+
+
 def test_core_module_no_longer_exports_backward_compatibility_wrappers() -> None:
     for wrapper_name in (
         "register_wrapper",
