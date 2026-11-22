@@ -740,6 +740,7 @@ def test_apply_pywin32_authority_keeps_unexposed_member_as_deviation() -> None:
 def test_main_authority_source_reports_backlog_without_typelib(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(validator, "load_authority", lambda: _authority(catalog={"IRPClass": {"isAbstract": "property"}}))
+    monkeypatch.setattr(validator, "resolve_java_interface_docs", lambda interface_name, docs_root: ("com.telelogic.rhapsody.core", docs_root))
     monkeypatch.setattr(validator, "collect_java_signatures", lambda interface_name, docs_root, **kwargs: {"isAbstract": {"IRPClass.isAbstract()"}})
     monkeypatch.setattr(validator, "collect_java_members", lambda interface_name, docs_root, **kwargs: {"isAbstract"})
     monkeypatch.setattr(validator, "collect_python_members", lambda interface_name, models_root, **kwargs: {"isAbstract": {"is_abstract() -> isAbstract"}})
