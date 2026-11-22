@@ -250,6 +250,44 @@ def verify_wrapper_bindings(root: Path, interface_name: str, wrapper_source: str
     return issues
 
 
+def verify_integration_exception_catches(test_source: str) -> List[str]:
+    """Integration tests may only assert NotImplementedError (Java-only stubs).
+
+    Any other exception assertion (pytest.raises(AttributeError,
+    RhapsodyRuntimeException, TypeError, ValueError, ...) blesses a wrong
+    binding and is forbidden by SKILL section 5. Bare try/except in test
+    bodies is likewise forbidden; only the documented NotImplementedError
+    stub case is allowed.
+    """
+    issues: List[str] = []
+    tree = ast.parse(test_source)
+    allowed = {"NotImplementedError"}
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.With):
+            continue
+        for item in node.items:
+            ce = item.context_expr
+            if not (isinstance(ce, ast.Call) and isinstance(ce.func, ast.Attribute) and ce.func.attr == "raises"):
+                continue
+            if not ce.args:
+                issues.append(f"pytest.raises() with no exception type at line {node.lineno}")
+                continue
+            exc_node = ce.args[0]
+            if isinstance(exc_node, ast.Name):
+                names = {exc_node.id}
+            elif isinstance(exc_node, ast.Tuple):
+                names = {e.id for e in exc_node.elts if isinstance(e, ast.Name)}
+            else:
+                names = set()
+            bad = names - allowed
+            if bad:
+                issues.append(
+                    f"integration test asserts disallowed exception(s) {sorted(bad)} at line {node.lineno} "
+                    f"(only NotImplementedError for JavaDoc-defined/pywin32-absent stubs is allowed)"
+                )
+    return issues
+
+
 def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) -> List[str]:
     """Check package placement, requirement entry, and RST coverage against a validator report."""
     issues: List[str] = []
@@ -321,6 +359,8 @@ def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) ->
             issues.append(f"{label} test file not found for {simple_name}: {test_dir / f'test_{class_stem}.py'}")
         elif wrapper_class not in test_path.read_text(encoding="utf-8"):
             issues.append(f"{label} test file does not exercise {wrapper_class}: {test_path}")
+        elif label == "Integration":
+            issues.extend(verify_integration_exception_catches(test_path.read_text(encoding="utf-8")))
     requirements_path = first_existing(root / "docs" / "requirements" / package_dir, "{stem}.md")
     if requirements_path is None:
         issues.append(f"Class requirement document not found: {root / 'docs' / 'requirements' / package_dir / f'{class_stem}.md'}")

@@ -435,3 +435,33 @@ class IRPType:
         return self.get_com_property(self._com, "flag")
 '''
     assert tools.verify_wrapper_bindings(tmp_path, "IRPType", wrapper) == []
+
+
+def test_integration_check_allows_only_not_implemented_error() -> None:
+    tools = _load_sync_tools()
+    ok = '''
+def test_stub():
+    with pytest.raises(NotImplementedError):
+        wrapper.java_only_method()
+'''
+    assert tools.verify_integration_exception_catches(ok) == []
+
+
+def test_integration_check_flags_disallowed_exceptions() -> None:
+    tools = _load_sync_tools()
+    bad = '''
+def test_a():
+    with pytest.raises(AttributeError):
+        wrapper.method()
+def test_b():
+    with pytest.raises(RhapsodyRuntimeException):
+        wrapper.method()
+def test_c():
+    with pytest.raises((TypeError, ValueError)):
+        wrapper.method()
+'''
+    issues = tools.verify_integration_exception_catches(bad)
+    assert len(issues) == 3
+    assert any("AttributeError" in i for i in issues)
+    assert any("RhapsodyRuntimeException" in i for i in issues)
+    assert any("TypeError" in i and "ValueError" in i for i in issues)
