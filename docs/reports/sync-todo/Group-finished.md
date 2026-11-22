@@ -13,6 +13,14 @@ one IRPCollection graphical-node test whose COM member is absent. Verified: zero
 markers in the finished classes' test files, 46 finished-class live integration tests green,
 and 100% statement/branch coverage for `irp_class.py`, `irp_collection.py` and `irp_unit.py`.
 
+## API report refresh (2026-11-22)
+
+Regenerated all 16 API reports after enumerating the registered Rhapsody type library. The
+fresh 16-interface catalog exactly matches `pywin32_authority.json`; no member or shape
+changes were found. The API reports are organized under `docs/reports/<java.package.path>/`
+and their generated content remains consistent with the fresh catalog. The archived rows and
+their historical closeout evidence are unchanged.
+
 - [x] irp_class_api_report (IRPClass · IRPClass · models/com/telelogic/rhapsody/core/irp_class.py · 0 sites left)
   - Note: pilot run 2026-11-21, commits `7163149` + `b27a8bb`; 7 property-shaped flag sites migrated to `get_com_property`/`set_com_property` (`is_final` was already direct); six flag rows rewritten in `elements.rst`, SWR_ELEM_00004 updated.
   - [x] Step 1 — §1 sync TODO published (per-run checklist rendered live in the run report)

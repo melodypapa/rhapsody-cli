@@ -700,21 +700,21 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--path",
         type=Path,
-        help="Output directory for the Markdown report (default: current working directory)",
+        help="Output root; the report is saved under its Java package path (default: current working directory)",
     )
     return parser
 
 
 def main(argv: Optional[List[str]] = None) -> int:
     args = build_arg_parser().parse_args(argv)
-    authority = load_authority()
     repository_root = Path(__file__).resolve().parents[1]
     docs_root = repository_root / "docs" / "java_api" / Path(*JAVA_PACKAGE.split("."))
     models_root = repository_root / "src" / "rhapsody_cli" / "models"
     report_directory = args.path or Path.cwd()
-    report_path = report_directory / f"{args.java_interface}_api_report.md"
+    report_path = report_directory.joinpath(*JAVA_PACKAGE.split("."), f"{args.java_interface}_api_report.md")
 
     try:
+        authority = load_authority()
         wrapper_class, wrapper_source = resolve_python_wrapper(args.java_interface, models_root)
         java_members = collect_java_members(args.java_interface, docs_root, include_superinterfaces=False)
         java_signatures = collect_java_signatures(args.java_interface, docs_root, include_superinterfaces=False)

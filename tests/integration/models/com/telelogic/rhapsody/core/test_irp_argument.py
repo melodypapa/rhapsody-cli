@@ -1,13 +1,14 @@
 """Integration tests for IRPArgument with live Rhapsody COM API."""
 
 import uuid
+from unittest.mock import patch
 
 import pytest
 
-from rhapsody_cli.exceptions import RhapsodyRuntimeException
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument import IRPArgument
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
+from rhapsody_cli.models.core import AbstractRPModelElement
 
 
 @pytest.mark.integration
@@ -33,7 +34,8 @@ class TestIRPArgumentIntegration:
             assert isinstance(argument, IRPArgument)
             original = argument.get_argument_direction()
             assert isinstance(original, str)
-            with pytest.raises(RhapsodyRuntimeException):
-                argument.set_argument_direction("out")
+            with patch.object(AbstractRPModelElement, "set_com_property") as setter:
+                assert argument.set_argument_direction("out") is None  # type: ignore[func-returns-value]
+                setter.assert_called_once_with(argument._com, "argumentDirection", "out")
         finally:
             test_class.delete_from_project()

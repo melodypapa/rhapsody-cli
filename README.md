@@ -243,9 +243,9 @@ pytest && ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests
 - **Integration tests** for real COM automation verification
 - **Branch coverage** tracking with 80% minimum threshold
 
-### Generating API Validation Reports (`docs/reports/*_api_report.md`)
+### Generating API Validation Reports (`docs/reports/<java.package.path>/*_api_report.md`)
 
-Every wrapped interface has a committed parity report — `docs/reports/<IRPInterface>_api_report.md` — that compares three sources for each member: the Java API (`docs/java_api`), the pywin32-exposed COM member (name and method/property shape), and the Python wrapper. The committed catalog `docs/reports/pywin32_authority.json` is the single source of truth for COM member names and shapes; the reports also carry `## Expected Binding Differences` (accepted, informational) and `## Wrapper Backlog` sections so that `## Comparison details` stays at zero actionable rows.
+Every wrapped interface has a committed parity report — `docs/reports/<java.package.path>/<IRPInterface>_api_report.md` — grouped by its declared Java package. Each report compares three sources for each member: the Java API (`docs/java_api`), the pywin32-exposed COM member (name and method/property shape), and the Python wrapper. The committed catalog `docs/reports/pywin32_authority.json` is the single source of truth for COM member names and shapes; the reports also carry `## Expected Binding Differences` (accepted, informational) and `## Wrapper Backlog` sections so that `## Comparison details` stays at zero actionable rows.
 
 #### Prerequisites
 
@@ -262,7 +262,7 @@ Every wrapped interface has a committed parity report — `docs/reports/<IRPInte
 python scripts/pywin32_authority.py --source typelib
 
 # 2. Generate/refresh one interface's report (writes
-#    docs/reports/IRPClass_api_report.md and exits per the rules below)
+#    docs/reports/com/telelogic/rhapsody/core/IRPClass_api_report.md and exits per the rules below)
 python scripts/validate_model_api.py IRPClass --source typelib --path docs/reports
 ```
 
@@ -290,7 +290,7 @@ python .agents/skills/rhapsody-sync/scripts/validate_interface.py IRPClass --sou
 | `1` | Actionable deviations found — fix them (see `## Comparison details` and `## AI Fix Guidance`), then regenerate |
 | `2` | Setup failure — missing JavaDoc tree, missing catalog entry, or (typelib mode) missing registered type library |
 
-Regenerated reports and a refreshed `pywin32_authority.json` are committed in the same change as the wrapper edits they justify. Do not hand-edit the generated `*_api_report.md` files; in `pywin32_authority.json` the `catalog` section is generated, while the `documented_aliases` / `documented_unavailable` exception maps are maintained by hand.
+Regenerated package-organized reports and a refreshed `pywin32_authority.json` are committed in the same change as the wrapper edits they justify. Do not hand-edit the generated `*_api_report.md` files; in `pywin32_authority.json` the `catalog` section is generated, while the `documented_aliases` / `documented_unavailable` exception maps are maintained by hand.
 
 ## Architecture
 

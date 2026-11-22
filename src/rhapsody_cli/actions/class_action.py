@@ -20,7 +20,7 @@ import argparse
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List, cast
+from typing import Dict, List, Optional, cast
 
 from rhapsody_cli.actions.abstract_action import ElementManagementAction, SessionAwareAction
 from rhapsody_cli.cli.formatters import OutputFormatter
@@ -39,6 +39,21 @@ class AbstractClassAction(SessionAwareAction, ElementManagementAction):
     """
 
     _PACKAGE_META_CLASSES = {"Package", "Project"}
+
+    def _find_nested_by_name(self, owner: IRPModelElement, name: str) -> Optional[IRPModelElement]:
+        """Fall back to a recursive walk when the COM finder is unavailable."""
+        try:
+            nested = owner.get_nested_elements()
+        except (AttributeError, RuntimeError):
+            return None
+        for element in nested:
+            wrapped = cast(IRPModelElement, element)
+            if wrapped.get_name() == name:
+                return wrapped
+            found = self._find_nested_by_name(wrapped, name)
+            if found is not None:
+                return found
+        return None
 
     def _resolve_and_validate_package(self, path: str) -> IRPModelElement:
         """Resolve path and validate it's a Package or Project element.
@@ -572,7 +587,13 @@ class ClassLinkAction(AbstractClassAction):
 
         target_name = args.add if args.add else args.remove
         owner = source.get_owner()
-        target = owner.find_nested_classifier_recursive(target_name)  # type: ignore[attr-defined]
+        try:
+            target = owner.find_nested_classifier_recursive(target_name)  # type: ignore[attr-defined]
+        except AttributeError:
+            # Some Rhapsody builds expose the owning element as a generic
+            # IRPModelElement COM object without the classifier finder; fall
+            # back to a recursive walk through nested elements.
+            target = self._find_nested_by_name(owner, target_name)
         if target is None:
             raise CliExecutionError(f"Class '{target_name}' not found")
 

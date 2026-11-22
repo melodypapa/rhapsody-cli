@@ -11,6 +11,13 @@ import pytest
 SKILL_ROOT = Path(__file__).resolve().parents[1]
 SYNC_TOOLS_PATH = SKILL_ROOT / "scripts" / "sync_tools.py"
 
+_REPORT_PACKAGE_PARTS = ("com", "telelogic", "rhapsody", "core")
+
+
+def _report_path(reports_root: Path, interface_name: str) -> Path:
+    return reports_root / Path(*_REPORT_PACKAGE_PARTS) / f"{interface_name}_api_report.md"
+
+
 _VALID_RST_DEVIATIONS = (
     ".. list-table:: API deviations\n"
     "   :header-rows: 1\n\n"
@@ -78,7 +85,7 @@ def _write_fixture_project(root: Path, rst_deviations: str, with_tests: bool = T
 
 
 def _write_report(root: Path, java_package: Optional[str] = "com.telelogic.rhapsody.core") -> Path:
-    report = root / "docs" / "reports" / "IRPThing_api_report.md"
+    report = _report_path(root / "docs" / "reports", "IRPThing")
     report.parent.mkdir(parents=True)
     java_package_line = f"- Java package: `{java_package}`\n" if java_package else ""
     report.write_text(
@@ -109,6 +116,15 @@ def test_finds_project_root_from_skill_scripts_directory(tmp_path: Path) -> None
     start.mkdir(parents=True)
 
     assert tools.find_project_root(start) == root
+
+
+def test_api_report_path_uses_the_java_package_from_javadoc(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = _write_fixture_project(tmp_path / "repo", _VALID_RST_DEVIATIONS)
+
+    report = tools.api_report_path(root, "IRPThing")
+
+    assert report == root / "docs" / "reports" / "com" / "telelogic" / "rhapsody" / "core" / "IRPThing_api_report.md"
 
 
 def test_builds_validator_command_using_existing_project_script(tmp_path: Path) -> None:
@@ -191,9 +207,9 @@ def test_irpclass_report_declares_java_package() -> None:
     # Resolve the repo root without the docs/java_api marker: this check validates a
     # committed offline artifact and must run on machines without the JavaDoc tree.
     root = next(
-        candidate for candidate in SYNC_TOOLS_PATH.parents if (candidate / "scripts" / "validate_model_api.py").is_file() and (candidate / "docs" / "reports" / "IRPClass_api_report.md").is_file()
+        candidate for candidate in SYNC_TOOLS_PATH.parents if (candidate / "scripts" / "validate_model_api.py").is_file() and _report_path(candidate / "docs" / "reports", "IRPClass").is_file()
     )
-    report = root / "docs" / "reports" / "IRPClass_api_report.md"
+    report = _report_path(root / "docs" / "reports", "IRPClass")
 
     assert tools.parse_report_java_package(report.read_text(encoding="utf-8")) == "com.telelogic.rhapsody.core"
 
@@ -207,7 +223,7 @@ def test_offline_blocker_exits_without_report_and_catalog(tmp_path: Path) -> Non
     blocker = tools.offline_authority_blocker(tmp_path, "IRPState")
 
     assert blocker is not None
-    assert "docs/reports/IRPState_api_report.md" in blocker
+    assert "docs/reports/com/telelogic/rhapsody/core/IRPState_api_report.md" in blocker
     assert "--source typelib" in blocker
 
 
@@ -216,7 +232,8 @@ def test_offline_blocker_asks_for_rebuild_when_report_exists(tmp_path: Path) -> 
     reports = tmp_path / "docs" / "reports"
     reports.mkdir(parents=True)
     (reports / "pywin32_authority.json").write_text('{"catalog": {"IRPClass": {}}}', encoding="utf-8")
-    (reports / "IRPState_api_report.md").write_text("# Rhapsody API Validation: IRPState\n", encoding="utf-8")
+    _report_path(reports, "IRPState").parent.mkdir(parents=True)
+    _report_path(reports, "IRPState").write_text("# Rhapsody API Validation: IRPState\n", encoding="utf-8")
 
     blocker = tools.offline_authority_blocker(tmp_path, "IRPState")
 
@@ -239,7 +256,7 @@ def test_offline_blocker_exits_when_snapshot_file_missing(tmp_path: Path) -> Non
     blocker = tools.offline_authority_blocker(tmp_path, "IRPState")
 
     assert blocker is not None
-    assert "IRPState_api_report.md" in blocker
+    assert "docs/reports/com/telelogic/rhapsody/core/IRPState_api_report.md" in blocker
 
 
 def test_verifier_requires_unit_and_integration_test_files(tmp_path: Path) -> None:
@@ -317,7 +334,7 @@ def _write_application_fixture(root: Path) -> Path:
         "     - binding difference\n",
         encoding="utf-8",
     )
-    report = root / "docs" / "reports" / "IRPApplication_api_report.md"
+    report = _report_path(root / "docs" / "reports", "IRPApplication")
     report.parent.mkdir(parents=True)
     report.write_text(
         "# Rhapsody API Validation: IRPApplication\n\n"

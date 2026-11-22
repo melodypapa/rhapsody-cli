@@ -1,14 +1,15 @@
 # Sync todo index — `docs/reports` interface sync (pywin32-direct bindings)
 
-Execution ledger for the 16 committed interface reports in `docs/reports/` (`*_api_report.md`)
-and their wrappers. One row = one report = one rhapsody-sync run; every row's steps enumerate
+Execution ledger for the 16 committed interface reports under `docs/reports/<java.package.path>/`
+(`*_api_report.md`; the authority catalog remains at `docs/reports/pywin32_authority.json`) and their wrappers. One row = one report = one rhapsody-sync run; every row's steps enumerate
 the rules and steps of [`.agents/skills/rhapsody-sync/SKILL.md`](../../.agents/skills/rhapsody-sync/SKILL.md)
 (§1–§8). Runs tick a step the moment it passes; rows archive to `Group-finished.md` only when
 all eight steps pass and the run's commit exists.
 
-## Layout (2026-11-21)
+## Layout (2026-11-22)
 
-The 13 open rows live in [Group-unfinished-1.md](Group-unfinished-1.md); completed rows
+API reports are grouped by their declared Java package; the current core reports live in
+`docs/reports/com/telelogic/rhapsody/core/`. The 13 open rows live in [Group-unfinished-1.md](Group-unfinished-1.md); completed rows
 archive to [Group-finished.md](Group-finished.md) (a batch file is deleted when its last row
 archives). Queue order: core.py base classes first (their migration removes the inherited
 dual-binding fallback for every subclass), then leaves.
@@ -21,7 +22,16 @@ dual-binding fallback for every subclass), then leaves.
 Progress: **3/16 rows archived** — IRPClass, IRPCollection and IRPUnit (commit `1c81084`
 closed IRPUnit at 8/8). The remaining 13 rows are open; IRPModelElement is 6/8. IRPCollection
 and IRPUnit completed their §2 canonical moves under the revised local-import rule.
-Refreshed 2026-11-21 (site counts re-surveyed at each run start).
+
+Report/status refresh (2026-11-22): regenerated all 16 API reports from the registered type
+library evidence. The fresh catalog matches `pywin32_authority.json` exactly (16 interfaces,
+no member or shape differences); the committed catalog's six documented aliases and nine
+documented-unavailable entries remain intact. All 16 report bodies match regenerated output
+and are now organized under their Java package paths. Unit suite:
+1943 passed; integration suite: 439 collected. Live integration closeout was not run because
+a Rhapsody process was already running and the project requires a fresh instance. No sync
+row was closed from this refresh; the 13 open rows remain open pending their own closeout
+evidence.
 
 ## Resume rule
 

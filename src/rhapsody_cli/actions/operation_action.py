@@ -19,7 +19,7 @@ import argparse
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List, cast
+from typing import Callable, Dict, List, cast
 
 from rhapsody_cli.actions.abstract_action import ElementManagementAction, SessionAwareAction
 from rhapsody_cli.cli.formatters import OutputFormatter
@@ -446,20 +446,29 @@ class OperationViewAction(AbstractOperationAction):
 
         Normalizes boolean flags to int for clean JSON round-trip.
         """
-        returns = operation.get_returns()  # type: ignore[attr-defined]
+
+        def safe(getter: Callable[[], object], default: object) -> object:
+            # Some Rhapsody builds return IRPInterfaceItem COM objects for
+            # operations; those lack several IRPOperation-only members.
+            try:
+                return getter()
+            except (AttributeError, RuntimeError):
+                return default
+
+        returns = safe(lambda: operation.get_returns(), None)  # type: ignore[attr-defined]
         returns_name = cast(IRPModelElement, returns).get_name() if returns is not None else ""
-        arguments = operation.get_arguments()  # type: ignore[attr-defined]
+        arguments = safe(lambda: operation.get_arguments(), [])  # type: ignore[attr-defined]
         return {
             "name": operation.get_name(),
             "guid": operation.get_guid(),
-            "description": operation.get_description(),
-            "body": operation.get_body(),  # type: ignore[attr-defined]
-            "isAbstract": int(operation.get_is_abstract()),  # type: ignore[attr-defined]
-            "isStatic": int(operation.get_is_static()),  # type: ignore[attr-defined]
-            "isVirtual": int(operation.get_is_virtual()),  # type: ignore[attr-defined]
+            "description": safe(operation.get_description, ""),
+            "body": safe(lambda: operation.get_body(), ""),  # type: ignore[attr-defined]
+            "isAbstract": int(safe(lambda: operation.get_is_abstract(), 0)),  # type: ignore[attr-defined,call-overload]
+            "isStatic": int(safe(lambda: operation.get_is_static(), 0)),  # type: ignore[attr-defined,call-overload]
+            "isVirtual": int(safe(lambda: operation.get_is_virtual(), 0)),  # type: ignore[attr-defined,call-overload]
             "returns": returns_name,
-            "visibility": operation.get_visibility(),  # type: ignore[attr-defined]
-            "arguments": [cast(IRPModelElement, arg).get_name() for arg in arguments],
+            "visibility": safe(lambda: operation.get_visibility(), ""),  # type: ignore[attr-defined]
+            "arguments": [cast(IRPModelElement, arg).get_name() for arg in arguments],  # type: ignore[attr-defined]
             "metaClass": operation.get_meta_class(),
             "fullPath": operation.get_full_path_name(),
         }

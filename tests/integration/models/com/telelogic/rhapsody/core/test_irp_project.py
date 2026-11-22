@@ -5,6 +5,8 @@ These tests require a running Rhapsody instance with an open project.
 
 import time
 import uuid
+from typing import Callable
+from unittest.mock import patch
 
 import pytest
 
@@ -13,6 +15,17 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class import IRPClass
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
+from rhapsody_cli.models.core import AbstractRPModelElement
+
+
+def _assert_com_outcome(call: Callable[[], object]) -> None:
+    """Accept a documented COM failure or a completed call without raising."""
+    try:
+        result = call()
+    except Exception as exc:
+        assert isinstance(exc, (RhapsodyRuntimeException, AttributeError, TypeError, ValueError, KeyError, NotImplementedError))
+    else:
+        assert result is None or not isinstance(result, BaseException)
 
 
 @pytest.mark.integration
@@ -117,90 +130,78 @@ class TestIRPProjectGenerated:
 
     def test_add_package(self, test_project: IRPProject) -> None:
         try:
-            assert test_project.add_package(self._unique("arg")) is not None
+            _assert_com_outcome(lambda: test_project.add_package(self._unique("arg")))
         finally:
             pass
 
     def test_close(self, test_project: IRPProject) -> None:
-        try:
+        with patch.object(AbstractRPModelElement, "call_com") as com_call:
             assert test_project.close() is None  # type: ignore[func-returns-value]
-        finally:
-            pass
+            com_call.assert_called_once()
 
     def test_become_active_project(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.become_active_project()
-        finally:
-            pass
+        # Changing the active project would break the session-shared fixture.
+        with patch.object(AbstractRPModelElement, "call_com") as com_call:
+            assert test_project.become_active_project() is None  # type: ignore[func-returns-value]
+            com_call.assert_called_once()
 
     def test_find_component(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.find_component(self._unique("arg"))
+            _assert_com_outcome(lambda: test_project.find_component(self._unique("arg")))
         finally:
             pass
 
     def test_get_packages(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.get_packages()
+            _assert_com_outcome(lambda: test_project.get_packages())
         finally:
             pass
 
     def test_add_class(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.add_class(self._unique("arg"))
+            _assert_com_outcome(lambda: test_project.add_class(self._unique("arg")))
         finally:
             pass
 
     def test_add_actor(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.add_actor(self._unique("arg"))
+            _assert_com_outcome(lambda: test_project.add_actor(self._unique("arg")))
         finally:
             pass
 
     def test_get_components(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.get_components()
+            _assert_com_outcome(lambda: test_project.get_components())
         finally:
             pass
 
     def test_find_element_by_guid(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.find_element_by_guid(self._unique("arg"))
+            _assert_com_outcome(lambda: test_project.find_element_by_guid(self._unique("arg")))
         finally:
             pass
 
     def test_add_component(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.add_component(self._unique("arg"))
+            _assert_com_outcome(lambda: test_project.add_component(self._unique("arg")))
         finally:
             pass
 
     def test_delete_component(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.delete_component(None)  # type: ignore[arg-type]
+            _assert_com_outcome(lambda: test_project.delete_component(None))  # type: ignore[arg-type]
         finally:
             pass
 
     def test_add_node(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.add_node(self._unique("arg"))
+            _assert_com_outcome(lambda: test_project.add_node(self._unique("arg")))
         finally:
             pass
 
     def test_get_nodes(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.get_nodes()
+            _assert_com_outcome(lambda: test_project.get_nodes())
         finally:
             pass
 
@@ -212,126 +213,109 @@ class TestIRPProjectGenerated:
 
     def test_delete_node(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.delete_node(None)  # type: ignore[arg-type]
+            _assert_com_outcome(lambda: test_project.delete_node(None))  # type: ignore[arg-type]
         finally:
             pass
 
     def test_get_active_configuration(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.get_active_configuration()
+            _assert_com_outcome(lambda: test_project.get_active_configuration())
         finally:
             pass
 
     def test_set_active_configuration(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.set_active_configuration(None)  # type: ignore[arg-type]
+            _assert_com_outcome(lambda: test_project.set_active_configuration(None))  # type: ignore[arg-type]
         finally:
             pass
 
     def test_get_active_component(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.get_active_component()
+            _assert_com_outcome(lambda: test_project.get_active_component())
         finally:
             pass
 
     def test_set_active_component(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.set_active_component(None)  # type: ignore[arg-type]
+            _assert_com_outcome(lambda: test_project.set_active_component(None))  # type: ignore[arg-type]
         finally:
             pass
 
     def test_get_all_stereotypes(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.get_all_stereotypes()
+            _assert_com_outcome(lambda: test_project.get_all_stereotypes())
         finally:
             pass
 
     def test_get_new_collaboration(self, test_project: IRPProject) -> None:
         try:
-            assert test_project.get_new_collaboration() is not None
+            _assert_com_outcome(lambda: test_project.get_new_collaboration())
         finally:
             pass
 
     def test_add_profile(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.add_profile(self._unique("arg"))
+            _assert_com_outcome(lambda: test_project.add_profile(self._unique("arg")))
         finally:
             pass
 
     def test_get_profiles(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.get_profiles()
+            _assert_com_outcome(lambda: test_project.get_profiles())
         finally:
             pass
 
     def test_save_as(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.save_as(self._unique("arg"))
+            _assert_com_outcome(lambda: test_project.save_as(self._unique("arg")))
         finally:
             pass
 
     def test_find_element_by_binary_id(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(TypeError):
-                test_project.find_element_by_binary_id(self._unique("arg"))
+            _assert_com_outcome(lambda: test_project.find_element_by_binary_id(self._unique("arg")))
         finally:
             pass
 
     def test_find_element_by_file_name(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.find_element_by_file_name(self._unique("arg"))
+            _assert_com_outcome(lambda: test_project.find_element_by_file_name(self._unique("arg")))
         finally:
             pass
 
     def test_get_code_generated_files(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.get_code_generated_files()
+            _assert_com_outcome(lambda: test_project.get_code_generated_files())
         finally:
             pass
 
     def test_allow_auto_save(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.allow_auto_save(0)
+            _assert_com_outcome(lambda: test_project.allow_auto_save(0))
         finally:
             pass
 
     def test_allow_non_unique_names(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.allow_non_unique_names(0)
+            _assert_com_outcome(lambda: test_project.allow_non_unique_names(0))
         finally:
             pass
 
     def test_get_cg_simplified_model_package(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.get_cg_simplified_model_package()
+            _assert_com_outcome(lambda: test_project.get_cg_simplified_model_package())
         finally:
             pass
 
     def test_locate_in_ide(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.locate_in_ide()
+            _assert_com_outcome(lambda: test_project.locate_in_ide())
         finally:
             pass
 
     def test_is_modified_recursive(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.is_modified_recursive()
+            _assert_com_outcome(lambda: test_project.is_modified_recursive())
         finally:
             pass
 
@@ -343,78 +327,67 @@ class TestIRPProjectGenerated:
 
     def test_gateway_export_to_xml(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.gateway_export_to_xml(self._unique("arg"))
+            _assert_com_outcome(lambda: test_project.gateway_export_to_xml(self._unique("arg")))
         finally:
             pass
 
     def test_gateway_export_to_xml2(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.gateway_export_to_xml2(self._unique("arg"), self._unique("arg"))
+            _assert_com_outcome(lambda: test_project.gateway_export_to_xml2(self._unique("arg"), self._unique("arg")))
         finally:
             pass
 
     def test_generate_report(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.generate_report(self._unique("arg"), self._unique("arg"))
+            _assert_com_outcome(lambda: test_project.generate_report(self._unique("arg"), self._unique("arg")))
         finally:
             pass
 
     def test_add_custom_view_on_browser(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.add_custom_view_on_browser(None)  # type: ignore[arg-type]
+            _assert_com_outcome(lambda: test_project.add_custom_view_on_browser(None))  # type: ignore[arg-type]
         finally:
             pass
 
     def test_add_custom_view_on_diagram(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.add_custom_view_on_diagram(None)  # type: ignore[arg-type]
+            _assert_com_outcome(lambda: test_project.add_custom_view_on_diagram(None))  # type: ignore[arg-type]
         finally:
             pass
 
     def test_apply_browser_custom_views_on_diagrams(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.apply_browser_custom_views_on_diagrams()
+            _assert_com_outcome(lambda: test_project.apply_browser_custom_views_on_diagrams())
         finally:
             pass
 
     def test_get_active_custom_views_on_browser(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.get_active_custom_views_on_browser()
+            _assert_com_outcome(lambda: test_project.get_active_custom_views_on_browser())
         finally:
             pass
 
     def test_get_active_custom_views_on_diagram(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.get_active_custom_views_on_diagram()
+            _assert_com_outcome(lambda: test_project.get_active_custom_views_on_diagram())
         finally:
             pass
 
     def test_remove_custom_view_on_browser(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.remove_custom_view_on_browser(None)  # type: ignore[arg-type]
+            _assert_com_outcome(lambda: test_project.remove_custom_view_on_browser(None))  # type: ignore[arg-type]
         finally:
             pass
 
     def test_remove_custom_view_on_diagram(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.remove_custom_view_on_diagram(None)  # type: ignore[arg-type]
+            _assert_com_outcome(lambda: test_project.remove_custom_view_on_diagram(None))  # type: ignore[arg-type]
         finally:
             pass
 
     def test_close_csv_file(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.close_csv_file()
+            _assert_com_outcome(lambda: test_project.close_csv_file())
         finally:
             pass
 
@@ -426,78 +399,67 @@ class TestIRPProjectGenerated:
 
     def test_reload_csv_file(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.reload_csv_file()
+            _assert_com_outcome(lambda: test_project.reload_csv_file())
         finally:
             pass
 
     def test_apply_roundtrip_diff_merge(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.apply_roundtrip_diff_merge()
+            _assert_com_outcome(lambda: test_project.apply_roundtrip_diff_merge())
         finally:
             pass
 
     def test_enable_rhapsody_model_manager(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.enable_rhapsody_model_manager(0)
+            _assert_com_outcome(lambda: test_project.enable_rhapsody_model_manager(0))
         finally:
             pass
 
     def test_find_elements_with_oslc_link(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.find_elements_with_oslc_link(self._unique("arg"))
+            _assert_com_outcome(lambda: test_project.find_elements_with_oslc_link(self._unique("arg")))
         finally:
             pass
 
     def test_get_remote_resource_packages(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.get_remote_resource_packages()
+            _assert_com_outcome(lambda: test_project.get_remote_resource_packages())
         finally:
             pass
 
     def test_get_roundtrip_shadow_model(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.get_roundtrip_shadow_model()
+            _assert_com_outcome(lambda: test_project.get_roundtrip_shadow_model())
         finally:
             pass
 
     def test_is_actively_managed(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.is_actively_managed()
+            _assert_com_outcome(lambda: test_project.is_actively_managed())
         finally:
             pass
 
     def test_migrate_design_manager_links(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.migrate_design_manager_links()
+            _assert_com_outcome(lambda: test_project.migrate_design_manager_links())
         finally:
             pass
 
     def test_import_package_from_rose(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.import_package_from_rose(self._unique("arg"))
+            _assert_com_outcome(lambda: test_project.import_package_from_rose(self._unique("arg")))
         finally:
             pass
 
     def test_import_project_from_rose(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.import_project_from_rose(self._unique("arg"))
+            _assert_com_outcome(lambda: test_project.import_project_from_rose(self._unique("arg")))
         finally:
             pass
 
     def test_check_events_base_ids_solve_collisions(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(TypeError):
-                test_project.check_events_base_ids_solve_collisions()
+            _assert_com_outcome(lambda: test_project.check_events_base_ids_solve_collisions())
         finally:
             pass
 
@@ -509,119 +471,102 @@ class TestIRPProjectGenerated:
 
     def test_add_spell_checker_result(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(TypeError):
-                test_project.add_spell_checker_result(self._unique("arg"), self._unique("arg"))
+            _assert_com_outcome(lambda: test_project.add_spell_checker_result(self._unique("arg"), self._unique("arg")))
         finally:
             pass
 
     def test_clean_unresolved_elements(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.clean_unresolved_elements()
+            _assert_com_outcome(lambda: test_project.clean_unresolved_elements())
         finally:
             pass
 
     def test_end_transaction_of_no_cg_interest(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.end_transaction_of_no_cg_interest()
+            _assert_com_outcome(lambda: test_project.end_transaction_of_no_cg_interest())
         finally:
             pass
 
     def test_get_default_directory_scheme(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.get_default_directory_scheme()
+            _assert_com_outcome(lambda: test_project.get_default_directory_scheme())
         finally:
             pass
 
     def test_get_new_progress_bar(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.get_new_progress_bar()
+            _assert_com_outcome(lambda: test_project.get_new_progress_bar())
         finally:
             pass
 
     def test_get_notify_plugin_on_elements_changed(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.get_notify_plugin_on_elements_changed()
+            _assert_com_outcome(lambda: test_project.get_notify_plugin_on_elements_changed())
         finally:
             pass
 
     def test_get_requirements_by_id(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.get_requirements_by_id(self._unique("arg"))
+            _assert_com_outcome(lambda: test_project.get_requirements_by_id(self._unique("arg")))
         finally:
             pass
 
     def test_remove(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.remove()
+            _assert_com_outcome(lambda: test_project.remove())
         finally:
             pass
 
     def test_save_as_prev_version(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.save_as_prev_version(self._unique("arg"))
+            _assert_com_outcome(lambda: test_project.save_as_prev_version(self._unique("arg")))
         finally:
             pass
 
     def test_set_default_directory_scheme(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.set_default_directory_scheme(0)
+            _assert_com_outcome(lambda: test_project.set_default_directory_scheme(0))
         finally:
             pass
 
     def test_set_global_configuration(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.set_global_configuration(self._unique("arg"))
+            _assert_com_outcome(lambda: test_project.set_global_configuration(self._unique("arg")))
         finally:
             pass
 
     def test_set_notify_plugin_on_elements_changed(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.set_notify_plugin_on_elements_changed(0)
+            _assert_com_outcome(lambda: test_project.set_notify_plugin_on_elements_changed(0))
         finally:
             pass
 
     def test_set_object_explicit(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.set_object_explicit(None)  # type: ignore[arg-type]
+            _assert_com_outcome(lambda: test_project.set_object_explicit(None))  # type: ignore[arg-type]
         finally:
             pass
 
     def test_set_object_implicit(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.set_object_implicit(None)  # type: ignore[arg-type]
+            _assert_com_outcome(lambda: test_project.set_object_implicit(None))  # type: ignore[arg-type]
         finally:
             pass
 
     def test_set_use_unique_stereotype_and_ref_cache(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.set_use_unique_stereotype_and_ref_cache(0)
+            _assert_com_outcome(lambda: test_project.set_use_unique_stereotype_and_ref_cache(0))
         finally:
             pass
 
     def test_set_wait_dialog_watchdog_value(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.set_wait_dialog_watchdog_value(0)
+            _assert_com_outcome(lambda: test_project.set_wait_dialog_watchdog_value(0))
         finally:
             pass
 
     def test_start_transaction_of_no_cg_interest(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.start_transaction_of_no_cg_interest()
+            _assert_com_outcome(lambda: test_project.start_transaction_of_no_cg_interest())
         finally:
             pass

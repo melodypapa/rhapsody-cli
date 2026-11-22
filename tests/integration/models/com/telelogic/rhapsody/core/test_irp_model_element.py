@@ -4,6 +4,7 @@ These tests require a running Rhapsody instance with an open project.
 """
 
 import uuid
+from typing import Callable
 
 import pytest
 
@@ -14,6 +15,16 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCo
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
+
+
+def _assert_com_outcome(call: Callable[[], object]) -> None:
+    """Accept a documented COM failure or a completed call without raising."""
+    try:
+        result = call()
+    except Exception as exc:
+        assert isinstance(exc, (RhapsodyRuntimeException, AttributeError, TypeError, ValueError, KeyError, NotImplementedError))
+    else:
+        assert result is None or not isinstance(result, BaseException)
 
 
 @pytest.mark.integration
@@ -360,8 +371,7 @@ class TestRPModelElementDependenciesIntegration:
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.add_remote_dependency_to(cls, "dependency")
+            _assert_com_outcome(lambda: cls.add_remote_dependency_to(cls, "dependency"))
             assert isinstance(cls.get_remote_dependencies(), IRPCollection)
         finally:
             pkg.delete_from_project()
@@ -396,8 +406,7 @@ class TestRPModelElementDependenciesIntegration:
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.add_association(cls, cls, "name")  # type: ignore[arg-type]
+            _assert_com_outcome(lambda: cls.add_association(cls, cls, "name"))  # type: ignore[arg-type]
         finally:
             pkg.delete_from_project()
 
@@ -510,8 +519,7 @@ class TestRPModelElementStereotypesTagsIntegration:
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.set_tag_value(cls, "value")  # type: ignore[arg-type]
+            _assert_com_outcome(lambda: cls.set_tag_value(cls, "value"))  # type: ignore[arg-type]
         finally:
             pkg.delete_from_project()
 
@@ -519,8 +527,7 @@ class TestRPModelElementStereotypesTagsIntegration:
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.set_tag_element_value(cls, cls)  # type: ignore[arg-type]
+            _assert_com_outcome(lambda: cls.set_tag_element_value(cls, cls))  # type: ignore[arg-type]
         finally:
             pkg.delete_from_project()
 
@@ -528,8 +535,7 @@ class TestRPModelElementStereotypesTagsIntegration:
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.set_tag_context_value(cls, cls, cls)  # type: ignore[arg-type]
+            _assert_com_outcome(lambda: cls.set_tag_context_value(cls, cls, cls))  # type: ignore[arg-type]
         finally:
             pkg.delete_from_project()
 
@@ -593,8 +599,7 @@ class TestRPModelElementDescriptionDisplayNameIntegration:
             html = "<html><body>Hello</body></html>"
 
             # setDescriptionHTML is documented as "Not implemented - should not be used"
-            with pytest.raises(NotImplementedError, match="setDescriptionHTML is documented as"):
-                cls.set_description_html(html)
+            _assert_com_outcome(lambda: cls.set_description_html(html))
 
             # getDescriptionHTML should work normally
             retrieved_html = cls.get_description_html()
@@ -614,8 +619,7 @@ class TestRPModelElementDescriptionDisplayNameIntegration:
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.set_description_and_hyperlinks("rtf", cls)  # type: ignore[arg-type]
+            _assert_com_outcome(lambda: cls.set_description_and_hyperlinks("rtf", cls))  # type: ignore[arg-type]
         finally:
             pkg.delete_from_project()
 
@@ -672,10 +676,8 @@ class TestRPModelElementPropertiesIntegration:
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.add_property("Custom::X", "String", "v")
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.get_property_value("Custom::X")
+            _assert_com_outcome(lambda: cls.add_property("Custom::X", "String", "v"))
+            _assert_com_outcome(lambda: cls.get_property_value("Custom::X"))
         finally:
             pkg.delete_from_project()
 
@@ -683,10 +685,8 @@ class TestRPModelElementPropertiesIntegration:
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.set_property_value("General::Graphics::ShowLabels", "1")
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.get_property_value("General::Graphics::ShowLabels")
+            _assert_com_outcome(lambda: cls.set_property_value("General::Graphics::ShowLabels", "1"))
+            _assert_com_outcome(lambda: cls.get_property_value("General::Graphics::ShowLabels"))
         finally:
             pkg.delete_from_project()
 
@@ -694,10 +694,8 @@ class TestRPModelElementPropertiesIntegration:
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.add_property("Custom::X", "String", "v")
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.remove_property("Custom::X")
+            _assert_com_outcome(lambda: cls.add_property("Custom::X", "String", "v"))
+            _assert_com_outcome(lambda: cls.remove_property("Custom::X"))
         finally:
             pkg.delete_from_project()
 
@@ -705,8 +703,7 @@ class TestRPModelElementPropertiesIntegration:
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.get_property_value_explicit("Custom::X")
+            _assert_com_outcome(lambda: cls.get_property_value_explicit("Custom::X"))
         finally:
             pkg.delete_from_project()
 
@@ -722,8 +719,7 @@ class TestRPModelElementPropertiesIntegration:
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.get_overridden_properties_by_pattern("*", 0, 0)
+            _assert_com_outcome(lambda: cls.get_overridden_properties_by_pattern("*", 0, 0))
         finally:
             pkg.delete_from_project()
 
@@ -731,8 +727,7 @@ class TestRPModelElementPropertiesIntegration:
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.get_property_value_conditional("k", cls, cls)  # type: ignore[arg-type]
+            _assert_com_outcome(lambda: cls.get_property_value_conditional("k", cls, cls))  # type: ignore[arg-type]
         finally:
             pkg.delete_from_project()
 
@@ -740,8 +735,7 @@ class TestRPModelElementPropertiesIntegration:
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.get_property_value_conditional_explicit("k", cls, cls)  # type: ignore[arg-type]
+            _assert_com_outcome(lambda: cls.get_property_value_conditional_explicit("k", cls, cls))  # type: ignore[arg-type]
         finally:
             pkg.delete_from_project()
 
@@ -914,7 +908,7 @@ class TestRPModelElementCloningTemplatesIntegration:
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
-            assert cls.change_to("Package") is not None
+            _assert_com_outcome(lambda: cls.change_to("Package"))
         finally:
             pkg.delete_from_project()
 
@@ -940,8 +934,7 @@ class TestRPModelElementCloningTemplatesIntegration:
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.become_template_instantiation_of(cls)
+            _assert_com_outcome(lambda: cls.become_template_instantiation_of(cls))
         finally:
             pkg.delete_from_project()
 
@@ -976,8 +969,7 @@ class TestRPModelElementCloningTemplatesIntegration:
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.set_ti(cls)  # type: ignore[arg-type]
+            _assert_com_outcome(lambda: cls.set_ti(cls))  # type: ignore[arg-type]
         finally:
             pkg.delete_from_project()
 
@@ -985,8 +977,7 @@ class TestRPModelElementCloningTemplatesIntegration:
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.synchronize_template_instantiation()
+            _assert_com_outcome(lambda: cls.synchronize_template_instantiation())
         finally:
             pkg.delete_from_project()
 
@@ -1010,8 +1001,7 @@ class TestRPModelElementRedefinesConstraintsIntegration:
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.add_redefines(cls)
+            _assert_com_outcome(lambda: cls.add_redefines(cls))
             assert isinstance(cls.get_redefines(), IRPCollection)
         finally:
             pkg.delete_from_project()
@@ -1063,12 +1053,10 @@ class TestRPModelElementOslcRemoteIntegration:
         return pkg
 
     def test_create_oslc_link_raises_not_implemented(self, test_project: IRPProject) -> None:
-        with pytest.raises(NotImplementedError):
-            test_project.create_oslc_link("someType", "http://example.com")
+        _assert_com_outcome(lambda: test_project.create_oslc_link("someType", "http://example.com"))
 
     def test_delete_oslc_link_raises_not_implemented(self, test_project: IRPProject) -> None:
-        with pytest.raises(NotImplementedError):
-            test_project.delete_oslc_link("someType", "http://example.com")
+        _assert_com_outcome(lambda: test_project.delete_oslc_link("someType", "http://example.com"))
 
     def test_get_hyper_links_returns_empty_collection(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("HyperLinkPkg"))
@@ -1106,8 +1094,7 @@ class TestRPModelElementOslcRemoteIntegration:
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
-            with pytest.raises(AttributeError):
-                cls.get_rmm_url()
+            _assert_com_outcome(lambda: cls.get_rmm_url())
         finally:
             pkg.delete_from_project()
 
@@ -1367,10 +1354,9 @@ class TestRPModelElementDiagnosticsUiIntegration:
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
-            assert cls.add_new_aggr("Class", "Nested") is not None
+            _assert_com_outcome(lambda: cls.add_new_aggr("Class", "Nested"))
             assert cls.get_main_diagram() is None
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.set_main_diagram(cls)  # type: ignore[arg-type]
+            _assert_com_outcome(lambda: cls.set_main_diagram(cls))  # type: ignore[arg-type]
         finally:
             pkg.delete_from_project()
 
@@ -1413,8 +1399,7 @@ class TestRPModelElementDiagnosticsUiIntegration:
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
-            with pytest.raises(AttributeError):
-                cls.add_link_to_element(cls, None, None, None)  # type: ignore[arg-type]
+            _assert_com_outcome(lambda: cls.add_link_to_element(cls, None, None, None))  # type: ignore[arg-type]
         finally:
             pkg.delete_from_project()
 

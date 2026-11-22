@@ -13,8 +13,14 @@ from scripts.pywin32_authority import (
 )
 
 
+def _package_report(root: Path, name: str) -> Path:
+    report_dir = root / "com" / "telelogic" / "rhapsody" / "core"
+    report_dir.mkdir(parents=True, exist_ok=True)
+    return report_dir / name
+
+
 def test_export_catalog_from_reports_extracts_names_and_kinds(tmp_path: Path) -> None:
-    report = tmp_path / "IRPExample_api_report.md"
+    report = _package_report(tmp_path, "IRPExample_api_report.md")
     report.write_text(
         "# Rhapsody API Validation: IRPExample\n"
         "| Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |\n"
@@ -27,7 +33,7 @@ def test_export_catalog_from_reports_extracts_names_and_kinds(tmp_path: Path) ->
 
 
 def test_build_authority_starts_with_empty_exception_maps(tmp_path: Path) -> None:
-    (tmp_path / "IRPExample_api_report.md").write_text(
+    _package_report(tmp_path, "IRPExample_api_report.md").write_text(
         "| Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |\n" "| --- | --- | --- | --- | --- |\n" "| — | — | addItem (method) | PYWIN32_ONLY_MEMBER | Review. |\n",
         encoding="utf-8",
     )
@@ -40,7 +46,7 @@ def test_build_authority_starts_with_empty_exception_maps(tmp_path: Path) -> Non
 
 
 def test_build_authority_from_typelib_uses_registered_members(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    (tmp_path / "IRPExample_api_report.md").write_text("", encoding="utf-8")
+    _package_report(tmp_path, "IRPExample_api_report.md").write_text("", encoding="utf-8")
     monkeypatch.setattr(validator, "collect_registered_pywin32_members", lambda interface_name: {"isFoo": "method", "Bar": "property"})
 
     data = build_authority_from_typelib(tmp_path)
@@ -48,6 +54,11 @@ def test_build_authority_from_typelib_uses_registered_members(tmp_path: Path, mo
     assert data["catalog"] == {"IRPExample": {"isFoo": "method", "Bar": "property"}}
     assert data["documented_aliases"] == {}
     assert data["documented_unavailable"] == {}
+
+
+def test_load_authority_reports_missing_snapshot(tmp_path: Path) -> None:
+    with pytest.raises(ValueError, match="Could not load pywin32 authority"):
+        load_authority(tmp_path / "missing.json")
 
 
 def test_load_authority_round_trip(tmp_path: Path) -> None:

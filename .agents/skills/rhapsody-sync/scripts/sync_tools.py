@@ -58,19 +58,42 @@ def find_java_doc(root: Path, interface_name: str) -> Tuple[str, str, Path]:
     return simple_name, ".".join(package_parts), java_doc
 
 
+def api_report_path(root: Path, interface_name: str) -> Path:
+    """Return the report path under the interface's Java package directory."""
+    simple_name, explicit_package = split_interface_name(interface_name)
+    reports_dir = root / "docs" / "reports"
+    report_name = f"{simple_name}_api_report.md"
+    if explicit_package is not None:
+        java_package = explicit_package
+    else:
+        try:
+            _, java_package, _ = find_java_doc(root, simple_name)
+        except FileNotFoundError as exc:
+            matches = sorted(reports_dir.rglob(report_name))
+            if len(matches) == 1:
+                return matches[0]
+            if len(matches) > 1:
+                paths = ", ".join(path.relative_to(reports_dir).as_posix() for path in matches)
+                raise ValueError(f"API report for {simple_name} is ambiguous without JavaDoc: {paths}") from exc
+            java_package = "com.telelogic.rhapsody.core"
+    return reports_dir / Path(*java_package.split(".")) / report_name
+
+
 def offline_authority_blocker(root: Path, interface_name: str) -> Optional[str]:
     """Return the blocker for offline validation, or None when committed COM evidence exists."""
     reports_dir = root / "docs" / "reports"
+    report_path = api_report_path(root, interface_name)
+    report_display_path = report_path.relative_to(root).as_posix()
     try:
         authority = json.loads((reports_dir / "pywin32_authority.json").read_text(encoding="utf-8"))
     except (OSError, ValueError):
         authority = {}
     if interface_name in authority.get("catalog", {}):
         return None
-    if (reports_dir / f"{interface_name}_api_report.md").is_file():
+    if report_path.is_file():
         return f"The authority catalog lacks {interface_name}. Rebuild it from the committed reports with: python scripts/pywin32_authority.py --source reports"
     return (
-        f"Offline sync cannot proceed: docs/reports/{interface_name}_api_report.md does not exist and "
+        f"Offline sync cannot proceed: {report_display_path} does not exist and "
         f"{interface_name} is absent from docs/reports/pywin32_authority.json. "
         "Run the sync on a machine with Rhapsody (--source typelib) or commit a generated report first."
     )

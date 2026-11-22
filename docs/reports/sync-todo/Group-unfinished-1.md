@@ -1,7 +1,8 @@
 # Sync todo: `docs/reports` — `Group-unfinished-1` (IRPModelElement → IRPUseCase)
 
-Baseline: 16 committed reports · 13 open rows · ~219 legacy sites (2026-11-21 survey; 3 rows
-archived; queue order = core.py base classes first, then leaves)
+Baseline: 16 committed reports under `docs/reports/com/telelogic/rhapsody/core/` · 13 open
+rows · ~219 legacy sites (2026-11-21 site survey; 3 rows archived; queue order = core.py base
+classes first, then leaves)
 (Resume = the first row still `[ ]`; a row archives to [Group-finished.md](Group-finished.md)
 only when all 8 steps are `[x]` and its commit exists)
 Steps = SKILL.md §1–§8, enumerated per row: ① §1 sync TODO · ② §2 resolve target ·
@@ -12,6 +13,15 @@ Per-row binding rules: one pywin32-exposed COM member per call —
 `get_com_property`/`set_com_property` for property-shaped members, names confirmed in
 `docs/reports/pywin32_authority.json`; catalog-absent sites are blockers, never blind
 migrations; inherited members wait for their base class's own row.
+
+## API report refresh (2026-11-22)
+
+Regenerated all 16 API reports after enumerating the registered Rhapsody type library. The
+fresh 16-interface catalog exactly matches `pywin32_authority.json`; no member or shape
+changes were found. The reports are organized under `docs/reports/<java.package.path>/` and
+their generated content remains consistent with the fresh catalog. The report refresh does not close any sync step: 13 rows remain open pending their own closeout evidence.
+The unit suite passed (1943 tests); integration collection found 439 tests, but live
+integration was not run against a fresh Rhapsody instance.
 
 - [ ] irp_model_element_api_report (IRPModelElement · models/core.py · 1 blocker site left)
   - Note: re-run completed 2026-11-21 under the updated skill (shape-follows-COM, future annotations, own-members report + Correct Items, Java-package declaration). Class renamed `RPModelElement` → `IRPModelElement`; python-only `get_oslc_links` removed (stale premise — `getOSLCLinks` is exposed by pywin32); `core.py` converted to `from __future__ import annotations` with unquoted type references and local runtime imports for `cast()` (25 casts + 84 annotations); `wrap()` reads the `metaClass` property; RPCollection migrated; IRPUnit's 21 sites remain for its own row.

@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 import pytest
 
@@ -58,7 +58,7 @@ ACTIVE_ROW = (
 
 
 def test_promote_correct_com_bindings_moves_property_binding_to_matches() -> None:
-    informational = [ACTIVE_ROW]
+    informational: List[Tuple[str, str, str, str, str]] = [ACTIVE_ROW]
 
     remaining, promoted = promote_correct_com_bindings(informational)
 
@@ -488,13 +488,14 @@ def test_main_writes_markdown_report_to_default_and_requested_directories(tmp_pa
     monkeypatch.setattr(validator, "collect_registered_pywin32_members", lambda interface_name: {"version": "method"})
 
     assert main(["IRPApplication"]) == 0
-    default_report = tmp_path / "IRPApplication_api_report.md"
+    package_path = Path(*validator.JAVA_PACKAGE.split("."))
+    default_report = tmp_path / package_path / "IRPApplication_api_report.md"
     assert default_report.is_file()
     assert "# Rhapsody API Validation: IRPApplication" in default_report.read_text(encoding="utf-8")
 
     custom_directory = tmp_path / "reports"
     assert main(["IRPApplication", "--path", str(custom_directory)]) == 0
-    custom_report = custom_directory / "IRPApplication_api_report.md"
+    custom_report = custom_directory / package_path / "IRPApplication_api_report.md"
     assert custom_report.is_file()
     assert capsys.readouterr().out == ""
 
@@ -717,7 +718,7 @@ def test_main_authority_source_reports_backlog_without_typelib(tmp_path: Path, m
 
     assert validator.main(["IRPClass", "--source", "authority"]) == 0
 
-    report = (tmp_path / "IRPClass_api_report.md").read_text(encoding="utf-8")
+    report = (tmp_path / Path(*validator.JAVA_PACKAGE.split(".")) / "IRPClass_api_report.md").read_text(encoding="utf-8")
     assert "## Expected Binding Differences" in report
     assert "## Wrapper Backlog" in report
     assert "No deviations require changes." in report
@@ -725,7 +726,7 @@ def test_main_authority_source_reports_backlog_without_typelib(tmp_path: Path, m
 
 def test_irpclass_report_has_no_actionable_deviations() -> None:
     reports_root = Path(__file__).resolve().parents[2] / "docs" / "reports"
-    text = (reports_root / "IRPClass_api_report.md").read_text(encoding="utf-8")
+    text = (reports_root / Path(*validator.JAVA_PACKAGE.split(".")) / "IRPClass_api_report.md").read_text(encoding="utf-8")
     section = text.split("## Comparison details", 1)[1].split("## Expected Binding Differences", 1)[0]
     rows = [line for line in section.splitlines() if line.startswith("| ") and "Python model wrapper" not in line and "---" not in line]
     assert rows == [], rows
