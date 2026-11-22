@@ -35,21 +35,27 @@ dual-binding fallback for every subclass), then leaves.
 | [Group-unfinished-13.md](Group-unfinished-13.md) | 3 | ~0 | IRPExtensionPoint → IRPIntegrator | ⬜ 3 open |
 
 Progress: **15/129 rows tracked as archived** (128 wrapper classes + 1 application layer;
-10 queued in Group-unfinished-2, 103 in Groups 3–13). All 12 model rows from
+10 queued in Group-unfinished-2, 103 in Groups 3–13). All 13 rows from
 Group-unfinished-1 reached 8/8 except
 IRPApplication, whose Step 8 stays open on integration layer-only coverage (44.68%). Commits
-`6cbebc3` (sync), `1778607` (test-rule compliance) and `5175b93` (COM hardening) carry the batch.
+`6cbebc3` (sync), `1778607` (test-rule compliance), `5175b93` (COM hardening), `2a6334c`…`3479937`
+(Windows closeout: real-COM outcome enforcement, report regeneration) and the review-fix commit
+(this one) carry the batch.
 
-Report/status refresh (2026-11-22): all 16 API reports were regenerated from the registered
-type library and grouped under `docs/reports/com/telelogic/rhapsody/core/`. Verification after
-the sync: unit suite **1938 passed** (after the review-fix commit; duplicates removed),
-integration suite **445 collected** (live re-run pending on Windows), system suite collected,
-skill self-tests **20 passed**; ruff/black/mypy clean; an AST cross-check proves zero
-catalog-absent COM members and zero legacy probe call sites across the 16 canonical wrappers.
-All 15
+Report/status refresh (2026-11-22, after the second review-fix pass on top of the Windows
+closeout): unit suite **1947 passed**, integration + system suites **504 collected** (live
+re-run pending on Windows), skill self-tests **22 passed**; ruff/black/mypy clean; an AST
+cross-check proves zero catalog-absent COM members and zero legacy probe call sites across the
+16 canonical wrappers, and `verify_sync.py` passes for 12 of 13 interfaces. All 15
 synced wrappers reach 100% statement/branch coverage independently at both unit and integration
-layers, with zero skip/xfail markers. IRPApplication's Step 8 remains open on integration
-layer-only coverage (44.68%) because most application methods have no safe live COM path.
+layers, with zero skip/xfail markers.
+
+Known verify_sync residual (IRPApplication, tracked by its open Step 8 row): the wrapper's
+`close_all_projects()` and `get_rhapsody_dir()` are `PYTHON_ONLY_MEMBER` facade helpers with
+no catalog backing. They are retained deliberately — `close_all_projects()` is the
+integration session teardown path (tests/integration/conftest.py) and `get_rhapsody_dir()` has
+a live test — so their removal is blocked by live callers, exactly as the IRPApplication
+report rows document.
 
 ## Resume rule
 

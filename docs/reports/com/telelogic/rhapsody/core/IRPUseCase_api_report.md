@@ -10,7 +10,7 @@
 
 - Informational binding differences (expected): `2`
 - Wrapper backlog (supported members without wrappers): `0`
-- Documented aliases: `0`, documented unavailable: `2`
+- Documented aliases: `0`, documented unavailable: `3` (set_is_behavior_overriden, add_event_reception_with_event, update_contained_diagrams_on_server)
 
 ## Comparison details
 
@@ -45,7 +45,7 @@
 | get_describing_diagrams() -> describingDiagrams | getDescribingDiagrams (method) | describingDiagrams (property) | MATCH | — |
 | get_entry_points() -> entryPoints | getEntryPoints (method) | entryPoints (property) | MATCH | — |
 | get_extension_points() -> extensionPoints | getExtensionPoints (method) | extensionPoints (property) | MATCH | — |
-| get_is_behavior_overriden() -> isBehaviorOverriden; set_is_behavior_overriden() (no static COM member) | getIsBehaviorOverriden (method); setIsBehaviorOverriden (method) | isBehaviorOverriden (property) | MATCH | — |
+| get_is_behavior_overriden() -> isBehaviorOverriden; set_is_behavior_overriden() (no static COM member) | getIsBehaviorOverriden (method); setIsBehaviorOverriden (method) | isBehaviorOverriden (property) | DOCUMENTED_UNAVAILABLE (setter is a stub raising NotImplementedError; only the getter is catalog-backed) | — |
 
 ## AI Fix Guidance
 No deviations require changes.

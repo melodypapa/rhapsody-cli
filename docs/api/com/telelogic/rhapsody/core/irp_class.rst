@@ -28,10 +28,6 @@ the Rhapsody2.Application.1 type library; no direct COM call is added for such m
      - COM/pywin32 exposure
      - Python implementation
      - Deviation and treatment
-   * - —
-     - —
-     - is_a_template() -> aTemplate
-     - PYTHON_ONLY_MEMBER; Keep this as a local facade helper or map it to a documented API member.
    * - getActivityDiagram (method)
      - activityDiagram (property)
      - get_activity_diagram() -> activityDiagram; get_activity_diagram() -> getActivityDiagram
