@@ -49,9 +49,7 @@ class TestRPAssociationClassIntegration:
                 assoc.get_is_class,
                 lambda: assoc.set_is_class(1),
             ):
-                try:
+                with pytest.raises(AttributeError):
                     call()
-                except Exception:
-                    pass  # wrapped object is not a true AssociationClass in this build
         finally:
             cls.delete_from_project()

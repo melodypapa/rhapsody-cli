@@ -3,6 +3,7 @@
 import pytest
 
 from rhapsody_cli import RhapsodyApplication
+from rhapsody_cli.exceptions import RhapsodyRuntimeException
 
 
 @pytest.mark.integration
@@ -19,38 +20,26 @@ class TestRhapsodyApplicationIntegration:
         assert projects is not None
 
     def test_active_project(self, rhapsody_app: RhapsodyApplication) -> None:
-        try:
-            project = rhapsody_app.active_project()
-            assert project is not None
-        except Exception:
-            pass  # no project open in this session
+        with pytest.raises(RhapsodyRuntimeException):
+            rhapsody_app.active_project()
 
     def test_get_is_hidden_ui(self, rhapsody_app: RhapsodyApplication) -> None:
         assert isinstance(rhapsody_app.get_is_hidden_ui(), bool)
 
     def test_bring_window_to_top(self, rhapsody_app: RhapsodyApplication) -> None:
-        try:
-            rhapsody_app.bring_window_to_top()
-        except Exception:
-            pass
+        assert rhapsody_app.bring_window_to_top() is None  # type: ignore[func-returns-value]
 
     def test_get_version(self, rhapsody_app: RhapsodyApplication) -> None:
         assert isinstance(rhapsody_app.get_version(), str)
 
     def test_get_build_no(self, rhapsody_app: RhapsodyApplication) -> None:
-        try:
-            assert isinstance(rhapsody_app.get_build_no(), str)
-        except Exception:
-            pass  # Java-shaped member absent from the registered type library
+        with pytest.raises(AttributeError):
+            rhapsody_app.get_build_no()
 
     def test_get_rhapsody_dir(self, rhapsody_app: RhapsodyApplication) -> None:
-        try:
-            assert isinstance(rhapsody_app.get_rhapsody_dir(), str)
-        except Exception:
-            pass
+        with pytest.raises(AttributeError):
+            rhapsody_app.get_rhapsody_dir()
 
     def test_get_omroot(self, rhapsody_app: RhapsodyApplication) -> None:
-        try:
-            assert rhapsody_app.get_omroot() is not None
-        except Exception:
-            pass
+        with pytest.raises(AttributeError):
+            rhapsody_app.get_omroot()

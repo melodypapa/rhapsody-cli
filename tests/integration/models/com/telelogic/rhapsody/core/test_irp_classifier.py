@@ -38,7 +38,7 @@ class TestRPClassifierIntegration:
             attribute = classifier.add_attribute(attr_name)
             found = classifier.find_attribute(attr_name)
             assert found is not None
-            assert found.get_name() == attr_name
+            assert found == attribute
             classifier.delete_attribute(attribute)
             attrs_after = [a.get_name() for a in classifier.get_attributes()]
             assert attr_name not in attrs_after
@@ -56,7 +56,7 @@ class TestRPClassifierIntegration:
             assert op is not None
             found = classifier.find_interface_item(f"{op_name}()")
             assert found is not None
-            assert found.get_name() == op_name
+            assert found == op
             assert classifier.find_trigger(self._unique("NoSuchTrigger")) is None
         finally:
             classifier.delete_from_project()
@@ -228,9 +228,9 @@ class TestRPClassifierIntegration:
             derived_classifiers = list(base.get_derived_classifiers())
             assert derived in derived_classifiers
             found_base = derived.find_base_classifier(base_name)
-            assert found_base is not None and found_base.get_name() == base_name
+            assert found_base == base
             found_derived = base.find_derived_classifier(derived_name)
-            assert found_derived is not None and found_derived.get_name() == derived_name
+            assert found_derived == derived
             found_generalization = derived.find_generalization(base_name)
             assert found_generalization is not None
             assert len(list(derived.get_attributes_including_bases())) >= 0
@@ -290,7 +290,7 @@ class TestRPClassifierIntegration:
             assert sc is not None
             fetched = classifier.get_statechart()
             assert fetched is not None
-            assert fetched.get_name() == sc.get_name()
+            assert fetched == sc
         finally:
             classifier.delete_from_project()
 
@@ -341,10 +341,10 @@ class TestRPClassifierIntegration:
             nested = list(outer.get_nested_classifiers())
             assert inner in nested
             found = outer.find_nested_classifier(inner_name)
-            assert found is not None and found.get_name() == inner_name
+            assert found == inner
             deep = inner.add_class(deep_name)
             assert deep is not None
             found_deep = outer.find_nested_classifier_recursive(deep_name)
-            assert found_deep is not None and found_deep.get_name() == deep_name
+            assert found_deep == deep
         finally:
             outer.delete_from_project()

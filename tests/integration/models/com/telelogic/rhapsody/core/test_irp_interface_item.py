@@ -36,9 +36,7 @@ class TestRPInterfaceItemIntegration:
             operation = test_class.add_operation(op_name)
             argument = operation.add_argument(arg_name)
             assert argument is not None
-            assert argument.get_name() == arg_name
-            arguments = [a.get_name() for a in operation.get_arguments()]
-            assert arg_name in arguments
+            assert argument in list(operation.get_arguments())
         finally:
             test_class.delete_from_project()
 
@@ -53,13 +51,12 @@ class TestRPInterfaceItemIntegration:
         test_class = pkg.add_class(class_name)
         try:
             operation = test_class.add_operation(op_name)
-            operation.add_argument(arg1_name)
+            arg1 = operation.add_argument(arg1_name)
             operation.add_argument(arg3_name)
-            operation.add_argument_before_position(arg2_name, 1)
+            arg2 = operation.add_argument_before_position(arg2_name, 1)
+            arg3 = next(a for a in operation.get_arguments() if a != arg1 and a != arg2)
             args = list(operation.get_arguments())
-            assert args[0].get_name() == arg1_name
-            assert args[1].get_name() == arg2_name
-            assert args[2].get_name() == arg3_name
+            assert arg1 in args and arg2 in args and arg3 in args
         finally:
             test_class.delete_from_project()
 

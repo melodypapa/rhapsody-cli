@@ -1,13 +1,23 @@
-"""Integration tests for IRPPort with live Rhapsody COM API."""
+"""Integration tests for IRP_port with live Rhapsody COM API."""
 
 import uuid
 
 import pytest
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
+from rhapsody_cli.exceptions import RhapsodyRuntimeException
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port import IRPPort
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
+
+
+def _assert_failure_or_none(call, exceptions=(RhapsodyRuntimeException, AttributeError, TypeError)) -> None:  # type: ignore[no-untyped-def]
+    """Assert a documented COM outcome: a known failure or a None result."""
+    try:
+        result = call()
+    except exceptions as exc:
+        assert exc is not None
+    else:
+        assert result is None
 
 
 @pytest.mark.integration
@@ -31,12 +41,7 @@ class TestIRPPortIntegration:
             port = test_class.add_new_aggr("Port", self._unique("port"))
             assert isinstance(port, IRPPort)
             for call in (port.get_is_behavioral, port.get_is_reversed, port.get_port_contract):
-                try:
-                    result = call()
-                    if call is port.get_port_contract:
-                        assert result is None or isinstance(result, IRPClass)
-                except Exception:
-                    pass  # property absent from the registered type library
+                _assert_failure_or_none(call)
             for call in (  # type: ignore[assignment]
                 lambda: port.set_is_behavioral(1),
                 lambda: port.set_is_reversed(0),
@@ -44,10 +49,7 @@ class TestIRPPortIntegration:
                 lambda: port.get_contract(),
                 lambda: port.set_contract(test_class),
             ):
-                try:
-                    call()
-                except Exception:
-                    pass  # documented catalog-absent / COM-rejected members
+                _assert_failure_or_none(call)
         finally:
             test_class.delete_from_project()
 
@@ -58,19 +60,13 @@ class TestIRPPortIntegration:
             port = test_class.add_new_aggr("Port", self._unique("ifPort"))
             assert isinstance(port, IRPPort)
             for call in (port.get_provided_interfaces, port.get_required_interfaces):
-                try:
-                    assert len(list(call())) >= 0
-                except Exception:
-                    pass  # property absent from the registered type library
+                _assert_failure_or_none(call)
             for call in (  # type: ignore[assignment]
                 lambda: port.add_provided_interface(test_class),
                 lambda: port.remove_provided_interface(test_class),
                 lambda: port.add_required_interface(test_class),
                 lambda: port.remove_required_interface(test_class),
             ):
-                try:
-                    call()
-                except Exception:
-                    pass  # COM may reject interface roles without a contract
+                _assert_failure_or_none(call)
         finally:
             test_class.delete_from_project()

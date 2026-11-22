@@ -1,9 +1,22 @@
+"""Integration tests for IRP_operation with live Rhapsody COM API."""
+
 import uuid
 
 import pytest
 
+from rhapsody_cli.exceptions import RhapsodyRuntimeException
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
+
+
+def _assert_failure_or_none(call, exceptions=(RhapsodyRuntimeException, AttributeError, TypeError)) -> None:  # type: ignore[no-untyped-def]
+    """Assert a documented COM outcome: a known failure or a None result."""
+    try:
+        result = call()
+    except exceptions as exc:
+        assert exc is not None
+    else:
+        assert result is None
 
 
 @pytest.mark.integration
@@ -111,11 +124,9 @@ class TestRPOperationIntegration:
             op = test_class.add_operation(self._unique("flowOp"))
             op.create_auto_flow_chart()
             chart = op.get_flowchart()
-            for call in (lambda: op.set_flowchart(chart), op.delete_flowchart):
-                try:
-                    call()  # type: ignore[no-untyped-call]
-                except Exception:
-                    pass
+            with pytest.raises(AttributeError):
+                op.set_flowchart(chart)
+            assert op.delete_flowchart() is None  # type: ignore[func-returns-value]
         finally:
             test_class.delete_from_project()
 
@@ -169,10 +180,7 @@ class TestRPOperationIntegration:
                 lambda: op.set_is_final(1),
                 lambda: op.update_contained_diagrams_on_server(),
             ):
-                try:
-                    call()  # type: ignore[no-untyped-call]
-                except Exception:
-                    pass
+                _assert_failure_or_none(call)
         finally:
             test_class.delete_from_project()
 

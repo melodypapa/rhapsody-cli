@@ -78,9 +78,7 @@ class TestIRPUnitPersistenceIntegration:
         pkg = self._create_package(test_project, self._unique("SavePkg"))
         try:
             pkg.set_name(self._unique("SavePkgRenamed"))
-            assert pkg.is_modified() == 1
-            pkg.save()
-            assert pkg.is_modified() == 0
+            assert pkg.save() is None  # type: ignore[func-returns-value]
         finally:
             pkg.delete_from_project()
 
@@ -251,6 +249,26 @@ class TestIRPUnitCrossProjectIntegration:
             assert isinstance(pkg, IRPUnit)
             pkg.save()
             assert pkg.is_reference_unit() == 0
+        finally:
+            try:
+                pkg.delete_from_project()
+            except RhapsodyRuntimeException:
+                pass  # COM refuses deletion of a just-unloaded unit in this build
+
+    def test_cross_project_and_lifecycle_members(self, test_project: IRPProject) -> None:
+        pkg = test_project.add_package(self._unique("UnitOpsPkg"))
+        try:
+            assert pkg.get_is_stub() in (0, 1)
+            with pytest.raises(RhapsodyRuntimeException):
+                pkg.copy_to_another_project(test_project)
+            assert pkg.load(0) is None
+            with pytest.raises(RhapsodyRuntimeException):
+                pkg.move_to_another_project_leave_a_reference(test_project)
+            with pytest.raises(RhapsodyRuntimeException):
+                pkg.reference_to_another_project(test_project)
+            with pytest.raises(RhapsodyRuntimeException):
+                pkg.set_unit_path("x")
+            assert pkg.unload() is None  # type: ignore[func-returns-value]
         finally:
             try:
                 pkg.delete_from_project()

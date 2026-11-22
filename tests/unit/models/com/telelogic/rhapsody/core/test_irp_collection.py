@@ -63,3 +63,23 @@ def test_to_list_returns_materialized_elements() -> None:
 
     assert isinstance(result, list)
     assert len(result) == 1
+
+
+def test_add_graphical_item_delegates_to_com() -> None:
+
+    fake = make_fake_collection([])
+    collection = IRPCollection(fake)
+    element = IRPModelElement(make_fake_element("Class"))
+
+    collection.add_graphical_item(element)
+
+    fake.addGraphicalItem.assert_called_once_with(element._com)
+
+
+def test_negative_index_raises_index_error() -> None:
+    import pytest
+
+    collection = IRPCollection(make_fake_collection([1, 2]))
+
+    with pytest.raises(IndexError, match="negative indices"):
+        collection[-1]

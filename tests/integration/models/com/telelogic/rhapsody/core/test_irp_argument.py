@@ -4,6 +4,7 @@ import uuid
 
 import pytest
 
+from rhapsody_cli.exceptions import RhapsodyRuntimeException
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument import IRPArgument
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
@@ -32,9 +33,7 @@ class TestIRPArgumentIntegration:
             assert isinstance(argument, IRPArgument)
             original = argument.get_argument_direction()
             assert isinstance(original, str)
-            try:
+            with pytest.raises(RhapsodyRuntimeException):
                 argument.set_argument_direction("out")
-            except Exception:
-                pass  # COM server may reject the direction setter; the call site is still exercised
         finally:
             test_class.delete_from_project()
