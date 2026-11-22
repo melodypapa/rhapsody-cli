@@ -29,10 +29,11 @@ Python name, follows the COM shape recorded in ``IRPUnit_api_report.md``.
      - Deviation and treatment
    * - getUnitPath (method); setUnitPath (method)
      - setUnitPath (method); getUnitPath absent from the committed catalog
-     - get_unit_path() -> getUnitPath; set_unit_path() -> setUnitPath
-     - ACCESSOR_ALIAS_MISMATCH; expected informational difference. get_unit_path() already
-       called the Java-shaped member directly and stays unchanged; set_unit_path() uses the
-       catalogued setUnitPath method via call_com. Regenerate on Windows typelib evidence.
+     - get_unit_path() is a `NotImplementedError` stub; set_unit_path() -> setUnitPath
+     - UNAVAILABLE_DOCUMENTED; expected informational difference. getUnitPath is absent from
+       pywin32, so get_unit_path() is a documented Java-only stub that raises
+       `NotImplementedError` before dispatch; set_unit_path() uses the catalogued setUnitPath
+       method via call_com.
    * - getCMHeader (method); setCMHeader (method)
      - CMHeader (property)
      - get_cm_header()/set_cm_header() via get_com_property/set_com_property("CMHeader")

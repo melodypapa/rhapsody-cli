@@ -21,31 +21,14 @@ The IRPType interface represents a named type definition.
      - COM/pywin32 exposure
      - Python implementation
      - Deviation and treatment
-   * - getEnumerationLiterals (method); getIsPredefined (method); getIsTypedef (method);
-     getTypedefBaseType (method); setTypedefBaseType (method)
-     - enumerationLiterals (property); isPredefined (property); isTypedef (property);
-     typedefBaseType (property)
-     - get_enumeration_literals(), get_is_predefined(), get_is_typedef(),
-     get_typedef_base_type(), set_typedef_base_type() via
-     get_com_property/set_com_property
-     - COM_MEMBER_NOT_EXPOSED resolved. The Java-shaped members are absent from the
-       pywin32 catalog; bindings migrated to the authoritative properties
-       (``enumerationLiterals``, ``isPredefined``, ``isTypedef``, ``typedefBaseType``)
-       as recommended in ``IRPType_api_report.md``. Python get_* names retained
-       by repo convention; COM property shape honoured in the binding.
-   * - getIsTypedefConstant (method); setIsTypedefConstant (method);
-     getIsTypedefOrdered (method); setIsTypedefOrdered (method);
-     getIsTypedefReference (method); setIsTypedefReference (method)
-     - isTypedefConstant (property); isTypedefOrdered (property);
-     isTypedefReference (property)
-     - get_is_typedef_constant(), set_is_typedef_constant(),
-     get_is_typedef_ordered(), set_is_typedef_ordered(),
-     get_is_typedef_reference(), set_is_typedef_reference() via
-     get_com_property/set_com_property
-     - ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH. Python get_* names retained
-       by repo convention; COM property shape honoured in the binding.
-   * - getDeclaration (method); getKind (method); getTypedefMultiplicity (method);
-     setDeclaration (method); setKind (method); setTypedefMultiplicity (method)
-     - declaration (property); kind (property); typedefMultiplicity (property)
-     - get_declaration()/set_declaration()/... via get_com_property/set_com_property
-     - METHOD_PROPERTY_MISMATCH; resolved as above.
+   * - —
+     - —
+     - —
+     - No deviations. Every JavaDoc member is backed by the matching pywin32
+       property or method and the wrapper reads/writes that member directly.
+       The former Java-named `get*` bindings (`getEnumerationLiterals`,
+       `getIsPredefined`, `getIsTypedef`, `getTypedefBaseType` /
+       `setTypedefBaseType`) were migrated to the authoritative properties
+       (`enumerationLiterals`, `isPredefined`, `isTypedef`, `typedefBaseType`);
+       Python get_* names are retained by repo convention while the COM
+       property shape is honoured in the binding.
