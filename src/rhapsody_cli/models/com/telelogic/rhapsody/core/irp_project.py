@@ -537,7 +537,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::gatewayExportToXML(java.lang.String filePath)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.gatewayExportToXML(file_path))
+        AbstractRPModelElement.call_com(lambda: self._com.GatewayExportToXML(file_path))
 
     def gateway_export_to_xml2(self, file_path: str, options: str) -> None:
         """Exports the project to an XML file using the Gateway tool with options.
@@ -549,7 +549,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::gatewayExportToXML2(java.lang.String filePath, java.lang.String options)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.gatewayExportToXML2(file_path, options))
+        AbstractRPModelElement.call_com(lambda: self._com.GatewayExportToXML2(file_path, options))
 
     def generate_report(self, template_path: str, output_path: str) -> None:
         """Generates a report from the project using the specified template.
@@ -561,7 +561,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::generateReport(java.lang.String templatePath, java.lang.String outputPath)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.generateReport(template_path, output_path))
+        AbstractRPModelElement.call_com(lambda: self._com.GenerateReport(template_path, output_path))
 
     # --- Custom Views methods ---
     def add_custom_view_on_browser(self, view: IRPModelElement) -> None:
@@ -956,7 +956,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::setUseUniqueStereotypeAndRefCache(int enabled)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setUseUniqueStereotypeAndRefCache", "useUniqueStereotypeAndRefCache", enabled)
+        AbstractRPModelElement.set_com_property(self._com, "UseUniqueStereotypeAndRefCache", enabled)
 
     def set_wait_dialog_watchdog_value(self, value: int) -> None:
         """Sets the wait dialog watchdog value.

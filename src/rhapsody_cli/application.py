@@ -272,7 +272,7 @@ class RhapsodyApplication:
         Reference:
             com.telelogic.rhapsody.core.IRPApplication::getBuildNo()
         """
-        return str(com_utils.call_com(lambda: self._com.getBuildNo()))
+        return str(com_utils.get_com_property(self._com, "BuildNo"))
 
     def get_rhapsody_dir(self) -> str:
         """Get the Rhapsody installation directory.
@@ -294,7 +294,7 @@ class RhapsodyApplication:
         Reference:
             com.telelogic.rhapsody.core.IRPApplication::getOMROOT()
         """
-        return str(com_utils.call_com(lambda: self._com.getOMROOT()))
+        return str(com_utils.get_com_property(self._com, "OMROOT"))
 
     def create_new_collection(self) -> IRPCollection:
         """Create a new empty ``IRPCollection`` for use with COM calls that require a pre-allocated collection.

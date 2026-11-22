@@ -221,15 +221,15 @@ def test_set_initializer_writes_property() -> None:
     assert fake.initializer == "init"
 
 
-def test_method_shaped_setters_delegate_to_com() -> None:
+def test_property_shaped_setters_write_properties() -> None:
     fake = make_fake_element("Operation")
     operation = IRPOperation(fake)
     operation.set_is_const(1)
     operation.set_is_final(1)
     operation.set_visibility("private")
-    fake.setIsConst.assert_called_once_with(1)
-    fake.setIsFinal.assert_called_once_with(1)
-    fake.setVisibility.assert_called_once_with("private")
+    assert fake.isConst == 1
+    assert fake.isFinal == 1
+    assert fake.visibility == "private"
 
 
 def test_update_contained_diagrams_on_server_raises_not_implemented_without_com_dispatch() -> None:

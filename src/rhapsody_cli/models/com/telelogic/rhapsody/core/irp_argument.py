@@ -7,7 +7,7 @@ Canonical module for :class:`IRPArgument`; see the class requirement document at
 from __future__ import annotations
 
 from rhapsody_cli.models.core import AbstractRPModelElement
-from rhapsody_cli.models.elements.variables import RPVariable
+from rhapsody_cli.models.elements.variables.model_variables import RPVariable
 
 
 class IRPArgument(RPVariable):

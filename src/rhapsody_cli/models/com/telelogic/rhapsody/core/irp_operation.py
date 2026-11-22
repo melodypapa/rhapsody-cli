@@ -372,7 +372,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::setIsConst(int isConst)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setIsConst(is_const))
+        AbstractRPModelElement.set_com_property(self._com, "isConst", is_const)
 
     def set_is_final(self, is_final: int) -> None:
         """Sets whether the operation is final.
@@ -383,7 +383,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::setIsFinal(int isFinal)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setIsFinal(is_final))
+        AbstractRPModelElement.set_com_property(self._com, "isFinal", is_final)
 
     def set_visibility(self, visibility: str) -> None:
         """Sets the visibility of the operation.
@@ -394,7 +394,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::setVisibility(java.lang.String visibility)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setVisibility(visibility))
+        AbstractRPModelElement.set_com_property(self._com, "visibility", visibility)
 
     def update_contained_diagrams_on_server(self, enforce_update: int) -> int:
         """Updates the contained diagrams on the server.

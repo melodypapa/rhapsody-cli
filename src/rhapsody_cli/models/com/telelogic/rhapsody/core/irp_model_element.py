@@ -110,7 +110,7 @@ class IRPModelElement(AbstractRPModelElement):
     # [x] get_remote_dependencies           [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_remote_uri                    [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_requirement_traceability_handle [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_rmm_url                       [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [!] get_rmm_url                       [x] impl (raises NotImplementedError) [x] docstring  [x] unit test  [x] integration test  (COM method not exposed)
     # [x] get_save_unit                     [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_stereotypes                  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_tag                          [x] impl  [x] docstring  [x] unit test  [x] integration test

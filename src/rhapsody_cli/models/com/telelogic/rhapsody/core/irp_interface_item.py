@@ -105,7 +105,7 @@ class IRPInterfaceItem(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPInterfaceItem::getSignatureNoArgNames()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getSignatureNoArgNames", "signatureNoArgNames"))
+        return str(AbstractRPModelElement.call_com(lambda: self._com.getSignatureNoArgNames()))
 
     def get_signature_no_arg_types(self) -> str:
         """Returns the signature of the operation without the argument types.
@@ -116,7 +116,7 @@ class IRPInterfaceItem(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPInterfaceItem::getSignatureNoArgTypes()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getSignatureNoArgTypes", "signatureNoArgTypes"))
+        return str(AbstractRPModelElement.call_com(lambda: self._com.getSignatureNoArgTypes()))
 
     def match_on_signature(self, item: IRPInterfaceItem) -> bool:
         """Compares the signature of this operation with another operation's signature.

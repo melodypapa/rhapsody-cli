@@ -236,7 +236,7 @@ def test_project_gateway_export_to_xml_delegates_to_com() -> None:
 
     project.gateway_export_to_xml("C:/out.xml")
 
-    fake.gatewayExportToXML.assert_called_once_with("C:/out.xml")
+    fake.GatewayExportToXML.assert_called_once_with("C:/out.xml")
 
 
 def test_project_gateway_export_to_xml2_delegates_to_com() -> None:
@@ -245,7 +245,7 @@ def test_project_gateway_export_to_xml2_delegates_to_com() -> None:
 
     project.gateway_export_to_xml2("C:/out.xml", "-verbose")
 
-    fake.gatewayExportToXML2.assert_called_once_with("C:/out.xml", "-verbose")
+    fake.GatewayExportToXML2.assert_called_once_with("C:/out.xml", "-verbose")
 
 
 def test_project_generate_report_delegates_to_com() -> None:
@@ -254,7 +254,7 @@ def test_project_generate_report_delegates_to_com() -> None:
 
     project.generate_report("C:/tmpl.tpl", "C:/report.html")
 
-    fake.generateReport.assert_called_once_with("C:/tmpl.tpl", "C:/report.html")
+    fake.GenerateReport.assert_called_once_with("C:/tmpl.tpl", "C:/report.html")
 
 
 # --- Task 7: Custom Views methods ---
@@ -643,7 +643,7 @@ def test_project_set_use_unique_stereotype_and_ref_cache_delegates_to_com() -> N
 
     project.set_use_unique_stereotype_and_ref_cache(1)
 
-    fake.setUseUniqueStereotypeAndRefCache.assert_called_once_with(1)
+    assert fake.UseUniqueStereotypeAndRefCache == 1
 
 
 def test_project_set_wait_dialog_watchdog_value_delegates_to_com() -> None:
@@ -878,19 +878,19 @@ def test_generated_highlight_from_code() -> None:
 
 def test_generated_gateway_export_to_xml() -> None:
     fake = make_fake_element("Project")
-    fake.gatewayExportToXML.return_value = None
+    fake.GatewayExportToXML.return_value = None
     IRPProject(fake).gateway_export_to_xml("x")
 
 
 def test_generated_gateway_export_to_xml2() -> None:
     fake = make_fake_element("Project")
-    fake.gatewayExportToXML2.return_value = None
+    fake.GatewayExportToXML2.return_value = None
     IRPProject(fake).gateway_export_to_xml2("x", "x")
 
 
 def test_generated_generate_report() -> None:
     fake = make_fake_element("Project")
-    fake.generateReport.return_value = None
+    fake.GenerateReport.return_value = None
     IRPProject(fake).generate_report("x", "x")
 
 

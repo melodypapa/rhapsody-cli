@@ -7,7 +7,7 @@ Canonical module for :class:`IRPAttribute`; see the class requirement document a
 from __future__ import annotations
 
 from rhapsody_cli.models.core import AbstractRPModelElement
-from rhapsody_cli.models.elements.variables import RPVariable
+from rhapsody_cli.models.elements.variables.model_variables import RPVariable
 
 
 class IRPAttribute(RPVariable):

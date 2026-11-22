@@ -264,7 +264,7 @@ def test_get_version_returns_string() -> None:
 
 def test_get_build_no_returns_string() -> None:
     fake_app = MagicMock(name="FakeApplication")
-    fake_app.getBuildNo.return_value = "12345"
+    fake_app.BuildNo = "12345"
     app = RhapsodyApplication(fake_app)
 
     assert app.get_build_no() == "12345"
@@ -280,7 +280,7 @@ def test_get_rhapsody_dir_returns_string() -> None:
 
 def test_get_omroot_returns_string() -> None:
     fake_app = MagicMock(name="FakeApplication")
-    fake_app.getOMROOT.return_value = "C:/Rhapsody/OMROOT"
+    fake_app.OMROOT = "C:/Rhapsody/OMROOT"
     app = RhapsodyApplication(fake_app)
 
     assert app.get_omroot() == "C:/Rhapsody/OMROOT"

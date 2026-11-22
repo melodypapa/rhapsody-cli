@@ -44,7 +44,7 @@ class IRPClass(IRPClassifier):
     # [x] get_is_final               [x] impl (method)    [x] docstring  [x] unit test  [ ] integration test (removed: setIsFinal does not persist in Rhapsody COM)
     # [x] set_is_final               [x] impl (method)    [x] docstring  [x] unit test  [ ] integration test (removed: setIsFinal does not persist in Rhapsody COM)
     # [x] is_reactive                [x] impl (property)  [x] docstring  [x] unit test  [x] integration test
-    # update_contained_diagrams_on_server: unavailable in Rhapsody2.Application.1 type library; wrapper removed.
+    # update_contained_diagrams_on_server: not exposed in the Rhapsody2.Application.1 type library; retained as a documented-unavailable NotImplementedError stub.
     # No deprecated methods in IRPClass.
 
     def add_superclass(self, super_class: IRPClass) -> None:
