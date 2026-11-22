@@ -4,12 +4,16 @@
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `IRPModelElement` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_model_element.py`)
 - Members: Python `113`, Java `118`, pywin32 `104`
-- Deviation items: `5` (actionable `0`, expected binding differences `1`, wrapper backlog `4`)
+- Deviation items: `5` (actionable `4`, expected binding differences `1`, wrapper backlog `0`)
 
 ## Comparison details
 
 | Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |
 | --- | --- | --- | --- | --- |
+| — | lockOnDesignManager (method) | lockOnDesignManager (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper, or record the Java member in documented_intentionally_unsupported with a rationale. |
+| — | getOSLCLinks (method) | getOSLCLinks (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper, or record the Java member in documented_intentionally_unsupported with a rationale. |
+| — | getStereotype (method); setStereotype (method) | stereotype (property) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Implement the Python wrapper, or record the Java member in documented_intentionally_unsupported with a rationale. |
+| — | unlockOnDesignManager (method) | unlockOnDesignManager (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper, or record the Java member in documented_intentionally_unsupported with a rationale. |
 
 ## Expected Binding Differences
 
@@ -21,10 +25,7 @@
 
 | Python model wrapper | Java API | pywin32 | Status | Recommended change |
 | --- | --- | --- | --- | --- |
-| — | lockOnDesignManager (method) | lockOnDesignManager (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getOSLCLinks (method) | getOSLCLinks (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getStereotype (method); setStereotype (method) | stereotype (property) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | unlockOnDesignManager (method) | unlockOnDesignManager (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
+| — | — | — | — | — |
 
 ## Correct Items
 
@@ -128,4 +129,39 @@
 | synchronize_template_instantiation() -> synchronizeTemplateInstantiation | synchronizeTemplateInstantiation (method) | synchronizeTemplateInstantiation (method) | MATCH | — |
 
 ## AI Fix Guidance
-No deviations require changes.
+
+### Finding 1: MISSING_PYTHON_WRAPPER
+- **Target:** `IRPModelElement` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_model_element.py`
+- **Current Python wrapper/COM call:** —
+- **Expected Python method(s):** `lock_on_design_manager`
+- **Java signature(s):** `IRPModelElement.lockOnDesignManager()`
+- **pywin32 member(s):** lockOnDesignManager (method)
+- **Recommended change:** Implement the Python wrapper, or record the Java member in documented_intentionally_unsupported with a rationale.
+- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
+
+### Finding 2: MISSING_PYTHON_WRAPPER
+- **Target:** `IRPModelElement` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_model_element.py`
+- **Current Python wrapper/COM call:** —
+- **Expected Python method(s):** `get_oslc_links`
+- **Java signature(s):** `IRPModelElement.getOSLCLinks()`
+- **pywin32 member(s):** getOSLCLinks (method)
+- **Recommended change:** Implement the Python wrapper, or record the Java member in documented_intentionally_unsupported with a rationale.
+- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
+
+### Finding 3: MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH
+- **Target:** `IRPModelElement` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_model_element.py`
+- **Current Python wrapper/COM call:** —
+- **Expected Python method(s):** `get_stereotype`, `set_stereotype`
+- **Java signature(s):** `IRPModelElement.getStereotype()`, `IRPModelElement.setStereotype(com.telelogic.rhapsody.core.IRPStereotype)`
+- **pywin32 member(s):** stereotype (property)
+- **Recommended change:** Implement the Python wrapper, or record the Java member in documented_intentionally_unsupported with a rationale.
+- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
+
+### Finding 4: MISSING_PYTHON_WRAPPER
+- **Target:** `IRPModelElement` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_model_element.py`
+- **Current Python wrapper/COM call:** —
+- **Expected Python method(s):** `unlock_on_design_manager`
+- **Java signature(s):** `IRPModelElement.unlockOnDesignManager()`
+- **pywin32 member(s):** unlockOnDesignManager (method)
+- **Recommended change:** Implement the Python wrapper, or record the Java member in documented_intentionally_unsupported with a rationale.
+- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.

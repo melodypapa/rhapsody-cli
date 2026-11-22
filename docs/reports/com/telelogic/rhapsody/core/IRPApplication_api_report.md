@@ -24,145 +24,145 @@
 
 | Python model wrapper | Java API | pywin32 | Status | Recommended change |
 | --- | --- | --- | --- | --- |
-| — | addProfileToModel (method) | addProfileToModel (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | addSelectedToFavorites (method) | addSelectedToFavorites (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | addToModelByReference (method) | addToModelByReference (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | addToModelFromURL (method) | addToModelFromURL (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | addUnitsToModel (method) | addUnitsToModel (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | allowBrowserRefresh (method) | allowBrowserRefresh (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | allowGERefresh (method) | allowGERefresh (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getApplicationConnectionString (method) | getApplicationConnectionString (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getApplicationName (method) | getApplicationName (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getApplicationRoot (method) | ApplicationRoot (property) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getApplicationStatus (method); setApplicationStatus (method) | getApplicationStatus (method); setApplicationStatus (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | applyNewTermsProfile (method) | applyNewTermsProfile (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | arcCheckOut (method) | arcCheckOut (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | build (method) | build (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | buildEntireProject (method) | buildEntireProject (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | buildWithDependencies (method) | buildWithDependencies (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | canRedo (method) | canRedo (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | canUndo (method) | canUndo (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | checkIn (method) | checkIn (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | checkOut (method) | checkOut (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | clean (method) | clean (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | clearOutputWindow (method) | clearOutputWindow (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | closeAllAnimatedSequenceDiagrams (method) | closeAllAnimatedSequenceDiagrams (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | compareSequenceDiagram (method) | compareSequenceDiagram (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | setComponent (method) | setComponent (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | setConfiguration (method) | setConfiguration (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | connectToArchive (method) | connectToArchive (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | connectToImportedModel (method) | connectToImportedModel (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | connectToTarget (method) | connectToTarget (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | createAndInsertProject (method) | createAndInsertProject (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | createDomainFromProfile (method) | createDomainFromProfile (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getDMBoolProperty (method); setDMBoolProperty (method) | getDMBoolProperty (method); setDMBoolProperty (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getDMModelWorkspaceFolder (method) | getDMModelWorkspaceFolder (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getDMProperty (method); setDMProperty (method) | getDMProperty (method); setDMProperty (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | dMRefreshRecursive (method) | dMRefreshRecursive (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | dMSyncAndRefresh (method) | dMSyncAndRefresh (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | dbgCheckComIn (method) | dbgCheckComIn (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | dbgCheckComOut (method) | dbgCheckComOut (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | deferredAddToModel (method) | deferredAddToModel (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | deleteProjectFromList (method) | deleteProjectFromList (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getDiagramOfSelectedElement (method) | getDiagramOfSelectedElement (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | disconnectFromTarget (method) | disconnectFromTarget (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | downloadToTarget (method) | downloadToTarget (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | endUndoTransaction (method) | endUndoTransaction (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | enterAnimationCommand (method) | enterAnimationCommand (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | errorMessage (method); getErrorMessage (method) | errorMessage (method); getErrorMessage (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getExecutableFolder (method) | getExecutableFolder (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | executeCommand (method) | ExecuteCommand (method) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | executeCommandLine (method) | executeCommandLine (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | executeTransformationSequence (method) | executeTransformationSequence (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | expandStringKeywords (method) | expandStringKeywords (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | fixpack (method) | fixpack (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | forceOutput2Console (method) | forceOutput2Console (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | forceRoundtrip (method) | forceRoundtrip (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | forceRoundtripElements (method) | forceRoundtripElements (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | generateMainAndMakeFiles (method) | generateMainAndMakeFiles (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | generateWithDependencies (method) | generateWithDependencies (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | highLightElement (method) | highLightElement (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | highlightByHandle (method) | highlightByHandle (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | importClasses (method) | importClasses (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | importDesignManagerModel (method) | importDesignManagerModel (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | importSyncSimulinkBlock2 (method) | importSyncSimulinkBlock2 (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | importTlb (method) | importTlb (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getIniFileParameterValue (method) | getIniFileParameterValue (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | insertProject (method) | insertProject (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | insertProjectFromDesignManager (method) | insertProjectFromDesignManager (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getInterfaceName (method) | interfaceName (property) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | invokePluginsMethod (method) | invokePluginsMethod (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | invokeRPE (method) | invokeRPE (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getIsLoadOnDemand (method); setIsLoadOnDemand (method) | isLoadOnDemand (property) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | isRhapsodyCL (method) | isRhapsodyCL (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | isRhapsodyFileType (method) | isRhapsodyFileType (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getLanguage (method); setLanguage (method) | Language (property) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getListOfFactoryProperties (method) | getListOfFactoryProperties (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getListOfSelectedElements (method) | getListOfSelectedElements (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getListOfSiteProperties (method) | getListOfSiteProperties (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getLocaleName (method) | getLocaleName (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getLogRoot (method) | LogRoot (property) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | loginToDesignManagerWithAlias (method) | loginToDesignManagerWithAlias (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | loginToDesignManagerWithCertificate (method) | loginToDesignManagerWithCertificate (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | loginToDesignManagerWithUsername (method) | loginToDesignManagerWithUsername (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | make (method) | make (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | mergeElements (method) | mergeElements (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getModelElementFromSource (method) | getModelElementFromSource (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | newProjectOnDesignManager (method) | newProjectOnDesignManager (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | notifyFileChanged (method) | notifyFileChanged (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | openActiveXView (method) | OpenActiveXView (method) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | openAdvancedSearchAndReplaceDialog (method) | openAdvancedSearchAndReplaceDialog (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | openDiagramView (method) | OpenDiagramView (method) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | openFileList (method) | openFileList (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | openProjectFromDesignManager (method) | openProjectFromDesignManager (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | openProjectFromDesignManagerAfterLogin (method) | openProjectFromDesignManagerAfterLogin (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | openProjectFromURL (method) | openProjectFromURL (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | openProjectWithLastSession (method) | openProjectWithLastSession (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | openProjectWithoutSubUnits (method) | openProjectWithoutSubUnits (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getOutputWindowText (method) | getOutputWindowText (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | rebuild (method) | rebuild (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | rebuildEntireProject (method) | rebuildEntireProject (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | rebuildWithDependencies (method) | rebuildWithDependencies (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | redo (method) | redo (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | refactorSelectedOperation (method) | refactorSelectedOperation (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | refreshAllViews (method) | refreshAllViews (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | regenerateElements (method) | regenerateElements (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | regenerateEntireProject (method) | regenerateEntireProject (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | regenerateWithDependencies (method) | regenerateWithDependencies (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | registerCOMClient (method) | registerCOMClient (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | report (method) | report (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getRhapsodyHandleErrorFunction (method) | getRhapsodyHandleErrorFunction (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getRhapsodyHandleErrorFunctionLong (method) | getRhapsodyHandleErrorFunctionLong (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | rhpCheckinLicense (method) | RhpCheckinLicense (method) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | rhpCheckoutLicense (method) | RhpCheckoutLicense (method) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | roundtrip (method) | roundtrip (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | roundtripElements (method) | roundtripElements (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | runApplication (method) | runApplication (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | runHelper (method) | runHelper (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | runHelperWithParameters (method) | runHelperWithParameters (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | selectGraphElements (method) | selectGraphElements (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | selectModelElements (method) | selectModelElements (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getSelectedElement (method) | getSelectedElement (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getSelectedGraphElements (method) | getSelectedGraphElements (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getSerialNo (method) | SerialNo (property) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | startUndoTransaction (method) | startUndoTransaction (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | syncBuild (method) | syncBuild (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | terminateApplication (method) | terminateApplication (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getTheCodeGeneratorInterface (method) | getTheCodeGeneratorInterface (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getTheExternalCodeGeneratorInvoker (method) | getTheExternalCodeGeneratorInvoker (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getTheIntegratorInterface (method) | getTheIntegratorInterface (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getTheJavaPluginsInterface (method) | getTheJavaPluginsInterface (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getTheRoundtripInterface (method) | getTheRoundtripInterface (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getToolSet (method); setToolSet (method) | ToolSet (property) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | undo (method) | undo (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | unloadFromTarget (method) | unloadFromTarget (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | unregisterCOMClient (method) | unregisterCOMClient (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | setUpdateRecentFileList (method) | setUpdateRecentFileList (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | updateRmmDataToNewVersion (method) | updateRmmDataToNewVersion (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getUserDataRoot (method) | UserDataRoot (property) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getUserOMROOT (method) | UserOMROOT (property) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | versionNumberLong (method) | versionNumberLong (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | writeToOutputWindow (method) | writeToOutputWindow (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
+| — | addProfileToModel (method) | addProfileToModel (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | addSelectedToFavorites (method) | addSelectedToFavorites (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | addToModelByReference (method) | addToModelByReference (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | addToModelFromURL (method) | addToModelFromURL (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | addUnitsToModel (method) | addUnitsToModel (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | allowBrowserRefresh (method) | allowBrowserRefresh (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | allowGERefresh (method) | allowGERefresh (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getApplicationConnectionString (method) | getApplicationConnectionString (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getApplicationName (method) | getApplicationName (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getApplicationRoot (method) | ApplicationRoot (property) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getApplicationStatus (method); setApplicationStatus (method) | getApplicationStatus (method); setApplicationStatus (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | applyNewTermsProfile (method) | applyNewTermsProfile (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | arcCheckOut (method) | arcCheckOut (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | build (method) | build (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | buildEntireProject (method) | buildEntireProject (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | buildWithDependencies (method) | buildWithDependencies (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | canRedo (method) | canRedo (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | canUndo (method) | canUndo (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | checkIn (method) | checkIn (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | checkOut (method) | checkOut (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | clean (method) | clean (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | clearOutputWindow (method) | clearOutputWindow (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | closeAllAnimatedSequenceDiagrams (method) | closeAllAnimatedSequenceDiagrams (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | compareSequenceDiagram (method) | compareSequenceDiagram (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | setComponent (method) | setComponent (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | setConfiguration (method) | setConfiguration (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | connectToArchive (method) | connectToArchive (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | connectToImportedModel (method) | connectToImportedModel (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | connectToTarget (method) | connectToTarget (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | createAndInsertProject (method) | createAndInsertProject (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | createDomainFromProfile (method) | createDomainFromProfile (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getDMBoolProperty (method); setDMBoolProperty (method) | getDMBoolProperty (method); setDMBoolProperty (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getDMModelWorkspaceFolder (method) | getDMModelWorkspaceFolder (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getDMProperty (method); setDMProperty (method) | getDMProperty (method); setDMProperty (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | dMRefreshRecursive (method) | dMRefreshRecursive (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | dMSyncAndRefresh (method) | dMSyncAndRefresh (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | dbgCheckComIn (method) | dbgCheckComIn (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | dbgCheckComOut (method) | dbgCheckComOut (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | deferredAddToModel (method) | deferredAddToModel (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | deleteProjectFromList (method) | deleteProjectFromList (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getDiagramOfSelectedElement (method) | getDiagramOfSelectedElement (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | disconnectFromTarget (method) | disconnectFromTarget (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | downloadToTarget (method) | downloadToTarget (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | endUndoTransaction (method) | endUndoTransaction (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | enterAnimationCommand (method) | enterAnimationCommand (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | errorMessage (method); getErrorMessage (method) | errorMessage (method); getErrorMessage (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getExecutableFolder (method) | getExecutableFolder (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | executeCommand (method) | ExecuteCommand (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | executeCommandLine (method) | executeCommandLine (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | executeTransformationSequence (method) | executeTransformationSequence (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | expandStringKeywords (method) | expandStringKeywords (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | fixpack (method) | fixpack (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | forceOutput2Console (method) | forceOutput2Console (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | forceRoundtrip (method) | forceRoundtrip (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | forceRoundtripElements (method) | forceRoundtripElements (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | generateMainAndMakeFiles (method) | generateMainAndMakeFiles (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | generateWithDependencies (method) | generateWithDependencies (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | highLightElement (method) | highLightElement (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | highlightByHandle (method) | highlightByHandle (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | importClasses (method) | importClasses (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | importDesignManagerModel (method) | importDesignManagerModel (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | importSyncSimulinkBlock2 (method) | importSyncSimulinkBlock2 (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | importTlb (method) | importTlb (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getIniFileParameterValue (method) | getIniFileParameterValue (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | insertProject (method) | insertProject (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | insertProjectFromDesignManager (method) | insertProjectFromDesignManager (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getInterfaceName (method) | interfaceName (property) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | invokePluginsMethod (method) | invokePluginsMethod (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | invokeRPE (method) | invokeRPE (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getIsLoadOnDemand (method); setIsLoadOnDemand (method) | isLoadOnDemand (property) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | isRhapsodyCL (method) | isRhapsodyCL (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | isRhapsodyFileType (method) | isRhapsodyFileType (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getLanguage (method); setLanguage (method) | Language (property) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getListOfFactoryProperties (method) | getListOfFactoryProperties (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getListOfSelectedElements (method) | getListOfSelectedElements (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getListOfSiteProperties (method) | getListOfSiteProperties (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getLocaleName (method) | getLocaleName (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getLogRoot (method) | LogRoot (property) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | loginToDesignManagerWithAlias (method) | loginToDesignManagerWithAlias (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | loginToDesignManagerWithCertificate (method) | loginToDesignManagerWithCertificate (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | loginToDesignManagerWithUsername (method) | loginToDesignManagerWithUsername (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | make (method) | make (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | mergeElements (method) | mergeElements (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getModelElementFromSource (method) | getModelElementFromSource (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | newProjectOnDesignManager (method) | newProjectOnDesignManager (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | notifyFileChanged (method) | notifyFileChanged (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | openActiveXView (method) | OpenActiveXView (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | openAdvancedSearchAndReplaceDialog (method) | openAdvancedSearchAndReplaceDialog (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | openDiagramView (method) | OpenDiagramView (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | openFileList (method) | openFileList (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | openProjectFromDesignManager (method) | openProjectFromDesignManager (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | openProjectFromDesignManagerAfterLogin (method) | openProjectFromDesignManagerAfterLogin (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | openProjectFromURL (method) | openProjectFromURL (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | openProjectWithLastSession (method) | openProjectWithLastSession (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | openProjectWithoutSubUnits (method) | openProjectWithoutSubUnits (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getOutputWindowText (method) | getOutputWindowText (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | rebuild (method) | rebuild (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | rebuildEntireProject (method) | rebuildEntireProject (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | rebuildWithDependencies (method) | rebuildWithDependencies (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | redo (method) | redo (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | refactorSelectedOperation (method) | refactorSelectedOperation (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | refreshAllViews (method) | refreshAllViews (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | regenerateElements (method) | regenerateElements (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | regenerateEntireProject (method) | regenerateEntireProject (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | regenerateWithDependencies (method) | regenerateWithDependencies (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | registerCOMClient (method) | registerCOMClient (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | report (method) | report (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getRhapsodyHandleErrorFunction (method) | getRhapsodyHandleErrorFunction (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getRhapsodyHandleErrorFunctionLong (method) | getRhapsodyHandleErrorFunctionLong (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | rhpCheckinLicense (method) | RhpCheckinLicense (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | rhpCheckoutLicense (method) | RhpCheckoutLicense (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | roundtrip (method) | roundtrip (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | roundtripElements (method) | roundtripElements (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | runApplication (method) | runApplication (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | runHelper (method) | runHelper (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | runHelperWithParameters (method) | runHelperWithParameters (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | selectGraphElements (method) | selectGraphElements (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | selectModelElements (method) | selectModelElements (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getSelectedElement (method) | getSelectedElement (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getSelectedGraphElements (method) | getSelectedGraphElements (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getSerialNo (method) | SerialNo (property) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | startUndoTransaction (method) | startUndoTransaction (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | syncBuild (method) | syncBuild (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | terminateApplication (method) | terminateApplication (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getTheCodeGeneratorInterface (method) | getTheCodeGeneratorInterface (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getTheExternalCodeGeneratorInvoker (method) | getTheExternalCodeGeneratorInvoker (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getTheIntegratorInterface (method) | getTheIntegratorInterface (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getTheJavaPluginsInterface (method) | getTheJavaPluginsInterface (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getTheRoundtripInterface (method) | getTheRoundtripInterface (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getToolSet (method); setToolSet (method) | ToolSet (property) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | undo (method) | undo (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | unloadFromTarget (method) | unloadFromTarget (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | unregisterCOMClient (method) | unregisterCOMClient (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | setUpdateRecentFileList (method) | setUpdateRecentFileList (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | updateRmmDataToNewVersion (method) | updateRmmDataToNewVersion (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getUserDataRoot (method) | UserDataRoot (property) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | getUserOMROOT (method) | UserOMROOT (property) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | versionNumberLong (method) | versionNumberLong (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | writeToOutputWindow (method) | writeToOutputWindow (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
 
 ## Correct Items
 

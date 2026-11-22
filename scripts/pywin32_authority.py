@@ -18,6 +18,7 @@ class AuthorityData(TypedDict):
     catalog: Dict[str, Dict[str, str]]
     documented_aliases: Dict[str, Dict[str, str]]
     documented_unavailable: Dict[str, List[str]]
+    documented_intentionally_unsupported: Dict[str, List[str]]
 
 
 def export_catalog_from_reports(reports_dir: Path) -> Dict[str, Dict[str, str]]:
@@ -49,6 +50,7 @@ def build_authority(reports_dir: Path) -> AuthorityData:
         catalog=export_catalog_from_reports(reports_dir),
         documented_aliases={},
         documented_unavailable={},
+        documented_intentionally_unsupported={},
     )
 
 
@@ -65,7 +67,7 @@ def build_authority_from_typelib(reports_dir: Path) -> AuthorityData:
     for report_path in sorted(reports_dir.rglob("*" + _REPORT_SUFFIX)):
         interface_name = report_path.name[: -len(_REPORT_SUFFIX)]
         catalog[interface_name] = collect_registered_pywin32_members(interface_name)
-    return AuthorityData(catalog=catalog, documented_aliases={}, documented_unavailable={})
+    return AuthorityData(catalog=catalog, documented_aliases={}, documented_unavailable={}, documented_intentionally_unsupported={})
 
 
 def load_authority(path: Path = AUTHORITY_PATH) -> AuthorityData:
@@ -78,6 +80,7 @@ def load_authority(path: Path = AUTHORITY_PATH) -> AuthorityData:
         catalog=data["catalog"],
         documented_aliases=data["documented_aliases"],
         documented_unavailable=data["documented_unavailable"],
+        documented_intentionally_unsupported=data.get("documented_intentionally_unsupported", {}),
     )
 
 

@@ -12,9 +12,9 @@
 | --- | --- | --- | --- | --- |
 | add_association() -> addAssociation | — | addAssociation (method) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
 | add_statechart_diagram() -> addStatechart | addStatechart (method) | addStatechart (method) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| get_nested_packages() -> packages | getPackages (method) | packages (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
+| get_nested_packages() -> packages | getPackages (method) | packages (property) | PYTHON_METHOD_NAME_MISMATCH; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
 | recalculate_events_base_id() -> reCalculateEventsBaseId | reCalculateEventsBaseId (method) | reCalculateEventsBaseId (method) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| get_saved_in_separate_directory() -> savedInSeperateDirectory; set_saved_in_separate_directory() -> savedInSeperateDirectory | getSavedInSeperateDirectory (method); setSavedInSeperateDirectory (method) | savedInSeperateDirectory (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
+| get_saved_in_separate_directory() -> savedInSeperateDirectory; set_saved_in_separate_directory() -> savedInSeperateDirectory | getSavedInSeperateDirectory (method); setSavedInSeperateDirectory (method) | savedInSeperateDirectory (property) | PYTHON_METHOD_NAME_MISMATCH; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
 
 ## Expected Binding Differences
 
@@ -146,7 +146,7 @@
 - **Recommended change:** Rename the Python method to the snake_case Java API name or document the alias.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
-### Finding 3: PYTHON_METHOD_NAME_MISMATCH
+### Finding 3: PYTHON_METHOD_NAME_MISMATCH; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH
 - **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
 - **Current Python wrapper/COM call:** get_nested_packages() -> packages
 - **Expected Python method(s):** `get_packages`
@@ -164,7 +164,7 @@
 - **Recommended change:** Rename the Python method to the snake_case Java API name or document the alias.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
-### Finding 5: PYTHON_METHOD_NAME_MISMATCH
+### Finding 5: PYTHON_METHOD_NAME_MISMATCH; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH
 - **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
 - **Current Python wrapper/COM call:** get_saved_in_separate_directory() -> savedInSeperateDirectory; set_saved_in_separate_directory() -> savedInSeperateDirectory
 - **Expected Python method(s):** `get_saved_in_seperate_directory`, `set_saved_in_seperate_directory`

@@ -43,6 +43,7 @@ def test_build_authority_starts_with_empty_exception_maps(tmp_path: Path) -> Non
     assert data["catalog"] == {"IRPExample": {"addItem": "method"}}
     assert data["documented_aliases"] == {}
     assert data["documented_unavailable"] == {}
+    assert data["documented_intentionally_unsupported"] == {}
 
 
 def test_build_authority_from_typelib_uses_registered_members(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -67,6 +68,7 @@ def test_load_authority_round_trip(tmp_path: Path) -> None:
         catalog={"IRPExample": {"addItem": "method"}},
         documented_aliases={"IRPExample": {"get_add": "addItem"}},
         documented_unavailable={"IRPExample": ["toList"]},
+        documented_intentionally_unsupported={"IRPExample": ["legacyItem"]},
     )
 
     write_authority(data, target)

@@ -18,9 +18,8 @@ JAVA_PACKAGE = "com.telelogic.rhapsody.core"
 _HELPER_NAMES = {"_get_method_or_property", "_set_method_or_property", "get_com_property", "set_com_property"}
 _REFERENCE_MEMBER_PATTERN = re.compile(r"::([A-Za-z_$][A-Za-z0-9_$]*)\s*\(")
 Rows = List[Tuple[str, str, str, str, str]]
-_AUTHORITY_INFO_STATUSES = {"ACCESSOR_ALIAS_MISMATCH", "METHOD_PROPERTY_MISMATCH", "PYTHON_ONLY_MEMBER", "JAVA_ONLY_MEMBER"}
-_AUTHORITY_BACKLOG_STATUSES = {"MISSING_PYTHON_WRAPPER", "PYWIN32_ONLY_MEMBER"}
-_UNAVAILABLE_RESOLVED_STATUSES = {"PYWIN32_MEMBER_MISSING", "JAVA_ONLY_MEMBER", "MISSING_PYTHON_WRAPPER", "PYWIN32_ONLY_MEMBER"}
+_AUTHORITY_INFO_STATUSES = {"JAVA_ONLY_MEMBER", "PYTHON_ONLY_MEMBER"}
+_DERIVED_ACCESSOR_STATUSES = {"ACCESSOR_ALIAS_MISMATCH", "METHOD_PROPERTY_MISMATCH"}
 _DOCUMENTED_ALIAS_RECOMMENDATION = "Documented decision: keep the current binding; no change."
 _DOCUMENTED_UNAVAILABLE_RECOMMENDATION = "Documented decision: intentionally unsupported; no change."
 
@@ -377,7 +376,7 @@ def _classify_deviation(
 
     property_names = sorted(name for name, kind in pywin32_members.items() if "property" in kind)
     if "MISSING_PYTHON_WRAPPER" in statuses:
-        recommendation = "Implement the Python wrapper or mark this API member intentionally unsupported."
+        recommendation = "Implement the Python wrapper, or record the Java member in documented_intentionally_unsupported with a rationale."
     elif "JAVA_ONLY_MEMBER" in statuses:
         recommendation = "Verify the Java documentation against the installed COM type library."
     elif "PYWIN32_ONLY_MEMBER" in statuses:
@@ -405,12 +404,29 @@ def _classify_deviation(
 
 
 def apply_pywin32_authority(rows: Rows, interface_name: str, authority: AuthorityData) -> Tuple[Rows, Rows, Rows]:
-    """Split raw deviations into actionable, informational, and backlog rows."""
+    """Split raw deviations into actionable, informational, and backlog rows.
+
+    Nothing is skipped by status label alone: MISSING_PYTHON_WRAPPER,
+    PYWIN32_ONLY_MEMBER, ACCESSOR_ALIAS_MISMATCH, and METHOD_PROPERTY_MISMATCH
+    are actionable unless a documented decision covers the family
+    (documented_unavailable / documented_intentionally_unsupported) or the
+    binding is verified correct against the catalog. Derived accessor statuses
+    clear when such a decision covers the family — they are consequences of
+    it, not independent findings. documented_unavailable entries that the
+    catalog actually exposes are ignored with a warning instead of hiding
+    wrappable work; documented aliases must reference the row's own Java
+    member, so a phantom target no longer hides a naming mismatch.
+    """
     deviations: Rows = []
     informational: Rows = []
     backlog: Rows = []
     aliases = authority["documented_aliases"].get(interface_name, {})
-    unavailable = set(authority["documented_unavailable"].get(interface_name, []))
+    catalog_members = set(authority["catalog"].get(interface_name, {}))
+    raw_unavailable = set(authority["documented_unavailable"].get(interface_name, []))
+    for phantom in sorted(raw_unavailable & catalog_members):
+        print(f"Warning: documented_unavailable lists {phantom} for {interface_name}, but the pywin32 catalog exposes it; the entry is ignored.", file=sys.stderr)
+    unavailable = raw_unavailable - catalog_members
+    intentionally_unsupported = set(authority["documented_intentionally_unsupported"].get(interface_name, []))
 
     def _java_members(row: Tuple[str, str, str, str, str]) -> Set[str]:
         return {entry[: -len(" (method)")] for entry in row[1].split("; ") if entry.endswith(" (method)")}
@@ -423,9 +439,9 @@ def apply_pywin32_authority(rows: Rows, interface_name: str, authority: Authorit
         java_names = _java_members(row)
         pywin32_entries: Dict[str, str] = {}
         for entry in row[2].split("; "):
-            name, separator, kind = entry.rpartition(" (")
-            if separator and kind.endswith(")"):
-                pywin32_entries[name] = kind[:-1]
+            name, separator, kind_with_paren = entry.rpartition(" (")
+            if separator and kind_with_paren.endswith(")"):
+                pywin32_entries[name] = kind_with_paren[:-1]
 
         missing_java_names: Set[str] = set()
         for java_name in java_names:
@@ -437,26 +453,48 @@ def apply_pywin32_authority(rows: Rows, interface_name: str, authority: Authorit
                 missing_java_names.add(java_name)
         return bool(missing_java_names) and missing_java_names.issubset(unavailable)
 
+    def _alias_targets_java(alias: Dict[str, str], wrapper_names: Set[str], java_names: Set[str]) -> bool:
+        if not java_names:
+            return False
+
+        def stems(text: str) -> Set[str]:
+            compact = text.replace("_", "")
+            stripped = re.sub(r"^(get|set)", "", compact, flags=re.IGNORECASE)
+            return {compact.casefold(), stripped.casefold()}
+
+        for name in wrapper_names:
+            entry = alias.get(name)
+            if entry is None or not any(stems(entry) & stems(java_name) for java_name in java_names):
+                return False
+        return True
+
     for row in rows:
         statuses = row[3].split("; ")
+        java_names = _java_members(row)
+        authoritative_names = java_names or _pywin32_cell_names(row[2])
+        intentionally_documented = "MISSING_PYTHON_WRAPPER" in statuses and bool(authoritative_names) and authoritative_names.issubset(intentionally_unsupported)
+        resolution_documented = intentionally_documented or bool(java_names and java_names.issubset(unavailable)) or _has_documented_partial_unavailability(row)
+        wrapper_names = {label.split("()", maxsplit=1)[0] for label in row[0].split("; ") if label != "—"}
+        alias_documented = bool(wrapper_names) and all(name in aliases for name in wrapper_names) and _alias_targets_java(aliases, wrapper_names, java_names)
         remaining: List[str] = []
-        alias_documented = False
         for status in statuses:
             if status in _AUTHORITY_INFO_STATUSES:
                 continue
-            if status == "PYTHON_METHOD_NAME_MISMATCH":
-                wrapper_names = {label.split("()", maxsplit=1)[0] for label in row[0].split("; ") if label != "—"}
-                if wrapper_names and all(name in aliases for name in wrapper_names):
-                    alias_documented = True
-                    continue
+            if status in _DERIVED_ACCESSOR_STATUSES and (alias_documented or resolution_documented):
+                continue
+            if status == "MISSING_PYTHON_WRAPPER" and (intentionally_documented or (java_names and java_names.issubset(unavailable))):
+                continue
+            if status == "PYTHON_METHOD_NAME_MISMATCH" and alias_documented:
+                continue
             if status == "PYWIN32_MEMBER_MISSING":
-                java_names = {entry[: -len(" (method)")] for entry in row[1].split("; ") if entry.endswith(" (method)")}
                 if java_names and java_names.issubset(unavailable):
                     continue
             remaining.append(status)
 
-        actionable = [status for status in remaining if status not in _AUTHORITY_BACKLOG_STATUSES]
-
+        actionable = remaining
+        if intentionally_documented and not actionable:
+            backlog.append((row[0], row[1], row[2], "INTENTIONALLY_UNSUPPORTED_DOCUMENTED", _DOCUMENTED_UNAVAILABLE_RECOMMENDATION))
+            continue
         if alias_documented and not actionable:
             resolved = ["ALIAS_DOCUMENTED" if status == "PYTHON_METHOD_NAME_MISMATCH" else status for status in statuses]
             informational.append((row[0], row[1], row[2], "; ".join(resolved), _DOCUMENTED_ALIAS_RECOMMENDATION))
@@ -464,10 +502,11 @@ def apply_pywin32_authority(rows: Rows, interface_name: str, authority: Authorit
         if (_documented_unavailable(row) or _has_documented_partial_unavailability(row)) and not actionable:
             informational.append((row[0], row[1], row[2], "UNAVAILABLE_DOCUMENTED", _DOCUMENTED_UNAVAILABLE_RECOMMENDATION))
             continue
+        if actionable and set(remaining).issubset(_DERIVED_ACCESSOR_STATUSES) and _is_correct_com_binding(row):
+            informational.append(row)
+            continue
         if actionable:
             deviations.append((row[0], row[1], row[2], "; ".join(remaining), row[4]))
-        elif remaining:
-            backlog.append(row)
         elif any(status in _AUTHORITY_INFO_STATUSES for status in statuses):
             informational.append(row)
 

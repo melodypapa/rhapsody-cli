@@ -4,7 +4,7 @@
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `IRPProject` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`)
 - Members: Python `74`, Java `70`, pywin32 `73`
-- Deviation items: `13` (actionable `7`, expected binding differences `3`, wrapper backlog `3`)
+- Deviation items: `13` (actionable `10`, expected binding differences `3`, wrapper backlog `0`)
 
 ## Comparison details
 
@@ -15,8 +15,11 @@
 | add_node() -> addNode | — | addNode (method) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
 | delete_node() -> deleteNode | — | deleteNode (method) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
 | find_node() -> findNode | — | findNode (method) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
+| — | moveToDesignManager (method) | moveToDesignManager (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper, or record the Java member in documented_intentionally_unsupported with a rationale. |
+| — | moveToDesignManagerAfterLogin (method) | moveToDesignManagerAfterLogin (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper, or record the Java member in documented_intentionally_unsupported with a rationale. |
 | get_nodes() -> nodes | — | nodes (property) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
 | get_packages() -> packages | — | packages (property) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
+| — | save (method) | save (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper, or record the Java member in documented_intentionally_unsupported with a rationale. |
 
 ## Expected Binding Differences
 
@@ -30,9 +33,7 @@
 
 | Python model wrapper | Java API | pywin32 | Status | Recommended change |
 | --- | --- | --- | --- | --- |
-| — | moveToDesignManager (method) | moveToDesignManager (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | moveToDesignManagerAfterLogin (method) | moveToDesignManagerAfterLogin (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | save (method) | save (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
+| — | — | — | — | — |
 
 ## Correct Items
 
@@ -146,7 +147,25 @@
 - **Recommended change:** Confirm this COM member is a supported extension and document its status.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
-### Finding 6: JAVA_DOC_MISSING
+### Finding 6: MISSING_PYTHON_WRAPPER
+- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
+- **Current Python wrapper/COM call:** —
+- **Expected Python method(s):** `move_to_design_manager`
+- **Java signature(s):** `IRPProject.moveToDesignManager(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)`
+- **pywin32 member(s):** moveToDesignManager (method)
+- **Recommended change:** Implement the Python wrapper, or record the Java member in documented_intentionally_unsupported with a rationale.
+- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
+
+### Finding 7: MISSING_PYTHON_WRAPPER
+- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
+- **Current Python wrapper/COM call:** —
+- **Expected Python method(s):** `move_to_design_manager_after_login`
+- **Java signature(s):** `IRPProject.moveToDesignManagerAfterLogin(java.lang.String, java.lang.String, java.lang.String)`
+- **pywin32 member(s):** moveToDesignManagerAfterLogin (method)
+- **Recommended change:** Implement the Python wrapper, or record the Java member in documented_intentionally_unsupported with a rationale.
+- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
+
+### Finding 8: JAVA_DOC_MISSING
 - **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
 - **Current Python wrapper/COM call:** get_nodes() -> nodes
 - **Expected Python method(s):** —
@@ -155,11 +174,20 @@
 - **Recommended change:** Confirm this COM member is a supported extension and document its status.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
-### Finding 7: JAVA_DOC_MISSING
+### Finding 9: JAVA_DOC_MISSING
 - **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
 - **Current Python wrapper/COM call:** get_packages() -> packages
 - **Expected Python method(s):** —
 - **Java signature(s):** —
 - **pywin32 member(s):** packages (property)
 - **Recommended change:** Confirm this COM member is a supported extension and document its status.
+- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
+
+### Finding 10: MISSING_PYTHON_WRAPPER
+- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
+- **Current Python wrapper/COM call:** —
+- **Expected Python method(s):** `save`
+- **Java signature(s):** `IRPProject.save()`
+- **pywin32 member(s):** save (method)
+- **Recommended change:** Implement the Python wrapper, or record the Java member in documented_intentionally_unsupported with a rationale.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
