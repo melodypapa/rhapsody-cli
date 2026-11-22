@@ -345,7 +345,11 @@ def _write_application_fixture(root: Path) -> Path:
         "   * - ``getBuildNo``\n"
         "     - ``BuildNo (property)``\n"
         "     - ``get_build_no``\n"
-        "     - binding difference\n",
+        "     - binding difference\n"
+        "   * - ``someJavaOnlyMember``\n"
+        "     - ``someJavaOnlyMember (method)``\n"
+        "     - ``—``\n"
+        "     - wrapper backlog; intentionally unsupported\n",
         encoding="utf-8",
     )
     report = _report_path(root / "docs" / "reports", "IRPApplication")
@@ -380,14 +384,15 @@ def test_verifier_accepts_application_layer_wrapper(tmp_path: Path) -> None:
     assert tools.verify_sync_artifacts(root, "IRPApplication", report) == []
 
 
-def test_verifier_ignores_wrapper_backlog_members(tmp_path: Path) -> None:
+def test_verifier_requires_wrapper_backlog_members(tmp_path: Path) -> None:
+    """Wrapper-backlog members are deviations: the verifier must collect them
+    so the RST page has to record their intentionally-unsupported disposition."""
     tools = _load_sync_tools()
     root = tmp_path / "repo"
     report = _write_application_fixture(root)
     text = report.read_text(encoding="utf-8")
 
-    assert "someJavaOnlyMember" in text
-    assert "someJavaOnlyMember" not in tools.extract_deviation_members(text)
+    assert "someJavaOnlyMember" in tools.extract_deviation_members(text)
 
 
 def test_binding_check_flags_absent_com_member(tmp_path: Path) -> None:

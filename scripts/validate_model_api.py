@@ -637,15 +637,9 @@ def render_markdown_report(
     informational_rows: Optional[Rows] = None,
     backlog_rows: Optional[Rows] = None,
     matched_rows: Optional[Rows] = None,
-    documented_counts: Optional[Tuple[int, int]] = None,
     java_package: str = JAVA_PACKAGE,
 ) -> str:
     """Render a comparison summary, five-column deviation table, and AI repair guidance."""
-    status_counts: Dict[str, int] = {}
-    for row in rows:
-        for status in row[3].split("; "):
-            status_counts[status] = status_counts.get(status, 0) + 1
-
     lines = [
         f"# Rhapsody API Validation: {interface_name}",
         "",
@@ -653,24 +647,10 @@ def render_markdown_report(
         f"- Java package: `{java_package}`",
         f"- Target wrapper: `{wrapper_class}` (`{wrapper_path}`)",
         f"- Members: Python `{member_counts[0]}`, Java `{member_counts[1]}`, pywin32 `{member_counts[2]}`",
-        f"- Deviations: `{len(rows)}`",
-        "- Deviations by status:",
+        f"- Deviation items: `{len(rows) + len(informational_rows or []) + len(backlog_rows or [])}` "
+        f"(actionable `{len(rows)}`, expected binding differences `{len(informational_rows or [])}`, "
+        f"wrapper backlog `{len(backlog_rows or [])}`)",
     ]
-    if status_counts:
-        lines.extend(f"  - `{status}`: {count}" for status, count in sorted(status_counts.items()))
-    else:
-        lines.append("  - None")
-
-    if authoritative:
-        lines.extend(
-            [
-                "",
-                f"- Informational binding differences (expected): `{len(informational_rows or [])}`",
-                f"- Wrapper backlog (supported members without wrappers): `{len(backlog_rows or [])}`",
-            ]
-        )
-        if documented_counts is not None:
-            lines.append(f"- Documented aliases: `{documented_counts[0]}`, documented unavailable: `{documented_counts[1]}`")
 
     lines.extend(
         [
@@ -764,13 +744,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         return 2
 
     raw_rows = build_deviation_rows(python_members, java_members, pywin32_members)
-    documented_counts: Optional[Tuple[int, int]] = None
     if args.source == "authority":
         rows, informational_rows, backlog_rows = apply_pywin32_authority(raw_rows, args.java_interface, authority)
-        documented_counts = (
-            len(authority["documented_aliases"].get(args.java_interface, {})),
-            len(authority["documented_unavailable"].get(args.java_interface, {})),
-        )
     else:
         rows, informational_rows, backlog_rows = raw_rows, [], []
 
@@ -794,7 +769,6 @@ def main(argv: Optional[List[str]] = None) -> int:
             informational_rows=informational_rows,
             backlog_rows=backlog_rows,
             matched_rows=matched_rows,
-            documented_counts=documented_counts,
             java_package=java_package,
         )
         report_path.write_text(markdown, encoding="utf-8")

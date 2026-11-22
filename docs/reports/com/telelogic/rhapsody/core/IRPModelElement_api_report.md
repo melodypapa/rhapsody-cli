@@ -4,13 +4,7 @@
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `IRPModelElement` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_model_element.py`)
 - Members: Python `113`, Java `118`, pywin32 `104`
-- Deviations: `0`
-- Deviations by status:
-  - None
-
-- Informational binding differences (expected): `1`
-- Wrapper backlog (supported members without wrappers): `4`
-- Documented aliases: `0`, documented unavailable: `1`
+- Deviation items: `5` (actionable `0`, expected binding differences `1`, wrapper backlog `4`)
 
 ## Comparison details
 

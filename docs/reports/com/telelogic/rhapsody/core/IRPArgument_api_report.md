@@ -4,13 +4,7 @@
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `IRPArgument` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_argument.py`)
 - Members: Python `2`, Java `2`, pywin32 `1`
-- Deviations: `0`
-- Deviations by status:
-  - None
-
-- Informational binding differences (expected): `0`
-- Wrapper backlog (supported members without wrappers): `0`
-- Documented aliases: `0`, documented unavailable: `0`
+- Deviation items: `0` (actionable `0`, expected binding differences `0`, wrapper backlog `0`)
 
 ## Comparison details
 

@@ -4,13 +4,7 @@
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `IRPPort` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_port.py`)
 - Members: Python `14`, Java `14`, pywin32 `9`
-- Deviations: `0`
-- Deviations by status:
-  - None
-
-- Informational binding differences (expected): `1`
-- Wrapper backlog (supported members without wrappers): `0`
-- Documented aliases: `0`, documented unavailable: `2`
+- Deviation items: `1` (actionable `0`, expected binding differences `1`, wrapper backlog `0`)
 
 ## Comparison details
 

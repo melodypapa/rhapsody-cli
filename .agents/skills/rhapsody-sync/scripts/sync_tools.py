@@ -12,10 +12,11 @@ _WRAPPER_PATTERN = re.compile(r"^- Target wrapper: `([^`]+)` \(`([^`]+)`\)$", re
 _JAVA_PACKAGE_PATTERN = re.compile(r"^- Java package: `([A-Za-z0-9_.]+)`$", re.MULTILINE)
 _MEMBER_PATTERN = re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\s*\(")
 _RST_INTERFACE_ANCHOR = ".. _rhapsody-java-interface-"
-# Only verified deviations/backing differences require an RST row. "Wrapper
-# Backlog" lists Java-only members that are intentionally unsupported (e.g. the
-# 139 IRPApplication members); enumerating those in the deviation table is noise.
-_REPORT_SECTIONS = {"Comparison details", "Expected Binding Differences"}
+# Every non-MATCH report row is a deviation and requires an RST row — including
+# "Wrapper Backlog" members (COM-supported members without Python wrappers):
+# unwrapped API surface is a deviation from Java-API parity, with the RST
+# recording the "intentionally unsupported" disposition.
+_REPORT_SECTIONS = {"Comparison details", "Expected Binding Differences", "Wrapper Backlog"}
 
 
 def split_interface_name(interface_name: str) -> Tuple[str, Optional[str]]:
@@ -129,11 +130,11 @@ def parse_report_java_package(report_text: str) -> Optional[str]:
 
 
 def extract_deviation_members(report_text: str) -> Set[str]:
-    """Collect API names from the validator's comparison and binding-difference tables.
+    """Collect API names from every non-MATCH report table.
 
-    The "Wrapper Backlog" table is intentionally excluded: it lists JavaDoc members
-    that have no Python wrapper (informational, e.g. IRPApplication's large Java-only
-    surface) rather than deviations the RST page must enumerate.
+    Covers the comparison table, expected binding differences, and the wrapper
+    backlog: unwrapped-but-COM-supported members are deviations too, and the
+    RST page must record their "intentionally unsupported" disposition.
     """
     members: Set[str] = set()
     active_section: Optional[str] = None

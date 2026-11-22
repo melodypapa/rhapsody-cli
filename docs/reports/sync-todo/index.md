@@ -116,6 +116,14 @@ not re-derive scope or decisions already recorded in the row's Notes.
   forwarder definitions are gone and every sync row has moved its class to the canonical core
   package. `IRPModelElement.get_rmm_url` is a documented-unavailable `NotImplementedError` stub
   (its `getRmmUrl` member is absent from the catalog), not a probe site.
+- **Deviation semantics (2026-11-22, review fix):** deviations count **items**, not kinds, and
+  Wrapper Backlog rows are deviations. API reports now report
+  `- Deviation items: N (actionable a, expected binding differences b, wrapper backlog c)` in
+  one line, and `verify_sync.py` includes Wrapper Backlog members in the deviation-member
+  coverage it demands from the RST page — an unwrapped-but-COM-supported member is a deviation
+  from Java-API parity whose RST row records the "intentionally unsupported" disposition.
+  Consequence at closeout: `irp_application.rst` enumerates all 139 IRPApplication backlog
+  members (report regenerated offline in authority mode; verify_sync 13/13).
 - **Per-class SWR IDs (2026-11-22, review fix):** the 12 per-class requirement documents carry
   unique IDs — the six entries moved out of `swr_elem_requirements.md` kept their original IDs
   (`SWR_ELEM_00001/2/3/6/7/12` → project/package/classifier/operation/attribute/use_case); the

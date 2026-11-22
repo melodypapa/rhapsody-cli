@@ -4,13 +4,7 @@
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `IRPClassifier` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_classifier.py`)
 - Members: Python `47`, Java `46`, pywin32 `47`
-- Deviations: `1`
-- Deviations by status:
-  - `JAVA_DOC_MISSING`: 1
-
-- Informational binding differences (expected): `0`
-- Wrapper backlog (supported members without wrappers): `0`
-- Documented aliases: `0`, documented unavailable: `0`
+- Deviation items: `1` (actionable `1`, expected binding differences `0`, wrapper backlog `0`)
 
 ## Comparison details
 

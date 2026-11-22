@@ -487,19 +487,22 @@ def test_markdown_report_includes_java_package() -> None:
     assert "- Java package: `com.telelogic.rhapsody.core`" in report
 
 
-def test_markdown_report_lists_documented_decision_counts(tmp_path: Path) -> None:
+def test_markdown_report_counts_deviation_items_across_all_tables() -> None:
+    """Deviations count items, not kinds: actionable rows, expected binding
+    differences, and wrapper backlog members all add to the total."""
     report = render_markdown_report(
         "IRPClass",
-        [],
+        [("—", "save (method)", "save (method)", "MISSING_PYTHON_WRAPPER", "Implement the Python wrapper.")],
         "IRPClass",
         "src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_class.py",
         {},
         (214, 222, 201),
         authoritative=True,
-        documented_counts=(7, 9),
+        informational_rows=[("get_build_no() -> getBuildNo", "getBuildNo (method)", "BuildNo (property)", "COM_MEMBER_NOT_EXPOSED", "Document.")],
+        backlog_rows=[("—", "moveToDesignManager (method)", "moveToDesignManager (method)", "MISSING_PYTHON_WRAPPER", "Implement the Python wrapper.")],
     )
 
-    assert "- Documented aliases: `7`, documented unavailable: `9`" in report
+    assert "- Deviation items: `3` (actionable `1`, expected binding differences `1`, wrapper backlog `1`)" in report
 
 
 def test_main_writes_markdown_report_to_default_and_requested_directories(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:

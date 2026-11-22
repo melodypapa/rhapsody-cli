@@ -4,13 +4,7 @@
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `RhapsodyApplication` (`src/rhapsody_cli/application.py`)
 - Members: Python `31`, Java `176`, pywin32 `172`
-- Deviations: `1`
-- Deviations by status:
-  - `PYTHON_METHOD_NAME_MISMATCH`: 1
-
-- Informational binding differences (expected): `3`
-- Wrapper backlog (supported members without wrappers): `139`
-- Documented aliases: `0`, documented unavailable: `0`
+- Deviation items: `143` (actionable `1`, expected binding differences `3`, wrapper backlog `139`)
 
 ## Comparison details
 
