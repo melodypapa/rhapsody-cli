@@ -1,10 +1,10 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPProfile``."""
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.core import AbstractRPModelElement
-from rhapsody_cli.models.elements.containment.model_package import RPPackage
 
 
-class RPProfile(RPPackage):
+class RPProfile(IRPPackage):
     """Wraps ``IRPProfile``: a profile that extends ``IRPPackage``."""
 
     # IRPProfile method parity checklist:

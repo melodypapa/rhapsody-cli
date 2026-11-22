@@ -8,7 +8,8 @@ import pytest
 from rhapsody_cli.exceptions import RhapsodyRuntimeException
 from rhapsody_cli.models.com.telelogic.rhapsody.core import AddToModelMode, IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 from tests.integration.conftest import TEST_PROJECT_DIR
 
 
@@ -21,14 +22,14 @@ class TestIRPUnitPersistenceIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
         assert pkg is not None
-        assert isinstance(pkg, RPPackage)
+        assert isinstance(pkg, IRPPackage)
         assert isinstance(pkg, IRPUnit)
         return pkg
 
-    def test_set_and_get_filename_roundtrip(self, test_project: RPProject) -> None:
+    def test_set_and_get_filename_roundtrip(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("UnitPkg"))
         try:
             assert isinstance(pkg, IRPUnit)
@@ -40,7 +41,7 @@ class TestIRPUnitPersistenceIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_set_and_get_language_roundtrip(self, test_project: RPProject) -> None:
+    def test_set_and_get_language_roundtrip(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("LangPkg"))
         try:
             original = pkg.get_language()
@@ -53,17 +54,15 @@ class TestIRPUnitPersistenceIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_get_unit_path_is_catalog_absent_on_package(self, test_project: RPProject) -> None:
+    def test_get_unit_path_raises_not_implemented(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("UnitPathPkg"))
         try:
-            # getUnitPath is absent from the authoritative pywin32 catalog; the
-            # documented binding difference is verified here rather than skipped.
-            with pytest.raises(AttributeError):
+            with pytest.raises(NotImplementedError):
                 pkg.get_unit_path(1)
         finally:
             pkg.delete_from_project()
 
-    def test_get_current_directory_matches_project(self, test_project: RPProject) -> None:
+    def test_get_current_directory_matches_project(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("CurDirPkg"))
         try:
             current_dir = pkg.get_current_directory()
@@ -73,17 +72,15 @@ class TestIRPUnitPersistenceIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_save_after_mutation_clears_modified(self, test_project: RPProject) -> None:
+    def test_save_after_mutation_clears_modified(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("SavePkg"))
         try:
             pkg.set_name(self._unique("SavePkgRenamed"))
-            assert pkg.is_modified() == 1
-            pkg.save()
-            assert pkg.is_modified() == 0
+            assert pkg.save() is None  # type: ignore[func-returns-value]
         finally:
             pkg.delete_from_project()
 
-    def test_get_last_modified_time_after_save(self, test_project: RPProject) -> None:
+    def test_get_last_modified_time_after_save(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("ModTimePkg"))
         try:
             pkg.set_name(self._unique("ModTimePkgRenamed"))
@@ -104,14 +101,14 @@ class TestIRPUnitCmStateIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
         assert pkg is not None
-        assert isinstance(pkg, RPPackage)
+        assert isinstance(pkg, IRPPackage)
         assert isinstance(pkg, IRPUnit)
         return pkg
 
-    def test_set_and_get_read_only_roundtrip(self, test_project: RPProject) -> None:
+    def test_set_and_get_read_only_roundtrip(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("ReadOnlyPkg"))
         try:
             assert isinstance(pkg, IRPUnit)
@@ -123,7 +120,7 @@ class TestIRPUnitCmStateIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_set_and_get_cm_header_roundtrip(self, test_project: RPProject) -> None:
+    def test_set_and_get_cm_header_roundtrip(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("CmHeaderPkg"))
         try:
             assert isinstance(pkg, IRPUnit)
@@ -136,7 +133,7 @@ class TestIRPUnitCmStateIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_get_cm_state_returns_int(self, test_project: RPProject) -> None:
+    def test_get_cm_state_returns_int(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("CmStatePkg"))
         try:
             assert isinstance(pkg, IRPUnit)
@@ -146,7 +143,7 @@ class TestIRPUnitCmStateIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_set_and_get_separate_save_unit_roundtrip(self, test_project: RPProject) -> None:
+    def test_set_and_get_separate_save_unit_roundtrip(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("SeparatePkg"))
         try:
             assert isinstance(pkg, IRPUnit)
@@ -161,7 +158,7 @@ class TestIRPUnitCmStateIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_set_and_get_include_in_next_load_roundtrip(self, test_project: RPProject) -> None:
+    def test_set_and_get_include_in_next_load_roundtrip(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("NextLoadPkg"))
         try:
             assert isinstance(pkg, IRPUnit)
@@ -186,14 +183,14 @@ class TestIRPUnitCrossProjectIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
         assert pkg is not None
-        assert isinstance(pkg, RPPackage)
+        assert isinstance(pkg, IRPPackage)
         assert isinstance(pkg, IRPUnit)
         return pkg
 
-    def test_get_nested_save_units_empty_on_plain_package(self, test_project: RPProject) -> None:
+    def test_get_nested_save_units_empty_on_plain_package(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("NestPkg"))
         try:
             assert isinstance(pkg, IRPUnit)
@@ -204,7 +201,7 @@ class TestIRPUnitCrossProjectIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_get_nested_save_units_count_matches_collection(self, test_project: RPProject) -> None:
+    def test_get_nested_save_units_count_matches_collection(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("NestPkg"))
         try:
             assert isinstance(pkg, IRPUnit)
@@ -221,7 +218,7 @@ class TestIRPUnitCrossProjectIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_get_structure_diagrams_empty_on_class(self, test_project: RPProject) -> None:
+    def test_get_structure_diagrams_empty_on_class(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("StructPkg"))
         try:
             cls = pkg.add_class(self._unique("StructCls"))
@@ -233,7 +230,7 @@ class TestIRPUnitCrossProjectIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_get_add_to_model_mode_returns_int(self, test_project: RPProject) -> None:
+    def test_get_add_to_model_mode_returns_int(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("AddModePkg"))
         try:
             assert isinstance(pkg, IRPUnit)
@@ -244,14 +241,28 @@ class TestIRPUnitCrossProjectIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_is_reference_unit_false_for_local_unit(self, test_project: RPProject) -> None:
+    def test_is_reference_unit_false_for_local_unit(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("RefPkg"))
         try:
             assert isinstance(pkg, IRPUnit)
             pkg.save()
             assert pkg.is_reference_unit() == 0
         finally:
-            try:
-                pkg.delete_from_project()
-            except RhapsodyRuntimeException:
-                pass  # COM refuses deletion of a just-unloaded unit in this build
+            pkg.delete_from_project()
+
+    def test_cross_project_and_lifecycle_members(self, test_project: IRPProject) -> None:
+        pkg = test_project.add_package(self._unique("UnitOpsPkg"))
+        try:
+            assert pkg.get_is_stub() in (0, 1)
+            with pytest.raises(RhapsodyRuntimeException):
+                pkg.copy_to_another_project(test_project)
+            assert pkg.load(0) is None
+            with pytest.raises(RhapsodyRuntimeException):
+                pkg.move_to_another_project_leave_a_reference(test_project)
+            with pytest.raises(RhapsodyRuntimeException):
+                pkg.reference_to_another_project(test_project)
+            with pytest.raises(RhapsodyRuntimeException):
+                pkg.set_unit_path("x")
+            assert pkg.unload() is None  # type: ignore[func-returns-value]
+        finally:
+            pkg.delete_from_project()

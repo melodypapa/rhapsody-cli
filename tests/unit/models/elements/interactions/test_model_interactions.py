@@ -3,8 +3,9 @@
 from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
-from rhapsody_cli.models.elements.classifiers.model_interface_item import RPInterfaceItem
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import IRPInterfaceItem
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.interactions import (
     RPDestructionEvent,
     RPEvent,
@@ -21,10 +22,10 @@ from rhapsody_cli.models.elements.interactions import (
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 if TYPE_CHECKING:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port import IRPPort
     from rhapsody_cli.models.elements.classifiers.model_statechart import RPStatechart
     from rhapsody_cli.models.elements.common.model_other_model import RPSysMLPort
     from rhapsody_cli.models.elements.diagrams.model_diagram_types import RPSequenceDiagram
-    from rhapsody_cli.models.elements.relations.model_port import RPPort
     from rhapsody_cli.models.elements.statemachine.model_statemachine import RPStateVertex
 
 
@@ -459,7 +460,7 @@ class TestRPMessage:
         op = make_fake_element("InterfaceItem", properties={"name": "op1"})
         fake.setFormalInterfaceItem.return_value = None
         msg = RPMessage(fake)
-        msg.set_formal_interface_item(RPInterfaceItem(op))
+        msg.set_formal_interface_item(IRPInterfaceItem(op))
         fake.setFormalInterfaceItem.assert_called_once_with(op)
 
     def test_set_formal_type_delegates(self) -> None:
@@ -482,7 +483,7 @@ class TestRPMessage:
         p = make_fake_element("Port", properties={"name": "p1"})
         fake.setPort.return_value = None
         msg = RPMessage(fake)
-        msg.set_port(cast("RPPort", IRPModelElement(p)))
+        msg.set_port(cast("IRPPort", IRPModelElement(p)))
         fake.setPort.assert_called_once_with(p)
 
     def test_set_return_value_delegates(self) -> None:

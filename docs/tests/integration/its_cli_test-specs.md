@@ -55,7 +55,7 @@ The `cli` group constructs a `RhapsodyContext`, propagates the `--output` choice
 Verifies end-to-end integration of the `project open` command: it constructs a `RhapsodyContext`,
 calls `connect(method="attach")`, calls `open_project(path)`, and echoes `"Opened project: {path}"`.
 `RhapsodyContext.open_project` must lazily connect if `app` is None, then delegate to
-`RhapsodyApplication.openProject` and store the resulting `RPProject` on `ctx.project`.
+`RhapsodyApplication.openProject` and store the resulting `IRPProject` on `ctx.project`.
 **Pre-conditions:**
 - `CliRunner` available.
 - `RhapsodyApplication.connect` patched to return a `RhapsodyApplication` wrapping a mock COM app
@@ -69,10 +69,10 @@ calls `connect(method="attach")`, calls `open_project(path)`, and echoes `"Opene
    `str(tmp_path)`.
 4. Assert (via spy) that `RhapsodyApplication.connect` was called with `method="attach"`.
 5. Assert (via spy) that the mock app's `openProject` was called with `str(tmp_path)`.
-6. Assert the resulting `RPProject` ended up on `ctx.project` (introspect via a follow-up command
+6. Assert the resulting `IRPProject` ended up on `ctx.project` (introspect via a follow-up command
    or a captured context object).
 **Expected Result:**
-`project open` performs the full connect → open → echo sequence; the wrapped `RPProject` is stored
+`project open` performs the full connect → open → echo sequence; the wrapped `IRPProject` is stored
 on the context for subsequent commands.
 **Verification Criteria:**
 - `result.exit_code == 0`.
@@ -92,13 +92,13 @@ on the context for subsequent commands.
 **Priority:** Medium
 **Description:**
 Verifies integration of `ListProjectsCommand.execute` with `RhapsodyContext.connect`,
-`RhapsodyApplication.getProjects` (returning an `IRPCollection` of `RPProject`), and
+`RhapsodyApplication.getProjects` (returning an `IRPCollection` of `IRPProject`), and
 `OutputFormatter.table`. The default `--output table` format must produce an ASCII grid table
 containing each project's name and path.
 **Pre-conditions:**
 - `CliRunner` available.
 - `RhapsodyApplication.connect` patched to return an app whose `getProjects` returns an
-  `IRPCollection` of two mock `RPProject` objects with names `"P1"` and `"P2"`.
+  `IRPCollection` of two mock `IRPProject` objects with names `"P1"` and `"P2"`.
 - `rhapsody_cli.models.elements` imported.
 **Test Steps:**
 1. `result = runner.invoke(cli, ["project", "list"])`.
@@ -157,11 +157,11 @@ The command prints the no-projects message and does not invoke the table formatt
 **Priority:** High
 **Description:**
 Verifies the `RhapsodyContext` state machine integrates correctly with the underlying
-`RhapsodyApplication` and `RPProject` lifecycles. After `connect`, `app` is set; after
+`RhapsodyApplication` and `IRPProject` lifecycles. After `connect`, `app` is set; after
 `open_project`, `project` is set; after `close_project`, `project` is None but `app` remains;
 after `disconnect`, both are None and the app's `quit()` was called.
 **Pre-conditions:**
-- A mock `RhapsodyApplication` whose `openProject` returns a mock `RPProject` whose `close()` is a
+- A mock `RhapsodyApplication` whose `openProject` returns a mock `IRPProject` whose `close()` is a
   spy.
 - `RhapsodyApplication.quit` is a spy.
 - `RhapsodyApplication.connect` patched to return the mock app.
@@ -196,13 +196,13 @@ project wrappers at each step and clearing references on close/disconnect.
 **Type:** Integration
 **Priority:** High
 **Description:**
-Verifies `AddElementCommand.execute` integrates with the active `RPProject`'s root and dispatches
+Verifies `AddElementCommand.execute` integrates with the active `IRPProject`'s root and dispatches
 correctly based on `--type`. The class-based command architecture must wire `--type` and `--name`
 params to the callback, require an active project, and echo `"Created {type}: {name}"` on success.
 Unknown types must abort.
 **Pre-conditions:**
 - `CliRunner` available.
-- A `RhapsodyContext` with `project` set to a mock `RPProject` whose root exposes spies
+- A `RhapsodyContext` with `project` set to a mock `IRPProject` whose root exposes spies
   `createClass`, `createActor`, `createPackage` (each returning a wrapped new element).
 - `rhapsody_cli.models.elements` imported.
 **Test Steps:**
@@ -241,7 +241,7 @@ producing `json.dumps(data, indent=2, default=str)`. The emitted JSON must conta
 array where each element has `name` and `type` keys.
 **Pre-conditions:**
 - `CliRunner` available.
-- A `RhapsodyContext` with `project` set to a mock `RPProject` whose root returns nested elements
+- A `RhapsodyContext` with `project` set to a mock `IRPProject` whose root returns nested elements
   (e.g., two elements named `"A"` and `"B"` of types `"Class"` and `"Actor"`).
 - `rhapsody_cli.models.elements` imported.
 **Test Steps:**
@@ -279,7 +279,7 @@ to coerce `data` to a list and delegate to `OutputFormatter.csv_format(headers, 
 by one row per element.
 **Pre-conditions:**
 - `CliRunner` available.
-- A `RhapsodyContext` with `project` set to a mock `RPProject` whose root returns two nested
+- A `RhapsodyContext` with `project` set to a mock `IRPProject` whose root returns two nested
   elements.
 - `rhapsody_cli.models.elements` imported.
 **Test Steps:**

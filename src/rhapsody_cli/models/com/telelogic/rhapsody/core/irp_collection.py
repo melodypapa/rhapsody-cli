@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Any, Iterator
 from rhapsody_cli import com_utils
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.core import IRPModelElement
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 
 class IRPCollection:
@@ -82,29 +82,29 @@ class IRPCollection:
         com_utils.call_com(lambda: self._com.addItem(element._com))
 
     def add_graphical_item(self, item: IRPModelElement) -> None:
-        """Adds a graphical item to the collection.
+        """Add a graphical element to the collection.
 
         Args:
-            item: The graphical model element to add.
+            item: The graphical element to add.
 
         Raises:
-            RhapsodyRuntimeException: If the operation fails.
+            NotImplementedError: This Java API method is not exposed by pywin32.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPCollection::addGraphicalItem(com.telelogic.rhapsody.core.IRPModelElement)
+            com.telelogic.rhapsody.core.IRPCollection::addGraphicalItem(com.telelogic.rhapsody.core.IRPGraphElement newVal)
         """
-        com_utils.call_com(lambda: self._com.addGraphicalItem(item._com))
+        raise NotImplementedError("addGraphicalItem is not exposed in the Rhapsody COM automation type library.")
 
-    def to_list(self) -> list[Any]:
-        """Converts the collection to a Python list.
+    def to_list(self) -> list[IRPModelElement]:
+        """Convert the collection to a Python list.
 
-        Returns:
-            A Python list containing all elements in the collection.
+        Raises:
+            NotImplementedError: This Java API method is not exposed by pywin32.
 
         Reference:
             com.telelogic.rhapsody.core.IRPCollection::toList()
         """
-        return list(self)
+        raise NotImplementedError("toList is not exposed in the Rhapsody COM automation type library.")
 
     def set_size(self, size: int) -> None:
         """Sets the size of the collection.

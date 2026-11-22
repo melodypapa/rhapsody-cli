@@ -14,14 +14,12 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser.add_argument("interface", help="Java interface, such as IRPClass; a fully qualified name is also accepted")
     parser.add_argument("--source", choices=("authority", "typelib"), default="authority", help="COM member catalog source")
     parser.add_argument("--root", type=Path, help="Project root; discovered from the current directory when omitted")
-    parser.add_argument("--reports-dir", type=Path, help="Report output directory; defaults to docs/reports")
+    parser.add_argument("--reports-dir", type=Path, help="Report output root; reports are nested by Java package under docs/reports")
     args = parser.parse_args(argv)
 
     try:
         root = find_project_root(args.root or Path(__file__).resolve())
         interface_name, java_package, _ = find_java_doc(root, args.interface)
-        if java_package != "com.telelogic.rhapsody.core":
-            raise ValueError(f"The repository validator currently reads JavaDoc from com.telelogic.rhapsody.core, but {interface_name} is declared in {java_package}")
         reports_dir = args.reports_dir or root / "docs" / "reports"
         if not reports_dir.is_absolute():
             reports_dir = root / reports_dir
@@ -36,7 +34,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         print(f"Validation setup failed: {exc}", file=sys.stderr)
         return 2
 
-    report_path = reports_dir / f"{interface_name}_api_report.md"
+    report_path = reports_dir / Path(*java_package.split(".")) / f"{interface_name}_api_report.md"
     if report_path.is_file():
         print(f"API report: {report_path}")
     if result.returncode == 0:

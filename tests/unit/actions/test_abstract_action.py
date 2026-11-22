@@ -17,7 +17,7 @@ from rhapsody_cli.actions.abstract_action import (
 )
 from rhapsody_cli.cli.path_resolver import PathResolver, PathResolverError
 from rhapsody_cli.exceptions import CliExecutionError, RhapsodyConnectionError
-from rhapsody_cli.models.core import IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 
 class TestAbstractActionAddVerboseArgument:

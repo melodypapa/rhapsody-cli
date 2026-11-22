@@ -3,9 +3,10 @@
 from typing import cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
-from rhapsody_cli.models.elements.classifiers import RPClassifier
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.relations import RPRelation
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -221,7 +222,7 @@ def test_relation_set_of_class_delegates_to_com() -> None:
     klass_fake = make_fake_element("Class", properties={"name": "Widget"})
     relation = RPRelation(fake)
 
-    relation.set_of_class(RPClassifier(klass_fake))
+    relation.set_of_class(IRPClassifier(klass_fake))
 
     fake.setOfClass.assert_called_once_with(klass_fake)
 
@@ -231,7 +232,7 @@ def test_relation_set_other_class_delegates_to_com() -> None:
     klass_fake = make_fake_element("Class", properties={"name": "Other"})
     relation = RPRelation(fake)
 
-    relation.set_other_class(RPClassifier(klass_fake))
+    relation.set_other_class(IRPClassifier(klass_fake))
 
     fake.setOtherClass.assert_called_once_with(klass_fake)
 
@@ -250,7 +251,7 @@ def test_relation_set_qualifier_type_delegates_to_com() -> None:
     klass_fake = make_fake_element("Class", properties={"name": "KeyType"})
     relation = RPRelation(fake)
 
-    relation.set_qualifier_type(cast(RPClassifier, AbstractRPModelElement.wrap(klass_fake)))
+    relation.set_qualifier_type(cast(IRPClassifier, AbstractRPModelElement.wrap(klass_fake)))
 
     fake.setQualifierType.assert_called_once_with(klass_fake)
 

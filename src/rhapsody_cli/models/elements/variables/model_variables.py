@@ -1,13 +1,14 @@
-"""Variable-family wrappers: mirrors IRPVariable and IRPAttribute from
-com.telelogic.rhapsody.core.
+"""Variable-family wrappers: mirrors IRPVariable from
+com.telelogic.rhapsody.core (IRPAttribute/IRPArgument live in the canonical package).
 """
 
 from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
-from rhapsody_cli.models.elements.classifiers import RPClassifier
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.containment.model_profile import RPProfile
@@ -86,7 +87,7 @@ class RPVariable(IRPUnit):
         """
         return str(AbstractRPModelElement._get_method_or_property(self._com, "getDefaultValue", "defaultValue"))
 
-    def get_type(self) -> "RPClassifier":
+    def get_type(self) -> "IRPClassifier":
         """Returns the type of the variable.
 
         Returns:
@@ -95,7 +96,7 @@ class RPVariable(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPVariable::getType()
         """
-        return cast("RPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getType", "type")))
+        return cast("IRPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getType", "type")))
 
     def get_value_specifications(self) -> IRPCollection:
         """Returns the initial values declared for elements with multiplicity greater than one.
@@ -130,7 +131,7 @@ class RPVariable(IRPUnit):
         """
         AbstractRPModelElement._set_method_or_property(self._com, "setDefaultValue", "defaultValue", default_value)
 
-    def set_type(self, type_: RPClassifier) -> None:
+    def set_type(self, type_: IRPClassifier) -> None:
         """Sets the type of the variable.
 
         Args:
@@ -157,161 +158,6 @@ class RPVariable(IRPUnit):
 
 
 AbstractRPModelElement.register_wrapper("Variable", RPVariable)
-
-
-class RPAttribute(RPVariable):
-    """Wraps ``IRPAttribute``: represents an attribute in a classifier."""
-
-    # IRPAttribute method parity checklist:
-    # [x] get_is_constant  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_is_ordered  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_is_reference  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_is_static  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_multiplicity  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_visibility  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_is_constant  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_is_ordered  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_is_reference  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_is_static  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_multiplicity  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_visibility  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [inherited] irp_variable / irp_unit / irp_model_element methods (covered by rp_variable / rp_unit / rp_model_element checklists)
-    # No deprecated IRPAttribute methods.
-
-    def get_is_constant(self) -> int:
-        """Checks whether the attribute is defined as constant.
-
-        Returns:
-            ``1`` if the attribute is constant, ``0`` otherwise.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPAttribute::getIsConstant()
-        """
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsConstant", "isConstant"))
-
-    def get_is_ordered(self) -> int:
-        """Checks whether the attribute is ordered.
-
-        Returns:
-            ``1`` if the attribute is ordered, ``0`` otherwise.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPAttribute::getIsOrdered()
-        """
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsOrdered", "isOrdered"))
-
-    def get_is_reference(self) -> int:
-        """Checks whether the attribute is a reference.
-
-        Returns:
-            ``1`` if the attribute is a reference, ``0`` otherwise.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPAttribute::getIsReference()
-        """
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsReference", "isReference"))
-
-    def set_is_constant(self, is_constant: bool) -> None:
-        """Specifies whether the attribute should be defined as constant.
-
-        Args:
-            is_constant: ``True`` to mark the attribute constant, ``False`` otherwise.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPAttribute::setIsConstant(int isConstant)
-        """
-        AbstractRPModelElement._set_method_or_property(self._com, "setIsConstant", "isConstant", 1 if is_constant else 0)
-
-    def set_is_ordered(self, is_ordered: bool) -> None:
-        """Specifies whether the attribute should be ordered.
-
-        Args:
-            is_ordered: ``True`` to mark the attribute ordered, ``False`` otherwise.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPAttribute::setIsOrdered(int isOrdered)
-        """
-        AbstractRPModelElement._set_method_or_property(self._com, "setIsOrdered", "isOrdered", 1 if is_ordered else 0)
-
-    def set_is_reference(self, is_reference: bool) -> None:
-        """Specifies whether the attribute should be a reference.
-
-        Args:
-            is_reference: ``True`` to mark the attribute as a reference, ``False`` otherwise.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPAttribute::setIsReference(int isReference)
-        """
-        AbstractRPModelElement._set_method_or_property(self._com, "setIsReference", "isReference", 1 if is_reference else 0)
-
-    def get_multiplicity(self) -> str:
-        """Gets the multiplicity specified for the attribute.
-
-        Returns:
-            The multiplicity string (e.g. ``"1"``, ``"0..*"``).
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPAttribute::getMultiplicity()
-        """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getMultiplicity", "multiplicity"))
-
-    def set_multiplicity(self, multiplicity: str) -> None:
-        """Specifies the multiplicity for the attribute.
-
-        Args:
-            multiplicity: The multiplicity string to set (e.g. ``"1"``, ``"0..*"``).
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPAttribute::setMultiplicity(java.lang.String multiplicity)
-        """
-        AbstractRPModelElement._set_method_or_property(self._com, "setMultiplicity", "multiplicity", multiplicity)
-
-    def get_is_static(self) -> bool:
-        """Checks whether the attribute was defined as static.
-
-        Returns:
-            ``True`` if the attribute is static, ``False`` otherwise.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPAttribute::getIsStatic()
-        """
-        return bool(AbstractRPModelElement._get_method_or_property(self._com, "getIsStatic", "isStatic"))
-
-    def set_is_static(self, is_static: bool) -> None:
-        """Specifies whether an attribute should be defined as static.
-
-        Args:
-            is_static: ``True`` to mark the attribute static, ``False`` otherwise.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPAttribute::setIsStatic(int isStatic)
-        """
-        AbstractRPModelElement._set_method_or_property(self._com, "setIsStatic", "isStatic", 1 if is_static else 0)
-
-    def get_visibility(self) -> str:
-        """Gets the visibility specified for the attribute.
-
-        Returns:
-            The visibility string (e.g. ``"public"``, ``"private"``).
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPAttribute::getVisibility()
-        """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getVisibility", "visibility"))
-
-    def set_visibility(self, visibility: str) -> None:
-        """Specifies the visibility of the attribute.
-
-        Args:
-            visibility: The visibility string to set (e.g. ``"public"``, ``"private"``).
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPAttribute::setVisibility(java.lang.String visibility)
-        """
-        AbstractRPModelElement._set_method_or_property(self._com, "setVisibility", "visibility", visibility)
-
-
-AbstractRPModelElement.register_wrapper("Attribute", RPAttribute)
 
 
 class RPTag(RPVariable):
@@ -420,38 +266,3 @@ class RPTag(RPVariable):
 
 
 AbstractRPModelElement.register_wrapper("Tag", RPTag)
-
-
-class RPArgument(RPVariable):
-    """Wraps ``IRPArgument``: an argument/parameter of an operation."""
-
-    # IRPArgument method parity checklist:
-    # [x] get_argument_direction  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_argument_direction  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [inherited] irp_variable / irp_unit / irp_model_element methods (covered by rp_variable / rp_unit / rp_model_element checklists)
-    # No deprecated IRPArgument methods.
-
-    def get_argument_direction(self) -> str:
-        """Returns the direction of the argument (e.g. ``"in"``, ``"out"``, ``"inout"``).
-
-        Returns:
-            The argument direction as a string.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPArgument::getArgumentDirection()
-        """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getArgumentDirection", "argumentDirection"))
-
-    def set_argument_direction(self, argument_direction: str) -> None:
-        """Sets the direction of the argument.
-
-        Args:
-            argument_direction: The direction to set (e.g. ``"in"``, ``"out"``, ``"inout"``).
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPArgument::setArgumentDirection(java.lang.String argumentDirection)
-        """
-        AbstractRPModelElement._set_method_or_property(self._com, "setArgumentDirection", "argumentDirection", argument_direction)
-
-
-AbstractRPModelElement.register_wrapper("Argument", RPArgument)

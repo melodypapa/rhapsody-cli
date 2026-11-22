@@ -243,14 +243,14 @@ pytest && ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests
 - **Integration tests** for real COM automation verification
 - **Branch coverage** tracking with 80% minimum threshold
 
-### Generating API Validation Reports (`docs/reports/*_api_report.md`)
+### Generating API Validation Reports (`docs/reports/<java.package.path>/*_api_report.md`)
 
-Every wrapped interface has a committed parity report — `docs/reports/<IRPInterface>_api_report.md` — that compares three sources for each member: the Java API (`docs/java_api`), the pywin32-exposed COM member (name and method/property shape), and the Python wrapper. The committed catalog `docs/reports/pywin32_authority.json` is the single source of truth for COM member names and shapes; the reports also carry `## Expected Binding Differences` (accepted, informational) and `## Wrapper Backlog` sections so that `## Comparison details` stays at zero actionable rows.
+Every wrapped interface has a committed parity report — `docs/reports/<java.package.path>/<IRPInterface>_api_report.md` — grouped by its declared Java package. Each report compares three sources for each member: the Java API (`docs/java_api`), the pywin32-exposed COM member (name and method/property shape), and the Python wrapper. The committed catalog `docs/reports/pywin32_authority.json` is the single source of truth for COM member names and shapes; the reports also carry `## Expected Binding Differences` (accepted, informational) and `## Wrapper Backlog` sections so that `## Comparison details` stays at zero actionable rows.
 
 #### Prerequisites
 
 1. `pip install -e ".[dev,cli]"` (from the repository root)
-2. **JavaDoc HTML tree** at `docs/java_api/com/telelogic/rhapsody/core/` — gitignored and machine-local; both `--source` modes need it to resolve Java members
+2. **JavaDoc HTML tree** at `docs/java_api/<java.package.path>/` — gitignored and machine-local; both `--source` modes need it to resolve Java members
 3. For `--source typelib` only: Windows with a licensed Rhapsody installation (the registered `Rhapsody2 1.0 Type Library`) and `pywin32`
 4. For `--source authority` only: the committed catalog must contain the interface
 
@@ -262,7 +262,7 @@ Every wrapped interface has a committed parity report — `docs/reports/<IRPInte
 python scripts/pywin32_authority.py --source typelib
 
 # 2. Generate/refresh one interface's report (writes
-#    docs/reports/IRPClass_api_report.md and exits per the rules below)
+#    docs/reports/com/telelogic/rhapsody/core/IRPClass_api_report.md and exits per the rules below)
 python scripts/validate_model_api.py IRPClass --source typelib --path docs/reports
 ```
 
@@ -290,7 +290,7 @@ python .agents/skills/rhapsody-sync/scripts/validate_interface.py IRPClass --sou
 | `1` | Actionable deviations found — fix them (see `## Comparison details` and `## AI Fix Guidance`), then regenerate |
 | `2` | Setup failure — missing JavaDoc tree, missing catalog entry, or (typelib mode) missing registered type library |
 
-Regenerated reports and a refreshed `pywin32_authority.json` are committed in the same change as the wrapper edits they justify. Do not hand-edit the generated `*_api_report.md` files; in `pywin32_authority.json` the `catalog` section is generated, while the `documented_aliases` / `documented_unavailable` exception maps are maintained by hand.
+Regenerated package-organized reports and a refreshed `pywin32_authority.json` are committed in the same change as the wrapper edits they justify. Do not hand-edit the generated `*_api_report.md` files; in `pywin32_authority.json` the `catalog` section is generated, while the `documented_aliases` / `documented_unavailable` exception maps are maintained by hand.
 
 ## Architecture
 
@@ -301,22 +301,22 @@ The package follows a systematic wrapping pattern:
 1. **Connection Layer**: `RhapsodyApplication` manages COM connections
 2. **Wrapping Pattern**: Each wrapper stores `_com` and delegates all calls
 3. **Type Registry**: Central registry maps Rhapsody types to Python wrappers
-4. **Automatic Fallback**: Unknown types fall back to generic `RPModelElement`
-5. **Collection Wrapping**: `RPCollection` provides Pythonic iteration
+4. **Automatic Fallback**: Unknown types fall back to generic `IRPModelElement`
+5. **Collection Wrapping**: `IRPCollection` provides Pythonic iteration
 
 ### Class Hierarchy
 
 Mirrors the Rhapsody Java API hierarchy:
 
 ```
-RPModelElement (wraps IRPModelElement - base for all model elements)
-└─ RPUnit (wraps IRPUnit - elements that can be saved as files)
-   ├─ RPProject (wraps IRPProject)
-   ├─ RPPackage (wraps IRPPackage)
-   ├─ RPClassifier (wraps IRPClassifier)
-   │  ├─ IRPClass (wraps IRPClass; import from rhapsody_cli.models.com.telelogic.rhapsody.core)
+IRPModelElement (wraps IRPModelElement - base for all model elements; canonical package)
+└─ IRPUnit (wraps IRPUnit - elements that can be saved as files)
+   ├─ IRPProject (wraps IRPProject)
+   ├─ IRPPackage (wraps IRPPackage)
+   ├─ IRPClassifier (wraps IRPClassifier)
+   │  ├─ IRPClass (wraps IRPClass)
    │  ├─ RPActor (wraps IRPActor)
-   │  ├─ RPUseCase (wraps IRPUseCase)
+   │  ├─ IRPUseCase (wraps IRPUseCase)
    │  └─ ... (15+ classifier types)
    └─ ... (96 total wrapped element types)
 ```
@@ -426,7 +426,7 @@ The package currently wraps **96 element types** including:
 
 **Leaf Elements**: Attribute, Tag, Requirement, Variable, Annotation, Constraint, EnumerationLiteral, Diagram, Comment
 
-Plus **hundreds of generic methods** from `RPModelElement` available on all element types.
+Plus **hundreds of generic methods** from `IRPModelElement` available on all element types.
 
 ## Contributing
 
@@ -486,8 +486,8 @@ MIT License - see [LICENSE](LICENSE) file for details.
 | Aspect | Java API | rhapsody-cli |
 |--------|----------|--------------|
 | Method Names | `getName()` | `get_name()` ✓ |
-| Class Hierarchy | `IRPClass extends IRPClassifier` | `RPClass(RPClassifier)` ✓ |
-| Collections | `IRPCollection` | `RPCollection` ✓ |
+| Class Hierarchy | `IRPClass extends IRPClassifier` | `IRPClass(IRPClassifier)` ✓ |
+| Collections | `IRPCollection` | `IRPCollection` ✓ |
 | Error Handling | COM errors | `RhapsodyRuntimeException` ✓ |
 | Type Safety | Checked at compile | mypy strict mode ✓ |
 | Testing | Requires Rhapsody | Mocked COM objects ✓ |

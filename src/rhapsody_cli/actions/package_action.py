@@ -25,7 +25,7 @@ from rhapsody_cli.exceptions import CliExecutionError, RhapsodyConnectionError
 from rhapsody_cli.exchange.exporter import RhapsodyExporter
 from rhapsody_cli.exchange.importer import RhapsodyImporter
 from rhapsody_cli.exchange.yaml_utils import RhapsodyYaml
-from rhapsody_cli.models.core import IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 logger = logging.getLogger(__name__)
 
@@ -131,7 +131,7 @@ class PackageCreateAction(AbstractPackageAction):
         """Create a single package and set its attributes. Returns the package name.
 
         Args:
-            container: The parent container (RPProject for root, RPPackage for nested).
+            container: The parent container (IRPProject for root, IRPPackage for nested).
             pkg_attrs: Dictionary of package attributes.
             parent_path: The parent path (for reporting; can be None/empty for root).
             is_root: Whether creating at project root (uses addPackage) vs nested (uses addNestedPackage).
@@ -188,7 +188,7 @@ class PackageCreateAction(AbstractPackageAction):
         """Check if a package with the given name already exists in the container.
 
         Args:
-            container: RPProject (for root) or RPPackage (for nested)
+            container: IRPProject (for root) or IRPPackage (for nested)
             name: Package name to check
             is_root: Whether checking at project root or nested
 

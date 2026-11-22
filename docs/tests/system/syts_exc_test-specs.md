@@ -143,8 +143,8 @@ Operation, Diagram) to confirm consistent funneling.
   `pywintypes.com_error` with distinct known messages.
 - The wrapper registry populated.
 **Test Steps:**
-1. For each sampled wrapper type (RPProject, RPPackage, RPClass, RPAttribute,
-   RPOperation, RPDiagram), wrap the corresponding failing fake COM object.
+1. For each sampled wrapper type (IRPProject, IRPPackage, RPClass, IRPAttribute,
+   IRPOperation, RPDiagram), wrap the corresponding failing fake COM object.
 2. Invoke at least one COM-delegating method on each wrapper (e.g. `getName()`,
    `getPackages()`, `addAttribute("x")`, `getMultiplicity()`, `getBody()`,
    `closeDiagram()`).
@@ -163,4 +163,4 @@ Operation, Diagram) to confirm consistent funneling.
 - Fail if any sampled method raises `pywintypes.com_error` directly, raises a different
   exception type, or drops the original message.
 **Last Changed:** 2026-07-07
-
+

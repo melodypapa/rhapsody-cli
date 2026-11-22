@@ -54,7 +54,7 @@ real `connect()` code path (including the `attach()` -> `launch()` fallback) is 
 
 **ID:** SYTS_APP_00002
 **Traces-To:** SWR_APP_00003, SWR_APP_00004, SWR_APP_00005
-**Title:** Open a project file, retrieve active project, and verify wrapped RPProject
+**Title:** Open a project file, retrieve active project, and verify wrapped IRPProject
 **Type:** System
 **Priority:** High
 **Description:**

@@ -13,8 +13,8 @@
 Unlike the other 14 support/elements subpackages, **every single class in `src/rhapsody_cli/models/support/` was found to have zero discoverable public creation path** in the current codebase. This was verified as follows:
 
 1. **`RhapsodyApplication` (`src/rhapsody_cli/application.py`) is a partial wrapper, not a full `IRPApplication` mirror.** It implements only `open_project`, `create_new_project`, `get_projects`, `get_is_hidden_ui`/`set_hidden_ui`, `get_version`, `get_build_no`, `get_rhapsody_dir`, `get_omroot`. Unlike `model_project.py` (which maintains an exhaustive method-parity checklist against `IRPProject`), `application.py` has no such checklist — but a full-repo grep for every one of the 17 support-package class names (`RPCodeGenerator`, `RPSearchManager`, `RPSelection`, `RPRhapsodyServer`, `RPDiagSynthAPI`, `RPRoundTrip`, `RPAXViewCtrl`, `RPExternalIDERegistry`, `RPInternalOEMPlugin`, `RPPlugInWindow`, `RPProgressBar`, `RPowListListener`, `RPowPaneMgr`, `RPowTextListener`, `RPASCIIFile`, `RPControlledFile`, `RPFile`, `RPFileFragment`) outside of `models/support/*.py` itself returned **zero matches**. No getter/factory anywhere in the codebase returns any of these types.
-2. **`model_project.py`'s own checklist confirms the gap for `RPProgressBar`:** line 57 reads `# [ ] getNewProgressBar  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test` — the underlying `IRPProject::getNewProgressBar()` COM method is not merely untested, it is **not implemented at all** in `RPProject`. This is concrete evidence that the factory method needed to construct `RPProgressBar` does not exist yet anywhere in the wrapper.
-3. **`model_project.py` confirms no code-generation trigger exists:** `RPProject.get_code_generated_files()` (`model_project.py:564`) wraps `IRPProject::getCodeGeneratedFiles()`, a pure getter that only returns non-empty results *after* code generation has actually run for the project. A full-repo grep for `generateCode`/`generate_code` found **no method anywhere** (in `RPProject`, `RPComponent`, or `RPConfiguration`) that triggers code generation. Without that trigger, `get_code_generated_files()` will always return an empty collection in a freshly-created test project, so it cannot be used to obtain a real `RPFile` instance.
+2. **`model_project.py`'s own checklist confirms the gap for `RPProgressBar`:** line 57 reads `# [ ] getNewProgressBar  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test` — the underlying `IRPProject::getNewProgressBar()` COM method is not merely untested, it is **not implemented at all** in `IRPProject`. This is concrete evidence that the factory method needed to construct `RPProgressBar` does not exist yet anywhere in the wrapper.
+3. **`model_project.py` confirms no code-generation trigger exists:** `IRPProject.get_code_generated_files()` (`model_project.py:564`) wraps `IRPProject::getCodeGeneratedFiles()`, a pure getter that only returns non-empty results *after* code generation has actually run for the project. A full-repo grep for `generateCode`/`generate_code` found **no method anywhere** (in `IRPProject`, `RPComponent`, or `RPConfiguration`) that triggers code generation. Without that trigger, `get_code_generated_files()` will always return an empty collection in a freshly-created test project, so it cannot be used to obtain a real `RPFile` instance.
 4. **`RPModelElement.get_controlled_files()` (`src/rhapsody_cli/models/core.py:686`) exists**, but a grep for `add_controlled_file`/`addControlledFile` found no method anywhere that associates a controlled file with an element. Without a way to create the association, `get_controlled_files()` will return an empty collection for any freshly-created test element, so it cannot be used to obtain a real `RPControlledFile` instance.
 5. **None of the 17 classes in `models/support/` are registered via `AbstractRPModelElement.register_wrapper(...)`** (grep for `register_wrapper` in `models/support/*.py` returned zero matches). Even if a COM object of one of these types were returned by some other, already-implemented method via the generic `AbstractRPModelElement.wrap()` dispatch, it would not be dispatched to the correct wrapper class today — reinforcing that these classes are presently unreachable stubs, exactly as their module docstrings ("auto-generated stubs") state.
 6. Several classes (`RPBaseExternalCodeGeneratorTool` and its subclasses `RPCodeGenSimplifiersRegistry`/`RPExternalCodeGeneratorInvoker`, `RPExternalCheckRegistry`, `RPExternalIDERegistry`, `RPInternalOEMPlugin`, `RPowListListener`, `RPowTextListener`) are **plugin/callback interfaces** implemented by external tools and invoked *by* Rhapsody (not obtained *from* Rhapsody via a getter). These require an entirely different test strategy (e.g. registering a Python-side COM server as a Rhapsody plugin) that is out of scope for a getter-based integration test and is not addressed by this plan.
@@ -225,7 +225,7 @@ git commit -m "docs: flag RPRhapsodyServer integration tests as blocked pending 
 
 **Feasibility:** BLOCKED. `IRPRoundTrip` performs roundtrip (reverse-engineering) of externally-edited files back into the model. A full-repo grep for `RPRoundTrip` outside `model_codegen.py` returned zero hits.
 
-**Required follow-up (out of scope for this plan):** A method such as `RhapsodyApplication.get_round_trip() -> RPRoundTrip` (or a per-project accessor on `RPProject`) would need to be added, wrapping the corresponding `IRPApplication`/`IRPProject` accessor.
+**Required follow-up (out of scope for this plan):** A method such as `RhapsodyApplication.get_round_trip() -> RPRoundTrip` (or a per-project accessor on `IRPProject`) would need to be added, wrapping the corresponding `IRPApplication`/`IRPProject` accessor.
 
 - [ ] **Step 1: Add TODO comment**
 
@@ -344,18 +344,18 @@ git commit -m "docs: flag RPControlledFile integration tests as blocked pending 
 
 **Methods in scope (15 total):** `add_element`, `add_model_element`, `add_package_to_scope`, `add_text_element`, `add_to_scope`, `get_elements`, `get_file_fragments`, `get_file_type`, `get_files`, `get_imp_name`, `get_path`, `get_spec_name`, `is_empty`, `set_file_type`, `set_path`.
 
-**Feasibility:** BLOCKED. `RPProject.get_code_generated_files()` (`model_project.py:564`) exists and returns an `IRPCollection` that would contain `RPFile` instances — but only *after* code generation has actually run against the project. A full-repo grep for `generateCode`/`generate_code` found no method anywhere (on `RPProject`, `RPComponent`, or `RPConfiguration`) that triggers code generation (see Research summary point 3). Without that trigger, `get_code_generated_files()` returns an empty collection for a freshly-created test project, so no real `RPFile` instance can be obtained today.
+**Feasibility:** BLOCKED. `IRPProject.get_code_generated_files()` (`model_project.py:564`) exists and returns an `IRPCollection` that would contain `RPFile` instances — but only *after* code generation has actually run against the project. A full-repo grep for `generateCode`/`generate_code` found no method anywhere (on `IRPProject`, `RPComponent`, or `RPConfiguration`) that triggers code generation (see Research summary point 3). Without that trigger, `get_code_generated_files()` returns an empty collection for a freshly-created test project, so no real `RPFile` instance can be obtained today.
 
-**Required follow-up (out of scope for this plan):** A method such as `RPProject.generate_code(component: "RPComponent") -> None` (or a similar accessor on `RPComponent`/`RPConfiguration`, wrapping the real `IRPProject::generateCode()`/`IRPComponent::generateCode()` COM method — name to be confirmed against the Rhapsody COM API reference) would need to be added, after which `get_code_generated_files()` could be exercised for real.
+**Required follow-up (out of scope for this plan):** A method such as `IRPProject.generate_code(component: "RPComponent") -> None` (or a similar accessor on `RPComponent`/`RPConfiguration`, wrapping the real `IRPProject::generateCode()`/`IRPComponent::generateCode()` COM method — name to be confirmed against the Rhapsody COM API reference) would need to be added, after which `get_code_generated_files()` could be exercised for real.
 
 - [ ] **Step 1: Add TODO comment**
 
 In `src/rhapsody_cli/models/support/model_files.py`, above `RPFile`, add:
 
 ```python
-# TODO(integration-tests): blocked — RPProject.get_code_generated_files() exists but
+# TODO(integration-tests): blocked — IRPProject.get_code_generated_files() exists but
 # nothing in the codebase can trigger code generation yet (no generate_code()).
-# Would need e.g. RPProject.generate_code(component) -> None (or an equivalent on
+# Would need e.g. IRPProject.generate_code(component) -> None (or an equivalent on
 # RPComponent/RPConfiguration) before this getter returns anything non-empty.
 # See docs/superpowers/plans/2026-07-14-integration-tests-support.md Task 12.
 ```
@@ -509,9 +509,9 @@ git commit -m "docs: flag RPPlugInWindow integration tests as blocked pending fa
 
 **Methods in scope (2 total):** `reset`, `tick`.
 
-**Feasibility:** BLOCKED, with direct evidence. `src/rhapsody_cli/models/elements/containment/model_project.py:57` lists `# [ ] getNewProgressBar  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test` in `RPProject`'s own method-parity checklist — the underlying `IRPProject::getNewProgressBar()` COM method is confirmed **not implemented at all** in this wrapper (not merely untested). This is the single factory method that would construct an `RPProgressBar`.
+**Feasibility:** BLOCKED, with direct evidence. `src/rhapsody_cli/models/elements/containment/model_project.py:57` lists `# [ ] getNewProgressBar  [ ] impl  [ ] docstring  [ ] unit test  [ ] integration test` in `IRPProject`'s own method-parity checklist — the underlying `IRPProject::getNewProgressBar()` COM method is confirmed **not implemented at all** in this wrapper (not merely untested). This is the single factory method that would construct an `RPProgressBar`.
 
-**Required follow-up (out of scope for this plan):** Implement `RPProject.get_new_progress_bar() -> RPProgressBar` in `src/rhapsody_cli/models/elements/containment/model_project.py`, wrapping `IRPProject::getNewProgressBar()`, following the "Adding a New Element Wrapper" / method-implementation conventions in `AGENTS.md`. This is a self-contained, low-risk addition (a single no-arg getter) and would be a good first candidate for a follow-up PR that unblocks this task.
+**Required follow-up (out of scope for this plan):** Implement `IRPProject.get_new_progress_bar() -> RPProgressBar` in `src/rhapsody_cli/models/elements/containment/model_project.py`, wrapping `IRPProject::getNewProgressBar()`, following the "Adding a New Element Wrapper" / method-implementation conventions in `AGENTS.md`. This is a self-contained, low-risk addition (a single no-arg getter) and would be a good first candidate for a follow-up PR that unblocks this task.
 
 - [ ] **Step 1: Add TODO comment**
 
@@ -520,7 +520,7 @@ In `src/rhapsody_cli/models/support/model_ide.py`, above `RPProgressBar`, add:
 ```python
 # TODO(integration-tests): blocked — IRPProject::getNewProgressBar() is not yet
 # implemented (see model_project.py's own checklist, "getNewProgressBar" row).
-# Implementing RPProject.get_new_progress_bar() -> RPProgressBar would unblock this.
+# Implementing IRPProject.get_new_progress_bar() -> RPProgressBar would unblock this.
 # See docs/superpowers/plans/2026-07-14-integration-tests-support.md Task 18.
 ```
 

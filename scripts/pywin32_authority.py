@@ -23,7 +23,7 @@ class AuthorityData(TypedDict):
 def export_catalog_from_reports(reports_dir: Path) -> Dict[str, Dict[str, str]]:
     """Read the pywin32 column of generated reports into an offline catalog."""
     catalog: Dict[str, Dict[str, str]] = {}
-    for report_path in sorted(reports_dir.glob("*" + _REPORT_SUFFIX)):
+    for report_path in sorted(reports_dir.rglob("*" + _REPORT_SUFFIX)):
         interface_name = report_path.name[: -len(_REPORT_SUFFIX)]
         members: Dict[str, str] = {}
         for line in report_path.read_text(encoding="utf-8").splitlines():
@@ -61,13 +61,19 @@ def build_authority_from_typelib(reports_dir: Path) -> AuthorityData:
     """
     from scripts.validate_model_api import collect_registered_pywin32_members
 
-    catalog = {report_path.name[: -len(_REPORT_SUFFIX)]: collect_registered_pywin32_members(report_path.name[: -len(_REPORT_SUFFIX)]) for report_path in sorted(reports_dir.glob("*" + _REPORT_SUFFIX))}
+    catalog: Dict[str, Dict[str, str]] = {}
+    for report_path in sorted(reports_dir.rglob("*" + _REPORT_SUFFIX)):
+        interface_name = report_path.name[: -len(_REPORT_SUFFIX)]
+        catalog[interface_name] = collect_registered_pywin32_members(interface_name)
     return AuthorityData(catalog=catalog, documented_aliases={}, documented_unavailable={})
 
 
 def load_authority(path: Path = AUTHORITY_PATH) -> AuthorityData:
     """Load the committed authority snapshot."""
-    data = json.loads(path.read_text(encoding="utf-8"))
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError(f"Could not load pywin32 authority from {path}: {exc}") from exc
     return AuthorityData(
         catalog=data["catalog"],
         documented_aliases=data["documented_aliases"],

@@ -19,16 +19,16 @@ As a model author, I want to build a model from scratch by adding a package, the
 inside it, then an attribute and an operation on the class, so that I can script the
 creation of structured UML/SysML models.
 **Acceptance Criteria:**
-- Given an open `RPProject`, When I call `project.addPackage("Domain")`, Then an
-  `RPPackage` named `"Domain"` is returned and appears in `project.getPackages()`.
-- Given the new `RPPackage`, When I call `package.addClass("Vehicle")`, Then an `RPClass`
+- Given an open `IRPProject`, When I call `project.addPackage("Domain")`, Then an
+  `IRPPackage` named `"Domain"` is returned and appears in `project.getPackages()`.
+- Given the new `IRPPackage`, When I call `package.addClass("Vehicle")`, Then an `RPClass`
   named `"Vehicle"` is returned (meta class `"Class"`).
 - Given the new `RPClass`, When I call `cls.addAttribute("speed")` and
-  `cls.addOperation("start()")`, Then an `RPAttribute` and an `RPOperation` are returned,
+  `cls.addOperation("start()")`, Then an `IRPAttribute` and an `IRPOperation` are returned,
   and `cls.getAttributes()` and `cls.getOperations()` each contain the new element.
 - Given `rhapsody_cli.models.elements` has been imported, When I call `wrap()` on each
-  newly created element, Then the correct wrapper class (`RPPackage`, `RPClass`,
-  `RPAttribute`, `RPOperation`) is returned (registration on import works).
+  newly created element, Then the correct wrapper class (`IRPPackage`, `RPClass`,
+  `IRPAttribute`, `IRPOperation`) is returned (registration on import works).
 **Verification Criteria:**
 Open a fixture project, call `addPackage("Domain")`, then `addClass("Vehicle")`, then
 `addAttribute("speed")` and `addOperation("start()")`. Assert each returned object's
@@ -57,9 +57,9 @@ UML generalization relationships in the model.
 - Given the same two classes, When I call `derived.addSuperclass(base)`, Then `base`
   becomes a superclass of `derived` (the relationship is reflected when querying
   inheritance-related collections on `derived`).
-- Given the `addGeneralization` method, When I pass a non-`RPClassifier` argument, Then
+- Given the `addGeneralization` method, When I pass a non-`IRPClassifier` argument, Then
   the behavior matches the underlying COM call's contract (the wrapper delegates the
-  argument's `_com` attribute, so passing an `RPClassifier` is the supported path).
+  argument's `_com` attribute, so passing an `IRPClassifier` is the supported path).
 **Verification Criteria:**
 In a fixture project, create `class Animal` and `class Dog`, then call
 `Dog.addSuperclass(Animal)` and `Dog.addGeneralization(Animal)` (on separate fixtures if
@@ -84,16 +84,16 @@ As a test engineer, I want to query the body, abstract/static/virtual flags of a
 operation and the multiplicity/visibility/default value of an attribute, so that I can
 write assertions about the structure of existing model elements.
 **Acceptance Criteria:**
-- Given an `RPOperation` with a defined body, When I call `op.getBody()`, Then the
+- Given an `IRPOperation` with a defined body, When I call `op.getBody()`, Then the
   operation's body text is returned as a string; and `op.getIsAbstract()`,
   `op.getIsStatic()`, and `op.getIsVirtual()` each return a boolean.
-- Given an `RPOperation`, When I call `op.getReturns()`, Then the return type element is
+- Given an `IRPOperation`, When I call `op.getReturns()`, Then the return type element is
   returned (wrapped) or `None`/empty when no return type is set.
-- Given an `RPAttribute`, When I call `attr.getMultiplicity()`, `attr.getVisibility()`,
+- Given an `IRPAttribute`, When I call `attr.getMultiplicity()`, `attr.getVisibility()`,
   and `attr.getDefaultValue()`, Then the corresponding string values are returned; and
   after `setMultiplicity("1..*")`, `setVisibility("private")`, and
   `setDefaultValue("0")`, the next getters return the new values.
-- Given an `RPAttribute`, When I call `attr.setIsStatic(True)`, Then
+- Given an `IRPAttribute`, When I call `attr.setIsStatic(True)`, Then
   `attr.getIsStatic()` subsequently returns `True` (bool-to-int translation succeeds).
 **Verification Criteria:**
 On a fixture class, add an operation `start()` with a body, set it abstract/static/virtual
@@ -151,7 +151,7 @@ return an `IRPCollection` (length may be 0 in a sparse fixture but the call must
 As a model author, I want to add a statechart to a class, add state nodes to it, and
 delete a state, so that I can script the construction of behavioral state machines.
 **Acceptance Criteria:**
-- Given an `RPClassifier` (e.g., an `RPClass`), When I call `cls.addStatechart()`, Then a
+- Given an `IRPClassifier` (e.g., an `RPClass`), When I call `cls.addStatechart()`, Then a
   wrapped `RPStatechart` is returned and registered with meta class `"Statechart"`.
 - Given the new `RPStatechart`, When I call
   `chart.addNewNodeByType("State", 10, 10, 120, 60)`, Then a wrapped state node is
@@ -185,7 +185,7 @@ traceability and use-case/actor configuration.
 **Acceptance Criteria:**
 - Given an `RPRequirement`, When I call `req.setRequirementID("REQ-001")`, Then
   `req.getRequirementID()` subsequently returns `"REQ-001"`.
-- Given an `RPUseCase`, When I call `uc.addExtensionPoint("main success")`, Then the
+- Given an `IRPUseCase`, When I call `uc.addExtensionPoint("main success")`, Then the
   extension point is added; and `uc.getExtensionPoints()`, `uc.getEntryPoints()`, and
   `uc.getDescribingDiagrams()` each return an `IRPCollection` (possibly empty, but no
   exception).
@@ -197,7 +197,7 @@ traceability and use-case/actor configuration.
   returned.
 **Verification Criteria:**
 On a fixture project, locate (or create) an `RPRequirement`, call `setRequirementID`
-with a known string, and assert the getter returns that exact string. On an `RPUseCase`,
+with a known string, and assert the getter returns that exact string. On an `IRPUseCase`,
 add an extension point and assert the three collection-returning methods each yield an
 `IRPCollection` instance without raising. On an `RPActor`, toggle
 `setIsBehaviorOverriden(True)` and assert `getIsBehaviorOverriden()` returns `True`, then

@@ -4,7 +4,7 @@
 
 **Goal:** Add integration tests for ALL methods (currently zero coverage, 190 methods — the largest coverage gap in the codebase) of `RPConditionMark`, `RPConnector`, `RPGraphElement`, `RPGraphicalProperty`, `RPImageMap`, `RPLink`, `RPMatrixLayout`, `RPMatrixView`, `RPMessagePoint`, `RPTableLayout`, `RPTableView`, `RPPin`, `RPGraphEdge`, `RPGraphNode`. Flip in-source `[ ] integration test` markers to `[x]` as work completes.
 
-**Architecture:** New test files under `tests/integration/models/elements/graphics/`, split by class group, using shared `rhapsody_app`/`test_project` fixtures and diagram/element creation helpers built on `RPPackage.add_statechart_diagram`/`add_new_aggr`, `RPDiagram.add_new_node_by_type`/`add_new_edge_by_type`, and `RPFlow.add_activity_parameter`.
+**Architecture:** New test files under `tests/integration/models/elements/graphics/`, split by class group, using shared `rhapsody_app`/`test_project` fixtures and diagram/element creation helpers built on `IRPPackage.add_statechart_diagram`/`add_new_aggr`, `RPDiagram.add_new_node_by_type`/`add_new_edge_by_type`, and `RPFlow.add_activity_parameter`.
 
 **Tech Stack:** pytest, pywin32 (win32com), live Rhapsody COM API, `uuid.uuid4().hex[:8]`.
 
@@ -39,7 +39,7 @@
 
 - Windows-only runtime (requires Windows + a running Rhapsody instance)
 - All test classes use `@pytest.mark.integration`
-- All tests consume the `test_project: RPProject` fixture
+- All tests consume the `test_project: IRPProject` fixture
 - Use `_unique(prefix)` with `uuid.uuid4().hex[:8]` (see `tests/integration/models/elements/classifiers/test_model_actor.py` for the canonical pattern)
 - Always `try/finally` cleanup using the correct delete/remove method verified from source (`element.delete_from_project()` for model elements/units; `diagram.remove_graph_elements(IRPCollection)` for pure graphics-only elements that have no `delete_from_project`)
 - Assert both `isinstance()` and read-back values
@@ -65,7 +65,7 @@ import uuid
 import pytest
 
 from rhapsody_cli.models.elements.classifiers.model_statechart import RPStatechart
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.elements.diagrams.model_diagrams import RPStatechartDiagram
 
 
@@ -74,14 +74,14 @@ def unique(prefix: str = "Test") -> str:
 
 
 @pytest.fixture
-def gfx_package(test_project: RPProject) -> RPPackage:
+def gfx_package(test_project: IRPProject) -> IRPPackage:
     pkg = test_project.add_package(unique("GfxPkg"))
-    assert pkg is not None and isinstance(pkg, RPPackage)
+    assert pkg is not None and isinstance(pkg, IRPPackage)
     return pkg
 
 
 @pytest.fixture
-def gfx_statechart_diagram(gfx_package: RPPackage) -> RPStatechartDiagram:
+def gfx_statechart_diagram(gfx_package: IRPPackage) -> RPStatechartDiagram:
     """A statechart diagram to host connectors/graph nodes/edges for graphics tests."""
     diagram = gfx_package.add_statechart_diagram(unique("SD"))
     assert diagram is not None
@@ -111,7 +111,7 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.elements.graphics import RPConnector
 
 
@@ -122,12 +122,12 @@ class TestRPConnectorIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_junction_connector_type_and_predicates(self, test_project: RPProject) -> None:
+    def test_junction_connector_type_and_predicates(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("ConnPkg"))
         try:
             diagram = pkg.add_statechart_diagram(self._unique("SD"))
@@ -203,7 +203,7 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.elements.graphics import RPGraphElement, RPGraphicalProperty
 
 
@@ -214,12 +214,12 @@ class TestRPGraphElementIntegrationPartA:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_add_property_and_get_graphical_property(self, test_project: RPProject) -> None:
+    def test_add_property_and_get_graphical_property(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("GEPkg"))
         try:
             diagram = pkg.add_statechart_diagram(self._unique("SD"))
@@ -284,7 +284,7 @@ class TestRPGraphElementIntegrationPartB:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_property_value_roundtrip_and_removal(self, test_project: RPProject) -> None:
+    def test_property_value_roundtrip_and_removal(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("GEPkgB"))
         try:
             diagram = pkg.add_statechart_diagram(self._unique("SD"))
@@ -348,7 +348,7 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPProject
+from rhapsody_cli.models.elements.containment import IRPProject
 from rhapsody_cli.models.elements.graphics import RPGraphicalProperty
 
 
@@ -358,7 +358,7 @@ class TestRPGraphicalPropertyIntegration:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_key_and_value_roundtrip(self, test_project: RPProject) -> None:
+    def test_key_and_value_roundtrip(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("GPPkg"))
         try:
             diagram = pkg.add_statechart_diagram(self._unique("SD"))
@@ -417,7 +417,7 @@ from pathlib import Path
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPProject
+from rhapsody_cli.models.elements.containment import IRPProject
 from rhapsody_cli.models.elements.graphics import RPImageMap
 
 
@@ -427,7 +427,7 @@ class TestRPImageMapIntegration:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_image_map_attributes_via_diagram_picture(self, rhapsody_app, test_project: RPProject, tmp_path: Path) -> None:
+    def test_image_map_attributes_via_diagram_picture(self, rhapsody_app, test_project: IRPProject, tmp_path: Path) -> None:
         pkg = test_project.add_package(self._unique("IMPkg"))
         try:
             diagram = pkg.add_statechart_diagram(self._unique("SD"))
@@ -498,7 +498,7 @@ import uuid
 import pytest
 
 from rhapsody_cli.models.elements.classifiers import RPClass
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.elements.graphics import RPLink
 
 
@@ -509,12 +509,12 @@ class TestRPLinkIntegrationPartA:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def _build_link(self, test_project: RPProject):
+    def _build_link(self, test_project: IRPProject):
         pkg = self._create_package(test_project, self._unique("LinkPkg"))
         owner_class = pkg.add_class(self._unique("OwnerCls"))
         part_class = pkg.add_class(self._unique("PartCls"))
@@ -527,7 +527,7 @@ class TestRPLinkIntegrationPartA:
         link = owner_class.add_link(part1, part2, assoc, None, None)
         return pkg, owner_class, link
 
-    def test_link_endpoints(self, test_project: RPProject) -> None:
+    def test_link_endpoints(self, test_project: IRPProject) -> None:
         pkg, owner_class, link = self._build_link(test_project)
         try:
             assert isinstance(link, RPLink)
@@ -585,7 +585,7 @@ class TestRPLinkIntegrationPartB:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_end_name_roundtrip(self, test_project: RPProject) -> None:
+    def test_end_name_roundtrip(self, test_project: IRPProject) -> None:
         pkg, owner_class, link = TestRPLinkIntegrationPartA()._build_link(test_project)
         try:
             new_end1 = self._unique("end1")
@@ -644,7 +644,7 @@ import uuid
 import pytest
 
 from rhapsody_cli.models.core import IRPCollection
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.elements.graphics import RPMatrixLayout, RPTableLayout
 
 
@@ -655,12 +655,12 @@ class TestRPMatrixLayoutIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_element_types_roundtrip(self, test_project: RPProject) -> None:
+    def test_element_types_roundtrip(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("MLPkg"))
         try:
             matrix = pkg.add_new_aggr("MatrixLayout", self._unique("Matrix"))
@@ -726,7 +726,7 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.elements.graphics import RPMatrixLayout, RPMatrixView
 
 
@@ -737,19 +737,19 @@ class TestRPMatrixViewIntegrationPartA:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def _build_matrix_view(self, test_project: RPProject):
+    def _build_matrix_view(self, test_project: IRPProject):
         pkg = self._create_package(test_project, self._unique("MVPkg"))
         layout = pkg.add_new_aggr("MatrixLayout", self._unique("Layout"))
         view = pkg.add_new_aggr("MatrixView", self._unique("View"))
         view.set_its_matrix_layout(layout)
         return pkg, layout, view
 
-    def test_row_and_column_counts(self, test_project: RPProject) -> None:
+    def test_row_and_column_counts(self, test_project: IRPProject) -> None:
         pkg, layout, view = self._build_matrix_view(test_project)
         try:
             assert isinstance(view, RPMatrixView)
@@ -808,7 +808,7 @@ class TestRPMatrixViewIntegrationPartB:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_scope_and_descendants_roundtrip(self, test_project: RPProject) -> None:
+    def test_scope_and_descendants_roundtrip(self, test_project: IRPProject) -> None:
         pkg, layout, view = TestRPMatrixViewIntegrationPartA()._build_matrix_view(test_project)
         try:
             pkg2 = pkg.add_nested_package(self._unique("ScopePkg"))
@@ -869,7 +869,7 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.elements.graphics import RPMessagePoint
 
 
@@ -880,12 +880,12 @@ class TestRPMessagePointIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_message_points_from_sequence_diagram(self, test_project: RPProject) -> None:
+    def test_message_points_from_sequence_diagram(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("MPPkg"))
         try:
             diagram = pkg.add_sequence_diagram(self._unique("SeqD"))
@@ -948,7 +948,7 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.elements.graphics import RPTableLayout
 
 
@@ -959,12 +959,12 @@ class TestRPTableLayoutIntegrationPartA:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_add_column_and_read_attributes(self, test_project: RPProject) -> None:
+    def test_add_column_and_read_attributes(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("TLPkg"))
         try:
             layout = pkg.add_new_aggr("TableLayout", self._unique("Layout"))
@@ -1024,7 +1024,7 @@ class TestRPTableLayoutIntegrationPartB:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_column_name_and_type(self, test_project: RPProject) -> None:
+    def test_column_name_and_type(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("TLPkgB"))
         try:
             layout = pkg.add_new_aggr("TableLayout", self._unique("Layout"))
@@ -1089,7 +1089,7 @@ class TestRPTableLayoutIntegrationPartC:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_set_column_name_and_remove_column(self, test_project: RPProject) -> None:
+    def test_set_column_name_and_remove_column(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("TLPkgC"))
         try:
             layout = pkg.add_new_aggr("TableLayout", self._unique("Layout"))
@@ -1153,7 +1153,7 @@ class TestRPTableLayoutIntegrationPartD:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_column_count_and_relation_table_flag(self, test_project: RPProject) -> None:
+    def test_column_count_and_relation_table_flag(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("TLPkgD"))
         try:
             layout = pkg.add_new_aggr("TableLayout", self._unique("Layout"))
@@ -1215,7 +1215,7 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.elements.graphics import RPTableLayout, RPTableView
 
 
@@ -1226,19 +1226,19 @@ class TestRPTableViewIntegrationPartA:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def _build_table_view(self, test_project: RPProject):
+    def _build_table_view(self, test_project: IRPProject):
         pkg = self._create_package(test_project, self._unique("TVPkg"))
         layout = pkg.add_new_aggr("TableLayout", self._unique("Layout"))
         view = pkg.add_new_aggr("TableView", self._unique("View"))
         view.set_its_table_layout(layout)
         return pkg, layout, view
 
-    def test_row_column_counts_and_layout_link(self, test_project: RPProject) -> None:
+    def test_row_column_counts_and_layout_link(self, test_project: IRPProject) -> None:
         pkg, layout, view = self._build_table_view(test_project)
         try:
             assert isinstance(view, RPTableView)
@@ -1296,7 +1296,7 @@ class TestRPTableViewIntegrationPartB:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_scope_and_descendants_roundtrip(self, test_project: RPProject) -> None:
+    def test_scope_and_descendants_roundtrip(self, test_project: IRPProject) -> None:
         pkg, layout, view = TestRPTableViewIntegrationPartA()._build_table_view(test_project)
         try:
             pkg2 = pkg.add_nested_package(self._unique("ScopePkg"))
@@ -1356,7 +1356,7 @@ import uuid
 import pytest
 
 from rhapsody_cli.models.elements.classifiers import RPClass
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.elements.graphics import RPPin
 
 
@@ -1367,12 +1367,12 @@ class TestRPPinIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_pin_direction_and_type_roundtrip(self, test_project: RPProject) -> None:
+    def test_pin_direction_and_type_roundtrip(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("PinPkg"))
         try:
             flowchart_pkg = pkg.add_activity_diagram(self._unique("Flow"))
@@ -1432,7 +1432,7 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.elements.graphics import RPGraphEdge, RPGraphNode
 
 
@@ -1443,12 +1443,12 @@ class TestRPGraphNodeIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_bring_to_front_and_send_to_back(self, test_project: RPProject) -> None:
+    def test_bring_to_front_and_send_to_back(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("NodePkg"))
         try:
             diagram = pkg.add_statechart_diagram(self._unique("SD"))
@@ -1474,7 +1474,7 @@ class TestRPGraphEdgeIntegration:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_get_source_and_target(self, test_project: RPProject) -> None:
+    def test_get_source_and_target(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("EdgePkg"))
         try:
             diagram = pkg.add_statechart_diagram(self._unique("SD"))

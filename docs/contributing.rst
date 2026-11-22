@@ -171,7 +171,7 @@ Example PR Description
 
    ## Changes
    - Add RPDiagram element wrapper
-   - Add diagram methods to RPProject
+   - Add diagram methods to IRPProject
    - Add diagram query to CLI
 
    ## Testing

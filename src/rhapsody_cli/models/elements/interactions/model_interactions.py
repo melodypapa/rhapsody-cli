@@ -3,11 +3,13 @@
 from typing import TYPE_CHECKING, Optional, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
-from rhapsody_cli.models.elements.classifiers.model_interface_item import RPInterfaceItem
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import IRPInterfaceItem
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.containment.model_collaboration import RPCollaboration
 
 if TYPE_CHECKING:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port import IRPPort
     from rhapsody_cli.models.elements.activity.model_actions import RPAction
     from rhapsody_cli.models.elements.classifiers.model_statechart import RPStatechart
     from rhapsody_cli.models.elements.common.model_other_model import (
@@ -18,11 +20,10 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.elements.relations.model_association_role import (
         RPAssociationRole,
     )
-    from rhapsody_cli.models.elements.relations.model_port import RPPort
     from rhapsody_cli.models.elements.statemachine.model_statemachine import RPState, RPStateVertex
 
 
-class RPEvent(RPInterfaceItem):
+class RPEvent(IRPInterfaceItem):
     """Wraps ``IRPEvent``: represents events in Rhapsody models."""
 
     # IRPEvent method parity checklist:
@@ -49,7 +50,7 @@ class RPEvent(RPInterfaceItem):
         AbstractRPModelElement._set_method_or_property(self._com, "setSuperEvent", "superEvent", super_event._com)
 
 
-class RPEventReception(RPInterfaceItem):
+class RPEventReception(IRPInterfaceItem):
     """Wraps ``IRPEventReception``."""
 
     # IRPEventReception method parity checklist:
@@ -224,8 +225,8 @@ class RPMessage(IRPModelElement):
     def get_flow_port(self) -> "RPSysMLPort":
         return cast("RPSysMLPort", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getFlowPort", "flowPort")))
 
-    def get_formal_interface_item(self) -> "RPInterfaceItem":
-        return cast("RPInterfaceItem", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getFormalInterfaceItem", "formalInterfaceItem")))
+    def get_formal_interface_item(self) -> "IRPInterfaceItem":
+        return cast("IRPInterfaceItem", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getFormalInterfaceItem", "formalInterfaceItem")))
 
     def get_formal_type(self) -> "Optional[IRPModelElement]":
         return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getFormalType", "formalType"))
@@ -236,8 +237,8 @@ class RPMessage(IRPModelElement):
     def get_message_type(self) -> str:
         return str(AbstractRPModelElement._get_method_or_property(self._com, "getMessageType", "messageType"))
 
-    def get_port(self) -> "RPPort":
-        return cast("RPPort", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getPort", "port")))
+    def get_port(self) -> "IRPPort":
+        return cast("IRPPort", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getPort", "port")))
 
     def get_return_value(self) -> str:
         return str(AbstractRPModelElement._get_method_or_property(self._com, "getReturnValue", "returnValue"))
@@ -284,7 +285,7 @@ class RPMessage(IRPModelElement):
     def set_flow_port(self, flow_port: "RPSysMLPort") -> None:
         AbstractRPModelElement._set_method_or_property(self._com, "setFlowPort", "flowPort", flow_port._com)
 
-    def set_formal_interface_item(self, new_val: "RPInterfaceItem") -> None:
+    def set_formal_interface_item(self, new_val: "IRPInterfaceItem") -> None:
         AbstractRPModelElement._set_method_or_property(self._com, "setFormalInterfaceItem", "formalInterfaceItem", new_val._com)
 
     def set_formal_type(self, formal_type: "IRPModelElement") -> None:
@@ -293,7 +294,7 @@ class RPMessage(IRPModelElement):
     def set_invariant(self, invariant: str) -> None:
         AbstractRPModelElement._set_method_or_property(self._com, "setInvariant", "invariant", invariant)
 
-    def set_port(self, port: "RPPort") -> None:
+    def set_port(self, port: "IRPPort") -> None:
         AbstractRPModelElement._set_method_or_property(self._com, "setPort", "port", port._com)
 
     def set_return_value(self, return_value: str) -> None:
@@ -424,8 +425,8 @@ class RPTrigger(IRPModelElement):
     def get_body(self) -> str:
         return str(AbstractRPModelElement._get_method_or_property(self._com, "getBody", "body"))
 
-    def get_its_operation(self) -> "RPInterfaceItem":
-        return cast("RPInterfaceItem", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getItsOperation", "itsOperation")))
+    def get_its_operation(self) -> "IRPInterfaceItem":
+        return cast("IRPInterfaceItem", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getItsOperation", "itsOperation")))
 
     def is_operation(self) -> int:
         return int(AbstractRPModelElement.call_com(lambda: self._com.isOperation()))

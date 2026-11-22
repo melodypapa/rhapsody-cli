@@ -1,7 +1,8 @@
 """Tests for rhapsody_cli.models.elements.templates.model_templates classes."""
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.templates import (
     RPTemplateInstantiation,
     RPTemplateInstantiationParameter,
@@ -57,12 +58,12 @@ class TestRPTemplateInstantiationParameter:
         fake.setArgValue.assert_called_once_with("int")
 
     def test_set_type_delegates(self) -> None:
-        from rhapsody_cli.models.elements.classifiers import RPClassifier
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 
         fake = make_fake_element("TemplateInstantiationParameter")
         clf = make_fake_element("Class", properties={"name": "C1"})
         param = RPTemplateInstantiationParameter(fake)
-        param.set_type(RPClassifier(clf))
+        param.set_type(IRPClassifier(clf))
         fake.setType.assert_called_once_with(clf)
 
 
@@ -99,10 +100,10 @@ class TestRPTemplateParameter:
         fake.setRepresentative.assert_called_once_with(rep)
 
     def test_set_class_type_delegates(self) -> None:
-        from rhapsody_cli.models.elements.classifiers import RPClassifier
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 
         fake = make_fake_element("TemplateParameter")
         clf = make_fake_element("Class", properties={"name": "C1"})
         tp = RPTemplateParameter(fake)
-        tp.set_class_type(RPClassifier(clf))
+        tp.set_class_type(IRPClassifier(clf))
         fake.setClassType.assert_called_once_with(clf)

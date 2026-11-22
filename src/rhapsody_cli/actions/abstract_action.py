@@ -8,8 +8,8 @@ from rhapsody_cli.application import RhapsodyApplication
 from rhapsody_cli.cli.formatters import OutputFormatter
 from rhapsody_cli.cli.path_resolver import PathResolver, PathResolverError
 from rhapsody_cli.exceptions import CliExecutionError, RhapsodyConnectionError
-from rhapsody_cli.models.core import IRPModelElement
-from rhapsody_cli.models.elements.containment import RPProject
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 from rhapsody_cli.session import SessionManager
 
 
@@ -86,7 +86,7 @@ class RhapsodyContextAction(AbstractAction):
         """
         super().__init__(command_id)
         self._app: Optional[RhapsodyApplication] = None
-        self._project: Optional[RPProject] = None
+        self._project: Optional[IRPProject] = None
         self.output_format: str = "table"
 
     def _connect_app(self) -> RhapsodyApplication:
@@ -221,7 +221,7 @@ class ElementManagementAction(RhapsodyContextAction):
         """
         parser.add_argument("--recursive", action="store_true", help=help_text)
 
-    def _get_active_project(self) -> RPProject:
+    def _get_active_project(self) -> IRPProject:
         """Get the active project, handling errors appropriately.
 
         Returns:

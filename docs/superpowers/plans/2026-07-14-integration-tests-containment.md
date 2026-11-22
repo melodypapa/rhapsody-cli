@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Add integration tests for all remaining untested methods across `RPProject`, `RPPackage` (largest surface — ~82 untested methods), `RPComponent`, `RPComponentInstance`, `RPConfiguration`, `RPCollaboration`, `RPNode`, creating new dedicated test files where none exist. Flip in-source `[ ] integration test` markers to `[x]` as work completes. (`RPModule` and `RPProfile` define no methods of their own — they only inherit from `RPInstance` / `RPPackage` respectively — so they need no test work.)
+**Goal:** Add integration tests for all remaining untested methods across `IRPProject`, `IRPPackage` (largest surface — ~82 untested methods), `RPComponent`, `RPComponentInstance`, `RPConfiguration`, `RPCollaboration`, `RPNode`, creating new dedicated test files where none exist. Flip in-source `[ ] integration test` markers to `[x]` as work completes. (`RPModule` and `RPProfile` define no methods of their own — they only inherit from `RPInstance` / `IRPPackage` respectively — so they need no test work.)
 
-**Architecture:** Extends `tests/integration/models/elements/containment/test_model_project.py` for `RPProject`/`RPPackage`, adds new test files for the other 5 classes, using shared `rhapsody_app`/`test_project` fixtures.
+**Architecture:** Extends `tests/integration/models/elements/containment/test_model_project.py` for `IRPProject`/`IRPPackage`, adds new test files for the other 5 classes, using shared `rhapsody_app`/`test_project` fixtures.
 
 **Tech Stack:** pytest, pywin32 (win32com), live Rhapsody COM API, `uuid.uuid4().hex[:8]` for unique names.
 
@@ -12,7 +12,7 @@
 
 - Windows-only runtime (requires Windows + a running Rhapsody instance)
 - All test classes use `@pytest.mark.integration`
-- All tests consume the `test_project: RPProject` fixture (session-scoped)
+- All tests consume the `test_project: IRPProject` fixture (session-scoped)
 - Use `_unique(prefix)` with `uuid.uuid4().hex[:8]`
 - Always `try/finally` cleanup via `element.delete_from_project()` (never `element._com.delete()`)
 - Assert both `isinstance()` and read-back values
@@ -21,24 +21,24 @@
   `# [x] method_name  [x] impl  [x] docstring  [x] unit test  [x] integration test`
   (copy the actual `impl`/`docstring`/`unit test` state from what is already true in the file; do not fabricate coverage that doesn't exist)
 - Quality gate after each task: `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ && pytest tests/unit` (live run: `pytest tests/integration -m integration`, requires attached Rhapsody)
-- Import concrete classes via subpackage `__init__.py` re-exports, e.g. `from rhapsody_cli.models.elements.containment import RPComponent, RPProject`
+- Import concrete classes via subpackage `__init__.py` re-exports, e.g. `from rhapsody_cli.models.elements.containment import RPComponent, IRPProject`
 
 ---
 
 ## Ground-Truth Scope Notes (read before starting)
 
-- `tests/integration/models/elements/containment/test_model_project.py` already covers, and must **not** be re-tested: `RPProject.add_package`, `RPProject.get_packages` (property-based, no own checklist row), `RPProject.add_component`, `RPPackage.add_nested_package`, `RPPackage.get_nested_packages` (no own checklist row), `RPPackage.add_class`, `RPPackage.get_classes`, `RPPackage.add_module`.
-- `tests/integration/models/elements/classifiers/test_model_actor.py` already covers `RPPackage.add_actor` (its checklist row is stale — flip it in Task RPPackage-G).
-- `tests/integration/models/elements/classifiers/test_model_usecase.py` already covers `RPPackage.add_use_case` / `get_use_cases` is a separate, still-untested getter (kept in scope).
-- `tests/integration/models/elements/classifiers/test_model_signal.py`, `test_model_enumeration.py`, `test_model_interface.py` already cover `RPPackage.add_signal`, `add_enumeration`, `add_interface` as documented `xfail` tests (Rhapsody2.Application.1 does not support these COM calls on a package). These methods have **no checklist row at all** in `model_package.py` — add rows and flip them in Task RPPackage-G; do not write new tests for them.
-- `RPProject.save` is inherited from `RPUnit` and out of scope for this plan (tracked under the `common`/core `RPUnit` integration-test plan instead).
-- `RPProject.add_class` / `RPProject.add_actor` duplicate `RPPackage.add_class` / `add_actor` behavior (already tested) and are out of scope here.
+- `tests/integration/models/elements/containment/test_model_project.py` already covers, and must **not** be re-tested: `IRPProject.add_package`, `IRPProject.get_packages` (property-based, no own checklist row), `IRPProject.add_component`, `IRPPackage.add_nested_package`, `IRPPackage.get_nested_packages` (no own checklist row), `IRPPackage.add_class`, `IRPPackage.get_classes`, `IRPPackage.add_module`.
+- `tests/integration/models/elements/classifiers/test_model_actor.py` already covers `IRPPackage.add_actor` (its checklist row is stale — flip it in Task IRPPackage-G).
+- `tests/integration/models/elements/classifiers/test_model_usecase.py` already covers `IRPPackage.add_use_case` / `get_use_cases` is a separate, still-untested getter (kept in scope).
+- `tests/integration/models/elements/classifiers/test_model_signal.py`, `test_model_enumeration.py`, `test_model_interface.py` already cover `IRPPackage.add_signal`, `add_enumeration`, `add_interface` as documented `xfail` tests (Rhapsody2.Application.1 does not support these COM calls on a package). These methods have **no checklist row at all** in `model_package.py` — add rows and flip them in Task IRPPackage-G; do not write new tests for them.
+- `IRPProject.save` is inherited from `RPUnit` and out of scope for this plan (tracked under the `common`/core `RPUnit` integration-test plan instead).
+- `IRPProject.add_class` / `IRPProject.add_actor` duplicate `IRPPackage.add_class` / `add_actor` behavior (already tested) and are out of scope here.
 
 ---
 
 ## Tasks
 
-### Task RPPackage-A: RPPackage — Diagram factory/getter/deleter methods (9 diagram types)
+### Task IRPPackage-A: IRPPackage — Diagram factory/getter/deleter methods (9 diagram types)
 
 **Files:**
 - Modify: `tests/integration/models/elements/containment/test_model_project.py`
@@ -49,7 +49,7 @@
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_activity_diagram_lifecycle(self, test_project: RPProject) -> None:
+def test_activity_diagram_lifecycle(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("ActDiagPkg")
     diag_name = self._unique("MyActivityDiagram")
     pkg = self._create_package(test_project, pkg_name)
@@ -65,7 +65,7 @@ def test_activity_diagram_lifecycle(self, test_project: RPProject) -> None:
         assert diag_name not in remaining
 ```
 
-For remaining methods in this task, follow the same established pattern: for each of the other 7 full add/get/delete diagram triples (sequence, use case, collaboration, component, deployment, object model, timing), write one `test_<type>_diagram_lifecycle` following the identical create → assert in getter → delete → assert absent shape. For `add_statechart_diagram` (no matching getter/deleter exist on `RPPackage`) and `add_panel_diagram`/`get_panel_diagrams`/`delete_panel_diagram`, write matching create/getter/delete tests using the same shape (panel diagram triple; statechart create-only test).
+For remaining methods in this task, follow the same established pattern: for each of the other 7 full add/get/delete diagram triples (sequence, use case, collaboration, component, deployment, object model, timing), write one `test_<type>_diagram_lifecycle` following the identical create → assert in getter → delete → assert absent shape. For `add_statechart_diagram` (no matching getter/deleter exist on `IRPPackage`) and `add_panel_diagram`/`get_panel_diagrams`/`delete_panel_diagram`, write matching create/getter/delete tests using the same shape (panel diagram triple; statechart create-only test).
 
 - [ ] **Step 2: Run the new tests against live Rhapsody**
 
@@ -84,12 +84,12 @@ Run: `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ &&
 
 ```bash
 git add tests/integration/models/elements/containment/test_model_project.py src/rhapsody_cli/models/elements/containment/model_package.py
-git commit -m "test: add RPPackage diagram factory/getter/deleter integration tests"
+git commit -m "test: add IRPPackage diagram factory/getter/deleter integration tests"
 ```
 
 ---
 
-### Task RPPackage-B: RPPackage — Class/actor/usecase/package CRUD + exception/enumeration
+### Task IRPPackage-B: IRPPackage — Class/actor/usecase/package CRUD + exception/enumeration
 
 **Files:**
 - Modify: `tests/integration/models/elements/containment/test_model_project.py`
@@ -100,7 +100,7 @@ git commit -m "test: add RPPackage diagram factory/getter/deleter integration te
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_class_find_and_delete(self, test_project: RPProject) -> None:
+def test_class_find_and_delete(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("FindClsPkg")
     class_name = self._unique("FindableClass")
     pkg = self._create_package(test_project, pkg_name)
@@ -133,12 +133,12 @@ Run: `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ &&
 
 ```bash
 git add tests/integration/models/elements/containment/test_model_project.py src/rhapsody_cli/models/elements/containment/model_package.py
-git commit -m "test: add RPPackage class/actor/usecase/package CRUD integration tests"
+git commit -m "test: add IRPPackage class/actor/usecase/package CRUD integration tests"
 ```
 
 ---
 
-### Task RPPackage-C: RPPackage — Association & event management
+### Task IRPPackage-C: IRPPackage — Association & event management
 
 **Files:**
 - Modify: `tests/integration/models/elements/containment/test_model_project.py`
@@ -149,7 +149,7 @@ git commit -m "test: add RPPackage class/actor/usecase/package CRUD integration 
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_association_lifecycle(self, test_project: RPProject) -> None:
+def test_association_lifecycle(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("AssocPkg")
     assoc_name = self._unique("MyAssociation")
     pkg = self._create_package(test_project, pkg_name)
@@ -180,12 +180,12 @@ Run: `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ &&
 
 ```bash
 git add tests/integration/models/elements/containment/test_model_project.py src/rhapsody_cli/models/elements/containment/model_package.py
-git commit -m "test: add RPPackage association and event management integration tests"
+git commit -m "test: add IRPPackage association and event management integration tests"
 ```
 
 ---
 
-### Task RPPackage-D: RPPackage — Global function/variable/object management
+### Task IRPPackage-D: IRPPackage — Global function/variable/object management
 
 **Files:**
 - Modify: `tests/integration/models/elements/containment/test_model_project.py`
@@ -196,7 +196,7 @@ git commit -m "test: add RPPackage association and event management integration 
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_global_function_lifecycle(self, test_project: RPProject) -> None:
+def test_global_function_lifecycle(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("GlobFuncPkg")
     func_name = self._unique("myGlobalFunction")
     pkg = self._create_package(test_project, pkg_name)
@@ -233,12 +233,12 @@ Run: `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ &&
 
 ```bash
 git add tests/integration/models/elements/containment/test_model_project.py src/rhapsody_cli/models/elements/containment/model_package.py
-git commit -m "test: add RPPackage global function/variable/object integration tests"
+git commit -m "test: add IRPPackage global function/variable/object integration tests"
 ```
 
 ---
 
-### Task RPPackage-E: RPPackage — Node/type/module management
+### Task IRPPackage-E: IRPPackage — Node/type/module management
 
 **Files:**
 - Modify: `tests/integration/models/elements/containment/test_model_project.py`
@@ -249,7 +249,7 @@ git commit -m "test: add RPPackage global function/variable/object integration t
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_node_lifecycle_in_package(self, test_project: RPProject) -> None:
+def test_node_lifecycle_in_package(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("NodePkg")
     node_name = self._unique("MyNode")
     pkg = self._create_package(test_project, pkg_name)
@@ -286,12 +286,12 @@ Run: `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ &&
 
 ```bash
 git add tests/integration/models/elements/containment/test_model_project.py src/rhapsody_cli/models/elements/containment/model_package.py
-git commit -m "test: add RPPackage node/type/module management integration tests"
+git commit -m "test: add IRPPackage node/type/module management integration tests"
 ```
 
 ---
 
-### Task RPPackage-F: RPPackage — Instance specification, links, nested classifiers/components, find operations
+### Task IRPPackage-F: IRPPackage — Instance specification, links, nested classifiers/components, find operations
 
 **Files:**
 - Modify: `tests/integration/models/elements/containment/test_model_project.py`
@@ -302,7 +302,7 @@ git commit -m "test: add RPPackage node/type/module management integration tests
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_instance_specification_lifecycle(self, test_project: RPProject) -> None:
+def test_instance_specification_lifecycle(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("InstSpecPkg")
     inst_name = self._unique("MyInstanceSpec")
     pkg = self._create_package(test_project, pkg_name)
@@ -337,12 +337,12 @@ Run: `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ &&
 
 ```bash
 git add tests/integration/models/elements/containment/test_model_project.py src/rhapsody_cli/models/elements/containment/model_package.py
-git commit -m "test: add RPPackage instance specification/link/find integration tests"
+git commit -m "test: add IRPPackage instance specification/link/find integration tests"
 ```
 
 ---
 
-### Task RPPackage-G: RPPackage — Reconcile stale checklist rows (no new tests)
+### Task IRPPackage-G: IRPPackage — Reconcile stale checklist rows (no new tests)
 
 **Files:**
 - Modify: `src/rhapsody_cli/models/elements/containment/model_package.py` (checklist only; no test code changes)
@@ -363,12 +363,12 @@ Run: `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ &&
 
 ```bash
 git add src/rhapsody_cli/models/elements/containment/model_package.py
-git commit -m "docs: reconcile stale RPPackage integration-test checklist rows"
+git commit -m "docs: reconcile stale IRPPackage integration-test checklist rows"
 ```
 
 ---
 
-### Task RPProject-A: RPProject — Component/node/configuration management
+### Task IRPProject-A: IRPProject — Component/node/configuration management
 
 **Files:**
 - Modify: `tests/integration/models/elements/containment/test_model_project.py`
@@ -379,7 +379,7 @@ git commit -m "docs: reconcile stale RPPackage integration-test checklist rows"
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_node_lifecycle_in_project(self, test_project: RPProject) -> None:
+def test_node_lifecycle_in_project(self, test_project: IRPProject) -> None:
     node_name = self._unique("MyProjectNode")
     node = test_project.add_node(node_name)
     try:
@@ -414,23 +414,23 @@ Run: `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ &&
 
 ```bash
 git add tests/integration/models/elements/containment/test_model_project.py src/rhapsody_cli/models/elements/containment/model_project.py
-git commit -m "test: add RPProject component/node/configuration management integration tests"
+git commit -m "test: add IRPProject component/node/configuration management integration tests"
 ```
 
 ---
 
-### Task RPProject-B: RPProject — Collaboration & profile management
+### Task IRPProject-B: IRPProject — Collaboration & profile management
 
 **Files:**
 - Modify: `tests/integration/models/elements/containment/test_model_project.py`
 - Modify: `src/rhapsody_cli/models/elements/containment/model_project.py` (flip checklist boxes only — no new rows; `addCollaboration`/`deleteCollaboration` have no dedicated wrapper, and `getCollaborations`/`findCollaboration` are absent from the `IRPProject` Java API)
 
-**Methods covered:** `get_new_collaboration`, `get_profiles`, `get_all_stereotypes` (3 `RPProject` methods). The collaboration create/get/delete lifecycle below is exercised through the *inherited* generic factories (`add_new_aggr`, `get_nested_elements_by_meta_class`, `delete_from_project`) — covered by the core plan — because there is no `add_collaboration`/`get_collaborations`/`find_collaboration`/`delete_collaboration` on `RPProject` (`getCollaborations`/`findCollaboration` are absent from the `IRPProject` Java API).
+**Methods covered:** `get_new_collaboration`, `get_profiles`, `get_all_stereotypes` (3 `IRPProject` methods). The collaboration create/get/delete lifecycle below is exercised through the *inherited* generic factories (`add_new_aggr`, `get_nested_elements_by_meta_class`, `delete_from_project`) — covered by the core plan — because there is no `add_collaboration`/`get_collaborations`/`find_collaboration`/`delete_collaboration` on `IRPProject` (`getCollaborations`/`findCollaboration` are absent from the `IRPProject` Java API).
 
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_collaboration_lifecycle(self, test_project: RPProject) -> None:
+def test_collaboration_lifecycle(self, test_project: IRPProject) -> None:
     collab_name = self._unique("MyCollaboration")
     # No dedicated add_collaboration/get_collaborations/find_collaboration/delete_collaboration
     # wrappers exist (getCollaborations/findCollaboration are absent from IRPProject). Use the
@@ -448,7 +448,7 @@ def test_collaboration_lifecycle(self, test_project: RPProject) -> None:
         assert collab_name not in remaining
 ```
 
-For remaining methods in this task, follow the same established pattern: `get_new_collaboration` should be tested as a simple call that returns a non-`None` `RPCollaboration`-typed object. `get_profiles` should be tested by creating a profile via `add_profile` (from Task RPProject-A) and asserting it appears in `get_profiles()`. `get_all_stereotypes` is a read-only getter — test by creating a stereotype on a class (as in `tests/integration/models/elements/classifiers/test_model_stereotype.py`) and asserting it appears in the project-wide collection.
+For remaining methods in this task, follow the same established pattern: `get_new_collaboration` should be tested as a simple call that returns a non-`None` `RPCollaboration`-typed object. `get_profiles` should be tested by creating a profile via `add_profile` (from Task IRPProject-A) and asserting it appears in `get_profiles()`. `get_all_stereotypes` is a read-only getter — test by creating a stereotype on a class (as in `tests/integration/models/elements/classifiers/test_model_stereotype.py`) and asserting it appears in the project-wide collection.
 
 - [ ] **Step 2: Run the new tests against live Rhapsody**
 
@@ -467,12 +467,12 @@ Run: `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ &&
 
 ```bash
 git add tests/integration/models/elements/containment/test_model_project.py src/rhapsody_cli/models/elements/containment/model_project.py
-git commit -m "test: add RPProject collaboration and profile management integration tests"
+git commit -m "test: add IRPProject collaboration and profile management integration tests"
 ```
 
 ---
 
-### Task RPProject-C: RPProject — Find/search operations
+### Task IRPProject-C: IRPProject — Find/search operations
 
 **Files:**
 - Modify: `tests/integration/models/elements/containment/test_model_project.py`
@@ -483,7 +483,7 @@ git commit -m "test: add RPProject collaboration and profile management integrat
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_find_element_by_guid_roundtrip(self, test_project: RPProject) -> None:
+def test_find_element_by_guid_roundtrip(self, test_project: IRPProject) -> None:
     class_name = self._unique("FindableProjectClass")
     pkg = test_project.add_package(self._unique("FindPkg"))
     new_class = pkg.add_class(class_name)
@@ -519,12 +519,12 @@ Run: `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ &&
 
 ```bash
 git add tests/integration/models/elements/containment/test_model_project.py src/rhapsody_cli/models/elements/containment/model_project.py
-git commit -m "test: add RPProject find/search operation integration tests"
+git commit -m "test: add IRPProject find/search operation integration tests"
 ```
 
 ---
 
-### Task RPProject-D: RPProject — Lifecycle (save/close/dirty state)
+### Task IRPProject-D: IRPProject — Lifecycle (save/close/dirty state)
 
 **Files:**
 - Modify: `tests/integration/models/elements/containment/test_model_project.py`
@@ -537,7 +537,7 @@ git commit -m "test: add RPProject find/search operation integration tests"
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_is_modified_recursive_returns_bool(self, test_project: RPProject) -> None:
+def test_is_modified_recursive_returns_bool(self, test_project: IRPProject) -> None:
     # IRPProject has no isDirty/setDirty; is_modified_recursive is the real read-only probe.
     assert isinstance(test_project.is_modified_recursive(), bool)
 ```
@@ -561,7 +561,7 @@ Run: `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ &&
 
 ```bash
 git add tests/integration/models/elements/containment/test_model_project.py src/rhapsody_cli/models/elements/containment/model_project.py
-git commit -m "test: add RPProject lifecycle (save/close/dirty) integration tests"
+git commit -m "test: add IRPProject lifecycle (save/close/dirty) integration tests"
 ```
 
 ---
@@ -581,7 +581,7 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPComponent, RPConfiguration, RPProject
+from rhapsody_cli.models.elements.containment import RPComponent, RPConfiguration, IRPProject
 
 
 @pytest.mark.integration
@@ -592,7 +592,7 @@ class TestRPComponentIntegration:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_configuration_lifecycle(self, test_project: RPProject) -> None:
+    def test_configuration_lifecycle(self, test_project: IRPProject) -> None:
         comp_name = self._unique("ConfigComp")
         config_name = self._unique("MyConfig")
         comp = test_project.add_component(comp_name)
@@ -647,7 +647,7 @@ git commit -m "test: add RPComponent configuration/file management integration t
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_scope_element_lifecycle(self, test_project: RPProject) -> None:
+def test_scope_element_lifecycle(self, test_project: IRPProject) -> None:
     comp_name = self._unique("ScopeComp")
     pkg_name = self._unique("ScopePkg")
     class_name = self._unique("ScopeClass")
@@ -701,7 +701,7 @@ git commit -m "test: add RPComponent scope element management integration tests"
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_build_type_roundtrip(self, test_project: RPProject) -> None:
+def test_build_type_roundtrip(self, test_project: IRPProject) -> None:
     comp_name = self._unique("BuildTypeComp")
     comp = test_project.add_component(comp_name)
     try:
@@ -750,7 +750,7 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPComponent, RPComponentInstance, RPNode, RPProject
+from rhapsody_cli.models.elements.containment import RPComponent, RPComponentInstance, RPNode, IRPProject
 
 
 @pytest.mark.integration
@@ -761,7 +761,7 @@ class TestRPComponentInstanceIntegration:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_component_type_roundtrip(self, test_project: RPProject) -> None:
+    def test_component_type_roundtrip(self, test_project: IRPProject) -> None:
         node_name = self._unique("CompInstNode")
         comp_name = self._unique("MyComponentType")
         inst_name = self._unique("MyComponentInstance")
@@ -820,7 +820,7 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPComponent, RPConfiguration, RPProject
+from rhapsody_cli.models.elements.containment import RPComponent, RPConfiguration, IRPProject
 
 
 @pytest.mark.integration
@@ -831,7 +831,7 @@ class TestRPConfigurationIntegration:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_its_component_roundtrip(self, test_project: RPProject) -> None:
+    def test_its_component_roundtrip(self, test_project: IRPProject) -> None:
         comp_name = self._unique("ConfComp")
         config_name = self._unique("MyItsConfig")
         comp = test_project.add_component(comp_name)
@@ -881,7 +881,7 @@ git commit -m "test: add RPConfiguration instance linkage and instrumentation sc
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_directory_roundtrip(self, test_project: RPProject) -> None:
+def test_directory_roundtrip(self, test_project: IRPProject) -> None:
     comp_name = self._unique("DirComp")
     config_name = self._unique("MyDirConfig")
     comp = test_project.add_component(comp_name)
@@ -928,7 +928,7 @@ git commit -m "test: add RPConfiguration build/compile property integration test
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_generate_code_for_actors_roundtrip(self, test_project: RPProject) -> None:
+def test_generate_code_for_actors_roundtrip(self, test_project: IRPProject) -> None:
     comp_name = self._unique("ActorCgComp")
     config_name = self._unique("MyActorCgConfig")
     comp = test_project.add_component(comp_name)
@@ -982,7 +982,7 @@ import uuid
 import pytest
 
 from rhapsody_cli.models.elements.common import RPClassifierRole
-from rhapsody_cli.models.elements.containment import RPCollaboration, RPProject
+from rhapsody_cli.models.elements.containment import RPCollaboration, IRPProject
 from rhapsody_cli.models.elements.common import RPMessage
 
 
@@ -994,7 +994,7 @@ class TestRPCollaborationIntegration:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_classifier_role_and_message_lifecycle(self, test_project: RPProject) -> None:
+    def test_classifier_role_and_message_lifecycle(self, test_project: IRPProject) -> None:
         collab_name = self._unique("MsgCollab")
         role_name = self._unique("MyRole")
         msg_name = self._unique("MyMessage")
@@ -1049,7 +1049,7 @@ git commit -m "test: add RPCollaboration message/classifier role integration tes
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_interaction_occurrence_lifecycle(self, test_project: RPProject) -> None:
+def test_interaction_occurrence_lifecycle(self, test_project: IRPProject) -> None:
     collab_name = self._unique("InterOccCollab")
     occ_name = self._unique("MyInteractionOccurrence")
     collab = test_project.add_new_aggr("Collaboration", collab_name)
@@ -1098,7 +1098,7 @@ git commit -m "test: add RPCollaboration interaction structure integration tests
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_generate_sequence_and_metadata(self, test_project: RPProject) -> None:
+def test_generate_sequence_and_metadata(self, test_project: IRPProject) -> None:
     collab_name = self._unique("MetaCollab")
     collab = test_project.add_new_aggr("Collaboration", collab_name)
     try:
@@ -1150,7 +1150,7 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPComponentInstance, RPNode, RPProject
+from rhapsody_cli.models.elements.containment import RPComponentInstance, RPNode, IRPProject
 
 
 @pytest.mark.integration
@@ -1161,7 +1161,7 @@ class TestRPNodeIntegration:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_component_instance_lifecycle(self, test_project: RPProject) -> None:
+    def test_component_instance_lifecycle(self, test_project: IRPProject) -> None:
         node_name = self._unique("MyNode")
         inst_name = self._unique("MyCompInst")
         node = test_project.add_node(node_name)
@@ -1181,7 +1181,7 @@ class TestRPNodeIntegration:
         finally:
             node.delete_from_project()
 
-    def test_cpu_type_roundtrip(self, test_project: RPProject) -> None:
+    def test_cpu_type_roundtrip(self, test_project: IRPProject) -> None:
         node_name = self._unique("CpuNode")
         node = test_project.add_node(node_name)
         try:
@@ -1242,7 +1242,7 @@ git commit -m "test: complete containment subpackage integration test coverage"
 
 ## Success Criteria
 
-- Every implemented (`[x] impl`) method across `RPProject`, `RPPackage`, `RPComponent`, `RPComponentInstance`, `RPConfiguration`, `RPCollaboration`, `RPNode` has an integration test (or a documented `xfail` where the live Rhapsody COM API does not support the operation, following the existing pattern in `tests/integration/models/elements/classifiers/test_model_signal.py`)
+- Every implemented (`[x] impl`) method across `IRPProject`, `IRPPackage`, `RPComponent`, `RPComponentInstance`, `RPConfiguration`, `RPCollaboration`, `RPNode` has an integration test (or a documented `xfail` where the live Rhapsody COM API does not support the operation, following the existing pattern in `tests/integration/models/elements/classifiers/test_model_signal.py`)
 - `RPModule` and `RPProfile` require no new work (inheritance-only wrappers)
 - No test leaves behind orphan elements in the Rhapsody model or closes the shared `test_project` fixture
 - All existing integration tests continue to pass

@@ -2,8 +2,9 @@
 
 import pytest
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.core import AbstractRPModelElement
-from rhapsody_cli.models.elements.classifiers import RPClassifier, RPStereotype
+from rhapsody_cli.models.elements.classifiers import RPStereotype
 from tests.unit.models.fakes import make_fake_element
 
 
@@ -11,7 +12,7 @@ def test_stereotype_is_a_classifier() -> None:
     fake = make_fake_element("Stereotype", properties={"name": "MyStereo"})
     stereo = RPStereotype(fake)
 
-    assert isinstance(stereo, RPClassifier)
+    assert isinstance(stereo, IRPClassifier)
     assert stereo.get_name() == "MyStereo"
 
 

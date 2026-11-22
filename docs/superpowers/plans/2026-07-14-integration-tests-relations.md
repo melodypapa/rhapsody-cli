@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Add integration tests for all remaining untested methods of `RPAssociationRole`, `RPDependency`, `RPGeneralization` (complete the partial coverage), `RPHyperLink`, `RPInstance`, `RPPort`, `RPRelation`. Flip in-source `[ ] integration test` markers to `[x]` as work completes.
+**Goal:** Add integration tests for all remaining untested methods of `RPAssociationRole`, `RPDependency`, `RPGeneralization` (complete the partial coverage), `RPHyperLink`, `RPInstance`, `IRPPort`, `RPRelation`. Flip in-source `[ ] integration test` markers to `[x]` as work completes.
 
 **Architecture:** Extends `tests/integration/models/elements/relations/test_model_generalization.py`; creates new test files for the other 6 classes.
 
@@ -12,14 +12,14 @@
 
 - Windows-only runtime (requires Windows + a running Rhapsody instance)
 - All test classes use `@pytest.mark.integration`
-- All tests consume the `test_project: RPProject` fixture
+- All tests consume the `test_project: IRPProject` fixture
 - Use `_unique(prefix)` with `uuid.uuid4().hex[:8]`
 - Always `try/finally` cleanup via `element.delete_from_project()`
 - Assert both `isinstance()` and read-back values
 - Flip `[ ] integration test` to `[x]` per task in the relevant `model_*.py` file
 - Quality gate after each task: `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ && pytest tests/unit`
-- Import via subpackage `__init__.py` re-exports, e.g. `from rhapsody_cli.models.elements.relations import RPPort`
-- Generic element creation uses the established `owner.add_new_aggr("<MetaType>", name)` factory pattern (already used for `RPComment`, `RPConstraint`, `RPRequirement` in `tests/integration/models/elements/common/test_model_misc.py` and `tests/integration/models/elements/requirements/test_model_requirements.py`), or a dedicated convenience method where one exists (`RPClassifier.add_port`, `RPPackage.add_association`).
+- Import via subpackage `__init__.py` re-exports, e.g. `from rhapsody_cli.models.elements.relations import IRPPort`
+- Generic element creation uses the established `owner.add_new_aggr("<MetaType>", name)` factory pattern (already used for `RPComment`, `RPConstraint`, `RPRequirement` in `tests/integration/models/elements/common/test_model_misc.py` and `tests/integration/models/elements/requirements/test_model_requirements.py`), or a dedicated convenience method where one exists (`IRPClassifier.add_port`, `IRPPackage.add_association`).
 - Where live COM behavior for a method is uncertain ahead of running against real Rhapsody (e.g. methods requiring complex pre-wired part/type/use-case context), mark the test `@pytest.mark.xfail(reason="...", strict=False)` following the precedent in `tests/integration/models/elements/classifiers/test_model_class.py::test_abstract_roundtrip`. Implementers should attempt the real assertion first (TDD) and only fall back to `xfail` if live Rhapsody genuinely does not support the scenario as designed.
 
 ---
@@ -35,7 +35,7 @@
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_generalization_derived_class_and_flags(self, test_project: RPProject) -> None:
+def test_generalization_derived_class_and_flags(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("GenPkg")
     parent_name = self._unique("Parent")
     child_name = self._unique("Child")
@@ -105,7 +105,7 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.elements.relations import RPDependency
 
 
@@ -118,12 +118,12 @@ class TestRPDependencyIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_dependency_roundtrip(self, test_project: RPProject) -> None:
+    def test_dependency_roundtrip(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("DepPkg")
         dependent_name = self._unique("Dependent")
         depends_on_name = self._unique("DependsOn")
@@ -193,7 +193,7 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.elements.relations import RPHyperLink
 
 
@@ -206,12 +206,12 @@ class TestRPHyperLinkIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_hyperlink_target_and_url_roundtrip(self, test_project: RPProject) -> None:
+    def test_hyperlink_target_and_url_roundtrip(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("LinkPkg")
         target_name = self._unique("Target")
         link_name = self._unique("Link")
@@ -273,7 +273,7 @@ import uuid
 import pytest
 
 from rhapsody_cli.models.core import IRPCollection
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.elements.relations import RPAssociationRole
 
 
@@ -286,12 +286,12 @@ class TestRPAssociationRoleIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_association_role_basic_accessors(self, test_project: RPProject) -> None:
+    def test_association_role_basic_accessors(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("RolePkg")
         role_name = self._unique("Role")
         pkg = self._create_package(test_project, pkg_name)
@@ -351,7 +351,7 @@ import uuid
 import pytest
 
 from rhapsody_cli.models.core import IRPCollection
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.elements.relations import RPInstance
 
 
@@ -364,12 +364,12 @@ class TestRPInstanceIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_instance_lifecycle_and_nesting(self, test_project: RPProject) -> None:
+    def test_instance_lifecycle_and_nesting(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("InstPkg")
         inst_name = self._unique("Inst")
         pkg = self._create_package(test_project, pkg_name)
@@ -428,7 +428,7 @@ git commit -m "test: add integration tests for RPInstance lifecycle and nesting"
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_instance_instantiated_by_roundtrip(self, test_project: RPProject) -> None:
+def test_instance_instantiated_by_roundtrip(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("InstOpPkg")
     class_name = self._unique("OwnerClass")
     op_name = self._unique("factoryOp")
@@ -473,7 +473,7 @@ git commit -m "test: add integration tests for RPInstance instantiation"
 
 ---
 
-## Task 7: RPPort — behavioral, reversed, and contract
+## Task 7: IRPPort — behavioral, reversed, and contract
 
 **Files:**
 - Create: `tests/integration/models/elements/relations/test_model_port.py`
@@ -488,25 +488,25 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
-from rhapsody_cli.models.elements.relations import RPPort
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
+from rhapsody_cli.models.elements.relations import IRPPort
 
 
 @pytest.mark.integration
 class TestRPPortIntegration:
-    """Integration tests for RPPort with live Rhapsody COM API."""
+    """Integration tests for IRPPort with live Rhapsody COM API."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_port_behavioral_reversed_and_contract(self, test_project: RPProject) -> None:
+    def test_port_behavioral_reversed_and_contract(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("PortPkg")
         class_name = self._unique("PortOwner")
         contract_name = self._unique("Contract")
@@ -516,7 +516,7 @@ class TestRPPortIntegration:
         contract_class = pkg.add_class(contract_name)
         port = owner_class.add_port(port_name)
         try:
-            assert isinstance(port, RPPort)
+            assert isinstance(port, IRPPort)
             assert port.get_meta_class() == "Port"
 
             assert port.get_is_behavioral() == 0
@@ -553,12 +553,12 @@ Run: `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ &&
 
 ```bash
 git add tests/integration/models/elements/relations/test_model_port.py src/rhapsody_cli/models/elements/relations/model_port.py
-git commit -m "test: add integration tests for RPPort behavioral/reversed/contract"
+git commit -m "test: add integration tests for IRPPort behavioral/reversed/contract"
 ```
 
 ---
 
-## Task 8: RPPort — provided/required interfaces and deprecated contract aliases
+## Task 8: IRPPort — provided/required interfaces and deprecated contract aliases
 
 **Files:**
 - Modify: `tests/integration/models/elements/relations/test_model_port.py`
@@ -569,7 +569,7 @@ git commit -m "test: add integration tests for RPPort behavioral/reversed/contra
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_port_provided_and_required_interfaces(self, test_project: RPProject) -> None:
+def test_port_provided_and_required_interfaces(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("IfacePkg")
     class_name = self._unique("IfaceOwner")
     provided_name = self._unique("ProvidedIface")
@@ -616,7 +616,7 @@ Run: `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ &&
 
 ```bash
 git add tests/integration/models/elements/relations/test_model_port.py src/rhapsody_cli/models/elements/relations/model_port.py
-git commit -m "test: add integration tests for RPPort provided/required interfaces"
+git commit -m "test: add integration tests for IRPPort provided/required interfaces"
 ```
 
 ---
@@ -636,7 +636,7 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.elements.relations import RPRelation
 
 
@@ -649,12 +649,12 @@ class TestRPRelationIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_relation_of_class_other_class_and_type(self, test_project: RPProject) -> None:
+    def test_relation_of_class_other_class_and_type(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("RelPkg")
         class_a_name = self._unique("ClassA")
         class_b_name = self._unique("ClassB")
@@ -718,7 +718,7 @@ git commit -m "test: add integration tests for RPRelation core identity"
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_relation_naming_visibility_and_navigability(self, test_project: RPProject) -> None:
+def test_relation_naming_visibility_and_navigability(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("RelPkg2")
     class_a_name = self._unique("ClassA2")
     class_b_name = self._unique("ClassB2")
@@ -787,7 +787,7 @@ git commit -m "test: add integration tests for RPRelation naming and navigabilit
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_relation_qualifiers_and_inverse(self, test_project: RPProject) -> None:
+def test_relation_qualifiers_and_inverse(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("RelPkg3")
     class_a_name = self._unique("ClassA3")
     class_b_name = self._unique("ClassB3")

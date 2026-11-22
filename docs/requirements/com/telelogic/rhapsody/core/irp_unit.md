@@ -28,10 +28,10 @@ method-shaped members (`getAddToModelMode`, `getCMState`, `getLanguage`,
 `setSeparateSaveUnit`, `setUnitPath`, `unload`, ...) are invoked via `call_com`, and
 property-shaped members (`CMHeader`, `currentDirectory`, `filename`, `includeInNextLoad`,
 `isStub`, `structureDiagrams`) are read/written via `get_com_property`/`set_com_property`.
-The two collection getters wrap the result in `IRPCollection`. `get_unit_path` calls the
-Java-shaped `getUnitPath` member directly; it is absent from the committed pywin32 catalog
-but the report records this as an expected informational binding difference, so the site is
-left unchanged pending Windows typelib evidence. The module uses
+The two collection getters wrap the result in `IRPCollection`. `get_unit_path` is a
+documented-unavailable `NotImplementedError` stub: the catalog exposes only `setUnitPath`
+(the getter `getUnitPath` is an `ACCESSOR_ALIAS_MISMATCH` row in the API report), so the
+wrapper raises instead of probing pending Windows typelib evidence. The module uses
 `from __future__ import annotations` with unquoted type references; names used only in
 `cast()` are imported locally inside the method to avoid circular imports.
 **Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_unit.py:IRPUnit

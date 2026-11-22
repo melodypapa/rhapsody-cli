@@ -1,9 +1,10 @@
 from typing import cast
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
-from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
-from rhapsody_cli.models.elements.containment.model_package import RPPackage
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.support.model_files import (
     RPASCIIFile,
     RPControlledFile,
@@ -58,7 +59,7 @@ class TestRPFile:
         fake = make_fake_element("File")
         target = make_fake_element("X")
         obj = RPFile(fake)
-        obj.add_element(cast(RPClassifier, AbstractRPModelElement.wrap(target)), "x")
+        obj.add_element(cast(IRPClassifier, AbstractRPModelElement.wrap(target)), "x")
         fake.addElement.assert_called_once_with(target, "x")
 
     def test_add_model_element_delegates_to_com(self) -> None:
@@ -72,7 +73,7 @@ class TestRPFile:
         fake = make_fake_element("File")
         target = make_fake_element("X")
         obj = RPFile(fake)
-        obj.add_package_to_scope(cast(RPPackage, AbstractRPModelElement.wrap(target)))
+        obj.add_package_to_scope(cast(IRPPackage, AbstractRPModelElement.wrap(target)))
         fake.addPackageToScope.assert_called_once_with(target)
 
     def test_add_text_element_delegates_to_com(self) -> None:
@@ -85,7 +86,7 @@ class TestRPFile:
         fake = make_fake_element("File")
         target = make_fake_element("X")
         obj = RPFile(fake)
-        obj.add_to_scope(cast(RPClassifier, AbstractRPModelElement.wrap(target)))
+        obj.add_to_scope(cast(IRPClassifier, AbstractRPModelElement.wrap(target)))
         fake.addToScope.assert_called_once_with(target)
 
     def test_get_elements_delegates_to_com(self) -> None:

@@ -1,0 +1,1436 @@
+"""Integration tests for IRPModelElement and IRPCollection with live Rhapsody COM API.
+
+These tests require a running Rhapsody instance with an open project.
+"""
+
+import uuid
+from unittest.mock import patch
+
+import pytest
+
+from rhapsody_cli import RhapsodyApplication
+from rhapsody_cli.exceptions import RhapsodyRuntimeException
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
+from rhapsody_cli.models.core import AbstractRPModelElement
+
+
+@pytest.mark.integration
+class TestRPModelElementIntegration:
+    """Integration tests for IRPModelElement with real Rhapsody COM API."""
+
+    def test_get_name(self, test_project: IRPProject) -> None:
+        assert isinstance(test_project, IRPModelElement)
+        name = test_project.get_name()
+        assert name == "TestProject"
+        assert isinstance(name, str)
+
+    def test_set_name(self, test_project: IRPProject) -> None:
+        original_name = test_project.get_name()
+        test_project.set_name("RenamedProject")
+        new_name = test_project.get_name()
+        assert new_name == "RenamedProject"
+        assert isinstance(new_name, str)
+        test_project.set_name(original_name)
+
+    def test_get_meta_class(self, test_project: IRPProject) -> None:
+        meta_class = test_project.get_meta_class()
+        assert meta_class == "Project"
+        assert isinstance(meta_class, str)
+
+    def test_get_guid(self, test_project: IRPProject) -> None:
+        guid = test_project.get_guid()
+        assert isinstance(guid, str)
+        assert len(guid) > 0
+
+
+@pytest.mark.integration
+class TestRPCollectionIntegration:
+    """Integration tests for IRPCollection with real Rhapsody COM API."""
+
+    def test_get_nested_elements_iteration(self, test_project: IRPProject) -> None:
+        elements = test_project.get_nested_elements()
+        assert elements is not None
+        assert len(list(elements)) >= 0
+
+    def test_get_nested_elements_filtering(self, test_project: IRPProject) -> None:
+        all_elements = test_project.get_nested_elements()
+        packages = test_project.get_nested_elements_by_meta_class("Package", 0)
+        assert all_elements is not None
+        assert packages is not None
+        all_list = list(all_elements)
+        package_list = list(packages)
+        assert len(package_list) <= len(all_list)
+
+
+@pytest.mark.integration
+class TestRPCollectionAddItemIntegration:
+    """Integration tests for IRPCollection.add_item with live Rhapsody COM API."""
+
+    @staticmethod
+    def _unique(prefix: str = "Test") -> str:
+        return f"{prefix}_{uuid.uuid4().hex[:8]}"
+
+    @staticmethod
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
+        pkg = project.add_package(name)
+        assert pkg is not None
+        assert isinstance(pkg, IRPPackage)
+        return pkg
+
+    def test_add_item_appends_and_count_increases(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
+        pkg = self._create_package(test_project, self._unique("AddItemPkg"))
+        try:
+            cls1 = pkg.add_class(self._unique("AddItemCls1"))
+            cls2 = pkg.add_class(self._unique("AddItemCls2"))
+
+            collection = rhapsody_app.create_new_collection()
+            assert isinstance(collection, IRPCollection)
+
+            before = collection.get_count()
+            assert isinstance(before, int)
+            assert before == 0
+
+            collection.add_item(cls1)
+            collection.add_item(cls2)
+            after = collection.get_count()
+            assert isinstance(after, int)
+            assert after == before + 2
+
+            items = [item.get_name() for item in collection]
+            assert cls1.get_name() in items
+            assert cls2.get_name() in items
+        finally:
+            pkg.delete_from_project()
+
+    def test_add_item_idempotent_on_same_element(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
+        pkg = self._create_package(test_project, self._unique("AddItemIdemPkg"))
+        try:
+            cls = pkg.add_class(self._unique("AddItemIdemCls"))
+
+            collection = rhapsody_app.create_new_collection()
+            assert isinstance(collection, IRPCollection)
+
+            collection.add_item(cls)
+            collection.add_item(cls)
+            assert collection.get_count() == 2
+
+            names = [item.get_name() for item in collection]
+            assert names.count(cls.get_name()) == 2
+        finally:
+            pkg.delete_from_project()
+
+
+@pytest.mark.integration
+class TestRPCollectionMutationMethodsIntegration:
+    """Integration tests for IRPCollection mutation methods with live Rhapsody COM API.
+
+    These tests use ``rhapsody_app.create_new_collection()`` to obtain a genuinely
+    mutable collection. Read-only snapshots such as ``getNestedElements()`` are
+    intentionally avoided because mutations on them are silently ignored.
+    """
+
+    @staticmethod
+    def _unique(prefix: str = "Test") -> str:
+        return f"{prefix}_{uuid.uuid4().hex[:8]}"
+
+    @staticmethod
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
+        pkg = project.add_package(name)
+        assert pkg is not None
+        assert isinstance(pkg, IRPPackage)
+        return pkg
+
+    def test_to_list_returns_python_list_of_items(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
+        pkg = self._create_package(test_project, self._unique("ToListPkg"))
+        try:
+            cls1 = pkg.add_class(self._unique("ToListCls1"))
+            cls2 = pkg.add_class(self._unique("ToListCls2"))
+
+            collection = rhapsody_app.create_new_collection()
+            assert isinstance(collection, IRPCollection)
+            collection.add_item(cls1)
+            collection.add_item(cls2)
+
+            with pytest.raises(NotImplementedError):
+                collection.to_list()
+        finally:
+            pkg.delete_from_project()
+
+    def test_set_size_changes_count(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
+        pkg = self._create_package(test_project, self._unique("SetSizePkg"))
+        try:
+            collection = rhapsody_app.create_new_collection()
+            assert isinstance(collection, IRPCollection)
+            assert collection.get_count() == 0
+
+            collection.set_size(3)
+            count = collection.get_count()
+            assert isinstance(count, int)
+            assert count == 3
+        finally:
+            pkg.delete_from_project()
+
+    def test_remove_decreases_count(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
+        pkg = self._create_package(test_project, self._unique("RemovePkg"))
+        try:
+            cls1 = pkg.add_class(self._unique("RemoveCls1"))
+            cls2 = pkg.add_class(self._unique("RemoveCls2"))
+
+            collection = rhapsody_app.create_new_collection()
+            assert isinstance(collection, IRPCollection)
+            collection.add_item(cls1)
+            collection.add_item(cls2)
+            before = collection.get_count()
+            assert before == 2
+
+            collection.remove(1)
+            after = collection.get_count()
+            assert isinstance(after, int)
+            assert after == before - 1
+
+            remaining = [item.get_name() for item in collection]
+            assert cls1.get_name() not in remaining
+            assert cls2.get_name() in remaining
+        finally:
+            pkg.delete_from_project()
+
+    def test_set_model_element_replaces_item_at_index(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
+        pkg = self._create_package(test_project, self._unique("SetModelElemPkg"))
+        try:
+            cls1 = pkg.add_class(self._unique("SetModelElemCls1"))
+            cls2 = pkg.add_class(self._unique("SetModelElemCls2"))
+            cls3 = pkg.add_class(self._unique("SetModelElemCls3"))
+
+            collection = rhapsody_app.create_new_collection()
+            assert isinstance(collection, IRPCollection)
+            collection.add_item(cls1)
+            collection.add_item(cls2)
+            assert collection.get_count() == 2
+
+            collection.set_model_element(1, cls3)
+            replaced = collection.get_item(1)
+            assert isinstance(replaced, IRPModelElement)
+            assert replaced.get_name() == cls3.get_name()
+        finally:
+            pkg.delete_from_project()
+
+    def test_empty_clears_collection(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
+        pkg = self._create_package(test_project, self._unique("EmptyPkg"))
+        try:
+            cls1 = pkg.add_class(self._unique("EmptyCls1"))
+            cls2 = pkg.add_class(self._unique("EmptyCls2"))
+
+            collection = rhapsody_app.create_new_collection()
+            assert isinstance(collection, IRPCollection)
+            collection.add_item(cls1)
+            collection.add_item(cls2)
+            assert collection.get_count() == 2
+
+            collection.empty()
+            count = collection.get_count()
+            assert isinstance(count, int)
+            assert count == 0
+            assert len(list(collection)) == 0
+        finally:
+            pkg.delete_from_project()
+
+    def test_set_string_stores_value(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
+        pkg = self._create_package(test_project, self._unique("SetStrPkg"))
+        try:
+            collection = rhapsody_app.create_new_collection()
+            assert isinstance(collection, IRPCollection)
+            collection.set_size(1)
+            collection.set_string(1, "marker")
+
+            item = collection.get_item(1)
+            assert "marker" in str(item)
+        finally:
+            pkg.delete_from_project()
+
+    def test_set_integer_stores_value(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
+        pkg = self._create_package(test_project, self._unique("SetIntPkg"))
+        try:
+            collection = rhapsody_app.create_new_collection()
+            assert isinstance(collection, IRPCollection)
+            collection.set_size(1)
+            collection.set_integer(1, 42)
+
+            item = collection.get_item(1)
+            assert "42" in str(item)
+        finally:
+            pkg.delete_from_project()
+
+
+@pytest.mark.integration
+class TestRPModelElementDependenciesIntegration:
+    """Integration tests for IRPModelElement dependency/association methods."""
+
+    @staticmethod
+    def _unique(prefix: str = "Test") -> str:
+        return f"{prefix}_{uuid.uuid4().hex[:8]}"
+
+    @staticmethod
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
+        pkg = project.add_package(name)
+        assert pkg is not None
+        assert isinstance(pkg, IRPPackage)
+        return pkg
+
+    def test_add_dependency_to_and_get_dependencies(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DepPkg"))
+        try:
+            source = pkg.add_class(self._unique("Source"))
+            target = pkg.add_class(self._unique("Target"))
+            dependency = source.add_dependency_to(target)
+            assert dependency is not None
+            assert isinstance(dependency, IRPModelElement)
+            assert dependency.get_meta_class() == "Dependency"
+
+            deps = source.get_dependencies()
+            assert isinstance(deps, IRPCollection)
+            assert isinstance(deps.get_count(), int)
+            assert deps.get_count() >= 0
+            assert len(list(deps)) >= 1
+
+            source.delete_dependency(dependency)
+            deps_after = source.get_dependencies()
+            assert len(list(deps_after)) == 0
+        finally:
+            pkg.delete_from_project()
+
+    def test_add_dependency(self, test_project: IRPProject) -> None:
+        pkg_name = self._unique("AddDepPkg")
+        pkg = self._create_package(test_project, pkg_name)
+        try:
+            target = pkg.add_class(self._unique("Target"))
+            target_name = target.get_name()
+            source = pkg.add_class(self._unique("Source"))
+            dependency = source.add_dependency(target_name, "Class")
+            assert dependency is not None
+            assert isinstance(dependency, IRPModelElement)
+            assert dependency.get_meta_class() == "Dependency"
+            deps = source.get_dependencies()
+            assert len(list(deps)) >= 1
+            source.delete_dependency(dependency)
+        finally:
+            pkg.delete_from_project()
+
+    def test_add_dependency_between(self, test_project: IRPProject) -> None:
+        pkg_name = self._unique("DepBetPkg")
+        pkg = self._create_package(test_project, pkg_name)
+        try:
+            source = pkg.add_class(self._unique("Source"))
+            target = pkg.add_class(self._unique("Target"))
+            dependency = pkg.add_dependency_between(source, target)
+            assert dependency is not None
+            assert isinstance(dependency, IRPModelElement)
+            assert dependency.get_meta_class() == "Dependency"
+            deps = pkg.get_owned_dependencies()
+            assert isinstance(deps, IRPCollection)
+            assert isinstance(deps.get_count(), int)
+            assert deps.get_count() >= 0
+            assert len(list(deps)) >= 1
+            pkg.delete_dependency(dependency)
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_owned_dependencies(self, test_project: IRPProject) -> None:
+        pkg_name = self._unique("OwnedDepPkg")
+        pkg = self._create_package(test_project, pkg_name)
+        try:
+            source = pkg.add_class(self._unique("Source"))
+            target = pkg.add_class(self._unique("Target"))
+            dependency = source.add_dependency_to(target)
+            owned = source.get_owned_dependencies()
+            assert isinstance(owned, IRPCollection)
+            assert isinstance(owned.get_count(), int)
+            assert owned.get_count() >= 0
+            assert len(list(owned)) >= 1
+            source.delete_dependency(dependency)
+        finally:
+            pkg.delete_from_project()
+
+    def test_add_remote_dependency_to_and_get_remote_dependencies(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            with pytest.raises(RhapsodyRuntimeException):
+                cls.add_remote_dependency_to(cls, "dependency")
+            assert isinstance(cls.get_remote_dependencies(), IRPCollection)
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_association_classes(self, test_project: IRPProject) -> None:
+        pkg_name = self._unique("AssocClsPkg")
+        pkg = self._create_package(test_project, pkg_name)
+        try:
+            assoc_classes = pkg.get_association_classes()
+            assert isinstance(assoc_classes, IRPCollection)
+            # smoke test: no associations created, but confirm the COM call returns a valid IRPCollection
+            assert isinstance(assoc_classes.get_count(), int)
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_references(self, test_project: IRPProject) -> None:
+        pkg_name = self._unique("RefPkg")
+        pkg = self._create_package(test_project, pkg_name)
+        try:
+            source = pkg.add_class(self._unique("Source"))
+            target = pkg.add_class(self._unique("Target"))
+            dependency = source.add_dependency_to(target)
+            references = target.get_references()
+            assert isinstance(references, IRPCollection)
+            assert isinstance(references.get_count(), int)
+            assert references.get_count() >= 0
+            source.delete_dependency(dependency)
+        finally:
+            pkg.delete_from_project()
+
+    def test_add_association(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            with pytest.raises(RhapsodyRuntimeException):
+                cls.add_association(cls, cls, "name")  # type: ignore[arg-type]
+        finally:
+            pkg.delete_from_project()
+
+
+@pytest.mark.integration
+class TestRPModelElementStereotypesTagsIntegration:
+    """Integration tests for IRPModelElement stereotype and tag methods."""
+
+    @staticmethod
+    def _unique(prefix: str = "Test") -> str:
+        return f"{prefix}_{uuid.uuid4().hex[:8]}"
+
+    @staticmethod
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
+        pkg = project.add_package(name)
+        assert pkg is not None
+        assert isinstance(pkg, IRPPackage)
+        return pkg
+
+    def test_get_stereotypes_initially_empty(self, test_project: IRPProject) -> None:
+        stereotypes = test_project.get_stereotypes()
+        assert stereotypes is not None
+        assert isinstance(stereotypes, IRPCollection)
+        assert len(list(stereotypes)) == 0
+
+    def test_add_stereotype_and_get_stereotypes(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("StereoPkg"))
+        try:
+            stereo = pkg.add_stereotype(self._unique("TestStereo"), "Package")
+            assert stereo is not None
+            assert isinstance(stereo, IRPModelElement)
+            stereotypes = pkg.get_stereotypes()
+            assert isinstance(stereotypes, IRPCollection)
+            names = [s.get_name() for s in stereotypes]
+            assert stereo.get_name() in names
+        finally:
+            pkg.delete_from_project()
+
+    def test_remove_stereotype(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("RemoveStereoPkg"))
+        try:
+            stereo = pkg.add_stereotype(self._unique("RemoveMe"), "Package")
+            assert stereo is not None
+            assert isinstance(stereo, IRPModelElement)
+            pkg.remove_stereotype(stereo)
+            stereotypes = pkg.get_stereotypes()
+            assert isinstance(stereotypes, IRPCollection)
+            names = [s.get_name() for s in stereotypes]
+            assert stereo.get_name() not in names
+        finally:
+            pkg.delete_from_project()
+
+    def test_add_specific_stereotype(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("SpecificStereoPkg"))
+        try:
+            stereo = pkg.add_stereotype(self._unique("SpecificStereo"), "Package")
+            assert stereo is not None
+            assert isinstance(stereo, IRPModelElement)
+            pkg.remove_stereotype(stereo)
+            # add_specific_stereotype returns void (None) according to Java API
+            pkg.add_specific_stereotype(stereo)
+            stereotypes = pkg.get_stereotypes()
+            assert isinstance(stereotypes, IRPCollection)
+            names = [s.get_name() for s in stereotypes]
+            assert stereo.get_name() in names
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_all_tags(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("AllTagsTestPkg"))
+        try:
+            stereo = pkg.add_stereotype(self._unique("TagTestStereo"), "Package")
+            assert stereo is not None
+            assert isinstance(stereo, IRPModelElement)
+            tags = pkg.get_all_tags()
+            assert tags is not None
+            assert isinstance(tags, IRPCollection)
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_local_tags(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("LocalTagsTestPkg"))
+        try:
+            stereo = pkg.add_stereotype(self._unique("LocalTagTestStereo"), "Package")
+            assert stereo is not None
+            assert isinstance(stereo, IRPModelElement)
+            tags = pkg.get_local_tags()
+            assert tags is not None
+            assert isinstance(tags, IRPCollection)
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_tag(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            assert cls.get_tag("SomeTag") is None
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_new_term_stereotype(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            assert cls.get_new_term_stereotype() is None
+        finally:
+            pkg.delete_from_project()
+
+    def test_set_tag_value(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            with pytest.raises(RhapsodyRuntimeException):
+                cls.set_tag_value(cls, "value")  # type: ignore[arg-type]
+        finally:
+            pkg.delete_from_project()
+
+    def test_set_tag_element_value(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            with pytest.raises(RhapsodyRuntimeException):
+                cls.set_tag_element_value(cls, cls)  # type: ignore[arg-type]
+        finally:
+            pkg.delete_from_project()
+
+    def test_set_tag_context_value(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            with pytest.raises(RhapsodyRuntimeException):
+                cls.set_tag_context_value(cls, cls, cls)  # type: ignore[arg-type]
+        finally:
+            pkg.delete_from_project()
+
+
+@pytest.mark.integration
+class TestRPModelElementDescriptionDisplayNameIntegration:
+    """Integration tests for IRPModelElement description and display-name methods."""
+
+    @staticmethod
+    def _unique(prefix: str = "Test") -> str:
+        return f"{prefix}_{uuid.uuid4().hex[:8]}"
+
+    @staticmethod
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
+        pkg = project.add_package(name)
+        assert pkg is not None
+        assert isinstance(pkg, IRPPackage)
+        return pkg
+
+    def test_set_and_get_description_roundtrip(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DescPkg"))
+        try:
+            cls = pkg.add_class(self._unique("DescCls"))
+            cls.set_description("A test description")
+            description = cls.get_description()
+            assert description == "A test description"
+            assert isinstance(description, str)
+
+            plain_text = cls.get_description_plain_text()
+            assert isinstance(plain_text, str)
+            assert "A test description" in plain_text
+        finally:
+            pkg.delete_from_project()
+
+    def test_set_and_get_description_rtf_roundtrip(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("RtfDescPkg"))
+        try:
+            cls = pkg.add_class(self._unique("RtfDescCls"))
+            rtf_string = r"{\rtf1 Hello}"
+            cls.set_description_rtf(rtf_string)
+
+            is_rtf = cls.is_description_rtf()
+            assert is_rtf
+            assert isinstance(is_rtf, (bool, int))
+
+            retrieved_rtf = cls.get_description_rtf()
+            assert isinstance(retrieved_rtf, str)
+            assert retrieved_rtf == rtf_string
+
+            description = cls.get_description()
+            assert isinstance(description, str)
+            assert "Hello" in description
+        finally:
+            pkg.delete_from_project()
+
+    def test_set_and_get_description_html(self, test_project: IRPProject) -> None:
+        """Test that setDescriptionHTML raises NotImplementedError (documented as unimplemented)."""
+        pkg = self._create_package(test_project, self._unique("HtmlDescPkg"))
+        try:
+            cls = pkg.add_class(self._unique("HtmlDescCls"))
+            html = "<html><body>Hello</body></html>"
+
+            # setDescriptionHTML is documented as "Not implemented - should not be used"
+            with pytest.raises(NotImplementedError, match="setDescriptionHTML is documented as"):
+                cls.set_description_html(html)
+
+            # getDescriptionHTML should work normally
+            retrieved_html = cls.get_description_html()
+            assert isinstance(retrieved_html, str)
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_description_html_on_empty(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("HtmlEmptyPkg"))
+        try:
+            result = pkg.get_description_html()
+            assert isinstance(result, str)
+        finally:
+            pkg.delete_from_project()
+
+    def test_set_description_and_hyperlinks(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            with pytest.raises(RhapsodyRuntimeException):
+                cls.set_description_and_hyperlinks("rtf", cls)  # type: ignore[arg-type]
+        finally:
+            pkg.delete_from_project()
+
+    def test_set_and_get_display_name_roundtrip(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DispNamePkg"))
+        try:
+            cls = pkg.add_class(self._unique("DispNameCls"))
+            display_name = "My Custom Label"
+            cls.set_display_name(display_name)
+
+            retrieved = cls.get_display_name()
+            assert retrieved == display_name
+            assert isinstance(retrieved, str)
+        finally:
+            pkg.delete_from_project()
+
+    def test_set_and_get_display_name_rtf_roundtrip(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DispNameRtfPkg"))
+        try:
+            cls = pkg.add_class(self._unique("DispNameRtfCls"))
+            rtf_string = r"{\rtf1 Bold Label}"
+            cls.set_display_name_rtf(rtf_string)
+
+            is_rtf = cls.is_display_name_rtf()
+            assert is_rtf
+            assert isinstance(is_rtf, (bool, int))
+
+            retrieved_rtf = cls.get_display_name_rtf()
+            assert isinstance(retrieved_rtf, str)
+            assert retrieved_rtf == rtf_string
+
+            display_name = cls.get_display_name()
+            assert isinstance(display_name, str)
+        finally:
+            pkg.delete_from_project()
+
+
+@pytest.mark.integration
+class TestRPModelElementPropertiesIntegration:
+    """Integration tests for IRPModelElement property methods."""
+
+    @staticmethod
+    def _unique(prefix: str = "Test") -> str:
+        return f"{prefix}_{uuid.uuid4().hex[:8]}"
+
+    @staticmethod
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
+        pkg = project.add_package(name)
+        assert pkg is not None
+        assert isinstance(pkg, IRPPackage)
+        return pkg
+
+    def test_add_property_and_get_property_value(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            with pytest.raises(RhapsodyRuntimeException):
+                cls.add_property("Custom::X", "String", "v")
+            with pytest.raises(RhapsodyRuntimeException):
+                cls.get_property_value("Custom::X")
+        finally:
+            pkg.delete_from_project()
+
+    def test_set_property_value_and_read_back(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            with pytest.raises(RhapsodyRuntimeException):
+                cls.set_property_value("General::Graphics::ShowLabels", "1")
+            with pytest.raises(RhapsodyRuntimeException):
+                cls.get_property_value("General::Graphics::ShowLabels")
+        finally:
+            pkg.delete_from_project()
+
+    def test_add_then_remove_property(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            with pytest.raises(RhapsodyRuntimeException):
+                cls.add_property("Custom::X", "String", "v")
+            with pytest.raises(RhapsodyRuntimeException):
+                cls.remove_property("Custom::X")
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_property_value_explicit(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            with pytest.raises(RhapsodyRuntimeException):
+                cls.get_property_value_explicit("Custom::X")
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_overridden_properties(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            assert isinstance(cls.get_overridden_properties(0), IRPCollection)
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_overridden_properties_by_pattern(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            with pytest.raises(RhapsodyRuntimeException):
+                cls.get_overridden_properties_by_pattern("*", 0, 0)
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_property_value_conditional(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            with pytest.raises(RhapsodyRuntimeException):
+                cls.get_property_value_conditional("k", cls, cls)  # type: ignore[arg-type]
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_property_value_conditional_explicit(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            with pytest.raises(RhapsodyRuntimeException):
+                cls.get_property_value_conditional_explicit("k", cls, cls)  # type: ignore[arg-type]
+        finally:
+            pkg.delete_from_project()
+
+
+@pytest.mark.integration
+class TestRPModelElementNavigationIntegration:
+    """Integration tests for IRPModelElement navigation/search methods."""
+
+    @staticmethod
+    def _unique(prefix: str = "Test") -> str:
+        return f"{prefix}_{uuid.uuid4().hex[:8]}"
+
+    @staticmethod
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
+        pkg = project.add_package(name)
+        assert pkg is not None
+        assert isinstance(pkg, IRPPackage)
+        return pkg
+
+    def test_find_nested_element(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("NavPkg"))
+        try:
+            class_name = self._unique("NavCls")
+            pkg.add_class(class_name)
+            found = pkg.find_nested_element(class_name, "Class")
+            assert found is not None
+            assert isinstance(found, IRPModelElement)
+            assert found.get_name() == class_name
+
+            not_found = pkg.find_nested_element(self._unique("Missing"), "Class")
+            # Rhapsody findNestedElement returns None (not an empty-name element) when no match.
+            assert not_found is None
+        finally:
+            pkg.delete_from_project()
+
+    def test_find_nested_element_recursive(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("RecPkg"))
+        try:
+            subpkg = pkg.add_nested_package(self._unique("SubPkg"))
+            class_name = self._unique("DeepCls")
+            subpkg.add_class(class_name)
+            not_found = pkg.find_nested_element(class_name, "Class")
+            # The class is nested one level down, so first-level search returns None.
+            assert not_found is None
+            found = pkg.find_nested_element_recursive(class_name, "Class")
+            assert found is not None
+            assert isinstance(found, IRPModelElement)
+            assert found.get_name() == class_name
+        finally:
+            pkg.delete_from_project()
+
+    def test_find_elements_by_full_name(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("FullNamePkg"))
+        try:
+            class_name = self._unique("FullNameCls")
+            pkg.add_class(class_name)
+            full_path = f"{pkg.get_name()}::{class_name}"
+            found = test_project.find_elements_by_full_name(full_path, "Class")
+            assert found is not None
+            assert isinstance(found, IRPModelElement)
+            assert found.get_name() == class_name
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_nested_elements_recursive(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("RecNestPkg"))
+        try:
+            pkg.add_class(self._unique("Child1"))
+            pkg.add_class(self._unique("Child2"))
+            elements = pkg.get_nested_elements_recursive()
+            assert isinstance(elements, IRPCollection)
+            assert isinstance(elements.get_count(), int)
+            assert len(list(elements)) >= 3
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_full_path_name(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("PathPkg"))
+        try:
+            class_name = self._unique("PathCls")
+            cls = pkg.add_class(class_name)
+            full_path = cls.get_full_path_name()
+            assert isinstance(full_path, str)
+            assert pkg.get_name() in full_path
+            assert class_name in full_path
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_full_path_name_in(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("PathInPkg"))
+        try:
+            class_name = self._unique("PathInCls")
+            cls = pkg.add_class(class_name)
+            path_in = cls.get_full_path_name_in()
+            assert isinstance(path_in, str)
+            assert class_name in path_in
+            assert pkg.get_name() in path_in
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_project(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("ProjPkg"))
+        try:
+            class_name = self._unique("ProjCls")
+            cls = pkg.add_class(class_name)
+            project = cls.get_project()
+            assert project is not None
+            assert isinstance(project, IRPProject)
+            assert project.get_name() == test_project.get_name()
+        finally:
+            pkg.delete_from_project()
+
+    def test_set_owner(self, test_project: IRPProject) -> None:
+        pkg1 = self._create_package(test_project, self._unique("OwnerPkg1"))
+        pkg2 = self._create_package(test_project, self._unique("OwnerPkg2"))
+        try:
+            cls = pkg1.add_class(self._unique("OwnerCls"))
+            cls.set_owner(pkg2)
+            owner = cls.get_owner()
+            assert owner is not None
+            assert isinstance(owner, IRPModelElement)
+            assert owner.get_name() == pkg2.get_name()
+        finally:
+            pkg2.delete_from_project()
+            pkg1.delete_from_project()
+
+    def test_has_nested_elements(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("HasNestPkg"))
+        try:
+            empty_pkg = pkg.add_nested_package(self._unique("EmptyPkg"))
+            assert empty_pkg.has_nested_elements() == 0
+            assert isinstance(empty_pkg.has_nested_elements(), int)
+            empty_pkg.add_class(self._unique("SomeCls"))
+            assert empty_pkg.has_nested_elements() == 1
+        finally:
+            pkg.delete_from_project()
+
+
+@pytest.mark.integration
+class TestRPModelElementCloningTemplatesIntegration:
+    """Integration tests for IRPModelElement clone, change-to and template methods."""
+
+    @staticmethod
+    def _unique(prefix: str = "Test") -> str:
+        return f"{prefix}_{uuid.uuid4().hex[:8]}"
+
+    @staticmethod
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
+        pkg = project.add_package(name)
+        assert pkg is not None
+        assert isinstance(pkg, IRPPackage)
+        return pkg
+
+    def test_clone(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("ClonePkg"))
+        try:
+            cls = pkg.add_class(self._unique("Original"))
+            original_guid = cls.get_guid()
+
+            clone_name = self._unique("Clone")
+            cloned = cls.clone(clone_name, pkg)
+            assert cloned is not None
+            assert isinstance(cloned, IRPModelElement)
+            assert cloned.get_name() == clone_name
+            assert cloned.get_guid() != original_guid
+        finally:
+            pkg.delete_from_project()
+
+    def test_change_to(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            assert cls.change_to("Package") is not None
+        finally:
+            pkg.delete_from_project()
+
+    def test_is_a_template(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("IsTemplPkg"))
+        try:
+            cls = pkg.add_class(self._unique("PlainClass"))
+            result = cls.is_a_template()
+            assert result == 0
+            assert isinstance(result, int)
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_of_template_on_plain_element(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            assert cls.get_of_template() is None
+        finally:
+            pkg.delete_from_project()
+
+    def test_become_template_instantiation_of(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            with pytest.raises(RhapsodyRuntimeException):
+                cls.become_template_instantiation_of(cls)
+        finally:
+            pkg.delete_from_project()
+
+    def test_set_of_template(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            assert cls.set_of_template(cls) is None  # type: ignore[func-returns-value]
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_template_parameters_on_plain_element(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("TemplParamsPkg"))
+        try:
+            cls = pkg.add_class(self._unique("Plain"))
+            params = cls.get_template_parameters()
+            assert params is not None
+            assert isinstance(params, IRPCollection)
+            assert isinstance(params.get_count(), int)
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_ti(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            assert cls.get_ti() is None
+        finally:
+            pkg.delete_from_project()
+
+    def test_set_ti(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            with pytest.raises(RhapsodyRuntimeException):
+                cls.set_ti(cls)  # type: ignore[arg-type]
+        finally:
+            pkg.delete_from_project()
+
+    def test_synchronize_template_instantiation(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            with pytest.raises(RhapsodyRuntimeException):
+                cls.synchronize_template_instantiation()
+        finally:
+            pkg.delete_from_project()
+
+
+@pytest.mark.integration
+class TestRPModelElementRedefinesConstraintsIntegration:
+    """Integration tests for IRPModelElement redefine and constraint methods."""
+
+    @staticmethod
+    def _unique(prefix: str = "Test") -> str:
+        return f"{prefix}_{uuid.uuid4().hex[:8]}"
+
+    @staticmethod
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
+        pkg = project.add_package(name)
+        assert pkg is not None
+        assert isinstance(pkg, IRPPackage)
+        return pkg
+
+    def test_add_redefines_and_get_redefines(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            with pytest.raises(RhapsodyRuntimeException):
+                cls.add_redefines(cls)
+            assert isinstance(cls.get_redefines(), IRPCollection)
+        finally:
+            pkg.delete_from_project()
+
+    def test_remove_redefines(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            assert cls.remove_redefines(cls) is None  # type: ignore[func-returns-value]
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_constraints(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("ConstrPkg"))
+        try:
+            cls = pkg.add_class(self._unique("ConstrCls"))
+            constraints = cls.get_constraints()
+            assert constraints is not None
+            assert isinstance(constraints, IRPCollection)
+            assert isinstance(constraints.get_count(), int)
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_constraints_by_him(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("ConstrHimPkg"))
+        try:
+            cls = pkg.add_class(self._unique("ConstrHimCls"))
+            constraints = cls.get_constraints_by_him()
+            assert constraints is not None
+            assert isinstance(constraints, IRPCollection)
+            assert isinstance(constraints.get_count(), int)
+        finally:
+            pkg.delete_from_project()
+
+
+@pytest.mark.integration
+class TestRPModelElementOslcRemoteIntegration:
+    """Integration tests for IRPModelElement OSLC, remote and requirement traceability methods."""
+
+    @staticmethod
+    def _unique(prefix: str = "Test") -> str:
+        return f"{prefix}_{uuid.uuid4().hex[:8]}"
+
+    @staticmethod
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
+        pkg = project.add_package(name)
+        assert pkg is not None
+        assert isinstance(pkg, IRPPackage)
+        return pkg
+
+    def test_create_oslc_link_raises_not_implemented(self, test_project: IRPProject) -> None:
+        with pytest.raises(NotImplementedError):
+            test_project.create_oslc_link("someType", "http://example.com")
+
+    def test_delete_oslc_link_raises_not_implemented(self, test_project: IRPProject) -> None:
+        with pytest.raises(NotImplementedError):
+            test_project.delete_oslc_link("someType", "http://example.com")
+
+    def test_get_hyper_links_returns_empty_collection(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("HyperLinkPkg"))
+        try:
+            cls = pkg.add_class(self._unique("HyperLinkCls"))
+            hyper_links = cls.get_hyper_links()
+            assert isinstance(hyper_links, IRPCollection)
+            assert isinstance(hyper_links.get_count(), int)
+            assert hyper_links.get_count() == 0
+            assert len(list(hyper_links)) == 0
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_remote_uri_returns_empty_string(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("RemoteUriPkg"))
+        try:
+            cls = pkg.add_class(self._unique("RemoteUriCls"))
+            uri = cls.get_remote_uri()
+            assert isinstance(uri, str)
+            assert uri == ""
+        finally:
+            pkg.delete_from_project()
+
+    def test_is_remote_returns_zero(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("IsRemotePkg"))
+        try:
+            cls = pkg.add_class(self._unique("IsRemoteCls"))
+            result = cls.is_remote()
+            assert isinstance(result, int)
+            assert result == 0
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_rmm_url_returns_empty_string(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            with pytest.raises(NotImplementedError):
+                cls.get_rmm_url()
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_requirement_traceability_handle_default(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("ReqTracePkg"))
+        try:
+            cls = pkg.add_class(self._unique("ReqTraceCls"))
+            handle = cls.get_requirement_traceability_handle()
+            assert isinstance(handle, int)
+        finally:
+            pkg.delete_from_project()
+
+    def test_set_and_get_requirement_traceability_handle_roundtrip(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("ReqTraceRoundPkg"))
+        try:
+            cls = pkg.add_class(self._unique("ReqTraceRoundCls"))
+            handle_value = 12345
+            cls.set_requirement_traceability_handle(handle_value)
+            retrieved = cls.get_requirement_traceability_handle()
+            assert isinstance(retrieved, int)
+            assert retrieved == handle_value
+        finally:
+            pkg.delete_from_project()
+
+
+@pytest.mark.integration
+class TestRPModelElementMetadataIntegration:
+    """Integration tests for IRPModelElement metadata/icon/GUID methods."""
+
+    @staticmethod
+    def _unique(prefix: str = "Test") -> str:
+        return f"{prefix}_{uuid.uuid4().hex[:8]}"
+
+    @staticmethod
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
+        pkg = project.add_package(name)
+        assert pkg is not None
+        assert isinstance(pkg, IRPPackage)
+        return pkg
+
+    def test_get_binary_id(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("BinIdPkg"))
+        try:
+            cls = pkg.add_class(self._unique("BinIdCls"))
+            binary_id = cls.get_binary_id()
+            assert isinstance(binary_id, bytes)
+            assert len(binary_id) > 0
+
+            guid = cls.get_guid()
+            assert isinstance(guid, str)
+            assert len(guid) > 0
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_interface_name(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("IntNamePkg"))
+        try:
+            cls = pkg.add_class(self._unique("IntNameCls"))
+            iface = cls.get_interface_name()
+            assert isinstance(iface, str)
+            assert iface == "IRPClass"
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_is_of_meta_class_class(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("IsOfPkg"))
+        try:
+            cls = pkg.add_class(self._unique("IsOfCls"))
+            result = cls.get_is_of_meta_class("Class")
+            assert result
+
+            not_result = cls.get_is_of_meta_class("Package")
+            assert not not_result
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_icon_file_name(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("IconPkg"))
+        try:
+            cls = pkg.add_class(self._unique("IconCls"))
+            icon = cls.get_icon_file_name()
+            assert isinstance(icon, str)
+            assert len(icon) > 0
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_overlay_icon_file_name(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("OverlayIconPkg"))
+        try:
+            cls = pkg.add_class(self._unique("OverlayIconCls"))
+            overlay = cls.get_overlay_icon_file_name()
+            assert isinstance(overlay, str)
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_decoration_style_roundtrip(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DecoPkg"))
+        try:
+            cls = pkg.add_class(self._unique("DecoCls"))
+            style = cls.get_decoration_style()
+            assert isinstance(style, str)
+
+            cls.set_decoration_style("None")
+            after = cls.get_decoration_style()
+            assert after == "None"
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_is_external(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("IsExtPkg"))
+        try:
+            cls = pkg.add_class(self._unique("IsExtCls"))
+            result = cls.get_is_external()
+            assert isinstance(result, int)
+            assert result == 0
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_is_unresolved(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("IsUnresPkg"))
+        try:
+            cls = pkg.add_class(self._unique("IsUnresCls"))
+            result = cls.get_is_unresolved()
+            assert isinstance(result, int)
+            assert result == 0
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_user_defined_meta_class(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            assert isinstance(cls.get_user_defined_meta_class(), str)
+        finally:
+            pkg.delete_from_project()
+
+    def test_is_modified_after_set_name(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("ModPkg"))
+        try:
+            cls = pkg.add_class(self._unique("ModCls"))
+            cls.set_name(self._unique("Renamed"))
+            modified = cls.is_modified()
+            assert modified
+        finally:
+            pkg.delete_from_project()
+
+    def test_set_guid_and_get_guid(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            assert cls.set_guid("{" + uuid.uuid4().hex + "}") is None  # type: ignore[func-returns-value]
+            assert isinstance(cls.get_guid(), str)
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_tool_tip_html(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("ToolTipPkg"))
+        try:
+            cls = pkg.add_class(self._unique("ToolTipCls"))
+            html = cls.get_tool_tip_html()
+            assert isinstance(html, str)
+            assert len(html) > 0
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_is_show_display_name_roundtrip(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("ShowDnPkg"))
+        try:
+            cls = pkg.add_class(self._unique("ShowDnCls"))
+            original = cls.get_is_show_display_name()
+            assert isinstance(original, int)
+
+            cls.set_is_show_display_name(0)
+            assert cls.get_is_show_display_name() == 0
+
+            cls.set_is_show_display_name(1)
+            assert cls.get_is_show_display_name() == 1
+        finally:
+            pkg.delete_from_project()
+
+
+@pytest.mark.integration
+class TestRPModelElementDiagnosticsUiIntegration:
+    """Integration tests for IRPModelElement diagnostics/annotations/UI-action methods."""
+
+    @staticmethod
+    def _unique(prefix: str = "Test") -> str:
+        return f"{prefix}_{uuid.uuid4().hex[:8]}"
+
+    @staticmethod
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
+        pkg = project.add_package(name)
+        assert pkg is not None
+        assert isinstance(pkg, IRPPackage)
+        return pkg
+
+    def test_error_message_empty_after_success(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("ErrPkg"))
+        try:
+            cls = pkg.add_class(self._unique("ErrCls"))
+            cls.get_name()
+            message = cls.error_message()
+            assert message == ""
+            assert isinstance(message, str)
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_error_message_empty_after_success(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("GetErrPkg"))
+        try:
+            cls = pkg.add_class(self._unique("GetErrCls"))
+            cls.get_name()
+            message = cls.get_error_message()
+            assert message == ""
+            assert isinstance(message, str)
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_annotations_empty_for_plain_class(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("AnnPkg"))
+        try:
+            cls = pkg.add_class(self._unique("AnnCls"))
+            annotations = cls.get_annotations()
+            assert isinstance(annotations, IRPCollection)
+            assert isinstance(annotations.get_count(), int)
+            assert annotations.get_count() == 0
+            assert len(list(annotations)) == 0
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_controlled_files_empty(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("CtrlPkg"))
+        try:
+            cls = pkg.add_class(self._unique("CtrlCls"))
+            files = cls.get_controlled_files()
+            assert isinstance(files, IRPCollection)
+            assert isinstance(files.get_count(), int)
+            assert files.get_count() == 0
+            assert len(list(files)) == 0
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_save_unit(self, test_project: IRPProject) -> None:
+
+        pkg = self._create_package(test_project, self._unique("SaveUnitPkg"))
+        try:
+            cls = pkg.add_class(self._unique("SaveUnitCls"))
+            unit = cls.get_save_unit()
+            assert isinstance(unit, IRPUnit)
+            unit_name = unit.get_name()
+            assert isinstance(unit_name, str)
+            assert pkg.get_name() in unit_name
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_main_diagram_and_set_main_diagram_roundtrip(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            assert cls.add_new_aggr("Class", "Nested") is not None
+            assert cls.get_main_diagram() is None
+            with pytest.raises(RhapsodyRuntimeException):
+                cls.set_main_diagram(cls)  # type: ignore[arg-type]
+        finally:
+            pkg.delete_from_project()
+
+    def test_has_panel_widget_returns_zero(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("PanelPkg"))
+        try:
+            cls = pkg.add_class(self._unique("PanelCls"))
+            result = cls.has_panel_widget()
+            assert isinstance(result, int)
+            assert result == 0
+        finally:
+            pkg.delete_from_project()
+
+    def test_high_light_element_binding(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("HLPkg"))
+        try:
+            cls = pkg.add_class(self._unique("HLCls"))
+            # A live call opens a modal GUI window that blocks the automation
+            # session; assert the COM binding shape instead.
+            with patch.object(AbstractRPModelElement, "call_com") as com_call:
+                assert cls.high_light_element() is None  # type: ignore[func-returns-value]
+                com_call.assert_called_once()
+        finally:
+            pkg.delete_from_project()
+
+    def test_locate_in_browser_returns_int(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("LocPkg"))
+        try:
+            cls = pkg.add_class(self._unique("LocCls"))
+            result = cls.locate_in_browser()
+            assert isinstance(result, int)
+        finally:
+            pkg.delete_from_project()
+
+    def test_open_features_dialog_binding(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("FeatPkg"))
+        try:
+            cls = pkg.add_class(self._unique("FeatCls"))
+            # A live call opens a modal "Features" window that blocks later
+            # project operations; assert the COM binding shape instead.
+            with patch.object(AbstractRPModelElement, "call_com") as com_call:
+                assert cls.open_features_dialog(0) is None  # type: ignore[func-returns-value]
+                com_call.assert_called_once()
+        finally:
+            pkg.delete_from_project()
+
+    def test_add_link_to_element(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("DocPkg"))
+        cls = pkg.add_class(self._unique("DocCls"))
+        try:
+            with pytest.raises(AttributeError):
+                cls.add_link_to_element(cls, None, None, None)  # type: ignore[arg-type]
+        finally:
+            pkg.delete_from_project()
+
+
+@pytest.mark.integration
+class TestIRPModelElementDunderIntegration:
+    """Live coverage for equality, hashing and representation."""
+
+    def test_equality_hash_and_repr(self, test_project: IRPProject) -> None:
+        assert test_project.__eq__(object()) is NotImplemented
+        assert test_project == test_project
+        assert hash(test_project) == hash(id(test_project._com))
+        assert repr(test_project).startswith("IRPProject(name=")

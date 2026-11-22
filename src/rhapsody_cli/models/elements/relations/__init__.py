@@ -1,5 +1,6 @@
 """Relations package — wrappers for IRPRelation and its subtypes."""
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port import IRPPort  # noqa: F401
 from rhapsody_cli.models.elements.relations.model_association_role import (  # noqa: F401
     RPAssociationRole,
 )
@@ -9,7 +10,6 @@ from rhapsody_cli.models.elements.relations.model_generalization import (  # noq
 )
 from rhapsody_cli.models.elements.relations.model_hyperlink import RPHyperLink  # noqa: F401
 from rhapsody_cli.models.elements.relations.model_instance import RPInstance  # noqa: F401
-from rhapsody_cli.models.elements.relations.model_port import RPPort  # noqa: F401
 from rhapsody_cli.models.elements.relations.model_relation import RPRelation  # noqa: F401
 
 __all__ = [
@@ -18,6 +18,6 @@ __all__ = [
     "RPGeneralization",
     "RPHyperLink",
     "RPInstance",
-    "RPPort",
+    "IRPPort",
     "RPRelation",
 ]

@@ -3,11 +3,12 @@
 from typing import TYPE_CHECKING, Optional, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
-from rhapsody_cli.models.elements.variables.model_variables import RPVariable
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.elements.variables import RPVariable
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 
 
 class RPTemplateInstantiation(IRPModelElement):
@@ -58,7 +59,7 @@ class RPTemplateInstantiationParameter(IRPModelElement):
         """
         return str(AbstractRPModelElement._get_method_or_property(self._com, "getArgValue", "argValue"))
 
-    def get_type(self) -> "RPClassifier":
+    def get_type(self) -> "IRPClassifier":
         """Returns the type of this template instantiation parameter.
 
         Returns:
@@ -70,7 +71,7 @@ class RPTemplateInstantiationParameter(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPTemplateInstantiationParameter::getType()
         """
-        return cast("RPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getType", "type")))
+        return cast("IRPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getType", "type")))
 
     def set_arg_value(self, arg_value: str) -> None:
         """Sets the argument value of this template instantiation parameter.
@@ -86,7 +87,7 @@ class RPTemplateInstantiationParameter(IRPModelElement):
         """
         AbstractRPModelElement._set_method_or_property(self._com, "setArgValue", "argValue", arg_value)
 
-    def set_type(self, type_: "RPClassifier") -> None:
+    def set_type(self, type_: "IRPClassifier") -> None:
         """Sets the type of this template instantiation parameter.
 
         Args:
@@ -139,7 +140,7 @@ class RPTemplateParameter(RPVariable):
         """
         return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getRepresentative", "representative"))
 
-    def set_class_type(self, class_type: "RPClassifier") -> None:
+    def set_class_type(self, class_type: "IRPClassifier") -> None:
         """Sets the type of the parameter to "class".
 
         Args:

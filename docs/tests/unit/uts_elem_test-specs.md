@@ -7,93 +7,93 @@
 
 ---
 
-## UTS_ELEM_00001: RPProject Extends RPPackage
+## UTS_ELEM_00001: IRPProject Extends IRPPackage
 
 **ID:** UTS_ELEM_00001
 **Traces-To:** SWR_ELEM_00001
-**Title:** RPProject is a subclass of RPPackage and registers itself for meta class "Project"
+**Title:** IRPProject is a subclass of IRPPackage and registers itself for meta class "Project"
 **Type:** Unit
 **Priority:** High
 **Description:**
-Verifies that `RPProject` extends `RPPackage` and is registered in `_WRAPPER_REGISTRY` under the meta class `"Project"` at import time of `rhapsody_cli.models.elements.containment`.
+Verifies that `IRPProject` extends `IRPPackage` and is registered in `_WRAPPER_REGISTRY` under the meta class `"Project"` at import time of `rhapsody_cli.models.elements.containment`.
 **Pre-conditions:**
 - `rhapsody_cli.models.elements` imported so the registry is populated.
 - Access to `_WRAPPER_REGISTRY` from `rhapsody_cli.models._core`.
 **Test Steps:**
 1. Import `rhapsody_cli.models.elements.containment` and `rhapsody_cli.models._core` (for the registry).
-2. Assert `issubclass(RPProject, RPPackage)`.
-3. Assert `_WRAPPER_REGISTRY["Project"] is RPProject`.
+2. Assert `issubclass(IRPProject, IRPPackage)`.
+3. Assert `_WRAPPER_REGISTRY["Project"] is IRPProject`.
 **Expected Result:**
-`RPProject` is a subclass of `RPPackage`, and the registry maps `"Project"` to `RPProject`.
+`IRPProject` is a subclass of `IRPPackage`, and the registry maps `"Project"` to `IRPProject`.
 **Verification Criteria:**
 Pass if both assertions hold.
 **Last Changed:** 2026-07-07
 
 ---
 
-## UTS_ELEM_00002: RPProject addPackage/close/becomeActiveProject/findComponent/getPackages
+## UTS_ELEM_00002: IRPProject addPackage/close/becomeActiveProject/findComponent/getPackages
 
 **ID:** UTS_ELEM_00002
 **Traces-To:** SWR_ELEM_00001
-**Title:** RPProject methods delegate to COM and wrap returned elements
+**Title:** IRPProject methods delegate to COM and wrap returned elements
 **Type:** Unit
 **Priority:** High
 **Description:**
-Verifies that `addPackage(name)` returns a wrapped `RPPackage`, `close()` and `becomeActiveProject()` return `None`, `findComponent(name)` returns a wrapped element, and `getPackages()` returns an `IRPCollection`.
+Verifies that `addPackage(name)` returns a wrapped `IRPPackage`, `close()` and `becomeActiveProject()` return `None`, `findComponent(name)` returns a wrapped element, and `getPackages()` returns an `IRPCollection`.
 **Pre-conditions:**
 - A fake project COM object built via `tests.fakes.make_fake_element("Project")` configured with `addPackage.return_value = make_fake_element("Package")`, `findComponent.return_value = make_fake_element("Component")`, and `getPackages.return_value = make_fake_collection([make_fake_element("Package")])`.
-- An `RPProject` constructed with that fake object.
+- An `IRPProject` constructed with that fake object.
 **Test Steps:**
-1. Construct `proj = RPProject(fake)`.
-2. Call `proj.addPackage("P1")` and assert the result is an `RPPackage` whose `_com` is the fake package returned by COM.
+1. Construct `proj = IRPProject(fake)`.
+2. Call `proj.addPackage("P1")` and assert the result is an `IRPPackage` whose `_com` is the fake package returned by COM.
 3. Call `proj.close()` and assert it returns `None`; assert `fake.close` was called once.
 4. Call `proj.becomeActiveProject()` and assert it returns `None`; assert `fake.becomeActiveProject` was called once.
 5. Call `proj.findComponent("C1")` and assert the result is a wrapped `RPModelElement` whose `_com` is the fake component.
 6. Call `proj.getPackages()` and assert the result is an `IRPCollection`.
 **Expected Result:**
-All methods delegate correctly. `addPackage` returns a wrapped `RPPackage`; `findComponent` returns a wrapped element; `getPackages` returns an `IRPCollection`; `close`/`becomeActiveProject` return `None`.
+All methods delegate correctly. `addPackage` returns a wrapped `IRPPackage`; `findComponent` returns a wrapped element; `getPackages` returns an `IRPCollection`; `close`/`becomeActiveProject` return `None`.
 **Verification Criteria:**
 Pass if all type/`_com` assertions hold and `fake.addPackage.call_args == call("P1")`, `fake.findComponent.call_args == call("C1")`.
 **Last Changed:** 2026-07-07
 
 ---
 
-## UTS_ELEM_00003: RPPackage Extends RPUnit and Registers for "Package"
+## UTS_ELEM_00003: IRPPackage Extends RPUnit and Registers for "Package"
 
 **ID:** UTS_ELEM_00003
 **Traces-To:** SWR_ELEM_00002
-**Title:** RPPackage is a subclass of RPUnit registered under meta class "Package"
+**Title:** IRPPackage is a subclass of RPUnit registered under meta class "Package"
 **Type:** Unit
 **Priority:** High
 **Description:**
-Verifies the inheritance and registration contract for `RPPackage`.
+Verifies the inheritance and registration contract for `IRPPackage`.
 **Pre-conditions:**
 - `rhapsody_cli.models.elements` imported.
 **Test Steps:**
-1. Import `RPPackage` and `RPUnit` and `_WRAPPER_REGISTRY`.
-2. Assert `issubclass(RPPackage, RPUnit)`.
-3. Assert `_WRAPPER_REGISTRY["Package"] is RPPackage`.
+1. Import `IRPPackage` and `RPUnit` and `_WRAPPER_REGISTRY`.
+2. Assert `issubclass(IRPPackage, RPUnit)`.
+3. Assert `_WRAPPER_REGISTRY["Package"] is IRPPackage`.
 **Expected Result:**
 Both assertions hold.
 **Verification Criteria:**
-Pass if `RPPackage` subclasses `RPUnit` and the registry maps `"Package"` to `RPPackage`.
+Pass if `IRPPackage` subclasses `RPUnit` and the registry maps `"Package"` to `IRPPackage`.
 **Last Changed:** 2026-07-07
 
 ---
 
-## UTS_ELEM_00004: RPPackage Creation Methods Return Wrapped Elements
+## UTS_ELEM_00004: IRPPackage Creation Methods Return Wrapped Elements
 
 **ID:** UTS_ELEM_00004
 **Traces-To:** SWR_ELEM_00002
-**Title:** RPPackage.addClass/addNestedPackage/addActor/addGlobalFunction wrap their results
+**Title:** IRPPackage.addClass/addNestedPackage/addActor/addGlobalFunction wrap their results
 **Type:** Unit
 **Priority:** High
 **Description:**
-Verifies that the four `addX` creation methods on `RPPackage` call the corresponding COM method with the supplied name and return the result wrapped via `wrap()`.
+Verifies that the four `addX` creation methods on `IRPPackage` call the corresponding COM method with the supplied name and return the result wrapped via `wrap()`.
 **Pre-conditions:**
 - A fake package COM object built via `make_fake_element("Package")` with each `addClass`/`addNestedPackage`/`addActor`/`addGlobalFunction` returning a distinct fake element built via `make_fake_element` with the appropriate meta class.
 **Test Steps:**
-1. Construct `pkg = RPPackage(fake)`.
+1. Construct `pkg = IRPPackage(fake)`.
 2. Call `pkg.addClass("C")`, `pkg.addNestedPackage("P")`, `pkg.addActor("A")`, `pkg.addGlobalFunction("F")`.
 3. Inspect the type and `_com` of each result; inspect the COM call args.
 **Expected Result:**
@@ -104,33 +104,33 @@ Pass if each result `_com` matches the configured fake and the COM call args mat
 
 ---
 
-## UTS_ELEM_00005: RPClassifier Extends RPUnit
+## UTS_ELEM_00005: IRPClassifier Extends RPUnit
 
 **ID:** UTS_ELEM_00005
 **Traces-To:** SWR_ELEM_00003
-**Title:** RPClassifier is a subclass of RPUnit
+**Title:** IRPClassifier is a subclass of RPUnit
 **Type:** Unit
 **Priority:** High
 **Description:**
-Verifies that `RPClassifier` extends `RPUnit` so that all `RPUnit` save/file operations are inherited by Class/Actor/UseCase.
+Verifies that `IRPClassifier` extends `RPUnit` so that all `RPUnit` save/file operations are inherited by Class/Actor/UseCase.
 **Pre-conditions:**
 - Imports available.
 **Test Steps:**
-1. Import `RPClassifier` and `RPUnit`.
-2. Assert `issubclass(RPClassifier, RPUnit)`.
+1. Import `IRPClassifier` and `RPUnit`.
+2. Assert `issubclass(IRPClassifier, RPUnit)`.
 **Expected Result:**
-`RPClassifier` is a subclass of `RPUnit`.
+`IRPClassifier` is a subclass of `RPUnit`.
 **Verification Criteria:**
 Pass if the subclass relationship holds.
 **Last Changed:** 2026-07-07
 
 ---
 
-## UTS_ELEM_00006: RPClassifier addAttribute/addOperation/getAttributes/getOperations/addStatechart
+## UTS_ELEM_00006: IRPClassifier addAttribute/addOperation/getAttributes/getOperations/addStatechart
 
 **ID:** UTS_ELEM_00006
 **Traces-To:** SWR_ELEM_00003
-**Title:** RPClassifier accessor/creation methods delegate to COM and wrap results
+**Title:** IRPClassifier accessor/creation methods delegate to COM and wrap results
 **Type:** Unit
 **Priority:** High
 **Description:**
@@ -138,7 +138,7 @@ Verifies that `addAttribute(name)` and `addOperation(name)` return wrapped eleme
 **Pre-conditions:**
 - A fake classifier COM object via `make_fake_element("Classifier")` configured so that `addAttribute` returns `make_fake_element("Attribute")`, `addOperation` returns `make_fake_element("Operation")`, `addStatechart` returns `make_fake_element("Statechart")`, `getAttributes` returns `make_fake_collection([make_fake_element("Attribute")])`, and `getOperations` returns `make_fake_collection([make_fake_element("Operation")])`.
 **Test Steps:**
-1. Construct `clf = RPClassifier(fake)`.
+1. Construct `clf = IRPClassifier(fake)`.
 2. Call `clf.addAttribute("a")` and assert the result is a wrapped element.
 3. Call `clf.addOperation("o")` and assert the result is a wrapped element.
 4. Call `clf.getAttributes()` and assert the result is an `IRPCollection` with `len == 1`.
@@ -152,44 +152,44 @@ Pass if all type/`_com`/length assertions hold and the COM methods are called wi
 
 ---
 
-## UTS_ELEM_00007: RPClassifier addGeneralization Unwraps the Base Classifier
+## UTS_ELEM_00007: IRPClassifier addGeneralization Unwraps the Base Classifier
 
 **ID:** UTS_ELEM_00007
 **Traces-To:** SWR_ELEM_00003
-**Title:** RPClassifier.addGeneralization delegates the base classifier's _com to COM
+**Title:** IRPClassifier.addGeneralization delegates the base classifier's _com to COM
 **Type:** Unit
 **Priority:** High
 **Description:**
-Verifies that `addGeneralization(base_classifier)` accepts an `RPClassifier` and passes its `_com` (not the wrapper itself) to the underlying COM `addGeneralization`.
+Verifies that `addGeneralization(base_classifier)` accepts an `IRPClassifier` and passes its `_com` (not the wrapper itself) to the underlying COM `addGeneralization`.
 **Pre-conditions:**
 - A fake classifier COM object `fake_clf` (the derived classifier).
-- A fake base classifier COM object `fake_base` and `base = RPClassifier(fake_base)`.
+- A fake base classifier COM object `fake_base` and `base = IRPClassifier(fake_base)`.
 **Test Steps:**
-1. Construct `clf = RPClassifier(fake_clf)`.
+1. Construct `clf = IRPClassifier(fake_clf)`.
 2. Call `clf.addGeneralization(base)`.
 3. Inspect `fake_clf.addGeneralization` call args.
 **Expected Result:**
-`fake_clf.addGeneralization` was called once with `fake_base` (the unwrapped `_com`), not the `RPClassifier` wrapper.
+`fake_clf.addGeneralization` was called once with `fake_base` (the unwrapped `_com`), not the `IRPClassifier` wrapper.
 **Verification Criteria:**
 Pass if `fake_clf.addGeneralization.call_args == call(fake_base)`.
 **Last Changed:** 2026-07-07
 
 ---
 
-## UTS_ELEM_00008: RPClass Extends RPClassifier and Registers for "Class"
+## UTS_ELEM_00008: RPClass Extends IRPClassifier and Registers for "Class"
 
 **ID:** UTS_ELEM_00008
 **Traces-To:** SWR_ELEM_00004
-**Title:** RPClass is a subclass of RPClassifier registered under meta class "Class"
+**Title:** RPClass is a subclass of IRPClassifier registered under meta class "Class"
 **Type:** Unit
 **Priority:** High
 **Description:**
-Verifies the inheritance chain `RPClass -> RPClassifier -> RPUnit` and the `"Class"` registry entry.
+Verifies the inheritance chain `RPClass -> IRPClassifier -> RPUnit` and the `"Class"` registry entry.
 **Pre-conditions:**
 - `rhapsody_cli.models.elements` imported.
 **Test Steps:**
-1. Import `RPClass`, `RPClassifier`, `RPUnit`, and `_WRAPPER_REGISTRY`.
-2. Assert `issubclass(RPClass, RPClassifier)` and `issubclass(RPClass, RPUnit)`.
+1. Import `RPClass`, `IRPClassifier`, `RPUnit`, and `_WRAPPER_REGISTRY`.
+2. Assert `issubclass(RPClass, IRPClassifier)` and `issubclass(RPClass, RPUnit)`.
 3. Assert `_WRAPPER_REGISTRY["Class"] is RPClass`.
 **Expected Result:**
 Both subclass relationships hold and the registry maps `"Class"` to `RPClass`.
@@ -249,11 +249,11 @@ Pass if the exception is `RhapsodyRuntimeException` and `"dup name"` is in `str(
 
 ---
 
-## UTS_ELEM_00011: RPActor Extends RPClassifier and Registers for "Actor"
+## UTS_ELEM_00011: RPActor Extends IRPClassifier and Registers for "Actor"
 
 **ID:** UTS_ELEM_00011
 **Traces-To:** SWR_ELEM_00005
-**Title:** RPActor is a subclass of RPClassifier registered under meta class "Actor"
+**Title:** RPActor is a subclass of IRPClassifier registered under meta class "Actor"
 **Type:** Unit
 **Priority:** Medium
 **Description:**
@@ -261,8 +261,8 @@ Verifies the inheritance chain and registry entry for `RPActor`.
 **Pre-conditions:**
 - `rhapsody_cli.models.elements` imported.
 **Test Steps:**
-1. Import `RPActor`, `RPClassifier`, and `_WRAPPER_REGISTRY`.
-2. Assert `issubclass(RPActor, RPClassifier)`.
+1. Import `RPActor`, `IRPClassifier`, and `_WRAPPER_REGISTRY`.
+2. Assert `issubclass(RPActor, IRPClassifier)`.
 3. Assert `_WRAPPER_REGISTRY["Actor"] is RPActor`.
 **Expected Result:**
 Both assertions hold.
@@ -298,21 +298,21 @@ Pass if all assertions hold, including the two `setIsBehaviorOverriden` calls us
 
 ---
 
-## UTS_ELEM_00013: RPOperation Extends RPUnit and Registers for "Operation"
+## UTS_ELEM_00013: IRPOperation Extends RPUnit and Registers for "Operation"
 
 **ID:** UTS_ELEM_00013
 **Traces-To:** SWR_ELEM_00006
-**Title:** RPOperation is a subclass of RPUnit registered under meta class "Operation"
+**Title:** IRPOperation is a subclass of RPUnit registered under meta class "Operation"
 **Type:** Unit
 **Priority:** High
 **Description:**
-Verifies the inheritance chain and registry entry for `RPOperation`.
+Verifies the inheritance chain and registry entry for `IRPOperation`.
 **Pre-conditions:**
 - `rhapsody_cli.models.elements` imported.
 **Test Steps:**
-1. Import `RPOperation`, `RPUnit`, and `_WRAPPER_REGISTRY`.
-2. Assert `issubclass(RPOperation, RPUnit)`.
-3. Assert `_WRAPPER_REGISTRY["Operation"] is RPOperation`.
+1. Import `IRPOperation`, `RPUnit`, and `_WRAPPER_REGISTRY`.
+2. Assert `issubclass(IRPOperation, RPUnit)`.
+3. Assert `_WRAPPER_REGISTRY["Operation"] is IRPOperation`.
 **Expected Result:**
 Both assertions hold.
 **Verification Criteria:**
@@ -321,11 +321,11 @@ Pass if the subclass and registry assertions hold.
 
 ---
 
-## UTS_ELEM_00014: RPOperation Methods Return Strings, Bools, and Wrapped Elements
+## UTS_ELEM_00014: IRPOperation Methods Return Strings, Bools, and Wrapped Elements
 
 **ID:** UTS_ELEM_00014
 **Traces-To:** SWR_ELEM_00006
-**Title:** RPOperation getBody/getIsAbstract/getIsStatic/getIsVirtual/getReturns/createAutoFlowChart behave per spec
+**Title:** IRPOperation getBody/getIsAbstract/getIsStatic/getIsVirtual/getReturns/createAutoFlowChart behave per spec
 **Type:** Unit
 **Priority:** High
 **Description:**
@@ -333,7 +333,7 @@ Verifies that `getBody()` returns a `str`; `getIsAbstract()`, `getIsStatic()`, `
 **Pre-conditions:**
 - A fake operation COM object via `make_fake_element("Operation")` configured with `getBody.return_value = "return x;"`, `getIsAbstract.return_value = 1`, `getIsStatic.return_value = 0`, `getIsVirtual.return_value = 1`, `getReturns.return_value = make_fake_element("Class")`.
 **Test Steps:**
-1. Construct `op = RPOperation(fake)`.
+1. Construct `op = IRPOperation(fake)`.
 2. Call `op.getBody()` and assert the result is `"return x;"`.
 3. Call `op.getIsAbstract()`, `op.getIsStatic()`, `op.getIsVirtual()` and assert the results are `True`, `False`, `True` respectively, each with `type(...) is bool`.
 4. Call `op.getReturns()` and assert the result is a wrapped `RPModelElement` whose `_com` is the configured fake.
@@ -346,21 +346,21 @@ Pass if every assertion holds, especially the bool-type checks.
 
 ---
 
-## UTS_ELEM_00015: RPAttribute Extends RPUnit and Registers for "Attribute"
+## UTS_ELEM_00015: IRPAttribute Extends RPUnit and Registers for "Attribute"
 
 **ID:** UTS_ELEM_00015
 **Traces-To:** SWR_ELEM_00007
-**Title:** RPAttribute is a subclass of RPUnit registered under meta class "Attribute"
+**Title:** IRPAttribute is a subclass of RPUnit registered under meta class "Attribute"
 **Type:** Unit
 **Priority:** High
 **Description:**
-Verifies the inheritance chain and registry entry for `RPAttribute`.
+Verifies the inheritance chain and registry entry for `IRPAttribute`.
 **Pre-conditions:**
 - `rhapsody_cli.models.elements` imported.
 **Test Steps:**
-1. Import `RPAttribute`, `RPUnit`, and `_WRAPPER_REGISTRY`.
-2. Assert `issubclass(RPAttribute, RPUnit)`.
-3. Assert `_WRAPPER_REGISTRY["Attribute"] is RPAttribute`.
+1. Import `IRPAttribute`, `RPUnit`, and `_WRAPPER_REGISTRY`.
+2. Assert `issubclass(IRPAttribute, RPUnit)`.
+3. Assert `_WRAPPER_REGISTRY["Attribute"] is IRPAttribute`.
 **Expected Result:**
 Both assertions hold.
 **Verification Criteria:**
@@ -369,11 +369,11 @@ Pass if the subclass and registry assertions hold.
 
 ---
 
-## UTS_ELEM_00016: RPAttribute Getters/Setters Round-Trip and Translate Bools
+## UTS_ELEM_00016: IRPAttribute Getters/Setters Round-Trip and Translate Bools
 
 **ID:** UTS_ELEM_00016
 **Traces-To:** SWR_ELEM_00007
-**Title:** RPAttribute multiplicity/isStatic/visibility/defaultValue getters and setters behave per spec
+**Title:** IRPAttribute multiplicity/isStatic/visibility/defaultValue getters and setters behave per spec
 **Type:** Unit
 **Priority:** High
 **Description:**
@@ -381,7 +381,7 @@ Verifies the str getters/setters for `Multiplicity`/`Visibility`/`DefaultValue` 
 **Pre-conditions:**
 - A fake attribute COM object via `make_fake_element("Attribute")` configured with `getMultiplicity.return_value = "1"`, `getIsStatic.return_value = 1`, `getVisibility.return_value = "public"`, `getDefaultValue.return_value = "0"`.
 **Test Steps:**
-1. Construct `attr = RPAttribute(fake)`.
+1. Construct `attr = IRPAttribute(fake)`.
 2. Assert `attr.getMultiplicity() == "1"`; call `attr.setMultiplicity("0..1")` and assert `fake.setMultiplicity.call_args == call("0..1")`.
 3. Assert `attr.getIsStatic() is True` and `type(...) is bool`; call `attr.setIsStatic(False)` and assert `fake.setIsStatic.call_args == call(0)`.
 4. Assert `attr.getVisibility() == "public"`; call `attr.setVisibility("private")` and assert the call arg.
@@ -586,34 +586,34 @@ Pass if all type/call-args assertions hold.
 
 ---
 
-## UTS_ELEM_00025: RPUseCase Extends RPClassifier and Registers for "UseCase"
+## UTS_ELEM_00025: IRPUseCase Extends IRPClassifier and Registers for "UseCase"
 
 **ID:** UTS_ELEM_00025
 **Traces-To:** SWR_ELEM_00012
-**Title:** RPUseCase is a subclass of RPClassifier registered under meta class "UseCase"
+**Title:** IRPUseCase is a subclass of IRPClassifier registered under meta class "UseCase"
 **Type:** Unit
 **Priority:** Medium
 **Description:**
-Verifies the inheritance chain `RPUseCase -> RPClassifier -> RPUnit` and the `"UseCase"` registry entry.
+Verifies the inheritance chain `IRPUseCase -> IRPClassifier -> RPUnit` and the `"UseCase"` registry entry.
 **Pre-conditions:**
 - `rhapsody_cli.models.elements` imported.
 **Test Steps:**
-1. Import `RPUseCase`, `RPClassifier`, `RPUnit`, and `_WRAPPER_REGISTRY`.
-2. Assert `issubclass(RPUseCase, RPClassifier)` and `issubclass(RPUseCase, RPUnit)`.
-3. Assert `_WRAPPER_REGISTRY["UseCase"] is RPUseCase`.
+1. Import `IRPUseCase`, `IRPClassifier`, `RPUnit`, and `_WRAPPER_REGISTRY`.
+2. Assert `issubclass(IRPUseCase, IRPClassifier)` and `issubclass(IRPUseCase, RPUnit)`.
+3. Assert `_WRAPPER_REGISTRY["UseCase"] is IRPUseCase`.
 **Expected Result:**
-Both subclass relationships hold and the registry maps `"UseCase"` to `RPUseCase`.
+Both subclass relationships hold and the registry maps `"UseCase"` to `IRPUseCase`.
 **Verification Criteria:**
 Pass if all three assertions hold.
 **Last Changed:** 2026-07-07
 
 ---
 
-## UTS_ELEM_00026: RPUseCase Methods Return Collections and Forward Strings
+## UTS_ELEM_00026: IRPUseCase Methods Return Collections and Forward Strings
 
 **ID:** UTS_ELEM_00026
 **Traces-To:** SWR_ELEM_00012
-**Title:** RPUseCase addExtensionPoint/getExtensionPoints/getEntryPoints/getDescribingDiagrams behave per spec
+**Title:** IRPUseCase addExtensionPoint/getExtensionPoints/getEntryPoints/getDescribingDiagrams behave per spec
 **Type:** Unit
 **Priority:** Medium
 **Description:**
@@ -621,7 +621,7 @@ Verifies that `addExtensionPoint(entry_point)` forwards the string arg; `getExte
 **Pre-conditions:**
 - A fake use case COM object via `make_fake_element("UseCase")` configured so that `getExtensionPoints`, `getEntryPoints`, and `getDescribingDiagrams` each return `make_fake_collection([make_fake_element("ExtensionPoint")])`.
 **Test Steps:**
-1. Construct `uc = RPUseCase(fake)`.
+1. Construct `uc = IRPUseCase(fake)`.
 2. Call `uc.addExtensionPoint("EP1")` and assert `fake.addExtensionPoint.call_args == call("EP1")`.
 3. Call `uc.getExtensionPoints()` and assert it is an `IRPCollection` with `len == 1`.
 4. Call `uc.getEntryPoints()` and assert it is an `IRPCollection`.
@@ -650,7 +650,7 @@ Verifies that after importing the `rhapsody_cli.models.elements` package, `_WRAP
 1. Import `rhapsody_cli.models.elements`.
 2. Read `_WRAPPER_REGISTRY` from `rhapsody_cli.models._core`.
 3. Assert the registry contains the keys `"Project"`, `"Package"`, `"Class"`, `"Actor"`, `"Operation"`, `"Attribute"`, `"ActivityDiagram"`, `"Instance"`, `"Requirement"`, `"Statechart"`, `"UseCase"`.
-4. Assert each key maps to the expected wrapper class (e.g., `"Project" -> RPProject`, `"Class" -> RPClass`, `"ActivityDiagram" -> RPDiagram`, `"UseCase" -> RPUseCase`).
+4. Assert each key maps to the expected wrapper class (e.g., `"Project" -> IRPProject`, `"Class" -> RPClass`, `"ActivityDiagram" -> RPDiagram`, `"UseCase" -> IRPUseCase`).
 **Expected Result:**
 After import, all core element meta classes are registered to their wrapper classes; no `KeyError` occurs when looking them up.
 **Verification Criteria:**

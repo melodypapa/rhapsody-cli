@@ -33,7 +33,7 @@ class TestAbstractClassAction:
                 assert result == mock_package
 
     def test_resolve_and_validate_package_success_project(self) -> None:
-        """Test project root accepted as package parent (RPProject inherits addClass)."""
+        """Test project root accepted as package parent (IRPProject inherits addClass)."""
         action = AbstractClassAction()
         mock_project = MagicMock()
         mock_project.get_meta_class.return_value = "Project"

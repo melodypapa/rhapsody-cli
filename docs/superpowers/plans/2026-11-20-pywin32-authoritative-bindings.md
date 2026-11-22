@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Bring `docs/reports/IRPClass_api_report.md` to zero actionable deviations under pywin32-authoritative rules, and in the same deliverable replace `RPClass`'s own `get_is_*` / `set_is_*` methods with snake_case Python `@property` accessors.
+**Goal:** Bring `docs/reports/com/telelogic/rhapsody/core/IRPClass_api_report.md` to zero actionable deviations under pywin32-authoritative rules, and in the same deliverable replace `RPClass`'s own `get_is_*` / `set_is_*` methods with snake_case Python `@property` accessors.
 
 **Architecture:** A committed pywin32 authority snapshot (name → kind per interface, plus documented aliases and unavailable members) plus an offline `--source authority` validator mode classify expected Java-vs-pywin32 differences as informational. Wrapper COM calls are corrected to use exposed members, the one IRPClass-owned wrapper calling an unavailable COM member is removed, and RPClass's 10 own flag methods become 6 properties. Callers in the CLI layer, unit tests, and integration tests migrate together so the tree stays green.
 
@@ -12,7 +12,7 @@
 
 ## Deviation inventory and proposal by type
 
-`docs/reports/IRPClass_api_report.md` has **83 deviation rows**:
+`docs/reports/com/telelogic/rhapsody/core/IRPClass_api_report.md` has **83 deviation rows**:
 
 | Rows | Deviation type | Proposed solution |
 |---:|---|---|
@@ -53,7 +53,7 @@
 | `src/rhapsody_cli/actions/class_action.py` (modify) | Attribute access instead of flag methods. |
 | `tests/integration/models/elements/classifiers/test_model_class.py` (modify) | Remove obsolete test; property attribute access. |
 | `tests/integration/models/test_core.py` (modify) | xfail updates for binding fixes. |
-| `docs/reports/IRPClass_api_report.md` (regenerate) | Final proof of zero actionable deviations. |
+| `docs/reports/com/telelogic/rhapsody/core/IRPClass_api_report.md` (regenerate) | Final proof of zero actionable deviations. |
 | `docs/CODE_GUIDELINES.md` (modify) | pywin32-authoritative rule and scoped refactor rule. |
 
 ## Preflight
@@ -917,7 +917,7 @@ int(cls.get_is_composite())                           →  int(cls.is_composite)
 int(cls.get_is_reactive())                            →  int(cls.is_reactive)
 ```
 
-Do not touch `operation_action.py` — `RPOperation` keeps its methods.
+Do not touch `operation_action.py` — `IRPOperation` keeps its methods.
 
 - [ ] **Step 2: Migrate RPClass integration tests**
 
@@ -945,7 +945,7 @@ git commit -m "refactor: migrate CLI and integration tests to RPClass properties
 
 ### Task 8: Document exceptions, regenerate the final report, and guard it
 
-**Files:** `docs/reports/pywin32_authority.json`, `docs/reports/IRPClass_api_report.md`, `tests/unit/test_validate_model_api.py`
+**Files:** `docs/reports/pywin32_authority.json`, `docs/reports/com/telelogic/rhapsody/core/IRPClass_api_report.md`, `tests/unit/test_validate_model_api.py`
 
 - [ ] **Step 1: Fill the authority exceptions**
 
@@ -985,7 +985,7 @@ Expected exit `0`. Verify zero actionable rows:
 ```bash
 python - <<'PY'
 from pathlib import Path
-text = Path("docs/reports/IRPClass_api_report.md").read_text(encoding="utf-8")
+text = Path("docs/reports/com/telelogic/rhapsody/core/IRPClass_api_report.md").read_text(encoding="utf-8")
 section = text.split("## Comparison details", 1)[1].split("## Expected Binding Differences", 1)[0]
 rows = [line for line in section.splitlines() if line.startswith("| ") and "Python model wrapper" not in line and "---" not in line]
 assert rows == [], rows
@@ -1038,7 +1038,7 @@ def test_irpclass_report_has_no_actionable_deviations() -> None:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add docs/reports/pywin32_authority.json docs/reports/IRPClass_api_report.md tests/unit/test_validate_model_api.py
+git add docs/reports/pywin32_authority.json docs/reports/com/telelogic/rhapsody/core/IRPClass_api_report.md tests/unit/test_validate_model_api.py
 git commit -m "docs: regenerate IRPClass report after binding and property fixes"
 ```
 

@@ -30,18 +30,18 @@ with the right arguments.
 - The `rhapsody_cli.models.elements` package imported so the wrapper registry is
   populated.
 **Test Steps:**
-1. Wrap the fake project COM object via `wrap()`; assert an `RPProject` is returned.
-2. Call `project.addPackage("Domain")` and assert an `RPPackage` is returned whose
+1. Wrap the fake project COM object via `wrap()`; assert an `IRPProject` is returned.
+2. Call `project.addPackage("Domain")` and assert an `IRPPackage` is returned whose
    `getName()` returns "Domain".
 3. Call `package.addClass("Vehicle")` and assert an `RPClass` is returned.
-4. Call `class_.addAttribute("speed")` and assert an `RPAttribute` is returned.
-5. Call `class_.addOperation("start")` and assert an `RPOperation` is returned.
+4. Call `class_.addAttribute("speed")` and assert an `IRPAttribute` is returned.
+5. Call `class_.addOperation("start")` and assert an `IRPOperation` is returned.
 6. Call `project.save()` and assert the fake project's `save` was invoked exactly once.
 7. Inspect the fake COM call recorder to confirm each `add*` received the expected name
    argument.
 **Expected Result:**
-- Each `add*` returns a wrapper of the correct subclass (RPPackage, RPClass, RPAttribute,
-  RPOperation).
+- Each `add*` returns a wrapper of the correct subclass (IRPPackage, RPClass, IRPAttribute,
+  IRPOperation).
 - `getName()` on each new element returns the name passed to the `add*` call.
 - `project.save()` delegates to the fake COM `save` exactly once.
 - The fake COM call recorder shows the correct argument strings for every creation call.
@@ -144,11 +144,11 @@ diagram, and deleting a state by passing a wrapped `RPModelElement`.
 
 **ID:** SYTS_ELEM_00004
 **Traces-To:** SWR_ELEM_00005, SWR_ELEM_00012
-**Title:** RPActor event reception and bool translation; RPUseCase extension points
+**Title:** RPActor event reception and bool translation; IRPUseCase extension points
 **Type:** System
 **Priority:** Medium
 **Description:**
-This test verifies end-to-end operations on `RPActor` and `RPUseCase` wrappers: an actor's
+This test verifies end-to-end operations on `RPActor` and `IRPUseCase` wrappers: an actor's
 `addEventReceptionWithEvent` accepting a wrapped event element, the actor's bool
 getter/setter with 1/0 translation, and a use case's extension-point and collection
 methods.
@@ -250,8 +250,8 @@ returned.
 2. For each core meta class string in {"Project", "Package", "Class", "Actor",
    "UseCase", "Operation", "Attribute", "ActivityDiagram", "Instance", "Requirement",
    "Statechart"}, wrap the corresponding fake COM object via `wrap()`.
-3. Assert each result is an instance of the expected wrapper subclass (RPProject,
-   RPPackage, RPClass, RPActor, RPUseCase, RPOperation, RPAttribute, RPDiagram,
+3. Assert each result is an instance of the expected wrapper subclass (IRPProject,
+   IRPPackage, RPClass, RPActor, IRPUseCase, IRPOperation, IRPAttribute, RPDiagram,
    RPInstance, RPRequirement, RPStatechart).
 **Expected Result:**
 - After import, every core meta class maps to its dedicated wrapper subclass.

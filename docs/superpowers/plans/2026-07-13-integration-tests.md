@@ -246,7 +246,7 @@ git commit -m "test: add integration test fixtures for Rhapsody lifecycle"
 ```python
 # tests/integration/models/test_core.py
 import pytest
-from rhapsody_cli.models.elements.containment import RPProject
+from rhapsody_cli.models.elements.containment import IRPProject
 from rhapsody_cli.models.core import RPModelElement
 
 @pytest.mark.integration
@@ -389,8 +389,8 @@ git commit -m "test: add IRPCollection integration tests"
 ```python
 # tests/integration/models/elements/test_classifiers.py
 import pytest
-from rhapsody_cli.models.elements.classifiers import RPClass, RPClassifier
-from rhapsody_cli.models.elements.containment import RPPackage
+from rhapsody_cli.models.elements.classifiers import RPClass, IRPClassifier
+from rhapsody_cli.models.elements.containment import IRPPackage
 
 @pytest.mark.integration
 class TestRPClassIntegration:
@@ -400,7 +400,7 @@ class TestRPClassIntegration:
         """Helper to create a test package."""
         package = project.add_package(name)
         assert package is not None
-        assert isinstance(package, RPPackage)
+        assert isinstance(package, IRPPackage)
         return package
 
     def test_create_class_in_package(self, test_project):
@@ -429,7 +429,7 @@ class TestRPClassIntegration:
         # Assert
         assert parent is not None
         assert parent.get_name() == "ParentPackage"
-        assert isinstance(parent, RPPackage)
+        assert isinstance(parent, IRPPackage)
 
     def test_create_operation_in_class(self, test_project):
         """Test creating operation as member of class (hierarchical relationship)."""
@@ -491,11 +491,11 @@ git commit -m "test: add RPClass hierarchy integration tests"
 ```python
 # tests/integration/models/elements/test_containment.py
 import pytest
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 
 @pytest.mark.integration
 class TestRPPackageIntegration:
-    """Integration tests for RPPackage with real Rhapsody COM API."""
+    """Integration tests for IRPPackage with real Rhapsody COM API."""
 
     def create_test_package(self, project, name="TestPackage"):
         """Helper to create a test package."""
@@ -513,7 +513,7 @@ class TestRPPackageIntegration:
 
         # Assert
         assert child_package is not None
-        assert isinstance(child_package, RPPackage)
+        assert isinstance(child_package, IRPPackage)
         assert child_package.get_name() == "ChildPackage"
         # Verify child is contained in parent
         children = parent_package.get_nested_elements("Package")
@@ -531,14 +531,14 @@ class TestRPPackageIntegration:
         # Assert
         assert parent is not None
         assert parent.get_name() == "RootPackage"
-        assert isinstance(parent, RPPackage)
+        assert isinstance(parent, IRPPackage)
 
 @pytest.mark.integration
 class TestRPProjectIntegration:
-    """Integration tests for RPProject with real Rhapsody COM API."""
+    """Integration tests for IRPProject with real Rhapsody COM API."""
 
     def test_project_properties(self, test_project):
-        """Test basic RPProject properties and methods."""
+        """Test basic IRPProject properties and methods."""
         # Act & Assert
         assert test_project.get_name() == "TestProject"
         assert test_project.get_meta_class() == "Project"
@@ -551,7 +551,7 @@ class TestRPProjectIntegration:
 
         # Assert
         assert new_package is not None
-        assert isinstance(new_package, RPPackage)
+        assert isinstance(new_package, IRPPackage)
         assert new_package.get_name() == "ProjectLevelPackage"
         # Verify package is in project's nested elements
         packages = test_project.get_nested_elements("Package")
@@ -569,7 +569,7 @@ Expected: Tests validate package/project containment and navigation
 
 ```bash
 git add tests/integration/models/elements/test_containment.py
-git commit -m "test: add RPPackage and RPProject integration tests"
+git commit -m "test: add IRPPackage and IRPProject integration tests"
 ```
 
 ---
@@ -800,27 +800,27 @@ git commit -m "test: wire CLI integration tests to test_project fixture with mod
 
 | Model Class | Integration Test File | Key Methods to Test | Test Status | Priority | Dependencies |
 |-------------|----------------------|---------------------|-------------|----------|--------------|
-| **RPProject** | `tests/integration/models/elements/test_containment.py` | create_project, get_elements, add_package, save, close | 🟡 In Progress | Critical | None |
-| **RPPackage** | `tests/integration/models/elements/test_containment.py` | add_package, get_nested_elements, get_higher_object, get_owner | 🟡 In Progress | Critical | RPProject |
-| **RPModule** | `tests/integration/models/elements/test_containment.py` | add_module, get_elements, save | 🔴 Not Started | Medium | RPPackage |
-| **RPComponent** | `tests/integration/models/elements/test_containment.py` | add_component, get_elements, get_realizing_classes | 🔴 Not Started | Medium | RPPackage |
+| **IRPProject** | `tests/integration/models/elements/test_containment.py` | create_project, get_elements, add_package, save, close | 🟡 In Progress | Critical | None |
+| **IRPPackage** | `tests/integration/models/elements/test_containment.py` | add_package, get_nested_elements, get_higher_object, get_owner | 🟡 In Progress | Critical | IRPProject |
+| **RPModule** | `tests/integration/models/elements/test_containment.py` | add_module, get_elements, save | 🔴 Not Started | Medium | IRPPackage |
+| **RPComponent** | `tests/integration/models/elements/test_containment.py` | add_component, get_elements, get_realizing_classes | 🔴 Not Started | Medium | IRPPackage |
 | **RPComponentInstance** | `tests/integration/models/elements/test_containment.py` | add_component_instance, get_component, get_master | 🔴 Not Started | Low | RPComponent |
-| **RPConfiguration** | `tests/integration/models/elements/test_containment.py` | get_elements, get_current_element, set_current_element | 🔴 Not Started | Low | RPProject |
-| **RPCollaboration** | `tests/integration/models/elements/test_containment.py` | add_collaboration, get_roles, get_interactions | 🔴 Not Started | Low | RPPackage |
-| **RPNode** | `tests/integration/models/elements/test_containment.py` | add_node, get_elements | 🔴 Not Started | Low | RPPackage |
-| **RPProfile** | `tests/integration/models/elements/test_containment.py` | add_profile, get_profile_elements | 🔴 Not Started | Low | RPProject |
+| **RPConfiguration** | `tests/integration/models/elements/test_containment.py` | get_elements, get_current_element, set_current_element | 🔴 Not Started | Low | IRPProject |
+| **RPCollaboration** | `tests/integration/models/elements/test_containment.py` | add_collaboration, get_roles, get_interactions | 🔴 Not Started | Low | IRPPackage |
+| **RPNode** | `tests/integration/models/elements/test_containment.py` | add_node, get_elements | 🔴 Not Started | Low | IRPPackage |
+| **RPProfile** | `tests/integration/models/elements/test_containment.py` | add_profile, get_profile_elements | 🔴 Not Started | Low | IRPProject |
 
 ### Classifier Elements
 
 | Model Class | Integration Test File | Key Methods to Test | Test Status | Priority | Dependencies |
 |-------------|----------------------|---------------------|-------------|----------|--------------|
-| **RPClassifier** | `tests/integration/models/elements/test_classifiers.py` | get_attributes, get_operations, add_attribute, get_containing_package | 🔴 Not Started | High | RPPackage |
-| **RPClass** | `tests/integration/models/elements/test_classifiers.py` | add_class, add_superclass, get_superclasses, get_is_abstract, set_is_abstract, delete_class | 🟡 In Progress | Critical | RPPackage, RPClassifier |
-| **RPOperation** | `tests/integration/models/elements/test_classifiers.py` | add_operation, get_parameters, get_owner, get_result, delete_operation | 🔴 Not Started | High | RPClass |
-| **RPActor** | `tests/integration/models/elements/test_classifiers.py` | add_actor, get_communications | 🔴 Not Started | Medium | RPPackage |
-| **RPUseCase** | `tests/integration/models/elements/test_classifiers.py` | add_usecase, get_actors, get_extensions | 🔴 Not Started | Medium | RPPackage |
-| **RPInterfaceItem** | `tests/integration/models/elements/test_classifiers.py` | add_interface_item, get_operations | 🔴 Not Started | Medium | RPClassifier |
-| **RPAssociationClass** | `tests/integration/models/elements/test_classifiers.py` | add_association_class, get_association_ends | 🔴 Not Started | Low | RPClass |
+| **IRPClassifier** | `tests/integration/models/elements/test_classifiers.py` | get_attributes, get_operations, add_attribute, get_containing_package | 🔴 Not Started | High | IRPPackage |
+| **RPClass** | `tests/integration/models/elements/test_classifiers.py` | add_class, add_superclass, get_superclasses, get_is_abstract, set_is_abstract, delete_class | 🟡 In Progress | Critical | IRPPackage, IRPClassifier |
+| **IRPOperation** | `tests/integration/models/elements/test_classifiers.py` | add_operation, get_parameters, get_owner, get_result, delete_operation | 🔴 Not Started | High | RPClass |
+| **RPActor** | `tests/integration/models/elements/test_classifiers.py` | add_actor, get_communications | 🔴 Not Started | Medium | IRPPackage |
+| **IRPUseCase** | `tests/integration/models/elements/test_classifiers.py` | add_usecase, get_actors, get_extensions | 🔴 Not Started | Medium | IRPPackage |
+| **IRPInterfaceItem** | `tests/integration/models/elements/test_classifiers.py` | add_interface_item, get_operations | 🔴 Not Started | Medium | IRPClassifier |
+| **IRPAssociationClass** | `tests/integration/models/elements/test_classifiers.py` | add_association_class, get_association_ends | 🔴 Not Started | Low | RPClass |
 | **RPStereotype** | `tests/integration/models/elements/test_classifiers.py` | add_stereotype, get_stereotyped_elements | 🔴 Not Started | Low | RPModelElement |
 | **RPStatechart** | `tests/integration/models/elements/test_classifiers.py` | add_statechart, get_states, get_transitions | 🔴 Not Started | Low | RPClass |
 
@@ -831,42 +831,42 @@ git commit -m "test: wire CLI integration tests to test_project fixture with mod
 | **RPRelation** | `tests/integration/models/elements/test_relations.py` | get_owner, get_other_end, get_name | 🔴 Not Started | High | RPModelElement |
 | **RPAssociationRole** | `tests/integration/models/elements/test_relations.py` | add_association_role, get_role_name, get_multiplicity | 🔴 Not Started | High | RPClass |
 | **RPDependency** | `tests/integration/models/elements/test_relations.py` | add_dependency, get_client, get_supplier | 🔴 Not Started | Medium | RPModelElement |
-| **RPGeneralization** | `tests/integration/models/elements/test_relations.py` | add_generalization, get_super, get_sub | 🔴 Not Started | Medium | RPClassifier |
+| **RPGeneralization** | `tests/integration/models/elements/test_relations.py` | add_generalization, get_super, get_sub | 🔴 Not Started | Medium | IRPClassifier |
 | **RPHyperlink** | `tests/integration/models/elements/test_relations.py` | add_hyperlink, get_url, get_anchor | 🔴 Not Started | Low | RPModelElement |
-| **RPPort** | `tests/integration/models/elements/test_relations.py` | add_port, get_interfaces, get_aggregated | 🔴 Not Started | Medium | RPClass |
-| **RPInstance** | `tests/integration/models/elements/test_relations.py` | add_instance, get_classifiers, get_slots | 🔴 Not Started | Low | RPClassifier |
+| **IRPPort** | `tests/integration/models/elements/test_relations.py` | add_port, get_interfaces, get_aggregated | 🔴 Not Started | Medium | RPClass |
+| **RPInstance** | `tests/integration/models/elements/test_relations.py` | add_instance, get_classifiers, get_slots | 🔴 Not Started | Low | IRPClassifier |
 
 ### Activity Elements
 
 | Model Class | Integration Test File | Key Methods to Test | Test Status | Priority | Dependencies |
 |-------------|----------------------|---------------------|-------------|----------|--------------|
 | **RPAction** | `tests/integration/models/elements/test_activity.py` | add_action, get_execution_language, get_body | 🔴 Not Started | Medium | RPClass |
-| **RPActivity** | `tests/integration/models/elements/test_activity.py` | add_activity, get_actions, get_preconditions | 🔴 Not Started | Low | RPClassifier |
+| **RPActivity** | `tests/integration/models/elements/test_activity.py` | add_activity, get_actions, get_preconditions | 🔴 Not Started | Low | IRPClassifier |
 
 ### Diagram Elements
 
 | Model Class | Integration Test File | Key Methods to Test | Test Status | Priority | Dependencies |
 |-------------|----------------------|---------------------|-------------|----------|--------------|
-| **RPDiagram** | `tests/integration/models/elements/test_diagrams.py` | add_diagram, get_elements, get_name, save | 🔴 Not Started | Low | RPPackage |
+| **RPDiagram** | `tests/integration/models/elements/test_diagrams.py` | add_diagram, get_elements, get_name, save | 🔴 Not Started | Low | IRPPackage |
 | **RPUMLDiagram** | `tests/integration/models/elements/test_diagrams.py` | get_type, get_owned_elements | 🔴 Not Started | Low | RPDiagram |
 | **RPActivityDiagram** | `tests/integration/models/elements/test_diagrams.py` | add_activity_diagram, get_activities | 🔴 Not Started | Low | RPClass |
-| **RPSequenceDiagram** | `tests/integration/models/elements/test_diagrams.py` | add_sequence_diagram, get_lifelines | 🔴 Not Started | Low | RPClassifier |
+| **RPSequenceDiagram** | `tests/integration/models/elements/test_diagrams.py` | add_sequence_diagram, get_lifelines | 🔴 Not Started | Low | IRPClassifier |
 | **RPCollaborationDiagram** | `tests/integration/models/elements/test_diagrams.py` | add_collaboration_diagram, get_links | 🔴 Not Started | Low | RPCollaboration |
 
 ### Requirement Elements
 
 | Model Class | Integration Test File | Key Methods to Test | Test Status | Priority | Dependencies |
 |-------------|----------------------|---------------------|-------------|----------|--------------|
-| **RPRequirement** | `tests/integration/models/elements/test_requirements.py` | add_requirement, get_id, get_text, get_traces_to | 🔴 Not Started | Medium | RPPackage |
+| **RPRequirement** | `tests/integration/models/elements/test_requirements.py` | add_requirement, get_id, get_text, get_traces_to | 🔴 Not Started | Medium | IRPPackage |
 | **RPTrace** | `tests/integration/models/elements/test_requirements.py` | add_trace, get_traced_from, get_traced_to | 🔴 Not Started | Low | RPRequirement |
 
 ### Variable and Value Elements
 
 | Model Class | Integration Test File | Key Methods to Test | Test Status | Priority | Dependencies |
 |-------------|----------------------|---------------------|-------------|----------|--------------|
-| **RPAttribute** | `tests/integration/models/elements/test_variables.py` | add_attribute, get_type, get_default_value, delete_attribute | 🔴 Not Started | High | RPClass |
-| **RPParameter** | `tests/integration/models/elements/test_variables.py` | add_parameter, get_type, get_default_value | 🔴 Not Started | High | RPOperation |
-| **RPVariable** | `tests/integration/models/elements/test_variables.py` | add_variable, get_type, get_scope | 🔴 Not Started | Medium | RPClassifier |
+| **IRPAttribute** | `tests/integration/models/elements/test_variables.py` | add_attribute, get_type, get_default_value, delete_attribute | 🔴 Not Started | High | RPClass |
+| **RPParameter** | `tests/integration/models/elements/test_variables.py` | add_parameter, get_type, get_default_value | 🔴 Not Started | High | IRPOperation |
+| **RPVariable** | `tests/integration/models/elements/test_variables.py` | add_variable, get_type, get_scope | 🔴 Not Started | Medium | IRPClassifier |
 | **RPTypedValue** | `tests/integration/models/elements/test_values.py` | get_type, get_value, set_value | 🔴 Not Started | Low | RPVariable |
 
 ### Graphics and Interaction Elements
@@ -876,21 +876,21 @@ git commit -m "test: wire CLI integration tests to test_project fixture with mod
 | **RPGraphics** | `tests/integration/models/elements/test_graphics.py` | get_position, set_position, get_size, set_size | 🔴 Not Started | Low | RPDiagram |
 | **RPLink** | `tests/integration/models/elements/test_graphics.py` | add_link, get_from, get_to | 🔴 Not Started | Low | RPDiagram |
 | **RPEventReception** | `tests/integration/models/elements/test_interactions.py` | add_event_reception, get_event, get_operation | 🔴 Not Started | Low | RPClass |
-| **RPInteraction** | `tests/integration/models/elements/test_interactions.py` | add_interaction, get_fragments, get_lifelines | 🔴 Not Started | Low | RPClassifier |
+| **RPInteraction** | `tests/integration/models/elements/test_interactions.py` | add_interaction, get_fragments, get_lifelines | 🔴 Not Started | Low | IRPClassifier |
 
 ### Template and StateMachine Elements
 
 | Model Class | Integration Test File | Key Methods to Test | Test Status | Priority | Dependencies |
 |-------------|----------------------|---------------------|-------------|----------|--------------|
-| **RPTemplate** | `tests/integration/models/elements/test_templates.py` | add_template, get_template_parameters, bind_parameters | 🔴 Not Started | Low | RPClassifier |
+| **RPTemplate** | `tests/integration/models/elements/test_templates.py` | add_template, get_template_parameters, bind_parameters | 🔴 Not Started | Low | IRPClassifier |
 | **RPStateMachine** | `tests/integration/models/elements/test_statemachine.py` | add_state_machine, get_states, get_transitions, get_initial_state | 🔴 Not Started | Low | RPClass |
 
 ### Support Classes
 
 | Model Class | Integration Test File | Key Methods to Test | Test Status | Priority | Dependencies |
 |-------------|----------------------|---------------------|-------------|----------|--------------|
-| **RPCodeGen** | `tests/integration/models/support/test_codegen.py` | generate_code, get_codegen_properties | 🔴 Not Started | Low | RPProject |
-| **RPFiles** | `tests/integration/models/support/test_files.py` | get_files, import_file, export_file | 🔴 Not Started | Low | RPProject |
+| **RPCodeGen** | `tests/integration/models/support/test_codegen.py` | generate_code, get_codegen_properties | 🔴 Not Started | Low | IRPProject |
+| **RPFiles** | `tests/integration/models/support/test_files.py` | get_files, import_file, export_file | 🔴 Not Started | Low | IRPProject |
 | **RPIde** | `tests/integration/models/support/test_ide.py` | get_ide_properties, set_ide_properties | 🔴 Not Started | Low | RhapsodyApplication |
 
 **Legend:**
@@ -965,7 +965,7 @@ git commit -m "test: wire CLI integration tests to test_project fixture with mod
   - [ ] get_attributes() - Gets all attributes
   - [ ] find_attribute() - Finds attribute by name
 
-### RPPackage (Critical)
+### IRPPackage (Critical)
 - [ ] **Creation and Containment** (Partial in Task 8)
   - [x] project.add_package() - Creates package in project
   - [x] package.add_package() - Creates nested package
@@ -984,7 +984,7 @@ git commit -m "test: wire CLI integration tests to test_project fixture with mod
   - [ ] get_is_library() - Checks if library package
   - [ ] get_is_controlled() - Checks if under version control
 
-### RPProject (Critical)
+### IRPProject (Critical)
 - [ ] **Project Management** (Partial in Task 8)
   - [x] create_project() - Creates new project file
   - [ ] open_project() - Opens existing project
@@ -1014,7 +1014,7 @@ git commit -m "test: wire CLI integration tests to test_project fixture with mod
   - [ ] find_first(metaClass) - Gets first matching element
   - [ ] find_all(metaClass) - Gets all matching elements
 
-### RPOperation (High Priority)
+### IRPOperation (High Priority)
 - [ ] **Creation and Management**
   - [ ] add_operation() - Creates operation in class
   - [ ] delete_operation() - Removes operation
@@ -1032,7 +1032,7 @@ git commit -m "test: wire CLI integration tests to test_project fixture with mod
   - [ ] get_visibility() - Gets visibility scope
   - [ ] set_visibility() - Sets visibility scope
 
-### RPAttribute (High Priority)
+### IRPAttribute (High Priority)
 - [ ] **Creation and Management**
   - [ ] add_attribute() - Creates attribute in class
   - [ ] delete_attribute() - Removes attribute
@@ -1084,7 +1084,7 @@ git commit -m "test: wire CLI integration tests to test_project fixture with mod
   - [ ] get_sub() - Gets child classifier
   - [ ] get_name() - Gets generalization name
 
-### RPPackage (Medium Priority)
+### IRPPackage (Medium Priority)
 - [ ] **Package Creation** (Partial in Task 8)
   - [x] add_package() - Creates package
   - [ ] delete_package() - Removes package
@@ -1161,8 +1161,8 @@ git commit -m "test: wire CLI integration tests to test_project fixture with mod
 - [ ] Exception handling tested for invalid hierarchies
 - [ ] All RPModelElement base methods tested (8/20 methods)
 - [ ] All RPClass critical methods tested (5/25 methods)
-- [ ] All RPPackage critical methods tested (4/15 methods)
-- [ ] All RPProject critical methods tested (3/15 methods)
+- [ ] All IRPPackage critical methods tested (4/15 methods)
+- [ ] All IRPProject critical methods tested (3/15 methods)
 
 ## Success Criteria
 

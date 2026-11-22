@@ -10,7 +10,8 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 from rhapsody_cli.models.elements.requirements import RPRequirement
 
 
@@ -23,12 +24,12 @@ class TestRPRequirementIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_create_requirement_in_package(self, test_project: RPProject) -> None:
+    def test_create_requirement_in_package(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("ReqPkg")
         req_name = self._unique("MyRequirement")
         pkg = self._create_package(test_project, pkg_name)
@@ -41,7 +42,7 @@ class TestRPRequirementIntegration:
         finally:
             req.delete_from_project()
 
-    def test_requirement_id_roundtrip(self, test_project: RPProject) -> None:
+    def test_requirement_id_roundtrip(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("ReqPkg")
         req_name = self._unique("MyRequirement")
         pkg = self._create_package(test_project, pkg_name)

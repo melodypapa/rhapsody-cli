@@ -2,24 +2,25 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
-from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.classifiers.model_statechart import RPStatechart
 from rhapsody_cli.models.elements.statemachine.model_statemachine import RPState
 
 if TYPE_CHECKING:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port import IRPPort
     from rhapsody_cli.models.elements.activity.model_actions import (
         RPAcceptEventAction,
         RPAcceptTimeEvent,
         RPCallOperation,
     )
-    from rhapsody_cli.models.elements.classifiers.model_operation import RPOperation
     from rhapsody_cli.models.elements.common.model_other_model import RPSysMLPort
     from rhapsody_cli.models.elements.diagrams.model_diagram_types import RPActivityDiagram
     from rhapsody_cli.models.elements.graphics.model_graphics import RPPin
     from rhapsody_cli.models.elements.relations.model_instance import RPInstance
-    from rhapsody_cli.models.elements.relations.model_port import RPPort
 
 
 class RPFlow(IRPModelElement):
@@ -102,11 +103,11 @@ class RPFlow(IRPModelElement):
         """
         return AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getEnd1()))
 
-    def get_end1_port(self) -> "RPPort":
+    def get_end1_port(self) -> "IRPPort":
         """Returns the port at the first end of the flow.
 
         Returns:
-            RPPort: The port at the first end of the flow.
+            IRPPort: The port at the first end of the flow.
 
         Raises:
             RhapsodyRuntimeException: If the operation fails.
@@ -114,7 +115,7 @@ class RPFlow(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPFlow::getEnd1Port()
         """
-        return cast("RPPort", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getEnd1Port())))
+        return cast("IRPPort", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getEnd1Port())))
 
     def get_end1_sys_ml_port(self) -> "RPSysMLPort":
         """Returns the SysML port at the first end of the flow.
@@ -144,11 +145,11 @@ class RPFlow(IRPModelElement):
         """
         return AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getEnd2()))
 
-    def get_end2_port(self) -> "RPPort":
+    def get_end2_port(self) -> "IRPPort":
         """Returns the port at the second end of the flow.
 
         Returns:
-            RPPort: The port at the second end of the flow.
+            IRPPort: The port at the second end of the flow.
 
         Raises:
             RhapsodyRuntimeException: If the operation fails.
@@ -156,7 +157,7 @@ class RPFlow(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPFlow::getEnd2Port()
         """
-        return cast("RPPort", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getEnd2Port())))
+        return cast("IRPPort", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getEnd2Port())))
 
     def get_end2_sys_ml_port(self) -> "RPSysMLPort":
         """Returns the SysML port at the second end of the flow.
@@ -215,7 +216,7 @@ class RPFlow(IRPModelElement):
         """
         self._set_method_or_property(self._com, "setEnd1", "end1", end1._com)
 
-    def set_end1_via_port(self, p_instance: "RPInstance", p_port: "RPPort") -> None:
+    def set_end1_via_port(self, p_instance: "RPInstance", p_port: "IRPPort") -> None:
         """Sets the first end of the flow via a port.
 
         Args:
@@ -259,7 +260,7 @@ class RPFlow(IRPModelElement):
         """
         self._set_method_or_property(self._com, "setEnd2", "end2", end2._com)
 
-    def set_end2_via_port(self, p_instance: "RPInstance", p_port: "RPPort") -> None:
+    def set_end2_via_port(self, p_instance: "RPInstance", p_port: "IRPPort") -> None:
         """Sets the second end of the flow via a port.
 
         Args:
@@ -290,7 +291,7 @@ class RPFlow(IRPModelElement):
         self.call_com(lambda: self._com.setEnd2ViaSysMLPort(p_instance._com, p_sys_m_l_port._com))
 
 
-class RPFlowItem(RPClassifier):
+class RPFlowItem(IRPClassifier):
     """Wraps ``IRPFlowItem``: represents item flows in Rhapsody models."""
 
     # IRPFlowItem method parity checklist:
@@ -521,16 +522,16 @@ class RPFlowchart(RPStatechart):
         """
         return int(self._get_method_or_property(self._com, "getIsAnalysisOnly", "isAnalysisOnly"))
 
-    def get_its_owner(self) -> "RPOperation":
+    def get_its_owner(self) -> "IRPOperation":
         """Returns the operation that owns the activity. Deprecated: use IRPModelElement.getOwner instead.
 
         Returns:
-            RPOperation: The operation that owns the activity.
+            IRPOperation: The operation that owns the activity.
 
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::getItsOwner()
         """
-        return cast("RPOperation", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getItsOwner())))
+        return cast("IRPOperation", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getItsOwner())))
 
     def get_swimlanes(self) -> "IRPCollection":
         """Returns a collection of all the swimlanes in the activity.
@@ -556,7 +557,7 @@ class RPFlowchart(RPStatechart):
         """
         self._set_method_or_property(self._com, "setIsAnalysisOnly", "isAnalysisOnly", is_analysis_only)
 
-    def set_its_owner(self, its_owner: "RPOperation") -> None:
+    def set_its_owner(self, its_owner: "IRPOperation") -> None:
         """Sets the owner of the activity. Deprecated: use IRPModelElement.setOwner instead.
 
         Args:

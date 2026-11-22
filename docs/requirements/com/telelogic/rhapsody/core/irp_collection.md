@@ -14,9 +14,9 @@ probing: `Count` is a property read via `get_com_property`, `Item` is a method i
 `call_com` (the legacy `getItem` name-probe in `get_item` was removed), and the mutators are
 invoked as methods via `call_com`. Elements returned by `get_item` are wrapped through
 `AbstractRPModelElement._wrap_if_element`.
-`add_graphical_item` (Java `addGraphicalItem`) and `to_list` (Java `toList`) are documented
-blockers: both members are absent from the committed pywin32 catalog, so their call sites
-stay unchanged until Windows typelib evidence lands.
+`add_graphical_item` (Java `addGraphicalItem`) is a documented-unavailable
+`NotImplementedError` stub (the catalog exposes `addGraphicalElementItem`, whose arity is
+unverified — do not migrate blind); `to_list` is a Python-side helper with no COM member.
 **Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_collection.py:IRPCollection
-(canonical package; re-exported from `rhapsody_cli.models.core` to preserve existing imports)
+(canonical package)
 **Last Changed:** 2026-11-21

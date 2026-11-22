@@ -10,15 +10,15 @@
 
 ## Creation chains (investigated in source)
 
-- **`RPEvent`** — `RPPackage.add_event(name) -> RPEvent` (`src/rhapsody_cli/models/elements/containment/model_package.py:786`). Two events are needed to exercise `get_base_event`/`set_base_event`/`get_super_event`/`set_super_event` (link a "child" event to a "base"/"super" event).
-- **`RPEventReception`** — `RPClass.add_event_reception(name) -> RPEventReception` or `RPClass.add_reception(name) -> RPEventReception` (`src/rhapsody_cli/models/elements/classifiers/model_class.py:111,216`). `get_event()`/`set_event(event)` need an `RPEvent` created via `RPPackage.add_event`.
+- **`RPEvent`** — `IRPPackage.add_event(name) -> RPEvent` (`src/rhapsody_cli/models/elements/containment/model_package.py:786`). Two events are needed to exercise `get_base_event`/`set_base_event`/`get_super_event`/`set_super_event` (link a "child" event to a "base"/"super" event).
+- **`RPEventReception`** — `RPClass.add_event_reception(name) -> RPEventReception` or `RPClass.add_reception(name) -> RPEventReception` (`src/rhapsody_cli/models/elements/classifiers/model_class.py:111,216`). `get_event()`/`set_event(event)` need an `RPEvent` created via `IRPPackage.add_event`.
 - **`RPTrigger`** — obtained from `RPTransition.set_its_trigger(str) -> RPTrigger` or `RPTransition.get_its_trigger()`. Requires a transition (see below).
 - **`RPGuard`** — obtained from `RPTransition.set_its_guard(str) -> RPGuard`.
-- **`RPTransition`** — chain: `RPPackage.add_class(name) -> RPClass` → `RPClass.add_statechart() -> RPStatechart` (`model_classifier.py:135`) → `RPStatechart.get_root_state() -> RPState` (`model_statechart.py:372`) → `root_state.add_state(name) -> RPState` (x2, source/target) → `source_state.add_transition(target_state) -> RPTransition` (`model_statemachine.py:46`, inherited from `RPStateVertex`).
-- **`RPMessage`** — chain: `RPPackage.add_sequence_diagram(name) -> RPSequenceDiagram` (`model_package.py:320`) → `seq_diagram.get_logical_collaboration() -> RPCollaboration` (`model_diagram_types.py:98`) → `collab.add_classifier_role(name) -> RPClassifierRole` (x2 for source/target roles) → `collab.add_message(name) -> RPMessage` (`model_collaboration.py:282`).
+- **`RPTransition`** — chain: `IRPPackage.add_class(name) -> RPClass` → `RPClass.add_statechart() -> RPStatechart` (`model_classifier.py:135`) → `RPStatechart.get_root_state() -> RPState` (`model_statechart.py:372`) → `root_state.add_state(name) -> RPState` (x2, source/target) → `source_state.add_transition(target_state) -> RPTransition` (`model_statemachine.py:46`, inherited from `RPStateVertex`).
+- **`RPMessage`** — chain: `IRPPackage.add_sequence_diagram(name) -> RPSequenceDiagram` (`model_package.py:320`) → `seq_diagram.get_logical_collaboration() -> RPCollaboration` (`model_diagram_types.py:98`) → `collab.add_classifier_role(name) -> RPClassifierRole` (x2 for source/target roles) → `collab.add_message(name) -> RPMessage` (`model_collaboration.py:282`).
 - **`RPExecutionOccurrence`** — `RPMessage.add_source_execution_occurrence()` / `add_target_execution_occurrence() -> RPExecutionOccurrence`.
 - **`RPDestructionEvent`** — `RPCollaboration.add_destruction_event(name) -> RPDestructionEvent` (`model_collaboration.py:170`; return type is typed `RPUnit` in that module but the metaclass "DestructionEvent" is registered to `RPDestructionEvent`, so `AbstractRPModelElement.wrap` resolves the correct subclass — assert `isinstance(result, RPDestructionEvent)`).
-- **`RPInteractionOccurrence`** — `RPCollaboration.add_interaction_occurrence(name) -> RPInteractionOccurrence` (`model_collaboration.py:240`). `set_reference_sequence_diagram` needs a second `RPSequenceDiagram` created via `RPPackage.add_sequence_diagram`.
+- **`RPInteractionOccurrence`** — `RPCollaboration.add_interaction_occurrence(name) -> RPInteractionOccurrence` (`model_collaboration.py:240`). `set_reference_sequence_diagram` needs a second `RPSequenceDiagram` created via `IRPPackage.add_sequence_diagram`.
 - **`RPInteractionOperator`** — `RPCollaboration.add_interaction_operator(name) -> RPInteractionOperator` (`model_collaboration.py:254`).
 - **`RPInteractionOperand`** — **no direct `add_*` API found.** Operands are expected to appear via `RPInteractionOperator.get_interaction_operands()` after `set_interaction_type(...)` is called with a Rhapsody-recognized combined-fragment type (e.g. `"alt"`, `"opt"`, `"loop"`). This must be verified empirically against the live Rhapsody instance during Task 8 below. **If the collection remains empty for all attempted interaction types**, flag `RPInteractionOperand.get_contained_messages`, `get_interaction_constraint`, `set_interaction_constraint` as unreachable via public API and mark them `xfail`/skip with a clear reason instead of deleting the checklist rows.
 
@@ -26,7 +26,7 @@
 
 - Windows-only runtime (requires Windows + a running Rhapsody instance)
 - All test classes use `@pytest.mark.integration`
-- All tests consume the `test_project: RPProject` fixture
+- All tests consume the `test_project: IRPProject` fixture
 - Use `_unique(prefix)` with `uuid.uuid4().hex[:8]`
 - Always `try/finally` cleanup using the correct delete method verified from source
 - Assert both `isinstance()` and read-back values
@@ -58,7 +58,7 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.elements.interactions import RPEvent
 
 
@@ -66,10 +66,10 @@ def _unique(prefix: str = "Test") -> str:
     return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
 
-def _create_package(project: "RPProject", name: str) -> "RPPackage":
+def _create_package(project: "IRPProject", name: str) -> "IRPPackage":
     pkg = project.add_package(name)
     assert pkg is not None
-    assert isinstance(pkg, RPPackage)
+    assert isinstance(pkg, IRPPackage)
     return pkg
 
 
@@ -77,7 +77,7 @@ def _create_package(project: "RPProject", name: str) -> "RPPackage":
 class TestRPEventIntegration:
     """Integration tests for RPEvent with real Rhapsody COM API."""
 
-    def test_base_and_super_event_roundtrip(self, test_project: RPProject) -> None:
+    def test_base_and_super_event_roundtrip(self, test_project: IRPProject) -> None:
         pkg = _create_package(test_project, _unique("EvtPkg"))
         base_name = _unique("BaseEvt")
         child_name = _unique("ChildEvt")
@@ -139,7 +139,7 @@ git commit -m "test: add integration tests for RPEvent"
 class TestRPEventReceptionIntegration:
     """Integration tests for RPEventReception with real Rhapsody COM API."""
 
-    def test_event_roundtrip(self, test_project: RPProject) -> None:
+    def test_event_roundtrip(self, test_project: IRPProject) -> None:
         pkg = _create_package(test_project, _unique("RecvPkg"))
         cls = pkg.add_class(_unique("RecvCls"))
         event = pkg.add_event(_unique("RecvEvt"))
@@ -160,7 +160,7 @@ class TestRPEventReceptionIntegration:
 class TestRPTriggerIntegration:
     """Integration tests for RPTrigger with real Rhapsody COM API."""
 
-    def test_body_roundtrip_and_predicates(self, test_project: RPProject) -> None:
+    def test_body_roundtrip_and_predicates(self, test_project: IRPProject) -> None:
         pkg = _create_package(test_project, _unique("TrigPkg"))
         cls = pkg.add_class(_unique("TrigCls"))
         try:
@@ -226,7 +226,7 @@ git commit -m "test: add integration tests for RPEventReception and RPTrigger"
 class TestRPGuardIntegration:
     """Integration tests for RPGuard with real Rhapsody COM API."""
 
-    def test_body_roundtrip(self, test_project: RPProject) -> None:
+    def test_body_roundtrip(self, test_project: IRPProject) -> None:
         pkg = _create_package(test_project, _unique("GuardPkg"))
         cls = pkg.add_class(_unique("GuardCls"))
         try:
@@ -252,7 +252,7 @@ class TestRPGuardIntegration:
 class TestRPTransitionIntegration:
     """Integration tests for RPTransition with real Rhapsody COM API."""
 
-    def test_transition_navigation_and_labels(self, test_project: RPProject) -> None:
+    def test_transition_navigation_and_labels(self, test_project: IRPProject) -> None:
         pkg = _create_package(test_project, _unique("TransPkg"))
         cls = pkg.add_class(_unique("TransCls"))
         try:
@@ -331,7 +331,7 @@ git commit -m "test: add integration tests for RPGuard and RPTransition"
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def _create_sequence_diagram_with_message(project: "RPProject", prefix: str):
+def _create_sequence_diagram_with_message(project: "IRPProject", prefix: str):
     """Helper: creates a package + sequence diagram + two roles + one message."""
     pkg = _create_package(project, _unique(f"{prefix}Pkg"))
     seq_diagram = pkg.add_sequence_diagram(_unique(f"{prefix}Seq"))
@@ -346,7 +346,7 @@ def _create_sequence_diagram_with_message(project: "RPProject", prefix: str):
 class TestRPMessageIntegration:
     """Integration tests for RPMessage with real Rhapsody COM API — creation & endpoints."""
 
-    def test_execution_occurrences_and_basic_getters(self, test_project: RPProject) -> None:
+    def test_execution_occurrences_and_basic_getters(self, test_project: IRPProject) -> None:
         pkg, seq_diagram, collab, role_a, role_b, message = _create_sequence_diagram_with_message(
             test_project, "Msg"
         )
@@ -410,7 +410,7 @@ git commit -m "test: add integration tests for RPMessage creation and endpoints"
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-    def test_ports_and_formal_typing(self, test_project: RPProject) -> None:
+    def test_ports_and_formal_typing(self, test_project: IRPProject) -> None:
         pkg, seq_diagram, collab, role_a, role_b, message = _create_sequence_diagram_with_message(
             test_project, "PortMsg"
         )
@@ -431,13 +431,13 @@ git commit -m "test: add integration tests for RPMessage creation and endpoints"
             operation = role_a.get_formal_classifier()
             if operation is not None:
                 # Best-effort: only set formal_interface_item if a usable
-                # RPInterfaceItem-compatible operation is discoverable.
+                # IRPInterfaceItem-compatible operation is discoverable.
                 pass
         finally:
             pkg.delete_from_project()
 ```
 
-For remaining methods (`set_port`, `set_flow_port`, `set_formal_interface_item`, `set_formal_type`): these setters require a valid target object of the correct type (`RPPort`, `RPSysMLPort`, `RPInterfaceItem`, `RPModelElement`) already associated with one of the classifier roles' formal classifiers. Investigate at runtime whether the test classifier role's class can be given an operation/port to use as the setter argument (e.g. `role_a`'s class → `add_operation`/`add_port` then `set_formal_classifier`). If no reliably reachable value can be constructed within a reasonable time, mark the setter test `xfail(reason="requires a fully-wired classifier role port/operation not reachable via a minimal API-only setup", strict=False)` rather than skipping the checklist row.
+For remaining methods (`set_port`, `set_flow_port`, `set_formal_interface_item`, `set_formal_type`): these setters require a valid target object of the correct type (`IRPPort`, `RPSysMLPort`, `IRPInterfaceItem`, `RPModelElement`) already associated with one of the classifier roles' formal classifiers. Investigate at runtime whether the test classifier role's class can be given an operation/port to use as the setter argument (e.g. `role_a`'s class → `add_operation`/`add_port` then `set_formal_classifier`). If no reliably reachable value can be constructed within a reasonable time, mark the setter test `xfail(reason="requires a fully-wired classifier role port/operation not reachable via a minimal API-only setup", strict=False)` rather than skipping the checklist row.
 
 - [ ] **Step 2: Run the new tests against live Rhapsody**
 
@@ -471,7 +471,7 @@ git commit -m "test: add integration tests for RPMessage ports and formal typing
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-    def test_string_property_roundtrips(self, test_project: RPProject) -> None:
+    def test_string_property_roundtrips(self, test_project: IRPProject) -> None:
         pkg, seq_diagram, collab, role_a, role_b, message = _create_sequence_diagram_with_message(
             test_project, "PropMsg"
         )
@@ -544,7 +544,7 @@ git commit -m "test: add integration tests for RPMessage properties and constrai
 class TestRPExecutionOccurrenceIntegration:
     """Integration tests for RPExecutionOccurrence with real Rhapsody COM API."""
 
-    def test_get_message_roundtrip(self, test_project: RPProject) -> None:
+    def test_get_message_roundtrip(self, test_project: IRPProject) -> None:
         pkg, seq_diagram, collab, role_a, role_b, message = _create_sequence_diagram_with_message(
             test_project, "ExecOcc"
         )
@@ -561,7 +561,7 @@ class TestRPExecutionOccurrenceIntegration:
 class TestRPDestructionEventIntegration:
     """Integration tests for RPDestructionEvent with real Rhapsody COM API."""
 
-    def test_creation_resolves_to_destruction_event_subtype(self, test_project: RPProject) -> None:
+    def test_creation_resolves_to_destruction_event_subtype(self, test_project: IRPProject) -> None:
         pkg = _create_package(test_project, _unique("DestrPkg"))
         seq_diagram = pkg.add_sequence_diagram(_unique("DestrSeq"))
         collab = seq_diagram.get_logical_collaboration()
@@ -611,7 +611,7 @@ git commit -m "test: add integration tests for RPExecutionOccurrence and RPDestr
 class TestRPInteractionOccurrenceIntegration:
     """Integration tests for RPInteractionOccurrence with real Rhapsody COM API."""
 
-    def test_reference_sequence_diagram_roundtrip(self, test_project: RPProject) -> None:
+    def test_reference_sequence_diagram_roundtrip(self, test_project: IRPProject) -> None:
         pkg = _create_package(test_project, _unique("IntOccPkg"))
         seq_diagram = pkg.add_sequence_diagram(_unique("MainSeq"))
         referenced_diagram = pkg.add_sequence_diagram(_unique("RefSeq"))
@@ -635,7 +635,7 @@ class TestRPInteractionOccurrenceIntegration:
 class TestRPInteractionOperatorIntegration:
     """Integration tests for RPInteractionOperator with real Rhapsody COM API."""
 
-    def test_interaction_type_and_operands(self, test_project: RPProject) -> None:
+    def test_interaction_type_and_operands(self, test_project: IRPProject) -> None:
         pkg = _create_package(test_project, _unique("IntOpPkg"))
         seq_diagram = pkg.add_sequence_diagram(_unique("OpSeq"))
         collab = seq_diagram.get_logical_collaboration()
@@ -677,7 +677,7 @@ class TestRPInteractionOperandIntegration:
         "Rhapsody instance and remove this xfail if a path is found.",
         strict=False,
     )
-    def test_contained_messages_and_constraint_roundtrip(self, test_project: RPProject) -> None:
+    def test_contained_messages_and_constraint_roundtrip(self, test_project: IRPProject) -> None:
         pkg = _create_package(test_project, _unique("IntOperandPkg"))
         seq_diagram = pkg.add_sequence_diagram(_unique("OperandSeq"))
         collab = seq_diagram.get_logical_collaboration()

@@ -133,11 +133,11 @@ Example:
 ```python
 # Before
 @pytest.mark.xfail(strict=False, reason="TODO: property API may not be available")
-def test_get_property_returns_value(test_project: RPProject) -> None:
+def test_get_property_returns_value(test_project: IRPProject) -> None:
     ...
 
 # After
-def test_get_property_returns_value(test_project: RPProject) -> None:
+def test_get_property_returns_value(test_project: IRPProject) -> None:
     ...
 ```
 

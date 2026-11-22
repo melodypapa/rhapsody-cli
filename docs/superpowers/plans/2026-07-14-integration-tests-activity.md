@@ -12,7 +12,7 @@
 
 - Windows-only runtime (requires Windows + a running Rhapsody instance)
 - All test classes use `@pytest.mark.integration`
-- All tests consume the `test_project: RPProject` fixture
+- All tests consume the `test_project: IRPProject` fixture
 - Use `_unique(prefix)` with `uuid.uuid4().hex[:8]`
 - Always `try/finally` cleanup — the owning `RPClass` (or `RPCollaboration`) created for each test is deleted via `delete_from_project()`, which cascades to delete the flowchart/action-block/flow/flow-item elements nested inside it (matches the `test_model_class.py` pattern; there is no flowchart-specific removal method exposed on the wrappers under test)
 - Assert both `isinstance()` and read-back values
@@ -46,22 +46,22 @@
 
 ### Object creation chain (verified from source)
 
-- `RPProject.add_package(name)` (inherited from `RPPackage`) → `RPPackage`
-- `RPPackage.add_class(name)` → `RPClass`
-- `RPClass.add_activity_diagram()` (inherited from `RPClassifier`, `src/rhapsody_cli/models/elements/classifiers/model_classifier.py:146`) → `RPFlowchart` directly (simpler than the `RPOperation.create_auto_flow_chart()` → `RPOperation.get_flowchart()` (→ `RPActivityDiagram`) → `RPActivityDiagram.get_flowchart()` (→ `RPFlowchart`) chain, which is also valid but requires an extra hop through an operation)
+- `IRPProject.add_package(name)` (inherited from `IRPPackage`) → `IRPPackage`
+- `IRPPackage.add_class(name)` → `RPClass`
+- `RPClass.add_activity_diagram()` (inherited from `IRPClassifier`, `src/rhapsody_cli/models/elements/classifiers/model_classifier.py:146`) → `RPFlowchart` directly (simpler than the `IRPOperation.create_auto_flow_chart()` → `IRPOperation.get_flowchart()` (→ `RPActivityDiagram`) → `RPActivityDiagram.get_flowchart()` (→ `RPFlowchart`) chain, which is also valid but requires an extra hop through an operation)
 - `RPFlowchart.get_root_state()` (inherited from `RPStatechart`) → the flowchart's implicit root `RPState`, used as the `parent` argument for `add_accept_event_action`, `add_accept_time_event`, `add_call_operation`, `add_object_node`
 - `RPState.add_state(name)` (inherited from `RPState` itself, see `model_statemachine.py:234`) → a plain child `RPState`, used as the target for `RPState.set_entry_action(str)` → `RPState.get_the_entry_action()` (`RPAction`) and for `RPState.set_state_type("EventState")` → `RPState.get_send_action()` (`RPSendAction`)
-- `RPClassifier.add_flows(name)` (`model_classifier.py:171`) → `RPFlow` directly on any `RPClass`
-- `RPClassifier.add_flow_items(name)` (`model_classifier.py:157`) → `RPFlowItem` directly on any `RPClass`
-- `RPProject.add_new_aggr("Collaboration", name)` (generic factory on `RPModelElement`, `src/rhapsody_cli/models/core.py:378`; returns `RPCollaboration` via the `"Collaboration"` meta-class registration) — there is no dedicated `add_collaboration` wrapper; `RPCollaboration.add_action_block(name)` (`model_collaboration.py:58`, typed `RPUnit` but wraps to `RPActionBlock` via the `"ActionBlock"` meta-class registration) — used only as a smoke check since `RPActionBlock` has no own methods
-- `RPPackage.add_event(name)` (inherited, `model_package.py:786`) → `RPEvent`, used to populate `set_event`/`get_event` on `RPAcceptEventAction` and `RPSendAction`
-- `RPClass.add_operation(name)` → `RPOperation` (an `RPInterfaceItem` subclass, `model_operation.py:13`), used for `RPCallOperation.set_operation`/`get_operation` and `RPSendAction.set_invoked_operation`/`get_invoked_operation`
-- `RPClassifier.add_relation_to(other_classifier, role1, link_type1, mult1, role2, link_type2, mult2, link_name)` (`model_classifier.py:259`) → `RPRelation`, used for `RPCallOperation.set_target`/`get_target`
+- `IRPClassifier.add_flows(name)` (`model_classifier.py:171`) → `RPFlow` directly on any `RPClass`
+- `IRPClassifier.add_flow_items(name)` (`model_classifier.py:157`) → `RPFlowItem` directly on any `RPClass`
+- `IRPProject.add_new_aggr("Collaboration", name)` (generic factory on `RPModelElement`, `src/rhapsody_cli/models/core.py:378`; returns `RPCollaboration` via the `"Collaboration"` meta-class registration) — there is no dedicated `add_collaboration` wrapper; `RPCollaboration.add_action_block(name)` (`model_collaboration.py:58`, typed `RPUnit` but wraps to `RPActionBlock` via the `"ActionBlock"` meta-class registration) — used only as a smoke check since `RPActionBlock` has no own methods
+- `IRPPackage.add_event(name)` (inherited, `model_package.py:786`) → `RPEvent`, used to populate `set_event`/`get_event` on `RPAcceptEventAction` and `RPSendAction`
+- `RPClass.add_operation(name)` → `IRPOperation` (an `IRPInterfaceItem` subclass, `model_operation.py:13`), used for `RPCallOperation.set_operation`/`get_operation` and `RPSendAction.set_invoked_operation`/`get_invoked_operation`
+- `IRPClassifier.add_relation_to(other_classifier, role1, link_type1, mult1, role2, link_type2, mult2, link_name)` (`model_classifier.py:259`) → `RPRelation`, used for `RPCallOperation.set_target`/`get_target`
 - Cleanup: deleting the owning `RPClass`/`RPCollaboration` via `delete_from_project()` cascades to remove flowcharts, flows, flow items, action blocks, states, and their nested actions
 
 ### Documented exceptions (methods that cannot be reached through the existing public API)
 
-- `RPFlow.set_end1_via_port`, `set_end2_via_port`, `set_end1_via_sys_ml_port`, `set_end2_via_sys_ml_port` (4 methods) — these require a live `IRPInstance` object. **Creation path discovered:** `RPPackage.add_implicit_object(name) -> RPInstance` (model_package.py:1381). Combined with `RPClassifier.add_port(name) -> RPPort` (for via_port) or `add_new_aggr("SysMLPort", name)` (for via_sys_ml_port), these methods can now be tested. Task 8 tests should use real assertions, not xfail.
+- `RPFlow.set_end1_via_port`, `set_end2_via_port`, `set_end1_via_sys_ml_port`, `set_end2_via_sys_ml_port` (4 methods) — these require a live `IRPInstance` object. **Creation path discovered:** `IRPPackage.add_implicit_object(name) -> RPInstance` (model_package.py:1381). Combined with `IRPClassifier.add_port(name) -> IRPPort` (for via_port) or `add_new_aggr("SysMLPort", name)` (for via_sys_ml_port), these methods can now be tested. Task 8 tests should use real assertions, not xfail.
 - `RPContextSpecification.get_multiplicities`, `get_value`, `set_multiplicities`, `set_value` (4 methods) — no dedicated `add_context_specification` factory exists. **Try the generic factory:** `element.add_new_aggr("ContextSpecification", name)` — if Rhapsody accepts this meta-type, lift the xfail. If it rejects it (ContextSpecification is typically created internally for SysML parametric diagrams), keep as xfail with the documented reason. Task 7 should attempt this live first.
 
 **Creation paths now discovered for the previously-flagged 8 methods** (4 in `RPFlow`, 4 in `RPContextSpecification`) — see the two bullets above. These are no longer unreachable; attempt them live and lift the `xfail` where the path works.
@@ -89,7 +89,7 @@ import pytest
 
 from rhapsody_cli.models.elements.activity import RPFlowchart
 from rhapsody_cli.models.elements.classifiers import RPClass
-from rhapsody_cli.models.elements.containment import RPProject
+from rhapsody_cli.models.elements.containment import IRPProject
 
 
 def unique(prefix: str = "Test") -> str:
@@ -97,7 +97,7 @@ def unique(prefix: str = "Test") -> str:
 
 
 @pytest.fixture
-def flowchart_factory(test_project: RPProject):
+def flowchart_factory(test_project: IRPProject):
     """Factory fixture: creates an ``RPClass`` with an activity diagram.
 
     Returns a callable ``() -> tuple[RPClass, RPFlowchart, RPState]`` giving
@@ -144,7 +144,7 @@ from rhapsody_cli.models.elements.activity import (
     RPObjectNode,
     RPSwimlane,
 )
-from rhapsody_cli.models.elements.containment import RPProject
+from rhapsody_cli.models.elements.containment import IRPProject
 
 
 def _unique(prefix: str = "Test") -> str:
@@ -271,7 +271,7 @@ import uuid
 import pytest
 
 from rhapsody_cli.models.elements.activity import RPAcceptEventAction, RPAcceptTimeEvent
-from rhapsody_cli.models.elements.containment import RPProject
+from rhapsody_cli.models.elements.containment import IRPProject
 
 
 def _unique(prefix: str = "Test") -> str:
@@ -282,7 +282,7 @@ def _unique(prefix: str = "Test") -> str:
 class TestRPAcceptEventActionIntegration:
     """Integration tests for RPAcceptEventAction with real Rhapsody COM API."""
 
-    def test_event_roundtrip(self, flowchart_factory, test_project: RPProject) -> None:
+    def test_event_roundtrip(self, flowchart_factory, test_project: IRPProject) -> None:
         test_class, flowchart, root_state = flowchart_factory()
         try:
             event_action = flowchart.add_accept_event_action(_unique("EvtAction"), root_state)
@@ -401,7 +401,7 @@ class TestRPCallOperationIntegration:
     """Integration tests for RPCallOperation with real Rhapsody COM API."""
 
     def test_operation_and_target_roundtrip(self, flowchart_factory) -> None:
-        from rhapsody_cli.models.elements.classifiers import RPOperation
+        from rhapsody_cli.models.elements.classifiers import IRPOperation
 
         test_class, flowchart, root_state = flowchart_factory()
         other_class = test_class.get_owner().add_class(_unique("TargetCls"))
@@ -411,7 +411,7 @@ class TestRPCallOperationIntegration:
             operation = test_class.add_operation(_unique("TargetOp"))
             call_op.set_operation(operation)
             resolved_operation = call_op.get_operation()
-            assert isinstance(resolved_operation, RPOperation)
+            assert isinstance(resolved_operation, IRPOperation)
             assert resolved_operation == operation
 
             relation = test_class.add_relation_to(
@@ -460,9 +460,9 @@ git commit -m "test: add integration tests for RPCallOperation"
 class TestRPSendActionIntegration:
     """Integration tests for RPSendAction with real Rhapsody COM API."""
 
-    def test_send_action_roundtrip(self, flowchart_factory, test_project: RPProject) -> None:
+    def test_send_action_roundtrip(self, flowchart_factory, test_project: IRPProject) -> None:
         from rhapsody_cli.models.elements.activity import RPSendAction
-        from rhapsody_cli.models.elements.classifiers import RPOperation
+        from rhapsody_cli.models.elements.classifiers import IRPOperation
 
         test_class, _flowchart, root_state = flowchart_factory()
         try:
@@ -478,7 +478,7 @@ class TestRPSendActionIntegration:
             operation = test_class.add_operation(_unique("InvokedOp"))
             send_action.set_invoked_operation(operation)
             resolved_operation = send_action.get_invoked_operation()
-            assert isinstance(resolved_operation, RPOperation)
+            assert isinstance(resolved_operation, IRPOperation)
             assert resolved_operation == operation
 
             send_action.set_target(send_state)
@@ -644,7 +644,7 @@ git commit -m "test: add integration tests for RPSwimlane"
 - Modify: `tests/integration/models/elements/activity/test_model_activity.py`
 - Modify: `src/rhapsody_cli/models/elements/activity/model_activity.py` (flip checklist boxes only)
 
-**Methods covered:** `add_conveyed`, `get_conveyed`, `get_direction`, `get_end1`, `get_end1_port`, `get_end1_sys_ml_port`, `get_end2`, `get_end2_port`, `get_end2_sys_ml_port`, `remove_conveyed`, `set_direction`, `set_end1`, `set_end2` (plain-path methods); `set_end1_via_port`, `set_end2_via_port` (creation path resolved via `RPPackage.add_implicit_object` — real assertions, no xfail); `set_end1_via_sys_ml_port`, `set_end2_via_sys_ml_port` (same creation path, but guarded with `xfail` pending confirmation that `add_new_aggr("SysMLPort", ...)` works without a SysML profile — see `2026-07-14-integration-tests-common.md`); `add_represented`, `get_represented`, `remove_represented` (`RPFlowItem`)
+**Methods covered:** `add_conveyed`, `get_conveyed`, `get_direction`, `get_end1`, `get_end1_port`, `get_end1_sys_ml_port`, `get_end2`, `get_end2_port`, `get_end2_sys_ml_port`, `remove_conveyed`, `set_direction`, `set_end1`, `set_end2` (plain-path methods); `set_end1_via_port`, `set_end2_via_port` (creation path resolved via `IRPPackage.add_implicit_object` — real assertions, no xfail); `set_end1_via_sys_ml_port`, `set_end2_via_sys_ml_port` (same creation path, but guarded with `xfail` pending confirmation that `add_new_aggr("SysMLPort", ...)` works without a SysML profile — see `2026-07-14-integration-tests-common.md`); `add_represented`, `get_represented`, `remove_represented` (`RPFlowItem`)
 
 - [ ] **Step 1: Write the failing/new integration tests**
 
@@ -794,7 +794,7 @@ git commit -m "test: add integration tests for RPFlow and RPFlowItem"
 class TestRPContextSpecificationIntegration:
     """Integration tests for RPContextSpecification with real Rhapsody COM API."""
 
-    def test_multiplicities_and_value_roundtrip(self, rhapsody_app, test_project: RPProject) -> None:
+    def test_multiplicities_and_value_roundtrip(self, rhapsody_app, test_project: IRPProject) -> None:
         from rhapsody_cli.models.core import IRPCollection
         from rhapsody_cli.models.elements.activity import RPContextSpecification
 
@@ -829,7 +829,7 @@ class TestRPContextSpecificationIntegration:
 class TestRPActionBlockIntegration:
     """Smoke test for RPActionBlock meta-class wrapping (no own methods to test)."""
 
-    def test_action_block_creation_wraps_correct_type(self, test_project: RPProject) -> None:
+    def test_action_block_creation_wraps_correct_type(self, test_project: IRPProject) -> None:
         from rhapsody_cli.models.elements.activity import RPActionBlock
         from rhapsody_cli.models.elements.containment import RPCollaboration
 
@@ -883,7 +883,7 @@ Expected output: `0` for both files.
 
 Run: `pytest tests/integration/models/elements/activity/ -m integration -v`
 
-All tests from Tasks 1–9 must pass or be explicitly `xfail`-marked with a documented reason. `RPFlow.set_end*_via_port`/`set_end*_via_sys_ml_port` (Task 8) and `RPContextSpecification` (Task 9) previously expected `xfail` due to missing creation paths; both now have a discovered creation path (`RPPackage.add_implicit_object` → `RPInstance` for `RPFlow`, `add_new_aggr("ContextSpecification", name)` for `RPContextSpecification`). Attempt these live first and lift the `xfail` if Rhapsody accepts the creation path; only keep `xfail` if the live attempt genuinely fails, with a documented reason.
+All tests from Tasks 1–9 must pass or be explicitly `xfail`-marked with a documented reason. `RPFlow.set_end*_via_port`/`set_end*_via_sys_ml_port` (Task 8) and `RPContextSpecification` (Task 9) previously expected `xfail` due to missing creation paths; both now have a discovered creation path (`IRPPackage.add_implicit_object` → `RPInstance` for `RPFlow`, `add_new_aggr("ContextSpecification", name)` for `RPContextSpecification`). Attempt these live first and lift the `xfail` if Rhapsody accepts the creation path; only keep `xfail` if the live attempt genuinely fails, with a documented reason.
 
 - [ ] **Step 3: Run the full quality gate one final time**
 

@@ -24,8 +24,8 @@ least `Project`, `Package`, `Class`, and `Actor` in the same test.
 - Four mock COM objects, each returning a distinct meta class string from `getMetaClass()`:
   `"Project"`, `"Package"`, `"Class"`, `"Actor"`.
 **Test Steps:**
-1. Call `wrap(mock_project_com)` and assert the result is an `RPProject`.
-2. Call `wrap(mock_package_com)` and assert the result is an `RPPackage`.
+1. Call `wrap(mock_project_com)` and assert the result is an `IRPProject`.
+2. Call `wrap(mock_package_com)` and assert the result is an `IRPPackage`.
 3. Call `wrap(mock_class_com)` and assert the result is an `RPClass`.
 4. Call `wrap(mock_actor_com)` and assert the result is an `RPActor`.
 5. For each result, assert `result._com` is the corresponding input mock.
@@ -60,7 +60,7 @@ caller intervention.
 1. Construct `coll = IRPCollection(mock_irp_collection)`.
 2. Iterate `coll` and collect items into a list.
 3. Assert the list length is 3.
-4. Assert item[0] is an `RPClass`, item[1] is an `RPAttribute`, item[2] is an `RPOperation`.
+4. Assert item[0] is an `RPClass`, item[1] is an `IRPAttribute`, item[2] is an `IRPOperation`.
 5. Assert `len(coll) == 3` and `coll[1]._com` is the first mock (1-based COM indexing).
 **Expected Result:**
 Iteration transparently dispatches each raw element through `wrap()`, producing correctly typed
@@ -124,7 +124,7 @@ working for element types without dedicated wrappers.
 **Test Steps:**
 1. Call `wrap(mock_unmapped_com)`.
 2. Assert the result is an `RPModelElement` instance.
-3. Assert the result is NOT an instance of any registered subclass (RPProject, RPPackage, RPClass,
+3. Assert the result is NOT an instance of any registered subclass (IRPProject, IRPPackage, RPClass,
    RPActor, etc.).
 4. Assert `result._com is mock_unmapped_com`.
 5. Assert `result.getName() == "someName"` (delegation still works on the fallback wrapper).

@@ -213,21 +213,21 @@ Reusable model manipulation utilities. Takes `app` in constructor for lazy conne
 class RhapsodyModelHelper:
     def __init__(self, app: Optional[RhapsodyApplication] = None):
         self.app = app or RhapsodyApplication.connect(attach_only=True)
-        self.project: Optional[RPProject] = None
+        self.project: Optional[IRPProject] = None
 
     # --- Element find/create (idempotent) ---
-    def find_or_create_package(self, parent: RPModelElement, name: str) -> RPPackage: ...
+    def find_or_create_package(self, parent: RPModelElement, name: str) -> IRPPackage: ...
     def find_or_create_class(self, parent: RPModelElement, name: str) -> RPClass: ...
-    def find_or_create_operation(self, parent: RPModelElement, name: str) -> RPOperation: ...
-    def find_or_create_argument(self, parent: RPModelElement, name: str) -> RPArgument: ...
-    def find_or_create_attribute(self, parent: RPModelElement, name: str) -> RPAttribute: ...
-    def find_or_create_type(self, parent: RPModelElement, name: str, kind: Optional[str] = None) -> RPType: ...
+    def find_or_create_operation(self, parent: RPModelElement, name: str) -> IRPOperation: ...
+    def find_or_create_argument(self, parent: RPModelElement, name: str) -> IRPArgument: ...
+    def find_or_create_attribute(self, parent: RPModelElement, name: str) -> IRPAttribute: ...
+    def find_or_create_type(self, parent: RPModelElement, name: str, kind: Optional[str] = None) -> IRPType: ...
     def find_or_create_object(self, parent: RPModelElement, name: str) -> RPInstance: ...
     def find_or_create_enumeration_literal(self, parent: RPModelElement, name: str) -> RPEnumerationLiteral: ...
     def find_or_create_dependency(self, parent: RPModelElement, name: str) -> RPDependency: ...
     def find_or_create_generalization(self, parent: RPModelElement, name: str) -> RPGeneralization: ...
     def find_or_create_relation(self, parent: RPModelElement, name: str) -> RPRelation: ...
-    def find_or_create_port(self, parent: RPModelElement, name: str) -> RPPort: ...
+    def find_or_create_port(self, parent: RPModelElement, name: str) -> IRPPort: ...
     def find_or_create_event(self, parent: RPModelElement, name: str) -> RPEvent: ...
     def find_or_create_event_reception(self, parent: RPModelElement, name: str) -> RPEventReception: ...
 
@@ -243,7 +243,7 @@ class RhapsodyModelHelper:
     def find_child_by_name(self, parent: RPModelElement, meta_class: str, name: str) -> Optional[RPModelElement]: ...
 
     # --- Private (exchange-specific internals) ---
-    def _set_type_kind(self, type_element: RPType, kind: str) -> None: ...
+    def _set_type_kind(self, type_element: IRPType, kind: str) -> None: ...
     def _collect_children(self, container: RPModelElement) -> List[RPModelElement]: ...
     def _get_project_name(self, container: RPModelElement) -> str: ...
 ```
@@ -370,7 +370,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
         return element
 
     # Type-specific extras (YAML spec fields -> element property setters)
-    def _apply_operation_extras(self, operation: RPOperation, spec: dict) -> None:
+    def _apply_operation_extras(self, operation: IRPOperation, spec: dict) -> None:
         if "return_type" in spec:
             classifier = self.resolve_classifier(spec["return_type"])
             if classifier is not None:
@@ -385,7 +385,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
             arg = self.find_or_create_argument(operation, arg_spec["name"])
             self._apply_argument_extras(arg, arg_spec)
 
-    def _apply_argument_extras(self, arg: RPArgument, spec: dict) -> None:
+    def _apply_argument_extras(self, arg: IRPArgument, spec: dict) -> None:
         if "data_type" in spec:
             classifier = self.resolve_classifier(spec["data_type"])
             if classifier is not None:
@@ -399,7 +399,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
         self.apply_stereotypes(arg, spec.get("stereotypes", []))
         self.apply_tags(arg, spec.get("tags", {}))
 
-    def _apply_attribute_extras(self, attr: RPAttribute, spec: dict) -> None:
+    def _apply_attribute_extras(self, attr: IRPAttribute, spec: dict) -> None:
         if "data_type" in spec:
             classifier = self.resolve_classifier(spec["data_type"])
             if classifier is not None:
@@ -411,7 +411,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
         if "is_static" in spec and hasattr(attr, "set_is_static"):
             attr.set_is_static(spec["is_static"])
 
-    def _apply_type_extras(self, type_element: RPType, spec: dict) -> None:
+    def _apply_type_extras(self, type_element: IRPType, spec: dict) -> None:
         # kind already applied in find_or_create_type via self._set_type_kind
         if spec.get("kind") == "Enumeration":
             for literal_spec in spec.get("literals", []):
@@ -487,7 +487,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
         if "visibility" in spec and hasattr(relation, "set_visibility"):
             relation.set_visibility(spec["visibility"])
 
-    def _apply_port_extras(self, port: RPPort, spec: dict) -> None:
+    def _apply_port_extras(self, port: IRPPort, spec: dict) -> None:
         if "is_behavioral" in spec and hasattr(port, "set_is_behavioral"):
             port.set_is_behavioral(spec["is_behavioral"])
         if "is_reversed" in spec and hasattr(port, "set_is_reversed"):
@@ -603,7 +603,7 @@ class RhapsodyExporter(RhapsodyModelHelper):
         return result
 
     # --- Type-specific exporters ---
-    def _export_package(self, pkg: RPPackage) -> dict:
+    def _export_package(self, pkg: IRPPackage) -> dict:
         result = {"name": pkg.get_name(), "type": "Package"}
         children = self._collect_children(pkg)
         if children:
@@ -621,7 +621,7 @@ class RhapsodyExporter(RhapsodyModelHelper):
             ]
         return result
 
-    def _export_operation(self, op: RPOperation) -> dict:
+    def _export_operation(self, op: IRPOperation) -> dict:
         result = {"name": op.get_name(), "type": "Operation"}
         return_type = self.get_classifier_name(op.get_returns()) if hasattr(op, "get_returns") else None
         if return_type:
@@ -636,7 +636,7 @@ class RhapsodyExporter(RhapsodyModelHelper):
             ]
         return result
 
-    def _export_argument(self, arg: RPArgument) -> dict:
+    def _export_argument(self, arg: IRPArgument) -> dict:
         result = {"name": arg.get_name(), "type": "Argument"}
         data_type = self.get_classifier_name(arg.get_type()) if hasattr(arg, "get_type") else None
         if data_type:
@@ -647,7 +647,7 @@ class RhapsodyExporter(RhapsodyModelHelper):
                 result["direction"] = direction
         return result
 
-    def _export_attribute(self, attr: RPAttribute) -> dict:
+    def _export_attribute(self, attr: IRPAttribute) -> dict:
         result = {"name": attr.get_name(), "type": "Attribute"}
         data_type = self.get_classifier_name(attr.get_type()) if hasattr(attr, "get_type") else None
         if data_type:
@@ -662,7 +662,7 @@ class RhapsodyExporter(RhapsodyModelHelper):
             result["is_static"] = attr.get_is_static()
         return result
 
-    def _export_type(self, type_element: RPType) -> dict:
+    def _export_type(self, type_element: IRPType) -> dict:
         result = {"name": type_element.get_name(), "type": "Type"}
         kind = type_element.get_kind() if hasattr(type_element, "get_kind") else None
         if kind:
@@ -758,7 +758,7 @@ class RhapsodyExporter(RhapsodyModelHelper):
                 result["visibility"] = visibility
         return result
 
-    def _export_port(self, port: RPPort) -> dict:
+    def _export_port(self, port: IRPPort) -> dict:
         result = {"name": port.get_name(), "type": "Port"}
         if hasattr(port, "get_is_behavioral"):
             result["is_behavioral"] = port.get_is_behavioral()
@@ -1026,7 +1026,7 @@ return [
 
 Global flags `-v`/`--verbose` and `--format` work as usual (no format-specific output — these commands print success/error messages only).
 
-**Project vs. Package distinction**: Since `RPProject extends RPPackage`, the project IS the root package. `project import/export` operates on the project root (no `--package` arg); `package import/export` operates on a specific package path (requires `--package`). Both call the same `RhapsodyExporter.export(container)` / `RhapsodyImporter.import_template(data, root_element)` API; only the container resolution differs.
+**Project vs. Package distinction**: Since `IRPProject extends IRPPackage`, the project IS the root package. `project import/export` operates on the project root (no `--package` arg); `package import/export` operates on a specific package path (requires `--package`). Both call the same `RhapsodyExporter.export(container)` / `RhapsodyImporter.import_template(data, root_element)` API; only the container resolution differs.
 
 ## 6. Data Flow
 

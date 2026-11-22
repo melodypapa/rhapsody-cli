@@ -12,7 +12,7 @@
 
 - Windows-only runtime (requires Windows + a running Rhapsody instance)
 - All test classes use `@pytest.mark.integration`
-- All tests consume the `test_project: RPProject` fixture
+- All tests consume the `test_project: IRPProject` fixture
 - Use `_unique(prefix)` with `uuid.uuid4().hex[:8]`
 - Always `try/finally` cleanup via `element.delete_from_project()`
 - Assert both `isinstance()` and read-back values
@@ -47,7 +47,7 @@ Existing coverage in `tests/integration/models/elements/requirements/test_model_
 - [ ] **Step 1: Write the new integration test**
 
 ```python
-def test_anchor_management(self, test_project: RPProject) -> None:
+def test_anchor_management(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("AnchorPkg")
     annotation_name = self._unique("Anno")
     target_class_name = self._unique("AnchorTarget")
@@ -104,7 +104,7 @@ git commit -m "test: add integration tests for RPAnnotation anchor management"
 - [ ] **Step 1: Write the new integration test**
 
 ```python
-def test_body_and_specification_roundtrip(self, test_project: RPProject) -> None:
+def test_body_and_specification_roundtrip(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("SpecPkg")
     annotation_name = self._unique("Anno")
     pkg = self._create_package(test_project, pkg_name)
@@ -166,7 +166,7 @@ git commit -m "test: add integration tests for RPAnnotation body and specificati
 - [ ] **Step 1: Write the new integration test**
 
 ```python
-def test_requirement_id_roundtrip(self, test_project: RPProject) -> None:
+def test_requirement_id_roundtrip(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("ReqIdPkg")
     req_name = self._unique("ReqWithId")
     pkg = self._create_package(test_project, pkg_name)

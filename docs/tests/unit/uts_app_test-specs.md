@@ -175,15 +175,15 @@ Pass if `RhapsodyConnectionError` is raised, `_attach.call_count == 1`, and `_la
 
 ---
 
-## UTS_APP_00008: Open Project File Returns Wrapped RPProject
+## UTS_APP_00008: Open Project File Returns Wrapped IRPProject
 
 **ID:** UTS_APP_00008
 **Traces-To:** SWR_APP_00004
-**Title:** openProject(filename) delegates to COM and returns a wrapped RPProject
+**Title:** openProject(filename) delegates to COM and returns a wrapped IRPProject
 **Type:** Unit
 **Priority:** High
 **Description:**
-Verifies that `openProject(filename)` calls `self._com.openProject(filename)` and returns an `RPProject` wrapping the returned COM project object.
+Verifies that `openProject(filename)` calls `self._com.openProject(filename)` and returns an `IRPProject` wrapping the returned COM project object.
 **Pre-conditions:**
 - A fake COM application object whose `openProject` method returns a fake project COM object (built via `tests.fakes.make_fake_element("Project")`).
 - A `RhapsodyApplication` constructed directly with that fake COM object.
@@ -193,9 +193,9 @@ Verifies that `openProject(filename)` calls `self._com.openProject(filename)` an
 3. Inspect the type and `_com` of the result.
 4. Inspect `fake_app.openProject` call args.
 **Expected Result:**
-The result is an `RPProject` instance whose `_com` is the fake project COM object. `fake_app.openProject` was called once with `"C:/models/sample.rpy"`.
+The result is an `IRPProject` instance whose `_com` is the fake project COM object. `fake_app.openProject` was called once with `"C:/models/sample.rpy"`.
 **Verification Criteria:**
-Pass if `isinstance(result, RPProject)`, `result._com is fake_project`, and `fake_app.openProject.call_args == call("C:/models/sample.rpy")`.
+Pass if `isinstance(result, IRPProject)`, `result._com is fake_project`, and `fake_app.openProject.call_args == call("C:/models/sample.rpy")`.
 **Last Changed:** 2026-07-07
 
 ---
@@ -217,22 +217,22 @@ Verifies that when the underlying `self._com.openProject(...)` raises a `pywinty
 2. Call `app.openProject("missing.rpy")` inside `assertRaises(RhapsodyRuntimeException)`.
 3. Inspect the exception message.
 **Expected Result:**
-`RhapsodyRuntimeException` is raised; its message contains the original COM error text. No `RPProject` is returned.
+`RhapsodyRuntimeException` is raised; its message contains the original COM error text. No `IRPProject` is returned.
 **Verification Criteria:**
 Pass if `RhapsodyRuntimeException` is raised and its `str()` contains `"file not found"`.
 **Last Changed:** 2026-07-07
 
 ---
 
-## UTS_APP_00010: Get Active Project Returns Wrapped RPProject
+## UTS_APP_00010: Get Active Project Returns Wrapped IRPProject
 
 **ID:** UTS_APP_00010
 **Traces-To:** SWR_APP_00005
-**Title:** activeProject() delegates to COM and returns a wrapped RPProject
+**Title:** activeProject() delegates to COM and returns a wrapped IRPProject
 **Type:** Unit
 **Priority:** Medium
 **Description:**
-Verifies that `activeProject()` calls `self._com.activeProject()` and returns an `RPProject` wrapping the returned COM object.
+Verifies that `activeProject()` calls `self._com.activeProject()` and returns an `IRPProject` wrapping the returned COM object.
 **Pre-conditions:**
 - A fake COM application whose `activeProject` returns a fake project COM object (built via `tests.fakes.make_fake_element("Project")`).
 - A `RhapsodyApplication` constructed with that fake object.
@@ -242,9 +242,9 @@ Verifies that `activeProject()` calls `self._com.activeProject()` and returns an
 3. Inspect the type and `_com` of the result.
 4. Verify `fake_app.activeProject` was called once with no arguments.
 **Expected Result:**
-The result is an `RPProject` whose `_com` is the fake project COM object. `fake_app.activeProject` was called once.
+The result is an `IRPProject` whose `_com` is the fake project COM object. `fake_app.activeProject` was called once.
 **Verification Criteria:**
-Pass if `isinstance(result, RPProject)`, `result._com is fake_project`, and `fake_app.activeProject.call_count == 1`.
+Pass if `isinstance(result, IRPProject)`, `result._com is fake_project`, and `fake_app.activeProject.call_count == 1`.
 **Last Changed:** 2026-07-07
 
 ---

@@ -1,17 +1,16 @@
 """Shared helpers for validating and verifying one Rhapsody API sync."""
 
+import ast
 import json
 import re
 import sys
 from pathlib import Path
-from typing import List, Optional, Set, Tuple
+from typing import List, Optional, Tuple
 
 _INTERFACE_PATTERN = re.compile(r"^# Rhapsody API Validation: (IRP[A-Za-z0-9_]+)$", re.MULTILINE)
 _WRAPPER_PATTERN = re.compile(r"^- Target wrapper: `([^`]+)` \(`([^`]+)`\)$", re.MULTILINE)
 _JAVA_PACKAGE_PATTERN = re.compile(r"^- Java package: `([A-Za-z0-9_.]+)`$", re.MULTILINE)
-_MEMBER_PATTERN = re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\s*\(")
 _RST_INTERFACE_ANCHOR = ".. _rhapsody-java-interface-"
-_REPORT_SECTIONS = {"Comparison details", "Expected Binding Differences", "Wrapper Backlog"}
 
 
 def split_interface_name(interface_name: str) -> Tuple[str, Optional[str]]:
@@ -55,19 +54,42 @@ def find_java_doc(root: Path, interface_name: str) -> Tuple[str, str, Path]:
     return simple_name, ".".join(package_parts), java_doc
 
 
+def api_report_path(root: Path, interface_name: str) -> Path:
+    """Return the report path under the interface's Java package directory."""
+    simple_name, explicit_package = split_interface_name(interface_name)
+    reports_dir = root / "docs" / "reports"
+    report_name = f"{simple_name}_api_report.md"
+    if explicit_package is not None:
+        java_package = explicit_package
+    else:
+        try:
+            _, java_package, _ = find_java_doc(root, simple_name)
+        except FileNotFoundError as exc:
+            matches = sorted(reports_dir.rglob(report_name))
+            if len(matches) == 1:
+                return matches[0]
+            if len(matches) > 1:
+                paths = ", ".join(path.relative_to(reports_dir).as_posix() for path in matches)
+                raise ValueError(f"API report for {simple_name} is ambiguous without JavaDoc: {paths}") from exc
+            java_package = "com.telelogic.rhapsody.core"
+    return reports_dir / Path(*java_package.split(".")) / report_name
+
+
 def offline_authority_blocker(root: Path, interface_name: str) -> Optional[str]:
     """Return the blocker for offline validation, or None when committed COM evidence exists."""
     reports_dir = root / "docs" / "reports"
+    report_path = api_report_path(root, interface_name)
+    report_display_path = report_path.relative_to(root).as_posix()
     try:
         authority = json.loads((reports_dir / "pywin32_authority.json").read_text(encoding="utf-8"))
     except (OSError, ValueError):
         authority = {}
     if interface_name in authority.get("catalog", {}):
         return None
-    if (reports_dir / f"{interface_name}_api_report.md").is_file():
+    if report_path.is_file():
         return f"The authority catalog lacks {interface_name}. Rebuild it from the committed reports with: python scripts/pywin32_authority.py --source reports"
     return (
-        f"Offline sync cannot proceed: docs/reports/{interface_name}_api_report.md does not exist and "
+        f"Offline sync cannot proceed: {report_display_path} does not exist and "
         f"{interface_name} is absent from docs/reports/pywin32_authority.json. "
         "Run the sync on a machine with Rhapsody (--source typelib) or commit a generated report first."
     )
@@ -101,22 +123,23 @@ def parse_report_java_package(report_text: str) -> Optional[str]:
     return match.group(1) if match else None
 
 
-def extract_deviation_members(report_text: str) -> Set[str]:
-    """Collect API names from the validator's comparison, binding, and backlog tables."""
-    members: Set[str] = set()
-    active_section: Optional[str] = None
-    for line in report_text.splitlines():
-        if line.startswith("## "):
-            active_section = line[3:].strip()
-            continue
-        if active_section not in _REPORT_SECTIONS or not line.startswith("|"):
-            continue
-        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
-        if len(cells) < 4 or cells[0] == "Python model wrapper" or all(set(cell) <= {"-", " "} for cell in cells):
-            continue
-        for cell in cells[:3]:
-            members.update(_MEMBER_PATTERN.findall(cell))
-    return members
+def parse_wrapper_public_members(wrapper_source: str, wrapper_class: str) -> List[str]:
+    """Return the wrapper class's public members, sorted.
+
+    The RST page is an API reference of the Python wrapper, so coverage is
+    defined over this set: public methods and properties (underscore-private
+    helpers and dunders are implementation details).
+    """
+    tree = ast.parse(wrapper_source)
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ClassDef) and node.name == wrapper_class:
+            names = {
+                item.name
+                for item in node.body
+                if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)) and not item.name.startswith("_")
+            }
+            return sorted(names)
+    return []
 
 
 def _get_rst_interface_section(rst_text: str, interface_name: str) -> Optional[str]:
@@ -126,6 +149,18 @@ def _get_rst_interface_section(rst_text: str, interface_name: str) -> Optional[s
         return None
     next_anchor = rst_text.find(_RST_INTERFACE_ANCHOR, start + len(anchor))
     return rst_text[start:] if next_anchor < 0 else rst_text[start:next_anchor]
+
+
+def _java_interface_snake(simple_name: str) -> str:
+    """Convert a Java interface name to the project's snake_case module stem.
+
+    ``IRPApplication`` -> ``irp_application``; ``IRPModelElement`` ->
+    ``irp_model_element``. Used for artifacts named after the Java interface rather
+    than the Python wrapper module (which differs for application-layer wrappers).
+    """
+    name = re.sub(r"([A-Z]+)([A-Z][a-z])", r"\1_\2", simple_name)
+    name = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", name)
+    return name.lower()
 
 
 def _canonical_import(root: Path, source_path: str) -> Tuple[Path, str]:
@@ -142,6 +177,105 @@ def _canonical_import(root: Path, source_path: str) -> Tuple[Path, str]:
     if not module_parts:
         raise ValueError(f"Wrapper source does not identify a Python module: {source_path}")
     return absolute_path, ".".join(module_parts)
+
+
+def parse_wrapper_bindings(wrapper_source: str) -> List[Tuple[str, str]]:
+    """Extract (com_member, expected_shape) pairs from a synced wrapper body.
+
+    Recognised binding forms (per AGENTS.md / SKILL §3):
+      * ``call_com(lambda: self._com.Name(...))`` -> ("Name", "method")
+      * ``get_com_property(self._com, "Name")``  -> ("Name", "property")
+      * ``set_com_property(self._com, "Name", ...)`` -> ("Name", "property")
+
+    Both ``self.call_com`` and ``AbstractRPModelElement.call_com`` (and the
+    ``com_utils.call_com`` form) are handled because the call target is not
+    what determines the COM member -- the lambda body / property argument is.
+    """
+    bindings: List[Tuple[str, str]] = []
+    tree = ast.parse(wrapper_source)
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call) or not isinstance(node.func, ast.Attribute):
+            continue
+        attr = node.func.attr
+        if attr == "call_com" and node.args:
+            lam = node.args[0]
+            if isinstance(lam, ast.Lambda) and isinstance(lam.body, ast.Call) and isinstance(lam.body.func, ast.Attribute):
+                if isinstance(lam.body.func.value, ast.Attribute) and lam.body.func.value.attr == "_com":
+                    bindings.append((lam.body.func.attr, "method"))
+        elif attr in ("get_com_property", "set_com_property") and len(node.args) >= 2:
+            arg = node.args[1]
+            if isinstance(arg, ast.Constant) and isinstance(arg.value, str):
+                bindings.append((arg.value, "property"))
+    return bindings
+
+
+def verify_wrapper_bindings(root: Path, interface_name: str, wrapper_source: str) -> List[str]:
+    """Check every wrapper COM binding against the committed pywin32 catalog.
+
+    A wrapper member must forward to exactly one pywin32-exposed member, with a
+    method-shaped member called via ``call_com`` and a property-shaped member
+    read/written via ``get_com_property`` / ``set_com_property``. Names are
+    matched case-insensitively (COM identifiers are case-insensitive and the
+    catalog preserves the type library's PascalCase). A member absent from the
+    catalog, or bound with the wrong shape, is a sync defect and fails Step 8.
+    """
+    catalog_path = root / "docs" / "reports" / "pywin32_authority.json"
+    if not catalog_path.is_file():
+        return [f"pywin32 authority catalog not found: {catalog_path}"]
+    catalog = json.loads(catalog_path.read_text(encoding="utf-8")).get("catalog", {})
+    entries = catalog.get(interface_name)
+    if entries is None:
+        return [f"pywin32 catalog has no entry for {interface_name}"]
+    lowered = {str(name).lower(): (name, shape) for name, shape in entries.items()}
+    issues: List[str] = []
+    for member, shape in parse_wrapper_bindings(wrapper_source):
+        found = lowered.get(member.lower())
+        if found is None:
+            issues.append(f"{interface_name} binding '{member}' is absent from the pywin32 catalog")
+        elif found[1] != shape:
+            issues.append(
+                f"{interface_name} binding '{member}' is {shape}-shaped in the wrapper "
+                f"but the pywin32 catalog declares '{found[0]}' as {found[1]}"
+            )
+    return issues
+
+
+def verify_integration_exception_catches(test_source: str) -> List[str]:
+    """Integration tests may only assert NotImplementedError (Java-only stubs).
+
+    Any other exception assertion (pytest.raises(AttributeError,
+    RhapsodyRuntimeException, TypeError, ValueError, ...) blesses a wrong
+    binding and is forbidden by SKILL section 5. Bare try/except in test
+    bodies is likewise forbidden; only the documented NotImplementedError
+    stub case is allowed.
+    """
+    issues: List[str] = []
+    tree = ast.parse(test_source)
+    allowed = {"NotImplementedError"}
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.With):
+            continue
+        for item in node.items:
+            ce = item.context_expr
+            if not (isinstance(ce, ast.Call) and isinstance(ce.func, ast.Attribute) and ce.func.attr == "raises"):
+                continue
+            if not ce.args:
+                issues.append(f"pytest.raises() with no exception type at line {node.lineno}")
+                continue
+            exc_node = ce.args[0]
+            if isinstance(exc_node, ast.Name):
+                names = {exc_node.id}
+            elif isinstance(exc_node, ast.Tuple):
+                names = {e.id for e in exc_node.elts if isinstance(e, ast.Name)}
+            else:
+                names = set()
+            bad = names - allowed
+            if bad:
+                issues.append(
+                    f"integration test asserts disallowed exception(s) {sorted(bad)} at line {node.lineno} "
+                    f"(only NotImplementedError for JavaDoc-defined/pywin32-absent stubs is allowed)"
+                )
+    return issues
 
 
 def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) -> List[str]:
@@ -171,34 +305,63 @@ def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) ->
     except ValueError as exc:
         return [str(exc)]
     package_dir = Path(*java_package.split("."))
-    expected_package_dir = root / "src" / "rhapsody_cli" / "models" / package_dir
+    source_root = root / "src" / "rhapsody_cli"
+    try:
+        rel_parent = absolute_wrapper.parent.relative_to(source_root)
+    except ValueError:
+        rel_parent = Path()  # handled by the mismatch check below
+    is_model_wrapper = bool(rel_parent.parts) and rel_parent.parts[0] == "models"
+    if is_model_wrapper:
+        # Model wrappers must live in the canonical Java-package directory.
+        expected_package_dir = source_root / "models" / package_dir
+    else:
+        # Application-layer wrappers (e.g. RhapsodyApplication) stay at the package
+        # root: §2's canonical move is N/A for the application layer.
+        expected_package_dir = source_root
     if absolute_wrapper.parent.resolve() != expected_package_dir.resolve():
         issues.append(f"Wrapper package mismatch: expected {expected_package_dir}, found {absolute_wrapper.parent}")
     if not absolute_wrapper.is_file():
         issues.append(f"Wrapper source does not exist: {absolute_wrapper}")
+    else:
+        # Step 3/4 enforcement: every wrapper COM binding must exist in the
+        # pywin32 catalog with the correct method/property shape.
+        issues.extend(verify_wrapper_bindings(root, simple_name, absolute_wrapper.read_text(encoding="utf-8")))
 
     class_stem = absolute_wrapper.stem
+    java_snake = _java_interface_snake(simple_name)
+    # Artifacts may be named after either the wrapper module or the Java interface;
+    # these differ for application-layer wrappers (application.py / irp_application).
+    candidate_stems = [class_stem] if class_stem == java_snake else [class_stem, java_snake]
+
+    def first_existing(directory: Path, filename_template: str) -> Optional[Path]:
+        for stem in candidate_stems:
+            candidate = directory / filename_template.format(stem=stem)
+            if candidate.is_file():
+                return candidate
+        return None
 
     # Unit and integration tests mirror the wrapper's package and must exercise the class.
-    models_root = root / "src" / "rhapsody_cli" / "models"
-    rel_pkg = absolute_wrapper.parent.relative_to(models_root)
+    model_segment = Path("models") / Path(*rel_parent.parts[1:]) if is_model_wrapper else Path()
     for label, test_base in (("Unit", "unit"), ("Integration", "integration")):
-        test_path = root / "tests" / test_base / "models" / rel_pkg / f"test_{class_stem}.py"
-        if not test_path.is_file():
-            issues.append(f"{label} test file not found for {simple_name}: {test_path}")
+        test_dir = root / "tests" / test_base / model_segment
+        test_path = first_existing(test_dir, "test_{stem}.py")
+        if test_path is None:
+            issues.append(f"{label} test file not found for {simple_name}: {test_dir / f'test_{class_stem}.py'}")
         elif wrapper_class not in test_path.read_text(encoding="utf-8"):
             issues.append(f"{label} test file does not exercise {wrapper_class}: {test_path}")
-    requirements_path = root / "docs" / "requirements" / package_dir / f"{class_stem}.md"
-    if not requirements_path.is_file():
-        issues.append(f"Class requirement document not found: {requirements_path}")
+        elif label == "Integration":
+            issues.extend(verify_integration_exception_catches(test_path.read_text(encoding="utf-8")))
+    requirements_path = first_existing(root / "docs" / "requirements" / package_dir, "{stem}.md")
+    if requirements_path is None:
+        issues.append(f"Class requirement document not found: {root / 'docs' / 'requirements' / package_dir / f'{class_stem}.md'}")
     else:
         requirement_text = requirements_path.read_text(encoding="utf-8")
         if simple_name not in requirement_text or wrapper_class not in requirement_text:
             issues.append(f"Requirement document does not identify both {simple_name} and {wrapper_class}")
 
-    rst_path = root / "docs" / "api" / package_dir / f"{class_stem}.rst"
-    if not rst_path.is_file():
-        issues.append(f"RST API document not found: {rst_path}")
+    rst_path = first_existing(root / "docs" / "api" / package_dir, "{stem}.rst")
+    if rst_path is None:
+        issues.append(f"RST API document not found: {root / 'docs' / 'api' / package_dir / f'{class_stem}.rst'}")
         return issues
     rst_section = _get_rst_interface_section(rst_path.read_text(encoding="utf-8"), simple_name)
     if rst_section is None:
@@ -209,25 +372,21 @@ def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) ->
         "Java interface": simple_name,
         "Python wrapper": wrapper_class,
         "canonical Python import": canonical_import,
-        "JavaDoc member/signature header": "javadoc member/signature",
-        "COM/pywin32 header": "com/pywin32",
-        "Python implementation header": "python implementation",
-        "deviation/treatment header": "deviation and treatment",
+        "API reference heading": "api reference",
     }
     lowered_rst_section = rst_section.lower()
     for label, value in required_values.items():
         if value.lower() not in lowered_rst_section:
             issues.append(f"RST section for {simple_name} is missing {label}: {value}")
 
-    deviation_members = extract_deviation_members(report_text)
-    if deviation_members:
-        if ".. list-table::" not in rst_section:
-            issues.append(f"RST section for {simple_name} has deviations but no reStructuredText list-table")
-        missing_members = sorted(member for member in deviation_members if member not in rst_section)
-        if missing_members:
-            issues.append(f"RST section for {simple_name} omits reported deviation members: {', '.join(missing_members)}")
-    elif "no deviations" not in lowered_rst_section:
-        issues.append(f"RST section for {simple_name} should explicitly state that there are no deviations")
+    # The RST page is a JavaDoc-style API reference of the Python wrapper: it
+    # must document every public member. Deviations live in the generated
+    # report, not here.
+    wrapper_source = absolute_wrapper.read_text(encoding="utf-8") if absolute_wrapper.is_file() else ""
+    public_members = parse_wrapper_public_members(wrapper_source, wrapper_class)
+    undocumented = [name for name in public_members if not re.search(rf"\b{re.escape(name)}\b", rst_section)]
+    if undocumented:
+        issues.append(f"RST section for {simple_name} omits public wrapper member documentation: {', '.join(undocumented)}")
 
     if not java_doc.is_file():
         issues.append(f"JavaDoc page does not exist: {java_doc}")

@@ -613,7 +613,7 @@ All 4 subcommands (create, delete, view, list) registered.
 **Type:** Unit
 **Priority:** High
 **Description:**
-Test that when PackageCreateAction.execute() is called with args.path=None, the package is created at the project root using RPProject.addPackage(), not addNestedPackage().
+Test that when PackageCreateAction.execute() is called with args.path=None, the package is created at the project root using IRPProject.addPackage(), not addNestedPackage().
 **Pre-conditions:**
 - Rhapsody application is mocked
 - args.path = None
@@ -642,7 +642,7 @@ Package created at project root via addPackage.
 **Type:** Unit
 **Priority:** High
 **Description:**
-Test that when PackageCreateAction.execute() is called with args.path="" (empty string), the package is created at the project root using RPProject.addPackage(), behaving identically to args.path=None.
+Test that when PackageCreateAction.execute() is called with args.path="" (empty string), the package is created at the project root using IRPProject.addPackage(), behaving identically to args.path=None.
 **Pre-conditions:**
 - Rhapsody application is mocked
 - args.path = ""

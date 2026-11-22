@@ -3,10 +3,11 @@
 from typing import cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
-from rhapsody_cli.models.elements.classifiers import RPClassifier
-from rhapsody_cli.models.elements.variables.model_variables import RPVariable
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.elements.variables import RPVariable
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
@@ -102,7 +103,7 @@ def test_variable_set_type_delegates_to_com() -> None:
     type_fake = make_fake_element("Class", properties={"name": "int"})
     variable = RPVariable(fake)
 
-    variable.set_type(RPClassifier(type_fake))
+    variable.set_type(IRPClassifier(type_fake))
 
     fake.setType.assert_called_once_with(type_fake)
 
@@ -117,122 +118,122 @@ def test_variable_set_type_declaration_delegates_to_com() -> None:
 
 
 # =============================================================================
-# RPAttribute tests
+# IRPAttribute tests
 # =============================================================================
 
 
 def test_attribute_get_is_constant_returns_int() -> None:
-    from rhapsody_cli.models.elements.variables.model_variables import RPAttribute
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute import IRPAttribute
 
-    fake = make_fake_element("Attribute", getIsConstant=1)
-    attr = RPAttribute(fake)
+    fake = make_fake_element("Attribute", properties={"isConstant": 1})
+    attr = IRPAttribute(fake)
     assert attr.get_is_constant() == 1
 
 
 def test_attribute_get_is_constant_returns_zero() -> None:
-    from rhapsody_cli.models.elements.variables.model_variables import RPAttribute
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute import IRPAttribute
 
-    fake = make_fake_element("Attribute", getIsConstant=0)
-    attr = RPAttribute(fake)
+    fake = make_fake_element("Attribute", properties={"isConstant": 0})
+    attr = IRPAttribute(fake)
     assert attr.get_is_constant() == 0
 
 
 def test_attribute_get_is_ordered_returns_int() -> None:
-    from rhapsody_cli.models.elements.variables.model_variables import RPAttribute
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute import IRPAttribute
 
-    fake = make_fake_element("Attribute", getIsOrdered=1)
-    attr = RPAttribute(fake)
+    fake = make_fake_element("Attribute", properties={"isOrdered": 1})
+    attr = IRPAttribute(fake)
     assert attr.get_is_ordered() == 1
 
 
 def test_attribute_get_is_ordered_returns_zero() -> None:
-    from rhapsody_cli.models.elements.variables.model_variables import RPAttribute
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute import IRPAttribute
 
-    fake = make_fake_element("Attribute", getIsOrdered=0)
-    attr = RPAttribute(fake)
+    fake = make_fake_element("Attribute", properties={"isOrdered": 0})
+    attr = IRPAttribute(fake)
     assert attr.get_is_ordered() == 0
 
 
 def test_attribute_get_is_reference_returns_int() -> None:
-    from rhapsody_cli.models.elements.variables.model_variables import RPAttribute
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute import IRPAttribute
 
-    fake = make_fake_element("Attribute", getIsReference=1)
-    attr = RPAttribute(fake)
+    fake = make_fake_element("Attribute", properties={"isReference": 1})
+    attr = IRPAttribute(fake)
     assert attr.get_is_reference() == 1
 
 
 def test_attribute_get_is_reference_returns_zero() -> None:
-    from rhapsody_cli.models.elements.variables.model_variables import RPAttribute
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute import IRPAttribute
 
-    fake = make_fake_element("Attribute", getIsReference=0)
-    attr = RPAttribute(fake)
+    fake = make_fake_element("Attribute", properties={"isReference": 0})
+    attr = IRPAttribute(fake)
     assert attr.get_is_reference() == 0
 
 
 def test_attribute_set_is_constant_delegates_to_com() -> None:
-    from rhapsody_cli.models.elements.variables.model_variables import RPAttribute
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute import IRPAttribute
 
     fake = make_fake_element("Attribute")
-    attr = RPAttribute(fake)
+    attr = IRPAttribute(fake)
 
     attr.set_is_constant(True)
 
-    fake.setIsConstant.assert_called_once_with(1)
+    assert fake.isConstant == 1
 
 
 def test_attribute_set_is_constant_false_delegates_to_com() -> None:
-    from rhapsody_cli.models.elements.variables.model_variables import RPAttribute
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute import IRPAttribute
 
     fake = make_fake_element("Attribute")
-    attr = RPAttribute(fake)
+    attr = IRPAttribute(fake)
 
     attr.set_is_constant(False)
 
-    fake.setIsConstant.assert_called_once_with(0)
+    assert fake.isConstant == 0
 
 
 def test_attribute_set_is_ordered_delegates_to_com() -> None:
-    from rhapsody_cli.models.elements.variables.model_variables import RPAttribute
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute import IRPAttribute
 
     fake = make_fake_element("Attribute")
-    attr = RPAttribute(fake)
+    attr = IRPAttribute(fake)
 
     attr.set_is_ordered(True)
 
-    fake.setIsOrdered.assert_called_once_with(1)
+    assert fake.isOrdered == 1
 
 
 def test_attribute_set_is_ordered_false_delegates_to_com() -> None:
-    from rhapsody_cli.models.elements.variables.model_variables import RPAttribute
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute import IRPAttribute
 
     fake = make_fake_element("Attribute")
-    attr = RPAttribute(fake)
+    attr = IRPAttribute(fake)
 
     attr.set_is_ordered(False)
 
-    fake.setIsOrdered.assert_called_once_with(0)
+    assert fake.isOrdered == 0
 
 
 def test_attribute_set_is_reference_delegates_to_com() -> None:
-    from rhapsody_cli.models.elements.variables.model_variables import RPAttribute
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute import IRPAttribute
 
     fake = make_fake_element("Attribute")
-    attr = RPAttribute(fake)
+    attr = IRPAttribute(fake)
 
     attr.set_is_reference(True)
 
-    fake.setIsReference.assert_called_once_with(1)
+    assert fake.isReference == 1
 
 
 def test_attribute_set_is_reference_false_delegates_to_com() -> None:
-    from rhapsody_cli.models.elements.variables.model_variables import RPAttribute
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute import IRPAttribute
 
     fake = make_fake_element("Attribute")
-    attr = RPAttribute(fake)
+    attr = IRPAttribute(fake)
 
     attr.set_is_reference(False)
 
-    fake.setIsReference.assert_called_once_with(0)
+    assert fake.isReference == 0
 
 
 # =============================================================================
@@ -241,7 +242,7 @@ def test_attribute_set_is_reference_false_delegates_to_com() -> None:
 
 
 def test_tag_get_base_wraps_result() -> None:
-    from rhapsody_cli.models.elements.variables.model_variables import RPTag
+    from rhapsody_cli.models.elements.variables import RPTag
 
     base_com = make_fake_element("Class", properties={"name": "BaseClass"})
     fake = make_fake_element("Tag")
@@ -254,7 +255,7 @@ def test_tag_get_base_wraps_result() -> None:
 
 def test_tag_get_from_profile_returns_profile() -> None:
     from rhapsody_cli.models.elements.containment.model_profile import RPProfile
-    from rhapsody_cli.models.elements.variables.model_variables import RPTag
+    from rhapsody_cli.models.elements.variables import RPTag
 
     fake_profile = make_fake_element("Profile", properties={"name": "MyProfile"})
     fake = make_fake_element("Tag", getFromProfile=fake_profile)
@@ -266,7 +267,7 @@ def test_tag_get_from_profile_returns_profile() -> None:
 
 
 def test_tag_get_multiplicity_returns_str() -> None:
-    from rhapsody_cli.models.elements.variables.model_variables import RPTag
+    from rhapsody_cli.models.elements.variables import RPTag
 
     fake = make_fake_element("Tag", getMultiplicity="0..*")
     tag = RPTag(fake)
@@ -275,7 +276,7 @@ def test_tag_get_multiplicity_returns_str() -> None:
 
 
 def test_tag_get_tag_meta_class_returns_str() -> None:
-    from rhapsody_cli.models.elements.variables.model_variables import RPTag
+    from rhapsody_cli.models.elements.variables import RPTag
 
     fake = make_fake_element("Tag", getTagMetaClass="Stereotype")
     tag = RPTag(fake)
@@ -284,7 +285,7 @@ def test_tag_get_tag_meta_class_returns_str() -> None:
 
 
 def test_tag_get_value_returns_str() -> None:
-    from rhapsody_cli.models.elements.variables.model_variables import RPTag
+    from rhapsody_cli.models.elements.variables import RPTag
 
     fake = make_fake_element("Tag", getValue="some_value")
     tag = RPTag(fake)
@@ -293,7 +294,7 @@ def test_tag_get_value_returns_str() -> None:
 
 
 def test_tag_set_multiplicity_delegates_to_com() -> None:
-    from rhapsody_cli.models.elements.variables.model_variables import RPTag
+    from rhapsody_cli.models.elements.variables import RPTag
 
     fake = make_fake_element("Tag")
     tag = RPTag(fake)
@@ -304,7 +305,7 @@ def test_tag_set_multiplicity_delegates_to_com() -> None:
 
 
 def test_tag_set_tag_meta_class_delegates_to_com() -> None:
-    from rhapsody_cli.models.elements.variables.model_variables import RPTag
+    from rhapsody_cli.models.elements.variables import RPTag
 
     fake = make_fake_element("Tag")
     tag = RPTag(fake)
@@ -315,7 +316,7 @@ def test_tag_set_tag_meta_class_delegates_to_com() -> None:
 
 
 def test_tag_set_value_delegates_to_com() -> None:
-    from rhapsody_cli.models.elements.variables.model_variables import RPTag
+    from rhapsody_cli.models.elements.variables import RPTag
 
     fake = make_fake_element("Tag")
     tag = RPTag(fake)

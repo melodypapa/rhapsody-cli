@@ -12,7 +12,7 @@
 
 - Windows-only runtime (requires Windows + a running Rhapsody instance)
 - All test classes use `@pytest.mark.integration`
-- All tests consume the `test_project: RPProject` fixture
+- All tests consume the `test_project: IRPProject` fixture
 - Use `_unique(prefix)` with `uuid.uuid4().hex[:8]`
 - Always `try/finally` cleanup using the correct delete method verified from source
 - Assert both `isinstance()` and read-back values
@@ -36,12 +36,12 @@
 
 ### Object creation chain (verified from source)
 
-- `RPPackage.add_class(name)` → `RPClass`
-- `RPClass.add_statechart()` (inherited from `RPClassifier`, already covered elsewhere) → `RPStatechart`
+- `IRPPackage.add_class(name)` → `RPClass`
+- `RPClass.add_statechart()` (inherited from `IRPClassifier`, already covered elsewhere) → `RPStatechart`
 - `RPStatechart.get_root_state()` → wrapped root `RPState` (the diagram's implicit top-level state)
 - `RPState.add_state(name)` → new top-level substate (`RPState`) — call this on the root state, per the method's own docstring
 - Nested states: call `add_state(name)` again on the returned `RPState` to create a substate
-- Triggers for `add_internal_transition`/`add_static_reaction`: `RPClass.add_reception(name)` → `RPEventReception` (an `RPInterfaceItem`)
+- Triggers for `add_internal_transition`/`add_static_reaction`: `RPClass.add_reception(name)` → `RPEventReception` (an `IRPInterfaceItem`)
 - Transitions returned from `add_transition`/`create_default_transition`/`add_internal_transition`/`add_static_reaction` wrap to `RPTransition` (registered under meta-class `"Transition"` in `rhapsody_cli.models.elements.interactions`)
 - Connectors returned from `add_connector` wrap to `RPConnector` (registered under meta-class `"Connector"` in `rhapsody_cli.models.elements.graphics`)
 - Cleanup: states and connectors are `RPModelElement` subclasses, so use `delete_from_project()`; the owning class's `delete_from_project()` also cascades and is used as the primary `finally` cleanup for most tests (matches `test_model_class.py` pattern)
@@ -66,7 +66,7 @@ import uuid
 import pytest
 
 from rhapsody_cli.models.elements.classifiers import RPClass, RPStatechart
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.elements.statemachine import RPState, RPStateVertex
 
 
@@ -79,12 +79,12 @@ class TestRPStateIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def _create_class_with_statechart(self, project: RPProject, prefix: str) -> tuple:
+    def _create_class_with_statechart(self, project: IRPProject, prefix: str) -> tuple:
         """Returns (test_class, statechart, root_state)."""
         pkg = self._create_package(project, self._unique(f"{prefix}Pkg"))
         test_class: RPClass = pkg.add_class(self._unique(f"{prefix}Cls"))
@@ -93,7 +93,7 @@ class TestRPStateIntegration:
         assert isinstance(root_state, RPState)
         return test_class, statechart, root_state
 
-    def test_state_hierarchy_and_structural_predicates(self, test_project: RPProject) -> None:
+    def test_state_hierarchy_and_structural_predicates(self, test_project: IRPProject) -> None:
         test_class, statechart, root_state = self._create_class_with_statechart(test_project, "Hier")
         try:
             parent_state_name = self._unique("Parent")
@@ -175,7 +175,7 @@ git commit -m "test: add integration tests for RPState hierarchy and structural 
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-    def test_transitions_in_out_and_default(self, test_project: RPProject) -> None:
+    def test_transitions_in_out_and_default(self, test_project: IRPProject) -> None:
         from rhapsody_cli.models.elements.interactions import RPTransition
 
         test_class, statechart, root_state = self._create_class_with_statechart(test_project, "Trans")
@@ -240,7 +240,7 @@ git commit -m "test: add integration tests for RPState transitions in/out and de
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-    def test_flows_and_connectors(self, test_project: RPProject) -> None:
+    def test_flows_and_connectors(self, test_project: IRPProject) -> None:
         from rhapsody_cli.models.elements.graphics import RPConnector
 
         test_class, statechart, root_state = self._create_class_with_statechart(test_project, "Flow")
@@ -298,7 +298,7 @@ The inheritance-related methods (`override_inheritance`, `unoverride_inheritance
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-    def test_entry_exit_actions_roundtrip(self, test_project: RPProject) -> None:
+    def test_entry_exit_actions_roundtrip(self, test_project: IRPProject) -> None:
         from rhapsody_cli.models.elements.activity import RPAction
 
         test_class, statechart, root_state = self._create_class_with_statechart(test_project, "Action")
@@ -329,7 +329,7 @@ The inheritance-related methods (`override_inheritance`, `unoverride_inheritance
         "xfail once confirmed stable.",
         strict=False,
     )
-    def test_state_inheritance_override(self, test_project: RPProject) -> None:
+    def test_state_inheritance_override(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("InhPkg"))
         parent_class: RPClass = pkg.add_class(self._unique("ParentCls"))
         child_class: RPClass = pkg.add_class(self._unique("ChildCls"))
@@ -397,7 +397,7 @@ git commit -m "test: add integration tests for RPState entry/exit actions and in
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-    def test_internal_transitions_and_static_reactions(self, test_project: RPProject) -> None:
+    def test_internal_transitions_and_static_reactions(self, test_project: IRPProject) -> None:
         from rhapsody_cli.models.elements.interactions import RPTransition
 
         pkg = self._create_package(test_project, self._unique("IntPkg"))
@@ -471,7 +471,7 @@ git commit -m "test: add integration tests for RPState internal transitions and 
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-    def test_state_type_and_send_action(self, test_project: RPProject) -> None:
+    def test_state_type_and_send_action(self, test_project: IRPProject) -> None:
         test_class, statechart, root_state = self._create_class_with_statechart(test_project, "Type")
         try:
             state = root_state.add_state(self._unique("TypedState"))
@@ -501,7 +501,7 @@ git commit -m "test: add integration tests for RPState internal transitions and 
         "against a live instance and remove xfail if a plain state accepts the reference.",
         strict=False,
     )
-    def test_reference_to_activity_roundtrip(self, test_project: RPProject) -> None:
+    def test_reference_to_activity_roundtrip(self, test_project: IRPProject) -> None:
         test_class, statechart, root_state = self._create_class_with_statechart(test_project, "Ref")
         try:
             state = root_state.add_state(self._unique("RefState"))
@@ -549,7 +549,7 @@ git commit -m "test: add integration tests for RPState state type, send action, 
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-    def test_sub_statechart_and_nested_statechart_deprecation(self, test_project: RPProject) -> None:
+    def test_sub_statechart_and_nested_statechart_deprecation(self, test_project: IRPProject) -> None:
         test_class, statechart, root_state = self._create_class_with_statechart(test_project, "Sub")
         try:
             state = root_state.add_state(self._unique("SubState"))
@@ -573,7 +573,7 @@ git commit -m "test: add integration tests for RPState state type, send action, 
         "xfail once a concrete creation path is confirmed.",
         strict=False,
     )
-    def test_its_swimlane_roundtrip(self, test_project: RPProject) -> None:
+    def test_its_swimlane_roundtrip(self, test_project: IRPProject) -> None:
         from rhapsody_cli.models.elements.activity import RPSwimlane
 
         test_class, statechart, root_state = self._create_class_with_statechart(test_project, "Lane")

@@ -17,7 +17,7 @@ import pytest
 
 from rhapsody_cli.commands.package_command import PackageCommand
 from rhapsody_cli.exceptions.core import CliExecutionError
-from rhapsody_cli.models.elements.containment import RPProject
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 
 
 @pytest.mark.integration
@@ -25,7 +25,7 @@ class TestPackageCLIIntegration:
     """End-to-end tests for package CLI with live Rhapsody instance."""
 
     @pytest.fixture(autouse=True)
-    def _use_test_project(self, test_project: RPProject) -> None:
+    def _use_test_project(self, test_project: IRPProject) -> None:
         """Ensure the isolated integration test_project is active for every test."""
         self.project = test_project
 

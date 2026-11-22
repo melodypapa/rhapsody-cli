@@ -27,17 +27,17 @@ from typing import TYPE_CHECKING, Dict, List, Optional, cast
 from unittest.mock import MagicMock
 
 from rhapsody_cli.exchange.exporter import RhapsodyExporter
-from rhapsody_cli.models.core import IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.elements.containment import RPProject
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 
 
 def _make_exporter(project: Optional[IRPModelElement] = None) -> RhapsodyExporter:
     """Build a RhapsodyExporter with mocked app and project."""
     exporter = RhapsodyExporter.__new__(RhapsodyExporter)
     exporter.app = MagicMock()
-    exporter.project = cast(Optional["RPProject"], project)
+    exporter.project = cast(Optional["IRPProject"], project)
     return exporter
 
 

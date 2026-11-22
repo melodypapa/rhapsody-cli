@@ -72,6 +72,22 @@ def _validate_interface_name(interface_name: str) -> None:
         raise ValueError(f"Invalid Java interface name {interface_name!r}; expected a name such as IRPClass")
 
 
+def resolve_java_interface_docs(interface_name: str, docs_root: Path) -> Tuple[str, Path]:
+    """Resolve one JavaDoc page and return its declared package plus package directory."""
+    _validate_interface_name(interface_name)
+    pages = sorted(path for path in docs_root.rglob(f"{interface_name}.html") if "class-use" not in path.parts)
+    if not pages:
+        raise FileNotFoundError(f"Java API documentation not found for {interface_name} under {docs_root}")
+    if len(pages) > 1:
+        matches = ", ".join(path.relative_to(docs_root).as_posix() for path in pages)
+        raise ValueError(f"JavaDoc name {interface_name} is ambiguous; use a unique interface name: {matches}")
+
+    package_parts = pages[0].parent.relative_to(docs_root).parts
+    if not package_parts:
+        raise ValueError(f"JavaDoc page has no package directory: {pages[0]}")
+    return ".".join(package_parts), pages[0].parent
+
+
 def collect_java_members(interface_name: str, docs_root: Path, include_superinterfaces: bool = True) -> Set[str]:
     """Return methods declared by an interface, optionally including superinterfaces."""
     _validate_interface_name(interface_name)
@@ -396,9 +412,30 @@ def apply_pywin32_authority(rows: Rows, interface_name: str, authority: Authorit
     aliases = authority["documented_aliases"].get(interface_name, {})
     unavailable = set(authority["documented_unavailable"].get(interface_name, []))
 
+    def _java_members(row: Tuple[str, str, str, str, str]) -> Set[str]:
+        return {entry[: -len(" (method)")] for entry in row[1].split("; ") if entry.endswith(" (method)")}
+
     def _documented_unavailable(row: Tuple[str, str, str, str, str]) -> bool:
-        java_names = {entry[: -len(" (method)")] for entry in row[1].split("; ") if entry.endswith(" (method)")}
+        java_names = _java_members(row)
         return bool(java_names) and java_names.issubset(unavailable)
+
+    def _has_documented_partial_unavailability(row: Tuple[str, str, str, str, str]) -> bool:
+        java_names = _java_members(row)
+        pywin32_entries: Dict[str, str] = {}
+        for entry in row[2].split("; "):
+            name, separator, kind = entry.rpartition(" (")
+            if separator and kind.endswith(")"):
+                pywin32_entries[name] = kind[:-1]
+
+        missing_java_names: Set[str] = set()
+        for java_name in java_names:
+            if java_name in pywin32_entries:
+                continue
+            property_suffix = java_name[3:] if java_name.startswith(("get", "set")) and len(java_name) > 3 and java_name[3].isupper() else ""
+            has_property_alias = any("property" in kind and name.casefold() == property_suffix.casefold() for name, kind in pywin32_entries.items()) if property_suffix else False
+            if not has_property_alias:
+                missing_java_names.add(java_name)
+        return bool(missing_java_names) and missing_java_names.issubset(unavailable)
 
     for row in rows:
         statuses = row[3].split("; ")
@@ -424,9 +461,8 @@ def apply_pywin32_authority(rows: Rows, interface_name: str, authority: Authorit
             resolved = ["ALIAS_DOCUMENTED" if status == "PYTHON_METHOD_NAME_MISMATCH" else status for status in statuses]
             informational.append((row[0], row[1], row[2], "; ".join(resolved), _DOCUMENTED_ALIAS_RECOMMENDATION))
             continue
-        if _documented_unavailable(row) and not actionable:
-            resolved = ["UNAVAILABLE_DOCUMENTED" if status in _UNAVAILABLE_RESOLVED_STATUSES else status for status in statuses]
-            informational.append((row[0], row[1], row[2], "; ".join(resolved), _DOCUMENTED_UNAVAILABLE_RECOMMENDATION))
+        if (_documented_unavailable(row) or _has_documented_partial_unavailability(row)) and not actionable:
+            informational.append((row[0], row[1], row[2], "UNAVAILABLE_DOCUMENTED", _DOCUMENTED_UNAVAILABLE_RECOMMENDATION))
             continue
         if actionable:
             deviations.append((row[0], row[1], row[2], "; ".join(remaining), row[4]))
@@ -448,12 +484,7 @@ def _drop_unexposed_probe_names(python_members: Dict[str, Set[str]], pywin32_mem
 
     filtered: Dict[str, Set[str]] = {}
     for member_name, labels in python_members.items():
-        kept_labels = {
-            label
-            for label in labels
-            if member_name in pywin32_members
-            or not any(name in pywin32_members for name in candidates[label.split("()", maxsplit=1)[0]])
-        }
+        kept_labels = {label for label in labels if member_name in pywin32_members or not any(name in pywin32_members for name in candidates[label.split("()", maxsplit=1)[0]])}
         if kept_labels:
             filtered[member_name] = kept_labels
     return filtered
@@ -606,15 +637,9 @@ def render_markdown_report(
     informational_rows: Optional[Rows] = None,
     backlog_rows: Optional[Rows] = None,
     matched_rows: Optional[Rows] = None,
-    documented_counts: Optional[Tuple[int, int]] = None,
     java_package: str = JAVA_PACKAGE,
 ) -> str:
     """Render a comparison summary, five-column deviation table, and AI repair guidance."""
-    status_counts: Dict[str, int] = {}
-    for row in rows:
-        for status in row[3].split("; "):
-            status_counts[status] = status_counts.get(status, 0) + 1
-
     lines = [
         f"# Rhapsody API Validation: {interface_name}",
         "",
@@ -622,24 +647,10 @@ def render_markdown_report(
         f"- Java package: `{java_package}`",
         f"- Target wrapper: `{wrapper_class}` (`{wrapper_path}`)",
         f"- Members: Python `{member_counts[0]}`, Java `{member_counts[1]}`, pywin32 `{member_counts[2]}`",
-        f"- Deviations: `{len(rows)}`",
-        "- Deviations by status:",
+        f"- Deviation items: `{len(rows) + len(informational_rows or []) + len(backlog_rows or [])}` "
+        f"(actionable `{len(rows)}`, expected binding differences `{len(informational_rows or [])}`, "
+        f"wrapper backlog `{len(backlog_rows or [])}`)",
     ]
-    if status_counts:
-        lines.extend(f"  - `{status}`: {count}" for status, count in sorted(status_counts.items()))
-    else:
-        lines.append("  - None")
-
-    if authoritative:
-        lines.extend(
-            [
-                "",
-                f"- Informational binding differences (expected): `{len(informational_rows or [])}`",
-                f"- Wrapper backlog (supported members without wrappers): `{len(backlog_rows or [])}`",
-            ]
-        )
-        if documented_counts is not None:
-            lines.append(f"- Documented aliases: `{documented_counts[0]}`, documented unavailable: `{documented_counts[1]}`")
 
     lines.extend(
         [
@@ -700,21 +711,22 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--path",
         type=Path,
-        help="Output directory for the Markdown report (default: current working directory)",
+        help="Output root; the report is saved under its Java package path (default: current working directory)",
     )
     return parser
 
 
 def main(argv: Optional[List[str]] = None) -> int:
     args = build_arg_parser().parse_args(argv)
-    authority = load_authority()
     repository_root = Path(__file__).resolve().parents[1]
-    docs_root = repository_root / "docs" / "java_api" / Path(*JAVA_PACKAGE.split("."))
+    java_api_root = repository_root / "docs" / "java_api"
     models_root = repository_root / "src" / "rhapsody_cli" / "models"
     report_directory = args.path or Path.cwd()
-    report_path = report_directory / f"{args.java_interface}_api_report.md"
 
     try:
+        authority = load_authority()
+        java_package, docs_root = resolve_java_interface_docs(args.java_interface, java_api_root)
+        report_path = report_directory.joinpath(*java_package.split("."), f"{args.java_interface}_api_report.md")
         wrapper_class, wrapper_source = resolve_python_wrapper(args.java_interface, models_root)
         java_members = collect_java_members(args.java_interface, docs_root, include_superinterfaces=False)
         java_signatures = collect_java_signatures(args.java_interface, docs_root, include_superinterfaces=False)
@@ -732,13 +744,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         return 2
 
     raw_rows = build_deviation_rows(python_members, java_members, pywin32_members)
-    documented_counts: Optional[Tuple[int, int]] = None
     if args.source == "authority":
         rows, informational_rows, backlog_rows = apply_pywin32_authority(raw_rows, args.java_interface, authority)
-        documented_counts = (
-            len(authority["documented_aliases"].get(args.java_interface, {})),
-            len(authority["documented_unavailable"].get(args.java_interface, {})),
-        )
     else:
         rows, informational_rows, backlog_rows = raw_rows, [], []
 
@@ -762,7 +769,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             informational_rows=informational_rows,
             backlog_rows=backlog_rows,
             matched_rows=matched_rows,
-            documented_counts=documented_counts,
+            java_package=java_package,
         )
         report_path.write_text(markdown, encoding="utf-8")
     except OSError as exc:

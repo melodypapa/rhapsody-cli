@@ -3,12 +3,13 @@
 from typing import TYPE_CHECKING, Optional, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import IRPInterfaceItem
     from rhapsody_cli.models.elements.activity.model_actions import RPAction, RPSendAction
     from rhapsody_cli.models.elements.activity.model_activity import RPSwimlane
-    from rhapsody_cli.models.elements.classifiers.model_interface_item import RPInterfaceItem
     from rhapsody_cli.models.elements.classifiers.model_statechart import RPStatechart
     from rhapsody_cli.models.elements.graphics.model_graphics import RPConnector
     from rhapsody_cli.models.elements.interactions.model_interactions import RPTransition
@@ -215,7 +216,7 @@ class RPState(RPStateVertex):
         """
         return cast("RPConnector", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addConnector(type_))))
 
-    def add_internal_transition(self, trigger: "RPInterfaceItem") -> "RPTransition":
+    def add_internal_transition(self, trigger: "IRPInterfaceItem") -> "RPTransition":
         """Adds an internal transition to the state.
 
         Args:
@@ -250,7 +251,7 @@ class RPState(RPStateVertex):
         """
         return RPState(AbstractRPModelElement.call_com(lambda: self._com.addState(name)))
 
-    def add_static_reaction(self, trigger: "RPInterfaceItem") -> "RPTransition":
+    def add_static_reaction(self, trigger: "IRPInterfaceItem") -> "RPTransition":
         """Adds an internal transition to the state.
 
         Args:

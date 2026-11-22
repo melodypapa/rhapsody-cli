@@ -250,6 +250,13 @@ Documentation Structure
 
 .. toctree::
    :maxdepth: 1
+   :caption: Per-Class Wrapper Requirements (canonical Java package):
+   :glob:
+
+   requirements/com/telelogic/rhapsody/core/*
+
+.. toctree::
+   :maxdepth: 1
    :caption: Test Specifications:
    :glob:
 
@@ -290,19 +297,19 @@ Project Structure
    │   ├── com/                      # Java-mirrored packages (IRPClass at com/telelogic/rhapsody/core/)
    │   └── elements/                 # Specific element types
    │       ├── __init__.py
-   │       ├── classifiers/          # RPActor, RPOperation, RPAttribute, etc.
-   │       ├── containment/          # RPPackage, RPProject, RPComponent, etc.
-   │       ├── relations/            # RPRelation, RPGeneralization, RPPort, etc.
+   │       ├── classifiers/          # RPActor, IRPOperation, IRPAttribute, etc.
+   │       ├── containment/          # IRPPackage, IRPProject, RPComponent, etc.
+   │       ├── relations/            # RPRelation, RPGeneralization, IRPPort, etc.
    │       ├── diagrams/             # RPDiagram and subclasses
    │       ├── activity/             # RPFlowchart, RPFlow, RPFlowItem
    │       ├── statemachine/         # RPStatechart, RPState, RPTransition
    │       ├── interactions/         # RPCollaboration, RPMessage
    │       ├── graphics/             # RPGraphElement, RPGraphNode
-   │       ├── common/               # RPType, RPConstraint, etc.
+   │       ├── common/               # IRPType, RPConstraint, etc.
    │       ├── values/               # RPEnumerationLiteral
    │       ├── templates/            # RPTemplateParameter, RPTemplateInstantiation
    │       ├── requirements/         # RPRequirement, RPAnnotation
-   │       └── variables/            # RPVariable, RPArgument
+   │       └── variables/            # RPVariable, IRPArgument
    ├── commands/                      # CLI command groups
    │   ├── __init__.py
    │   ├── abstract_command.py       # AbstractCommand base class

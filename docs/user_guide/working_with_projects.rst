@@ -31,7 +31,7 @@ Programmatically:
    project = app.createNewProject("C:\\path\\to\\directory", "MyNewProject")
 
 The ``createNewProject()`` method creates the project on disk and returns
-the resulting ``RPProject`` instance (fetched via ``activeProject()``).
+the resulting ``IRPProject`` instance (fetched via ``activeProject()``).
 
 Opening a Project File
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -46,7 +46,7 @@ Opening a Project File
    # Open a project
    project = app.openProject("C:\\path\\to\\myproject.rpy")
 
-The ``openProject()`` method returns an ``RPProject`` instance.
+The ``openProject()`` method returns an ``IRPProject`` instance.
 
 Listing Open Projects
 ~~~~~~~~~~~~~~~~~~~~~

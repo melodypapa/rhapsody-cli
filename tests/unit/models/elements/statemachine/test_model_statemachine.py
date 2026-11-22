@@ -3,13 +3,14 @@
 from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.statemachine import RPState, RPStateVertex
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 if TYPE_CHECKING:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import IRPInterfaceItem
     from rhapsody_cli.models.elements.activity.model_activity import RPSwimlane
-    from rhapsody_cli.models.elements.classifiers.model_interface_item import RPInterfaceItem
     from rhapsody_cli.models.elements.graphics.model_graphics import RPConnector
     from rhapsody_cli.models.elements.interactions.model_interactions import RPTransition
 
@@ -118,7 +119,7 @@ class TestRPState:
         result = make_fake_element("Transition", properties={"name": "T1"})
         fake.addInternalTransition.return_value = result
         s = RPState(fake)
-        wrapped = s.add_internal_transition(cast("RPInterfaceItem", IRPModelElement(trigger)))
+        wrapped = s.add_internal_transition(cast("IRPInterfaceItem", IRPModelElement(trigger)))
         assert wrapped.get_name() == "T1"
         fake.addInternalTransition.assert_called_once_with(trigger)
 
@@ -137,7 +138,7 @@ class TestRPState:
         result = make_fake_element("Transition", properties={"name": "T1"})
         fake.addStaticReaction.return_value = result
         s = RPState(fake)
-        wrapped = s.add_static_reaction(cast("RPInterfaceItem", IRPModelElement(trigger)))
+        wrapped = s.add_static_reaction(cast("IRPInterfaceItem", IRPModelElement(trigger)))
         assert wrapped.get_name() == "T1"
         fake.addStaticReaction.assert_called_once_with(trigger)
 

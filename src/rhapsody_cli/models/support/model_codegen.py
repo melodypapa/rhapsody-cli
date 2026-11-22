@@ -4,12 +4,13 @@ from typing import TYPE_CHECKING, Optional
 
 from rhapsody_cli.application import RhapsodyApplication
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.graphics.model_graphics import RPTableLayout
 
 if TYPE_CHECKING:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
     from rhapsody_cli.models.elements.classifiers.model_stereotype import RPStereotype
-    from rhapsody_cli.models.elements.containment.model_package import RPPackage
     from rhapsody_cli.models.elements.diagrams.model_diagram_types import RPSequenceDiagram
     from rhapsody_cli.models.elements.diagrams.model_diagrams import RPDiagram
     from rhapsody_cli.models.elements.graphics.model_graphics import RPMatrixView, RPTableView
@@ -1153,7 +1154,7 @@ class RPSearchQuery(IRPModelElement):
         """
         self.call_com(lambda: self._com.resetSearchScope())
 
-    def save_as_query(self, query_owner: "RPPackage") -> "RPTableLayout":
+    def save_as_query(self, query_owner: "IRPPackage") -> "RPTableLayout":
         """Saves the search query object that you defined as a query in your
         model.
 

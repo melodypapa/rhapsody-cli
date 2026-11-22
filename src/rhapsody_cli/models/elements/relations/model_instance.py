@@ -3,11 +3,12 @@
 from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.relations.model_relation import RPRelation
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.elements.classifiers.model_operation import RPOperation
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
 
 
 class RPInstance(RPRelation):
@@ -124,7 +125,7 @@ class RPInstance(RPRelation):
         """
         return cast("RPRelation", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addRelationToTheWhole(rel_name))))
 
-    def get_instantiated_by(self) -> "RPOperation":
+    def get_instantiated_by(self) -> "IRPOperation":
         """Returns the operation that instantiates this instance.
 
         Returns:
@@ -136,7 +137,7 @@ class RPInstance(RPRelation):
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::getInstantiatedBy()
         """
-        return cast("RPOperation", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getInstantiatedBy", "instantiatedBy")))
+        return cast("IRPOperation", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getInstantiatedBy", "instantiatedBy")))
 
     def get_list_of_initializer_arguments(self) -> IRPCollection:
         """Returns the list of initializer arguments for this instance.

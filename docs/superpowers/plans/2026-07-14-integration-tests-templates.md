@@ -24,7 +24,7 @@ Some of the above (`set_type`, `get_representative`/`set_representative`) touch 
 
 - Windows-only runtime (requires Windows + a running Rhapsody instance)
 - All test classes use `@pytest.mark.integration`
-- All tests consume the `test_project: RPProject` fixture
+- All tests consume the `test_project: IRPProject` fixture
 - Use `_unique(prefix)` with `uuid.uuid4().hex[:8]`
 - Always `try/finally` cleanup using the correct delete method verified from source (`delete_from_project()`)
 - Assert both `isinstance()` and read-back values
@@ -55,7 +55,7 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.elements.templates import (
     RPTemplateInstantiation,
     RPTemplateInstantiationParameter,
@@ -67,10 +67,10 @@ def _unique(prefix: str = "Test") -> str:
     return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
 
-def _create_package(project: RPProject, name: str) -> RPPackage:
+def _create_package(project: IRPProject, name: str) -> IRPPackage:
     pkg = project.add_package(name)
     assert pkg is not None
-    assert isinstance(pkg, RPPackage)
+    assert isinstance(pkg, IRPPackage)
     return pkg
 
 
@@ -78,7 +78,7 @@ def _create_package(project: RPProject, name: str) -> RPPackage:
 class TestRPTemplateInstantiationIntegration:
     """Integration tests for RPTemplateInstantiation with real Rhapsody COM API."""
 
-    def test_get_template_instantiation_parameters(self, test_project: RPProject) -> None:
+    def test_get_template_instantiation_parameters(self, test_project: IRPProject) -> None:
         pkg = _create_package(test_project, _unique("TplPkg"))
         template_cls = pkg.add_class(_unique("TplClass"))
         instance_cls = pkg.add_class(_unique("InstClass"))
@@ -103,7 +103,7 @@ class TestRPTemplateInstantiationIntegration:
 class TestRPTemplateInstantiationParameterIntegration:
     """Integration tests for RPTemplateInstantiationParameter with real Rhapsody COM API."""
 
-    def test_arg_value_roundtrip(self, test_project: RPProject) -> None:
+    def test_arg_value_roundtrip(self, test_project: IRPProject) -> None:
         pkg = _create_package(test_project, _unique("TplPkg"))
         template_cls = pkg.add_class(_unique("TplClass"))
         instance_cls = pkg.add_class(_unique("InstClass"))
@@ -131,7 +131,7 @@ class TestRPTemplateInstantiationParameterIntegration:
         "relax this xfail once verified.",
         strict=False,
     )
-    def test_type_roundtrip(self, test_project: RPProject) -> None:
+    def test_type_roundtrip(self, test_project: IRPProject) -> None:
         pkg = _create_package(test_project, _unique("TplPkg"))
         template_cls = pkg.add_class(_unique("TplClass"))
         instance_cls = pkg.add_class(_unique("InstClass"))
@@ -192,7 +192,7 @@ git commit -m "test: add integration tests for RPTemplateInstantiation and RPTem
 class TestRPTemplateParameterIntegration:
     """Integration tests for RPTemplateParameter with real Rhapsody COM API."""
 
-    def test_parameter_kind_roundtrip(self, test_project: RPProject) -> None:
+    def test_parameter_kind_roundtrip(self, test_project: IRPProject) -> None:
         pkg = _create_package(test_project, _unique("TplPkg"))
         template_cls = pkg.add_class(_unique("TplClass"))
         try:
@@ -205,7 +205,7 @@ class TestRPTemplateParameterIntegration:
             template_cls.delete_from_project()
             pkg.delete_from_project()
 
-    def test_set_class_type(self, test_project: RPProject) -> None:
+    def test_set_class_type(self, test_project: IRPProject) -> None:
         pkg = _create_package(test_project, _unique("TplPkg"))
         template_cls = pkg.add_class(_unique("TplClass"))
         helper_cls = pkg.add_class(_unique("HelperClass"))
@@ -230,7 +230,7 @@ class TestRPTemplateParameterIntegration:
         "TODO: confirm representative wiring against a live instance and relax this xfail.",
         strict=False,
     )
-    def test_representative_roundtrip(self, test_project: RPProject) -> None:
+    def test_representative_roundtrip(self, test_project: IRPProject) -> None:
         pkg = _create_package(test_project, _unique("TplPkg"))
         template_cls = pkg.add_class(_unique("TplClass"))
         try:

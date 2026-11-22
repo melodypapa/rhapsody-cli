@@ -1,7 +1,8 @@
 """Tests for rhapsody_cli.models.elements.values.model_values classes."""
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.values import (
     RPInstanceSlot,
     RPInstanceSpecification,
@@ -119,13 +120,13 @@ class TestRPInstanceSpecification:
         fake.populateSlots.assert_called_once_with()
 
     def test_set_classifier_delegates(self) -> None:
-        from rhapsody_cli.models.elements.classifiers import RPClassifier
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 
         fake = make_fake_element("InstanceSpecification")
         clf = make_fake_element("Class", properties={"name": "C1"})
         fake.setClassifier.return_value = None
         spec = RPInstanceSpecification(fake)
-        spec.set_classifier(RPClassifier(clf))
+        spec.set_classifier(IRPClassifier(clf))
         fake.setClassifier.assert_called_once_with(clf)
 
 

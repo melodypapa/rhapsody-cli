@@ -7,7 +7,7 @@ After rounds 1-2 (RPModelElement + 9 imported classes), ~75 wrapper classes rema
 Same as rounds 1-2:
 1. Open Java API HTML doc for the interface (e.g., `IRPClass.html`)
 2. Compare each method's Python signature against the Java declaration
-3. Fix return types: `IRP*` → specific Python wrapper (e.g., `IRPClassifier` → `RPClassifier`)
+3. Fix return types: `IRP*` → specific Python wrapper (e.g., `IRPClassifier` → `IRPClassifier`)
 4. Fix param types: drop `Any`, use specific wrappers
 5. Add `cast()` returns where `wrap()` returns `RPModelElement`
 6. Add `TYPE_CHECKING` imports for wrapper types used only in annotations
@@ -20,13 +20,13 @@ Same as rounds 1-2:
 | Class | Parent | Direct methods | Interface |
 |-------|--------|---------------|-----------|
 | `RPException` | `RPModelElement` | 0 | IRPException — empty interface |
-| **`RPUseCase`** | `RPClassifier` | 2 | IRPUseCase |
-| **`RPActor`** | `RPClassifier` | 2 | IRPActor |
-| **`RPInterfaceItem`** | `RPClassifier` | 2 | IRPInterfaceItem |
-| **`RPOperation`** | `RPInterfaceItem` | 8 | IRPOperation |
+| **`IRPUseCase`** | `IRPClassifier` | 2 | IRPUseCase |
+| **`RPActor`** | `IRPClassifier` | 2 | IRPActor |
+| **`IRPInterfaceItem`** | `IRPClassifier` | 2 | IRPInterfaceItem |
+| **`IRPOperation`** | `IRPInterfaceItem` | 8 | IRPOperation |
 | **`RPStatechart`** | `RPClass` | 10 | IRPStatechart |
-| **`RPClass`** | `RPClassifier` | 14 | IRPClass |
-| **`RPClassifier`** | `RPUnit` | 18 | IRPClassifier |
+| **`RPClass`** | `IRPClassifier` | 14 | IRPClass |
+| **`IRPClassifier`** | `RPUnit` | 18 | IRPClassifier |
 
 RPException is a no-op (0 direct methods, empty interface). Skip it.
 
@@ -39,7 +39,7 @@ RPException is a no-op (0 direct methods, empty interface). Skip it.
 | **`RPConstraint`** | `RPModelElement` | 2 | IRPConstraint |
 | **`RPClassifierRole`** | `RPModelElement` | 4 | IRPClassifierRole |
 | **`RPSysMLPort`** | `RPInstance` | 2 | IRPSysMLPort |
-| **`RPType`** | `RPClassifier` | 2 | IRPType |
+| **`IRPType`** | `IRPClassifier` | 2 | IRPType |
 
 RPEnumerationLiteral has 0 direct methods. Skip it.
 
@@ -67,10 +67,10 @@ RPValueSpecification, RPInstanceValue, RPLiteralSpecification have 0 direct meth
 | Class | Parent | Direct methods | Interface |
 |-------|--------|---------------|-----------|
 | RPVariable | `RPUnit` | 10 | IRPVariable — already checked implicitly in round 2 (RPTag file) |
-| **`RPAttribute`** | `RPVariable` | 11 | IRPAttribute |
-| **`RPArgument`** | `RPVariable` | 2 | IRPArgument |
+| **`IRPAttribute`** | `RPVariable` | 11 | IRPAttribute |
+| **`IRPArgument`** | `RPVariable` | 2 | IRPArgument |
 
-RPVariable has been partially checked (same file as RPTag, round 2). RPAttribute and RPArgument need full review.
+RPVariable has been partially checked (same file as RPTag, round 2). IRPAttribute and IRPArgument need full review.
 
 ### 6. `statemachine/` — 2 classes with methods
 
@@ -84,7 +84,7 @@ RPVariable has been partially checked (same file as RPTag, round 2). RPAttribute
 | Class | Parent | Direct methods | Interface |
 |-------|--------|---------------|-----------|
 | **`RPInstance`** | `RPRelation` | 6 | IRPInstance |
-| **`RPPort`** | `RPInstance` | 6 | IRPPort |
+| **`IRPPort`** | `RPInstance` | 6 | IRPPort |
 | **`RPGeneralization`** | `RPModelElement` | 6 | IRPGeneralization |
 | **`RPHyperLink`** | `RPDependency` | 2 | IRPHyperLink |
 | `RPAssociationRole` | `RPInstance` | 2 | IRPAssociationRole |
@@ -102,7 +102,7 @@ All 10 diagram type subclasses in `model_diagram_types.py` have 0 direct methods
 | Class | Parent | Direct methods | Interface |
 |-------|--------|---------------|-----------|
 | **`RPFlow`** | `RPModelElement` | 12 | IRPFlow |
-| **`RPFlowItem`** | `RPClassifier` | 2 | IRPFlowItem |
+| **`RPFlowItem`** | `IRPClassifier` | 2 | IRPFlowItem |
 | **`RPFlowchart`** | `RPStatechart` | 2 | IRPFlowchart |
 | **`RPObjectNode`** | `RPState` | 4 | IRPObjectNode |
 | **`RPSwimlane`** | `RPModelElement` | 2 | IRPSwimlane |
@@ -125,7 +125,7 @@ All 10 diagram type subclasses in `model_diagram_types.py` have 0 direct methods
 |-------|--------|---------------|-----------|
 | **`RPMessage`** | `RPModelElement` | 12 | IRPMessage |
 | **`RPTransition`** | `RPModelElement` | 8 | IRPTransition |
-| **`RPEvent`** | `RPInterfaceItem` | 2 | IRPEvent |
+| **`RPEvent`** | `IRPInterfaceItem` | 2 | IRPEvent |
 | **`RPTrigger`** | `RPModelElement` | 2 | IRPTrigger |
 | **`RPGuard`** | `RPModelElement` | 2 | IRPGuard |
 | **`RPExecutionOccurrence`** | `RPModelElement` | 0 | IRPExecutionOccurrence |
@@ -133,19 +133,19 @@ All 10 diagram type subclasses in `model_diagram_types.py` have 0 direct methods
 | **`RPInteractionOperand`** | `RPCollaboration` | 0 | IRPInteractionOperand |
 | **`RPInteractionOperator`** | `RPModelElement` | 0 | IRPInteractionOperator |
 | **`RPDestructionEvent`** | `RPMessage` | 0 | IRPDestructionEvent |
-| **`RPEventReception`** | `RPInterfaceItem` | 0 | IRPEventReception |
+| **`RPEventReception`** | `IRPInterfaceItem` | 0 | IRPEventReception |
 
 ### 12. `containment/` — 7 classes with methods
 
 | Class | Parent | Direct methods | Interface |
 |-------|--------|---------------|-----------|
-| **`RPPackage`** | `RPUnit` | ~40 | IRPPackage — LARGE |
+| **`IRPPackage`** | `RPUnit` | ~40 | IRPPackage — LARGE |
 | **`RPComponent`** | `RPUnit` | 14 | IRPComponent |
 | **`RPConfiguration`** | `RPUnit` | 14 | IRPConfiguration |
 | **`RPCollaboration`** | `RPUnit` | 14 | IRPCollaboration |
 | **`RPNode`** | `RPUnit` | 6 | IRPNode |
 | **`RPComponentInstance`** | `RPInstance` | 2 | IRPComponentInstance |
-| **`RPProfile`** | `RPPackage` | 0 | IRPProfile — shared from RPPackage |
+| **`RPProfile`** | `IRPPackage` | 0 | IRPProfile — shared from IRPPackage |
 | `RPModule` | `RPInstance` | 0 | IRPModule — empty/basic |
 
 RPProfile and RPModule have 0 direct methods. Skip them.
@@ -170,9 +170,9 @@ RPProfile and RPModule have 0 direct methods. Skip them.
 
 Many graphics classes have 0 methods (RPGraphEdge, RPGraphNode, RPGraphicalProperty, RPConditionMark, RPMessagePoint). Skip them. The main ones are RPGraphElement, RPTableLayout, RPMatrixLayout, RPTableView, RPMatrixView, RPImageMap, RPConnector, RPPin.
 
-### 14. `containment/` — RPProject re-audit
+### 14. `containment/` — IRPProject re-audit
 
-RPProject was "partially checked" in round 2. It has ~55 methods and needs a full systematic review. The round 2 audit found it has many `Any` params and potential signature mismatches. This is the largest single file.
+IRPProject was "partially checked" in round 2. It has ~55 methods and needs a full systematic review. The round 2 audit found it has many `Any` params and potential signature mismatches. This is the largest single file.
 
 ## Recommended Execution Order
 
@@ -180,19 +180,19 @@ Work from smallest to largest for quick wins:
 
 1. **common/** — 5 classes (Comment, Constraint, ClassifierRole, SysMLPort, Type)
 2. **classifiers/small** — 4 classes (UseCase, Actor, InterfaceItem, Operation)
-3. **variables/** — 2 classes (RPAttribute, RPArgument)
+3. **variables/** — 2 classes (IRPAttribute, IRPArgument)
 4. **statemachine/** — 2 classes (RPStateVertex, RPState)
 5. **requirements/** — 2 classes (RPAnnotation, RPRequirement)
-6. **relations/** — 5 classes (RPInstance, RPPort, RPGeneralization, RPHyperLink, RPAssociationRole)
+6. **relations/** — 5 classes (RPInstance, IRPPort, RPGeneralization, RPHyperLink, RPAssociationRole)
 7. **values/** — 1 class (RPInstanceSlot, RPInstanceSpecification)
 8. **graphics/small** — 5 classes (RPImageMap, RPConnector, RPPin, RPMatrixLayout/View, RPTableView)
 9. **activity/** — 5 classes (Flow, FlowItem, Flowchart, ObjectNode, Swimlane)
 10. **activity/actions** — 3 classes (RPAction, RPCallOperation, RPSendAction)
 11. **interactions/** — 5 classes (Message, Transition, Event, Trigger, Guard, InteractionOccurrence)
-12. **classifiers/large** — 2 classes (RPClassifier, RPClass, RPStatechart)
+12. **classifiers/large** — 2 classes (IRPClassifier, RPClass, RPStatechart)
 13. **graphics/large** — 2 classes (RPGraphElement, RPTableLayout)
-14. **containment/large** — 4 classes (RPPackage, RPComponent, RPConfiguration, RPCollaboration, RPNode, RPComponentInstance)
-15. **containment/rpproject** — RPProject full re-audit
+14. **containment/large** — 4 classes (IRPPackage, RPComponent, RPConfiguration, RPCollaboration, RPNode, RPComponentInstance)
+15. **containment/rpproject** — IRPProject full re-audit
 
 ## Quality Gate After Each Subpackage
 
@@ -271,14 +271,14 @@ def find_nested_element(self, name: str, meta_class: str) -> Optional["RPModelEl
     if com_result is None:
         return None  # Explicit None - truthful to actual behavior
     return AbstractRPModelElement.wrap(com_result)
-    # Returns specific wrapper (RPClass, RPPackage, etc.) or None
+    # Returns specific wrapper (RPClass, IRPPackage, etc.) or None
 ```
 
 **Why this is correct:**
 1. ✅ **Java API truthfulness**: Java API signature lies (says non-null, returns null). Python's Optional tells the truth.
 2. ✅ **Type-safe**: Mypy ENFORCES `if element is None:` checks before using
 3. ✅ **No private access**: Users never need to check `element._com`
-4. ✅ **Specific types**: Returns `RPClass`, `RPPackage`, etc., not just `RPModelElement`
+4. ✅ **Specific types**: Returns `RPClass`, `IRPPackage`, etc., not just `RPModelElement`
 5. ✅ **Matches child class returns**: `wrap()` returns specific subclass, not base class
 
 ### How to Check Java API Docs

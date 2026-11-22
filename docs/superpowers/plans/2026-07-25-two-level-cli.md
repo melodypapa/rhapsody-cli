@@ -979,7 +979,7 @@ from rhapsody_cli.exceptions import CliExecutionError, RhapsodyConnectionError
 from rhapsody_cli.session import Session, SessionManager
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.elements.containment import RPProject
+    from rhapsody_cli.models.elements.containment import IRPProject
 
 logger = logging.getLogger(__name__)
 

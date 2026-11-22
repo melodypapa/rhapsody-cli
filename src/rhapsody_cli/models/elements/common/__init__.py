@@ -1,5 +1,6 @@
 """Common package — catch-all model-element wrappers (comments, constraints, types)."""
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type import IRPType  # noqa: F401
 from rhapsody_cli.models.elements.common.model_misc import (  # noqa: F401
     RPComment,
     RPConstraint,
@@ -8,7 +9,6 @@ from rhapsody_cli.models.elements.common.model_misc import (  # noqa: F401
 from rhapsody_cli.models.elements.common.model_other_model import (  # noqa: F401
     RPClassifierRole,
     RPSysMLPort,
-    RPType,
 )
 
 __all__ = [
@@ -17,5 +17,5 @@ __all__ = [
     "RPEnumerationLiteral",
     "RPClassifierRole",
     "RPSysMLPort",
-    "RPType",
+    "IRPType",
 ]

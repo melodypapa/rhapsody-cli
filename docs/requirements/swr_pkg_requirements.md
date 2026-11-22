@@ -362,8 +362,8 @@ The package CLI
 The package CLI
 - SHALL allow `--path` argument on `package create` to be optional
 - When `--path` is omitted (None or empty string), SHALL create the package directly under the project root
-- When creating at project root, SHALL use the `RPProject.addPackage()` method (top-level package creation)
-- When creating under an existing package, SHALL use `RPPackage.addNestedPackage()` method (nested package creation)
+- When creating at project root, SHALL use the `IRPProject.addPackage()` method (top-level package creation)
+- When creating under an existing package, SHALL use `IRPPackage.addNestedPackage()` method (nested package creation)
 - Reported/logged full paths for root-level packages SHALL not include leading `None/` or empty-segment artifacts (e.g., `"MyPackage"` not `"None/MyPackage"`)
 - All other package attributes, stereotypes, tags, and error handling remain unchanged
 **Implementation:** src/rhapsody_cli/actions/package_action.py:PackageCreateAction

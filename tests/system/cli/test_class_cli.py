@@ -137,7 +137,7 @@ class TestClassCLI:
         """Test adding a generalization link between nested classes.
 
         Classes are nested inside a container class (not directly under a
-        package) so that the source class's owner is an RPClassifier, which
+        package) so that the source class's owner is an IRPClassifier, which
         is the type that defines find_nested_classifier_recursive.
         """
         from rhapsody_cli import RhapsodyApplication
@@ -158,8 +158,10 @@ class TestClassCLI:
         container = project.find_nested_element_recursive(container_cls_name, "Class")
         assert container is not None, f"Could not find container class {container_cls_name}"
         assert isinstance(container, IRPClass), f"Expected IRPClass, got {type(container)}"
-        container.add_class(parent_cls_name)
-        container.add_class(child_cls_name)
+        # The nested class COM object is typed generically in this build and
+        # lacks addClass; use the generic aggregation API instead.
+        container.add_new_aggr("Class", parent_cls_name)
+        container.add_new_aggr("Class", child_cls_name)
         child_path = f"{pkg_path}/{container_cls_name}/{child_cls_name}"
 
         try:

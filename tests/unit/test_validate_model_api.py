@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 import pytest
 
@@ -20,6 +20,29 @@ from scripts.validate_model_api import (
     render_report,
     resolve_python_wrapper,
 )
+
+
+def test_resolve_java_interface_docs_uses_declared_package(tmp_path: Path) -> None:
+    docs_root = tmp_path / "java_api"
+    package_docs = docs_root / "org" / "example" / "rhapsody"
+    package_docs.mkdir(parents=True)
+    (package_docs / "IRPThing.html").write_text("<html></html>", encoding="utf-8")
+
+    java_package, resolved_docs = validator.resolve_java_interface_docs("IRPThing", docs_root)
+
+    assert java_package == "org.example.rhapsody"
+    assert resolved_docs == package_docs
+
+
+def test_resolve_java_interface_docs_rejects_ambiguous_interface_names(tmp_path: Path) -> None:
+    docs_root = tmp_path / "java_api"
+    for package in ("org/example/one", "org/example/two"):
+        package_docs = docs_root / Path(package)
+        package_docs.mkdir(parents=True)
+        (package_docs / "IRPThing.html").write_text("<html></html>", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="ambiguous"):
+        validator.resolve_java_interface_docs("IRPThing", docs_root)
 
 
 def test_collect_java_members_includes_superinterfaces(tmp_path: Path) -> None:
@@ -58,7 +81,7 @@ ACTIVE_ROW = (
 
 
 def test_promote_correct_com_bindings_moves_property_binding_to_matches() -> None:
-    informational = [ACTIVE_ROW]
+    informational: List[Tuple[str, str, str, str, str]] = [ACTIVE_ROW]
 
     remaining, promoted = promote_correct_com_bindings(informational)
 
@@ -150,7 +173,7 @@ def test_collect_java_members_own_only_excludes_superinterfaces(tmp_path: Path) 
     docs_root.mkdir()
     (docs_root / "IRPBase.html").write_text('<A NAME="baseCall()"><!-- --></A><H3>baseCall</H3>', encoding="utf-8")
     (docs_root / "IRPChild.html").write_text(
-        '<DT><B>All Superinterfaces:</B><DD><A HREF="IRPBase.html">IRPBase</A></DD>' '<A NAME="childCall()"><!-- --></A><H3>childCall</H3>',
+        '<DT><B>All Superinterfaces:</B><DD><A HREF="IRPBase.html">IRPBase</A></DD><A NAME="childCall()"><!-- --></A><H3>childCall</H3>',
         encoding="utf-8",
     )
 
@@ -464,23 +487,29 @@ def test_markdown_report_includes_java_package() -> None:
     assert "- Java package: `com.telelogic.rhapsody.core`" in report
 
 
-def test_markdown_report_lists_documented_decision_counts(tmp_path: Path) -> None:
+def test_markdown_report_counts_deviation_items_across_all_tables() -> None:
+    """Deviations count items, not kinds: actionable rows, expected binding
+    differences, and wrapper backlog members all add to the total."""
     report = render_markdown_report(
         "IRPClass",
-        [],
+        [("—", "save (method)", "save (method)", "MISSING_PYTHON_WRAPPER", "Implement the Python wrapper.")],
         "IRPClass",
         "src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_class.py",
         {},
         (214, 222, 201),
         authoritative=True,
-        documented_counts=(7, 9),
+        informational_rows=[("get_build_no() -> getBuildNo", "getBuildNo (method)", "BuildNo (property)", "COM_MEMBER_NOT_EXPOSED", "Document.")],
+        backlog_rows=[("—", "moveToDesignManager (method)", "moveToDesignManager (method)", "MISSING_PYTHON_WRAPPER", "Implement the Python wrapper.")],
     )
 
-    assert "- Documented aliases: `7`, documented unavailable: `9`" in report
+    assert "- Deviation items: `3` (actionable `1`, expected binding differences `1`, wrapper backlog `1`)" in report
 
 
 def test_main_writes_markdown_report_to_default_and_requested_directories(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
     monkeypatch.chdir(tmp_path)
+    java_package = "org.example.rhapsody"
+    package_docs = tmp_path / "java_api" / Path(*java_package.split("."))
+    monkeypatch.setattr(validator, "resolve_java_interface_docs", lambda interface_name, docs_root: (java_package, package_docs))
     monkeypatch.setattr(validator, "resolve_python_wrapper", lambda interface_name, models_root: ("RhapsodyApplication", models_root.parent / "application.py"))
     monkeypatch.setattr(validator, "collect_java_signatures", lambda interface_name, docs_root, **kwargs: {"version": {"IRPApplication.version()"}})
     monkeypatch.setattr(validator, "collect_java_members", lambda interface_name, docs_root, **kwargs: {"version"})
@@ -488,13 +517,16 @@ def test_main_writes_markdown_report_to_default_and_requested_directories(tmp_pa
     monkeypatch.setattr(validator, "collect_registered_pywin32_members", lambda interface_name: {"version": "method"})
 
     assert main(["IRPApplication"]) == 0
-    default_report = tmp_path / "IRPApplication_api_report.md"
+    package_path = Path(*java_package.split("."))
+    default_report = tmp_path / package_path / "IRPApplication_api_report.md"
     assert default_report.is_file()
-    assert "# Rhapsody API Validation: IRPApplication" in default_report.read_text(encoding="utf-8")
+    default_text = default_report.read_text(encoding="utf-8")
+    assert "# Rhapsody API Validation: IRPApplication" in default_text
+    assert f"- Java package: `{java_package}`" in default_text
 
     custom_directory = tmp_path / "reports"
     assert main(["IRPApplication", "--path", str(custom_directory)]) == 0
-    custom_report = custom_directory / "IRPApplication_api_report.md"
+    custom_report = custom_directory / package_path / "IRPApplication_api_report.md"
     assert custom_report.is_file()
     assert capsys.readouterr().out == ""
 
@@ -591,6 +623,32 @@ def test_apply_pywin32_authority_marks_documented_unavailable_member() -> None:
             "get_rmm_url() -> getRmmUrl; get_rmm_url() -> rmmUrl",
             "getRmmUrl (method)",
             "—",
+            "UNAVAILABLE_DOCUMENTED",
+            "Documented decision: intentionally unsupported; no change.",
+        )
+    ]
+
+
+def test_apply_pywin32_authority_marks_partial_accessor_unavailable() -> None:
+    rows = [
+        (
+            "get_unit_path() (no static COM member); set_unit_path() -> setUnitPath",
+            "getUnitPath (method); setUnitPath (method)",
+            "setUnitPath (method)",
+            "ACCESSOR_ALIAS_MISMATCH",
+            "Review the related API spellings.",
+        )
+    ]
+
+    deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPUnit", _authority(unavailable={"IRPUnit": ["getUnitPath"]}))
+
+    assert deviations == []
+    assert backlog == []
+    assert informational == [
+        (
+            "get_unit_path() (no static COM member); set_unit_path() -> setUnitPath",
+            "getUnitPath (method); setUnitPath (method)",
+            "setUnitPath (method)",
             "UNAVAILABLE_DOCUMENTED",
             "Documented decision: intentionally unsupported; no change.",
         )
@@ -711,13 +769,14 @@ def test_apply_pywin32_authority_keeps_unexposed_member_as_deviation() -> None:
 def test_main_authority_source_reports_backlog_without_typelib(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(validator, "load_authority", lambda: _authority(catalog={"IRPClass": {"isAbstract": "property"}}))
+    monkeypatch.setattr(validator, "resolve_java_interface_docs", lambda interface_name, docs_root: ("com.telelogic.rhapsody.core", docs_root))
     monkeypatch.setattr(validator, "collect_java_signatures", lambda interface_name, docs_root, **kwargs: {"isAbstract": {"IRPClass.isAbstract()"}})
     monkeypatch.setattr(validator, "collect_java_members", lambda interface_name, docs_root, **kwargs: {"isAbstract"})
     monkeypatch.setattr(validator, "collect_python_members", lambda interface_name, models_root, **kwargs: {"isAbstract": {"is_abstract() -> isAbstract"}})
 
     assert validator.main(["IRPClass", "--source", "authority"]) == 0
 
-    report = (tmp_path / "IRPClass_api_report.md").read_text(encoding="utf-8")
+    report = (tmp_path / Path(*validator.JAVA_PACKAGE.split(".")) / "IRPClass_api_report.md").read_text(encoding="utf-8")
     assert "## Expected Binding Differences" in report
     assert "## Wrapper Backlog" in report
     assert "No deviations require changes." in report
@@ -725,7 +784,7 @@ def test_main_authority_source_reports_backlog_without_typelib(tmp_path: Path, m
 
 def test_irpclass_report_has_no_actionable_deviations() -> None:
     reports_root = Path(__file__).resolve().parents[2] / "docs" / "reports"
-    text = (reports_root / "IRPClass_api_report.md").read_text(encoding="utf-8")
+    text = (reports_root / Path(*validator.JAVA_PACKAGE.split(".")) / "IRPClass_api_report.md").read_text(encoding="utf-8")
     section = text.split("## Comparison details", 1)[1].split("## Expected Binding Differences", 1)[0]
     rows = [line for line in section.splitlines() if line.startswith("| ") and "Python model wrapper" not in line and "---" not in line]
     assert rows == [], rows

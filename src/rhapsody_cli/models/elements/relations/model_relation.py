@@ -3,13 +3,14 @@
 from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
-from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
-    from rhapsody_cli.models.elements.classifiers.model_association_class import RPAssociationClass
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_association_class import IRPAssociationClass
 
 
 class RPRelation(IRPUnit):
@@ -66,7 +67,7 @@ class RPRelation(IRPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.addQualifier(p_val._com))
 
-    def get_association_class(self) -> "RPAssociationClass":
+    def get_association_class(self) -> "IRPAssociationClass":
         """Returns the association class linked to this relation, if any.
 
         Returns:
@@ -78,7 +79,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getAssociationClass()
         """
-        return cast("RPAssociationClass", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getAssociationClass", "associationClass")))
+        return cast("IRPAssociationClass", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getAssociationClass", "associationClass")))
 
     def get_inverse(self) -> "RPRelation":
         """Gets the inverse relation for this (bidirectional) relation.
@@ -150,7 +151,7 @@ class RPRelation(IRPUnit):
         """
         return cast("IRPClass", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getObjectAsObjectType", "objectAsObjectType")))
 
-    def get_of_class(self) -> "RPClassifier":
+    def get_of_class(self) -> "IRPClassifier":
         """Gets the classifier that owns this relation.
 
         Returns:
@@ -162,9 +163,9 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getOfClass()
         """
-        return cast("RPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getOfClass", "ofClass")))
+        return cast("IRPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getOfClass", "ofClass")))
 
-    def get_other_class(self) -> "RPClassifier":
+    def get_other_class(self) -> "IRPClassifier":
         """Gets the class that this class is related to via this relation.
 
         Returns:
@@ -173,7 +174,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getOtherClass()
         """
-        return cast("RPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getOtherClass", "otherClass")))
+        return cast("IRPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getOtherClass", "otherClass")))
 
     def get_qualifier(self) -> str:
         """Gets the qualifier text for the association.
@@ -203,7 +204,7 @@ class RPRelation(IRPUnit):
         """
         return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getQualifiers", "qualifiers"))
 
-    def get_qualifier_type(self) -> "RPClassifier":
+    def get_qualifier_type(self) -> "IRPClassifier":
         """For associations that use qualifiers, returns the type of the qualifier.
 
         Returns:
@@ -212,7 +213,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getQualifierType()
         """
-        return cast("RPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getQualifierType", "qualifierType")))
+        return cast("IRPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getQualifierType", "qualifierType")))
 
     def get_relation_label(self) -> str:
         """Gets the label of the relation.
@@ -366,7 +367,7 @@ class RPRelation(IRPUnit):
         """
         AbstractRPModelElement._set_method_or_property(self._com, "setMultiplicity", "multiplicity", multiplicity)
 
-    def set_of_class(self, of_class: RPClassifier) -> None:
+    def set_of_class(self, of_class: IRPClassifier) -> None:
         """Sets the classifier that owns this relation.
 
         Args:
@@ -380,7 +381,7 @@ class RPRelation(IRPUnit):
         """
         AbstractRPModelElement._set_method_or_property(self._com, "setOfClass", "ofClass", of_class._com)
 
-    def set_other_class(self, other_class: RPClassifier) -> None:
+    def set_other_class(self, other_class: IRPClassifier) -> None:
         """Sets the class that this class is related to via this relation.
 
         Args:
@@ -408,7 +409,7 @@ class RPRelation(IRPUnit):
         """
         AbstractRPModelElement._set_method_or_property(self._com, "setQualifier", "qualifier", qualifier)
 
-    def set_qualifier_type(self, p_val: RPClassifier) -> None:
+    def set_qualifier_type(self, p_val: IRPClassifier) -> None:
         """Sets the type to use for the qualifier for the association.
 
         Args:

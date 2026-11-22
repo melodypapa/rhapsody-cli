@@ -11,21 +11,18 @@ import pytest
 SKILL_ROOT = Path(__file__).resolve().parents[1]
 SYNC_TOOLS_PATH = SKILL_ROOT / "scripts" / "sync_tools.py"
 
-_VALID_RST_DEVIATIONS = (
-    ".. list-table:: API deviations\n"
-    "   :header-rows: 1\n\n"
-    "   * - JavaDoc member/signature\n"
-    "     - COM/pywin32 exposure\n"
-    "     - Python implementation\n"
-    "     - Deviation and treatment\n"
-    "   * - ``getValue``\n"
-    "     - ``getValue (method)``\n"
-    "     - ``get_value``\n"
-    "     - Mismatch\n"
-    "   * - ``addExample``\n"
-    "     - unavailable\n"
-    "     - no wrapper\n"
-    "     - JavaDoc-only\n"
+_REPORT_PACKAGE_PARTS = ("com", "telelogic", "rhapsody", "core")
+
+
+def _report_path(reports_root: Path, interface_name: str) -> Path:
+    return reports_root / Path(*_REPORT_PACKAGE_PARTS) / f"{interface_name}_api_report.md"
+
+
+_VALID_RST_API_REFERENCE = (
+    "API reference\n"
+    "-------------\n\n"
+    ".. autofunction:: rhapsody_cli.models.com.telelogic.rhapsody.core.model_thing.get_value\n\n"
+    ".. autofunction:: rhapsody_cli.models.com.telelogic.rhapsody.core.model_thing.add_example\n"
 )
 
 
@@ -51,8 +48,19 @@ def _write_fixture_project(root: Path, rst_deviations: str, with_tests: bool = T
     wrapper_dir.mkdir(parents=True)
     (root / "scripts").mkdir()
     (root / "scripts" / "validate_model_api.py").write_text("", encoding="utf-8")
+    (root / "docs" / "reports").mkdir(parents=True)
+    (root / "docs" / "reports" / "pywin32_authority.json").write_text('{"catalog": {"IRPThing": {}}}', encoding="utf-8")
     (java_dir / "IRPThing.html").write_text("<html>IRPThing</html>", encoding="utf-8")
-    (wrapper_dir / "model_thing.py").write_text("class RPThing: pass\n", encoding="utf-8")
+    (wrapper_dir / "model_thing.py").write_text(
+        "class RPThing:\n"
+        "    def get_value(self) -> int:\n"
+        "        return 0\n\n"
+        "    def add_example(self, name: str) -> None:\n"
+        "        pass\n\n"
+        "    def _helper(self) -> None:\n"
+        "        pass\n",
+        encoding="utf-8",
+    )
     (root / "docs" / "requirements" / Path(*package_parts)).mkdir(parents=True)
     (root / "docs" / "requirements" / Path(*package_parts) / "model_thing.md").write_text("RPThing wraps IRPThing\n", encoding="utf-8")
     (root / "docs" / "api" / Path(*package_parts)).mkdir(parents=True)
@@ -78,7 +86,7 @@ def _write_fixture_project(root: Path, rst_deviations: str, with_tests: bool = T
 
 
 def _write_report(root: Path, java_package: Optional[str] = "com.telelogic.rhapsody.core") -> Path:
-    report = root / "docs" / "reports" / "IRPThing_api_report.md"
+    report = _report_path(root / "docs" / "reports", "IRPThing")
     report.parent.mkdir(parents=True)
     java_package_line = f"- Java package: `{java_package}`\n" if java_package else ""
     report.write_text(
@@ -111,6 +119,25 @@ def test_finds_project_root_from_skill_scripts_directory(tmp_path: Path) -> None
     assert tools.find_project_root(start) == root
 
 
+def test_api_report_path_uses_the_java_package_from_javadoc(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = _write_fixture_project(tmp_path / "repo", _VALID_RST_API_REFERENCE)
+
+    report = tools.api_report_path(root, "IRPThing")
+
+    assert report == root / "docs" / "reports" / "com" / "telelogic" / "rhapsody" / "core" / "IRPThing_api_report.md"
+
+
+def test_api_report_path_finds_package_report_without_javadoc(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    report = root / "docs" / "reports" / "org" / "example" / "rhapsody" / "IRPThing_api_report.md"
+    report.parent.mkdir(parents=True)
+    report.write_text("# Rhapsody API Validation: IRPThing\n", encoding="utf-8")
+
+    assert tools.api_report_path(root, "IRPThing") == report
+
+
 def test_builds_validator_command_using_existing_project_script(tmp_path: Path) -> None:
     tools = _load_sync_tools()
     root = tmp_path / "repo"
@@ -124,36 +151,47 @@ def test_builds_validator_command_using_existing_project_script(tmp_path: Path) 
     assert command[command.index("--path") + 1] == str(reports)
 
 
-def test_extracts_deviation_members_from_validator_report() -> None:
+def test_parses_public_wrapper_members() -> None:
+    """API-reference coverage is defined over the wrapper's public members:
+    public methods and properties, no underscore-private, no dunders."""
     tools = _load_sync_tools()
-    report = (
-        "## Comparison details\n"
-        "| wrapper | Java API | COM | status | recommendation |\n"
-        "| --- | --- | --- | --- | --- |\n"
-        "| get_value() -> getValue | getValue (method) | value (property) | MISMATCH | Fix it. |\n"
-        "## Expected Binding Differences\n"
-        "| wrapper | Java API | COM | status | recommendation |\n"
-        "| --- | --- | --- | --- | --- |\n"
-        "| — | addExample (method) | — | JAVA_ONLY_MEMBER | Check it. |\n"
+    source = (
+        "class RPThing:\n"
+        "    def get_value(self) -> int:\n"
+        "        return 0\n\n"
+        "    @property\n"
+        "    def kind(self) -> str:\n"
+        "        return \"\"\n\n"
+        "    def add_example(self, name: str) -> None:\n"
+        "        pass\n\n"
+        "    def _helper(self) -> None:\n"
+        "        pass\n\n"
+        "    def __repr__(self) -> str:\n"
+        "        return \"\"\n"
     )
 
-    assert tools.extract_deviation_members(report) == {"get_value", "getValue", "value", "addExample"}
+    assert tools.parse_wrapper_public_members(source, "RPThing") == ["add_example", "get_value", "kind"]
 
 
-def test_verifier_reports_missing_deviation_from_rst(tmp_path: Path) -> None:
+def test_verifier_reports_undocumented_public_member(tmp_path: Path) -> None:
+    """The RST page is an API reference: every public wrapper member must be
+    documented, regardless of the report's deviation tables."""
     tools = _load_sync_tools()
-    root = _write_fixture_project(tmp_path / "repo", ".. list-table:: API deviations\n")
+    root = _write_fixture_project(
+        tmp_path / "repo",
+        ".. autofunction:: rhapsody_cli.models.com.telelogic.rhapsody.core.model_thing.get_value\n",
+    )
     report = _write_report(root)
 
     issues = tools.verify_sync_artifacts(root, "IRPThing", report)
 
-    assert any("getValue" in issue for issue in issues)
-    assert any("addExample" in issue for issue in issues)
+    assert any("add_example" in issue for issue in issues)
+    assert not any("get_value" in issue and "omits" in issue for issue in issues)
 
 
-def test_verifier_accepts_package_requirements_and_complete_rst_deviations(tmp_path: Path) -> None:
+def test_verifier_accepts_package_requirements_and_complete_api_reference(tmp_path: Path) -> None:
     tools = _load_sync_tools()
-    root = _write_fixture_project(tmp_path / "repo", _VALID_RST_DEVIATIONS)
+    root = _write_fixture_project(tmp_path / "repo", _VALID_RST_API_REFERENCE)
     report = _write_report(root)
 
     assert tools.verify_sync_artifacts(root, "IRPThing", report) == []
@@ -168,7 +206,7 @@ def test_parses_java_package_from_report() -> None:
 
 def test_verifier_reports_missing_java_package(tmp_path: Path) -> None:
     tools = _load_sync_tools()
-    root = _write_fixture_project(tmp_path / "repo", _VALID_RST_DEVIATIONS)
+    root = _write_fixture_project(tmp_path / "repo", _VALID_RST_API_REFERENCE)
     report = _write_report(root, java_package=None)
 
     issues = tools.verify_sync_artifacts(root, "IRPThing", report)
@@ -178,7 +216,7 @@ def test_verifier_reports_missing_java_package(tmp_path: Path) -> None:
 
 def test_verifier_reports_java_package_mismatch(tmp_path: Path) -> None:
     tools = _load_sync_tools()
-    root = _write_fixture_project(tmp_path / "repo", _VALID_RST_DEVIATIONS)
+    root = _write_fixture_project(tmp_path / "repo", _VALID_RST_API_REFERENCE)
     report = _write_report(root, java_package="com.example.other")
 
     issues = tools.verify_sync_artifacts(root, "IRPThing", report)
@@ -191,11 +229,9 @@ def test_irpclass_report_declares_java_package() -> None:
     # Resolve the repo root without the docs/java_api marker: this check validates a
     # committed offline artifact and must run on machines without the JavaDoc tree.
     root = next(
-        candidate
-        for candidate in SYNC_TOOLS_PATH.parents
-        if (candidate / "scripts" / "validate_model_api.py").is_file() and (candidate / "docs" / "reports" / "IRPClass_api_report.md").is_file()
+        candidate for candidate in SYNC_TOOLS_PATH.parents if (candidate / "scripts" / "validate_model_api.py").is_file() and _report_path(candidate / "docs" / "reports", "IRPClass").is_file()
     )
-    report = root / "docs" / "reports" / "IRPClass_api_report.md"
+    report = _report_path(root / "docs" / "reports", "IRPClass")
 
     assert tools.parse_report_java_package(report.read_text(encoding="utf-8")) == "com.telelogic.rhapsody.core"
 
@@ -209,7 +245,7 @@ def test_offline_blocker_exits_without_report_and_catalog(tmp_path: Path) -> Non
     blocker = tools.offline_authority_blocker(tmp_path, "IRPState")
 
     assert blocker is not None
-    assert "docs/reports/IRPState_api_report.md" in blocker
+    assert "docs/reports/com/telelogic/rhapsody/core/IRPState_api_report.md" in blocker
     assert "--source typelib" in blocker
 
 
@@ -218,7 +254,8 @@ def test_offline_blocker_asks_for_rebuild_when_report_exists(tmp_path: Path) -> 
     reports = tmp_path / "docs" / "reports"
     reports.mkdir(parents=True)
     (reports / "pywin32_authority.json").write_text('{"catalog": {"IRPClass": {}}}', encoding="utf-8")
-    (reports / "IRPState_api_report.md").write_text("# Rhapsody API Validation: IRPState\n", encoding="utf-8")
+    _report_path(reports, "IRPState").parent.mkdir(parents=True)
+    _report_path(reports, "IRPState").write_text("# Rhapsody API Validation: IRPState\n", encoding="utf-8")
 
     blocker = tools.offline_authority_blocker(tmp_path, "IRPState")
 
@@ -241,17 +278,14 @@ def test_offline_blocker_exits_when_snapshot_file_missing(tmp_path: Path) -> Non
     blocker = tools.offline_authority_blocker(tmp_path, "IRPState")
 
     assert blocker is not None
-    assert "IRPState_api_report.md" in blocker
+    assert "docs/reports/com/telelogic/rhapsody/core/IRPState_api_report.md" in blocker
 
 
 def test_verifier_requires_unit_and_integration_test_files(tmp_path: Path) -> None:
     tools = _load_sync_tools()
     root = _write_fixture_project(
         tmp_path / "repo",
-        ".. list-table:: API deviations\n   :header-rows: 1\n\n"
-        "   * - JavaDoc member/signature\n     - COM/pywin32 exposure\n     - Python implementation\n     - Deviation and treatment\n"
-        "   * - ``getValue``\n     - ``getValue (method)``\n     - ``get_value``\n     - Mismatch\n"
-        "   * - ``addExample``\n     - unavailable\n     - no wrapper\n     - JavaDoc-only\n",
+        _VALID_RST_API_REFERENCE,
         with_tests=False,
     )
     report = _write_report(root)
@@ -266,13 +300,171 @@ def test_verifier_accepts_mirror_test_files_exercising_the_class(tmp_path: Path)
     tools = _load_sync_tools()
     root = _write_fixture_project(
         tmp_path / "repo",
-        ".. list-table:: API deviations\n   :header-rows: 1\n\n"
-        "   * - JavaDoc member/signature\n     - COM/pywin32 exposure\n     - Python implementation\n     - Deviation and treatment\n"
-        "   * - ``getValue``\n     - ``getValue (method)``\n     - ``get_value``\n     - Mismatch\n"
-        "   * - ``addExample``\n     - unavailable\n     - no wrapper\n     - JavaDoc-only\n",
+        _VALID_RST_API_REFERENCE,
     )
     report = _write_report(root)
 
     issues = tools.verify_sync_artifacts(root, "IRPThing", report)
 
     assert not any("test file" in issue for issue in issues)
+
+
+def _write_application_fixture(root: Path) -> Path:
+    """Fixture for an application-layer wrapper: application.py, not under models/."""
+    package_parts = ("com", "telelogic", "rhapsody", "core")
+    package_name = ".".join(package_parts)
+    java_dir = root / "docs" / "java_api" / Path(*package_parts)
+    java_dir.mkdir(parents=True)
+    (java_dir / "IRPApplication.html").write_text("<html>IRPApplication</html>", encoding="utf-8")
+    (root / "scripts").mkdir(parents=True)
+    (root / "scripts" / "validate_model_api.py").write_text("", encoding="utf-8")
+    (root / "docs" / "reports").mkdir(parents=True)
+    (root / "docs" / "reports" / "pywin32_authority.json").write_text('{"catalog": {"IRPApplication": {}}}', encoding="utf-8")
+
+    app_dir = root / "src" / "rhapsody_cli"
+    app_dir.mkdir(parents=True)
+    (app_dir / "application.py").write_text(
+        "class RhapsodyApplication:\n"
+        "    def get_build_no(self) -> str:\n"
+        "        return \"\"\n\n"
+        "    def connect(self) -> None:\n"
+        "        pass\n\n"
+        "    def _attach(self) -> None:\n"
+        "        pass\n",
+        encoding="utf-8",
+    )
+    for layer in ("unit", "integration"):
+        test_dir = root / "tests" / layer
+        test_dir.mkdir(parents=True)
+        (test_dir / "test_application.py").write_text("RhapsodyApplication\n", encoding="utf-8")
+
+    req_dir = root / "docs" / "requirements" / Path(*package_parts)
+    req_dir.mkdir(parents=True)
+    (req_dir / "irp_application.md").write_text("RhapsodyApplication wraps IRPApplication\n", encoding="utf-8")
+    api_dir = root / "docs" / "api" / Path(*package_parts)
+    api_dir.mkdir(parents=True)
+    (api_dir / "irp_application.rst").write_text(
+        ".. _rhapsody-java-interface-IRPApplication:\n\n"
+        "IRPApplication\n==============\n\n"
+        f"Java package: ``{package_name}``\n\n"
+        "Python wrapper: ``RhapsodyApplication``\n\n"
+        "Canonical Python import: ``rhapsody_cli.application``\n\n"
+        "API reference\n"
+        "-------------\n\n"
+        ".. autofunction:: rhapsody_cli.application.RhapsodyApplication.get_build_no\n\n"
+        ".. autofunction:: rhapsody_cli.application.RhapsodyApplication.connect\n",
+        encoding="utf-8",
+    )
+    report = _report_path(root / "docs" / "reports", "IRPApplication")
+    report.parent.mkdir(parents=True)
+    report.write_text(
+        "# Rhapsody API Validation: IRPApplication\n\n"
+        "## Summary\n"
+        f"- Java package: `{package_name}`\n"
+        "- Target wrapper: `RhapsodyApplication` (`src/rhapsody_cli/application.py`)\n\n"
+        "## Comparison details\n\n"
+        "| Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |\n"
+        "| --- | --- | --- | --- | --- |\n"
+        "| get_build_no() -> getBuildNo | getBuildNo (method) | BuildNo (property) | COM_MEMBER_NOT_EXPOSED | Document. |\n\n"
+        "## Expected Binding Differences\n\n"
+        "| Python model wrapper | Java API | pywin32 | Status | Recommended change |\n"
+        "| --- | --- | --- | --- | --- |\n"
+        "| — | — | — | — | — |\n\n"
+        "## Wrapper Backlog\n\n"
+        "| Python model wrapper | Java API | pywin32 | Status | Recommended change |\n"
+        "| --- | --- | --- | --- | --- |\n"
+        "| — | someJavaOnlyMember (method) | — | MISSING_PYTHON_WRAPPER | Intentionally unsupported. |\n",
+        encoding="utf-8",
+    )
+    return report
+
+
+def test_verifier_accepts_application_layer_wrapper(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    report = _write_application_fixture(root)
+
+    assert tools.verify_sync_artifacts(root, "IRPApplication", report) == []
+
+
+def test_verifier_does_not_require_report_deviation_rows_in_rst(tmp_path: Path) -> None:
+    """Deviations live in the generated report; the RST is an API reference and
+    must not be required to repeat report members (backlog or otherwise)."""
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    report = _write_application_fixture(root)
+
+    assert tools.verify_sync_artifacts(root, "IRPApplication", report) == []
+    assert not hasattr(tools, "extract_deviation_members")
+
+
+def test_binding_check_flags_absent_com_member(tmp_path: Path) -> None:
+    """A wrapper calling a Java-named member absent from pywin32 must fail Step 8."""
+    tools = _load_sync_tools()
+    (tmp_path / "docs" / "reports").mkdir(parents=True)
+    (tmp_path / "docs" / "reports" / "pywin32_authority.json").write_text('{"catalog": {"IRPType": {}}}', encoding="utf-8")
+    wrapper = '''
+class IRPType:
+    def get_thing(self):
+        return self.call_com(lambda: self._com.getThing())
+'''
+    issues = tools.verify_wrapper_bindings(tmp_path, "IRPType", wrapper)
+    assert any("getThing" in issue and "absent" in issue.lower() for issue in issues)
+
+
+def test_binding_check_flags_wrong_shape(tmp_path: Path) -> None:
+    """A property-shaped COM member called via call_com must be flagged."""
+    tools = _load_sync_tools()
+    (tmp_path / "docs" / "reports").mkdir(parents=True)
+    (tmp_path / "docs" / "reports" / "pywin32_authority.json").write_text('{"catalog": {"IRPType": {"thing": "property"}}}', encoding="utf-8")
+    wrapper = '''
+class IRPType:
+    def get_thing(self):
+        return self.call_com(lambda: self._com.thing())
+'''
+    issues = tools.verify_wrapper_bindings(tmp_path, "IRPType", wrapper)
+    assert any("thing" in issue and "shape" in issue.lower() for issue in issues)
+
+
+def test_binding_check_accepts_valid_bindings(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    (tmp_path / "docs" / "reports").mkdir(parents=True)
+    (tmp_path / "docs" / "reports" / "pywin32_authority.json").write_text('{"catalog": {"IRPType": {"Thing": "method", "flag": "property"}}}', encoding="utf-8")
+    wrapper = '''
+class IRPType:
+    def get_thing(self):
+        return self.call_com(lambda: self._com.Thing())
+    def get_flag(self):
+        return self.get_com_property(self._com, "flag")
+'''
+    assert tools.verify_wrapper_bindings(tmp_path, "IRPType", wrapper) == []
+
+
+def test_integration_check_allows_only_not_implemented_error() -> None:
+    tools = _load_sync_tools()
+    ok = '''
+def test_stub():
+    with pytest.raises(NotImplementedError):
+        wrapper.java_only_method()
+'''
+    assert tools.verify_integration_exception_catches(ok) == []
+
+
+def test_integration_check_flags_disallowed_exceptions() -> None:
+    tools = _load_sync_tools()
+    bad = '''
+def test_a():
+    with pytest.raises(AttributeError):
+        wrapper.method()
+def test_b():
+    with pytest.raises(RhapsodyRuntimeException):
+        wrapper.method()
+def test_c():
+    with pytest.raises((TypeError, ValueError)):
+        wrapper.method()
+'''
+    issues = tools.verify_integration_exception_catches(bad)
+    assert len(issues) == 3
+    assert any("AttributeError" in i for i in issues)
+    assert any("RhapsodyRuntimeException" in i for i in issues)
+    assert any("TypeError" in i and "ValueError" in i for i in issues)
