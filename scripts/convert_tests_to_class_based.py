@@ -2,7 +2,6 @@
 
 import re
 import sys
-from pathlib import Path
 
 
 def parse_blocks(lines):
@@ -141,4 +140,4 @@ if __name__ == "__main__":
     for path in sys.argv[1:]:
         print(f"Converting {path}...")
         convert_file(path)
-        print(f"  Done.")
+        print("  Done.")

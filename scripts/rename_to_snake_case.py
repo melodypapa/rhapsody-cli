@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import argparse
-import json
 import shutil
 import sys
 from pathlib import Path
@@ -10,8 +9,7 @@ _SCRIPTS_DIR = Path(__file__).parent
 sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from extract_mapping import extract_mapping
-from rename_engine import apply_rename, Change
-
+from rename_engine import Change, apply_rename
 
 CATEGORY_DIRS: Dict[str, List[Path]] = {
     "model": [Path("src/rhapsody_cli/models"), Path("src/rhapsody_cli/application.py")],

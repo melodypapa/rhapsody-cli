@@ -427,7 +427,12 @@ def collect_wrapper_arg_types(interface_name: str, models_root: Path) -> Dict[st
             # declared param types from annotations (skip self)
             declared = []
             for arg in method.args.args[1:]:
-                ann = ast.unparse(arg.annotation) if arg.annotation else "object"
+                if arg.annotation is None:
+                    ann = "object"
+                elif hasattr(ast, "unparse"):
+                    ann = ast.unparse(arg.annotation)
+                else:  # Python 3.8: build a simple annotation string
+                    ann = getattr(arg.annotation, "id", None) or getattr(getattr(arg.annotation, "value", None), "id", None) or "object"
                 base = ann.split(".")[-1].strip('"').lower()
                 if base in ("str", "string"):
                     declared.append("str")
@@ -930,7 +935,10 @@ def main(argv: Optional[List[str]] = None) -> int:
             pywin32_signatures = authority.get("signatures", {}).get(args.java_interface, {})
         else:
             pywin32_members = collect_registered_pywin32_members(args.java_interface)
-            pywin32_signatures = collect_registered_pywin32_signatures(args.java_interface)
+            try:
+                pywin32_signatures = collect_registered_pywin32_signatures(args.java_interface)
+            except Exception:
+                pywin32_signatures = {}
         wrapper_arities = collect_wrapper_call_arities(args.java_interface, models_root)
         wrapper_arg_types = collect_wrapper_arg_types(args.java_interface, models_root)
         owned_families = {_canonical_member_name(name) for name in python_members} | {_canonical_member_name(name) for name in java_members}

@@ -68,7 +68,10 @@ def build_authority_from_typelib(reports_dir: Path) -> AuthorityData:
     for report_path in sorted(reports_dir.rglob("*" + _REPORT_SUFFIX)):
         interface_name = report_path.name[: -len(_REPORT_SUFFIX)]
         catalog[interface_name] = collect_registered_pywin32_members(interface_name)
-        signatures[interface_name] = collect_registered_pywin32_signatures(interface_name)
+        try:
+            signatures[interface_name] = collect_registered_pywin32_signatures(interface_name)
+        except Exception:
+            signatures[interface_name] = {}
     return AuthorityData(catalog=catalog, documented_aliases={}, documented_unavailable={}, signatures=signatures)
 
 

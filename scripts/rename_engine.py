@@ -1,8 +1,7 @@
-import tokenize
 import io
+import tokenize
 from pathlib import Path
 from typing import Dict, List, Tuple
-
 
 Change = Tuple[int, str, str]
 
