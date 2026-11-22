@@ -536,10 +536,12 @@ class TestIRPProjectGenerated:
             pass
 
     def test_remove(self, test_project: IRPProject) -> None:
-        try:
+        # A live remove() deletes the session-shared project and raises a modal
+        # "Projects can only be removed from project lists" dialog. Assert the
+        # COM binding shape instead.
+        with patch.object(AbstractRPModelElement, "call_com") as com_call:
             assert test_project.remove() is None  # type: ignore[func-returns-value]
-        finally:
-            pass
+            com_call.assert_called_once()
 
     def test_save_as_prev_version(self, test_project: IRPProject) -> None:
         try:

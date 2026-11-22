@@ -4,6 +4,7 @@ These tests require a running Rhapsody instance with an open project.
 """
 
 import uuid
+from unittest.mock import patch
 
 import pytest
 
@@ -14,6 +15,7 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCo
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
+from rhapsody_cli.models.core import AbstractRPModelElement
 
 
 @pytest.mark.integration
@@ -1380,11 +1382,15 @@ class TestRPModelElementDiagnosticsUiIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_high_light_element_does_not_raise(self, test_project: IRPProject) -> None:
+    def test_high_light_element_binding(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("HLPkg"))
         try:
             cls = pkg.add_class(self._unique("HLCls"))
-            cls.high_light_element()
+            # A live call opens a modal GUI window that blocks the automation
+            # session; assert the COM binding shape instead.
+            with patch.object(AbstractRPModelElement, "call_com") as com_call:
+                assert cls.high_light_element() is None  # type: ignore[func-returns-value]
+                com_call.assert_called_once()
         finally:
             pkg.delete_from_project()
 
@@ -1397,11 +1403,15 @@ class TestRPModelElementDiagnosticsUiIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_open_features_dialog_does_not_raise(self, test_project: IRPProject) -> None:
+    def test_open_features_dialog_binding(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("FeatPkg"))
         try:
             cls = pkg.add_class(self._unique("FeatCls"))
-            cls.open_features_dialog(0)
+            # A live call opens a modal "Features" window that blocks later
+            # project operations; assert the COM binding shape instead.
+            with patch.object(AbstractRPModelElement, "call_com") as com_call:
+                assert cls.open_features_dialog(0) is None  # type: ignore[func-returns-value]
+                com_call.assert_called_once()
         finally:
             pkg.delete_from_project()
 
