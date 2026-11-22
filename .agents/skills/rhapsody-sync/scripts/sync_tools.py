@@ -245,14 +245,20 @@ def verify_integration_exception_catches(test_source: str) -> List[str]:
 
     Any other exception assertion (pytest.raises(AttributeError,
     RhapsodyRuntimeException, TypeError, ValueError, ...) blesses a wrong
-    binding and is forbidden by SKILL section 5. Bare try/except in test
-    bodies is likewise forbidden; only the documented NotImplementedError
-    stub case is allowed.
+    binding and is forbidden by SKILL section 5. try/except handlers in test
+    bodies are likewise forbidden — a caught failure masquerades as a pass —
+    while try/finally cleanup without an except clause stays allowed (the
+    canonical mirrored integration tests rely on it for object cleanup).
     """
     issues: List[str] = []
     tree = ast.parse(test_source)
     allowed = {"NotImplementedError"}
     for node in ast.walk(tree):
+        if isinstance(node, ast.Try) and node.handlers:
+            issues.append(
+                f"try/except handler at line {node.lineno} catches exceptions in an integration test "
+                f"(SKILL section 5); assert the real outcome or record a blocker"
+            )
         if not isinstance(node, ast.With):
             continue
         for item in node.items:

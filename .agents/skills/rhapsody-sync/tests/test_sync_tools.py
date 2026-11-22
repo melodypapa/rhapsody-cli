@@ -468,3 +468,37 @@ def test_c():
     assert any("AttributeError" in i for i in issues)
     assert any("RhapsodyRuntimeException" in i for i in issues)
     assert any("TypeError" in i and "ValueError" in i for i in issues)
+
+
+def test_integration_check_flags_try_except_handlers() -> None:
+    """Section 5 forbids try/except in integration test bodies: a caught
+    failure masquerades as a pass. try/finally cleanup stays allowed."""
+    tools = _load_sync_tools()
+    bad = '''
+def test_a():
+    try:
+        assert wrapper.method() is not None
+    except Exception:
+        pass
+'''
+    issues = tools.verify_integration_exception_catches(bad)
+    assert len(issues) == 1
+    assert "try/except" in issues[0]
+
+
+def test_integration_check_allows_try_finally_cleanup() -> None:
+    """try/finally cleanup without an except clause catches nothing; the
+    canonical mirrored integration tests rely on it, and the documented
+    NotImplementedError stub assertion stays permitted."""
+    tools = _load_sync_tools()
+    ok = '''
+def test_a():
+    element = package.add_element("x")
+    try:
+        assert element is not None
+    finally:
+        element.delete_from_project()
+    with pytest.raises(NotImplementedError):
+        wrapper.java_only_method()
+'''
+    assert tools.verify_integration_exception_catches(ok) == []
