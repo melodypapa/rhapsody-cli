@@ -4,7 +4,8 @@
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `IRPPackage` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`)
 - Members: Python `101`, Java `100`, pywin32 `94`
-- Deviation items: `11` (actionable `5`, expected binding differences `6`, wrapper backlog `0`)
+- Deviation items: `29` (actionable `23`, expected binding differences `6`, wrapper backlog `0`)
+- Status legend: `MATCH` verified binding · `UNAVAILABLE_DOCUMENTED` pywin32 lacks the member (NotImplementedError stub) · `ALIAS_DOCUMENTED` documented alias · actionable rows are named by code in `Comparison details`
 
 ## Comparison details
 
@@ -15,6 +16,24 @@
 | get_nested_packages() -> packages | getPackages (method) | packages (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
 | recalculate_events_base_id() -> reCalculateEventsBaseId | reCalculateEventsBaseId (method) | reCalculateEventsBaseId (method) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
 | get_saved_in_separate_directory() -> savedInSeperateDirectory; set_saved_in_separate_directory() -> savedInSeperateDirectory | getSavedInSeperateDirectory (method); setSavedInSeperateDirectory (method) | savedInSeperateDirectory (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
+| add_activity_diagram() -> addActivityDiagram | — | addActivityDiagram (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 0 parameter(s) (0 required; params: —; types: —). Pass the documented parameters. |
+| add_association() -> addAssociation | — | addAssociation (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 3 parameter(s) (3 required; params: end1, end2, name; types: com, com, str). Pass the documented parameters. |
+| add_global_object() -> addGlobalObject | — | addGlobalObject (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 3 parameter(s) (3 required; params: name, otherClassName, otherClassPackageName; types: str, str, str). Pass the documented parameters. |
+| add_link() -> addLink | — | addLink (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 5 parameter(s) (5 required; params: fromPart, toPart, assoc, fromPort, toPort; types: com, com, com, com, com). Pass the documented parameters. |
+| add_link_between_sysml_ports() -> addLinkBetweenSYSMLPorts | — | addLinkBetweenSYSMLPorts (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [2] arg(s) but pywin32 declares 5 parameter(s) (5 required; params: fromPart, toPart, assoc, fromPort, toPort; types: com, com, com, com, com). Pass the documented parameters. |
+| add_statechart_diagram() -> addStatechart | — | addStatechart (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 0 parameter(s) (0 required; params: —; types: —). Pass the documented parameters. |
+| delete_collaboration_diagram() -> deleteCollaborationDiagram | — | deleteCollaborationDiagram (method) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
+| delete_component_diagram() -> deleteComponentDiagram | — | deleteComponentDiagram (method) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
+| delete_deployment_diagram() -> deleteDeploymentDiagram | — | deleteDeploymentDiagram (method) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
+| delete_node() -> deleteNode | — | deleteNode (method) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
+| delete_object_model_diagram() -> deleteObjectModelDiagram | — | deleteObjectModelDiagram (method) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
+| delete_package() -> deletePackage | — | deletePackage (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 0 parameter(s) (0 required; params: —; types: —). Pass the documented parameters. |
+| delete_panel_diagram() -> deletePanelDiagram | — | deletePanelDiagram (method) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
+| delete_sequence_diagram() -> deleteSequenceDiagram | — | deleteSequenceDiagram (method) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
+| delete_timing_diagram() -> deleteTimingDiagram | — | deleteTimingDiagram (method) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
+| delete_use_case_diagram() -> deleteUseCaseDiagram | — | deleteUseCaseDiagram (method) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
+| find_all_by_name() -> findAllByName | — | findAllByName (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 2 parameter(s) (2 required; params: name, metaClass; types: str, str). Pass the documented parameters. |
+| set_remote_requirements_populate_mode() -> setRemoteRequirementsPopulateMode | — | setRemoteRequirementsPopulateMode (method) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['int'] but pywin32 declares ['str']. Match the documented COM parameter types. |
 
 ## Expected Binding Differences
 
@@ -32,6 +51,10 @@
 | Python model wrapper | Java API | pywin32 | Status | Recommended change |
 | --- | --- | --- | --- | --- |
 | — | — | — | — | — |
+
+<details>
+<summary>Correct items (88) — bindings verified against pywin32</summary>
+
 
 ## Correct Items
 
@@ -126,72 +149,37 @@
 | get_user_defined_stereotypes() -> userDefinedStereotypes | getUserDefinedStereotypes (method) | userDefinedStereotypes (property) | MATCH | — |
 | populate_remote_requirements() -> populateRemoteRequirements | populateRemoteRequirements (method) | populateRemoteRequirements (method) | MATCH | — |
 
-## Signature Validation
-
-| Python model wrapper | Java API | pywin32 | Status | Recommended change |
-| --- | --- | --- | --- | --- |
-| add_activity_diagram() -> addActivityDiagram | — | addActivityDiagram (method; params: —) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 0 (types: —). Pass the documented parameters. |
-| add_association() -> addAssociation | — | addAssociation (method; params: end1, end2, name) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 3 (types: com, com, str). Pass the documented parameters. |
-| add_global_object() -> addGlobalObject | — | addGlobalObject (method; params: name, otherClassName, otherClassPackageName) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 3 (types: str, str, str). Pass the documented parameters. |
-| add_link() -> addLink | — | addLink (method; params: fromPart, toPart, assoc, fromPort, toPort) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 5 (types: com, com, com, com, com). Pass the documented parameters. |
-| add_link_between_sysml_ports() -> addLinkBetweenSYSMLPorts | — | addLinkBetweenSYSMLPorts (method; params: fromPart, toPart, assoc, fromPort, toPort) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [2] arg(s) but pywin32 declares 5 (types: com, com, com, com, com). Pass the documented parameters. |
-| add_statechart_diagram() -> addStatechart | — | addStatechart (method; params: —) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 0 (types: —). Pass the documented parameters. |
-| delete_collaboration_diagram() -> deleteCollaborationDiagram | — | deleteCollaborationDiagram (method; types: str) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
-| delete_component_diagram() -> deleteComponentDiagram | — | deleteComponentDiagram (method; types: str) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
-| delete_deployment_diagram() -> deleteDeploymentDiagram | — | deleteDeploymentDiagram (method; types: str) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
-| delete_node() -> deleteNode | — | deleteNode (method; types: str) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
-| delete_object_model_diagram() -> deleteObjectModelDiagram | — | deleteObjectModelDiagram (method; types: str) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
-| delete_package() -> deletePackage | — | deletePackage (method; params: —) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 0 (types: —). Pass the documented parameters. |
-| delete_panel_diagram() -> deletePanelDiagram | — | deletePanelDiagram (method; types: str) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
-| delete_sequence_diagram() -> deleteSequenceDiagram | — | deleteSequenceDiagram (method; types: str) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
-| delete_timing_diagram() -> deleteTimingDiagram | — | deleteTimingDiagram (method; types: str) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
-| delete_use_case_diagram() -> deleteUseCaseDiagram | — | deleteUseCaseDiagram (method; types: str) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
-| find_all_by_name() -> findAllByName | — | findAllByName (method; params: name, metaClass) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 2 (types: str, str). Pass the documented parameters. |
-| set_remote_requirements_populate_mode() -> setRemoteRequirementsPopulateMode | — | setRemoteRequirementsPopulateMode (method; types: str) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['int'] but pywin32 declares ['str']. Match the documented COM parameter types. |
+</details>
 
 ## AI Fix Guidance
 
-### Finding 1: JAVA_DOC_MISSING
+### JAVA_DOC_MISSING (1 finding)
 - **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
-- **Current Python wrapper/COM call:** add_association() -> addAssociation
-- **Expected Python method(s):** —
-- **Java signature(s):** —
-- **pywin32 member(s):** addAssociation (method)
+- **Affected call(s):** add_association() -> addAssociation
 - **Recommended change:** Confirm this COM member is a supported extension and document its status.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
-### Finding 2: PYTHON_METHOD_NAME_MISMATCH
+### PYTHON_METHOD_NAME_MISMATCH (4 findings)
 - **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
-- **Current Python wrapper/COM call:** add_statechart_diagram() -> addStatechart
-- **Expected Python method(s):** `add_statechart`
-- **Java signature(s):** `IRPPackage.addStatechart()`
-- **pywin32 member(s):** addStatechart (method)
+- **Affected call(s):** add_statechart_diagram() -> addStatechart; get_nested_packages() -> packages; recalculate_events_base_id() -> reCalculateEventsBaseId; get_saved_in_separate_directory() -> savedInSeperateDirectory; set_saved_in_separate_directory() -> savedInSeperateDirectory
+- **Java signature(s):** `IRPPackage.setSavedInSeperateDirectory(int)`
 - **Recommended change:** Rename the Python method to the snake_case Java API name or document the alias.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
-### Finding 3: PYTHON_METHOD_NAME_MISMATCH
+### SIGNATURE_ARITY_MISMATCH (8 findings)
 - **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
-- **Current Python wrapper/COM call:** get_nested_packages() -> packages
-- **Expected Python method(s):** `get_packages`
-- **Java signature(s):** `IRPPackage.getPackages()`
-- **pywin32 member(s):** packages (property)
-- **Recommended change:** Rename the Python method to the snake_case Java API name or document the alias.
+- **Affected call(s):** add_activity_diagram() -> addActivityDiagram; add_association() -> addAssociation; add_global_object() -> addGlobalObject; add_link() -> addLink; add_link_between_sysml_ports() -> addLinkBetweenSYSMLPorts; add_statechart_diagram() -> addStatechart; delete_package() -> deletePackage; find_all_by_name() -> findAllByName
+- **Recommended change:** Wrapper passes [1] arg(s) but pywin32 declares 0 parameter(s) (0 required; params: —; types: —). Pass the documented parameters.
+- **Recommended change:** Wrapper passes [1] arg(s) but pywin32 declares 3 parameter(s) (3 required; params: end1, end2, name; types: com, com, str). Pass the documented parameters.
+- **Recommended change:** Wrapper passes [1] arg(s) but pywin32 declares 3 parameter(s) (3 required; params: name, otherClassName, otherClassPackageName; types: str, str, str). Pass the documented parameters.
+- **Recommended change:** Wrapper passes [1] arg(s) but pywin32 declares 5 parameter(s) (5 required; params: fromPart, toPart, assoc, fromPort, toPort; types: com, com, com, com, com). Pass the documented parameters.
+- **Recommended change:** Wrapper passes [2] arg(s) but pywin32 declares 5 parameter(s) (5 required; params: fromPart, toPart, assoc, fromPort, toPort; types: com, com, com, com, com). Pass the documented parameters.
+- **Recommended change:** Wrapper passes [1] arg(s) but pywin32 declares 2 parameter(s) (2 required; params: name, metaClass; types: str, str). Pass the documented parameters.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
-### Finding 4: PYTHON_METHOD_NAME_MISMATCH
+### SIGNATURE_TYPE_MISMATCH (10 findings)
 - **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
-- **Current Python wrapper/COM call:** recalculate_events_base_id() -> reCalculateEventsBaseId
-- **Expected Python method(s):** `re_calculate_events_base_id`
-- **Java signature(s):** `IRPPackage.reCalculateEventsBaseId()`
-- **pywin32 member(s):** reCalculateEventsBaseId (method)
-- **Recommended change:** Rename the Python method to the snake_case Java API name or document the alias.
-- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
-
-### Finding 5: PYTHON_METHOD_NAME_MISMATCH
-- **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
-- **Current Python wrapper/COM call:** get_saved_in_separate_directory() -> savedInSeperateDirectory; set_saved_in_separate_directory() -> savedInSeperateDirectory
-- **Expected Python method(s):** `get_saved_in_seperate_directory`, `set_saved_in_seperate_directory`
-- **Java signature(s):** `IRPPackage.getSavedInSeperateDirectory()`, `IRPPackage.setSavedInSeperateDirectory(int)`
-- **pywin32 member(s):** savedInSeperateDirectory (property)
-- **Recommended change:** Rename the Python method to the snake_case Java API name or document the alias.
+- **Affected call(s):** delete_collaboration_diagram() -> deleteCollaborationDiagram; delete_component_diagram() -> deleteComponentDiagram; delete_deployment_diagram() -> deleteDeploymentDiagram; delete_node() -> deleteNode; delete_object_model_diagram() -> deleteObjectModelDiagram; delete_panel_diagram() -> deletePanelDiagram; delete_sequence_diagram() -> deleteSequenceDiagram; delete_timing_diagram() -> deleteTimingDiagram; delete_use_case_diagram() -> deleteUseCaseDiagram; set_remote_requirements_populate_mode() -> setRemoteRequirementsPopulateMode
+- **Recommended change:** Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types.
+- **Recommended change:** Wrapper passes types ['int'] but pywin32 declares ['str']. Match the documented COM parameter types.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.

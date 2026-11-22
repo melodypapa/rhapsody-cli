@@ -5,6 +5,7 @@
 - Target wrapper: `RhapsodyApplication` (`src/rhapsody_cli/application.py`)
 - Members: Python `31`, Java `176`, pywin32 `172`
 - Deviation items: `143` (actionable `1`, expected binding differences `3`, wrapper backlog `139`)
+- Status legend: `MATCH` verified binding · `UNAVAILABLE_DOCUMENTED` pywin32 lacks the member (NotImplementedError stub) · `ALIAS_DOCUMENTED` documented alias · actionable rows are named by code in `Comparison details`
 
 ## Comparison details
 
@@ -164,6 +165,10 @@
 | — | versionNumberLong (method) | versionNumberLong (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | writeToOutputWindow (method) | writeToOutputWindow (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 
+<details>
+<summary>Correct items (28) — bindings verified against pywin32</summary>
+
+
 ## Correct Items
 
 | Python model wrapper | Java API | pywin32 | Status | Recommended change |
@@ -197,13 +202,13 @@
 | set_hidden_ui() -> setHiddenUI | setHiddenUI (method) | setHiddenUI (method) | MATCH | — |
 | set_log() -> setLog | setLog (method) | setLog (method) | MATCH | — |
 
+</details>
+
 ## AI Fix Guidance
 
-### Finding 1: PYTHON_METHOD_NAME_MISMATCH
+### PYTHON_METHOD_NAME_MISMATCH (1 finding)
 - **Target:** `RhapsodyApplication` in `src/rhapsody_cli/application.py`
-- **Current Python wrapper/COM call:** get_version() -> version
-- **Expected Python method(s):** `version`
+- **Affected call(s):** get_version() -> version
 - **Java signature(s):** `IRPApplication.version()`
-- **pywin32 member(s):** version (method)
 - **Recommended change:** Rename the Python method to the snake_case Java API name or document the alias.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.

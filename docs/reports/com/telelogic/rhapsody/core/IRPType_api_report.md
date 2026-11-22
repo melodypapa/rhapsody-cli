@@ -5,6 +5,7 @@
 - Target wrapper: `IRPType` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_type.py`)
 - Members: Python `35`, Java `35`, pywin32 `28`
 - Deviation items: `0` (actionable `0`, expected binding differences `0`, wrapper backlog `0`)
+- Status legend: `MATCH` verified binding · `UNAVAILABLE_DOCUMENTED` pywin32 lacks the member (NotImplementedError stub) · `ALIAS_DOCUMENTED` documented alias · actionable rows are named by code in `Comparison details`
 
 ## Comparison details
 
@@ -22,6 +23,10 @@
 | Python model wrapper | Java API | pywin32 | Status | Recommended change |
 | --- | --- | --- | --- | --- |
 | — | — | — | — | — |
+
+<details>
+<summary>Correct items (28) — bindings verified against pywin32</summary>
+
 
 ## Correct Items
 
@@ -55,6 +60,8 @@
 | is_struct() -> isStruct | isStruct (method) | isStruct (method) | MATCH | — |
 | is_template() -> isTemplate | isTemplate (method) | isTemplate (method) | MATCH | — |
 | is_union() -> isUnion | isUnion (method) | isUnion (method) | MATCH | — |
+
+</details>
 
 ## AI Fix Guidance
 No deviations require changes.

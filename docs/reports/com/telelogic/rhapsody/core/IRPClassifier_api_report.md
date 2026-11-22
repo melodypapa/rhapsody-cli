@@ -5,6 +5,7 @@
 - Target wrapper: `IRPClassifier` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_classifier.py`)
 - Members: Python `47`, Java `46`, pywin32 `47`
 - Deviation items: `1` (actionable `1`, expected binding differences `0`, wrapper backlog `0`)
+- Status legend: `MATCH` verified binding · `UNAVAILABLE_DOCUMENTED` pywin32 lacks the member (NotImplementedError stub) · `ALIAS_DOCUMENTED` documented alias · actionable rows are named by code in `Comparison details`
 
 ## Comparison details
 
@@ -23,6 +24,10 @@
 | Python model wrapper | Java API | pywin32 | Status | Recommended change |
 | --- | --- | --- | --- | --- |
 | — | — | — | — | — |
+
+<details>
+<summary>Correct items (46) — bindings verified against pywin32</summary>
+
 
 ## Correct Items
 
@@ -75,13 +80,12 @@
 | get_source_artifacts() -> sourceArtifacts | getSourceArtifacts (method) | sourceArtifacts (property) | MATCH | — |
 | get_statechart() -> statechart | getStatechart (method) | statechart (property) | MATCH | — |
 
+</details>
+
 ## AI Fix Guidance
 
-### Finding 1: JAVA_DOC_MISSING
+### JAVA_DOC_MISSING (1 finding)
 - **Target:** `IRPClassifier` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_classifier.py`
-- **Current Python wrapper/COM call:** add_port() -> addNewAggr
-- **Expected Python method(s):** —
-- **Java signature(s):** —
-- **pywin32 member(s):** addNewAggr (method)
+- **Affected call(s):** add_port() -> addNewAggr
 - **Recommended change:** Confirm this COM member is a supported extension and document its status.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.

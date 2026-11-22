@@ -5,6 +5,7 @@
 - Target wrapper: `IRPOperation` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_operation.py`)
 - Members: Python `32`, Java `32`, pywin32 `21`
 - Deviation items: `1` (actionable `0`, expected binding differences `1`, wrapper backlog `0`)
+- Status legend: `MATCH` verified binding · `UNAVAILABLE_DOCUMENTED` pywin32 lacks the member (NotImplementedError stub) · `ALIAS_DOCUMENTED` documented alias · actionable rows are named by code in `Comparison details`
 
 ## Comparison details
 
@@ -22,6 +23,10 @@
 | Python model wrapper | Java API | pywin32 | Status | Recommended change |
 | --- | --- | --- | --- | --- |
 | — | — | — | — | — |
+
+<details>
+<summary>Correct items (20) — bindings verified against pywin32</summary>
+
 
 ## Correct Items
 
@@ -47,6 +52,8 @@
 | get_return_type_declaration() -> getReturnTypeDeclaration; set_return_type_declaration() -> setReturnTypeDeclaration | getReturnTypeDeclaration (method); setReturnTypeDeclaration (method) | getReturnTypeDeclaration (method); setReturnTypeDeclaration (method) | MATCH | — |
 | get_returns() -> returns; set_returns() -> returns | getReturns (method); setReturns (method) | returns (property) | MATCH | — |
 | get_visibility() -> visibility; set_visibility() -> visibility | getVisibility (method); setVisibility (method) | visibility (property) | MATCH | — |
+
+</details>
 
 ## AI Fix Guidance
 No deviations require changes.

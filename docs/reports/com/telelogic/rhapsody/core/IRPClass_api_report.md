@@ -5,6 +5,7 @@
 - Target wrapper: `IRPClass` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_class.py`)
 - Members: Python `26`, Java `29`, pywin32 `24`
 - Deviation items: `2` (actionable `0`, expected binding differences `2`, wrapper backlog `0`)
+- Status legend: `MATCH` verified binding · `UNAVAILABLE_DOCUMENTED` pywin32 lacks the member (NotImplementedError stub) · `ALIAS_DOCUMENTED` documented alias · actionable rows are named by code in `Comparison details`
 
 ## Comparison details
 
@@ -23,6 +24,10 @@
 | Python model wrapper | Java API | pywin32 | Status | Recommended change |
 | --- | --- | --- | --- | --- |
 | — | — | — | — | — |
+
+<details>
+<summary>Correct items (23) — bindings verified against pywin32</summary>
+
 
 ## Correct Items
 
@@ -51,6 +56,8 @@
 | is_behavior_overriden() -> isBehaviorOverriden | getIsBehaviorOverriden (method); setIsBehaviorOverriden (method) | isBehaviorOverriden (property) | MATCH | — |
 | is_composite() -> isComposite | getIsComposite (method) | isComposite (property) | MATCH | — |
 | is_reactive() -> isReactive | getIsReactive (method) | isReactive (property) | MATCH | — |
+
+</details>
 
 ## AI Fix Guidance
 No deviations require changes.

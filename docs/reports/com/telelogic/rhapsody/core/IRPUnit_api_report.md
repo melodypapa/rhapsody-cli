@@ -5,6 +5,7 @@
 - Target wrapper: `IRPUnit` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_unit.py`)
 - Members: Python `29`, Java `29`, pywin32 `25`
 - Deviation items: `1` (actionable `0`, expected binding differences `1`, wrapper backlog `0`)
+- Status legend: `MATCH` verified binding · `UNAVAILABLE_DOCUMENTED` pywin32 lacks the member (NotImplementedError stub) · `ALIAS_DOCUMENTED` documented alias · actionable rows are named by code in `Comparison details`
 
 ## Comparison details
 
@@ -22,6 +23,10 @@
 | Python model wrapper | Java API | pywin32 | Status | Recommended change |
 | --- | --- | --- | --- | --- |
 | — | — | — | — | — |
+
+<details>
+<summary>Correct items (23) — bindings verified against pywin32</summary>
+
 
 ## Correct Items
 
@@ -51,11 +56,7 @@
 | set_separate_save_unit() -> setSeparateSaveUnit | setSeparateSaveUnit (method) | setSeparateSaveUnit (method) | MATCH | — |
 | unload() -> unload | unload (method) | unload (method) | MATCH | — |
 
-## Signature Validation
-
-| Python model wrapper | Java API | pywin32 | Status | Recommended change |
-| --- | --- | --- | --- | --- |
-| set_read_only() -> setReadOnly | — | setReadOnly (method; types: int) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['bool'] but pywin32 declares ['int']. Match the documented COM parameter types. |
+</details>
 
 ## AI Fix Guidance
 No deviations require changes.
