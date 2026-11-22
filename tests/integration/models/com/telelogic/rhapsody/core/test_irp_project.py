@@ -118,10 +118,13 @@ class TestIRPProjectGenerated:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     def test_add_package(self, test_project: IRPProject) -> None:
+        pkg = None
         try:
-            assert test_project.add_package(self._unique("arg")) is not None
+            pkg = test_project.add_package(self._unique("arg"))
+            assert pkg is not None
         finally:
-            pass
+            if pkg is not None:
+                pkg.delete_from_project()
 
     def test_close(self, test_project: IRPProject) -> None:
         with patch.object(AbstractRPModelElement, "call_com") as com_call:
@@ -173,10 +176,13 @@ class TestIRPProjectGenerated:
             pass
 
     def test_add_component(self, test_project: IRPProject) -> None:
+        pkg = None
         try:
-            assert test_project.add_component(self._unique("arg")) is not None
+            pkg = test_project.add_component(self._unique("arg"))
+            assert pkg is not None
         finally:
-            pass
+            if pkg is not None:
+                pkg.delete_from_project()
 
     def test_delete_component(self, test_project: IRPProject) -> None:
         try:
@@ -250,10 +256,13 @@ class TestIRPProjectGenerated:
             pass
 
     def test_add_profile(self, test_project: IRPProject) -> None:
+        pkg = None
         try:
-            assert test_project.add_profile(self._unique("arg")) is not None
+            pkg = test_project.add_profile(self._unique("arg"))
+            assert pkg is not None
         finally:
-            pass
+            if pkg is not None:
+                pkg.delete_from_project()
 
     def test_get_profiles(self, test_project: IRPProject) -> None:
         try:

@@ -98,7 +98,7 @@ class TestIRPUseCaseGenerated:
         try:
             assert use_case.add_extension_point("x") is None  # type: ignore[func-returns-value]
         finally:
-            pass
+            pkg.delete_from_project()
 
     def test_get_extension_points(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("UsePkg"))
@@ -106,7 +106,7 @@ class TestIRPUseCaseGenerated:
         try:
             assert use_case.get_extension_points() is not None
         finally:
-            pass
+            pkg.delete_from_project()
 
     def test_get_entry_points(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("UsePkg"))
@@ -114,7 +114,7 @@ class TestIRPUseCaseGenerated:
         try:
             assert use_case.get_entry_points() is not None
         finally:
-            pass
+            pkg.delete_from_project()
 
     def test_get_describing_diagrams(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("UsePkg"))
@@ -122,7 +122,7 @@ class TestIRPUseCaseGenerated:
         try:
             assert use_case.get_describing_diagrams() is not None
         finally:
-            pass
+            pkg.delete_from_project()
 
     def test_add_describing_diagram(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("UsePkg"))
@@ -131,7 +131,7 @@ class TestIRPUseCaseGenerated:
             with pytest.raises(AttributeError):
                 use_case.add_describing_diagram(None)  # type: ignore[arg-type]
         finally:
-            pass
+            pkg.delete_from_project()
 
     def test_add_event_reception_with_event(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("UsePkg"))
@@ -140,7 +140,7 @@ class TestIRPUseCaseGenerated:
             with pytest.raises(NotImplementedError):
                 use_case.add_event_reception_with_event("x", None)  # type: ignore[arg-type]
         finally:
-            pass
+            pkg.delete_from_project()
 
     def test_delete_describing_diagram(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("UsePkg"))
@@ -149,7 +149,7 @@ class TestIRPUseCaseGenerated:
             with pytest.raises(AttributeError):
                 use_case.delete_describing_diagram(None)  # type: ignore[arg-type]
         finally:
-            pass
+            pkg.delete_from_project()
 
     def test_delete_entry_point(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("UsePkg"))
@@ -157,7 +157,7 @@ class TestIRPUseCaseGenerated:
         try:
             assert use_case.delete_entry_point("x") is None  # type: ignore[func-returns-value]
         finally:
-            pass
+            pkg.delete_from_project()
 
     def test_delete_extension_point(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("UsePkg"))
@@ -165,7 +165,7 @@ class TestIRPUseCaseGenerated:
         try:
             assert use_case.delete_extension_point("x") is None  # type: ignore[func-returns-value]
         finally:
-            pass
+            pkg.delete_from_project()
 
     def test_find_entry_point(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("UsePkg"))
@@ -174,7 +174,7 @@ class TestIRPUseCaseGenerated:
             with pytest.raises(TypeError):
                 use_case.find_entry_point("x")
         finally:
-            pass
+            pkg.delete_from_project()
 
     def test_find_extension_point(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("UsePkg"))
@@ -183,7 +183,7 @@ class TestIRPUseCaseGenerated:
             with pytest.raises(TypeError):
                 use_case.find_extension_point("x")
         finally:
-            pass
+            pkg.delete_from_project()
 
     def test_get_describing_diagram(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("UsePkg"))
@@ -191,7 +191,7 @@ class TestIRPUseCaseGenerated:
         try:
             assert use_case.get_describing_diagram("x") is None
         finally:
-            pass
+            pkg.delete_from_project()
 
     def test_get_is_behavior_overriden(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("UsePkg"))
@@ -199,7 +199,7 @@ class TestIRPUseCaseGenerated:
         try:
             assert use_case.get_is_behavior_overriden() is not None
         finally:
-            pass
+            pkg.delete_from_project()
 
     def test_set_is_behavior_overriden(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("UsePkg"))
@@ -208,7 +208,7 @@ class TestIRPUseCaseGenerated:
             with pytest.raises(NotImplementedError):
                 use_case.set_is_behavior_overriden(1)
         finally:
-            pass
+            pkg.delete_from_project()
 
     def test_update_contained_diagrams_on_server(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("UsePkg"))
@@ -217,4 +217,4 @@ class TestIRPUseCaseGenerated:
             with pytest.raises(TypeError):
                 use_case.update_contained_diagrams_on_server()  # type: ignore[call-arg]
         finally:
-            pass
+            pkg.delete_from_project()
