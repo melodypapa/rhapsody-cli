@@ -1,14 +1,16 @@
 """Cross-wrapper integration tests: factory methods return correct subclasses."""
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
-from rhapsody_cli.models.elements.classifiers import RPClassifier, RPStereotype
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.elements.classifiers import RPStereotype
 from rhapsody_cli.models.elements.common.model_misc import RPComment, RPConstraint, RPEnumerationLiteral
 from rhapsody_cli.models.elements.containment import (
+    IRPPackage,
     RPComponent,
     RPConfiguration,
-    RPPackage,
     RPProfile,
 )
 from rhapsody_cli.models.elements.relations import (
@@ -26,7 +28,7 @@ def test_wrap_dispatches_profile_to_rpprofile() -> None:
     result = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(result, RPProfile)
-    assert isinstance(result, RPPackage)
+    assert isinstance(result, IRPPackage)
 
 
 def test_wrap_dispatches_component_to_rpcomponent() -> None:
@@ -127,22 +129,22 @@ def test_wrap_dispatches_stereotype_to_rpstereotype() -> None:
     result = AbstractRPModelElement.wrap(fake)
 
     assert isinstance(result, RPStereotype)
-    assert isinstance(result, RPClassifier)
+    assert isinstance(result, IRPClassifier)
 
 
 def test_wrap_dispatches_association_class_to_rpassociation_class() -> None:
-    from rhapsody_cli.models.elements.classifiers import RPAssociationClass
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_association_class import IRPAssociationClass
 
     fake = make_fake_element("AssociationClass", properties={"name": "MyAssoc"})
 
     result = AbstractRPModelElement.wrap(fake)
 
-    assert isinstance(result, RPAssociationClass)
+    assert isinstance(result, IRPAssociationClass)
     assert isinstance(result, IRPClass)
 
 
 def test_wrap_dispatches_tag_to_rptag() -> None:
-    from rhapsody_cli.models.elements.variables.model_variables import RPTag
+    from rhapsody_cli.models.elements.variables import RPTag
 
     fake = make_fake_element("Tag", properties={"name": "MyTag"})
 
@@ -160,13 +162,13 @@ def test_collection_contains_mixed_element_types() -> None:
 
     assert len(result) == 2
     assert isinstance(result[0], IRPClass)
-    assert isinstance(result[1], RPClassifier)
+    assert isinstance(result[1], IRPClassifier)
 
 
 def test_all_new_wrappers_exist() -> None:
     """Verify all new wrappers can be imported."""
     from rhapsody_cli.models.elements.classifiers import (
-        RPAssociationClass,
+        IRPAssociationClass,
         RPStereotype,
     )
     from rhapsody_cli.models.elements.common.model_misc import (
@@ -186,10 +188,10 @@ def test_all_new_wrappers_exist() -> None:
         RPGeneralization,
         RPHyperLink,
     )
-    from rhapsody_cli.models.elements.variables.model_variables import RPTag
+    from rhapsody_cli.models.elements.variables import RPTag
 
     # All imports should succeed
-    assert RPAssociationClass is not None
+    assert IRPAssociationClass is not None
     assert RPStereotype is not None
     assert RPModule is not None
     assert RPNode is not None

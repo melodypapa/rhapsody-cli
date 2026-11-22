@@ -124,8 +124,8 @@ As a test engineer, I want a guarantee that no wrapper method ever raises a raw
 `pywintypes.com_error` to my code, so that I can write portable error handling that does
 not depend on `pywintypes` being importable on my platform.
 **Acceptance Criteria:**
-- Given any wrapper method on any element wrapper (`RPProject`, `RPPackage`, `RPClass`,
-  `RPOperation`, `RPAttribute`, etc.) that invokes the underlying COM object, When the COM
+- Given any wrapper method on any element wrapper (`IRPProject`, `IRPPackage`, `RPClass`,
+  `IRPOperation`, `IRPAttribute`, etc.) that invokes the underlying COM object, When the COM
   call raises `pywintypes.com_error`, Then the error is funneled through `call_com` and
   the caller observes a `RhapsodyRuntimeException`.
 - Given the same scenario, When I grep the public API surface for `pywintypes.com_error`
@@ -146,4 +146,4 @@ callable that returns `42` to `call_com` and assert `42` is returned unchanged. 
 via code inspection (or a representative sample) that wrapper methods route COM calls
 through `call_com` rather than calling the COM object directly.
 **Last Changed:** 2026-07-07
-
+

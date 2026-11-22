@@ -6,7 +6,7 @@ from pathlib import Path
 from rhapsody_cli.models.com.telelogic.rhapsody.core import AddToModelMode, IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core import irp_unit as irp_unit_module
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 

@@ -51,7 +51,7 @@ As a test engineer, I want to save a unit (project, package, or class that owns 
 file) and inspect or change its filename and read-only state, so that I can persist model
 edits and control file-level locking.
 **Acceptance Criteria:**
-- Given a wrapped `RPUnit` (e.g., an `RPProject` or `RPPackage`), When I call
+- Given a wrapped `RPUnit` (e.g., an `IRPProject` or `IRPPackage`), When I call
   `unit.save()`, Then the underlying Rhapsody unit is written to disk and no exception is
   raised.
 - Given a wrapped `RPUnit`, When I call `unit.getFilename()`, Then the path string of the
@@ -85,7 +85,7 @@ navigation code instead of Java-style `getCount`/`getItem` loops.
 **Acceptance Criteria:**
 - Given an `IRPCollection` returned from a method like `package.getNestedElements()`, When
   I write `for x in collection:`, Then each yielded `x` is auto-wrapped (e.g., an
-  `RPClass`, `RPPackage`, etc.) and the loop visits every element exactly once.
+  `RPClass`, `IRPPackage`, etc.) and the loop visits every element exactly once.
 - Given an `IRPCollection` with N items, When I call `len(collection)`, Then the integer
   returned equals N (matching `getCount()`).
 - Given an `IRPCollection` with at least one item, When I call `collection[1]`, Then the
@@ -151,7 +151,7 @@ wrapper, so that navigation code keeps working across the whole model.
 - Given a raw COM object whose `getMetaClass()` returns `"Class"`, When I call
   `wrap(com_obj)`, Then an `RPClass` instance is returned.
 - Given a raw COM object whose `getMetaClass()` returns `"Package"`, When I call
-  `wrap(com_obj)`, Then an `RPPackage` instance is returned.
+  `wrap(com_obj)`, Then an `IRPPackage` instance is returned.
 - Given a raw COM object whose `getMetaClass()` returns a value not present in the wrapper
   registry (e.g., an obscure or future element type), When I call `wrap(com_obj)`, Then a
   generic `RPModelElement` is returned (no exception raised) and the caller can still call

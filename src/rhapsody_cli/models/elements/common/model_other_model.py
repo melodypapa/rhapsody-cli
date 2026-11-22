@@ -2,14 +2,15 @@
 
 from typing import TYPE_CHECKING, cast
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
-from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.relations.model_instance import RPInstance
 
 if TYPE_CHECKING:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
     from rhapsody_cli.models.elements.common.model_misc import RPEnumerationLiteral
-    from rhapsody_cli.models.elements.containment.model_package import RPPackage
     from rhapsody_cli.models.elements.diagrams.model_diagram_types import RPSequenceDiagram
     from rhapsody_cli.models.elements.graphics.model_graphics import RPLink
     from rhapsody_cli.models.elements.relations.model_relation import RPRelation
@@ -30,7 +31,7 @@ class RPClassifierRole(IRPModelElement):
     # [inherited] irp_model_element methods (covered by rp_model_element checklist)
     # No deprecated IRPClassifierRole methods.
 
-    def get_formal_classifier(self) -> "RPClassifier":
+    def get_formal_classifier(self) -> "IRPClassifier":
         """Returns the classifier (for example, class or actor) that the lifeline realizes.
 
         Returns:
@@ -42,7 +43,7 @@ class RPClassifierRole(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifierRole::getFormalClassifier()
         """
-        return cast("RPClassifier", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getFormalClassifier())))
+        return cast("IRPClassifier", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getFormalClassifier())))
 
     def get_formal_instance(self) -> "RPInstance":
         """Returns the object that is realized by the lifeline, for cases where a lifeline represents an object and not just a classifier.
@@ -103,7 +104,7 @@ class RPClassifierRole(IRPModelElement):
         """
         return str(self._get_method_or_property(self._com, "getRoleType", "roleType"))
 
-    def set_formal_classifier(self, formal_classifier: "RPClassifier") -> None:
+    def set_formal_classifier(self, formal_classifier: "IRPClassifier") -> None:
         """Sets the specified element as the classifier realized by the lifeline.
 
         Args:
@@ -166,7 +167,7 @@ class RPSysMLPort(RPInstance):
     # [inherited] irp_unit methods (covered by rp_unit checklist)
     # No deprecated IRPSysMLPort methods.
 
-    def add_link(self, from_part: "RPInstance", to_part: "RPInstance", assoc: "RPRelation", to_port: "RPSysMLPort", new_owner: "RPPackage") -> "RPLink":
+    def add_link(self, from_part: "RPInstance", to_part: "RPInstance", assoc: "RPRelation", to_port: "RPSysMLPort", new_owner: "IRPPackage") -> "RPLink":
         """Creates a link between flowports on two parts.
 
         Args:
@@ -222,7 +223,7 @@ class RPSysMLPort(RPInstance):
         """
         return str(self._get_method_or_property(self._com, "getPortDirection", "portDirection"))
 
-    def get_type(self) -> "RPClassifier":
+    def get_type(self) -> "IRPClassifier":
         """Returns the type that was specified for the flowport.
 
         Returns:
@@ -234,7 +235,7 @@ class RPSysMLPort(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPSysMLPort::getType()
         """
-        return cast("RPClassifier", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getType())))
+        return cast("IRPClassifier", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getType())))
 
     def set_is_reversed(self, is_reversed: int) -> None:
         """Specifies whether the flowport should be conjugated.
@@ -266,7 +267,7 @@ class RPSysMLPort(RPInstance):
         """
         self._set_method_or_property(self._com, "setPortDirection", "portDirection", port_direction)
 
-    def set_type(self, type_: "RPClassifier") -> None:
+    def set_type(self, type_: "IRPClassifier") -> None:
         """Sets the type for the flowport.
 
         Args:
@@ -281,7 +282,7 @@ class RPSysMLPort(RPInstance):
         self.call_com(lambda: self._com.setType(type_._com))
 
 
-class RPType(RPClassifier):
+class IRPType(IRPClassifier):
     """Wraps ``IRPType``."""
 
     # IRPType method parity checklist:
@@ -468,7 +469,7 @@ class RPType(RPClassifier):
         """
         return str(self._get_method_or_property(self._com, "getKind", "kind"))
 
-    def get_typedef_base_type(self) -> "RPClassifier":
+    def get_typedef_base_type(self) -> "IRPClassifier":
         """Returns the base type of the typedef.
 
         Returns:
@@ -480,7 +481,7 @@ class RPType(RPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPType::getTypedefBaseType()
         """
-        return cast("RPClassifier", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getTypedefBaseType())))
+        return cast("IRPClassifier", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getTypedefBaseType())))
 
     def get_typedef_multiplicity(self) -> str:
         """Returns the multiplicity of the typedef.
@@ -793,7 +794,7 @@ class RPType(RPClassifier):
         """
         self._set_method_or_property(self._com, "setKind", "kind", kind)
 
-    def set_typedef_base_type(self, typedef_base_type: "RPClassifier") -> None:
+    def set_typedef_base_type(self, typedef_base_type: "IRPClassifier") -> None:
         """Sets the base type of the typedef.
 
         Args:
@@ -824,4 +825,7 @@ class RPType(RPClassifier):
 
 AbstractRPModelElement.register_wrapper("ClassifierRole", RPClassifierRole)
 AbstractRPModelElement.register_wrapper("SysMLPort", RPSysMLPort)
-AbstractRPModelElement.register_wrapper("Type", RPType)
+AbstractRPModelElement.register_wrapper("Type", IRPType)
+
+AbstractRPModelElement.register_wrapper("ClassifierRole", RPClassifierRole)
+AbstractRPModelElement.register_wrapper("SysMLPort", RPSysMLPort)

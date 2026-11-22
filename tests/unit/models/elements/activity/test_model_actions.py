@@ -3,7 +3,8 @@
 from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.activity.model_actions import (
     RPAcceptEventAction,
     RPAcceptTimeEvent,
@@ -16,7 +17,7 @@ from rhapsody_cli.models.elements.activity.model_actions import (
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.elements.classifiers.model_interface_item import RPInterfaceItem
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import IRPInterfaceItem
     from rhapsody_cli.models.elements.interactions.model_interactions import RPEvent
     from rhapsody_cli.models.elements.relations.model_relation import RPRelation
 
@@ -137,7 +138,7 @@ class TestRPCallOperation:
         fake = make_fake_element("CallOperation")
         op = make_fake_element("Operation", properties={"name": "myOp"})
         co = RPCallOperation(fake)
-        co.set_operation(cast("RPInterfaceItem", AbstractRPModelElement.wrap(op)))
+        co.set_operation(cast("IRPInterfaceItem", AbstractRPModelElement.wrap(op)))
         fake.setOperation.assert_called_once_with(op)
 
     def test_set_target_delegates(self) -> None:
@@ -252,7 +253,7 @@ class TestRPSendAction:
         fake = make_fake_element("SendAction")
         op = make_fake_element("Operation", properties={"name": "myOp"})
         sa = RPSendAction(fake)
-        sa.set_invoked_operation(cast("RPInterfaceItem", AbstractRPModelElement.wrap(op)))
+        sa.set_invoked_operation(cast("IRPInterfaceItem", AbstractRPModelElement.wrap(op)))
         fake.setInvokedOperation.assert_called_once_with(op)
 
     def test_set_target_delegates(self) -> None:

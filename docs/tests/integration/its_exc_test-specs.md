@@ -150,7 +150,7 @@ exercised through the CLI surface.
 4. Assert the original COM message text (e.g., `"project corrupted"`) appears in `result.output`
    or captured stderr (proving message preservation across the boundary).
 5. Assert (via spy) that `RhapsodyApplication.openProject` was called once with the supplied path.
-6. Assert no `RPProject` was constructed (the COM call failed before `wrap()` ran).
+6. Assert no `IRPProject` was constructed (the COM call failed before `wrap()` ran).
 **Expected Result:**
 The COM error is translated to `RhapsodyRuntimeException` by `call_com`, propagated through
 `openProject` unmodified, then caught by the CLI command and reported via `click.Abort` with the
@@ -199,4 +199,4 @@ call).
 - `Dispatch.call_count == 1` with arg `"Rhapsody2.Application.1"`.
 - Exception message contains `"Failed to launch Rhapsody instance"`.
 **Last Changed:** 2026-07-07
-
+

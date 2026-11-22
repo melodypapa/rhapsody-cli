@@ -2,14 +2,14 @@
 
 from typing import TYPE_CHECKING
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.core import AbstractRPModelElement
-from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.interactions.model_interactions import RPEvent, RPEventReception
 
 
-class RPActor(RPClassifier):
+class RPActor(IRPClassifier):
     """Wraps ``IRPActor``: represents an actor in the model."""
 
     # IRPActor method parity checklist:

@@ -3,13 +3,14 @@
 from typing import TYPE_CHECKING, Optional, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.interactions.model_interactions import RPMessage
 from rhapsody_cli.models.elements.statemachine.model_statemachine import RPState
 from rhapsody_cli.models.elements.values.model_values import RPValueSpecification
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.elements.classifiers.model_interface_item import RPInterfaceItem
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import IRPInterfaceItem
     from rhapsody_cli.models.elements.interactions.model_interactions import RPEvent
     from rhapsody_cli.models.elements.relations.model_relation import RPRelation
 
@@ -138,7 +139,7 @@ class RPCallOperation(RPState):
     # [inherited] irp_state_vertex methods (covered by rp_state_vertex checklist)
     # No deprecated IRPCallOperation methods.
 
-    def get_operation(self) -> "RPInterfaceItem":
+    def get_operation(self) -> "IRPInterfaceItem":
         """Returns the operation specified for this call operation element.
 
         Returns:
@@ -147,7 +148,7 @@ class RPCallOperation(RPState):
         Reference:
             com.telelogic.rhapsody.core.IRPCallOperation::getOperation()
         """
-        return cast("RPInterfaceItem", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getOperation", "operation")))
+        return cast("IRPInterfaceItem", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getOperation", "operation")))
 
     def get_target(self) -> "RPRelation":
         """Returns the target specified for this call operation element.
@@ -160,7 +161,7 @@ class RPCallOperation(RPState):
         """
         return cast("RPRelation", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getTarget", "target")))
 
-    def set_operation(self, operation: "RPInterfaceItem") -> None:
+    def set_operation(self, operation: "IRPInterfaceItem") -> None:
         """Specifies the operation to use for this call operation element.
 
         Args:
@@ -298,7 +299,7 @@ class RPSendAction(RPAction):
         """
         return cast("RPEvent", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getEvent", "event")))
 
-    def get_invoked_operation(self) -> "RPInterfaceItem":
+    def get_invoked_operation(self) -> "IRPInterfaceItem":
         """Returns the interface item element that is invoked by the Send Action element.
 
         Returns:
@@ -307,7 +308,7 @@ class RPSendAction(RPAction):
         Reference:
             com.telelogic.rhapsody.core.IRPSendAction::getInvokedOperation()
         """
-        return cast("RPInterfaceItem", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getInvokedOperation", "invokedOperation")))
+        return cast("IRPInterfaceItem", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getInvokedOperation", "invokedOperation")))
 
     def get_target(self) -> Optional["IRPModelElement"]:
         """Gets the event target of the Send Action element.
@@ -331,7 +332,7 @@ class RPSendAction(RPAction):
         """
         AbstractRPModelElement._set_method_or_property(self._com, "setEvent", "event", event._com)
 
-    def set_invoked_operation(self, invoked_operation: "RPInterfaceItem") -> None:
+    def set_invoked_operation(self, invoked_operation: "IRPInterfaceItem") -> None:
         """Sets the invoked operation property.
 
         Args:

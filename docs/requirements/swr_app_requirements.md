@@ -69,7 +69,7 @@ shall call `setHiddenUI(False)` to make the GUI window visible.
 **Priority:** High
 **Description:**
 The `openProject(filename: str)` method shall open the Rhapsody project at the given
-file path and return a wrapped `RPProject` instance. COM errors during the call shall
+file path and return a wrapped `IRPProject` instance. COM errors during the call shall
 be translated to `RhapsodyRuntimeException`.
 **Implementation:** src/rhapsody_cli/application.py:RhapsodyApplication.openProject
 **Last Changed:** 2026-07-07
@@ -84,7 +84,7 @@ be translated to `RhapsodyRuntimeException`.
 **Priority:** Medium
 **Description:**
 The `activeProject()` method shall return the currently active Rhapsody project as a
-wrapped `RPProject` instance.
+wrapped `IRPProject` instance.
 **Implementation:** src/rhapsody_cli/application.py:RhapsodyApplication.activeProject
 **Last Changed:** 2026-07-07
 

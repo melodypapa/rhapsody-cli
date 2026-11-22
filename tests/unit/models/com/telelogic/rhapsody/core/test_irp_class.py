@@ -8,9 +8,10 @@ import pytest
 
 import rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class as irp_class_module
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
-from rhapsody_cli.models.elements.classifiers import RPClassifier
-from rhapsody_cli.models.elements.classifiers.model_operation import RPOperation
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.interactions.model_interactions import RPEvent, RPEventReception
 from tests.unit.models.fakes import make_fake_element
 
@@ -19,7 +20,7 @@ def test_class_is_a_classifier() -> None:
     fake = make_fake_element("Class", properties={"name": "Widget"})
     klass = IRPClass(fake)
 
-    assert isinstance(klass, RPClassifier)
+    assert isinstance(klass, IRPClassifier)
     assert klass.get_name() == "Widget"
 
 
@@ -204,7 +205,7 @@ def test_class_delete_constructor_unwraps_arg() -> None:
     klass = IRPClass(fake)
 
     wrapped_ctor = AbstractRPModelElement.wrap(ctor)
-    klass.delete_constructor(cast(RPOperation, wrapped_ctor))
+    klass.delete_constructor(cast(IRPOperation, wrapped_ctor))
 
     fake.deleteConstructor.assert_called_once_with(ctor)
 

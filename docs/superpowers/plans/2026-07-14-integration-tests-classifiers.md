@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Add integration tests for all remaining untested methods across the 12 classifier wrapper classes in `src/rhapsody_cli/models/elements/classifiers/`, and create dedicated test files for `RPAssociationClass`, `RPClassifier`, `RPInterfaceItem` which currently have zero coverage. Flip in-source `[ ] integration test` checklist markers to `[x]` as work completes.
+**Goal:** Add integration tests for all remaining untested methods across the 12 classifier wrapper classes in `src/rhapsody_cli/models/elements/classifiers/`, and create dedicated test files for `IRPAssociationClass`, `IRPClassifier`, `IRPInterfaceItem` which currently have zero coverage. Flip in-source `[ ] integration test` checklist markers to `[x]` as work completes.
 
 **Architecture:** Extends existing test files under `tests/integration/models/elements/classifiers/` and adds new ones for uncovered classes, using the shared `rhapsody_app`/`test_project` fixtures.
 
@@ -12,15 +12,15 @@
 
 - Windows-only runtime (COM automation requires Windows + a running Rhapsody instance)
 - All test classes use `@pytest.mark.integration`
-- All tests consume the `test_project: RPProject` fixture (session-scoped)
+- All tests consume the `test_project: IRPProject` fixture (session-scoped)
 - Use `_unique(prefix)` with `uuid.uuid4().hex[:8]` for unique element names
 - Always use `try/finally` for cleanup — never rely solely on fixture teardown
 - Assert both `isinstance()` return types and read-back values
 - After each task's tests pass, flip `[ ] integration test` to `[x] integration test` in the relevant `model_*.py` file for every method that task covers
 - Quality gate after each task: `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ && pytest tests/unit` (live integration run: `pytest tests/integration -m integration`, requires attached Rhapsody)
-- New test files import concrete classes via subpackage `__init__.py` re-exports, e.g. `from rhapsody_cli.models.elements.classifiers import RPClassifier`
+- New test files import concrete classes via subpackage `__init__.py` re-exports, e.g. `from rhapsody_cli.models.elements.classifiers import IRPClassifier`
 - Follow the exact style of `tests/integration/models/elements/classifiers/test_model_class.py`
-- `RPEnumeration`, `RPInterface`, `RPSignal` and their creation paths (`RPPackage.add_enumeration`/`add_interface`/`add_signal`) were removed entirely — no `IRPEnumeration`/`IRPInterface`/`IRPSignal` COM interface or `addEnumeration`/`addInterface`/`addSignal` COM method exists anywhere in the Rhapsody Java API (see `docs/superpowers/plans/2026-07-15-remove-fictional-package-methods.md`). Real UML Enumeration/Interface/Signal creation uses `RPPackage.add_type`+`set_kind("Enumeration")`, `add_class`+`add_stereotype("Interface", "Class")`, and `add_event` respectively. `RPException` has no own methods (pure inheritance from `RPModelElement`) and remains out of scope for this plan.
+- `RPEnumeration`, `RPInterface`, `RPSignal` and their creation paths (`IRPPackage.add_enumeration`/`add_interface`/`add_signal`) were removed entirely — no `IRPEnumeration`/`IRPInterface`/`IRPSignal` COM interface or `addEnumeration`/`addInterface`/`addSignal` COM method exists anywhere in the Rhapsody Java API (see `docs/superpowers/plans/2026-07-15-remove-fictional-package-methods.md`). Real UML Enumeration/Interface/Signal creation uses `IRPPackage.add_type`+`set_kind("Enumeration")`, `add_class`+`add_stereotype("Interface", "Class")`, and `add_event` respectively. `RPException` has no own methods (pure inheritance from `RPModelElement`) and remains out of scope for this plan.
 
 ---
 
@@ -37,7 +37,7 @@
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_add_event_reception_with_event(self, test_project: RPProject) -> None:
+def test_add_event_reception_with_event(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("ActorEvPkg")
     actor_name = self._unique("EvActor")
     event_name = self._unique("MyEvent")
@@ -80,7 +80,7 @@ git commit -m "test: add integration tests for RPActor event reception"
 
 ---
 
-### Task 2: RPAssociationClass — new test file (ends & class flag)
+### Task 2: IRPAssociationClass — new test file (ends & class flag)
 
 **Files:**
 - Create: `tests/integration/models/elements/classifiers/test_model_association_class.py`
@@ -91,7 +91,7 @@ git commit -m "test: add integration tests for RPActor event reception"
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-"""Integration tests for RPAssociationClass with live Rhapsody COM API.
+"""Integration tests for IRPAssociationClass with live Rhapsody COM API.
 
 These tests require a running Rhapsody instance with an open project.
 """
@@ -100,25 +100,25 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.classifiers import RPAssociationClass
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.classifiers import IRPAssociationClass
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 
 
 @pytest.mark.integration
 class TestRPAssociationClassIntegration:
-    """Integration tests for RPAssociationClass with real Rhapsody COM API."""
+    """Integration tests for IRPAssociationClass with real Rhapsody COM API."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_association_ends_and_is_class_roundtrip(self, test_project: RPProject) -> None:
+    def test_association_ends_and_is_class_roundtrip(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("AssocPkg")
         class_a_name = self._unique("ClassA")
         class_b_name = self._unique("ClassB")
@@ -131,7 +131,7 @@ class TestRPAssociationClassIntegration:
                 class_b, "roleA", "Association", "1", "roleB", "Association", "1", link_name
             )
             assoc_class = pkg.find_nested_element(link_name)
-            assert isinstance(assoc_class, RPAssociationClass)
+            assert isinstance(assoc_class, IRPAssociationClass)
             end1 = assoc_class.get_end1()
             end2 = assoc_class.get_end2()
             assert end1 is not None
@@ -164,7 +164,7 @@ Expected: all pass
 
 ```bash
 git add tests/integration/models/elements/classifiers/test_model_association_class.py src/rhapsody_cli/models/elements/classifiers/model_association_class.py
-git commit -m "test: add integration tests for RPAssociationClass"
+git commit -m "test: add integration tests for IRPAssociationClass"
 ```
 
 ---
@@ -180,7 +180,7 @@ git commit -m "test: add integration tests for RPAssociationClass"
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_add_and_delete_reception(self, test_project: RPProject) -> None:
+def test_add_and_delete_reception(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("RecPkg")
     class_name = self._unique("RecCls")
     reception_name = self._unique("onSignal")
@@ -200,7 +200,7 @@ def test_add_and_delete_reception(self, test_project: RPProject) -> None:
 ```
 
 For the remaining methods in this task, follow the same pattern (one test per behavior, or shared test for tightly-coupled getter/setter pairs). Notably:
-- `add_triggered_operation` should assert the returned `RPOperation`'s name and presence in `get_operations()`.
+- `add_triggered_operation` should assert the returned `IRPOperation`'s name and presence in `get_operations()`.
 - `delete_class`/`delete_type` should create then delete a nested class/type and assert absence from `get_nested_classifiers()`/type list afterward.
 - `delete_constructor`/`delete_destructor` should build on the existing `test_constructor_destructor` pattern already in the file, adding explicit deletion and re-query assertions.
 - `add_event_reception`/`add_event_reception_with_event`/`delete_event_reception` mirror the reception pattern above but via the legacy event-reception API.
@@ -239,7 +239,7 @@ git commit -m "test: add integration tests for RPClass member management"
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_active_flag_roundtrip(self, test_project: RPProject) -> None:
+def test_active_flag_roundtrip(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("ActPkg")
     class_name = self._unique("ActCls")
     pkg = self._create_package(test_project, pkg_name)
@@ -283,7 +283,7 @@ git commit -m "test: add integration tests for RPClass flags, links and server s
 
 ---
 
-### Task 5: RPClassifier — new test file: attributes, ports & interface items
+### Task 5: IRPClassifier — new test file: attributes, ports & interface items
 
 **Files:**
 - Create: `tests/integration/models/elements/classifiers/test_model_classifier.py`
@@ -294,7 +294,7 @@ git commit -m "test: add integration tests for RPClass flags, links and server s
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-"""Integration tests for RPClassifier with live Rhapsody COM API.
+"""Integration tests for IRPClassifier with live Rhapsody COM API.
 
 These tests require a running Rhapsody instance with an open project.
 """
@@ -303,30 +303,30 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.classifiers import RPClassifier
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.classifiers import IRPClassifier
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 
 
 @pytest.mark.integration
 class TestRPClassifierIntegration:
-    """Integration tests for RPClassifier with real Rhapsody COM API."""
+    """Integration tests for IRPClassifier with real Rhapsody COM API."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_find_attribute_and_delete_attribute(self, test_project: RPProject) -> None:
+    def test_find_attribute_and_delete_attribute(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("AttrPkg")
         class_name = self._unique("AttrCls")
         attr_name = self._unique("myAttr")
         pkg = self._create_package(test_project, pkg_name)
-        classifier: RPClassifier = pkg.add_class(class_name)
+        classifier: IRPClassifier = pkg.add_class(class_name)
         try:
             attribute = classifier.add_attribute(attr_name)
             found = classifier.find_attribute(attr_name)
@@ -364,12 +364,12 @@ Expected: all pass
 
 ```bash
 git add tests/integration/models/elements/classifiers/test_model_classifier.py src/rhapsody_cli/models/elements/classifiers/model_classifier.py
-git commit -m "test: add integration tests for RPClassifier attributes, ports and interface items"
+git commit -m "test: add integration tests for IRPClassifier attributes, ports and interface items"
 ```
 
 ---
 
-### Task 6: RPClassifier — relations & generalization hierarchy
+### Task 6: IRPClassifier — relations & generalization hierarchy
 
 **Files:**
 - Modify: `tests/integration/models/elements/classifiers/test_model_classifier.py`
@@ -380,7 +380,7 @@ git commit -m "test: add integration tests for RPClassifier attributes, ports an
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_add_relation_to_and_find_and_delete(self, test_project: RPProject) -> None:
+def test_add_relation_to_and_find_and_delete(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("RelPkg")
     class_a_name = self._unique("ClsA")
     class_b_name = self._unique("ClsB")
@@ -428,12 +428,12 @@ Expected: all pass
 
 ```bash
 git add tests/integration/models/elements/classifiers/test_model_classifier.py src/rhapsody_cli/models/elements/classifiers/model_classifier.py
-git commit -m "test: add integration tests for RPClassifier relations and generalizations"
+git commit -m "test: add integration tests for IRPClassifier relations and generalizations"
 ```
 
 ---
 
-### Task 7: RPClassifier — flows, activity diagrams, nested classifiers & statecharts
+### Task 7: IRPClassifier — flows, activity diagrams, nested classifiers & statecharts
 
 **Files:**
 - Modify: `tests/integration/models/elements/classifiers/test_model_classifier.py`
@@ -444,11 +444,11 @@ git commit -m "test: add integration tests for RPClassifier relations and genera
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_add_activity_diagram_and_get_behavioral_diagrams(self, test_project: RPProject) -> None:
+def test_add_activity_diagram_and_get_behavioral_diagrams(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("ActDiagPkg")
     class_name = self._unique("ActDiagCls")
     pkg = self._create_package(test_project, pkg_name)
-    classifier: RPClassifier = pkg.add_class(class_name)
+    classifier: IRPClassifier = pkg.add_class(class_name)
     try:
         activity_diagram = classifier.add_activity_diagram()
         assert activity_diagram is not None
@@ -484,12 +484,12 @@ Expected: all pass
 
 ```bash
 git add tests/integration/models/elements/classifiers/test_model_classifier.py src/rhapsody_cli/models/elements/classifiers/model_classifier.py
-git commit -m "test: add integration tests for RPClassifier flows, activity diagrams and nested classifiers"
+git commit -m "test: add integration tests for IRPClassifier flows, activity diagrams and nested classifiers"
 ```
 
 ---
 
-### Task 8: RPInterfaceItem — new test file: arguments & signatures
+### Task 8: IRPInterfaceItem — new test file: arguments & signatures
 
 **Files:**
 - Create: `tests/integration/models/elements/classifiers/test_model_interface_item.py`
@@ -500,7 +500,7 @@ git commit -m "test: add integration tests for RPClassifier flows, activity diag
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-"""Integration tests for RPInterfaceItem with live Rhapsody COM API.
+"""Integration tests for IRPInterfaceItem with live Rhapsody COM API.
 
 These tests require a running Rhapsody instance with an open project.
 """
@@ -509,24 +509,24 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 
 
 @pytest.mark.integration
 class TestRPInterfaceItemIntegration:
-    """Integration tests for RPInterfaceItem (via RPOperation) with real Rhapsody COM API."""
+    """Integration tests for IRPInterfaceItem (via IRPOperation) with real Rhapsody COM API."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_add_argument_and_get_arguments(self, test_project: RPProject) -> None:
+    def test_add_argument_and_get_arguments(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("ArgPkg")
         class_name = self._unique("ArgCls")
         op_name = self._unique("myOp")
@@ -568,12 +568,12 @@ Expected: all pass
 
 ```bash
 git add tests/integration/models/elements/classifiers/test_model_interface_item.py src/rhapsody_cli/models/elements/classifiers/model_interface_item.py
-git commit -m "test: add integration tests for RPInterfaceItem arguments and signatures"
+git commit -m "test: add integration tests for IRPInterfaceItem arguments and signatures"
 ```
 
 ---
 
-### Task 9: RPOperation — flowchart & descriptive flag getters
+### Task 9: IRPOperation — flowchart & descriptive flag getters
 
 **Files:**
 - Modify: `tests/integration/models/elements/classifiers/test_model_operation.py`
@@ -584,7 +584,7 @@ git commit -m "test: add integration tests for RPInterfaceItem arguments and sig
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_create_and_delete_auto_flow_chart(self, test_project: RPProject) -> None:
+def test_create_and_delete_auto_flow_chart(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("FlowPkg")
     class_name = self._unique("FlowCls")
     op_name = self._unique("flowOp")
@@ -624,12 +624,12 @@ Expected: all pass
 
 ```bash
 git add tests/integration/models/elements/classifiers/test_model_operation.py src/rhapsody_cli/models/elements/classifiers/model_operation.py
-git commit -m "test: add integration tests for RPOperation flowchart and flag getters"
+git commit -m "test: add integration tests for IRPOperation flowchart and flag getters"
 ```
 
 ---
 
-### Task 10: RPOperation — argument deletion, initializer, setters, returns & server sync
+### Task 10: IRPOperation — argument deletion, initializer, setters, returns & server sync
 
 **Files:**
 - Modify: `tests/integration/models/elements/classifiers/test_model_operation.py`
@@ -640,7 +640,7 @@ git commit -m "test: add integration tests for RPOperation flowchart and flag ge
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_set_and_get_body(self, test_project: RPProject) -> None:
+def test_set_and_get_body(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("BodySetPkg")
     class_name = self._unique("BodySetCls")
     op_name = self._unique("bodyOp")
@@ -679,7 +679,7 @@ Expected: all pass
 
 ```bash
 git add tests/integration/models/elements/classifiers/test_model_operation.py src/rhapsody_cli/models/elements/classifiers/model_operation.py
-git commit -m "test: add integration tests for RPOperation argument, initializer and setters"
+git commit -m "test: add integration tests for IRPOperation argument, initializer and setters"
 ```
 
 ---
@@ -695,7 +695,7 @@ git commit -m "test: add integration tests for RPOperation argument, initializer
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_add_new_node_by_type(self, test_project: RPProject) -> None:
+def test_add_new_node_by_type(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("NodePkg")
     class_name = self._unique("NodeCls")
     pkg = self._create_package(test_project, pkg_name)
@@ -749,7 +749,7 @@ git commit -m "test: add integration tests for RPStatechart diagram graphics bui
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_create_graphics_and_get_statechart_diagram(self, test_project: RPProject) -> None:
+def test_create_graphics_and_get_statechart_diagram(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("GfxPkg")
     class_name = self._unique("GfxCls")
     pkg = self._create_package(test_project, pkg_name)
@@ -803,7 +803,7 @@ git commit -m "test: add integration tests for RPStatechart diagram lifecycle an
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_get_its_class_and_root_state(self, test_project: RPProject) -> None:
+def test_get_its_class_and_root_state(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("RootPkg")
     class_name = self._unique("RootCls")
     pkg = self._create_package(test_project, pkg_name)
@@ -858,7 +858,7 @@ git commit -m "test: add integration tests for RPStatechart state/trigger querie
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_add_and_remove_meta_class(self, test_project: RPProject) -> None:
+def test_add_and_remove_meta_class(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("MetaPkg")
     class_name = self._unique("MetaCls")
     stereo_name = self._unique("MyMetaStereo")
@@ -904,7 +904,7 @@ git commit -m "test: add integration tests for RPStereotype metaclass management
 
 ---
 
-### Task 15: RPUseCase — extension & entry point management
+### Task 15: IRPUseCase — extension & entry point management
 
 **Files:**
 - Modify: `tests/integration/models/elements/classifiers/test_model_usecase.py`
@@ -915,7 +915,7 @@ git commit -m "test: add integration tests for RPStereotype metaclass management
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_add_find_and_delete_extension_point(self, test_project: RPProject) -> None:
+def test_add_find_and_delete_extension_point(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("ExtPkg")
     uc_name = self._unique("ExtUc")
     ext_name = self._unique("myExtension")
@@ -956,12 +956,12 @@ Expected: all pass
 
 ```bash
 git add tests/integration/models/elements/classifiers/test_model_usecase.py src/rhapsody_cli/models/elements/classifiers/model_usecase.py
-git commit -m "test: add integration tests for RPUseCase extension and entry points"
+git commit -m "test: add integration tests for IRPUseCase extension and entry points"
 ```
 
 ---
 
-### Task 16: RPUseCase — describing diagrams, behavior override & server sync
+### Task 16: IRPUseCase — describing diagrams, behavior override & server sync
 
 **Files:**
 - Modify: `tests/integration/models/elements/classifiers/test_model_usecase.py`
@@ -972,7 +972,7 @@ git commit -m "test: add integration tests for RPUseCase extension and entry poi
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_add_get_and_delete_describing_diagram(self, test_project: RPProject) -> None:
+def test_add_get_and_delete_describing_diagram(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("DescPkg")
     uc_name = self._unique("DescUc")
     diagram_name = self._unique("DescDiagram")
@@ -1016,7 +1016,7 @@ Expected: all pass
 
 ```bash
 git add tests/integration/models/elements/classifiers/test_model_usecase.py src/rhapsody_cli/models/elements/classifiers/model_usecase.py
-git commit -m "test: add integration tests for RPUseCase describing diagrams and behavior sync"
+git commit -m "test: add integration tests for IRPUseCase describing diagrams and behavior sync"
 ```
 
 ---

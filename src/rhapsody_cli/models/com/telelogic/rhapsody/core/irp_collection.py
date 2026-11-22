@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Any, Iterator
 from rhapsody_cli import com_utils
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.core import IRPModelElement
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 
 class IRPCollection:

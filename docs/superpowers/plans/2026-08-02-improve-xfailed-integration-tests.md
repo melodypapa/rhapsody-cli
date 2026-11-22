@@ -110,13 +110,13 @@ Remove exactly this line (line 277):
 
 ```python
     @pytest.mark.xfail(strict=False, reason="read-back of variant typed slots is not reliable on all collections")
-    def test_set_string_stores_value(self, test_project: RPProject, rhapsody_app: RhapsodyApplication) -> None:
+    def test_set_string_stores_value(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
 ```
 
 becomes:
 
 ```python
-    def test_set_string_stores_value(self, test_project: RPProject, rhapsody_app: RhapsodyApplication) -> None:
+    def test_set_string_stores_value(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
 ```
 
 - [ ] **Step 2: Delete the decorator above `test_set_integer_stores_value`**
@@ -256,7 +256,7 @@ git commit -m "test(integration): fix find_nested_element not-found assertion (r
 
 ### Task 3: Fix 3 `pkg.add_package()` test bugs → `add_nested_package()`
 
-`RPPackage` exposes `add_nested_package(name)` (wrapper at `src/rhapsody_cli/models/elements/containment/model_package.py:151`), **not** `add_package`. Three tests call `pkg.add_package(...)`, which always raises `AttributeError: 'RPPackage' object has no attribute 'add_package'` — a typo in the test, not a SUT bug. Fix the call. `test_find_nested_element_recursive` also re-uses the wrong not-found assertion pattern from Task 2.
+`IRPPackage` exposes `add_nested_package(name)` (wrapper at `src/rhapsody_cli/models/elements/containment/model_package.py:151`), **not** `add_package`. Three tests call `pkg.add_package(...)`, which always raises `AttributeError: 'IRPPackage' object has no attribute 'add_package'` — a typo in the test, not a SUT bug. Fix the call. `test_find_nested_element_recursive` also re-uses the wrong not-found assertion pattern from Task 2.
 
 **Files:**
 - Modify: `tests/integration/models/test_core.py:892-906` (`test_find_nested_element_recursive`)
@@ -264,7 +264,7 @@ git commit -m "test(integration): fix find_nested_element not-found assertion (r
 - Modify: `tests/integration/models/test_core.py:1858-1870` (`test_get_nested_save_units_count_matches_collection`)
 
 **Interfaces:**
-- Consumes: `RPPackage.add_nested_package(name) -> RPPackage` (existing).
+- Consumes: `IRPPackage.add_nested_package(name) -> IRPPackage` (existing).
 - Produces: three tests either pass (marker removed) or, if a deeper issue remains, keep the marker with a sharpened reason (fallback strings supplied per test).
 
 - [ ] **Step 1: Fix `test_find_nested_element_recursive` calls**
@@ -572,7 +572,7 @@ Create a PR titled `test: improve xfailed integration tests (verified against li
 - Task 3 Step 6 intentionally supplies fallback reasons for the 3 tests whose post-fix outcome is not 100% guaranteed — these are concrete strings, not placeholders.
 
 ### 3. Type / name consistency
-- Method names verified against source: `RPPackage.add_nested_package` (`model_package.py:151`), `find_nested_element` (`core.py:590`), `addProperty`/`setPropertyValue` (`core.py:404`/`1672`).
+- Method names verified against source: `IRPPackage.add_nested_package` (`model_package.py:151`), `find_nested_element` (`core.py:590`), `addProperty`/`setPropertyValue` (`core.py:404`/`1672`).
 - Test names verified against the live JUnit run (e.g. `test_is_final_roundtrip`, `test_match_on_signature` — note the old plan's `test_set_is_final_roundtrip` / `test_match_on_signature_returns_true_for_matching` do not exist and are not used here).
 - HRESULTs taken verbatim from the `--tb=line` / JUnit capture: `0x80040001`, `0x80040002`, `0x80040009`, `0x8004000A`, `0x80004005`, `0x80070057`, `DISP_E_TYPEMISMATCH`.
 

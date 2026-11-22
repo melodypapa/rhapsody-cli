@@ -16,13 +16,13 @@ def test_exceptions_are_exported() -> None:
 
 def test_importing_package_registers_all_core_element_wrappers() -> None:
     for meta_class, expected_name in [
-        ("Project", "RPProject"),
-        ("Package", "RPPackage"),
+        ("Project", "IRPProject"),
+        ("Package", "IRPPackage"),
         ("Class", "IRPClass"),
-        ("Attribute", "RPAttribute"),
-        ("Operation", "RPOperation"),
+        ("Attribute", "IRPAttribute"),
+        ("Operation", "IRPOperation"),
         ("Actor", "RPActor"),
-        ("UseCase", "RPUseCase"),
+        ("UseCase", "IRPUseCase"),
         ("Instance", "RPInstance"),
         ("Statechart", "RPStatechart"),
         ("Requirement", "RPRequirement"),

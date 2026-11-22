@@ -2,7 +2,7 @@
 
 ## Summary
 - Java package: `com.telelogic.rhapsody.core`
-- Target wrapper: `RPInterfaceItem` (`src/rhapsody_cli/models/elements/classifiers/model_interface_item.py`)
+- Target wrapper: `IRPInterfaceItem` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_interface_item.py`)
 - Members: Python `7`, Java `7`, pywin32 `7`
 - Deviations: `0`
 - Deviations by status:

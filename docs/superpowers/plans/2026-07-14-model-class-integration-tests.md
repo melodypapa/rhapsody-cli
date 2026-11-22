@@ -21,7 +21,7 @@
 
 - Windows-only runtime (COM automation requires Windows + Rhapsody)
 - All tests use `@pytest.mark.integration` decorator
-- All tests consume `test_project: RPProject` fixture (session-scoped, creates isolated project at `demos/test_project/`)
+- All tests consume `test_project: IRPProject` fixture (session-scoped, creates isolated project at `demos/test_project/`)
 - TDD is mandatory — write failing test first, then verify it passes
 - Use `_unique(prefix)` helper with `uuid.uuid4().hex[:8]` for unique element names
 - Always use `try/finally` for cleanup — never rely solely on fixture teardown
@@ -32,11 +32,11 @@
 
 ### Priority Order for Element Subpackages
 
-1. **classifiers/** — RPClass, RPOperation, RPActor, RPStereotype, RPSignal, RPEnumeration, RPUseCase, RPInterface, RPInterfaceItem, RPException, RPAssociationClass, RPStatechart
-2. **containment/** — RPProject, RPPackage (expand existing), RPComponent, RPModule, RPCollaboration, RPNode, RPProfile, RPComponentInstance, RPConfiguration
-3. **variables/** — RPAttribute, RPVariable, RPArgument, RPTag
-4. **common/** — RPComment, RPConstraint, RPEnumerationLiteral, RPSysMLPort, RPType, RPClassifierRole
-5. **relations/** — RPAssociationRole, RPDependency, RPGeneralization, RPHyperLink, RPInstance, RPPort, RPRelation
+1. **classifiers/** — RPClass, IRPOperation, RPActor, RPStereotype, RPSignal, RPEnumeration, IRPUseCase, RPInterface, IRPInterfaceItem, RPException, IRPAssociationClass, RPStatechart
+2. **containment/** — IRPProject, IRPPackage (expand existing), RPComponent, RPModule, RPCollaboration, RPNode, RPProfile, RPComponentInstance, RPConfiguration
+3. **variables/** — IRPAttribute, RPVariable, IRPArgument, RPTag
+4. **common/** — RPComment, RPConstraint, RPEnumerationLiteral, RPSysMLPort, IRPType, RPClassifierRole
+5. **relations/** — RPAssociationRole, RPDependency, RPGeneralization, RPHyperLink, RPInstance, IRPPort, RPRelation
 6. **diagrams/** — RPDiagram and 11 diagram-type wrappers
 7. **activity/** — RPAction, RPFlow, RPFlowchart, RPObjectNode, RPSwimlane + action subtypes
 8. **requirements/** — RPRequirement, RPAnnotation
@@ -54,7 +54,7 @@
 - Modify: `tests/integration/models/elements/classifiers/test_model_class.py`
 
 **Interfaces:**
-- Consumes: `test_project` fixture (session-scoped `RPProject`)
+- Consumes: `test_project` fixture (session-scoped `IRPProject`)
 - Consumes: `_unique()` helper pattern, `_create_package()` helper
 
 **Rationale:** Existing test file covers only create/navigate/operation/delete. RPClass has ~25 additional methods (add_superclass, add_constructor, add_destructor, get_is_abstract/set_is_abstract, add_type, etc.) that need live-COM validation.
@@ -62,7 +62,7 @@
 - [ ] **Step 1: Add test for add_superclass / get_generalizations / delete_superclass**
 
 ```python
-def test_class_inheritance(self, test_project: RPProject) -> None:
+def test_class_inheritance(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("InhPkg")
     parent_name = self._unique("ParentCls")
     child_name = self._unique("ChildCls")
@@ -82,7 +82,7 @@ def test_class_inheritance(self, test_project: RPProject) -> None:
 ```
 
 > **Note:** `RPClass` has no `get_superclasses()` method. Use `get_generalizations()`
-> (inherited from `RPClassifier`), which returns an `IRPCollection` of
+> (inherited from `IRPClassifier`), which returns an `IRPCollection` of
 > `RPGeneralization` objects; call `.get_base_class()` on each to find the parent.
 
 - [ ] **Step 2: Run test to verify it passes**
@@ -95,7 +95,7 @@ Expected: PASS
 - [ ] **Step 3: Add test for add_constructor / add_destructor**
 
 ```python
-def test_constructor_destructor(self, test_project: RPProject) -> None:
+def test_constructor_destructor(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("CtorPkg")
     class_name = self._unique("CtorCls")
     pkg = self._create_package(test_project, pkg_name)
@@ -103,10 +103,10 @@ def test_constructor_destructor(self, test_project: RPProject) -> None:
     try:
         ctor = test_class.add_constructor("void()")
         assert ctor is not None
-        assert isinstance(ctor, RPOperation)
+        assert isinstance(ctor, IRPOperation)
         dtor = test_class.add_destructor()
         assert dtor is not None
-        assert isinstance(dtor, RPOperation)
+        assert isinstance(dtor, IRPOperation)
         operations = list(test_class.get_operations())
         assert ctor in operations
         assert dtor in operations
@@ -124,7 +124,7 @@ Expected: PASS
 - [ ] **Step 5: Add test for get_is_abstract / set_is_abstract round-trip**
 
 ```python
-def test_abstract_roundtrip(self, test_project: RPProject) -> None:
+def test_abstract_roundtrip(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("AbsPkg")
     class_name = self._unique("AbsCls")
     pkg = self._create_package(test_project, pkg_name)
@@ -149,7 +149,7 @@ Expected: PASS
 - [ ] **Step 7: Add test for add_type / delete_type**
 
 ```python
-def test_type_management(self, test_project: RPProject) -> None:
+def test_type_management(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("TypePkg")
     class_name = self._unique("TypeCls")
     pkg = self._create_package(test_project, pkg_name)
@@ -186,7 +186,7 @@ git commit -m "test: expand RPClass integration tests with inheritance, ctor/dto
 
 ---
 
-### Task 2: Add RPOperation Integration Tests (classifiers)
+### Task 2: Add IRPOperation Integration Tests (classifiers)
 
 **Files:**
 - Create: `tests/integration/models/elements/classifiers/test_model_operation.py`
@@ -195,32 +195,32 @@ git commit -m "test: expand RPClass integration tests with inheritance, ctor/dto
 - Consumes: `test_project` fixture
 - Produces: `TestRPOperationIntegration` class
 
-**Rationale:** RPOperation has ~30 methods; basic create/read was tested via RPClass tests, but operation-specific properties (get_is_static, set_is_static, get_is_virtual, get_body, set_return_type_declaration, etc.) need their own integration tests.
+**Rationale:** IRPOperation has ~30 methods; basic create/read was tested via RPClass tests, but operation-specific properties (get_is_static, set_is_static, get_is_virtual, get_body, set_return_type_declaration, etc.) need their own integration tests.
 
-- [ ] **Step 1: Create test file with RPOperation property round-trip tests**
+- [ ] **Step 1: Create test file with IRPOperation property round-trip tests**
 
 ```python
 import uuid
 import pytest
-from rhapsody_cli.models.elements.classifiers import RPClass, RPOperation
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.classifiers import RPClass, IRPOperation
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 
 
 @pytest.mark.integration
 class TestRPOperationIntegration:
-    """Integration tests for RPOperation with live Rhapsody COM API."""
+    """Integration tests for IRPOperation with live Rhapsody COM API."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_static_roundtrip(self, test_project: RPProject) -> None:
+    def test_static_roundtrip(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("StatPkg")
         class_name = self._unique("StatCls")
         op_name = self._unique("staticOp")
@@ -236,7 +236,7 @@ class TestRPOperationIntegration:
         finally:
             test_class.delete_from_project()
 
-    def test_virtual_roundtrip(self, test_project: RPProject) -> None:
+    def test_virtual_roundtrip(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("VirtPkg")
         class_name = self._unique("VirtCls")
         op_name = self._unique("virtualOp")
@@ -252,7 +252,7 @@ class TestRPOperationIntegration:
         finally:
             test_class.delete_from_project()
 
-    def test_abstract_roundtrip(self, test_project: RPProject) -> None:
+    def test_abstract_roundtrip(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("AbsOpPkg")
         class_name = self._unique("AbsOpCls")
         op_name = self._unique("abstractOp")
@@ -268,7 +268,7 @@ class TestRPOperationIntegration:
         finally:
             test_class.delete_from_project()
 
-    def test_return_type_declaration(self, test_project: RPProject) -> None:
+    def test_return_type_declaration(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("RetPkg")
         class_name = self._unique("RetCls")
         op_name = self._unique("getValue")
@@ -281,7 +281,7 @@ class TestRPOperationIntegration:
         finally:
             test_class.delete_from_project()
 
-    def test_get_body(self, test_project: RPProject) -> None:
+    def test_get_body(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("BodyPkg")
         class_name = self._unique("BodyCls")
         op_name = self._unique("doSomething")
@@ -306,7 +306,7 @@ Expected: All 5 tests PASS
 
 ```bash
 git add tests/integration/models/elements/classifiers/test_model_operation.py
-git commit -m "test: add RPOperation integration tests for static/virtual/abstract/return/body"
+git commit -m "test: add IRPOperation integration tests for static/virtual/abstract/return/body"
 ```
 
 ---
@@ -319,7 +319,7 @@ git commit -m "test: add RPOperation integration tests for static/virtual/abstra
 **Interfaces:**
 - Consumes: `test_project` fixture
 
-**Rationale:** RPActor inherits from RPClassifier and adds `add_event_reception_with_event`, `get_is_behavior_overriden`, `set_is_behavior_overriden`. Need to verify these work with live COM.
+**Rationale:** RPActor inherits from IRPClassifier and adds `add_event_reception_with_event`, `get_is_behavior_overriden`, `set_is_behavior_overriden`. Need to verify these work with live COM.
 
 - [ ] **Step 1: Create test file for RPActor**
 
@@ -327,7 +327,7 @@ git commit -m "test: add RPOperation integration tests for static/virtual/abstra
 import uuid
 import pytest
 from rhapsody_cli.models.elements.classifiers import RPActor
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 
 
 @pytest.mark.integration
@@ -339,12 +339,12 @@ class TestRPActorIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_create_actor_in_package(self, test_project: RPProject) -> None:
+    def test_create_actor_in_package(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("ActorPkg")
         actor_name = self._unique("TestActor")
         pkg = self._create_package(test_project, pkg_name)
@@ -359,7 +359,7 @@ class TestRPActorIntegration:
         finally:
             actor.delete_from_project()
 
-    def test_actor_behavior_override(self, test_project: RPProject) -> None:
+    def test_actor_behavior_override(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("BehPkg")
         actor_name = self._unique("BehActor")
         pkg = self._create_package(test_project, pkg_name)
@@ -373,7 +373,7 @@ class TestRPActorIntegration:
         finally:
             actor.delete_from_project()
 
-    def test_actor_owner(self, test_project: RPProject) -> None:
+    def test_actor_owner(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("OwnPkg")
         actor_name = self._unique("OwnActor")
         pkg = self._create_package(test_project, pkg_name)
@@ -382,7 +382,7 @@ class TestRPActorIntegration:
             owner = actor.get_owner()
             assert owner is not None
             assert owner.get_name() == pkg_name
-            assert isinstance(owner, RPPackage)
+            assert isinstance(owner, IRPPackage)
         finally:
             actor.delete_from_project()
 ```
@@ -421,7 +421,7 @@ git commit -m "test: add RPActor integration tests for create, behavior override
 import uuid
 import pytest
 from rhapsody_cli.models.elements.classifiers import RPStereotype
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 
 
 @pytest.mark.integration
@@ -433,12 +433,12 @@ class TestRPStereotypeIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_create_stereotype_on_class(self, test_project: RPProject) -> None:
+    def test_create_stereotype_on_class(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("SterPkg")
         class_name = self._unique("SterCls")
         stereo_name = self._unique("MyStereotype")
@@ -454,7 +454,7 @@ class TestRPStereotypeIntegration:
             test_class.delete_from_project()
             stereotype.delete_from_project()
 
-    def test_stereotype_owner(self, test_project: RPProject) -> None:
+    def test_stereotype_owner(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("SterOwnPkg")
         class_name = self._unique("SterOwnCls")
         stereo_name = self._unique("OwnedStereo")
@@ -465,7 +465,7 @@ class TestRPStereotypeIntegration:
             owner = stereotype.get_owner()
             assert owner is not None
             assert owner.get_name() == pkg_name
-            assert isinstance(owner, RPPackage)
+            assert isinstance(owner, IRPPackage)
         finally:
             test_class.delete_from_project()
             stereotype.delete_from_project()
@@ -476,7 +476,7 @@ class TestRPStereotypeIntegration:
 > from the class in `finally`, or it will be left as an orphan element in
 > the package.
 
-> **Note:** `RPPackage.add_stereotype(name)` does not exist. Stereotypes are
+> **Note:** `IRPPackage.add_stereotype(name)` does not exist. Stereotypes are
 > created/applied via the generic `RPModelElement.add_stereotype(name, meta_type)`
 > method (present on any element, e.g. `RPClass`), which creates the stereotype
 > in the owning package (if it doesn't already exist) and applies it to the
@@ -511,7 +511,7 @@ git commit -m "test: add RPStereotype integration tests"
 import uuid
 import pytest
 from rhapsody_cli.models.elements.classifiers import RPSignal
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 
 
 @pytest.mark.integration
@@ -523,12 +523,12 @@ class TestRPSignalIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_create_signal_in_package(self, test_project: RPProject) -> None:
+    def test_create_signal_in_package(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("SigPkg")
         sig_name = self._unique("MySignal")
         pkg = self._create_package(test_project, pkg_name)
@@ -548,7 +548,7 @@ class TestRPSignalIntegration:
 import uuid
 import pytest
 from rhapsody_cli.models.elements.classifiers import RPEnumeration
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 
 
 @pytest.mark.integration
@@ -560,12 +560,12 @@ class TestRPEnumerationIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_create_enumeration_in_package(self, test_project: RPProject) -> None:
+    def test_create_enumeration_in_package(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("EnumPkg")
         enum_name = self._unique("MyEnum")
         pkg = self._create_package(test_project, pkg_name)
@@ -595,43 +595,43 @@ git commit -m "test: add RPSignal and RPEnumeration integration tests"
 
 ---
 
-### Task 6: Add RPUseCase and RPInterface Integration Tests (classifiers)
+### Task 6: Add IRPUseCase and RPInterface Integration Tests (classifiers)
 
 **Files:**
 - Create: `tests/integration/models/elements/classifiers/test_model_usecase.py`
 - Create: `tests/integration/models/elements/classifiers/test_model_interface.py`
 
-- [ ] **Step 1: Create RPUseCase tests**
+- [ ] **Step 1: Create IRPUseCase tests**
 
 ```python
 import uuid
 import pytest
-from rhapsody_cli.models.elements.classifiers import RPUseCase
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.classifiers import IRPUseCase
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 
 
 @pytest.mark.integration
 class TestRPUseCaseIntegration:
-    """Integration tests for RPUseCase with live Rhapsody COM API."""
+    """Integration tests for IRPUseCase with live Rhapsody COM API."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_create_usecase_in_package(self, test_project: RPProject) -> None:
+    def test_create_usecase_in_package(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("UcPkg")
         uc_name = self._unique("MyUseCase")
         pkg = self._create_package(test_project, pkg_name)
         try:
             uc = pkg.add_use_case(uc_name)
             assert uc is not None
-            assert isinstance(uc, RPUseCase)
+            assert isinstance(uc, IRPUseCase)
             assert uc.get_name() == uc_name
             assert uc.get_meta_class() == "UseCase"
         finally:
@@ -646,7 +646,7 @@ class TestRPUseCaseIntegration:
 import uuid
 import pytest
 from rhapsody_cli.models.elements.classifiers import RPInterface
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 
 
 @pytest.mark.integration
@@ -658,12 +658,12 @@ class TestRPInterfaceIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_create_interface_in_package(self, test_project: RPProject) -> None:
+    def test_create_interface_in_package(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("IntPkg")
         iface_name = self._unique("MyInterface")
         pkg = self._create_package(test_project, pkg_name)
@@ -682,7 +682,7 @@ class TestRPInterfaceIntegration:
 ```bash
 pytest tests/integration/models/elements/classifiers/ -v
 git add tests/integration/models/elements/classifiers/test_model_usecase.py tests/integration/models/elements/classifiers/test_model_interface.py
-git commit -m "test: add RPUseCase and RPInterface integration tests"
+git commit -m "test: add IRPUseCase and RPInterface integration tests"
 ```
 
 ---
@@ -692,12 +692,12 @@ git commit -m "test: add RPUseCase and RPInterface integration tests"
 **Files:**
 - Modify: `tests/integration/models/elements/containment/test_model_project.py`
 
-**Rationale:** Existing containment tests cover RPProject and RPPackage basics. Need to add RPComponent, RPModule.
+**Rationale:** Existing containment tests cover IRPProject and IRPPackage basics. Need to add RPComponent, RPModule.
 
 - [ ] **Step 1: Add RPComponent creation test**
 
 ```python
-def test_create_component_in_project(self, test_project: RPProject) -> None:
+def test_create_component_in_project(self, test_project: IRPProject) -> None:
     comp_name = self._unique("MyComponent")
     comp = test_project.add_component(comp_name)
     try:
@@ -708,13 +708,13 @@ def test_create_component_in_project(self, test_project: RPProject) -> None:
         comp.delete_from_project()
 ```
 
-> **Note:** `add_component` exists only on `RPProject`, not `RPPackage` — there
-> is no `RPPackage.add_component`.
+> **Note:** `add_component` exists only on `IRPProject`, not `IRPPackage` — there
+> is no `IRPPackage.add_component`.
 
 - [ ] **Step 2: Add RPModule creation test**
 
 ```python
-def test_create_module_in_package(self, test_project: RPProject) -> None:
+def test_create_module_in_package(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("ModPkg")
     mod_name = self._unique("MyModule")
     pkg = self._create_package(test_project, pkg_name)
@@ -737,38 +737,38 @@ git commit -m "test: add RPComponent and RPModule integration tests"
 
 ---
 
-### Task 8: Add RPAttribute Integration Tests (variables)
+### Task 8: Add IRPAttribute Integration Tests (variables)
 
 **Files:**
 - Create: `tests/integration/models/elements/variables/test_model_attribute.py`
 
-**Rationale:** RPAttribute is a high-priority class used in nearly every model.
+**Rationale:** IRPAttribute is a high-priority class used in nearly every model.
 
-- [ ] **Step 1: Create RPAttribute tests**
+- [ ] **Step 1: Create IRPAttribute tests**
 
 ```python
 import uuid
 import pytest
 from rhapsody_cli.models.elements.classifiers import RPClass
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
-from rhapsody_cli.models.elements.variables import RPAttribute
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
+from rhapsody_cli.models.elements.variables import IRPAttribute
 
 
 @pytest.mark.integration
 class TestRPAttributeIntegration:
-    """Integration tests for RPAttribute with live Rhapsody COM API."""
+    """Integration tests for IRPAttribute with live Rhapsody COM API."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_add_attribute_to_class(self, test_project: RPProject) -> None:
+    def test_add_attribute_to_class(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("AttrPkg")
         class_name = self._unique("AttrCls")
         attr_name = self._unique("myAttribute")
@@ -777,14 +777,14 @@ class TestRPAttributeIntegration:
         try:
             attr = test_class.add_attribute(attr_name)
             assert attr is not None
-            assert isinstance(attr, RPAttribute)
+            assert isinstance(attr, IRPAttribute)
             assert attr.get_name() == attr_name
             attrs = list(test_class.get_attributes())
             assert attr in attrs
         finally:
             test_class.delete_from_project()
 
-    def test_attribute_type_roundtrip(self, test_project: RPProject) -> None:
+    def test_attribute_type_roundtrip(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("TypePkg")
         class_name = self._unique("TypeCls")
         attr_name = self._unique("typedAttr")
@@ -797,7 +797,7 @@ class TestRPAttributeIntegration:
         finally:
             test_class.delete_from_project()
 
-    def test_attribute_default_value(self, test_project: RPProject) -> None:
+    def test_attribute_default_value(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("DefPkg")
         class_name = self._unique("DefCls")
         attr_name = self._unique("defaultAttr")
@@ -811,7 +811,7 @@ class TestRPAttributeIntegration:
             test_class.delete_from_project()
 ```
 
-> **Note:** `set_type`/`get_type` operate on `RPClassifier` objects (not
+> **Note:** `set_type`/`get_type` operate on `IRPClassifier` objects (not
 > strings) — passing a raw string to `set_type` will raise an `AttributeError`.
 > For on-the-fly string type declarations, use `set_type_declaration(str)` /
 > `get_declaration()` instead.
@@ -821,7 +821,7 @@ class TestRPAttributeIntegration:
 ```bash
 pytest tests/integration/models/elements/variables/test_model_attribute.py -v
 git add tests/integration/models/elements/variables/test_model_attribute.py
-git commit -m "test: add RPAttribute integration tests for create, type, default value"
+git commit -m "test: add IRPAttribute integration tests for create, type, default value"
 ```
 
 ---
@@ -837,7 +837,7 @@ git commit -m "test: add RPAttribute integration tests for create, type, default
 import uuid
 import pytest
 from rhapsody_cli.models.elements.classifiers import RPClass
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.elements.relations import RPGeneralization
 
 
@@ -850,12 +850,12 @@ class TestRPGeneralizationIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_create_generalization(self, test_project: RPProject) -> None:
+    def test_create_generalization(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("GenPkg")
         parent_name = self._unique("Parent")
         child_name = self._unique("Child")
@@ -899,7 +899,7 @@ git commit -m "test: add RPGeneralization integration test"
 import uuid
 import pytest
 from rhapsody_cli.models.elements.common import RPComment, RPConstraint
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 
 
 @pytest.mark.integration
@@ -911,12 +911,12 @@ class TestRPCommentIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_create_comment_in_package(self, test_project: RPProject) -> None:
+    def test_create_comment_in_package(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("ComPkg")
         comment_name = self._unique("MyComment")
         pkg = self._create_package(test_project, pkg_name)
@@ -939,12 +939,12 @@ class TestRPConstraintIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_create_constraint_in_package(self, test_project: RPProject) -> None:
+    def test_create_constraint_in_package(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("ConPkg")
         con_name = self._unique("MyConstraint")
         pkg = self._create_package(test_project, pkg_name)
@@ -958,10 +958,10 @@ class TestRPConstraintIntegration:
             constraint.delete_from_project()
 ```
 
-> **Note:** Neither `RPPackage.add_comment` nor `RPPackage.add_constraint`
+> **Note:** Neither `IRPPackage.add_comment` nor `IRPPackage.add_constraint`
 > exist. Use the generic `RPModelElement.add_new_aggr(meta_type, name)`
-> method (inherited by `RPPackage`) — the same mechanism used elsewhere in
-> the codebase (e.g. `RPClassifier.add_port` calls `addNewAggr("Port", name)`).
+> method (inherited by `IRPPackage`) — the same mechanism used elsewhere in
+> the codebase (e.g. `IRPClassifier.add_port` calls `addNewAggr("Port", name)`).
 
 - [ ] **Step 2: Run tests and commit**
 
@@ -983,7 +983,7 @@ git commit -m "test: add RPComment and RPConstraint integration tests"
 ```python
 import uuid
 import pytest
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.elements.diagrams import RPDiagram
 
 
@@ -996,12 +996,12 @@ class TestRPDiagramIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_create_object_model_diagram(self, test_project: RPProject) -> None:
+    def test_create_object_model_diagram(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("DiagPkg")
         diag_name = self._unique("MyDiagram")
         pkg = self._create_package(test_project, pkg_name)
@@ -1014,7 +1014,7 @@ class TestRPDiagramIntegration:
             diagram.delete_from_project()
 ```
 
-> **Note:** `RPPackage.add_class_diagram` does not exist. Rhapsody's UML
+> **Note:** `IRPPackage.add_class_diagram` does not exist. Rhapsody's UML
 > "class diagram" equivalent is `add_object_model_diagram`, which returns
 > `RPObjectModelDiagram` (a subclass of `RPDiagram`, so `isinstance(diagram,
 > RPDiagram)` still holds).
@@ -1044,7 +1044,7 @@ git commit -m "test: add RPDiagram integration test"
 import uuid
 import pytest
 from rhapsody_cli.models.elements.classifiers import RPClass, RPStatechart
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 
 
 @pytest.mark.integration
@@ -1056,12 +1056,12 @@ class TestRPStatechartIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_create_statechart_in_class(self, test_project: RPProject) -> None:
+    def test_create_statechart_in_class(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("StPkg")
         class_name = self._unique("StCls")
         pkg = self._create_package(test_project, pkg_name)
@@ -1075,7 +1075,7 @@ class TestRPStatechartIntegration:
             test_class.delete_from_project()
 ```
 
-> **Note:** `add_statechart()` (defined on `RPClassifier`) takes zero
+> **Note:** `add_statechart()` (defined on `IRPClassifier`) takes zero
 > arguments — it does not accept a name.
 
 - [ ] **Step 2: Run tests and commit**
@@ -1098,7 +1098,7 @@ git commit -m "test: add RPStatechart integration test"
 ```python
 import uuid
 import pytest
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.elements.requirements import RPRequirement
 
 
@@ -1111,12 +1111,12 @@ class TestRPRequirementIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_create_requirement_in_package(self, test_project: RPProject) -> None:
+    def test_create_requirement_in_package(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("ReqPkg")
         req_name = self._unique("MyRequirement")
         pkg = self._create_package(test_project, pkg_name)
@@ -1130,7 +1130,7 @@ class TestRPRequirementIntegration:
             req.delete_from_project()
 ```
 
-> **Note:** `RPPackage.add_requirement` does not exist anywhere in the
+> **Note:** `IRPPackage.add_requirement` does not exist anywhere in the
 > codebase. Use the generic `RPModelElement.add_new_aggr(meta_type, name)`
 > method instead.
 
@@ -1174,13 +1174,13 @@ Expected: All integration tests collected, no unit tests
 | Task | Subpackage | Action | Tests Added | Priority |
 |------|-----------|--------|-------------|----------|
 | 1 | classifiers/RPClass | modify existing | 4 | Critical |
-| 2 | classifiers/RPOperation | create new | 5 | Critical |
+| 2 | classifiers/IRPOperation | create new | 5 | Critical |
 | 3 | classifiers/RPActor | create new | 3 | High |
 | 4 | classifiers/RPStereotype | create new | 2 | Medium |
 | 5 | classifiers/RPSignal + Enumeration | create new | 2 | Medium |
-| 6 | classifiers/RPUseCase + Interface | create new | 2 | Medium |
+| 6 | classifiers/IRPUseCase + Interface | create new | 2 | Medium |
 | 7 | containment (expand) | modify existing | 2 | Critical |
-| 8 | variables/RPAttribute | create new | 3 | High |
+| 8 | variables/IRPAttribute | create new | 3 | High |
 | 9 | relations/RPGeneralization | create new | 1 | Medium |
 | 10 | common/RPComment + RPConstraint | create new | 2 | Medium |
 | 11 | diagrams/RPDiagram | create new | 1 | Low |
@@ -1192,6 +1192,6 @@ Expected: All integration tests collected, no unit tests
 
 - All existing integration tests continue to pass
 - Every model wrapper class in `src/rhapsody_cli/models/elements/` has at least one integration test verifying create + identity + delete
-- Key property round-trips (get/set pairs) are validated for RPClass, RPOperation, RPActor, RPAttribute
+- Key property round-trips (get/set pairs) are validated for RPClass, IRPOperation, RPActor, IRPAttribute
 - No test leaves behind orphan elements in the Rhapsody model
 - Unit tests are unaffected (0 regressions)

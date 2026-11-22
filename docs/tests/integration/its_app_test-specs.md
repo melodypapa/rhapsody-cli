@@ -41,17 +41,17 @@ points to the launched instance.
 
 ---
 
-## ITS_APP_00002: openProject returns wrapped RPProject and translates COM errors
+## ITS_APP_00002: openProject returns wrapped IRPProject and translates COM errors
 
 **ID:** ITS_APP_00002
 **Traces-To:** SWR_APP_00004, SWR_APP_00009
-**Title:** openProject(path) returns an RPProject wrapper; COM failures surface as RhapsodyRuntimeException
+**Title:** openProject(path) returns an IRPProject wrapper; COM failures surface as RhapsodyRuntimeException
 **Type:** Integration
 **Priority:** High
 **Description:**
 Verifies the integration between `RhapsodyApplication.openProject`, the `wrap()` factory, and the
-`RPProject` wrapper. On success, the raw COM project returned by the underlying
-`openProject` call must be passed through `wrap()` and yield an `RPProject` instance. When the
+`IRPProject` wrapper. On success, the raw COM project returned by the underlying
+`openProject` call must be passed through `wrap()` and yield an `IRPProject` instance. When the
 COM call raises `pywintypes.com_error`, the error must cross the `call_com` boundary as a
 `RhapsodyRuntimeException` preserving the original message.
 **Pre-conditions:**
@@ -60,31 +60,31 @@ COM call raises `pywintypes.com_error`, the error must cross the `call_com` boun
 - A mock COM project object whose `getMetaClass()` returns `"Project"`.
 **Test Steps:**
 1. Patch `_com.openProject` to return the mock COM project; call `app.openProject("model.rpy")`.
-2. Assert the return value is an `RPProject` instance and its `_com` is the mock project.
+2. Assert the return value is an `IRPProject` instance and its `_com` is the mock project.
 3. Patch `_com.openProject` to raise `pywintypes.com_error("file not found", 0, "missing")`.
 4. Call `app.openProject("missing.rpy")` and assert `RhapsodyRuntimeException` is raised.
 5. Assert the raised exception's message contains the original COM error text.
 **Expected Result:**
-Success path yields a properly wrapped `RPProject`; failure path raises
+Success path yields a properly wrapped `IRPProject`; failure path raises
 `RhapsodyRuntimeException` (never raw `pywintypes.com_error`) with the COM message preserved.
 **Verification Criteria:**
-- `isinstance(result, RPProject)` on success.
+- `isinstance(result, IRPProject)` on success.
 - `RhapsodyRuntimeException` raised on COM failure; no `pywintypes.com_error` leaks.
 - Exception message string contains the original COM detail.
 **Last Changed:** 2026-07-07
 
 ---
 
-## ITS_APP_00003: activeProject returns wrapped RPProject from current selection
+## ITS_APP_00003: activeProject returns wrapped IRPProject from current selection
 
 **ID:** ITS_APP_00003
 **Traces-To:** SWR_APP_00005, SWR_APP_00009
-**Title:** activeProject() returns the currently active project as a wrapped RPProject
+**Title:** activeProject() returns the currently active project as a wrapped IRPProject
 **Type:** Integration
 **Priority:** Medium
 **Description:**
 Verifies that `RhapsodyApplication.activeProject` reads `_com.activeProject` and routes the result
-through `wrap()`, producing an `RPProject` wrapper. Confirms the application layer integrates with
+through `wrap()`, producing an `IRPProject` wrapper. Confirms the application layer integrates with
 the wrapping machinery rather than returning raw COM objects to callers.
 **Pre-conditions:**
 - A `RhapsodyApplication` instance whose `_com.activeProject` is patched to return a mock COM
@@ -93,29 +93,29 @@ the wrapping machinery rather than returning raw COM objects to callers.
 **Test Steps:**
 1. Patch `_com.activeProject` to return the mock COM project.
 2. Call `app.activeProject()`.
-3. Assert the returned object is an `RPProject`.
+3. Assert the returned object is an `IRPProject`.
 4. Assert the wrapper's `_com` attribute is the same mock project returned by the COM property.
 **Expected Result:**
-`activeProject()` returns a fully wrapped `RPProject`; the underlying COM object is preserved on
+`activeProject()` returns a fully wrapped `IRPProject`; the underlying COM object is preserved on
 the wrapper's `_com`.
 **Verification Criteria:**
-- `isinstance(result, RPProject)` is True.
+- `isinstance(result, IRPProject)` is True.
 - `result._com is mock_project` is True.
 **Last Changed:** 2026-07-07
 
 ---
 
-## ITS_APP_00004: getProjects returns IRPCollection of wrapped RPProject items
+## ITS_APP_00004: getProjects returns IRPCollection of wrapped IRPProject items
 
 **ID:** ITS_APP_00004
 **Traces-To:** SWR_APP_00006, SWR_CORE_00003, SWR_CORE_00007
-**Title:** getProjects() returns an IRPCollection whose iteration yields RPProject wrappers
+**Title:** getProjects() returns an IRPCollection whose iteration yields IRPProject wrappers
 **Type:** Integration
 **Priority:** Medium
 **Description:**
 Verifies integration between `RhapsodyApplication.getProjects`, `IRPCollection`, and `wrap()`/
 `_wrap_if_element`. The COM collection returned by `_com.getProjects()` must be wrapped as an
-`IRPCollection`, and iterating it must auto-wrap each raw COM project as an `RPProject`.
+`IRPCollection`, and iterating it must auto-wrap each raw COM project as an `IRPProject`.
 **Pre-conditions:**
 - A `RhapsodyApplication` whose `_com.getProjects` is patched to return a mock `IRPCollection`.
 - The mock collection's `getCount()` returns 2 and `getItem(i)` returns two distinct mock COM
@@ -125,15 +125,15 @@ Verifies integration between `RhapsodyApplication.getProjects`, `IRPCollection`,
 1. Call `app.getProjects()`.
 2. Assert the return value is an `IRPCollection`.
 3. Iterate the result and collect items into a list.
-4. Assert the list has length 2 and every item is an `RPProject`.
+4. Assert the list has length 2 and every item is an `IRPProject`.
 5. Assert each item's `_com` matches the corresponding mock returned by `getItem`.
 **Expected Result:**
 `getProjects()` returns an `IRPCollection`; iteration transparently wraps each raw COM project as
-`RPProject` via `_wrap_if_element`/`wrap`.
+`IRPProject` via `_wrap_if_element`/`wrap`.
 **Verification Criteria:**
 - `isinstance(result, IRPCollection)` is True.
 - `len(result) == 2`.
-- All iterated items are `RPProject` instances.
+- All iterated items are `IRPProject` instances.
 - Order of `_com` matches `getItem(1)`, `getItem(2)`.
 **Last Changed:** 2026-07-07
 
@@ -193,7 +193,7 @@ application layer, the exceptions module, and the CLI command layer.
 2. Capture the `Result` object's `output` and `exit_code`.
 3. Assert `exit_code != 0` (aborted).
 4. Assert stderr/stdout contains the `RhapsodyConnectionError` message text.
-5. Assert no `RPProject` was constructed (i.e., `openProject` was never reached).
+5. Assert no `IRPProject` was constructed (i.e., `openProject` was never reached).
 **Expected Result:**
 The attach failure surfaces as `RhapsodyConnectionError`, the CLI command catches it, writes the
 message to stderr, and aborts with a non-zero exit code. No raw `pywintypes.com_error` reaches

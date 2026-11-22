@@ -2,7 +2,7 @@
 
 ## Summary
 - Java package: `com.telelogic.rhapsody.core`
-- Target wrapper: `RPPackage` (`src/rhapsody_cli/models/elements/containment/model_package.py`)
+- Target wrapper: `IRPPackage` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`)
 - Members: Python `101`, Java `100`, pywin32 `94`
 - Deviations: `11`
 - Deviations by status:
@@ -138,7 +138,7 @@
 ## AI Fix Guidance
 
 ### Finding 1: JAVA_DOC_MISSING
-- **Target:** `RPPackage` in `src/rhapsody_cli/models/elements/containment/model_package.py`
+- **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
 - **Current Python wrapper/COM call:** add_association() -> addAssociation
 - **Expected Python method(s):** —
 - **Java signature(s):** —
@@ -147,7 +147,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 2: PYWIN32_MEMBER_MISSING
-- **Target:** `RPPackage` in `src/rhapsody_cli/models/elements/containment/model_package.py`
+- **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
 - **Current Python wrapper/COM call:** add_instance_specification() -> addInstanceSpecification
 - **Expected Python method(s):** `add_instance_specification`
 - **Java signature(s):** `IRPPackage.addInstanceSpecification(java.lang.String, com.telelogic.rhapsody.core.IRPClassifier)`
@@ -156,7 +156,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 3: PYTHON_METHOD_NAME_MISMATCH
-- **Target:** `RPPackage` in `src/rhapsody_cli/models/elements/containment/model_package.py`
+- **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
 - **Current Python wrapper/COM call:** add_statechart_diagram() -> addStatechart
 - **Expected Python method(s):** `add_statechart`
 - **Java signature(s):** `IRPPackage.addStatechart()`
@@ -165,7 +165,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 4: PYWIN32_MEMBER_MISSING
-- **Target:** `RPPackage` in `src/rhapsody_cli/models/elements/containment/model_package.py`
+- **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
 - **Current Python wrapper/COM call:** login_to_remote_artifact_server() -> loginToRemoteArtifactServer
 - **Expected Python method(s):** `login_to_remote_artifact_server`
 - **Java signature(s):** `IRPPackage.loginToRemoteArtifactServer()`
@@ -174,7 +174,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 5: PYTHON_METHOD_NAME_MISMATCH
-- **Target:** `RPPackage` in `src/rhapsody_cli/models/elements/containment/model_package.py`
+- **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
 - **Current Python wrapper/COM call:** get_nested_packages() -> packages
 - **Expected Python method(s):** `get_packages`
 - **Java signature(s):** `IRPPackage.getPackages()`
@@ -183,7 +183,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 6: PYTHON_METHOD_NAME_MISMATCH
-- **Target:** `RPPackage` in `src/rhapsody_cli/models/elements/containment/model_package.py`
+- **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
 - **Current Python wrapper/COM call:** recalculate_events_base_id() -> reCalculateEventsBaseId
 - **Expected Python method(s):** `re_calculate_events_base_id`
 - **Java signature(s):** `IRPPackage.reCalculateEventsBaseId()`
@@ -192,7 +192,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 7: PYWIN32_MEMBER_MISSING
-- **Target:** `RPPackage` in `src/rhapsody_cli/models/elements/containment/model_package.py`
+- **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
 - **Current Python wrapper/COM call:** get_root_instance_specifications() -> getRootInstanceSpecifications; get_root_instance_specifications() -> rootInstanceSpecifications
 - **Expected Python method(s):** `get_root_instance_specifications`
 - **Java signature(s):** `IRPPackage.getRootInstanceSpecifications()`
@@ -201,7 +201,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 8: PYTHON_METHOD_NAME_MISMATCH
-- **Target:** `RPPackage` in `src/rhapsody_cli/models/elements/containment/model_package.py`
+- **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
 - **Current Python wrapper/COM call:** get_saved_in_separate_directory() -> savedInSeperateDirectory; set_saved_in_separate_directory() -> savedInSeperateDirectory
 - **Expected Python method(s):** `get_saved_in_seperate_directory`, `set_saved_in_seperate_directory`
 - **Java signature(s):** `IRPPackage.getSavedInSeperateDirectory()`, `IRPPackage.setSavedInSeperateDirectory(int)`
@@ -210,7 +210,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 9: PYWIN32_MEMBER_MISSING
-- **Target:** `RPPackage` in `src/rhapsody_cli/models/elements/containment/model_package.py`
+- **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
 - **Current Python wrapper/COM call:** update_contained_diagrams_on_server() -> updateContainedDiagramsOnServer
 - **Expected Python method(s):** `update_contained_diagrams_on_server`
 - **Java signature(s):** `IRPPackage.updateContainedDiagramsOnServer(int)`
@@ -219,7 +219,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 10: PYWIN32_MEMBER_MISSING
-- **Target:** `RPPackage` in `src/rhapsody_cli/models/elements/containment/model_package.py`
+- **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
 - **Current Python wrapper/COM call:** update_contained_matrices_on_server() -> updateContainedMatricesOnServer
 - **Expected Python method(s):** `update_contained_matrices_on_server`
 - **Java signature(s):** `IRPPackage.updateContainedMatricesOnServer(int)`
@@ -228,7 +228,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 11: PYWIN32_MEMBER_MISSING
-- **Target:** `RPPackage` in `src/rhapsody_cli/models/elements/containment/model_package.py`
+- **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
 - **Current Python wrapper/COM call:** update_contained_tables_on_server() -> updateContainedTablesOnServer
 - **Expected Python method(s):** `update_contained_tables_on_server`
 - **Java signature(s):** `IRPPackage.updateContainedTablesOnServer(int)`

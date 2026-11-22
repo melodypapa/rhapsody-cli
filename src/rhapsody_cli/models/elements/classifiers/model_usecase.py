@@ -2,9 +2,10 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
-from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.diagrams import RPDiagram
@@ -20,7 +21,7 @@ class RPExtensionPoint(IRPModelElement):
 AbstractRPModelElement.register_wrapper("ExtensionPoint", RPExtensionPoint)
 
 
-class RPUseCase(RPClassifier):
+class IRPUseCase(IRPClassifier):
     """Wraps ``IRPUseCase``: represents a use case in the model."""
 
     # IRPUseCase method parity checklist:
@@ -229,7 +230,7 @@ class RPUseCase(RPClassifier):
             com.telelogic.rhapsody.core.IRPUseCase::setIsBehaviorOverriden(int isBehaviorOverriden)
         """
         raise NotImplementedError(
-            "RPUseCase.set_is_behavior_overriden is unimplemented: setIsBehaviorOverriden is not exposed in the "
+            "IRPUseCase.set_is_behavior_overriden is unimplemented: setIsBehaviorOverriden is not exposed in the "
             "Rhapsody COM automation type library for UseCase (get_is_behavior_overriden works). See docstring for "
             "details."
         )
@@ -245,4 +246,4 @@ class RPUseCase(RPClassifier):
         AbstractRPModelElement.call_com(lambda: self._com.updateContainedDiagramsOnServer())
 
 
-AbstractRPModelElement.register_wrapper("UseCase", RPUseCase)
+AbstractRPModelElement.register_wrapper("UseCase", IRPUseCase)

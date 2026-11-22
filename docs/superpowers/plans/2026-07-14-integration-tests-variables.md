@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Add integration tests for all remaining untested methods of `RPVariable`, `RPAttribute` (complete partial coverage), `RPTag`, `RPArgument`. Flip in-source `[ ] integration test` markers to `[x]` as work completes.
+**Goal:** Add integration tests for all remaining untested methods of `RPVariable`, `IRPAttribute` (complete partial coverage), `RPTag`, `IRPArgument`. Flip in-source `[ ] integration test` markers to `[x]` as work completes.
 
-**Architecture:** Extends `tests/integration/models/elements/variables/test_model_attribute.py` for `RPAttribute`/`RPVariable`; creates new test files for `RPTag` (`test_model_tag.py`) and `RPArgument` (`test_model_argument.py`).
+**Architecture:** Extends `tests/integration/models/elements/variables/test_model_attribute.py` for `IRPAttribute`/`RPVariable`; creates new test files for `RPTag` (`test_model_tag.py`) and `IRPArgument` (`test_model_argument.py`).
 
 **Tech Stack:** pytest, pywin32 (win32com), live Rhapsody COM API, `uuid.uuid4().hex[:8]`.
 
@@ -15,9 +15,9 @@
 | Class | Total rows | Already `[x] integration test` | Remaining (this plan) |
 |-------|-----------:|--------------------------------:|-----------------------:|
 | `RPVariable` (base) | 10 | 2 (`get_default_value`, `set_default_value`) | 8 |
-| `RPAttribute` | 12 | 0 | 12 |
+| `IRPAttribute` | 12 | 0 | 12 |
 | `RPTag` | 9 | 0 | 9 |
-| `RPArgument` | 2 | 0 | 2 |
+| `IRPArgument` | 2 | 0 | 2 |
 | **Total** | **33** | **2** | **31** |
 
 Existing `tests/integration/models/elements/variables/test_model_attribute.py` covers:
@@ -28,14 +28,14 @@ Existing `tests/integration/models/elements/variables/test_model_attribute.py` c
 **Untested method list (31, exactly matching remaining `[ ]` markers in source):**
 
 - `RPVariable`: `add_element_default_value`, `add_string_default_value`, `get_declaration`, `get_type`, `get_value_specifications`, `set_declaration`, `set_type`, `set_type_declaration`
-- `RPAttribute`: `get_is_constant`, `get_is_ordered`, `get_is_reference`, `get_is_static`, `get_multiplicity`, `get_visibility`, `set_is_constant`, `set_is_ordered`, `set_is_reference`, `set_is_static`, `set_multiplicity`, `set_visibility`
+- `IRPAttribute`: `get_is_constant`, `get_is_ordered`, `get_is_reference`, `get_is_static`, `get_multiplicity`, `get_visibility`, `set_is_constant`, `set_is_ordered`, `set_is_reference`, `set_is_static`, `set_multiplicity`, `set_visibility`
 - `RPTag`: `get_base`, `get_from_profile`, `get_multiplicity`, `get_tag_meta_class`, `get_value`, `set_multiplicity`, `set_tag_context_value` (inherited from `RPModelElement`, but tracked as an `RPTag` row in this file), `set_tag_meta_class`, `set_value`
-- `RPArgument`: `get_argument_direction`, `set_argument_direction`
+- `IRPArgument`: `get_argument_direction`, `set_argument_direction`
 
 ## Creation Chains Discovered
 
-- **`RPAttribute`**: `RPClass.add_attribute(name) -> RPAttribute` (already used in existing tests).
-- **`RPArgument`**: `RPClass.add_operation(name) -> RPOperation` (subclass of `RPInterfaceItem`), then `RPOperation.add_argument(name) -> RPArgument` (`src/rhapsody_cli/models/elements/classifiers/model_interface_item.py:30`).
+- **`IRPAttribute`**: `RPClass.add_attribute(name) -> IRPAttribute` (already used in existing tests).
+- **`IRPArgument`**: `RPClass.add_operation(name) -> IRPOperation` (subclass of `IRPInterfaceItem`), then `IRPOperation.add_argument(name) -> IRPArgument` (`src/rhapsody_cli/models/elements/classifiers/model_interface_item.py:30`).
 - **`RPTag`**: no dedicated factory method exists on `model_variables.py`. The established chain (via `RPModelElement` in `core.py`) is:
   1. `element.add_property(property_key, property_type, property_value)` (`core.py:383`) — creates a new property/tag on the element.
   2. `element.get_tag(name) -> RPModelElement` (`core.py:1281`), which the wrapper factory (`AbstractRPModelElement.wrap`) resolves to `RPTag` when the underlying COM object's meta-type is `Tag` (see `register_wrapper("Tag", RPTag)` at `model_variables.py:424`).
@@ -46,13 +46,13 @@ Existing `tests/integration/models/elements/variables/test_model_attribute.py` c
 
 - Windows-only runtime (requires Windows + a running Rhapsody instance)
 - All test classes use `@pytest.mark.integration`
-- All tests consume the `test_project: RPProject` fixture
+- All tests consume the `test_project: IRPProject` fixture
 - Use `_unique(prefix)` with `uuid.uuid4().hex[:8]`
 - Always `try/finally` cleanup via `element.delete_from_project()` (delete the top-level owning class, not the sub-element, unless the sub-element supports its own `delete_from_project()`)
 - Assert both `isinstance()` and read-back values
 - Flip `[ ] integration test` to `[x]` per task in `model_variables.py` — only for rows actually covered by a **passing** (non-`xfail`) test
 - Quality gate after each task: `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ && pytest tests/unit`
-- Import via subpackage `__init__.py` re-exports (`from rhapsody_cli.models.elements.variables import RPAttribute, RPTag, RPArgument`)
+- Import via subpackage `__init__.py` re-exports (`from rhapsody_cli.models.elements.variables import IRPAttribute, RPTag, IRPArgument`)
 
 ---
 
@@ -69,7 +69,7 @@ Existing `tests/integration/models/elements/variables/test_model_attribute.py` c
 - [ ] **Step 1: Write the new integration tests**
 
 ```python
-def test_attribute_type_via_existing_classifier(self, test_project: RPProject) -> None:
+def test_attribute_type_via_existing_classifier(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("TypeRefPkg")
     class_name = self._unique("TypeRefCls")
     type_class_name = self._unique("TypeRefType")
@@ -124,7 +124,7 @@ git commit -m "test: add integration tests for RPVariable type management"
 - [ ] **Step 1: Write the new integration tests**
 
 ```python
-def test_add_string_default_value_and_read_specifications(self, test_project: RPProject) -> None:
+def test_add_string_default_value_and_read_specifications(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("MultiDefPkg")
     class_name = self._unique("MultiDefCls")
     attr_name = self._unique("multiAttr")
@@ -165,7 +165,7 @@ git commit -m "test: add integration tests for RPVariable default value specific
 
 ---
 
-### Task 3: `RPAttribute` — constant/ordered/reference/static flags
+### Task 3: `IRPAttribute` — constant/ordered/reference/static flags
 
 **Files:**
 - Modify: `tests/integration/models/elements/variables/test_model_attribute.py`
@@ -176,7 +176,7 @@ git commit -m "test: add integration tests for RPVariable default value specific
 - [ ] **Step 1: Write the new integration tests**
 
 ```python
-def test_attribute_is_constant_roundtrip(self, test_project: RPProject) -> None:
+def test_attribute_is_constant_roundtrip(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("ConstPkg")
     class_name = self._unique("ConstCls")
     attr_name = self._unique("constAttr")
@@ -211,12 +211,12 @@ Run: `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ &&
 
 ```bash
 git add tests/integration/models/elements/variables/test_model_attribute.py src/rhapsody_cli/models/elements/variables/model_variables.py
-git commit -m "test: add integration tests for RPAttribute constant/ordered/reference/static flags"
+git commit -m "test: add integration tests for IRPAttribute constant/ordered/reference/static flags"
 ```
 
 ---
 
-### Task 4: `RPAttribute` — multiplicity & visibility
+### Task 4: `IRPAttribute` — multiplicity & visibility
 
 **Files:**
 - Modify: `tests/integration/models/elements/variables/test_model_attribute.py`
@@ -227,7 +227,7 @@ git commit -m "test: add integration tests for RPAttribute constant/ordered/refe
 - [ ] **Step 1: Write the new integration tests**
 
 ```python
-def test_attribute_multiplicity_roundtrip(self, test_project: RPProject) -> None:
+def test_attribute_multiplicity_roundtrip(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("MultPkg")
     class_name = self._unique("MultCls")
     attr_name = self._unique("multAttr")
@@ -250,7 +250,7 @@ Run: `pytest tests/integration/models/elements/variables/test_model_attribute.py
 
 - [ ] **Step 3: Flip checklist boxes**
 
-In `src/rhapsody_cli/models/elements/variables/model_variables.py`, flip `get_multiplicity`, `set_multiplicity`, `get_visibility`, `set_visibility` (`RPAttribute` rows).
+In `src/rhapsody_cli/models/elements/variables/model_variables.py`, flip `get_multiplicity`, `set_multiplicity`, `get_visibility`, `set_visibility` (`IRPAttribute` rows).
 
 - [ ] **Step 4: Run quality gate**
 
@@ -260,7 +260,7 @@ Run: `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ &&
 
 ```bash
 git add tests/integration/models/elements/variables/test_model_attribute.py src/rhapsody_cli/models/elements/variables/model_variables.py
-git commit -m "test: add integration tests for RPAttribute multiplicity and visibility"
+git commit -m "test: add integration tests for IRPAttribute multiplicity and visibility"
 ```
 
 ---
@@ -281,7 +281,7 @@ import uuid
 import pytest
 
 from rhapsody_cli.models.elements.classifiers import RPClass
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.elements.variables import RPTag
 
 
@@ -294,13 +294,13 @@ class TestRPTagIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
     @staticmethod
-    def _create_class_with_tag(pkg: RPPackage, class_name: str, tag_name: str) -> "tuple[RPClass, RPTag]":
+    def _create_class_with_tag(pkg: IRPPackage, class_name: str, tag_name: str) -> "tuple[RPClass, RPTag]":
         test_class = pkg.add_class(class_name)
         test_class.add_property(tag_name, "String", "initialValue")
         tag = test_class.get_tag(tag_name)
@@ -308,7 +308,7 @@ class TestRPTagIntegration:
         assert isinstance(tag, RPTag)
         return test_class, tag
 
-    def test_tag_value_roundtrip(self, test_project: RPProject) -> None:
+    def test_tag_value_roundtrip(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("TagValPkg")
         class_name = self._unique("TagValCls")
         tag_name = self._unique("myTag")
@@ -360,7 +360,7 @@ git commit -m "test: add integration tests for RPTag value and metadata"
 - [ ] **Step 1: Write the new integration tests**
 
 ```python
-def test_tag_multiplicity_roundtrip(self, test_project: RPProject) -> None:
+def test_tag_multiplicity_roundtrip(self, test_project: IRPProject) -> None:
     pkg_name = self._unique("TagMultPkg")
     class_name = self._unique("TagMultCls")
     tag_name = self._unique("multTag")
@@ -397,7 +397,7 @@ git commit -m "test: add integration tests for RPTag multiplicity and context va
 
 ---
 
-### Task 7: `RPArgument` — argument direction
+### Task 7: `IRPArgument` — argument direction
 
 **Files:**
 - Create: `tests/integration/models/elements/variables/test_model_argument.py`
@@ -412,25 +412,25 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
-from rhapsody_cli.models.elements.variables import RPArgument
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
+from rhapsody_cli.models.elements.variables import IRPArgument
 
 
 @pytest.mark.integration
 class TestRPArgumentIntegration:
-    """Integration tests for RPArgument with live Rhapsody COM API."""
+    """Integration tests for IRPArgument with live Rhapsody COM API."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_argument_direction_roundtrip(self, test_project: RPProject) -> None:
+    def test_argument_direction_roundtrip(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("ArgPkg")
         class_name = self._unique("ArgCls")
         op_name = self._unique("argOp")
@@ -441,7 +441,7 @@ class TestRPArgumentIntegration:
             op = test_class.add_operation(op_name)
             arg = op.add_argument(arg_name)
             assert arg is not None
-            assert isinstance(arg, RPArgument)
+            assert isinstance(arg, IRPArgument)
             arg.set_argument_direction("out")
             assert arg.get_argument_direction() == "out"
         finally:
@@ -454,7 +454,7 @@ Run: `pytest tests/integration/models/elements/variables/test_model_argument.py 
 
 - [ ] **Step 3: Flip checklist boxes**
 
-In `src/rhapsody_cli/models/elements/variables/model_variables.py`, flip `get_argument_direction`, `set_argument_direction` (`RPArgument` rows).
+In `src/rhapsody_cli/models/elements/variables/model_variables.py`, flip `get_argument_direction`, `set_argument_direction` (`IRPArgument` rows).
 
 - [ ] **Step 4: Run quality gate**
 
@@ -464,7 +464,7 @@ Run: `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ &&
 
 ```bash
 git add tests/integration/models/elements/variables/test_model_argument.py src/rhapsody_cli/models/elements/variables/model_variables.py
-git commit -m "test: add integration tests for RPArgument direction"
+git commit -m "test: add integration tests for IRPArgument direction"
 ```
 
 ---

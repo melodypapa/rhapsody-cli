@@ -2,7 +2,7 @@
 
 ## Summary
 - Java package: `com.telelogic.rhapsody.core`
-- Target wrapper: `RPType` (`src/rhapsody_cli/models/elements/common/model_other_model.py`)
+- Target wrapper: `IRPType` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_type.py`)
 - Members: Python `35`, Java `35`, pywin32 `28`
 - Deviations: `4`
 - Deviations by status:
@@ -64,7 +64,7 @@
 ## AI Fix Guidance
 
 ### Finding 1: COM_MEMBER_NOT_EXPOSED
-- **Target:** `RPType` in `src/rhapsody_cli/models/elements/common/model_other_model.py`
+- **Target:** `IRPType` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_type.py`
 - **Current Python wrapper/COM call:** get_enumeration_literals() -> getEnumerationLiterals
 - **Expected Python method(s):** `get_enumeration_literals`
 - **Java signature(s):** `IRPType.getEnumerationLiterals()`
@@ -73,7 +73,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 2: COM_MEMBER_NOT_EXPOSED
-- **Target:** `RPType` in `src/rhapsody_cli/models/elements/common/model_other_model.py`
+- **Target:** `IRPType` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_type.py`
 - **Current Python wrapper/COM call:** get_is_predefined() -> getIsPredefined
 - **Expected Python method(s):** `get_is_predefined`
 - **Java signature(s):** `IRPType.getIsPredefined()`
@@ -82,7 +82,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 3: COM_MEMBER_NOT_EXPOSED
-- **Target:** `RPType` in `src/rhapsody_cli/models/elements/common/model_other_model.py`
+- **Target:** `IRPType` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_type.py`
 - **Current Python wrapper/COM call:** get_is_typedef() -> getIsTypedef
 - **Expected Python method(s):** `get_is_typedef`
 - **Java signature(s):** `IRPType.getIsTypedef()`
@@ -91,7 +91,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 4: COM_MEMBER_NOT_EXPOSED
-- **Target:** `RPType` in `src/rhapsody_cli/models/elements/common/model_other_model.py`
+- **Target:** `IRPType` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_type.py`
 - **Current Python wrapper/COM call:** get_typedef_base_type() -> getTypedefBaseType; set_typedef_base_type() -> setTypedefBaseType
 - **Expected Python method(s):** `get_typedef_base_type`, `set_typedef_base_type`
 - **Java signature(s):** `IRPType.getTypedefBaseType()`, `IRPType.setTypedefBaseType(com.telelogic.rhapsody.core.IRPClassifier)`

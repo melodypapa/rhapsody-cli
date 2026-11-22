@@ -3,7 +3,8 @@ from typing import cast
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 
 
 @pytest.mark.integration
@@ -15,12 +16,12 @@ class TestRPActorIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_actor_behavior_override(self, test_project: RPProject) -> None:
+    def test_actor_behavior_override(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("BehPkg")
         actor_name = self._unique("BehActor")
         pkg = self._create_package(test_project, pkg_name)
@@ -34,7 +35,7 @@ class TestRPActorIntegration:
         finally:
             actor.delete_from_project()
 
-    def test_add_event_reception_with_event(self, test_project: RPProject) -> None:
+    def test_add_event_reception_with_event(self, test_project: IRPProject) -> None:
         """Test that add_event_reception_with_event raises NotImplementedError (not exposed in COM type library)."""
         from rhapsody_cli.models.elements.interactions import RPEvent
 

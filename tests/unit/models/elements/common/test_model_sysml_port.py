@@ -1,7 +1,8 @@
 """Tests for rhapsody_cli.models.elements.common.model_other_model.RPSysMLPort."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
-from rhapsody_cli.models.elements.classifiers import RPClassifier
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.common import RPSysMLPort
 from tests.unit.models.fakes import make_fake_element
 
@@ -54,17 +55,17 @@ class TestRPSysMLPort:
         fake.setPortDirection.assert_called_once_with("Out")
 
     def test_set_type_delegates(self) -> None:
-        # Pattern F — multi-arg void method (single RPClassifier arg)
+        # Pattern F — multi-arg void method (single IRPClassifier arg)
         fake = make_fake_element("SysMLPort")
         t = make_fake_element("Class", properties={"name": "T1"})
         fake.setType.return_value = None
         port = RPSysMLPort(fake)
-        port.set_type(RPClassifier(t))
+        port.set_type(IRPClassifier(t))
         fake.setType.assert_called_once_with(t)
 
     def test_add_link_delegates_and_wraps(self) -> None:
         # Pattern E — multi-arg method returning wrapped element
-        from rhapsody_cli.models.elements.containment import RPPackage
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
         from rhapsody_cli.models.elements.relations import RPInstance, RPRelation
 
         fake = make_fake_element("SysMLPort")
@@ -81,7 +82,7 @@ class TestRPSysMLPort:
             RPInstance(to_part),
             RPRelation(assoc),
             RPSysMLPort(to_port),
-            RPPackage(new_owner),
+            IRPPackage(new_owner),
         )
         assert wrapped.get_name() == "L1"
         fake.addLink.assert_called_once_with(from_part, to_part, assoc, to_port, new_owner)

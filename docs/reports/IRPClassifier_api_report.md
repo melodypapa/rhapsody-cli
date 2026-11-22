@@ -2,7 +2,7 @@
 
 ## Summary
 - Java package: `com.telelogic.rhapsody.core`
-- Target wrapper: `RPClassifier` (`src/rhapsody_cli/models/elements/classifiers/model_classifier.py`)
+- Target wrapper: `IRPClassifier` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_classifier.py`)
 - Members: Python `47`, Java `46`, pywin32 `47`
 - Deviations: `1`
 - Deviations by status:
@@ -84,7 +84,7 @@
 ## AI Fix Guidance
 
 ### Finding 1: JAVA_DOC_MISSING
-- **Target:** `RPClassifier` in `src/rhapsody_cli/models/elements/classifiers/model_classifier.py`
+- **Target:** `IRPClassifier` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_classifier.py`
 - **Current Python wrapper/COM call:** add_port() -> addNewAggr
 - **Expected Python method(s):** —
 - **Java signature(s):** —

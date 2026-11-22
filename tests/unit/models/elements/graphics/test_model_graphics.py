@@ -308,7 +308,7 @@ class TestRPPinTask15:
         assert pin.get_pin_direction() == "In"
 
     def test_get_pin_type_wraps_result(self) -> None:
-        # Pattern B — returns wrapped RPClassifier
+        # Pattern B — returns wrapped IRPClassifier
         fake = make_fake_element("Pin")
         classifier = make_fake_element("Class", properties={"name": "DataType"})
         fake.getPinType.return_value = classifier

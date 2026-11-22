@@ -3,7 +3,8 @@
 from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.activity.model_activity import (
     RPFlow,
     RPFlowchart,
@@ -16,10 +17,10 @@ from rhapsody_cli.models.elements.statemachine.model_statemachine import RPState
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.elements.classifiers.model_operation import RPOperation
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port import IRPPort
     from rhapsody_cli.models.elements.common.model_other_model import RPSysMLPort
     from rhapsody_cli.models.elements.relations.model_instance import RPInstance
-    from rhapsody_cli.models.elements.relations.model_port import RPPort
 
 
 class TestRPFlow:
@@ -128,7 +129,7 @@ class TestRPFlow:
         flow = RPFlow(fake)
         flow.set_end1_via_port(
             cast("RPInstance", AbstractRPModelElement.wrap(instance)),
-            cast("RPPort", AbstractRPModelElement.wrap(port)),
+            cast("IRPPort", AbstractRPModelElement.wrap(port)),
         )
         fake.setEnd1ViaPort.assert_called_once_with(instance, port)
 
@@ -157,7 +158,7 @@ class TestRPFlow:
         flow = RPFlow(fake)
         flow.set_end2_via_port(
             cast("RPInstance", AbstractRPModelElement.wrap(instance)),
-            cast("RPPort", AbstractRPModelElement.wrap(port)),
+            cast("IRPPort", AbstractRPModelElement.wrap(port)),
         )
         fake.setEnd2ViaPort.assert_called_once_with(instance, port)
 
@@ -345,7 +346,7 @@ class TestRPFlowchart:
         fake = make_fake_element("Flowchart")
         owner = make_fake_element("Operation", properties={"name": "myOperation"})
         flowchart = RPFlowchart(fake)
-        flowchart.set_its_owner(cast("RPOperation", AbstractRPModelElement.wrap(owner)))
+        flowchart.set_its_owner(cast("IRPOperation", AbstractRPModelElement.wrap(owner)))
         fake.setItsOwner.assert_called_once_with(owner)
 
     def test_is_registered_for_meta_class_flowchart(self) -> None:

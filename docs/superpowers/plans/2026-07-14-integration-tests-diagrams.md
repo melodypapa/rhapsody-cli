@@ -24,7 +24,7 @@
   - `RPTimingDiagram` (extends `RPSequenceDiagram`) — own methods: `get_is_elaborated`, `set_is_elaborated` (2 checklist rows)
   - `RPActivityDiagram` (extends `RPStatechartDiagram`) — own methods: `decompose_swimlane`, `get_flowchart` (2 checklist rows)
 - Existing `tests/integration/models/elements/diagrams/test_model_diagrams.py` covers only: creation via `pkg.add_object_model_diagram`, `get_name()`, and an `isinstance(diagram, RPDiagram)` check. None of `RPDiagram`'s own 33 methods are exercised.
-- `RPPackage` (in `src/rhapsody_cli/models/elements/containment/model_package.py`) exposes the factory methods needed to instantiate each diagram subtype directly:
+- `IRPPackage` (in `src/rhapsody_cli/models/elements/containment/model_package.py`) exposes the factory methods needed to instantiate each diagram subtype directly:
   - `add_activity_diagram`, `add_sequence_diagram`, `add_use_case_diagram`, `add_collaboration_diagram`, `add_component_diagram`, `add_deployment_diagram`, `add_object_model_diagram`, `add_statechart_diagram`, `add_timing_diagram`, `add_panel_diagram`
   - No `add_structure_diagram` (see limitation above).
 
@@ -32,7 +32,7 @@
 
 - Windows-only runtime (requires Windows + a running Rhapsody instance)
 - All test classes use `@pytest.mark.integration`
-- All tests consume the `test_project: RPProject` fixture
+- All tests consume the `test_project: IRPProject` fixture
 - Use `_unique(prefix)` with `uuid.uuid4().hex[:8]`
 - Always `try/finally` cleanup via `diagram.delete_from_project()`. For tests that call `open_diagram()`/`open_diagram_view()`, call `diagram.close_diagram()` before `delete_from_project()` in the `finally` block to avoid leaving the diagram in an open UI state.
 - Assert both `isinstance()` and read-back values
@@ -55,7 +55,7 @@
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_open_close_and_is_open(self, test_project: RPProject) -> None:
+def test_open_close_and_is_open(self, test_project: IRPProject) -> None:
     pkg = self._create_package(test_project, self._unique("DiagPkg"))
     diagram = pkg.add_object_model_diagram(self._unique("MyDiagram"))
     try:
@@ -70,7 +70,7 @@ def test_open_close_and_is_open(self, test_project: RPProject) -> None:
 For `populate_diagram`, follow the same pattern:
 
 ```python
-def test_populate_diagram(self, test_project: RPProject) -> None:
+def test_populate_diagram(self, test_project: IRPProject) -> None:
     pkg = self._create_package(test_project, self._unique("DiagPkg"))
     cls = pkg.add_class(self._unique("PopClass"))
     diagram = pkg.add_object_model_diagram(self._unique("MyDiagram"))
@@ -115,7 +115,7 @@ git commit -m "test: add integration tests for RPDiagram lifecycle methods"
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_add_new_node_by_type_and_add_new_edge_by_type(self, test_project: RPProject) -> None:
+def test_add_new_node_by_type_and_add_new_edge_by_type(self, test_project: IRPProject) -> None:
     pkg = self._create_package(test_project, self._unique("DiagPkg"))
     diagram = pkg.add_object_model_diagram(self._unique("MyDiagram"))
     try:
@@ -132,7 +132,7 @@ def test_add_new_node_by_type_and_add_new_edge_by_type(self, test_project: RPPro
 For remaining methods, follow the same pattern:
 
 ```python
-def test_add_new_node_for_element(self, test_project: RPProject) -> None:
+def test_add_new_node_for_element(self, test_project: IRPProject) -> None:
     pkg = self._create_package(test_project, self._unique("DiagPkg"))
     cls = pkg.add_class(self._unique("NodeClass"))
     diagram = pkg.add_object_model_diagram(self._unique("MyDiagram"))
@@ -142,7 +142,7 @@ def test_add_new_node_for_element(self, test_project: RPProject) -> None:
     finally:
         diagram.delete_from_project()
 
-def test_add_new_edge_for_element(self, test_project: RPProject) -> None:
+def test_add_new_edge_for_element(self, test_project: IRPProject) -> None:
     pkg = self._create_package(test_project, self._unique("DiagPkg"))
     cls_a = pkg.add_class(self._unique("ClsA"))
     cls_b = pkg.add_class(self._unique("ClsB"))
@@ -156,7 +156,7 @@ def test_add_new_edge_for_element(self, test_project: RPProject) -> None:
     finally:
         diagram.delete_from_project()
 
-def test_add_free_shape_by_type(self, test_project: RPProject) -> None:
+def test_add_free_shape_by_type(self, test_project: IRPProject) -> None:
     pkg = self._create_package(test_project, self._unique("DiagPkg"))
     diagram = pkg.add_object_model_diagram(self._unique("MyDiagram"))
     try:
@@ -165,7 +165,7 @@ def test_add_free_shape_by_type(self, test_project: RPProject) -> None:
     finally:
         diagram.delete_from_project()
 
-def test_add_image(self, test_project: RPProject, tmp_path) -> None:
+def test_add_image(self, test_project: IRPProject, tmp_path) -> None:
     from PIL import Image  # or reuse an existing fixture image under tests/fixtures
     image_path = str(tmp_path / "test_image.bmp")
     Image.new("RGB", (10, 10)).save(image_path)
@@ -177,7 +177,7 @@ def test_add_image(self, test_project: RPProject, tmp_path) -> None:
     finally:
         diagram.delete_from_project()
 
-def test_add_text_box(self, test_project: RPProject) -> None:
+def test_add_text_box(self, test_project: IRPProject) -> None:
     pkg = self._create_package(test_project, self._unique("DiagPkg"))
     diagram = pkg.add_object_model_diagram(self._unique("MyDiagram"))
     try:
@@ -187,7 +187,7 @@ def test_add_text_box(self, test_project: RPProject) -> None:
         diagram.delete_from_project()
 ```
 
-Note: if `RPClass.add_association` does not exist in the classifiers subpackage, substitute any existing relation-adding method available on `RPClass`/`RPClassifier` (check `model_classifier.py`/`model_class.py` first) or fall back to two nodes plus `add_new_edge_by_type` only, dropping the `add_new_edge_for_element`-specific relation setup and instead reusing an existing model element (e.g. a dependency or generalization) already available in that subpackage's public API.
+Note: if `RPClass.add_association` does not exist in the classifiers subpackage, substitute any existing relation-adding method available on `RPClass`/`IRPClassifier` (check `model_classifier.py`/`model_class.py` first) or fall back to two nodes plus `add_new_edge_by_type` only, dropping the `add_new_edge_for_element`-specific relation setup and instead reusing an existing model element (e.g. a dependency or generalization) already available in that subpackage's public API.
 
 - [ ] **Step 2: Run the new tests against live Rhapsody**
 
@@ -221,7 +221,7 @@ git commit -m "test: add integration tests for RPDiagram graphic element builder
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_create_diagram_view_and_get_diagram_views(self, test_project: RPProject) -> None:
+def test_create_diagram_view_and_get_diagram_views(self, test_project: IRPProject) -> None:
     pkg = self._create_package(test_project, self._unique("DiagPkg"))
     diagram = pkg.add_object_model_diagram(self._unique("MyDiagram"))
     view_name = self._unique("View")
@@ -237,7 +237,7 @@ def test_create_diagram_view_and_get_diagram_views(self, test_project: RPProject
 For remaining methods, follow the same pattern:
 
 ```python
-def test_get_diagram_view_of_and_is_diagram_view(self, test_project: RPProject) -> None:
+def test_get_diagram_view_of_and_is_diagram_view(self, test_project: IRPProject) -> None:
     pkg = self._create_package(test_project, self._unique("DiagPkg"))
     diagram = pkg.add_object_model_diagram(self._unique("MyDiagram"))
     view_name = self._unique("View")
@@ -249,7 +249,7 @@ def test_get_diagram_view_of_and_is_diagram_view(self, test_project: RPProject) 
     finally:
         diagram.delete_from_project()
 
-def test_open_diagram_view(self, test_project: RPProject) -> None:
+def test_open_diagram_view(self, test_project: IRPProject) -> None:
     pkg = self._create_package(test_project, self._unique("DiagPkg"))
     diagram = pkg.add_object_model_diagram(self._unique("MyDiagram"))
     view_name = self._unique("View")
@@ -293,7 +293,7 @@ git commit -m "test: add integration tests for RPDiagram view methods"
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_get_elements_in_diagram_and_get_graphical_elements(self, test_project: RPProject) -> None:
+def test_get_elements_in_diagram_and_get_graphical_elements(self, test_project: IRPProject) -> None:
     pkg = self._create_package(test_project, self._unique("DiagPkg"))
     cls = pkg.add_class(self._unique("QueryClass"))
     diagram = pkg.add_object_model_diagram(self._unique("MyDiagram"))
@@ -310,7 +310,7 @@ def test_get_elements_in_diagram_and_get_graphical_elements(self, test_project: 
 For remaining methods, follow the same pattern:
 
 ```python
-def test_get_corresponding_graphic_elements(self, test_project: RPProject) -> None:
+def test_get_corresponding_graphic_elements(self, test_project: IRPProject) -> None:
     pkg = self._create_package(test_project, self._unique("DiagPkg"))
     cls = pkg.add_class(self._unique("CorrClass"))
     diagram = pkg.add_object_model_diagram(self._unique("MyDiagram"))
@@ -321,7 +321,7 @@ def test_get_corresponding_graphic_elements(self, test_project: RPProject) -> No
     finally:
         diagram.delete_from_project()
 
-def test_get_picture(self, test_project: RPProject) -> None:
+def test_get_picture(self, test_project: IRPProject) -> None:
     pkg = self._create_package(test_project, self._unique("DiagPkg"))
     diagram = pkg.add_object_model_diagram(self._unique("MyDiagram"))
     try:
@@ -332,7 +332,7 @@ def test_get_picture(self, test_project: RPProject) -> None:
         diagram.close_diagram()
         diagram.delete_from_project()
 
-def test_get_picture_as(self, test_project: RPProject) -> None:
+def test_get_picture_as(self, test_project: IRPProject) -> None:
     pkg = self._create_package(test_project, self._unique("DiagPkg"))
     diagram = pkg.add_object_model_diagram(self._unique("MyDiagram"))
     try:
@@ -343,7 +343,7 @@ def test_get_picture_as(self, test_project: RPProject) -> None:
         diagram.close_diagram()
         diagram.delete_from_project()
 
-def test_get_picture_ex(self, test_project: RPProject) -> None:
+def test_get_picture_ex(self, test_project: IRPProject) -> None:
     pkg = self._create_package(test_project, self._unique("DiagPkg"))
     diagram = pkg.add_object_model_diagram(self._unique("MyDiagram"))
     try:
@@ -354,7 +354,7 @@ def test_get_picture_ex(self, test_project: RPProject) -> None:
         diagram.close_diagram()
         diagram.delete_from_project()
 
-def test_get_picture_as_divided_metafiles(self, test_project: RPProject) -> None:
+def test_get_picture_as_divided_metafiles(self, test_project: IRPProject) -> None:
     pkg = self._create_package(test_project, self._unique("DiagPkg"))
     diagram = pkg.add_object_model_diagram(self._unique("MyDiagram"))
     try:
@@ -365,7 +365,7 @@ def test_get_picture_as_divided_metafiles(self, test_project: RPProject) -> None
         diagram.close_diagram()
         diagram.delete_from_project()
 
-def test_get_pictures_with_image_map(self, test_project: RPProject) -> None:
+def test_get_pictures_with_image_map(self, test_project: IRPProject) -> None:
     pkg = self._create_package(test_project, self._unique("DiagPkg"))
     diagram = pkg.add_object_model_diagram(self._unique("MyDiagram"))
     try:
@@ -411,7 +411,7 @@ git commit -m "test: add integration tests for RPDiagram picture export and quer
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-def test_show_diagram_frame_get_set(self, test_project: RPProject) -> None:
+def test_show_diagram_frame_get_set(self, test_project: IRPProject) -> None:
     pkg = self._create_package(test_project, self._unique("DiagPkg"))
     diagram = pkg.add_object_model_diagram(self._unique("MyDiagram"))
     try:
@@ -426,7 +426,7 @@ def test_show_diagram_frame_get_set(self, test_project: RPProject) -> None:
 For remaining methods, follow the same pattern:
 
 ```python
-def test_rearrange_ports(self, test_project: RPProject) -> None:
+def test_rearrange_ports(self, test_project: IRPProject) -> None:
     pkg = self._create_package(test_project, self._unique("DiagPkg"))
     diagram = pkg.add_object_model_diagram(self._unique("MyDiagram"))
     try:
@@ -434,7 +434,7 @@ def test_rearrange_ports(self, test_project: RPProject) -> None:
     finally:
         diagram.delete_from_project()
 
-def test_complete_relations(self, test_project: RPProject) -> None:
+def test_complete_relations(self, test_project: IRPProject) -> None:
     pkg = self._create_package(test_project, self._unique("DiagPkg"))
     diagram = pkg.add_object_model_diagram(self._unique("MyDiagram"))
     try:
@@ -442,7 +442,7 @@ def test_complete_relations(self, test_project: RPProject) -> None:
     finally:
         diagram.delete_from_project()
 
-def test_update_view_on_server(self, test_project: RPProject) -> None:
+def test_update_view_on_server(self, test_project: IRPProject) -> None:
     pkg = self._create_package(test_project, self._unique("DiagPkg"))
     diagram = pkg.add_object_model_diagram(self._unique("MyDiagram"))
     try:
@@ -450,7 +450,7 @@ def test_update_view_on_server(self, test_project: RPProject) -> None:
     finally:
         diagram.delete_from_project()
 
-def test_remove_graph_elements(self, test_project: RPProject) -> None:
+def test_remove_graph_elements(self, test_project: IRPProject) -> None:
     pkg = self._create_package(test_project, self._unique("DiagPkg"))
     cls = pkg.add_class(self._unique("RemClass"))
     diagram = pkg.add_object_model_diagram(self._unique("MyDiagram"))
@@ -465,7 +465,7 @@ def test_remove_graph_elements(self, test_project: RPProject) -> None:
     finally:
         diagram.delete_from_project()
 
-def test_custom_views_get_set(self, test_project: RPProject) -> None:
+def test_custom_views_get_set(self, test_project: IRPProject) -> None:
     pkg = self._create_package(test_project, self._unique("DiagPkg"))
     diagram = pkg.add_object_model_diagram(self._unique("MyDiagram"))
     try:
@@ -474,7 +474,7 @@ def test_custom_views_get_set(self, test_project: RPProject) -> None:
     finally:
         diagram.delete_from_project()
 
-def test_get_last_visualization_modified_time(self, test_project: RPProject) -> None:
+def test_get_last_visualization_modified_time(self, test_project: IRPProject) -> None:
     pkg = self._create_package(test_project, self._unique("DiagPkg"))
     diagram = pkg.add_object_model_diagram(self._unique("MyDiagram"))
     try:
@@ -526,7 +526,7 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.elements.diagrams import (
     RPActivityDiagram,
     RPCollaborationDiagram,
@@ -550,12 +550,12 @@ class TestDiagramTypesIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_create_collaboration_diagram(self, test_project: RPProject) -> None:
+    def test_create_collaboration_diagram(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("DiagPkg"))
         name = self._unique("CollabDiagram")
         diagram = pkg.add_collaboration_diagram(name)
@@ -572,7 +572,7 @@ class TestDiagramTypesIntegration:
 For remaining subtypes, follow the same pattern:
 
 ```python
-    def test_create_component_diagram(self, test_project: RPProject) -> None:
+    def test_create_component_diagram(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("DiagPkg"))
         name = self._unique("ComponentDiagram")
         diagram = pkg.add_component_diagram(name)
@@ -582,7 +582,7 @@ For remaining subtypes, follow the same pattern:
         finally:
             diagram.delete_from_project()
 
-    def test_create_deployment_diagram(self, test_project: RPProject) -> None:
+    def test_create_deployment_diagram(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("DiagPkg"))
         name = self._unique("DeploymentDiagram")
         diagram = pkg.add_deployment_diagram(name)
@@ -592,7 +592,7 @@ For remaining subtypes, follow the same pattern:
         finally:
             diagram.delete_from_project()
 
-    def test_create_panel_diagram(self, test_project: RPProject) -> None:
+    def test_create_panel_diagram(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("DiagPkg"))
         name = self._unique("PanelDiagram")
         diagram = pkg.add_panel_diagram(name)
@@ -602,7 +602,7 @@ For remaining subtypes, follow the same pattern:
         finally:
             diagram.delete_from_project()
 
-    def test_create_sequence_diagram_and_own_methods(self, test_project: RPProject) -> None:
+    def test_create_sequence_diagram_and_own_methods(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("DiagPkg"))
         name = self._unique("SeqDiagram")
         diagram = pkg.add_sequence_diagram(name)
@@ -616,7 +616,7 @@ For remaining subtypes, follow the same pattern:
         finally:
             diagram.delete_from_project()
 
-    def test_create_statechart_diagram_and_own_methods(self, test_project: RPProject) -> None:
+    def test_create_statechart_diagram_and_own_methods(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("DiagPkg"))
         name = self._unique("SCDiagram")
         diagram = pkg.add_statechart_diagram(name)
@@ -629,7 +629,7 @@ For remaining subtypes, follow the same pattern:
         finally:
             diagram.delete_from_project()
 
-    def test_statechart_add_and_line(self, test_project: RPProject) -> None:
+    def test_statechart_add_and_line(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("DiagPkg"))
         name = self._unique("SCDiagram")
         diagram = pkg.add_statechart_diagram(name)
@@ -641,7 +641,7 @@ For remaining subtypes, follow the same pattern:
         finally:
             diagram.delete_from_project()
 
-    def test_create_structure_diagram(self, test_project: RPProject) -> None:
+    def test_create_structure_diagram(self, test_project: IRPProject) -> None:
         from rhapsody_cli.models.elements.classifiers import RPClass
 
         pkg = self._create_package(test_project, self._unique("DiagPkg"))
@@ -652,7 +652,7 @@ For remaining subtypes, follow the same pattern:
         finally:
             cls.delete_from_project()
 
-    def test_create_use_case_diagram(self, test_project: RPProject) -> None:
+    def test_create_use_case_diagram(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("DiagPkg"))
         name = self._unique("UCDiagram")
         diagram = pkg.add_use_case_diagram(name)
@@ -662,7 +662,7 @@ For remaining subtypes, follow the same pattern:
         finally:
             diagram.delete_from_project()
 
-    def test_create_timing_diagram_and_own_methods(self, test_project: RPProject) -> None:
+    def test_create_timing_diagram_and_own_methods(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("DiagPkg"))
         name = self._unique("TimingDiagram")
         diagram = pkg.add_timing_diagram(name)
@@ -676,7 +676,7 @@ For remaining subtypes, follow the same pattern:
         finally:
             diagram.delete_from_project()
 
-    def test_create_activity_diagram_and_own_methods(self, test_project: RPProject) -> None:
+    def test_create_activity_diagram_and_own_methods(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("DiagPkg"))
         name = self._unique("ActDiagram")
         diagram = pkg.add_activity_diagram(name)
@@ -688,7 +688,7 @@ For remaining subtypes, follow the same pattern:
         finally:
             diagram.delete_from_project()
 
-    def test_activity_diagram_decompose_swimlane(self, test_project: RPProject) -> None:
+    def test_activity_diagram_decompose_swimlane(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("DiagPkg"))
         name = self._unique("ActDiagram")
         diagram = pkg.add_activity_diagram(name)

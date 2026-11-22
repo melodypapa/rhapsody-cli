@@ -9,10 +9,10 @@ import logging
 from typing import TYPE_CHECKING, Dict, List, Optional, Set
 
 from rhapsody_cli.application import RhapsodyApplication
-from rhapsody_cli.models.core import IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.elements.containment import RPProject
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +26,7 @@ class RhapsodyModelHelper:
 
     Attributes:
         app: RhapsodyApplication instance (lazily connected if not provided).
-        project: Active RPProject, or None until set by caller.
+        project: Active IRPProject, or None until set by caller.
     """
 
     def __init__(self, app: Optional["RhapsodyApplication"] = None) -> None:
@@ -38,7 +38,7 @@ class RhapsodyModelHelper:
         if app is None:
             app = RhapsodyApplication.connect(attach_only=True)
         self.app = app
-        self.project: Optional["RPProject"] = None  # noqa: UP037
+        self.project: Optional["IRPProject"] = None  # noqa: UP037
 
     # ------------------------------------------------------------------
     # Element find/create (idempotent)

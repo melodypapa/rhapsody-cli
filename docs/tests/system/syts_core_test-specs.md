@@ -30,15 +30,15 @@ rather than raising. The graph is navigated end-to-end through the wrapper API.
   `getAttributes()` / `getOperations()` collections.
 **Test Steps:**
 1. Obtain the fake Project COM object and call `wrap(project_com)`.
-2. Assert the result is an `RPProject` instance.
-3. Navigate to the package via `getPackages()` and assert each item is an `RPPackage`.
+2. Assert the result is an `IRPProject` instance.
+3. Navigate to the package via `getPackages()` and assert each item is an `IRPPackage`.
 4. Navigate to a class via the package's class collection and assert it is an `RPClass`.
 5. Navigate to an attribute and an operation and assert their wrapper types.
 6. Navigate to the "FutureThing" node (unmapped meta class) and assert the result is a
    plain `RPModelElement` (the fallback) rather than raising.
 **Expected Result:**
-- Each node is wrapped as the correct subclass: RPProject, RPPackage, RPClass,
-  RPAttribute, RPOperation.
+- Each node is wrapped as the correct subclass: IRPProject, IRPPackage, RPClass,
+  IRPAttribute, IRPOperation.
 - The unmapped "FutureThing" node is wrapped as a generic `RPModelElement` without
   raising.
 - All wrapper instances expose the expected Java-mirrored methods (e.g. `getName()`,
@@ -79,7 +79,7 @@ are auto-wrapped via `_wrap_if_element` into the correct wrapper classes.
 **Expected Result:**
 - `len(collection)` returns 3.
 - Iteration yields exactly 3 items, each auto-wrapped to the matching wrapper subclass
-  (RPClass, RPClass, RPAttribute).
+  (RPClass, RPClass, IRPAttribute).
 - 1-based indexing returns the same items in the same order as iteration.
 - Non-element scalar values are returned unchanged (not wrapped).
 **Verification Criteria:**

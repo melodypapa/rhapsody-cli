@@ -5,9 +5,10 @@ com.telelogic.rhapsody.core.
 from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
-from rhapsody_cli.models.elements.classifiers import RPClassifier
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.containment.model_profile import RPProfile
@@ -86,7 +87,7 @@ class RPVariable(IRPUnit):
         """
         return str(AbstractRPModelElement._get_method_or_property(self._com, "getDefaultValue", "defaultValue"))
 
-    def get_type(self) -> "RPClassifier":
+    def get_type(self) -> "IRPClassifier":
         """Returns the type of the variable.
 
         Returns:
@@ -95,7 +96,7 @@ class RPVariable(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPVariable::getType()
         """
-        return cast("RPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getType", "type")))
+        return cast("IRPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getType", "type")))
 
     def get_value_specifications(self) -> IRPCollection:
         """Returns the initial values declared for elements with multiplicity greater than one.
@@ -130,7 +131,7 @@ class RPVariable(IRPUnit):
         """
         AbstractRPModelElement._set_method_or_property(self._com, "setDefaultValue", "defaultValue", default_value)
 
-    def set_type(self, type_: RPClassifier) -> None:
+    def set_type(self, type_: IRPClassifier) -> None:
         """Sets the type of the variable.
 
         Args:
@@ -159,7 +160,7 @@ class RPVariable(IRPUnit):
 AbstractRPModelElement.register_wrapper("Variable", RPVariable)
 
 
-class RPAttribute(RPVariable):
+class IRPAttribute(RPVariable):
     """Wraps ``IRPAttribute``: represents an attribute in a classifier."""
 
     # IRPAttribute method parity checklist:
@@ -311,7 +312,7 @@ class RPAttribute(RPVariable):
         AbstractRPModelElement._set_method_or_property(self._com, "setVisibility", "visibility", visibility)
 
 
-AbstractRPModelElement.register_wrapper("Attribute", RPAttribute)
+AbstractRPModelElement.register_wrapper("Attribute", IRPAttribute)
 
 
 class RPTag(RPVariable):
@@ -422,7 +423,7 @@ class RPTag(RPVariable):
 AbstractRPModelElement.register_wrapper("Tag", RPTag)
 
 
-class RPArgument(RPVariable):
+class IRPArgument(RPVariable):
     """Wraps ``IRPArgument``: an argument/parameter of an operation."""
 
     # IRPArgument method parity checklist:
@@ -454,4 +455,4 @@ class RPArgument(RPVariable):
         AbstractRPModelElement._set_method_or_property(self._com, "setArgumentDirection", "argumentDirection", argument_direction)
 
 
-AbstractRPModelElement.register_wrapper("Argument", RPArgument)
+AbstractRPModelElement.register_wrapper("Argument", IRPArgument)

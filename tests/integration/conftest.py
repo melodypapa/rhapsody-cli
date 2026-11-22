@@ -12,7 +12,7 @@ import pytest
 from pytest import Config, FixtureRequest
 
 from rhapsody_cli import RhapsodyApplication
-from rhapsody_cli.models.elements.containment import RPProject
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 
 # Add unit directory to Python path so imports from unit tests work
 sys.path.insert(0, str(Path(__file__).parent.parent / "unit"))
@@ -141,7 +141,7 @@ def _require_rhapsody(rhapsody_app: RhapsodyApplication) -> None:
 
 
 @pytest.fixture(scope="session")
-def test_project(rhapsody_app: RhapsodyApplication, request: FixtureRequest) -> Generator[RPProject, None, None]:
+def test_project(rhapsody_app: RhapsodyApplication, request: FixtureRequest) -> Generator[IRPProject, None, None]:
     """Session-scoped test project fixture — creates an isolated project in ``demos/test_project/``.
 
     The project is created with auto-save enabled to ensure automatic persistence
@@ -168,7 +168,7 @@ def test_project(rhapsody_app: RhapsodyApplication, request: FixtureRequest) -> 
 
 
 @pytest.fixture(scope="session")
-def test_stereotypes(test_project: RPProject) -> None:
+def test_stereotypes(test_project: IRPProject) -> None:
     """Set up test stereotypes with tag definitions for integration tests.
 
     This fixture creates a stereotype with tag definitions that are required
@@ -192,7 +192,7 @@ def test_stereotypes(test_project: RPProject) -> None:
 
 
 @pytest.fixture(scope="function")
-def second_test_project(rhapsody_app: RhapsodyApplication, request: FixtureRequest) -> Generator[RPProject, None, None]:
+def second_test_project(rhapsody_app: RhapsodyApplication, request: FixtureRequest) -> Generator[IRPProject, None, None]:
     """Function-scoped second test project for cross-project testing.
 
     This fixture creates a temporary second project for testing cross-project
@@ -209,7 +209,7 @@ def second_test_project(rhapsody_app: RhapsodyApplication, request: FixtureReque
         request: pytest request object for accessing test configuration
 
     Returns:
-        RPProject: A temporary second test project
+        IRPProject: A temporary second test project
     """
     import tempfile
 

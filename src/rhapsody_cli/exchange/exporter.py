@@ -9,7 +9,7 @@ from typing import Dict, List, Optional, cast
 
 from rhapsody_cli.exchange.core import RhapsodyModelHelper
 from rhapsody_cli.exchange.schema import PROJECT_KEY, RHAPSODY_MODEL_KEY, SCHEMA_VERSION, VERSION_KEY
-from rhapsody_cli.models.core import IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 _LOGGER = logging.getLogger(__name__)
 

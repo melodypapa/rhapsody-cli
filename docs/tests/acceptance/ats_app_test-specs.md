@@ -108,20 +108,20 @@ set of open projects and the active project, so that I can script model-level op
 against a known target.
 **Acceptance Criteria:**
 - Given a connected `RhapsodyApplication` and a valid `.rpyx` project path on disk, When I
-  call `app.openProject(path)`, Then an `RPProject` wrapping the opened project is
+  call `app.openProject(path)`, Then an `IRPProject` wrapping the opened project is
   returned and the project appears in the Rhapsody GUI.
 - Given `openProject` is called with a path whose COM open call fails, When the COM error
   is propagated, Then a `RhapsodyRuntimeException` (not a raw `pywintypes.com_error`) is
   raised with the original COM message preserved.
 - Given one or more projects are open, When I call `app.getProjects()`, Then an
   `IRPCollection` is returned whose length equals the number of open projects and whose
-  items are wrapped `RPProject` instances.
+  items are wrapped `IRPProject` instances.
 - Given a project has been opened and made active, When I call `app.activeProject()`, Then
-  the returned `RPProject` matches the project most recently made active.
+  the returned `IRPProject` matches the project most recently made active.
 **Verification Criteria:**
 Connect to Rhapsody, call `openProject` on a known-good fixture project, and assert the
 returned object's `getName()` matches the project file name. Call `getProjects()` and
-assert `len(...) >= 1` and that iterating yields `RPProject` instances. Call
+assert `len(...) >= 1` and that iterating yields `IRPProject` instances. Call
 `activeProject()` and assert its name is among the open projects. Repeat `openProject`
 with a non-existent path and assert that `RhapsodyRuntimeException` is raised and its
 message is a non-empty string.

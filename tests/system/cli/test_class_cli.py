@@ -137,7 +137,7 @@ class TestClassCLI:
         """Test adding a generalization link between nested classes.
 
         Classes are nested inside a container class (not directly under a
-        package) so that the source class's owner is an RPClassifier, which
+        package) so that the source class's owner is an IRPClassifier, which
         is the type that defines find_nested_classifier_recursive.
         """
         from rhapsody_cli import RhapsodyApplication

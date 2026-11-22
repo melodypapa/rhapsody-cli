@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Add integration tests for all remaining untested methods of `RPEnumerationLiteral`, `RPComment`, `RPConstraint`, `RPClassifierRole`, `RPSysMLPort`, `RPType`. Flip in-source `[ ] integration test` markers to `[x]` as work completes.
+**Goal:** Add integration tests for all remaining untested methods of `RPEnumerationLiteral`, `RPComment`, `RPConstraint`, `RPClassifierRole`, `RPSysMLPort`, `IRPType`. Flip in-source `[ ] integration test` markers to `[x]` as work completes.
 
 **Architecture:** Extends `tests/integration/models/elements/common/test_model_misc.py`; creates new `tests/integration/models/elements/common/test_model_other_model.py` for the `model_other_model.py` classes.
 
@@ -12,12 +12,12 @@
 
 | Class | File | Untested methods | Creation path |
 |---|---|---|---|
-| `RPEnumerationLiteral` | `model_misc.py` | `get_value`, `set_value` | `RPType.add_enumeration_literal(name)` |
+| `RPEnumerationLiteral` | `model_misc.py` | `get_value`, `set_value` | `IRPType.add_enumeration_literal(name)` |
 | `RPComment` | `model_misc.py` | none (only inherited methods; creation already covered) | `pkg.add_new_aggr("Comment", name)` |
 | `RPConstraint` | `model_misc.py` | `get_constraints_by_me` | `pkg.add_new_aggr("Constraint", name)` |
 | `RPClassifierRole` | `model_other_model.py` | `get_formal_classifier`, `get_formal_instance`, `get_referenced_sequence_diagram`, `get_referencing_classifier_roles_recursively`, `get_role_type`, `set_formal_classifier`, `set_formal_instance`, `set_referenced_sequence_diagram` | `pkg.add_new_aggr("Collaboration", name)` → `collab.add_classifier_role(name)` |
 | `RPSysMLPort` | `model_other_model.py` | `add_link`, `get_is_reversed`, `get_port_direction`, `get_type`, `set_is_reversed`, `set_port_direction`, `set_type` | `test_class.add_new_aggr("SysMLPort", name)` (may require SysML profile; guard with `xfail` if unavailable) |
-| `RPType` | `model_other_model.py` | `add_enumeration_literal`, `delete_enumeration_literal`, `get_declaration`, `get_enumeration_literals`, `get_is_predefined`, `get_is_typedef`, `get_is_typedef_constant`, `get_is_typedef_ordered`, `get_is_typedef_reference`, `get_kind`, `get_typedef_base_type`, `get_typedef_multiplicity`, `is_array`, `is_enum`, `is_equal_to`, `is_implicit`, `is_kind_enumeration`, `is_kind_language`, `is_kind_struct`, `is_kind_typedef`, `is_kind_union`, `is_pointer`, `is_pointer_to_pointer`, `is_reference`, `is_reference_to_pointer`, `is_struct`, `is_template`, `is_union`, `set_declaration`, `set_is_typedef_constant`, `set_is_typedef_ordered`, `set_is_typedef_reference`, `set_kind`, `set_typedef_base_type`, `set_typedef_multiplicity` | `pkg.add_class(name).add_type(name)` |
+| `IRPType` | `model_other_model.py` | `add_enumeration_literal`, `delete_enumeration_literal`, `get_declaration`, `get_enumeration_literals`, `get_is_predefined`, `get_is_typedef`, `get_is_typedef_constant`, `get_is_typedef_ordered`, `get_is_typedef_reference`, `get_kind`, `get_typedef_base_type`, `get_typedef_multiplicity`, `is_array`, `is_enum`, `is_equal_to`, `is_implicit`, `is_kind_enumeration`, `is_kind_language`, `is_kind_struct`, `is_kind_typedef`, `is_kind_union`, `is_pointer`, `is_pointer_to_pointer`, `is_reference`, `is_reference_to_pointer`, `is_struct`, `is_template`, `is_union`, `set_declaration`, `set_is_typedef_constant`, `set_is_typedef_ordered`, `set_is_typedef_reference`, `set_kind`, `set_typedef_base_type`, `set_typedef_multiplicity` | `pkg.add_class(name).add_type(name)` |
 
 `RPComment` has no untested method-level checklist rows (only the `IRPModelElement` inherited items already covered by `RPModelElement`'s own checklist) — no new task is needed for it beyond what `test_model_misc.py` already covers.
 
@@ -25,7 +25,7 @@
 
 - Windows-only runtime (requires Windows + a running Rhapsody instance)
 - All test classes use `@pytest.mark.integration`
-- All tests consume the `test_project: RPProject` fixture
+- All tests consume the `test_project: IRPProject` fixture
 - Use `_unique(prefix)` with `uuid.uuid4().hex[:8]`
 - Always `try/finally` cleanup via `element.delete_from_project()`
 - Assert both `isinstance()` and read-back values
@@ -36,7 +36,7 @@
 
 ---
 
-### Task 1: RPType — kind, declaration, typedef, and predicate methods
+### Task 1: IRPType — kind, declaration, typedef, and predicate methods
 
 **Files:**
 - Create: `tests/integration/models/elements/common/test_model_other_model.py`
@@ -47,33 +47,33 @@
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
-"""Integration tests for RPClassifierRole, RPSysMLPort, and RPType with live Rhapsody COM API."""
+"""Integration tests for RPClassifierRole, RPSysMLPort, and IRPType with live Rhapsody COM API."""
 
 import uuid
 
 import pytest
 
 from rhapsody_cli.models.elements.classifiers import RPClass
-from rhapsody_cli.models.elements.common import RPType
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.common import IRPType
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 
 
 @pytest.mark.integration
 class TestRPTypeIntegration:
-    """Integration tests for RPType with live Rhapsody COM API."""
+    """Integration tests for IRPType with live Rhapsody COM API."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def _create_type(self, project: RPProject, pkg_prefix: str, class_prefix: str, type_prefix: str) -> tuple[RPPackage, RPClass, RPType]:
+    def _create_type(self, project: IRPProject, pkg_prefix: str, class_prefix: str, type_prefix: str) -> tuple[IRPPackage, RPClass, IRPType]:
         pkg = project.add_package(self._unique(pkg_prefix))
         test_class = pkg.add_class(self._unique(class_prefix))
         test_type = test_class.add_type(self._unique(type_prefix))
-        assert isinstance(test_type, RPType)
+        assert isinstance(test_type, IRPType)
         return pkg, test_class, test_type
 
-    def test_declaration_roundtrip(self, test_project: RPProject) -> None:
+    def test_declaration_roundtrip(self, test_project: IRPProject) -> None:
         _pkg, test_class, test_type = self._create_type(test_project, "TypeDeclPkg", "TypeDeclCls", "MyType")
         try:
             test_type.set_declaration("int")
@@ -82,7 +82,7 @@ class TestRPTypeIntegration:
             test_type.delete_from_project()
             test_class.delete_from_project()
 
-    def test_kind_roundtrip_and_predicates(self, test_project: RPProject) -> None:
+    def test_kind_roundtrip_and_predicates(self, test_project: IRPProject) -> None:
         _pkg, test_class, test_type = self._create_type(test_project, "TypeKindPkg", "TypeKindCls", "MyType")
         try:
             assert test_type.get_is_predefined() in (0, 1)
@@ -113,7 +113,7 @@ class TestRPTypeIntegration:
             test_type.delete_from_project()
             test_class.delete_from_project()
 
-    def test_typedef_roundtrip(self, test_project: RPProject) -> None:
+    def test_typedef_roundtrip(self, test_project: IRPProject) -> None:
         pkg, test_class, test_type = self._create_type(test_project, "TypedefPkg", "TypedefCls", "MyTypedef")
         base_class = pkg.add_class(self._unique("BaseCls"))
         base_type = base_class.add_type(self._unique("BaseType"))
@@ -140,7 +140,7 @@ class TestRPTypeIntegration:
             base_class.delete_from_project()
 ```
 
-For remaining methods (`get_is_typedef` beyond the typedef test above is already covered), follow the same pattern: group logically-related getters/setters/predicates into one test method with a `try/finally` cleanup around a freshly created `RPType`.
+For remaining methods (`get_is_typedef` beyond the typedef test above is already covered), follow the same pattern: group logically-related getters/setters/predicates into one test method with a `try/finally` cleanup around a freshly created `IRPType`.
 
 - [ ] **Step 2: Run the new tests against live Rhapsody**
 
@@ -148,7 +148,7 @@ Run: `pytest tests/integration/models/elements/common/test_model_other_model.py:
 
 - [ ] **Step 3: Flip checklist boxes**
 
-In `src/rhapsody_cli/models/elements/common/model_other_model.py`, flip the 31 `RPType` checklist rows listed above (all except `addEnumerationLiteral`, `deleteEnumerationLiteral`, `getEnumerationLiterals`, which are covered in Task 2) from `[ ] integration test` to `[x] integration test`.
+In `src/rhapsody_cli/models/elements/common/model_other_model.py`, flip the 31 `IRPType` checklist rows listed above (all except `addEnumerationLiteral`, `deleteEnumerationLiteral`, `getEnumerationLiterals`, which are covered in Task 2) from `[ ] integration test` to `[x] integration test`.
 
 - [ ] **Step 4: Run quality gate**
 
@@ -158,26 +158,26 @@ Run: `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ &&
 
 ```bash
 git add tests/integration/models/elements/common/test_model_other_model.py src/rhapsody_cli/models/elements/common/model_other_model.py
-git commit -m "test: add integration tests for RPType"
+git commit -m "test: add integration tests for IRPType"
 ```
 
 ---
 
-### Task 2: RPEnumerationLiteral — value roundtrip and RPType enumeration-literal factory methods
+### Task 2: RPEnumerationLiteral — value roundtrip and IRPType enumeration-literal factory methods
 
 **Files:**
 - Modify: `tests/integration/models/elements/common/test_model_misc.py`
 - Modify: `src/rhapsody_cli/models/elements/common/model_misc.py` (flip checklist boxes only)
-- Modify: `src/rhapsody_cli/models/elements/common/model_other_model.py` (flip checklist boxes only, for `RPType.add_enumeration_literal` / `delete_enumeration_literal` / `get_enumeration_literals`)
+- Modify: `src/rhapsody_cli/models/elements/common/model_other_model.py` (flip checklist boxes only, for `IRPType.add_enumeration_literal` / `delete_enumeration_literal` / `get_enumeration_literals`)
 
-**Methods covered:** `RPEnumerationLiteral.get_value`, `RPEnumerationLiteral.set_value`, `RPType.add_enumeration_literal`, `RPType.delete_enumeration_literal`, `RPType.get_enumeration_literals`
+**Methods covered:** `RPEnumerationLiteral.get_value`, `RPEnumerationLiteral.set_value`, `IRPType.add_enumeration_literal`, `IRPType.delete_enumeration_literal`, `IRPType.get_enumeration_literals`
 
 - [ ] **Step 1: Write the failing/new integration tests**
 
 ```python
 # Add to tests/integration/models/elements/common/test_model_misc.py
 
-from rhapsody_cli.models.elements.common import RPComment, RPConstraint, RPEnumerationLiteral, RPType
+from rhapsody_cli.models.elements.common import RPComment, RPConstraint, RPEnumerationLiteral, IRPType
 from rhapsody_cli.models.elements.classifiers import RPClass
 
 
@@ -189,12 +189,12 @@ class TestRPEnumerationLiteralIntegration:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_add_get_delete_enumeration_literal(self, test_project: RPProject) -> None:
+    def test_add_get_delete_enumeration_literal(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("EnumPkg"))
         test_class = pkg.add_class(self._unique("EnumCls"))
         enum_type = test_class.add_type(self._unique("MyEnum"))
         try:
-            assert isinstance(enum_type, RPType)
+            assert isinstance(enum_type, IRPType)
             literal = enum_type.add_enumeration_literal(self._unique("LIT"))
             assert isinstance(literal, RPEnumerationLiteral)
 
@@ -219,7 +219,7 @@ Run: `pytest tests/integration/models/elements/common/test_model_misc.py::TestRP
 - [ ] **Step 3: Flip checklist boxes**
 
 In `model_misc.py`: flip `getValue`, `setValue` for `RPEnumerationLiteral`.
-In `model_other_model.py`: flip `addEnumerationLiteral`, `deleteEnumerationLiteral`, `getEnumerationLiterals` for `RPType`.
+In `model_other_model.py`: flip `addEnumerationLiteral`, `deleteEnumerationLiteral`, `getEnumerationLiterals` for `IRPType`.
 
 - [ ] **Step 4: Run quality gate**
 
@@ -247,7 +247,7 @@ git commit -m "test: add integration tests for RPEnumerationLiteral"
 ```python
 # Add to the existing TestRPConstraintIntegration class in test_model_misc.py
 
-    def test_get_constraints_by_me_returns_collection(self, test_project: RPProject) -> None:
+    def test_get_constraints_by_me_returns_collection(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("ConColPkg")
         con_name = self._unique("MyConstraint")
         pkg = self._create_package(test_project, pkg_name)
@@ -307,7 +307,7 @@ class TestRPClassifierRoleIntegration:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_formal_classifier_roundtrip(self, test_project: RPProject) -> None:
+    def test_formal_classifier_roundtrip(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("RolePkg"))
         collab = pkg.add_new_aggr("Collaboration", self._unique("MyCollab"))
         target_class = pkg.add_class(self._unique("RoleTargetCls"))
@@ -322,7 +322,7 @@ class TestRPClassifierRoleIntegration:
             collab.delete_from_project()
             target_class.delete_from_project()
 
-    def test_formal_instance_roundtrip(self, test_project: RPProject) -> None:
+    def test_formal_instance_roundtrip(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("RoleInstPkg"))
         collab = pkg.add_new_aggr("Collaboration", self._unique("MyCollab"))
         target_class = pkg.add_class(self._unique("RoleInstTargetCls"))
@@ -336,7 +336,7 @@ class TestRPClassifierRoleIntegration:
             target_class.delete_from_project()
             instance.delete_from_project()
 
-    def test_referenced_sequence_diagram_roundtrip(self, test_project: RPProject) -> None:
+    def test_referenced_sequence_diagram_roundtrip(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("RoleSeqPkg"))
         collab = pkg.add_new_aggr("Collaboration", self._unique("MyCollab"))
         seq_diagram = pkg.add_sequence_diagram(self._unique("MySeq"))
@@ -401,12 +401,12 @@ class TestRPSysMLPortIntegration:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def _create_port(self, pkg: RPPackage, owner_class: RPClass, name: str) -> RPSysMLPort:
+    def _create_port(self, pkg: IRPPackage, owner_class: RPClass, name: str) -> RPSysMLPort:
         port = owner_class.add_new_aggr("SysMLPort", name)
         assert isinstance(port, RPSysMLPort)
         return port
 
-    def test_direction_and_reversal_roundtrip(self, test_project: RPProject) -> None:
+    def test_direction_and_reversal_roundtrip(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("PortPkg"))
         owner_class = pkg.add_class(self._unique("PortOwnerCls"))
         try:
@@ -424,7 +424,7 @@ class TestRPSysMLPortIntegration:
         finally:
             owner_class.delete_from_project()
 
-    def test_type_roundtrip(self, test_project: RPProject) -> None:
+    def test_type_roundtrip(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("PortTypePkg"))
         owner_class = pkg.add_class(self._unique("PortTypeOwnerCls"))
         type_class = pkg.add_class(self._unique("PortTypeCls"))
@@ -439,7 +439,7 @@ class TestRPSysMLPortIntegration:
             owner_class.delete_from_project()
             type_class.delete_from_project()
 
-    def test_add_link_between_ports(self, test_project: RPProject) -> None:
+    def test_add_link_between_ports(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("PortLinkPkg"))
         owner_class = pkg.add_class(self._unique("LinkOwnerCls"))
         from_part = pkg.add_new_aggr("Object", self._unique("FromPart"))

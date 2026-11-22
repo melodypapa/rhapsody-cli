@@ -4,7 +4,7 @@
 
 **Goal:** Rewrite the element-focused integration test files so each one tests only the methods its class actually owns; parent-class methods are used strictly for setup, and redefined methods are exercised in a way that proves the correct override is invoked.
 
-**Architecture:** No production code changes. Every model method already exists and has unit-test coverage via fakes. This plan only edits files under `tests/integration/models/elements/`. The gold-standard pattern to imitate is `tests/integration/models/elements/classifiers/test_model_classifier.py` and the user-cited example `test_model_association_class.py` (uses `add_relation_to` — an `RPClassifier` method — only to build the fixture, then asserts on `RPAssociationClass`'s own four methods). Per test file we either (a) replace parent-method tests with own-method tests, or (b) delete pure setup-only / duplicate tests.
+**Architecture:** No production code changes. Every model method already exists and has unit-test coverage via fakes. This plan only edits files under `tests/integration/models/elements/`. The gold-standard pattern to imitate is `tests/integration/models/elements/classifiers/test_model_classifier.py` and the user-cited example `test_model_association_class.py` (uses `add_relation_to` — an `IRPClassifier` method — only to build the fixture, then asserts on `IRPAssociationClass`'s own four methods). Per test file we either (a) replace parent-method tests with own-method tests, or (b) delete pure setup-only / duplicate tests.
 
 **Tech Stack:** pytest (`@pytest.mark.integration`), Rhapsody COM wrappers under `src/rhapsody_cli/models/`, fakes-free live COM.
 
@@ -32,26 +32,26 @@ The class-under-test's own methods are read from the model module's docstring ch
 
 | File (test) | Class under test | Action |
 |-------------|------------------|--------|
-| `tests/integration/models/elements/variables/test_model_attribute.py` | `RPAttribute` | **Rewrite**: 4 current tests all hit `RPVariable`/`RPClassifier`; replace with 6 tests covering all 12 `RPAttribute`-owned getters/setters. |
+| `tests/integration/models/elements/variables/test_model_attribute.py` | `IRPAttribute` | **Rewrite**: 4 current tests all hit `RPVariable`/`IRPClassifier`; replace with 6 tests covering all 12 `IRPAttribute`-owned getters/setters. |
 | `tests/integration/models/elements/classifiers/test_model_stereotype.py` | `RPStereotype` | **Rewrite**: 2 current tests only call `RPModelElement.add_stereotype`; replace with 3 tests covering all 6 `RPStereotype`-owned methods. |
-| `tests/integration/models/elements/classifiers/test_model_statechart.py` | `RPStatechart` | **Rewrite**: 1 current test only calls `RPClassifier.add_statechart`; replace with 4 tests on `RPStatechart`-owned methods. |
-| `tests/integration/models/elements/classifiers/test_model_usecase.py` | `RPUseCase` | **Rewrite**: 1 current test is creation-only; replace with 4 tests on `RPUseCase`-owned methods. |
+| `tests/integration/models/elements/classifiers/test_model_statechart.py` | `RPStatechart` | **Rewrite**: 1 current test only calls `IRPClassifier.add_statechart`; replace with 4 tests on `RPStatechart`-owned methods. |
+| `tests/integration/models/elements/classifiers/test_model_usecase.py` | `IRPUseCase` | **Rewrite**: 1 current test is creation-only; replace with 4 tests on `IRPUseCase`-owned methods. |
 | `tests/integration/models/elements/requirements/test_model_requirements.py` | `RPRequirement` | **Extend**: keep creation test, add `RPRequirement`-owned `get_requirement_id`/`set_requirement_id` roundtrip. |
-| `tests/integration/models/elements/classifiers/test_model_class.py` | `RPClass` | **Trim**: delete `test_create_operation_in_class` (duplicate `RPClassifier` coverage) + 3 setup-only tests. |
+| `tests/integration/models/elements/classifiers/test_model_class.py` | `RPClass` | **Trim**: delete `test_create_operation_in_class` (duplicate `IRPClassifier` coverage) + 3 setup-only tests. |
 | `tests/integration/models/elements/classifiers/test_model_actor.py` | `RPActor` | **Trim**: delete 2 setup-only tests; keep the 2 that exercise `RPActor`-owned overrides. |
 | `tests/integration/models/elements/common/test_model_misc.py` | `RPConstraint` | **Extend**: add `RPConstraint.get_constraints_by_me` test (`RPComment` has no own methods — leave it). |
-| `tests/integration/models/elements/classifiers/test_model_association_class.py` | `RPAssociationClass` | **Fix**: uncomment the `xfail` decorator so the file matches its own docstring. |
+| `tests/integration/models/elements/classifiers/test_model_association_class.py` | `IRPAssociationClass` | **Fix**: uncomment the `xfail` decorator so the file matches its own docstring. |
 
 ---
 
-### Task 1: Rewrite `test_model_attribute.py` to test `RPAttribute`-owned methods
+### Task 1: Rewrite `test_model_attribute.py` to test `IRPAttribute`-owned methods
 
 **Files:**
 - Rewrite: `tests/integration/models/elements/variables/test_model_attribute.py`
-- Read-only reference: `src/rhapsody_cli/models/elements/variables/model_variables.py` (class `RPAttribute` — its 12 own methods: `get_is_constant`/`set_is_constant`, `get_is_ordered`/`set_is_ordered`, `get_is_reference`/`set_is_reference`, `get_is_static`/`set_is_static`, `get_multiplicity`/`set_multiplicity`, `get_visibility`/`set_visibility`).
+- Read-only reference: `src/rhapsody_cli/models/elements/variables/model_variables.py` (class `IRPAttribute` — its 12 own methods: `get_is_constant`/`set_is_constant`, `get_is_ordered`/`set_is_ordered`, `get_is_reference`/`set_is_reference`, `get_is_static`/`set_is_static`, `get_multiplicity`/`set_multiplicity`, `get_visibility`/`set_visibility`).
 
 **Interfaces:**
-- Consumes: `RPProject.add_package(name) -> RPPackage`; `RPPackage.add_class(name) -> RPClass`; `RPClass.add_attribute(name) -> RPAttribute` (this last one is an `RPClassifier` method — used **only** as setup to obtain the instance).
+- Consumes: `IRPProject.add_package(name) -> IRPPackage`; `IRPPackage.add_class(name) -> RPClass`; `RPClass.add_attribute(name) -> IRPAttribute` (this last one is an `IRPClassifier` method — used **only** as setup to obtain the instance).
 - Produces: nothing (test-only).
 
 - [ ] **Step 1: Replace the file contents**
@@ -59,38 +59,38 @@ The class-under-test's own methods are read from the model module's docstring ch
 Overwrite `tests/integration/models/elements/variables/test_model_attribute.py` with:
 
 ```python
-"""Integration tests for RPAttribute with live Rhapsody COM API.
+"""Integration tests for IRPAttribute with live Rhapsody COM API.
 
-Scope: only methods that RPAttribute owns (the 12 is_*/multiplicity/visibility
+Scope: only methods that IRPAttribute owns (the 12 is_*/multiplicity/visibility
 getters and setters declared on IRPAttribute). Parent-class behaviour
 (IRPVariable::set_declaration / get_type / set_default_value, IRPClassifier::
 add_attribute) is exercised in its own integration tests; here
-``add_attribute`` is used purely to obtain an RPAttribute instance.
+``add_attribute`` is used purely to obtain an IRPAttribute instance.
 """
 
 import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
-from rhapsody_cli.models.elements.variables import RPAttribute
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
+from rhapsody_cli.models.elements.variables import IRPAttribute
 
 
 @pytest.mark.integration
 class TestRPAttributeIntegration:
-    """Integration tests for RPAttribute with real Rhapsody COM API."""
+    """Integration tests for IRPAttribute with real Rhapsody COM API."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_is_static_roundtrip(self, test_project: RPProject) -> None:
+    def test_is_static_roundtrip(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("AttrPkg")
         class_name = self._unique("AttrCls")
         attr_name = self._unique("myAttr")
@@ -98,7 +98,7 @@ class TestRPAttributeIntegration:
         test_class = pkg.add_class(class_name)
         try:
             attr = test_class.add_attribute(attr_name)
-            assert isinstance(attr, RPAttribute)
+            assert isinstance(attr, IRPAttribute)
             assert attr.get_is_static() is False
             attr.set_is_static(True)
             assert attr.get_is_static() is True
@@ -107,7 +107,7 @@ class TestRPAttributeIntegration:
         finally:
             test_class.delete_from_project()
 
-    def test_is_constant_roundtrip(self, test_project: RPProject) -> None:
+    def test_is_constant_roundtrip(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("AttrPkg")
         class_name = self._unique("AttrCls")
         attr_name = self._unique("myAttr")
@@ -123,7 +123,7 @@ class TestRPAttributeIntegration:
         finally:
             test_class.delete_from_project()
 
-    def test_is_ordered_roundtrip(self, test_project: RPProject) -> None:
+    def test_is_ordered_roundtrip(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("AttrPkg")
         class_name = self._unique("AttrCls")
         attr_name = self._unique("myAttr")
@@ -139,7 +139,7 @@ class TestRPAttributeIntegration:
         finally:
             test_class.delete_from_project()
 
-    def test_is_reference_roundtrip(self, test_project: RPProject) -> None:
+    def test_is_reference_roundtrip(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("AttrPkg")
         class_name = self._unique("AttrCls")
         attr_name = self._unique("myAttr")
@@ -155,7 +155,7 @@ class TestRPAttributeIntegration:
         finally:
             test_class.delete_from_project()
 
-    def test_multiplicity_roundtrip(self, test_project: RPProject) -> None:
+    def test_multiplicity_roundtrip(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("AttrPkg")
         class_name = self._unique("AttrCls")
         attr_name = self._unique("myAttr")
@@ -168,7 +168,7 @@ class TestRPAttributeIntegration:
         finally:
             test_class.delete_from_project()
 
-    def test_visibility_roundtrip(self, test_project: RPProject) -> None:
+    def test_visibility_roundtrip(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("AttrPkg")
         class_name = self._unique("AttrCls")
         attr_name = self._unique("myAttr")
@@ -204,7 +204,7 @@ Expected: all clean (no output / "All done!").
 
 ```bash
 git add tests/integration/models/elements/variables/test_model_attribute.py
-git commit -m "test: rewrite RPAttribute integration tests to cover own methods"
+git commit -m "test: rewrite IRPAttribute integration tests to cover own methods"
 ```
 
 ---
@@ -237,7 +237,7 @@ import uuid
 import pytest
 
 from rhapsody_cli.models.elements.classifiers import RPStereotype
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 
 
 @pytest.mark.integration
@@ -249,12 +249,12 @@ class TestRPStereotypeIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_meta_class_add_get_remove(self, test_project: RPProject) -> None:
+    def test_meta_class_add_get_remove(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("SterPkg")
         stereo_name = self._unique("MyStereotype")
         pkg = self._create_package(test_project, pkg_name)
@@ -273,7 +273,7 @@ class TestRPStereotypeIntegration:
         finally:
             stereotype.delete_from_project()
 
-    def test_is_new_term_roundtrip(self, test_project: RPProject) -> None:
+    def test_is_new_term_roundtrip(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("SterPkg")
         stereo_name = self._unique("MyStereotype")
         pkg = self._create_package(test_project, pkg_name)
@@ -287,7 +287,7 @@ class TestRPStereotypeIntegration:
         finally:
             stereotype.delete_from_project()
 
-    def test_get_icon_is_string(self, test_project: RPProject) -> None:
+    def test_get_icon_is_string(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("SterPkg")
         stereo_name = self._unique("MyStereotype")
         pkg = self._create_package(test_project, pkg_name)
@@ -322,10 +322,10 @@ git commit -m "test: rewrite RPStereotype integration tests to cover own methods
 
 **Files:**
 - Rewrite: `tests/integration/models/elements/classifiers/test_model_statechart.py`
-- Read-only reference: `src/rhapsody_cli/models/elements/classifiers/model_statechart.py` (class `RPStatechart` — own methods include `create_graphics`, `close_diagram`, `get_root_state`, `get_its_class`, `get_is_main_behavior`, `delete_state`, `populate_diagram`, etc.). **`add_statechart` belongs to `RPClassifier`, not `RPStatechart`** — it is setup only.
+- Read-only reference: `src/rhapsody_cli/models/elements/classifiers/model_statechart.py` (class `RPStatechart` — own methods include `create_graphics`, `close_diagram`, `get_root_state`, `get_its_class`, `get_is_main_behavior`, `delete_state`, `populate_diagram`, etc.). **`add_statechart` belongs to `IRPClassifier`, not `RPStatechart`** — it is setup only.
 
 **Interfaces:**
-- Consumes: `RPClass.add_statechart() -> RPStatechart` (an `RPClassifier` method — setup only; already covered by `test_model_classifier.py::test_get_statechart`).
+- Consumes: `RPClass.add_statechart() -> RPStatechart` (an `IRPClassifier` method — setup only; already covered by `test_model_classifier.py::test_get_statechart`).
 - Produces: nothing.
 
 - [ ] **Step 1: Replace the file contents**
@@ -346,7 +346,7 @@ import uuid
 import pytest
 
 from rhapsody_cli.models.elements.classifiers import RPClass, RPStatechart
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.core import RPModelElement
 
 
@@ -359,12 +359,12 @@ class TestRPStatechartIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_get_its_class_returns_owning_class(self, test_project: RPProject) -> None:
+    def test_get_its_class_returns_owning_class(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("ScPkg")
         class_name = self._unique("ScCls")
         pkg = self._create_package(test_project, pkg_name)
@@ -378,7 +378,7 @@ class TestRPStatechartIntegration:
         finally:
             test_class.delete_from_project()
 
-    def test_get_is_main_behavior(self, test_project: RPProject) -> None:
+    def test_get_is_main_behavior(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("ScPkg")
         class_name = self._unique("ScCls")
         pkg = self._create_package(test_project, pkg_name)
@@ -389,7 +389,7 @@ class TestRPStatechartIntegration:
         finally:
             test_class.delete_from_project()
 
-    def test_get_root_state(self, test_project: RPProject) -> None:
+    def test_get_root_state(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("ScPkg")
         class_name = self._unique("ScCls")
         pkg = self._create_package(test_project, pkg_name)
@@ -402,7 +402,7 @@ class TestRPStatechartIntegration:
         finally:
             test_class.delete_from_project()
 
-    def test_create_graphics_then_close_diagram(self, test_project: RPProject) -> None:
+    def test_create_graphics_then_close_diagram(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("ScPkg")
         class_name = self._unique("ScCls")
         pkg = self._create_package(test_project, pkg_name)
@@ -434,14 +434,14 @@ git commit -m "test: rewrite RPStatechart integration tests to cover own methods
 
 ---
 
-### Task 4: Rewrite `test_model_usecase.py` to test `RPUseCase`-owned methods
+### Task 4: Rewrite `test_model_usecase.py` to test `IRPUseCase`-owned methods
 
 **Files:**
 - Rewrite: `tests/integration/models/elements/classifiers/test_model_usecase.py`
-- Read-only reference: `src/rhapsody_cli/models/elements/classifiers/model_usecase.py` (class `RPUseCase` — own methods: `add_extension_point`, `get_extension_points`, `delete_extension_point`, `find_extension_point`, `get_entry_points`, `delete_entry_point`, `get_is_behavior_overriden`, `set_is_behavior_overriden`, plus diagram ones). **Note:** unlike `RPActor`, `RPUseCase.add_event_reception_with_event` has a *real* COM implementation (no `NotImplementedError`) — but it needs an event fixture, so we keep this task focused on the extension-point + behavior-override methods.
+- Read-only reference: `src/rhapsody_cli/models/elements/classifiers/model_usecase.py` (class `IRPUseCase` — own methods: `add_extension_point`, `get_extension_points`, `delete_extension_point`, `find_extension_point`, `get_entry_points`, `delete_entry_point`, `get_is_behavior_overriden`, `set_is_behavior_overriden`, plus diagram ones). **Note:** unlike `RPActor`, `IRPUseCase.add_event_reception_with_event` has a *real* COM implementation (no `NotImplementedError`) — but it needs an event fixture, so we keep this task focused on the extension-point + behavior-override methods.
 
 **Interfaces:**
-- Consumes: `RPPackage.add_use_case(name) -> RPUseCase` (setup only).
+- Consumes: `IRPPackage.add_use_case(name) -> IRPUseCase` (setup only).
 - Produces: nothing.
 
 - [ ] **Step 1: Replace the file contents**
@@ -449,9 +449,9 @@ git commit -m "test: rewrite RPStatechart integration tests to cover own methods
 Overwrite `tests/integration/models/elements/classifiers/test_model_usecase.py` with:
 
 ```python
-"""Integration tests for RPUseCase with live Rhapsody COM API.
+"""Integration tests for IRPUseCase with live Rhapsody COM API.
 
-Scope: only methods that RPUseCase owns (IRPUseCase::addExtensionPoint,
+Scope: only methods that IRPUseCase owns (IRPUseCase::addExtensionPoint,
 getExtensionPoints, findExtensionPoint, deleteExtensionPoint, getEntryPoints,
 getIsBehaviorOverriden, setIsBehaviorOverriden). ``add_use_case`` is an
 IRPPackage method used only to build the fixture.
@@ -461,32 +461,32 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.classifiers import RPUseCase
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.classifiers import IRPUseCase
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 
 
 @pytest.mark.integration
 class TestRPUseCaseIntegration:
-    """Integration tests for RPUseCase with real Rhapsody COM API."""
+    """Integration tests for IRPUseCase with real Rhapsody COM API."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_extension_point_add_get_find_delete(self, test_project: RPProject) -> None:
+    def test_extension_point_add_get_find_delete(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("UcPkg")
         uc_name = self._unique("MyUseCase")
         ep_name = self._unique("MyExtensionPoint")
         pkg = self._create_package(test_project, pkg_name)
         uc = pkg.add_use_case(uc_name)
         try:
-            assert isinstance(uc, RPUseCase)
+            assert isinstance(uc, IRPUseCase)
             uc.add_extension_point(ep_name)
             assert ep_name in [str(e) for e in uc.get_extension_points()]
             found = uc.find_extension_point(ep_name)
@@ -496,7 +496,7 @@ class TestRPUseCaseIntegration:
         finally:
             uc.delete_from_project()
 
-    def test_get_entry_points_empty(self, test_project: RPProject) -> None:
+    def test_get_entry_points_empty(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("UcPkg")
         uc_name = self._unique("MyUseCase")
         pkg = self._create_package(test_project, pkg_name)
@@ -507,8 +507,8 @@ class TestRPUseCaseIntegration:
         finally:
             uc.delete_from_project()
 
-    def test_is_behavior_overriden_roundtrip(self, test_project: RPProject) -> None:
-        # RPUseCase redefines getIsBehaviorOverriden/setIsBehaviorOverriden as int-typed
+    def test_is_behavior_overriden_roundtrip(self, test_project: IRPProject) -> None:
+        # IRPUseCase redefines getIsBehaviorOverriden/setIsBehaviorOverriden as int-typed
         # (its sibling RPClass also has them; this asserts the int contract specifically).
         pkg_name = self._unique("UcPkg")
         uc_name = self._unique("MyUseCase")
@@ -538,7 +538,7 @@ Expected: clean.
 
 ```bash
 git add tests/integration/models/elements/classifiers/test_model_usecase.py
-git commit -m "test: rewrite RPUseCase integration tests to cover own methods"
+git commit -m "test: rewrite IRPUseCase integration tests to cover own methods"
 ```
 
 ---
@@ -570,7 +570,7 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.elements.requirements import RPRequirement
 
 
@@ -583,12 +583,12 @@ class TestRPRequirementIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_create_requirement_in_package(self, test_project: RPProject) -> None:
+    def test_create_requirement_in_package(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("ReqPkg")
         req_name = self._unique("MyRequirement")
         pkg = self._create_package(test_project, pkg_name)
@@ -601,7 +601,7 @@ class TestRPRequirementIntegration:
         finally:
             req.delete_from_project()
 
-    def test_requirement_id_roundtrip(self, test_project: RPProject) -> None:
+    def test_requirement_id_roundtrip(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("ReqPkg")
         req_name = self._unique("MyRequirement")
         pkg = self._create_package(test_project, pkg_name)
@@ -635,17 +635,17 @@ git commit -m "test: add RPRequirement.owned get/set_requirement_id integration 
 
 ---
 
-### Task 6: Trim `test_model_class.py` — remove `RPClassifier`-duplicate and setup-only tests
+### Task 6: Trim `test_model_class.py` — remove `IRPClassifier`-duplicate and setup-only tests
 
 **Files:**
 - Modify: `tests/integration/models/elements/classifiers/test_model_class.py`
-- Read-only reference: `src/rhapsody_cli/models/elements/classifiers/model_class.py` (class `RPClass`). The methods `add_operation` / `get_operations` are declared on **`RPClassifier`**, not `RPClass`; their integration coverage lives in `test_model_classifier.py`. `get_name` / `get_meta_class` / `get_owner` / `delete_from_project` are `RPModelElement` methods covered in `test_core.py`.
+- Read-only reference: `src/rhapsody_cli/models/elements/classifiers/model_class.py` (class `RPClass`). The methods `add_operation` / `get_operations` are declared on **`IRPClassifier`**, not `RPClass`; their integration coverage lives in `test_model_classifier.py`. `get_name` / `get_meta_class` / `get_owner` / `delete_from_project` are `RPModelElement` methods covered in `test_core.py`.
 
 **Interfaces:** none new.
 
 **Tests to delete and why:**
-- `test_create_operation_in_class` — exercises `RPClassifier.add_operation` + `RPClassifier.get_operations` (wrong class; duplicate of `test_model_classifier.py`).
-- `test_create_class_in_package` — only `RPModelElement.get_name`/`get_meta_class` + `RPPackage.add_class` (setup-only, no `RPClass` method).
+- `test_create_operation_in_class` — exercises `IRPClassifier.add_operation` + `IRPClassifier.get_operations` (wrong class; duplicate of `test_model_classifier.py`).
+- `test_create_class_in_package` — only `RPModelElement.get_name`/`get_meta_class` + `IRPPackage.add_class` (setup-only, no `RPClass` method).
 - `test_class_hierarchy_navigation` — only `RPModelElement.get_owner` (setup-only).
 - `test_class_delete` — only `RPModelElement.delete_from_project` (setup-only).
 
@@ -669,13 +669,13 @@ Expected: the four deleted IDs are gone; the remaining IDs include at least `tes
 - [ ] **Step 3: Lint the file**
 
 Run: `ruff check tests/integration/models/elements/classifiers/test_model_class.py && black --check tests/integration/models/elements/classifiers/test_model_class.py && mypy tests/integration/models/elements/classifiers/test_model_class.py`
-Expected: clean. (If `RPOperation`/`cast` imports become unused after removing `test_create_operation_in_class`, ruff will flag `F401` — remove any now-unused import that ruff names.)
+Expected: clean. (If `IRPOperation`/`cast` imports become unused after removing `test_create_operation_in_class`, ruff will flag `F401` — remove any now-unused import that ruff names.)
 
 - [ ] **Step 4: Commit**
 
 ```bash
 git add tests/integration/models/elements/classifiers/test_model_class.py
-git commit -m "test: drop RPClassifier-duplicate and setup-only tests from RPClass suite"
+git commit -m "test: drop IRPClassifier-duplicate and setup-only tests from RPClass suite"
 ```
 
 ---
@@ -684,12 +684,12 @@ git commit -m "test: drop RPClassifier-duplicate and setup-only tests from RPCla
 
 **Files:**
 - Modify: `tests/integration/models/elements/classifiers/test_model_actor.py`
-- Read-only reference: `src/rhapsody_cli/models/elements/classifiers/model_actor.py` (class `RPActor(RPClassifier)`). `RPActor` *redefines* `get_is_behavior_overriden`/`set_is_behavior_overriden`/`update_contained_diagrams_on_server` with **different signatures** (`bool` / no-arg) than its sibling `RPClass` (`int` / `int`-arg). The tests that stay assert those `bool` contracts and so prove the correct override is invoked.
+- Read-only reference: `src/rhapsody_cli/models/elements/classifiers/model_actor.py` (class `RPActor(IRPClassifier)`). `RPActor` *redefines* `get_is_behavior_overriden`/`set_is_behavior_overriden`/`update_contained_diagrams_on_server` with **different signatures** (`bool` / no-arg) than its sibling `RPClass` (`int` / `int`-arg). The tests that stay assert those `bool` contracts and so prove the correct override is invoked.
 
 **Interfaces:** none new.
 
 **Tests to delete and why:**
-- `test_create_actor_in_package` — only `RPModelElement.get_name`/`get_meta_class` + `RPPackage.get_actors` (setup-only, no `RPActor` method).
+- `test_create_actor_in_package` — only `RPModelElement.get_name`/`get_meta_class` + `IRPPackage.get_actors` (setup-only, no `RPActor` method).
 - `test_actor_owner` — only `RPModelElement.get_owner` (setup-only).
 
 **Tests to keep:** `test_actor_behavior_override` (exercises `RPActor.get_is_behavior_overriden`/`set_is_behavior_overriden` with `is True`/`is False` — would fail if it resolved to the `RPClass` `int` version) and `test_add_event_reception_with_event` (exercises `RPActor.add_event_reception_with_event` which raises `NotImplementedError`).
@@ -732,7 +732,7 @@ git commit -m "test: drop setup-only tests from RPActor suite"
 In `tests/integration/models/elements/common/test_model_misc.py`, inside the existing `TestRPConstraintIntegration` class, add this method after `test_create_constraint_in_package`:
 
 ```python
-    def test_get_constraints_by_me_returns_collection(self, test_project: RPProject) -> None:
+    def test_get_constraints_by_me_returns_collection(self, test_project: IRPProject) -> None:
         from rhapsody_cli.models.core import IRPCollection
 
         pkg_name = self._unique("ConPkg")
@@ -781,13 +781,13 @@ In `tests/integration/models/elements/classifiers/test_model_association_class.p
 From:
 ```python
     # @pytest.mark.xfail(strict=False, reason="addRelationTo(linkName) does not create AssociationClass in this Rhapsody COM build")
-    def test_association_class_found_via_package(self, test_project: RPProject) -> None:
+    def test_association_class_found_via_package(self, test_project: IRPProject) -> None:
 ```
 
 To:
 ```python
     @pytest.mark.xfail(strict=False, reason="addRelationTo(linkName) does not create AssociationClass in this Rhapsody COM build")
-    def test_association_class_found_via_package(self, test_project: RPProject) -> None:
+    def test_association_class_found_via_package(self, test_project: IRPProject) -> None:
 ```
 
 Change only the leading `# ` — leave the reason string and everything else untouched.
@@ -806,7 +806,7 @@ Expected: clean.
 
 ```bash
 git add tests/integration/models/elements/classifiers/test_model_association_class.py
-git commit -m "test: mark RPAssociationClass integration test xfail to match its docstring"
+git commit -m "test: mark IRPAssociationClass integration test xfail to match its docstring"
 ```
 
 ---
@@ -818,7 +818,7 @@ git commit -m "test: mark RPAssociationClass integration test xfail to match its
 - [ ] **Step 1: Collect the entire integration tree**
 
 Run: `python -m pytest tests/integration/ --collect-only -q`
-Expected: every integration module collects with no import/syntax errors. Count the `RPAttribute` (6), `RPStereotype` (3), `RPStatechart` (4), `RPUseCase` (3), `RPRequirement` (2), `RPClass` (19, down from 23), `RPActor` (2, down from 4), `RPConstraint` (2) IDs and confirm they match the per-task expectations.
+Expected: every integration module collects with no import/syntax errors. Count the `IRPAttribute` (6), `RPStereotype` (3), `RPStatechart` (4), `IRPUseCase` (3), `RPRequirement` (2), `RPClass` (19, down from 23), `RPActor` (2, down from 4), `RPConstraint` (2) IDs and confirm they match the per-task expectations.
 
 - [ ] **Step 2: Run the full lint gate on the touched files**
 
@@ -850,7 +850,7 @@ Note in the PR description that live execution is Windows-only (CI); locally onl
 - `test_model_statechart.py` add_statechart-only → Task 3 ✅
 - `test_model_usecase.py` creation-only → Task 4 ✅
 - `test_model_requirements.py` creation-only → Task 5 ✅
-- `test_model_class.py` `RPClassifier`-duplicate + setup-only → Task 6 ✅
+- `test_model_class.py` `IRPClassifier`-duplicate + setup-only → Task 6 ✅
 - `test_model_actor.py` setup-only → Task 7 ✅
 - `test_model_misc.py` `RPConstraint` untested → Task 8 ✅
 - `test_model_association_class.py` xfail/docstring mismatch → Task 9 ✅
@@ -859,6 +859,6 @@ Note in the PR description that live execution is Windows-only (CI); locally onl
 
 **2. Placeholder scan:** no "TBD"/"implement later"/"similar to Task N". Every code step shows the full file or full method to add/delete. Deletion steps name the exact symbols and their replacement boundary.
 
-**3. Type/name consistency:** method names and signatures used in test code were taken verbatim from the referenced model modules (`get_is_static`/`set_is_static`, `add_meta_class`/`get_of_meta_class`/`remove_meta_class`, `get_its_class`/`get_is_main_behavior`/`get_root_state`/`create_graphics`/`close_diagram`, `add_extension_point`/`get_extension_points`/`find_extension_point`/`delete_extension_point`/`get_entry_points`/`get_is_behavior_overriden`/`set_is_behavior_overriden`, `get_requirement_id`/`set_requirement_id`, `get_constraints_by_me`). Setup entry points (`add_attribute`, `add_stereotype`, `add_statechart`, `add_use_case`, `add_new_aggr`) all confirmed to exist on the parent classes (`RPClassifier`, `RPModelElement`, `RPPackage`). No `from __future__ import annotations`; no py3.9+ generic syntax; no `Any`.
+**3. Type/name consistency:** method names and signatures used in test code were taken verbatim from the referenced model modules (`get_is_static`/`set_is_static`, `add_meta_class`/`get_of_meta_class`/`remove_meta_class`, `get_its_class`/`get_is_main_behavior`/`get_root_state`/`create_graphics`/`close_diagram`, `add_extension_point`/`get_extension_points`/`find_extension_point`/`delete_extension_point`/`get_entry_points`/`get_is_behavior_overriden`/`set_is_behavior_overriden`, `get_requirement_id`/`set_requirement_id`, `get_constraints_by_me`). Setup entry points (`add_attribute`, `add_stereotype`, `add_statechart`, `add_use_case`, `add_new_aggr`) all confirmed to exist on the parent classes (`IRPClassifier`, `RPModelElement`, `IRPPackage`). No `from __future__ import annotations`; no py3.9+ generic syntax; no `Any`.
 
 **Caveat (called out, not a gap):** assertions on live COM return values (e.g. default `get_is_constant()` value, whether `get_of_meta_class()` is comma-separated) are reasoned from docstring semantics, not from a live run; the `--collect-only` gate cannot validate them. The first CI run on `windows-latest` is the real proof and may surface xfail-worthy Rhapsody quirks (as already seen with `set_is_final` / `set_is_abstract` in the existing suite). If a live run shows a method genuinely does not persist, mark that single test `@pytest.mark.xfail(strict=False, reason=...)` following the existing convention — do not change `src/`.

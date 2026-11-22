@@ -2,7 +2,8 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 from rhapsody_cli.models.elements.relations import RPGeneralization
 
 
@@ -15,12 +16,12 @@ class TestRPGeneralizationIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_create_generalization(self, test_project: RPProject) -> None:
+    def test_create_generalization(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("GenPkg")
         parent_name = self._unique("Parent")
         child_name = self._unique("Child")

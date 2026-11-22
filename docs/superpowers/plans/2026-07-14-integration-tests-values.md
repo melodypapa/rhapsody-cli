@@ -12,9 +12,9 @@
 
 - Windows-only runtime (requires Windows + a running Rhapsody instance)
 - All test classes use `@pytest.mark.integration`
-- All tests consume the `test_project: RPProject` fixture
+- All tests consume the `test_project: IRPProject` fixture
 - Use `_unique(prefix)` with `uuid.uuid4().hex[:8]`
-- Always `try/finally` cleanup — the owning `RPPackage` created per test is deleted via `delete_from_project()`, which cascades to delete the nested class, attribute, and instance specification (matches the `test_model_class.py`/`test_model_operation.py` pattern)
+- Always `try/finally` cleanup — the owning `IRPPackage` created per test is deleted via `delete_from_project()`, which cascades to delete the nested class, attribute, and instance specification (matches the `test_model_class.py`/`test_model_operation.py` pattern)
 - Assert both `isinstance()` and read-back values
 - Flip `[ ] integration test` to `[x]` per task in `model_values.py`
 - Quality gate after each task: `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/ && pytest tests/unit`
@@ -36,15 +36,15 @@
 
 ### Object creation chain (verified from source)
 
-- `RPProject.add_package(name)` (inherited, `model_package.py`) → `RPPackage`
-- `RPPackage.add_class(name)` → `RPClass` (an `RPClassifier`), used as the instance specification's classifier
-- `RPClassifier.add_attribute(name)` (`model_classifier.py:74`) → `RPAttribute` (an `RPVariable`), used as the `slot_property` argument for `RPInstanceSpecification.add_instance_slot` / `RPInstanceSlot.set_slot_property`
-- `RPPackage.add_instance_specification(name)` (`model_package.py:1127`) → `RPInstanceSpecification`
+- `IRPProject.add_package(name)` (inherited, `model_package.py`) → `IRPPackage`
+- `IRPPackage.add_class(name)` → `RPClass` (an `IRPClassifier`), used as the instance specification's classifier
+- `IRPClassifier.add_attribute(name)` (`model_classifier.py:74`) → `IRPAttribute` (an `RPVariable`), used as the `slot_property` argument for `RPInstanceSpecification.add_instance_slot` / `RPInstanceSlot.set_slot_property`
+- `IRPPackage.add_instance_specification(name)` (`model_package.py:1127`) → `RPInstanceSpecification`
 - `RPInstanceSpecification.set_classifier(classifier)` → binds the instance specification to the `RPClass` created above; `get_classifier()` reads it back
-- `RPInstanceSpecification.add_instance_slot(name, slot_property)` (`slot_property` = the `RPAttribute` above) → `RPInstanceSlot`
+- `RPInstanceSpecification.add_instance_slot(name, slot_property)` (`slot_property` = the `IRPAttribute` above) → `RPInstanceSlot`
 - `RPInstanceSlot.add_string_value(str)` → `RPLiteralSpecification` (a `RPValueSpecification` subclass)
 - `RPInstanceSlot.add_element_value(RPModelElement)` (using a second `RPClass` created in the same package as the element value) → `RPInstanceValue` (a `RPValueSpecification` subclass)
-- Cleanup: deleting the owning `RPPackage` via `delete_from_project()` cascades to remove the class(es), attribute, instance specification, instance slot, and all values nested inside it
+- Cleanup: deleting the owning `IRPPackage` via `delete_from_project()` cascades to remove the class(es), attribute, instance specification, instance slot, and all values nested inside it
 
 No methods are flagged as unreachable — all 15 methods have a valid, documented creation/exercise path through the existing public API.
 
@@ -69,8 +69,8 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.elements.classifiers import RPAttribute, RPClass
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.classifiers import IRPAttribute, RPClass
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 from rhapsody_cli.models.elements.values import RPInstanceSpecification
 
 
@@ -79,20 +79,20 @@ def unique(prefix: str = "Test") -> str:
 
 
 @pytest.fixture
-def instance_spec_factory(test_project: RPProject):
-    """Factory fixture: creates an ``RPPackage`` containing a classifier (with
+def instance_spec_factory(test_project: IRPProject):
+    """Factory fixture: creates an ``IRPPackage`` containing a classifier (with
     one attribute) and an ``RPInstanceSpecification`` bound to it.
 
-    Returns a callable ``() -> tuple[RPPackage, RPClass, RPAttribute, RPInstanceSpecification]``.
+    Returns a callable ``() -> tuple[IRPPackage, RPClass, IRPAttribute, RPInstanceSpecification]``.
     The package is deleted (cascading delete of everything nested inside it)
     when the fixture tears down.
     """
     created = []
 
     def _make():
-        pkg: RPPackage = test_project.add_package(unique("ValPkg"))
+        pkg: IRPPackage = test_project.add_package(unique("ValPkg"))
         test_class: RPClass = pkg.add_class(unique("ValCls"))
-        attribute: RPAttribute = test_class.add_attribute(unique("attr"))
+        attribute: IRPAttribute = test_class.add_attribute(unique("attr"))
         instance_spec = pkg.add_instance_specification(unique("Inst"))
         assert instance_spec is not None
         assert isinstance(instance_spec, RPInstanceSpecification)

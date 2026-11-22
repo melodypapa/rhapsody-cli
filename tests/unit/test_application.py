@@ -7,7 +7,7 @@ import pytest
 from rhapsody_cli.application import RhapsodyApplication
 from rhapsody_cli.exceptions import RhapsodyConnectionError, RhapsodyRuntimeException
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.elements.containment import RPProject
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 # --- connect() lifecycle tests ---
@@ -98,7 +98,7 @@ def test_open_project_wraps_result_as_rpproject() -> None:
     project = app.open_project("C:/models/MyProject.rpy")
 
     fake_app.openProject.assert_called_once_with("C:/models/MyProject.rpy")
-    assert isinstance(project, RPProject)
+    assert isinstance(project, IRPProject)
     assert project.get_name() == "MyProject"
 
 
@@ -110,12 +110,12 @@ def test_active_project_wraps_result_as_rpproject() -> None:
 
     project = app.active_project()
 
-    assert isinstance(project, RPProject)
+    assert isinstance(project, IRPProject)
     assert project.get_name() == "ActiveOne"
 
 
 def test_active_project_raises_when_no_project_open() -> None:
-    """activeProject() must not silently return an RPProject wrapping None."""
+    """activeProject() must not silently return an IRPProject wrapping None."""
     fake_app = MagicMock(name="FakeApplication")
     fake_app.activeProject.return_value = None
     app = RhapsodyApplication(fake_app)
@@ -127,13 +127,13 @@ def test_active_project_raises_when_no_project_open() -> None:
 def test_get_projects_returns_collection_of_rpproject() -> None:
     fake_app = MagicMock(name="FakeApplication")
     fake_project = make_fake_element("Project", properties={"name": "P1"})
-    fake_app.getProjects.return_value = make_fake_collection([fake_project])
+    fake_app.projects = make_fake_collection([fake_project])
     app = RhapsodyApplication(fake_app)
 
     projects = app.get_projects()
 
     assert len(projects) == 1
-    assert isinstance(projects[0], RPProject)
+    assert isinstance(projects[0], IRPProject)
     assert projects[0].get_name() == "P1"
 
 
@@ -149,7 +149,7 @@ def test_get_projects_falls_back_to_projects_property_when_method_missing() -> N
     projects = app.get_projects()
 
     assert len(projects) == 1
-    assert isinstance(projects[0], RPProject)
+    assert isinstance(projects[0], IRPProject)
     assert projects[0].get_name() == "P1"
 
 
@@ -163,7 +163,7 @@ def test_create_new_project_calls_com_and_returns_active_project() -> None:
 
     fake_app.createNewProject.assert_called_once_with("C:/models", "NewProject")
     fake_app.activeProject.assert_called_once_with()
-    assert isinstance(project, RPProject)
+    assert isinstance(project, IRPProject)
     assert project.get_name() == "NewProject"
 
 
@@ -213,13 +213,11 @@ def test_set_hidden_ui_calls_method_when_present() -> None:
     fake_app.setHiddenUI.assert_called_once_with(False)
 
 
-def test_set_hidden_ui_falls_back_to_property_when_method_missing() -> None:
-    fake_app = MagicMock(spec=["isHiddenUI"])
+def test_set_hidden_ui_hides_when_requested() -> None:
+    fake_app = MagicMock(name="FakeApplication")
     app = RhapsodyApplication(fake_app)
-
-    app.set_hidden_ui(False)
-
-    assert fake_app.isHiddenUI is False
+    app.set_hidden_ui(True)
+    fake_app.setHiddenUI.assert_called_once_with(True)
 
 
 def test_bring_window_to_top_delegates_to_com() -> None:
@@ -483,3 +481,49 @@ def test_get_ow_pane_mgr_returns_wrapped_element() -> None:
 
     fake_app.getOWPaneMgr.assert_called_once_with("MyClient")
     assert isinstance(result, RPowPaneMgr)
+
+
+def test_attach_raises_when_pywin32_unavailable(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("rhapsody_cli.application.win32_client", None)
+    with pytest.raises(RhapsodyConnectionError, match="pywin32 is not available"):
+        RhapsodyApplication._attach()
+
+
+def test_attach_wraps_com_failure(monkeypatch: pytest.MonkeyPatch) -> None:
+    fake_client = MagicMock()
+    fake_client.GetActiveObject.side_effect = RhapsodyRuntimeException("no active object")
+    monkeypatch.setattr("rhapsody_cli.application.win32_client", fake_client)
+    with pytest.raises(RhapsodyConnectionError, match="No running Rhapsody"):
+        RhapsodyApplication._attach()
+
+
+def test_launch_raises_when_pywin32_unavailable(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("rhapsody_cli.application.win32_client", None)
+    with pytest.raises(RhapsodyConnectionError, match="pywin32 is not available"):
+        RhapsodyApplication._launch()
+
+
+def test_launch_wraps_com_failure(monkeypatch: pytest.MonkeyPatch) -> None:
+    fake_client = MagicMock()
+    fake_client.Dispatch.side_effect = RhapsodyRuntimeException("dispatch failed")
+    monkeypatch.setattr("rhapsody_cli.application.win32_client", fake_client)
+    with pytest.raises(RhapsodyConnectionError, match="Failed to launch"):
+        RhapsodyApplication._launch()
+
+
+def test_attach_returns_wrapped_application(monkeypatch: pytest.MonkeyPatch) -> None:
+    fake_com = MagicMock(name="ActiveApplication")
+    fake_client = MagicMock()
+    fake_client.GetActiveObject.return_value = fake_com
+    monkeypatch.setattr("rhapsody_cli.application.win32_client", fake_client)
+    app = RhapsodyApplication._attach()
+    assert app._com is fake_com
+
+
+def test_launch_returns_wrapped_application(monkeypatch: pytest.MonkeyPatch) -> None:
+    fake_com = MagicMock(name="LaunchedApplication")
+    fake_client = MagicMock()
+    fake_client.Dispatch.return_value = fake_com
+    monkeypatch.setattr("rhapsody_cli.application.win32_client", fake_client)
+    app = RhapsodyApplication._launch()
+    assert app._com is fake_com

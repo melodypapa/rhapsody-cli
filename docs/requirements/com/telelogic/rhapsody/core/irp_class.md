@@ -6,7 +6,7 @@
 **Priority:** High
 **Description:**
 The `IRPClass` interface represents classes in Rhapsody models. The Python `IRPClass` shall extend
-`RPClassifier` to wrap the Java `IRPClass`. It shall expose Java-mirrored methods:
+`IRPClassifier` to wrap the Java `IRPClass`. It shall expose Java-mirrored methods:
 `addSuperclass(super_class)` (accepts an `IRPClass`), `addConstructor(arguments_data)`
 (returns wrapped constructor), `addDestructor()` (returns wrapped destructor),
 `is_abstract` (property returning bool), and `addClass(name)` (returns wrapped class).

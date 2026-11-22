@@ -8,18 +8,57 @@ from importlib import import_module
 from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument import IRPArgument
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_association_class import IRPAssociationClass
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute import IRPAttribute
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class import IRPClass
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port import IRPPort
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type import IRPType
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_unit import AddToModelMode, IRPUnit
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_use_case import IRPUseCase
 
 _EXPORT_MODULES = {
     "AddToModelMode": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_unit",
+    "IRPArgument": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument",
+    "IRPAssociationClass": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_association_class",
+    "IRPAttribute": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute",
     "IRPClass": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class",
+    "IRPInterfaceItem": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item",
+    "IRPClassifier": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier",
     "IRPCollection": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection",
+    "IRPModelElement": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element",
+    "IRPOperation": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation",
+    "IRPPackage": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package",
+    "IRPPort": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port",
+    "IRPProject": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project",
+    "IRPType": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type",
+    "IRPUseCase": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_use_case",
     "IRPUnit": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_unit",
 }
 
-__all__ = ["AddToModelMode", "IRPClass", "IRPCollection", "IRPUnit"]
+__all__ = [
+    "AddToModelMode",
+    "IRPArgument",
+    "IRPAssociationClass",
+    "IRPAttribute",
+    "IRPClass",
+    "IRPClassifier",
+    "IRPCollection",
+    "IRPModelElement",
+    "IRPOperation",
+    "IRPPackage",
+    "IRPPort",
+    "IRPProject",
+    "IRPType",
+    "IRPUnit",
+    "IRPUseCase",
+]
 
 
 def __getattr__(name: str) -> object:

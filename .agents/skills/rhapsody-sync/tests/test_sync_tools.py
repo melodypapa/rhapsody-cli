@@ -191,9 +191,7 @@ def test_irpclass_report_declares_java_package() -> None:
     # Resolve the repo root without the docs/java_api marker: this check validates a
     # committed offline artifact and must run on machines without the JavaDoc tree.
     root = next(
-        candidate
-        for candidate in SYNC_TOOLS_PATH.parents
-        if (candidate / "scripts" / "validate_model_api.py").is_file() and (candidate / "docs" / "reports" / "IRPClass_api_report.md").is_file()
+        candidate for candidate in SYNC_TOOLS_PATH.parents if (candidate / "scripts" / "validate_model_api.py").is_file() and (candidate / "docs" / "reports" / "IRPClass_api_report.md").is_file()
     )
     report = root / "docs" / "reports" / "IRPClass_api_report.md"
 
@@ -276,3 +274,86 @@ def test_verifier_accepts_mirror_test_files_exercising_the_class(tmp_path: Path)
     issues = tools.verify_sync_artifacts(root, "IRPThing", report)
 
     assert not any("test file" in issue for issue in issues)
+
+
+def _write_application_fixture(root: Path) -> Path:
+    """Fixture for an application-layer wrapper: application.py, not under models/."""
+    package_parts = ("com", "telelogic", "rhapsody", "core")
+    package_name = ".".join(package_parts)
+    java_dir = root / "docs" / "java_api" / Path(*package_parts)
+    java_dir.mkdir(parents=True)
+    (java_dir / "IRPApplication.html").write_text("<html>IRPApplication</html>", encoding="utf-8")
+    (root / "scripts").mkdir(parents=True)
+    (root / "scripts" / "validate_model_api.py").write_text("", encoding="utf-8")
+
+    app_dir = root / "src" / "rhapsody_cli"
+    app_dir.mkdir(parents=True)
+    (app_dir / "application.py").write_text("class RhapsodyApplication: pass\n", encoding="utf-8")
+    for layer in ("unit", "integration"):
+        test_dir = root / "tests" / layer
+        test_dir.mkdir(parents=True)
+        (test_dir / "test_application.py").write_text("RhapsodyApplication\n", encoding="utf-8")
+
+    req_dir = root / "docs" / "requirements" / Path(*package_parts)
+    req_dir.mkdir(parents=True)
+    (req_dir / "irp_application.md").write_text("RhapsodyApplication wraps IRPApplication\n", encoding="utf-8")
+    api_dir = root / "docs" / "api" / Path(*package_parts)
+    api_dir.mkdir(parents=True)
+    (api_dir / "irp_application.rst").write_text(
+        ".. _rhapsody-java-interface-IRPApplication:\n\n"
+        "IRPApplication\n==============\n\n"
+        f"Java package: ``{package_name}``\n\n"
+        "Python wrapper: ``RhapsodyApplication``\n\n"
+        "Canonical Python import: ``rhapsody_cli.application``\n\n"
+        ".. list-table:: API deviations\n"
+        "   :header-rows: 1\n\n"
+        "   * - JavaDoc member/signature\n"
+        "     - COM/pywin32 exposure\n"
+        "     - Python implementation\n"
+        "     - Deviation and treatment\n"
+        "   * - ``getBuildNo``\n"
+        "     - ``BuildNo (property)``\n"
+        "     - ``get_build_no``\n"
+        "     - binding difference\n",
+        encoding="utf-8",
+    )
+    report = root / "docs" / "reports" / "IRPApplication_api_report.md"
+    report.parent.mkdir(parents=True)
+    report.write_text(
+        "# Rhapsody API Validation: IRPApplication\n\n"
+        "## Summary\n"
+        f"- Java package: `{package_name}`\n"
+        "- Target wrapper: `RhapsodyApplication` (`src/rhapsody_cli/application.py`)\n\n"
+        "## Comparison details\n\n"
+        "| Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |\n"
+        "| --- | --- | --- | --- | --- |\n"
+        "| get_build_no() -> getBuildNo | getBuildNo (method) | BuildNo (property) | COM_MEMBER_NOT_EXPOSED | Document. |\n\n"
+        "## Expected Binding Differences\n\n"
+        "| Python model wrapper | Java API | pywin32 | Status | Recommended change |\n"
+        "| --- | --- | --- | --- | --- |\n"
+        "| — | — | — | — | — |\n\n"
+        "## Wrapper Backlog\n\n"
+        "| Python model wrapper | Java API | pywin32 | Status | Recommended change |\n"
+        "| --- | --- | --- | --- | --- |\n"
+        "| — | someJavaOnlyMember (method) | — | MISSING_PYTHON_WRAPPER | Intentionally unsupported. |\n",
+        encoding="utf-8",
+    )
+    return report
+
+
+def test_verifier_accepts_application_layer_wrapper(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    report = _write_application_fixture(root)
+
+    assert tools.verify_sync_artifacts(root, "IRPApplication", report) == []
+
+
+def test_verifier_ignores_wrapper_backlog_members(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    report = _write_application_fixture(root)
+    text = report.read_text(encoding="utf-8")
+
+    assert "someJavaOnlyMember" in text
+    assert "someJavaOnlyMember" not in tools.extract_deviation_members(text)

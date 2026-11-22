@@ -11,9 +11,10 @@ import uuid
 import pytest
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
-from rhapsody_cli.models.core import IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 from rhapsody_cli.models.elements.classifiers import RPStatechart
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
 
 
 @pytest.mark.integration
@@ -25,12 +26,12 @@ class TestRPStatechartIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_get_its_class_returns_owning_class(self, test_project: RPProject) -> None:
+    def test_get_its_class_returns_owning_class(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("ScPkg")
         class_name = self._unique("ScCls")
         pkg = self._create_package(test_project, pkg_name)
@@ -44,7 +45,7 @@ class TestRPStatechartIntegration:
         finally:
             test_class.delete_from_project()
 
-    def test_get_is_main_behavior(self, test_project: RPProject) -> None:
+    def test_get_is_main_behavior(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("ScPkg")
         class_name = self._unique("ScCls")
         pkg = self._create_package(test_project, pkg_name)
@@ -55,7 +56,7 @@ class TestRPStatechartIntegration:
         finally:
             test_class.delete_from_project()
 
-    def test_get_root_state(self, test_project: RPProject) -> None:
+    def test_get_root_state(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("ScPkg")
         class_name = self._unique("ScCls")
         pkg = self._create_package(test_project, pkg_name)
@@ -68,7 +69,7 @@ class TestRPStatechartIntegration:
         finally:
             test_class.delete_from_project()
 
-    def test_create_graphics_then_close_diagram(self, test_project: RPProject) -> None:
+    def test_create_graphics_then_close_diagram(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("ScPkg")
         class_name = self._unique("ScCls")
         pkg = self._create_package(test_project, pkg_name)

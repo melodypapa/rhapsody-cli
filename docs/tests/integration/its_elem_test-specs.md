@@ -15,8 +15,8 @@
 **Type:** Integration
 **Priority:** High
 **Description:**
-Verifies the integration of the model-construction chain across `RPProject.addPackage`,
-`RPPackage.addClass`, `RPClassifier.addAttribute`, and the `wrap()` factory. Each `addX(name)`
+Verifies the integration of the model-construction chain across `IRPProject.addPackage`,
+`IRPPackage.addClass`, `IRPClassifier.addAttribute`, and the `wrap()` factory. Each `addX(name)`
 call returns a wrapped new element whose `_com` is the raw COM object returned by the underlying
 `addX` COM call, and that element is immediately usable for the next chained call.
 **Pre-conditions:**
@@ -28,11 +28,11 @@ call returns a wrapped new element whose `_com` is the raw COM object returned b
 - The mock COM class's `getMetaClass()` returns `"Class"` and its `addAttribute("Attr")` returns a
   mock COM attribute whose `getMetaClass()` returns `"Attribute"`.
 **Test Steps:**
-1. `project = wrap(mock_com_project)`; assert `isinstance(project, RPProject)`.
-2. `pkg = project.addPackage("Pkg")`; assert `isinstance(pkg, RPPackage)` and
+1. `project = wrap(mock_com_project)`; assert `isinstance(project, IRPProject)`.
+2. `pkg = project.addPackage("Pkg")`; assert `isinstance(pkg, IRPPackage)` and
    `pkg._com is mock_com_package`.
 3. `cls = pkg.addClass("Cls")`; assert `isinstance(cls, RPClass)` and `cls._com is mock_com_class`.
-4. `attr = cls.addAttribute("Attr")`; assert `isinstance(attr, RPAttribute)` and
+4. `attr = cls.addAttribute("Attr")`; assert `isinstance(attr, IRPAttribute)` and
    `attr._com is mock_com_attribute`.
 5. Assert the underlying COM `addPackage`, `addClass`, `addAttribute` were each called exactly
    once with the corresponding name argument.
@@ -48,7 +48,7 @@ arguments.
 
 ---
 
-## ITS_ELEM_00002: Generalization between two RPClassifier instances
+## ITS_ELEM_00002: Generalization between two IRPClassifier instances
 
 **ID:** ITS_ELEM_00002
 **Traces-To:** SWR_ELEM_00003, SWR_ELEM_00004
@@ -56,7 +56,7 @@ arguments.
 **Type:** Integration
 **Priority:** High
 **Description:**
-Verifies that `RPClassifier.addGeneralization` correctly unwraps its `RPClassifier` argument and
+Verifies that `IRPClassifier.addGeneralization` correctly unwraps its `IRPClassifier` argument and
 passes the raw COM object (`base._com`) to the underlying `addGeneralization` COM method. This
 confirms the wrapper-to-wrapper integration pattern: callers pass wrappers, the framework
 delegates COM objects.
@@ -73,7 +73,7 @@ delegates COM objects.
 4. Assert the returned `gen` is wrapped (an `RPModelElement` subclass) and its `_com` is the mock
    returned by the COM call.
 **Expected Result:**
-The wrapper correctly bridges two `RPClassifier` instances: the base wrapper is unwrapped to its
+The wrapper correctly bridges two `IRPClassifier` instances: the base wrapper is unwrapped to its
 `_com` before the COM call; the resulting generalization is wrapped for the caller.
 **Verification Criteria:**
 - `derived_com.addGeneralization.call_args` is `(base_com,)` (raw COM, not wrapper).
@@ -90,10 +90,10 @@ The wrapper correctly bridges two `RPClassifier` instances: the base wrapper is 
 **Type:** Integration
 **Priority:** High
 **Description:**
-Verifies integration between container-returning navigation methods (`RPProject.getPackages`,
-`RPClassifier.getOperations`) and `IRPCollection` auto-wrapping. A project's packages must be
-returned as an `IRPCollection` whose iteration yields `RPPackage` wrappers; navigating further into
-a package's class operations must again yield an `IRPCollection` of `RPOperation` wrappers.
+Verifies integration between container-returning navigation methods (`IRPProject.getPackages`,
+`IRPClassifier.getOperations`) and `IRPCollection` auto-wrapping. A project's packages must be
+returned as an `IRPCollection` whose iteration yields `IRPPackage` wrappers; navigating further into
+a package's class operations must again yield an `IRPCollection` of `IRPOperation` wrappers.
 **Pre-conditions:**
 - A mock COM project whose `getMetaClass() == "Project"` and `getPackages()` returns a mock
   `IRPCollection` containing one mock COM package (`getMetaClass() == "Package"`).
@@ -105,17 +105,17 @@ a package's class operations must again yield an `IRPCollection` of `RPOperation
 **Test Steps:**
 1. `project = wrap(mock_com_project)`.
 2. `pkgs = project.getPackages()`; assert `isinstance(pkgs, IRPCollection)` and `len(pkgs) == 1`.
-3. `pkg = pkgs[1]`; assert `isinstance(pkg, RPPackage)`.
+3. `pkg = pkgs[1]`; assert `isinstance(pkg, IRPPackage)`.
 4. `cls = pkg.getClasses()[1]`; assert `isinstance(cls, RPClass)`.
 5. `ops = cls.getOperations()`; assert `isinstance(ops, IRPCollection)` and `len(ops) == 2`.
-6. Assert every item in `ops` is an `RPOperation`.
+6. Assert every item in `ops` is an `IRPOperation`.
 **Expected Result:**
 Each navigation hop transparently wraps raw COM elements into the correct subclass; collections
 and element wrappers compose without manual intervention.
 **Verification Criteria:**
 - `isinstance` checks at every level pass.
 - `len(pkgs) == 1` and `len(ops) == 2`.
-- Both items in `ops` are `RPOperation` instances.
+- Both items in `ops` are `IRPOperation` instances.
 **Last Changed:** 2026-07-07
 
 ---
@@ -142,7 +142,7 @@ Verifies `RPClass`-specific creation methods integrate correctly with the wrappe
 **Test Steps:**
 1. `child = wrap(child_com)`; `parent = wrap(parent_com)`.
 2. `child.addSuperclass(parent)`; assert `child_com.addSuperclass` was called with `parent_com`.
-3. `ctor = child.addConstructor("void()")`; assert `isinstance(ctor, RPOperation)` (or
+3. `ctor = child.addConstructor("void()")`; assert `isinstance(ctor, IRPOperation)` (or
    `RPModelElement`) and `ctor._com` is the mock returned by `addConstructor`.
 4. `dtor = child.addDestructor()`; assert `dtor._com` is the mock returned by `addDestructor`.
 5. Patch `child_com.getIsAbstract` to return `1`; assert `child.getIsAbstract()` is `True`
@@ -236,17 +236,17 @@ attribute access round-trips correctly through COM.
 
 ---
 
-## ITS_ELEM_00007: RPUseCase extension point add and retrieve round-trip
+## ITS_ELEM_00007: IRPUseCase extension point add and retrieve round-trip
 
 **ID:** ITS_ELEM_00007
 **Traces-To:** SWR_ELEM_00012, SWR_ELEM_00003
-**Title:** RPUseCase.addExtensionPoint then getExtensionPoints round-trips via IRPCollection
+**Title:** IRPUseCase.addExtensionPoint then getExtensionPoints round-trips via IRPCollection
 **Type:** Integration
 **Priority:** Medium
 **Description:**
-Verifies `RPUseCase.addExtensionPoint(entry_point)` and `getExtensionPoints()` integration: the
+Verifies `IRPUseCase.addExtensionPoint(entry_point)` and `getExtensionPoints()` integration: the
 string argument flows to the underlying COM call, and the returned `IRPCollection` of extension
-points auto-wraps its items. Confirms `RPUseCase` inherits `RPClassifier` behavior while adding
+points auto-wraps its items. Confirms `IRPUseCase` inherits `IRPClassifier` behavior while adding
 use-case-specific navigation.
 **Pre-conditions:**
 - A mock COM use case `uc_com` (`getMetaClass() == "UseCase"`) with spies for
@@ -256,7 +256,7 @@ use-case-specific navigation.
 - `getExtensionPoints()` returns a mock `IRPCollection` of 1 such mock element.
 - `rhapsody_cli.models.elements` imported.
 **Test Steps:**
-1. `uc = wrap(uc_com)`; assert `isinstance(uc, RPUseCase)` and `isinstance(uc, RPClassifier)`.
+1. `uc = wrap(uc_com)`; assert `isinstance(uc, IRPUseCase)` and `isinstance(uc, IRPClassifier)`.
 2. `ep = uc.addExtensionPoint("main")`; assert `uc_com.addExtensionPoint` was called with
    `"main"` and `ep._com` is the mock returned.
 3. `eps = uc.getExtensionPoints()`; assert `isinstance(eps, IRPCollection)` and `len(eps) == 1`.
@@ -265,7 +265,7 @@ use-case-specific navigation.
 `addExtensionPoint` round-trips the string and wraps the result; `getExtensionPoints` returns an
 `IRPCollection` whose single item is the previously added extension point.
 **Verification Criteria:**
-- `isinstance(uc, RPUseCase)` and `isinstance(uc, RPClassifier)` (inheritance).
+- `isinstance(uc, IRPUseCase)` and `isinstance(uc, IRPClassifier)` (inheritance).
 - `uc_com.addExtensionPoint.call_args == (("main",),)`.
 - `len(eps) == 1` and `eps[1]._com is mock_extension_point`.
 **Last Changed:** 2026-07-07

@@ -2,8 +2,9 @@
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
-from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.classifiers.model_usecase import RPExtensionPoint
@@ -26,7 +27,7 @@ class RPGeneralization(IRPModelElement):
     # [inherited] irp_model_element methods (covered by rp_model_element checklists)
     # No deprecated IRPGeneralization methods.
 
-    def get_base_class(self) -> RPClassifier:
+    def get_base_class(self) -> IRPClassifier:
         """Returns the base class (parent) of the generalization.
 
         Returns:
@@ -35,9 +36,9 @@ class RPGeneralization(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPGeneralization::getBaseClass()
         """
-        return cast(RPClassifier, AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getBaseClass", "baseClass")))
+        return cast(IRPClassifier, AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getBaseClass", "baseClass")))
 
-    def get_derived_class(self) -> RPClassifier:
+    def get_derived_class(self) -> IRPClassifier:
         """Returns the derived class (child) of the generalization.
 
         Returns:
@@ -46,7 +47,7 @@ class RPGeneralization(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPGeneralization::getDerivedClass()
         """
-        return cast(RPClassifier, AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getDerivedClass", "derivedClass")))
+        return cast(IRPClassifier, AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getDerivedClass", "derivedClass")))
 
     def get_extension_point(self) -> "RPExtensionPoint":
         """Returns the extension point for this generalization (for use case extension).
@@ -81,7 +82,7 @@ class RPGeneralization(IRPModelElement):
         """
         return str(AbstractRPModelElement._get_method_or_property(self._com, "getVisibility", "visibility"))
 
-    def set_base_class(self, base_class: RPClassifier) -> None:
+    def set_base_class(self, base_class: IRPClassifier) -> None:
         """Sets the base class (parent) of the generalization.
 
         Args:
@@ -92,7 +93,7 @@ class RPGeneralization(IRPModelElement):
         """
         AbstractRPModelElement.call_com(lambda: self._com.setBaseClass(base_class._com))
 
-    def set_derived_class(self, derived_class: RPClassifier) -> None:
+    def set_derived_class(self, derived_class: IRPClassifier) -> None:
         """Sets the derived class (child) of the generalization.
 
         Args:

@@ -52,7 +52,7 @@ The approved spec (`docs/superpowers/specs/2026-07-19-yaml-import-export-design.
 - **`get_classifier_name` implementation**: `None`-safe wrapper around `classifier.get_name()` with `try/except` fallback to `None`.
 - **`apply_tags` uses `set_property_value`**: This is idempotent (creates property if missing, updates if present) and matches existing `package_action.py` convention. Stereotype-style tags are also settable via this API.
 - **`_export_tags` uses `get_all_tags()`**: Enumerates stereotype tags. Each tag's `get_name()` + `get_value()` is read with `try/except` per tag (skips malformed tags). v1 limitation: arbitrary properties set via `set_property_value` that aren't stereotype tags may not round-trip on export (documented in §10 of spec).
-- **`_collect_children` for Package**: Uses `hasattr` guards for `get_global_functions`/`get_global_variables`/`get_global_objects` (these may not exist on all RPPackage variants). Falls back to `get_nested_elements()` only.
+- **`_collect_children` for Package**: Uses `hasattr` guards for `get_global_functions`/`get_global_variables`/`get_global_objects` (these may not exist on all IRPPackage variants). Falls back to `get_nested_elements()` only.
 - **`make_com_error` is Windows-only** (requires `pywintypes`): Error-path tests that need `make_com_error` are fine because CI runs the full gate on `windows-latest`. Non-Windows devs skip those specific tests.
 
 ## File Structure
@@ -503,7 +503,7 @@ SWR_XCH_005."
 - Test: `tests/unit/exchange/test_core.py`
 
 **Interfaces:**
-- Consumes: `RhapsodyApplication` (for `connect` classmethod), `RPModelElement`, `IRPCollection` from `rhapsody_cli.models.core`, `RPProject` from `rhapsody_cli.models.elements.containment`
+- Consumes: `RhapsodyApplication` (for `connect` classmethod), `RPModelElement`, `IRPCollection` from `rhapsody_cli.models.core`, `IRPProject` from `rhapsody_cli.models.elements.containment`
 - Produces: `RhapsodyModelHelper` class with:
   - `__init__(self, app: Optional[RhapsodyApplication] = None) -> None`
   - `find_or_create_package(parent, name) -> RPModelElement`
@@ -997,7 +997,7 @@ from rhapsody_cli.models.core import RPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.application import RhapsodyApplication
-    from rhapsody_cli.models.elements.containment import RPProject
+    from rhapsody_cli.models.elements.containment import IRPProject
 
 logger = logging.getLogger(__name__)
 
@@ -1011,7 +1011,7 @@ class RhapsodyModelHelper:
 
     Attributes:
         app: RhapsodyApplication instance (lazily connected if not provided).
-        project: Active RPProject, or None until set by caller.
+        project: Active IRPProject, or None until set by caller.
     """
 
     def __init__(self, app: Optional["RhapsodyApplication"] = None) -> None:
@@ -1025,7 +1025,7 @@ class RhapsodyModelHelper:
 
             app = RhapsodyApplication.connect(attach_only=True)
         self.app = app
-        self.project: Optional["RPProject"] = None
+        self.project: Optional["IRPProject"] = None
 
     # ------------------------------------------------------------------
     # Element find/create (idempotent)

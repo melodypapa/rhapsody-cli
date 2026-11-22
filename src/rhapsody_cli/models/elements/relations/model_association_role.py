@@ -7,7 +7,7 @@ from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.relations.model_instance import RPInstance
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 
 
 class RPAssociationRole(RPInstance):
@@ -42,7 +42,7 @@ class RPAssociationRole(RPInstance):
         """
         return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getFormalRelations", "formalRelations"))
 
-    def get_role_type(self) -> "RPClassifier":
+    def get_role_type(self) -> "IRPClassifier":
         """Returns the role type (classifier) for this association role.
 
         Returns:
@@ -51,7 +51,7 @@ class RPAssociationRole(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPAssociationRole::getRoleType()
         """
-        return cast("RPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getRoleType", "roleType")))
+        return cast("IRPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getRoleType", "roleType")))
 
 
 AbstractRPModelElement.register_wrapper("AssociationRole", RPAssociationRole)

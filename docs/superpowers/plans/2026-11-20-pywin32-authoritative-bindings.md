@@ -917,7 +917,7 @@ int(cls.get_is_composite())                           →  int(cls.is_composite)
 int(cls.get_is_reactive())                            →  int(cls.is_reactive)
 ```
 
-Do not touch `operation_action.py` — `RPOperation` keeps its methods.
+Do not touch `operation_action.py` — `IRPOperation` keeps its methods.
 
 - [ ] **Step 2: Migrate RPClass integration tests**
 

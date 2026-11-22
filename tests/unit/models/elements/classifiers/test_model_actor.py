@@ -4,8 +4,10 @@ from typing import cast
 
 import pytest
 
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
-from rhapsody_cli.models.elements.classifiers import RPActor, RPClassifier
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.elements.classifiers import RPActor
 from rhapsody_cli.models.elements.interactions import RPEvent
 from tests.unit.models.fakes import make_fake_element
 
@@ -14,7 +16,7 @@ def test_actor_is_a_classifier() -> None:
     fake = make_fake_element("Actor", properties={"name": "Driver"})
     actor = RPActor(fake)
 
-    assert isinstance(actor, RPClassifier)
+    assert isinstance(actor, IRPClassifier)
     assert actor.get_name() == "Driver"
 
 

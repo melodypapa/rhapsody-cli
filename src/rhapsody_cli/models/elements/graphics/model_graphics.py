@@ -4,13 +4,15 @@ from typing import TYPE_CHECKING, Optional, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.interactions.model_interactions import RPMessage
 from rhapsody_cli.models.elements.statemachine.model_statemachine import RPStateVertex
 
 if TYPE_CHECKING:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port import IRPPort
     from rhapsody_cli.models.elements.activity.model_activity import RPFlow, RPSwimlane
-    from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
     from rhapsody_cli.models.elements.common.model_other_model import (
         RPClassifierRole,
         RPSysMLPort,
@@ -22,7 +24,6 @@ if TYPE_CHECKING:
         RPTransition,
     )
     from rhapsody_cli.models.elements.relations.model_instance import RPInstance
-    from rhapsody_cli.models.elements.relations.model_port import RPPort
     from rhapsody_cli.models.elements.relations.model_relation import RPRelation
     from rhapsody_cli.models.elements.statemachine.model_statemachine import RPState
 
@@ -860,7 +861,7 @@ class RPLink(IRPUnit):
         """
         return AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getFromElement()))
 
-    def get_from_port(self) -> "RPPort":
+    def get_from_port(self) -> "IRPPort":
         """Returns the source port of this link.
 
         Returns:
@@ -872,7 +873,7 @@ class RPLink(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPLink::getFromPort()
         """
-        return cast("RPPort", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getFromPort())))
+        return cast("IRPPort", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getFromPort())))
 
     def get_from_sys_ml_port(self) -> "RPSysMLPort":
         """Returns the source SysML port of this link.
@@ -941,7 +942,7 @@ class RPLink(IRPUnit):
         """
         return AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getToElement()))
 
-    def get_to_port(self) -> "RPPort":
+    def get_to_port(self) -> "IRPPort":
         """Returns the port through which a link reaches a target object.
 
         Returns:
@@ -950,7 +951,7 @@ class RPLink(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPLink::getToPort()
         """
-        return cast("RPPort", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getToPort())))
+        return cast("IRPPort", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getToPort())))
 
     def get_to_sys_ml_port(self) -> "RPSysMLPort":
         """Returns the target SysML port of this link.
@@ -2819,7 +2820,7 @@ class RPPin(RPConnector):
         """
         return str(self._get_method_or_property(self._com, "getPinDirection", "pinDirection"))
 
-    def get_pin_type(self) -> "RPClassifier":
+    def get_pin_type(self) -> "IRPClassifier":
         """Returns the type of the value held by the pin/parameter.
 
         Returns:
@@ -2828,7 +2829,7 @@ class RPPin(RPConnector):
         Reference:
             com.telelogic.rhapsody.core.IRPPin::getPinType()
         """
-        return cast("RPClassifier", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getPinType())))
+        return cast("IRPClassifier", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getPinType())))
 
     def set_is_parameter(self, is_parameter: int) -> None:
         """Specifies whether the element should be an activity parameter or an action pin.
@@ -2855,7 +2856,7 @@ class RPPin(RPConnector):
         """
         self._set_method_or_property(self._com, "setPinDirection", "pinDirection", pin_direction)
 
-    def set_pin_type(self, pin_type: "RPClassifier") -> None:
+    def set_pin_type(self, pin_type: "IRPClassifier") -> None:
         """Specifies the type to use for the value held by the pin/parameter.
 
         Args:

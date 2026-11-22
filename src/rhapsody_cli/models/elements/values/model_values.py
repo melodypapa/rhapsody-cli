@@ -3,10 +3,11 @@
 from typing import TYPE_CHECKING, Optional, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.elements.classifiers.model_classifier import RPClassifier
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 
 
 class RPInstanceSlot(IRPModelElement):
@@ -130,7 +131,7 @@ class RPInstanceSpecification(IRPModelElement):
         """
         return cast("RPInstanceSlot", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addInstanceSlot(name, slot_property._com))))
 
-    def get_classifier(self) -> "RPClassifier":
+    def get_classifier(self) -> "IRPClassifier":
         """Returns the classifier of this instance specification.
 
         Returns:
@@ -142,7 +143,7 @@ class RPInstanceSpecification(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPInstanceSpecification::getClassifier()
         """
-        return cast("RPClassifier", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getClassifier())))
+        return cast("IRPClassifier", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getClassifier())))
 
     def get_instance_slots(self) -> "IRPCollection":
         """Returns the instance slots of this instance specification.
@@ -187,7 +188,7 @@ class RPInstanceSpecification(IRPModelElement):
         """
         self.call_com(lambda: self._com.populateSlots())
 
-    def set_classifier(self, classifier: "RPClassifier") -> None:
+    def set_classifier(self, classifier: "IRPClassifier") -> None:
         """Sets the classifier of this instance specification.
 
         Args:

@@ -2,7 +2,8 @@ from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.application import RhapsodyApplication
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.diagrams.model_diagram_types import RPSequenceDiagram
 from rhapsody_cli.models.elements.graphics.model_graphics import RPTableLayout
 from rhapsody_cli.models.support.model_codegen import (
@@ -21,8 +22,8 @@ from rhapsody_cli.models.support.model_codegen import (
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 if TYPE_CHECKING:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
     from rhapsody_cli.models.elements.classifiers.model_stereotype import RPStereotype
-    from rhapsody_cli.models.elements.containment.model_package import RPPackage
     from rhapsody_cli.models.elements.diagrams.model_diagram_types import RPSequenceDiagram
     from rhapsody_cli.models.elements.diagrams.model_diagrams import RPDiagram
     from rhapsody_cli.models.elements.graphics.model_graphics import RPMatrixView, RPTableView
@@ -509,7 +510,7 @@ class TestRPSearchQuery:
         fake.saveAsQuery.return_value = inner
         obj = RPSearchQuery(fake)
         wrapped = AbstractRPModelElement.wrap(target)
-        result = obj.save_as_query(cast("RPPackage", wrapped))
+        result = obj.save_as_query(cast("IRPPackage", wrapped))
         fake.saveAsQuery.assert_called_once_with(target)
         assert isinstance(result, RPTableLayout)
 

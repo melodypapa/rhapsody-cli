@@ -55,7 +55,7 @@ not re-derive scope or decisions already recorded in the row's Notes.
   the only cycle risk was a module-level import of a moved class back into `models/core.py`.
   With `from __future__ import annotations` already in `core.py`, annotations never evaluate at
   runtime (quoted types are therefore unnecessary); a runtime `cast()` target imports locally
-  inside the method, the pattern already used at `core.py:314` for `RPAssociationClass`. A
+  inside the method, the pattern already used at `core.py:314` for `IRPAssociationClass`. A
   moved class imports its bases from `core.py` one-way, so each base row does the full §2 move
   in its own run and `verify_sync.py` can go green.
 - **Python-only members are removed (SKILL §3/§4, added 2026-11-21):** a wrapper member with

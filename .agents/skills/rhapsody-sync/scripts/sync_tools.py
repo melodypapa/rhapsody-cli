@@ -11,7 +11,10 @@ _WRAPPER_PATTERN = re.compile(r"^- Target wrapper: `([^`]+)` \(`([^`]+)`\)$", re
 _JAVA_PACKAGE_PATTERN = re.compile(r"^- Java package: `([A-Za-z0-9_.]+)`$", re.MULTILINE)
 _MEMBER_PATTERN = re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\s*\(")
 _RST_INTERFACE_ANCHOR = ".. _rhapsody-java-interface-"
-_REPORT_SECTIONS = {"Comparison details", "Expected Binding Differences", "Wrapper Backlog"}
+# Only verified deviations/backing differences require an RST row. "Wrapper
+# Backlog" lists Java-only members that are intentionally unsupported (e.g. the
+# 139 IRPApplication members); enumerating those in the deviation table is noise.
+_REPORT_SECTIONS = {"Comparison details", "Expected Binding Differences"}
 
 
 def split_interface_name(interface_name: str) -> Tuple[str, Optional[str]]:
@@ -102,7 +105,12 @@ def parse_report_java_package(report_text: str) -> Optional[str]:
 
 
 def extract_deviation_members(report_text: str) -> Set[str]:
-    """Collect API names from the validator's comparison, binding, and backlog tables."""
+    """Collect API names from the validator's comparison and binding-difference tables.
+
+    The "Wrapper Backlog" table is intentionally excluded: it lists JavaDoc members
+    that have no Python wrapper (informational, e.g. IRPApplication's large Java-only
+    surface) rather than deviations the RST page must enumerate.
+    """
     members: Set[str] = set()
     active_section: Optional[str] = None
     for line in report_text.splitlines():
@@ -126,6 +134,18 @@ def _get_rst_interface_section(rst_text: str, interface_name: str) -> Optional[s
         return None
     next_anchor = rst_text.find(_RST_INTERFACE_ANCHOR, start + len(anchor))
     return rst_text[start:] if next_anchor < 0 else rst_text[start:next_anchor]
+
+
+def _java_interface_snake(simple_name: str) -> str:
+    """Convert a Java interface name to the project's snake_case module stem.
+
+    ``IRPApplication`` -> ``irp_application``; ``IRPModelElement`` ->
+    ``irp_model_element``. Used for artifacts named after the Java interface rather
+    than the Python wrapper module (which differs for application-layer wrappers).
+    """
+    name = re.sub(r"([A-Z]+)([A-Z][a-z])", r"\1_\2", simple_name)
+    name = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", name)
+    return name.lower()
 
 
 def _canonical_import(root: Path, source_path: str) -> Tuple[Path, str]:
@@ -171,34 +191,57 @@ def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) ->
     except ValueError as exc:
         return [str(exc)]
     package_dir = Path(*java_package.split("."))
-    expected_package_dir = root / "src" / "rhapsody_cli" / "models" / package_dir
+    source_root = root / "src" / "rhapsody_cli"
+    try:
+        rel_parent = absolute_wrapper.parent.relative_to(source_root)
+    except ValueError:
+        rel_parent = Path()  # handled by the mismatch check below
+    is_model_wrapper = bool(rel_parent.parts) and rel_parent.parts[0] == "models"
+    if is_model_wrapper:
+        # Model wrappers must live in the canonical Java-package directory.
+        expected_package_dir = source_root / "models" / package_dir
+    else:
+        # Application-layer wrappers (e.g. RhapsodyApplication) stay at the package
+        # root: §2's canonical move is N/A for the application layer.
+        expected_package_dir = source_root
     if absolute_wrapper.parent.resolve() != expected_package_dir.resolve():
         issues.append(f"Wrapper package mismatch: expected {expected_package_dir}, found {absolute_wrapper.parent}")
     if not absolute_wrapper.is_file():
         issues.append(f"Wrapper source does not exist: {absolute_wrapper}")
 
     class_stem = absolute_wrapper.stem
+    java_snake = _java_interface_snake(simple_name)
+    # Artifacts may be named after either the wrapper module or the Java interface;
+    # these differ for application-layer wrappers (application.py / irp_application).
+    candidate_stems = [class_stem] if class_stem == java_snake else [class_stem, java_snake]
+
+    def first_existing(directory: Path, filename_template: str) -> Optional[Path]:
+        for stem in candidate_stems:
+            candidate = directory / filename_template.format(stem=stem)
+            if candidate.is_file():
+                return candidate
+        return None
 
     # Unit and integration tests mirror the wrapper's package and must exercise the class.
-    models_root = root / "src" / "rhapsody_cli" / "models"
-    rel_pkg = absolute_wrapper.parent.relative_to(models_root)
+    model_segment = Path("models") / Path(*rel_parent.parts[1:]) if is_model_wrapper else Path()
     for label, test_base in (("Unit", "unit"), ("Integration", "integration")):
-        test_path = root / "tests" / test_base / "models" / rel_pkg / f"test_{class_stem}.py"
-        if not test_path.is_file():
-            issues.append(f"{label} test file not found for {simple_name}: {test_path}")
+        test_dir = root / "tests" / test_base / model_segment
+        test_path = first_existing(test_dir, "test_{stem}.py")
+        if test_path is None:
+            issues.append(f"{label} test file not found for {simple_name}: {test_dir / f'test_{class_stem}.py'}")
         elif wrapper_class not in test_path.read_text(encoding="utf-8"):
             issues.append(f"{label} test file does not exercise {wrapper_class}: {test_path}")
-    requirements_path = root / "docs" / "requirements" / package_dir / f"{class_stem}.md"
-    if not requirements_path.is_file():
-        issues.append(f"Class requirement document not found: {requirements_path}")
+    requirements_path = first_existing(root / "docs" / "requirements" / package_dir, "{stem}.md")
+    if requirements_path is None:
+        issues.append(f"Class requirement document not found: {root / 'docs' / 'requirements' / package_dir / f'{class_stem}.md'}")
     else:
         requirement_text = requirements_path.read_text(encoding="utf-8")
         if simple_name not in requirement_text or wrapper_class not in requirement_text:
             issues.append(f"Requirement document does not identify both {simple_name} and {wrapper_class}")
 
-    rst_path = root / "docs" / "api" / package_dir / f"{class_stem}.rst"
-    if not rst_path.is_file():
-        issues.append(f"RST API document not found: {rst_path}")
+    rst_path = first_existing(root / "docs" / "api" / package_dir, "{stem}.rst")
+    if rst_path is None:
+        issues.append(f"RST API document not found: {root / 'docs' / 'api' / package_dir / f'{class_stem}.rst'}")
         return issues
     rst_section = _get_rst_interface_section(rst_path.read_text(encoding="utf-8"), simple_name)
     if rst_section is None:

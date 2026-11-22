@@ -166,7 +166,7 @@ Pass if `ctx.app is sentinel_a`, `attach.call_count == 1`, and `ctx2.app is sent
 **Description:**
 Verifies that `open_project(path)` calls `connect()` when `app is None`, then calls `app.openProject(path)`, stores the result in `self.project`, and returns it.
 **Pre-conditions:**
-- A fake `RhapsodyApplication` whose `openProject` returns a fake `RPProject`.
+- A fake `RhapsodyApplication` whose `openProject` returns a fake `IRPProject`.
 - `RhapsodyApplication.attach`/`launch` patched to return that fake app.
 - A fresh `RhapsodyContext`.
 **Test Steps:**
@@ -1012,4 +1012,4 @@ All three groups are `click.Group` subclasses with the right names and the right
 **Verification Criteria:**
 Pass if all type/name/subcommand assertions hold.
 **Last Changed:** 2026-07-07
-
+

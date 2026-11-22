@@ -2,7 +2,7 @@
 
 ## Summary
 - Java package: `com.telelogic.rhapsody.core`
-- Target wrapper: `RPProject` (`src/rhapsody_cli/models/elements/containment/model_project.py`)
+- Target wrapper: `IRPProject` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`)
 - Members: Python `74`, Java `70`, pywin32 `73`
 - Deviations: `14`
 - Deviations by status:
@@ -111,7 +111,7 @@
 ## AI Fix Guidance
 
 ### Finding 1: JAVA_DOC_MISSING
-- **Target:** `RPProject` in `src/rhapsody_cli/models/elements/containment/model_project.py`
+- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
 - **Current Python wrapper/COM call:** add_actor() -> addActor
 - **Expected Python method(s):** —
 - **Java signature(s):** —
@@ -120,7 +120,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 2: JAVA_DOC_MISSING
-- **Target:** `RPProject` in `src/rhapsody_cli/models/elements/containment/model_project.py`
+- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
 - **Current Python wrapper/COM call:** add_class() -> addClass
 - **Expected Python method(s):** —
 - **Java signature(s):** —
@@ -129,7 +129,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 3: JAVA_DOC_MISSING
-- **Target:** `RPProject` in `src/rhapsody_cli/models/elements/containment/model_project.py`
+- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
 - **Current Python wrapper/COM call:** add_node() -> addNode
 - **Expected Python method(s):** —
 - **Java signature(s):** —
@@ -138,7 +138,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 4: JAVA_DOC_MISSING
-- **Target:** `RPProject` in `src/rhapsody_cli/models/elements/containment/model_project.py`
+- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
 - **Current Python wrapper/COM call:** delete_node() -> deleteNode
 - **Expected Python method(s):** —
 - **Java signature(s):** —
@@ -147,7 +147,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 5: PYWIN32_MEMBER_MISSING
-- **Target:** `RPProject` in `src/rhapsody_cli/models/elements/containment/model_project.py`
+- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
 - **Current Python wrapper/COM call:** enable_rhapsody_model_manager() -> enableRhapsodyModelManager
 - **Expected Python method(s):** `enable_rhapsody_model_manager`
 - **Java signature(s):** `IRPProject.enableRhapsodyModelManager()`
@@ -156,7 +156,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 6: JAVA_DOC_MISSING
-- **Target:** `RPProject` in `src/rhapsody_cli/models/elements/containment/model_project.py`
+- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
 - **Current Python wrapper/COM call:** find_node() -> findNode
 - **Expected Python method(s):** —
 - **Java signature(s):** —
@@ -165,7 +165,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 7: COM_MEMBER_NOT_EXPOSED
-- **Target:** `RPProject` in `src/rhapsody_cli/models/elements/containment/model_project.py`
+- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
 - **Current Python wrapper/COM call:** gateway_export_to_xml() -> gatewayExportToXML
 - **Expected Python method(s):** `gateway_export_to_xml`
 - **Java signature(s):** `IRPProject.gatewayExportToXML(java.lang.String, java.lang.String)`
@@ -174,7 +174,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 8: COM_MEMBER_NOT_EXPOSED
-- **Target:** `RPProject` in `src/rhapsody_cli/models/elements/containment/model_project.py`
+- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
 - **Current Python wrapper/COM call:** gateway_export_to_xml2() -> gatewayExportToXML2
 - **Expected Python method(s):** `gateway_export_to_xml2`
 - **Java signature(s):** `IRPProject.gatewayExportToXML2(java.lang.String, java.lang.String, com.telelogic.rhapsody.core.IRPProject)`
@@ -183,7 +183,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 9: COM_MEMBER_NOT_EXPOSED
-- **Target:** `RPProject` in `src/rhapsody_cli/models/elements/containment/model_project.py`
+- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
 - **Current Python wrapper/COM call:** generate_report() -> generateReport
 - **Expected Python method(s):** `generate_report`
 - **Java signature(s):** `IRPProject.generateReport(java.lang.String, java.lang.String, java.lang.String, java.lang.String, int, int)`
@@ -192,7 +192,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 10: PYWIN32_MEMBER_MISSING
-- **Target:** `RPProject` in `src/rhapsody_cli/models/elements/containment/model_project.py`
+- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
 - **Current Python wrapper/COM call:** set_global_configuration() -> globalConfiguration; set_global_configuration() -> setGlobalConfiguration
 - **Expected Python method(s):** `set_global_configuration`
 - **Java signature(s):** `IRPProject.setGlobalConfiguration(java.lang.String, java.lang.String)`
@@ -201,7 +201,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 11: PYWIN32_MEMBER_MISSING
-- **Target:** `RPProject` in `src/rhapsody_cli/models/elements/containment/model_project.py`
+- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
 - **Current Python wrapper/COM call:** migrate_design_manager_links() -> migrateDesignManagerLinks
 - **Expected Python method(s):** `migrate_design_manager_links`
 - **Java signature(s):** `IRPProject.migrateDesignManagerLinks()`
@@ -210,7 +210,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 12: JAVA_DOC_MISSING
-- **Target:** `RPProject` in `src/rhapsody_cli/models/elements/containment/model_project.py`
+- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
 - **Current Python wrapper/COM call:** get_nodes() -> nodes
 - **Expected Python method(s):** —
 - **Java signature(s):** —
@@ -219,7 +219,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 13: JAVA_DOC_MISSING
-- **Target:** `RPProject` in `src/rhapsody_cli/models/elements/containment/model_project.py`
+- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
 - **Current Python wrapper/COM call:** get_packages() -> packages
 - **Expected Python method(s):** —
 - **Java signature(s):** —
@@ -228,7 +228,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 14: COM_MEMBER_NOT_EXPOSED
-- **Target:** `RPProject` in `src/rhapsody_cli/models/elements/containment/model_project.py`
+- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
 - **Current Python wrapper/COM call:** set_use_unique_stereotype_and_ref_cache() -> setUseUniqueStereotypeAndRefCache; set_use_unique_stereotype_and_ref_cache() -> useUniqueStereotypeAndRefCache
 - **Expected Python method(s):** `set_use_unique_stereotype_and_ref_cache`
 - **Java signature(s):** `IRPProject.setUseUniqueStereotypeAndRefCache(int)`

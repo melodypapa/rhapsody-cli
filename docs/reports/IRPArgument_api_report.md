@@ -2,7 +2,7 @@
 
 ## Summary
 - Java package: `com.telelogic.rhapsody.core`
-- Target wrapper: `RPArgument` (`src/rhapsody_cli/models/elements/variables/model_variables.py`)
+- Target wrapper: `IRPArgument` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_argument.py`)
 - Members: Python `2`, Java `2`, pywin32 `1`
 - Deviations: `0`
 - Deviations by status:

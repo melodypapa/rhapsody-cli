@@ -12,7 +12,7 @@
 
 - Windows-only runtime (COM automation requires Windows + a running Rhapsody instance)
 - All test classes use `@pytest.mark.integration`
-- All tests consume the `test_project: RPProject` fixture (session-scoped)
+- All tests consume the `test_project: IRPProject` fixture (session-scoped)
 - Use `_unique(prefix)` with `uuid.uuid4().hex[:8]` for unique element names
 - Always use `try/finally` for cleanup — never rely solely on fixture teardown
 - Assert both `isinstance()` return types and read-back values
@@ -39,7 +39,7 @@ import uuid
 import pytest
 
 from rhapsody_cli.models.core import IRPCollection, RPModelElement
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 
 
 @pytest.mark.integration
@@ -51,13 +51,13 @@ class TestRPModelElementDependenciesIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
         assert pkg is not None
-        assert isinstance(pkg, RPPackage)
+        assert isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_add_dependency_to_and_get_dependencies(self, test_project: RPProject) -> None:
+    def test_add_dependency_to_and_get_dependencies(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("DepPkg"))
         try:
             source = pkg.add_class(self._unique("Source"))
@@ -126,7 +126,7 @@ class TestRPModelElementStereotypesTagsIntegration:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_add_stereotype_and_get_stereotypes_roundtrip(self, test_project: RPProject) -> None:
+    def test_add_stereotype_and_get_stereotypes_roundtrip(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("StereoPkg"))
         try:
             cls = pkg.add_class(self._unique("StereoCls"))
@@ -194,7 +194,7 @@ class TestRPModelElementDescriptionDisplayNameIntegration:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_set_and_get_description_roundtrip(self, test_project: RPProject) -> None:
+    def test_set_and_get_description_roundtrip(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("DescPkg"))
         try:
             cls = pkg.add_class(self._unique("DescCls"))
@@ -258,7 +258,7 @@ class TestRPModelElementPropertiesIntegration:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_set_and_get_property_value_roundtrip(self, test_project: RPProject) -> None:
+    def test_set_and_get_property_value_roundtrip(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("PropPkg"))
         try:
             cls = pkg.add_class(self._unique("PropCls"))
@@ -325,7 +325,7 @@ class TestRPModelElementNavigationIntegration:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_find_nested_element(self, test_project: RPProject) -> None:
+    def test_find_nested_element(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("NavPkg")
         class_name = self._unique("NavCls")
         pkg = test_project.add_package(pkg_name)
@@ -393,7 +393,7 @@ class TestRPModelElementCloningTemplatesIntegration:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_clone_creates_independent_copy(self, test_project: RPProject) -> None:
+    def test_clone_creates_independent_copy(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("ClonePkg"))
         try:
             original = pkg.add_class(self._unique("Original"))
@@ -456,7 +456,7 @@ class TestRPModelElementRedefinesConstraintsIntegration:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_add_and_remove_redefines_roundtrip(self, test_project: RPProject) -> None:
+    def test_add_and_remove_redefines_roundtrip(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("RedefPkg"))
         try:
             base_op = pkg.add_class(self._unique("BaseCls")).add_operation(self._unique("op"))
@@ -520,7 +520,7 @@ class TestRPModelElementOslcRemoteIntegration:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_create_oslc_link_not_implemented(self, test_project: RPProject) -> None:
+    def test_create_oslc_link_not_implemented(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("OslcPkg"))
         try:
             cls = pkg.add_class(self._unique("OslcCls"))
@@ -579,7 +579,7 @@ class TestRPModelElementMetadataIntegration:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_get_binary_id_matches_guid(self, test_project: RPProject) -> None:
+    def test_get_binary_id_matches_guid(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("MetaPkg"))
         try:
             cls = pkg.add_class(self._unique("MetaCls"))
@@ -649,7 +649,7 @@ class TestRPModelElementDiagnosticsUiIntegration:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_error_message_empty_after_success(self, test_project: RPProject) -> None:
+    def test_error_message_empty_after_success(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("ErrPkg"))
         try:
             cls = pkg.add_class(self._unique("ErrCls"))
@@ -708,7 +708,7 @@ git commit -m "test: add integration tests for RPModelElement diagnostics/annota
 import pytest
 
 from rhapsody_cli.models.core import RPUnit
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
+from rhapsody_cli.models.elements.containment import IRPPackage, IRPProject
 
 
 @pytest.mark.integration
@@ -719,7 +719,7 @@ class TestRPUnitPersistenceIntegration:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_set_and_get_filename_roundtrip(self, test_project: RPProject) -> None:
+    def test_set_and_get_filename_roundtrip(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("UnitPkg")
         pkg = test_project.add_package(pkg_name)
         try:
@@ -783,7 +783,7 @@ class TestRPUnitCmStateIntegration:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_set_and_get_read_only_roundtrip(self, test_project: RPProject) -> None:
+    def test_set_and_get_read_only_roundtrip(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("ReadOnlyPkg"))
         try:
             assert isinstance(pkg, RPUnit)
@@ -845,7 +845,7 @@ class TestRPUnitCrossProjectIntegration:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_get_nested_save_units_count_matches_collection(self, test_project: RPProject) -> None:
+    def test_get_nested_save_units_count_matches_collection(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("NestPkg"))
         try:
             assert isinstance(pkg, RPUnit)
@@ -862,7 +862,7 @@ class TestRPUnitCrossProjectIntegration:
 ```
 
 For the remaining methods, follow the same pattern:
-- `copy_to_another_project` requires a second open project as the target — if only one project is available via the session fixture, either create a second `RPProject` inline via `rhapsody_app.create_new_project(...)` in a temp directory (cleaning it up in `finally`) or mark `xfail(reason="requires a second live project", strict=False)`.
+- `copy_to_another_project` requires a second open project as the target — if only one project is available via the session fixture, either create a second `IRPProject` inline via `rhapsody_app.create_new_project(...)` in a temp directory (cleaning it up in `finally`) or mark `xfail(reason="requires a second live project", strict=False)`.
 - `move_to_another_project_leave_a_reference`/`reference_to_another_project` follow the same two-project setup as `copy_to_another_project`; assert `is_reference_unit()` returns `1` on the resulting reference unit where applicable.
 - `get_structure_diagrams` should assert an empty `IRPCollection` for a class with no structure diagrams (or non-empty after adding one via the diagram-adding API).
 - `get_add_to_model_mode` should assert the returned `int` matches `AddToModelMode.AS_UNIT_WITH_COPY` (or the appropriate constant) for a locally-created unit.
@@ -913,7 +913,7 @@ class TestIRPCollectionAddItemIntegration:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_add_item_appends_element(self, test_project: RPProject) -> None:
+    def test_add_item_appends_element(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("CollPkg"))
         try:
             cls_a = pkg.add_class(self._unique("ClsA"))
@@ -1070,7 +1070,7 @@ class TestIRPCollectionMutationIntegration:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
-    def test_empty_clears_collection(self, test_project: RPProject) -> None:
+    def test_empty_clears_collection(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("MutPkg"))
         try:
             pkg.add_class(self._unique("MutCls"))

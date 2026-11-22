@@ -2,7 +2,7 @@
 
 ## Summary
 - Java package: `com.telelogic.rhapsody.core`
-- Target wrapper: `RPPort` (`src/rhapsody_cli/models/elements/relations/model_port.py`)
+- Target wrapper: `IRPPort` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_port.py`)
 - Members: Python `14`, Java `14`, pywin32 `9`
 - Deviations: `1`
 - Deviations by status:
@@ -47,7 +47,7 @@
 ## AI Fix Guidance
 
 ### Finding 1: PYWIN32_MEMBER_MISSING
-- **Target:** `RPPort` in `src/rhapsody_cli/models/elements/relations/model_port.py`
+- **Target:** `IRPPort` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_port.py`
 - **Current Python wrapper/COM call:** get_contract() -> contract; get_contract() -> getContract; set_contract() -> contract; set_contract() -> setContract
 - **Expected Python method(s):** `get_contract`, `set_contract`
 - **Java signature(s):** `IRPPort.getContract()`, `IRPPort.setContract(com.telelogic.rhapsody.core.IRPClass)`

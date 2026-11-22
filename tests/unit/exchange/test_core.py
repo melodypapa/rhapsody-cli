@@ -28,10 +28,10 @@ from typing import TYPE_CHECKING, Optional, cast
 from unittest.mock import MagicMock
 
 from rhapsody_cli.exchange.core import RhapsodyModelHelper
-from rhapsody_cli.models.core import IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.elements.containment import RPProject
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 
 
 def _make_helper(project: Optional[IRPModelElement] = None) -> RhapsodyModelHelper:
@@ -42,7 +42,7 @@ def _make_helper(project: Optional[IRPModelElement] = None) -> RhapsodyModelHelp
     app = MagicMock()
     helper = RhapsodyModelHelper.__new__(RhapsodyModelHelper)
     helper.app = app
-    helper.project = cast(Optional["RPProject"], project)
+    helper.project = cast(Optional["IRPProject"], project)
     return helper
 
 
@@ -453,7 +453,7 @@ class TestCollectChildren:
         """If global getters are unavailable, fall back to nested elements only.
 
         Uses spec=IRPModelElement so the package-specific global getters are
-        absent (they live on RPPackage, not the base class). The implementation's
+        absent (they live on IRPPackage, not the base class). The implementation's
         ``getattr(container, getter_name, None)`` returns None and skips them.
         """
         nested = MagicMock()

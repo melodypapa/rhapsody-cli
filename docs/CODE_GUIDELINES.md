@@ -156,7 +156,7 @@ def get_element(self, name: str, element_type: str) -> Optional[IRPModelElement]
 def connect(self, timeout: int = 30, attach_only: bool = False) -> RhapsodyApplication:
     return RhapsodyApplication.connect(attach_only=attach_only)
 
-def create_package(self, name: str, parent: Optional[RPPackage] = None) -> RPPackage:
+def create_package(self, name: str, parent: Optional[IRPPackage] = None) -> IRPPackage:
     if parent is None:
         parent = self._get_default_package()
     return parent.add_package(name)
@@ -186,7 +186,7 @@ If a line is too long (exceeds Black's line length limit of 200), wrap arguments
 ```python
 # Acceptable: Line too long, wrap with all args on next line
 def export_to_yaml(
-    self, project: RPProject, output_path: Path, include_diagrams: bool = True
+    self, project: IRPProject, output_path: Path, include_diagrams: bool = True
 ) -> None:
     self._exporter.export(project, output_path, include_diagrams)
 ```
@@ -214,7 +214,7 @@ def parse_config(path: Path) -> Dict[str, Union[str, int, bool]]:
     return json.loads(path.read_text())
 
 # CORRECT: List with element type
-def get_all_packages(project: RPProject) -> List[RPPackage]:
+def get_all_packages(project: IRPProject) -> List[IRPPackage]:
     return project.get_packages()
 
 # CORRECT: Union for multiple known types
@@ -769,7 +769,7 @@ class RhapsodyContext:
 
     def __init__(self):
         self._app: Optional[RhapsodyApplication] = None
-        self._project: Optional[RPProject] = None
+        self._project: Optional[IRPProject] = None
         self._output_format: str = "table"
 
     @property
@@ -777,7 +777,7 @@ class RhapsodyContext:
         return self._app
 
     @property
-    def project(self) -> Optional[RPProject]:
+    def project(self) -> Optional[IRPProject]:
         return self._project
 
     @property
@@ -799,7 +799,7 @@ class RhapsodyContext:
                 self._app = RhapsodyApplication.launch()
         return self._app
 
-    def open_project(self, project_path: str) -> RPProject:
+    def open_project(self, project_path: str) -> IRPProject:
         """Open a project file."""
         if self._app is None:
             self.connect()
@@ -856,7 +856,7 @@ def test_context_open_project_calls_app_open_project():
     # ARRANGE
     ctx = RhapsodyContext()
     mock_app = Mock(spec=RhapsodyApplication)
-    mock_project = Mock(spec=RPProject)
+    mock_project = Mock(spec=IRPProject)
     mock_app.open_project.return_value = mock_project
     ctx._app = mock_app
     
@@ -913,7 +913,7 @@ def mock_context():
     """Fixture: Create a mock RhapsodyContext for testing."""
     ctx = RhapsodyContext()
     ctx._app = Mock(spec=RhapsodyApplication)
-    ctx._project = Mock(spec=RPProject)
+    ctx._project = Mock(spec=IRPProject)
     return ctx
 
 @pytest.fixture

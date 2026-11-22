@@ -194,7 +194,7 @@
 | get_external_checker_registry() -> getExternalCheckerRegistry | getExternalCheckerRegistry (method) | getExternalCheckerRegistry (method) | MATCH | — |
 | get_external_ide_registry() -> getExternalIDERegistry | getExternalIDERegistry (method) | getExternalIDERegistry (method) | MATCH | — |
 | get_external_roundtrip_invoker() -> getExternalRoundtripInvoker | getExternalRoundtripInvoker (method) | getExternalRoundtripInvoker (method) | MATCH | — |
-| get_is_hidden_ui() -> isHiddenUI; set_hidden_ui() -> isHiddenUI | getIsHiddenUI (method) | isHiddenUI (property) | MATCH | — |
+| get_is_hidden_ui() -> isHiddenUI | getIsHiddenUI (method) | isHiddenUI (property) | MATCH | — |
 | get_ow_pane_mgr() -> getOWPaneMgr | getOWPaneMgr (method) | getOWPaneMgr (method) | MATCH | — |
 | get_projects() -> projects | getProjects (method) | projects (property) | MATCH | — |
 | get_search_manager() -> getSearchManager | getSearchManager (method) | getSearchManager (method) | MATCH | — |

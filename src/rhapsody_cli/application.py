@@ -26,7 +26,7 @@ except ImportError:  # pragma: no cover - pywin32 is Windows-only
 from rhapsody_cli import com_utils
 from rhapsody_cli.exceptions import RhapsodyConnectionError, RhapsodyRuntimeException
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.elements.containment import RPProject
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 
 _PROG_ID = "Rhapsody2.Application.1"
 
@@ -109,21 +109,21 @@ class RhapsodyApplication:
             app.set_hidden_ui(False)
         return app
 
-    def open_project(self, filename: str) -> RPProject:
+    def open_project(self, filename: str) -> IRPProject:
         """Open an existing Rhapsody project.
 
         Args:
             filename: The name of the .rpy file, including the full path.
 
         Returns:
-            RPProject: The opened Rhapsody project.
+            IRPProject: The opened Rhapsody project.
 
         Reference:
             com.telelogic.rhapsody.core.IRPApplication::openProject(java.lang.String filename)
         """
-        return RPProject(com_utils.call_com(lambda: self._com.openProject(filename)))
+        return IRPProject(com_utils.call_com(lambda: self._com.openProject(filename)))
 
-    def create_new_project(self, project_location: str, project_name: str) -> RPProject:
+    def create_new_project(self, project_location: str, project_name: str) -> IRPProject:
         """Create a new Rhapsody project.
 
         Args:
@@ -131,7 +131,7 @@ class RhapsodyApplication:
             project_name: The name to use for the project (used for the .rpy file).
 
         Returns:
-            RPProject: The newly created project, active after creation.
+            IRPProject: The newly created project, active after creation.
 
         Reference:
             com.telelogic.rhapsody.core.IRPApplication::createNewProject(java.lang.String projectLocation, java.lang.String projectName)
@@ -139,11 +139,11 @@ class RhapsodyApplication:
         com_utils.call_com(lambda: self._com.createNewProject(project_location, project_name))
         return self.active_project()
 
-    def active_project(self) -> RPProject:
+    def active_project(self) -> IRPProject:
         """Return the project currently open in Rhapsody.
 
         Returns:
-            RPProject: The project currently open in Rhapsody.
+            IRPProject: The project currently open in Rhapsody.
 
         Raises:
             RhapsodyRuntimeException: If no project is currently open in
@@ -155,13 +155,13 @@ class RhapsodyApplication:
         result = com_utils.call_com(lambda: self._com.activeProject())
         if result is None:
             raise RhapsodyRuntimeException("No active project is open in Rhapsody")
-        return RPProject(result)
+        return IRPProject(result)
 
     def get_projects(self) -> IRPCollection:
         """Return all open projects in Rhapsody.
 
         Returns:
-            IRPCollection: A collection of the open RPProject objects.
+            IRPCollection: A collection of the open IRPProject objects.
 
         Raises:
             RhapsodyRuntimeException: If the projects cannot be retrieved.
@@ -169,7 +169,7 @@ class RhapsodyApplication:
         Reference:
             com.telelogic.rhapsody.core.IRPApplication::getProjects()
         """
-        return IRPCollection(com_utils._get_method_or_property(self._com, "getProjects", "projects"))
+        return IRPCollection(com_utils.get_com_property(self._com, "projects"))
 
     def quit(self) -> None:
         """Quit the Rhapsody application.
@@ -202,7 +202,7 @@ class RhapsodyApplication:
         Reference:
             com.telelogic.rhapsody.core.IRPApplication::getIsHiddenUI()
         """
-        return bool(com_utils._get_method_or_property(self._com, "getIsHiddenUI", "isHiddenUI"))
+        return bool(com_utils.get_com_property(self._com, "isHiddenUI"))
 
     def set_hidden_ui(self, hidden: bool) -> None:
         """Set whether the Rhapsody GUI is hidden.
@@ -220,7 +220,7 @@ class RhapsodyApplication:
         Reference:
             com.telelogic.rhapsody.core.IRPApplication::setHiddenUI(boolean pVal)
         """
-        com_utils._set_method_or_property(self._com, "setHiddenUI", "isHiddenUI", hidden)
+        com_utils.call_com(lambda: self._com.setHiddenUI(hidden))
 
     def bring_window_to_top(self) -> None:
         """Bring the Rhapsody application window to the top.
@@ -455,7 +455,7 @@ class RhapsodyApplication:
         """Generate code for the entire project.
 
         Uses the active component and configuration. Use
-        ``RPProject.setActiveComponent`` and ``RPProject.setActiveConfiguration``
+        ``IRPProject.setActiveComponent`` and ``IRPProject.setActiveConfiguration``
         to change them first if necessary.
 
         Reference:

@@ -64,7 +64,7 @@ tests/
 
 - Depends on `rhapsody_app` fixture
 - Cleans up `demos/test_project/` before creating new project
-- Creates new RPProject at `demos/test_project/TestProject.rpy`
+- Creates new IRPProject at `demos/test_project/TestProject.rpy`
 - Yields project instance for tests to use
 - Optionally cleans up after session based on behavior/flag
 
@@ -268,7 +268,7 @@ Integration tests will validate **every wrapper method** in every model class:
 ### Phase 3: Element Wrapper Integration Tests
 
 1. Implement `tests/integration/models/elements/` tests
-2. Create tests for containment elements (`RPPackage`, `RPProject`)
+2. Create tests for containment elements (`IRPPackage`, `IRPProject`)
 3. Create tests for classifiers (`RPClass`, `RPActor`)
 4. Create tests for relations, diagrams, requirements, variables
 

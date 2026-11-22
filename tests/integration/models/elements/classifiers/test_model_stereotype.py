@@ -12,8 +12,9 @@ from typing import Tuple
 import pytest
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 from rhapsody_cli.models.elements.classifiers import RPStereotype
-from rhapsody_cli.models.elements.containment import RPPackage, RPProject
 
 
 @pytest.mark.integration
@@ -25,12 +26,12 @@ class TestRPStereotypeIntegration:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     @staticmethod
-    def _create_package(project: RPProject, name: str) -> RPPackage:
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
         pkg = project.add_package(name)
-        assert pkg is not None and isinstance(pkg, RPPackage)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def _create_stereotype(self, pkg: RPPackage, stereo_name: str) -> Tuple[IRPClass, RPStereotype]:
+    def _create_stereotype(self, pkg: IRPPackage, stereo_name: str) -> Tuple[IRPClass, RPStereotype]:
         # addStereotype(name, "Class") succeeds when applied to a Class element; applying a
         # "Class"-scoped stereotype directly to a Package raises a COM error in this build.
         # The owning class is returned so cleanup can delete it before the stereotype
@@ -40,7 +41,7 @@ class TestRPStereotypeIntegration:
         assert isinstance(stereotype, RPStereotype)
         return test_class, stereotype
 
-    def test_meta_class_add_get_remove(self, test_project: RPProject) -> None:
+    def test_meta_class_add_get_remove(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("SterPkg")
         stereo_name = self._unique("MyStereotype")
         pkg = self._create_package(test_project, pkg_name)
@@ -59,7 +60,7 @@ class TestRPStereotypeIntegration:
             test_class.delete_from_project()
             stereotype.delete_from_project()
 
-    def test_set_is_new_term_raises_not_implemented(self, test_project: RPProject) -> None:
+    def test_set_is_new_term_raises_not_implemented(self, test_project: IRPProject) -> None:
         # setIsNewTerm is not exposed in the COM automation type library for stereotypes
         # (getIsNewTerm is), so the wrapper raises NotImplementedError — mirrors IRPClass.set_is_abstract.
         pkg_name = self._unique("SterPkg")
@@ -74,7 +75,7 @@ class TestRPStereotypeIntegration:
             test_class.delete_from_project()
             stereotype.delete_from_project()
 
-    def test_get_icon_is_string(self, test_project: RPProject) -> None:
+    def test_get_icon_is_string(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("SterPkg")
         stereo_name = self._unique("MyStereotype")
         pkg = self._create_package(test_project, pkg_name)

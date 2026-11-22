@@ -6,9 +6,9 @@ from rhapsody_cli.models.elements.common.model_misc import (  # noqa: F401
     RPEnumerationLiteral,
 )
 from rhapsody_cli.models.elements.common.model_other_model import (  # noqa: F401
+    IRPType,
     RPClassifierRole,
     RPSysMLPort,
-    RPType,
 )
 
 __all__ = [
@@ -17,5 +17,5 @@ __all__ = [
     "RPEnumerationLiteral",
     "RPClassifierRole",
     "RPSysMLPort",
-    "RPType",
+    "IRPType",
 ]

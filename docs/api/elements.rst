@@ -13,20 +13,20 @@ rhapsody-cli provides wrapper classes for all major Rhapsody element types:
 
 **Structural Elements**
 
-* RPProject - Project container
-* RPPackage - Package container
+* IRPProject - Project container
+* IRPPackage - Package container
 * RPActor - System actor
-* RPUseCase - Use case
+* IRPUseCase - Use case
 * RPInstance - Object instance
 * RPDiagram - Diagram
 * RPStatechart - State machine
 
 **Behavioral Elements**
 
-* RPAttribute - Class attribute
-* RPOperation - Class operation
+* IRPAttribute - Class attribute
+* IRPOperation - Class operation
 * RPParameter - Operation parameter
-* RPClassifier - Base classifier
+* IRPClassifier - Base classifier
 
 **Other Elements**
 
@@ -47,7 +47,19 @@ Java Package API Reference
 .. toctree::
    :maxdepth: 1
 
+   com/telelogic/rhapsody/core/irp_application
+   com/telelogic/rhapsody/core/irp_association_class
+   com/telelogic/rhapsody/core/irp_argument
+   com/telelogic/rhapsody/core/irp_attribute
    com/telelogic/rhapsody/core/irp_class
+   com/telelogic/rhapsody/core/irp_classifier
+   com/telelogic/rhapsody/core/irp_interface_item
    com/telelogic/rhapsody/core/irp_model_element
+   com/telelogic/rhapsody/core/irp_operation
+   com/telelogic/rhapsody/core/irp_package
+   com/telelogic/rhapsody/core/irp_port
+   com/telelogic/rhapsody/core/irp_project
+   com/telelogic/rhapsody/core/irp_type
+   com/telelogic/rhapsody/core/irp_use_case
    com/telelogic/rhapsody/core/irp_collection
    com/telelogic/rhapsody/core/irp_unit

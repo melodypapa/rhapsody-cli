@@ -46,7 +46,7 @@ store the selected format string on `ctx.output_format` (where `ctx` is the `Rha
 **Priority:** High
 **Description:**
 `RhapsodyContext` shall manage CLI session state with attributes `app`
-(`RhapsodyApplication | None`), `project` (`RPProject | None`), and `output_format`
+(`RhapsodyApplication | None`), `project` (`IRPProject | None`), and `output_format`
 (str, default `"table"`). It shall expose methods: `connect(method="attach")` (lazily
 attaches or launches), `open_project(project_path)` (connects if needed, opens project),
 `close_project()` (closes and clears project), and `disconnect()` (closes project and

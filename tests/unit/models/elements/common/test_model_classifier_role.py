@@ -1,8 +1,9 @@
 """Tests for rhapsody_cli.models.elements.common.model_other_model.RPClassifierRole."""
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement, IRPModelElement
-from rhapsody_cli.models.elements.classifiers import RPClassifier
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.common import RPClassifierRole
 from rhapsody_cli.models.elements.relations import RPInstance
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
@@ -63,12 +64,12 @@ class TestRPClassifierRole:
         assert role.get_role_type() == "CLASS"
 
     def test_set_formal_classifier_delegates(self) -> None:
-        # Pattern F — multi-arg void method (single RPClassifier arg)
+        # Pattern F — multi-arg void method (single IRPClassifier arg)
         fake = make_fake_element("ClassifierRole")
         clf = make_fake_element("Class", properties={"name": "Foo"})
         fake.setFormalClassifier.return_value = None
         role = RPClassifierRole(fake)
-        role.set_formal_classifier(RPClassifier(clf))
+        role.set_formal_classifier(IRPClassifier(clf))
         fake.setFormalClassifier.assert_called_once_with(clf)
 
     def test_set_formal_instance_delegates(self) -> None:

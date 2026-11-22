@@ -2,7 +2,7 @@
 
 ## Summary
 - Java package: `com.telelogic.rhapsody.core`
-- Target wrapper: `IRPModelElement` (`src/rhapsody_cli/models/core.py`)
+- Target wrapper: `IRPModelElement` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_model_element.py`)
 - Members: Python `113`, Java `118`, pywin32 `104`
 - Deviations: `1`
 - Deviations by status:
@@ -137,7 +137,7 @@
 ## AI Fix Guidance
 
 ### Finding 1: PYWIN32_MEMBER_MISSING
-- **Target:** `IRPModelElement` in `src/rhapsody_cli/models/core.py`
+- **Target:** `IRPModelElement` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_model_element.py`
 - **Current Python wrapper/COM call:** get_rmm_url() -> getRmmUrl; get_rmm_url() -> rmmUrl
 - **Expected Python method(s):** `get_rmm_url`
 - **Java signature(s):** `IRPModelElement.getRmmUrl()`

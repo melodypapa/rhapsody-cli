@@ -2,7 +2,7 @@
 
 ## Summary
 - Java package: `com.telelogic.rhapsody.core`
-- Target wrapper: `RPOperation` (`src/rhapsody_cli/models/elements/classifiers/model_operation.py`)
+- Target wrapper: `IRPOperation` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_operation.py`)
 - Members: Python `32`, Java `32`, pywin32 `21`
 - Deviations: `1`
 - Deviations by status:
@@ -57,7 +57,7 @@
 ## AI Fix Guidance
 
 ### Finding 1: PYWIN32_MEMBER_MISSING
-- **Target:** `RPOperation` in `src/rhapsody_cli/models/elements/classifiers/model_operation.py`
+- **Target:** `IRPOperation` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_operation.py`
 - **Current Python wrapper/COM call:** update_contained_diagrams_on_server() -> updateContainedDiagramsOnServer
 - **Expected Python method(s):** `update_contained_diagrams_on_server`
 - **Java signature(s):** `IRPOperation.updateContainedDiagramsOnServer(int)`

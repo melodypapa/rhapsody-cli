@@ -2,7 +2,7 @@
 
 ## Summary
 - Java package: `com.telelogic.rhapsody.core`
-- Target wrapper: `RPUseCase` (`src/rhapsody_cli/models/elements/classifiers/model_usecase.py`)
+- Target wrapper: `IRPUseCase` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_use_case.py`)
 - Members: Python `15`, Java `15`, pywin32 `12`
 - Deviations: `2`
 - Deviations by status:
@@ -51,7 +51,7 @@
 ## AI Fix Guidance
 
 ### Finding 1: PYWIN32_MEMBER_MISSING
-- **Target:** `RPUseCase` in `src/rhapsody_cli/models/elements/classifiers/model_usecase.py`
+- **Target:** `IRPUseCase` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_use_case.py`
 - **Current Python wrapper/COM call:** add_event_reception_with_event() -> addEventReceptionWithEvent
 - **Expected Python method(s):** `add_event_reception_with_event`
 - **Java signature(s):** `IRPUseCase.addEventReceptionWithEvent(java.lang.String, com.telelogic.rhapsody.core.IRPEvent)`
@@ -60,7 +60,7 @@
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### Finding 2: PYWIN32_MEMBER_MISSING
-- **Target:** `RPUseCase` in `src/rhapsody_cli/models/elements/classifiers/model_usecase.py`
+- **Target:** `IRPUseCase` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_use_case.py`
 - **Current Python wrapper/COM call:** update_contained_diagrams_on_server() -> updateContainedDiagramsOnServer
 - **Expected Python method(s):** `update_contained_diagrams_on_server`
 - **Java signature(s):** `IRPUseCase.updateContainedDiagramsOnServer(int)`

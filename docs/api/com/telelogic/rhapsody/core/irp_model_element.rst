@@ -9,10 +9,10 @@ The IRPModelElement interface is the base interface for all model elements.
 - **Java package:** com.telelogic.rhapsody.core
 - **JavaDoc description:** The base interface of all Rhapsody model elements.
 - **Python wrapper:** IRPModelElement
-- **Python import:** ``from rhapsody_cli.models.core import IRPModelElement``
-- **Canonical module:** pending — the §2 move is unblocked by the revised rule (local imports
-  before ``cast()``, with ``from __future__ import annotations`` making annotations lazy).
-  Scheduled for the dedicated ``core.py`` cleanup; see ``docs/reports/sync-todo``.
+- **Python import:** ``from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPModelElement``
+- **Canonical module:** ``rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element`` (the
+  §2 move is complete; ``AbstractRPModelElement`` remains in ``models/core.py`` as shared
+  infrastructure with a local import in ``wrap()``).
 
 
 Zero actionable deviations require code changes. Every migrated member calls exactly one
