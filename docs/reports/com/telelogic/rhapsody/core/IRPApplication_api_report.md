@@ -3,13 +3,12 @@
 ## Summary
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `RhapsodyApplication` (`src/rhapsody_cli/application.py`)
-- Members: Python `33`, Java `176`, pywin32 `172`
-- Deviations: `3`
+- Members: Python `31`, Java `176`, pywin32 `172`
+- Deviations: `1`
 - Deviations by status:
-  - `COM_MEMBER_NOT_EXPOSED`: 2
   - `PYTHON_METHOD_NAME_MISMATCH`: 1
 
-- Informational binding differences (expected): `5`
+- Informational binding differences (expected): `3`
 - Wrapper backlog (supported members without wrappers): `139`
 - Documented aliases: `0`, documented unavailable: `0`
 
@@ -17,19 +16,15 @@
 
 | Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |
 | --- | --- | --- | --- | --- |
-| get_build_no() -> getBuildNo | getBuildNo (method) | BuildNo (property) | COM_MEMBER_NOT_EXPOSED | Use the BuildNo property or a getter/setter fallback instead of calling getBuildNo directly. |
-| get_omroot() -> getOMROOT | getOMROOT (method) | OMROOT (property) | COM_MEMBER_NOT_EXPOSED | Use the OMROOT property or a getter/setter fallback instead of calling getOMROOT directly. |
 | get_version() -> version | version (method) | version (method) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
 
 ## Expected Binding Differences
 
 | Python model wrapper | Java API | pywin32 | Status | Recommended change |
 | --- | --- | --- | --- | --- |
-| close_all_projects() -> closeAllProjects | — | — | PYTHON_ONLY_MEMBER | Keep this as a local facade helper or map it to a documented API member. |
 | — | getPlugInWindow (method) | — | JAVA_ONLY_MEMBER | Verify the Java documentation against the installed COM type library. |
 | connect() (no static COM member) | — | — | PYTHON_ONLY_MEMBER | Keep this as a local facade helper or map it to a documented API member. |
 | disconnect() (no static COM member) | — | — | PYTHON_ONLY_MEMBER | Keep this as a local facade helper or map it to a documented API member. |
-| get_rhapsody_dir() -> getRhapsodyDir | — | — | PYTHON_ONLY_MEMBER | Keep this as a local facade helper or map it to a documented API member. |
 
 ## Wrapper Backlog
 
@@ -189,12 +184,14 @@
 | generate() -> generate | generate (method) | generate (method) | MATCH | — |
 | generate_elements() -> generateElements | generateElements (method) | generateElements (method) | MATCH | — |
 | generate_entire_project() -> generateEntireProject | generateEntireProject (method) | generateEntireProject (method) | MATCH | — |
+| get_build_no() -> BuildNo | getBuildNo (method) | BuildNo (property) | MATCH | — |
 | get_code_gen_simplifiers_registry() -> getCodeGenSimplifiersRegistry | getCodeGenSimplifiersRegistry (method) | getCodeGenSimplifiersRegistry (method) | MATCH | — |
 | get_diag_synth_api() -> getDiagSynthAPI | getDiagSynthAPI (method) | getDiagSynthAPI (method) | MATCH | — |
 | get_external_checker_registry() -> getExternalCheckerRegistry | getExternalCheckerRegistry (method) | getExternalCheckerRegistry (method) | MATCH | — |
 | get_external_ide_registry() -> getExternalIDERegistry | getExternalIDERegistry (method) | getExternalIDERegistry (method) | MATCH | — |
 | get_external_roundtrip_invoker() -> getExternalRoundtripInvoker | getExternalRoundtripInvoker (method) | getExternalRoundtripInvoker (method) | MATCH | — |
 | get_is_hidden_ui() -> isHiddenUI | getIsHiddenUI (method) | isHiddenUI (property) | MATCH | — |
+| get_omroot() -> OMROOT | getOMROOT (method) | OMROOT (property) | MATCH | — |
 | get_ow_pane_mgr() -> getOWPaneMgr | getOWPaneMgr (method) | getOWPaneMgr (method) | MATCH | — |
 | get_projects() -> projects | getProjects (method) | projects (property) | MATCH | — |
 | get_search_manager() -> getSearchManager | getSearchManager (method) | getSearchManager (method) | MATCH | — |
@@ -208,25 +205,7 @@
 
 ## AI Fix Guidance
 
-### Finding 1: COM_MEMBER_NOT_EXPOSED
-- **Target:** `RhapsodyApplication` in `src/rhapsody_cli/application.py`
-- **Current Python wrapper/COM call:** get_build_no() -> getBuildNo
-- **Expected Python method(s):** `get_build_no`
-- **Java signature(s):** `IRPApplication.getBuildNo()`
-- **pywin32 member(s):** BuildNo (property)
-- **Recommended change:** Use the BuildNo property or a getter/setter fallback instead of calling getBuildNo directly.
-- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
-
-### Finding 2: COM_MEMBER_NOT_EXPOSED
-- **Target:** `RhapsodyApplication` in `src/rhapsody_cli/application.py`
-- **Current Python wrapper/COM call:** get_omroot() -> getOMROOT
-- **Expected Python method(s):** `get_omroot`
-- **Java signature(s):** `IRPApplication.getOMROOT()`
-- **pywin32 member(s):** OMROOT (property)
-- **Recommended change:** Use the OMROOT property or a getter/setter fallback instead of calling getOMROOT directly.
-- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
-
-### Finding 3: PYTHON_METHOD_NAME_MISMATCH
+### Finding 1: PYTHON_METHOD_NAME_MISMATCH
 - **Target:** `RhapsodyApplication` in `src/rhapsody_cli/application.py`
 - **Current Python wrapper/COM call:** get_version() -> version
 - **Expected Python method(s):** `version`

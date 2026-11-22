@@ -46,16 +46,18 @@ Report/status refresh (2026-11-22, after the second review-fix pass on top of th
 closeout): unit suite **1947 passed**, integration + system suites **504 collected** (live
 re-run pending on Windows), skill self-tests **22 passed**; ruff/black/mypy clean; an AST
 cross-check proves zero catalog-absent COM members and zero legacy probe call sites across the
-16 canonical wrappers, and `verify_sync.py` passes for 12 of 13 interfaces. All 15
+16 canonical wrappers, and `verify_sync.py` passes for **all 13 interfaces**. All 15
 synced wrappers reach 100% statement/branch coverage independently at both unit and integration
 layers, with zero skip/xfail markers.
 
-Known verify_sync residual (IRPApplication, tracked by its open Step 8 row): the wrapper's
-`close_all_projects()` and `get_rhapsody_dir()` are `PYTHON_ONLY_MEMBER` facade helpers with
-no catalog backing. They are retained deliberately — `close_all_projects()` is the
-integration session teardown path (tests/integration/conftest.py) and `get_rhapsody_dir()` has
-a live test — so their removal is blocked by live callers, exactly as the IRPApplication
-report rows document.
+`close_all_projects()` and `get_rhapsody_dir()` were removed from `RhapsodyApplication` in the
+review-fix pass: both were `PYTHON_ONLY_MEMBER` conveniences whose COM members do not exist
+(the Windows-authored integration tests had pinned their `AttributeError` as the live outcome,
+and the teardown call only "succeeded" because it swallowed that error with a printed warning).
+The integration teardown now closes each open project through the catalog-exposed
+`IRPProject.close()` member; `connect`/`disconnect` remain as documented python-only facade
+helpers (live callers throughout the codebase, so their removal stays blocked per the standing
+decision).
 
 ## Resume rule
 

@@ -237,10 +237,6 @@ class RhapsodyApplication:
         """
         com_utils.call_com(lambda: self._com.bringWindowToTop())
 
-    def close_all_projects(self) -> None:
-        """Close all open projects without quitting Rhapsody."""
-        com_utils.call_com(lambda: self._com.closeAllProjects())
-
     def save_all(self) -> None:
         """Save all open projects.
 
@@ -273,14 +269,6 @@ class RhapsodyApplication:
             com.telelogic.rhapsody.core.IRPApplication::getBuildNo()
         """
         return str(com_utils.get_com_property(self._com, "BuildNo"))
-
-    def get_rhapsody_dir(self) -> str:
-        """Get the Rhapsody installation directory.
-
-        Returns:
-            The installation directory path.
-        """
-        return str(com_utils.call_com(lambda: self._com.getRhapsodyDir()))
 
     def get_omroot(self) -> str:
         """Return the OMROOT directory path.
