@@ -34,7 +34,7 @@ def test_export_catalog_from_reports_extracts_names_and_kinds(tmp_path: Path) ->
 
 def test_build_authority_starts_with_empty_exception_maps(tmp_path: Path) -> None:
     _package_report(tmp_path, "IRPExample_api_report.md").write_text(
-        "| Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |\n" "| --- | --- | --- | --- | --- |\n" "| — | — | addItem (method) | PYWIN32_ONLY_MEMBER | Review. |\n",
+        "| Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |\n| --- | --- | --- | --- | --- |\n| — | — | addItem (method) | PYWIN32_ONLY_MEMBER | Review. |\n",
         encoding="utf-8",
     )
 

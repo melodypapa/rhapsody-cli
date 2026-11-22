@@ -22,6 +22,29 @@ from scripts.validate_model_api import (
 )
 
 
+def test_resolve_java_interface_docs_uses_declared_package(tmp_path: Path) -> None:
+    docs_root = tmp_path / "java_api"
+    package_docs = docs_root / "org" / "example" / "rhapsody"
+    package_docs.mkdir(parents=True)
+    (package_docs / "IRPThing.html").write_text("<html></html>", encoding="utf-8")
+
+    java_package, resolved_docs = validator.resolve_java_interface_docs("IRPThing", docs_root)
+
+    assert java_package == "org.example.rhapsody"
+    assert resolved_docs == package_docs
+
+
+def test_resolve_java_interface_docs_rejects_ambiguous_interface_names(tmp_path: Path) -> None:
+    docs_root = tmp_path / "java_api"
+    for package in ("org/example/one", "org/example/two"):
+        package_docs = docs_root / Path(package)
+        package_docs.mkdir(parents=True)
+        (package_docs / "IRPThing.html").write_text("<html></html>", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="ambiguous"):
+        validator.resolve_java_interface_docs("IRPThing", docs_root)
+
+
 def test_collect_java_members_includes_superinterfaces(tmp_path: Path) -> None:
     docs_root = tmp_path / "docs"
     docs_root.mkdir()
@@ -150,7 +173,7 @@ def test_collect_java_members_own_only_excludes_superinterfaces(tmp_path: Path) 
     docs_root.mkdir()
     (docs_root / "IRPBase.html").write_text('<A NAME="baseCall()"><!-- --></A><H3>baseCall</H3>', encoding="utf-8")
     (docs_root / "IRPChild.html").write_text(
-        '<DT><B>All Superinterfaces:</B><DD><A HREF="IRPBase.html">IRPBase</A></DD>' '<A NAME="childCall()"><!-- --></A><H3>childCall</H3>',
+        '<DT><B>All Superinterfaces:</B><DD><A HREF="IRPBase.html">IRPBase</A></DD><A NAME="childCall()"><!-- --></A><H3>childCall</H3>',
         encoding="utf-8",
     )
 
@@ -481,6 +504,9 @@ def test_markdown_report_lists_documented_decision_counts(tmp_path: Path) -> Non
 
 def test_main_writes_markdown_report_to_default_and_requested_directories(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
     monkeypatch.chdir(tmp_path)
+    java_package = "org.example.rhapsody"
+    package_docs = tmp_path / "java_api" / Path(*java_package.split("."))
+    monkeypatch.setattr(validator, "resolve_java_interface_docs", lambda interface_name, docs_root: (java_package, package_docs))
     monkeypatch.setattr(validator, "resolve_python_wrapper", lambda interface_name, models_root: ("RhapsodyApplication", models_root.parent / "application.py"))
     monkeypatch.setattr(validator, "collect_java_signatures", lambda interface_name, docs_root, **kwargs: {"version": {"IRPApplication.version()"}})
     monkeypatch.setattr(validator, "collect_java_members", lambda interface_name, docs_root, **kwargs: {"version"})
@@ -488,10 +514,12 @@ def test_main_writes_markdown_report_to_default_and_requested_directories(tmp_pa
     monkeypatch.setattr(validator, "collect_registered_pywin32_members", lambda interface_name: {"version": "method"})
 
     assert main(["IRPApplication"]) == 0
-    package_path = Path(*validator.JAVA_PACKAGE.split("."))
+    package_path = Path(*java_package.split("."))
     default_report = tmp_path / package_path / "IRPApplication_api_report.md"
     assert default_report.is_file()
-    assert "# Rhapsody API Validation: IRPApplication" in default_report.read_text(encoding="utf-8")
+    default_text = default_report.read_text(encoding="utf-8")
+    assert "# Rhapsody API Validation: IRPApplication" in default_text
+    assert f"- Java package: `{java_package}`" in default_text
 
     custom_directory = tmp_path / "reports"
     assert main(["IRPApplication", "--path", str(custom_directory)]) == 0

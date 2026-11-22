@@ -20,8 +20,6 @@ def main(argv: Optional[List[str]] = None) -> int:
     try:
         root = find_project_root(args.root or Path(__file__).resolve())
         interface_name, java_package, _ = find_java_doc(root, args.interface)
-        if java_package != "com.telelogic.rhapsody.core":
-            raise ValueError(f"The repository validator currently reads JavaDoc from com.telelogic.rhapsody.core, but {interface_name} is declared in {java_package}")
         reports_dir = args.reports_dir or root / "docs" / "reports"
         if not reports_dir.is_absolute():
             reports_dir = root / reports_dir

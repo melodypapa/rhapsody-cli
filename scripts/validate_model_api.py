@@ -72,6 +72,22 @@ def _validate_interface_name(interface_name: str) -> None:
         raise ValueError(f"Invalid Java interface name {interface_name!r}; expected a name such as IRPClass")
 
 
+def resolve_java_interface_docs(interface_name: str, docs_root: Path) -> Tuple[str, Path]:
+    """Resolve one JavaDoc page and return its declared package plus package directory."""
+    _validate_interface_name(interface_name)
+    pages = sorted(path for path in docs_root.rglob(f"{interface_name}.html") if "class-use" not in path.parts)
+    if not pages:
+        raise FileNotFoundError(f"Java API documentation not found for {interface_name} under {docs_root}")
+    if len(pages) > 1:
+        matches = ", ".join(path.relative_to(docs_root).as_posix() for path in pages)
+        raise ValueError(f"JavaDoc name {interface_name} is ambiguous; use a unique interface name: {matches}")
+
+    package_parts = pages[0].parent.relative_to(docs_root).parts
+    if not package_parts:
+        raise ValueError(f"JavaDoc page has no package directory: {pages[0]}")
+    return ".".join(package_parts), pages[0].parent
+
+
 def collect_java_members(interface_name: str, docs_root: Path, include_superinterfaces: bool = True) -> Set[str]:
     """Return methods declared by an interface, optionally including superinterfaces."""
     _validate_interface_name(interface_name)
@@ -448,12 +464,7 @@ def _drop_unexposed_probe_names(python_members: Dict[str, Set[str]], pywin32_mem
 
     filtered: Dict[str, Set[str]] = {}
     for member_name, labels in python_members.items():
-        kept_labels = {
-            label
-            for label in labels
-            if member_name in pywin32_members
-            or not any(name in pywin32_members for name in candidates[label.split("()", maxsplit=1)[0]])
-        }
+        kept_labels = {label for label in labels if member_name in pywin32_members or not any(name in pywin32_members for name in candidates[label.split("()", maxsplit=1)[0]])}
         if kept_labels:
             filtered[member_name] = kept_labels
     return filtered
@@ -708,13 +719,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
 def main(argv: Optional[List[str]] = None) -> int:
     args = build_arg_parser().parse_args(argv)
     repository_root = Path(__file__).resolve().parents[1]
-    docs_root = repository_root / "docs" / "java_api" / Path(*JAVA_PACKAGE.split("."))
+    java_api_root = repository_root / "docs" / "java_api"
     models_root = repository_root / "src" / "rhapsody_cli" / "models"
     report_directory = args.path or Path.cwd()
-    report_path = report_directory.joinpath(*JAVA_PACKAGE.split("."), f"{args.java_interface}_api_report.md")
 
     try:
         authority = load_authority()
+        java_package, docs_root = resolve_java_interface_docs(args.java_interface, java_api_root)
+        report_path = report_directory.joinpath(*java_package.split("."), f"{args.java_interface}_api_report.md")
         wrapper_class, wrapper_source = resolve_python_wrapper(args.java_interface, models_root)
         java_members = collect_java_members(args.java_interface, docs_root, include_superinterfaces=False)
         java_signatures = collect_java_signatures(args.java_interface, docs_root, include_superinterfaces=False)
@@ -763,6 +775,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             backlog_rows=backlog_rows,
             matched_rows=matched_rows,
             documented_counts=documented_counts,
+            java_package=java_package,
         )
         report_path.write_text(markdown, encoding="utf-8")
     except OSError as exc:

@@ -9,29 +9,27 @@ all eight steps pass and the run's commit exists.
 ## Layout (2026-11-22)
 
 API reports are grouped by their declared Java package; the current core reports live in
-`docs/reports/com/telelogic/rhapsody/core/`. The 13 open rows live in [Group-unfinished-1.md](Group-unfinished-1.md); completed rows
+`docs/reports/com/telelogic/rhapsody/core/`. One open row (IRPApplication Step 8) lives in [Group-unfinished-1.md](Group-unfinished-1.md); completed rows
 archive to [Group-finished.md](Group-finished.md) (a batch file is deleted when its last row
 archives). Queue order: core.py base classes first (their migration removes the inherited
 dual-binding fallback for every subclass), then leaves.
 
 | Batch file | Rows | Legacy sites | Interface span | Status |
 | --- | --- | --- | --- | --- |
-| [Group-unfinished-1.md](Group-unfinished-1.md) | 13 | ~219 | IRPModelElement → IRPUseCase | ⬜ 13 open |
-| [Group-finished.md](Group-finished.md) | 3 | ~3 blockers | IRPClass, IRPCollection, IRPUnit | ✅ 3 archived |
+| [Group-unfinished-1.md](Group-unfinished-1.md) | 1 | 3 | IRPApplication closeout | ⬜ 1 open (Step 8 only) |
+| [Group-finished.md](Group-finished.md) | 15 | ~219 | IRPClass → IRPModelElement | ✅ 15 archived |
 
-Progress: **3/16 rows archived** — IRPClass, IRPCollection and IRPUnit (commit `1c81084`
-closed IRPUnit at 8/8). The remaining 13 rows are open; IRPModelElement is 6/8. IRPCollection
-and IRPUnit completed their §2 canonical moves under the revised local-import rule.
+Progress: **15/16 rows archived**. All 13 rows from Group-unfinished-1 reached 8/8 except
+IRPApplication, whose Step 8 stays open on integration layer-only coverage (44.68%). Commits
+`6cbebc3` (sync), `1778607` (test-rule compliance) and `5175b93` (COM hardening) carry the batch.
 
-Report/status refresh (2026-11-22): regenerated all 16 API reports from the registered type
-library evidence. The fresh catalog matches `pywin32_authority.json` exactly (16 interfaces,
-no member or shape differences); the committed catalog's six documented aliases and nine
-documented-unavailable entries remain intact. All 16 report bodies match regenerated output
-and are now organized under their Java package paths. Unit suite:
-1943 passed; integration suite: 439 collected. Live integration closeout was not run because
-a Rhapsody process was already running and the project requires a fresh instance. No sync
-row was closed from this refresh; the 13 open rows remain open pending their own closeout
-evidence.
+Report/status refresh (2026-11-22): all 16 API reports were regenerated from the registered
+type library and grouped under `docs/reports/com/telelogic/rhapsody/core/`. Verification after
+the sync: unit suite **1944 passed**, integration suite **439 passed** (live Rhapsody), system
+suite **54 passed / 3 skipped**, skill self-tests **18 passed**; ruff/black/mypy clean. All 15
+synced wrappers reach 100% statement/branch coverage independently at both unit and integration
+layers, with zero skip/xfail markers. IRPApplication's Step 8 remains open on integration
+layer-only coverage (44.68%) because most application methods have no safe live COM path.
 
 ## Resume rule
 
@@ -55,8 +53,9 @@ not re-derive scope or decisions already recorded in the row's Notes.
   an offline proof substituting for regeneration checks); Step 8's Windows closeout —
   `validate_interface.py <IFACE> --source authority`, `verify_sync.py <IFACE>`, live
   integration run — stays open with the blocker recorded on the row.
-- **Canonical package (SKILL §4):** `IRPClass`, `IRPCollection` and `IRPUnit` live in
-  `src/rhapsody_cli/models/com/telelogic/rhapsody/core/`; every other row starts with the
+- **Canonical package (SKILL §4):** all 15 synced wrappers now live in
+  `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` (the application layer stays at
+  `src/rhapsody_cli/application.py`); completed rows performed the
   package move (wrapper, imports/exports/registration, unit + integration tests to the
   mirrored `tests/{unit,integration}/models/com/telelogic/rhapsody/core/` paths, snake_case
   test module names, `__init__.py` at every level, no compatibility shim). The canonical
@@ -82,12 +81,9 @@ not re-derive scope or decisions already recorded in the row's Notes.
   (`swr_elem_requirements.md`, `elements.rst`). Each run moves its class's entries out of the
   monoliths into the per-class files (no duplicates); `elements.rst` lists per-class pages in
   its toctree. `verify_sync.py` checks the per-class paths strictly (no legacy fallback).
-- **core.py split:** `models/core.py` holds `AbstractRPModelElement` (2 forwarder
-  definitions), `IRPModelElement`, `IRPCollection`, `IRPUnit` — 92 legacy sites total. Survey and
-  split per class at each row's start. IRPModelElement's 22 unit-family names (`CMHeader`,
-  `filename`, `isReadOnly`, ...) exist only in other interfaces' catalogs: resolve against
-  IRPUnit's catalog entry during the IRPUnit row, or record a blocker in the IRPModelElement
-  row.
+- **core.py split (complete):** `models/core.py` now holds only `AbstractRPModelElement`; the
+  forwarder definitions are gone and every sync row has moved its class to the canonical core
+  package. `IRPModelElement.get_rmm_url` remains a catalog-absent blocker site, unchanged.
 - **Uncovered interfaces have no rows yet:** ~380 further legacy sites (Interactions, Graphics,
   Codegen support, StateVertex/State, Relation, Configuration, Activity, Component, RPVariable,
   RPTag, Files, Annotation/Requirement, Statechart, Templates, IDE support, Instance,
@@ -95,7 +91,7 @@ not re-derive scope or decisions already recorded in the row's Notes.
   Dependency, Diagram, Node, EnumerationLiteral/Comment/Constraint, Actor, Collaboration).
   Add rows only after the catalog and their reports are regenerated on Windows
   (`python scripts/pywin32_authority.py --source typelib`). Never migrate blind.
-- **Termination:** after the last row archives, delete `_get_method_or_property` /
-  `_set_method_or_property` from `com_utils.py` / `core.py`, drop the legacy notes from
+- **Termination (pending):** only IRPApplication's Step 8 is open. After it archives, delete
+  `_get_method_or_property` / `_set_method_or_property` from `com_utils.py` / `core.py`, drop the legacy notes from
   `AGENTS.md`, `docs/CODE_GUIDELINES.md`, and the sync skill, and confirm
   `grep -r "_method_or_property" src/` is empty.

@@ -250,7 +250,7 @@ Every wrapped interface has a committed parity report — `docs/reports/<java.pa
 #### Prerequisites
 
 1. `pip install -e ".[dev,cli]"` (from the repository root)
-2. **JavaDoc HTML tree** at `docs/java_api/com/telelogic/rhapsody/core/` — gitignored and machine-local; both `--source` modes need it to resolve Java members
+2. **JavaDoc HTML tree** at `docs/java_api/<java.package.path>/` — gitignored and machine-local; both `--source` modes need it to resolve Java members
 3. For `--source typelib` only: Windows with a licensed Rhapsody installation (the registered `Rhapsody2 1.0 Type Library`) and `pywin32`
 4. For `--source authority` only: the committed catalog must contain the interface
 

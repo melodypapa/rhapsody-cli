@@ -127,6 +127,16 @@ def test_api_report_path_uses_the_java_package_from_javadoc(tmp_path: Path) -> N
     assert report == root / "docs" / "reports" / "com" / "telelogic" / "rhapsody" / "core" / "IRPThing_api_report.md"
 
 
+def test_api_report_path_finds_package_report_without_javadoc(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    report = root / "docs" / "reports" / "org" / "example" / "rhapsody" / "IRPThing_api_report.md"
+    report.parent.mkdir(parents=True)
+    report.write_text("# Rhapsody API Validation: IRPThing\n", encoding="utf-8")
+
+    assert tools.api_report_path(root, "IRPThing") == report
+
+
 def test_builds_validator_command_using_existing_project_script(tmp_path: Path) -> None:
     tools = _load_sync_tools()
     root = tmp_path / "repo"
