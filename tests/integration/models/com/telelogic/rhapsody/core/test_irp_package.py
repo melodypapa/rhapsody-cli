@@ -5,8 +5,10 @@ import uuid
 import pytest
 
 from rhapsody_cli.exceptions import RhapsodyRuntimeException
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
+from rhapsody_cli.models.elements.common import RPSysMLPort
 
 
 @pytest.mark.integration
@@ -230,112 +232,126 @@ class TestIRPPackageIntegration:
     def test_delete_sequence_diagram(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises(AttributeError):
-                pkg.delete_sequence_diagram(None)  # type: ignore[arg-type]
+            element = pkg.add_sequence_diagram(self._unique("DelElem"))
+            assert element is not None
+            pkg.delete_sequence_diagram(element)
         finally:
             pkg.delete_from_project()
 
     def test_delete_use_case_diagram(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises(AttributeError):
-                pkg.delete_use_case_diagram(None)  # type: ignore[arg-type]
+            element = pkg.add_use_case_diagram(self._unique("DelElem"))
+            assert element is not None
+            pkg.delete_use_case_diagram(element)
         finally:
             pkg.delete_from_project()
 
     def test_delete_collaboration_diagram(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises(AttributeError):
-                pkg.delete_collaboration_diagram(None)  # type: ignore[arg-type]
+            element = pkg.add_collaboration_diagram(self._unique("DelElem"))
+            assert element is not None
+            pkg.delete_collaboration_diagram(element)
         finally:
             pkg.delete_from_project()
 
     def test_delete_component_diagram(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises(AttributeError):
-                pkg.delete_component_diagram(None)  # type: ignore[arg-type]
+            element = pkg.add_component_diagram(self._unique("DelElem"))
+            assert element is not None
+            pkg.delete_component_diagram(element)
         finally:
             pkg.delete_from_project()
 
     def test_delete_deployment_diagram(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises(AttributeError):
-                pkg.delete_deployment_diagram(None)  # type: ignore[arg-type]
+            element = pkg.add_deployment_diagram(self._unique("DelElem"))
+            assert element is not None
+            pkg.delete_deployment_diagram(element)
         finally:
             pkg.delete_from_project()
 
     def test_delete_object_model_diagram(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises(AttributeError):
-                pkg.delete_object_model_diagram(None)  # type: ignore[arg-type]
+            element = pkg.add_object_model_diagram(self._unique("DelElem"))
+            assert element is not None
+            pkg.delete_object_model_diagram(element)
         finally:
             pkg.delete_from_project()
 
     def test_delete_timing_diagram(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises(AttributeError):
-                pkg.delete_timing_diagram(None)  # type: ignore[arg-type]
+            element = pkg.add_timing_diagram(self._unique("DelElem"))
+            assert element is not None
+            pkg.delete_timing_diagram(element)
         finally:
             pkg.delete_from_project()
 
     def test_delete_panel_diagram(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises(AttributeError):
-                pkg.delete_panel_diagram(None)  # type: ignore[arg-type]
+            element = pkg.add_panel_diagram(self._unique("DelElem"))
+            assert element is not None
+            pkg.delete_panel_diagram(element)
         finally:
             pkg.delete_from_project()
 
     def test_delete_class(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises(AttributeError):
-                pkg.delete_class(None)  # type: ignore[arg-type]
+            element = pkg.add_class(self._unique("DelElem"))
+            assert element is not None
+            pkg.delete_class(element)
         finally:
             pkg.delete_from_project()
 
     def test_delete_actor(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises(AttributeError):
-                pkg.delete_actor(None)  # type: ignore[arg-type]
+            element = pkg.add_actor(self._unique("DelElem"))
+            assert element is not None
+            pkg.delete_actor(element)
         finally:
             pkg.delete_from_project()
 
     def test_delete_use_case(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises(AttributeError):
-                pkg.delete_use_case(None)  # type: ignore[arg-type]
+            element = pkg.add_use_case(self._unique("DelElem"))
+            assert element is not None
+            pkg.delete_use_case(element)
         finally:
             pkg.delete_from_project()
 
     def test_delete_flow_items(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises(AttributeError):
-                pkg.delete_flow_items(None)  # type: ignore[arg-type]
+            element = pkg.add_flow_items(self._unique("DelElem"))
+            assert element is not None
+            pkg.delete_flow_items(element)
         finally:
             pkg.delete_from_project()
 
     def test_delete_flows(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises(AttributeError):
-                pkg.delete_flows(None)  # type: ignore[arg-type]
+            element = pkg.add_flows(self._unique("DelElem"))
+            assert element is not None
+            pkg.delete_flows(element)
         finally:
             pkg.delete_from_project()
 
     def test_delete_package(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises(AttributeError):
-                pkg.delete_package(None)  # type: ignore[arg-type]
+            element = pkg.add_nested_package(self._unique("DelElem"))
+            assert element is not None
+            pkg.delete_package(element)
         finally:
             pkg.delete_from_project()
 
@@ -406,8 +422,9 @@ class TestIRPPackageIntegration:
     def test_delete_event(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises(AttributeError):
-                pkg.delete_event(None)  # type: ignore[arg-type]
+            element = pkg.add_event(self._unique("DelElem"))
+            assert element is not None
+            pkg.delete_event(element)
         finally:
             pkg.delete_from_project()
 
@@ -435,8 +452,9 @@ class TestIRPPackageIntegration:
     def test_delete_node(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises(AttributeError):
-                pkg.delete_node(None)  # type: ignore[arg-type]
+            element = pkg.add_node(self._unique("DelElem"))
+            assert element is not None
+            pkg.delete_node(element)
         finally:
             pkg.delete_from_project()
 
@@ -478,8 +496,9 @@ class TestIRPPackageIntegration:
     def test_delete_type(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises(AttributeError):
-                pkg.delete_type(None)  # type: ignore[arg-type]
+            element = pkg.add_type(self._unique("DelElem"))
+            assert element is not None
+            pkg.delete_type(element)
         finally:
             pkg.delete_from_project()
 
@@ -500,8 +519,9 @@ class TestIRPPackageIntegration:
     def test_delete_global_function(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises(AttributeError):
-                pkg.delete_global_function(None)  # type: ignore[arg-type]
+            element = pkg.add_global_function(self._unique("DelElem"))
+            assert element is not None
+            pkg.delete_global_function(element)
         finally:
             pkg.delete_from_project()
 
@@ -530,8 +550,9 @@ class TestIRPPackageIntegration:
     def test_delete_global_object(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises(AttributeError):
-                pkg.delete_global_object(None)  # type: ignore[arg-type]
+            element = pkg.add_global_object(self._unique("DelElem"))
+            assert element is not None
+            pkg.delete_global_object(element)
         finally:
             pkg.delete_from_project()
 
@@ -559,8 +580,9 @@ class TestIRPPackageIntegration:
     def test_delete_global_variable(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises(AttributeError):
-                pkg.delete_global_variable(None)  # type: ignore[arg-type]
+            element = pkg.add_global_variable(self._unique("DelElem"))
+            assert element is not None
+            pkg.delete_global_variable(element)
         finally:
             pkg.delete_from_project()
 
@@ -581,8 +603,9 @@ class TestIRPPackageIntegration:
     def test_add_instance_specification(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises(TypeError):
-                pkg.add_instance_specification(self._unique("arg"))  # type: ignore[call-arg]
+            classifier = pkg.add_class(self._unique("InstCls"))
+            with pytest.raises(NotImplementedError):
+                pkg.add_instance_specification(self._unique("InstSpec"), classifier)
         finally:
             pkg.delete_from_project()
 
@@ -633,8 +656,8 @@ class TestIRPPackageIntegration:
     def test_find_usage(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises(AttributeError):
-                pkg.find_usage(None)  # type: ignore[arg-type]
+            element = pkg.add_class(self._unique("UsageCls"))
+            assert isinstance(pkg.find_usage(element), IRPCollection)
         finally:
             pkg.delete_from_project()
 
@@ -657,8 +680,8 @@ class TestIRPPackageIntegration:
     def test_login_to_remote_artifact_server(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises(TypeError):
-                pkg.login_to_remote_artifact_server(self._unique("arg"), self._unique("arg"), self._unique("arg"))  # type: ignore[call-arg]
+            with pytest.raises(NotImplementedError):
+                pkg.login_to_remote_artifact_server()
         finally:
             pkg.delete_from_project()
 
@@ -701,8 +724,12 @@ class TestIRPPackageIntegration:
     def test_add_link_between_sysml_ports(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises(AttributeError):
-                pkg.add_link_between_sysml_ports(None, None)  # type: ignore[arg-type]
+            cls_a = pkg.add_class(self._unique("SysMLClsA"))
+            cls_b = pkg.add_class(self._unique("SysMLClsB"))
+            port_a = cls_a.add_new_aggr("Port", self._unique("portA"))
+            port_b = cls_b.add_new_aggr("Port", self._unique("portB"))
+            assert isinstance(port_a, RPSysMLPort) and isinstance(port_b, RPSysMLPort)
+            assert pkg.add_link_between_sysml_ports(port_a, port_b) is not None
         finally:
             pkg.delete_from_project()
 
@@ -751,15 +778,15 @@ class TestIRPPackageIntegration:
     def test_update_contained_matrices_on_server(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises(TypeError):
-                pkg.update_contained_matrices_on_server()  # type: ignore[call-arg]
+            with pytest.raises(NotImplementedError):
+                pkg.update_contained_matrices_on_server(1)
         finally:
             pkg.delete_from_project()
 
     def test_update_contained_tables_on_server(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises(TypeError):
-                pkg.update_contained_tables_on_server()  # type: ignore[call-arg]
+            with pytest.raises(NotImplementedError):
+                pkg.update_contained_tables_on_server(1)
         finally:
             pkg.delete_from_project()

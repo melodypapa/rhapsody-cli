@@ -31,13 +31,11 @@ class TestRhapsodyApplicationIntegration:
         assert isinstance(rhapsody_app.get_version(), str)
 
     def test_get_build_no(self, rhapsody_app: RhapsodyApplication) -> None:
-        with pytest.raises(AttributeError):
-            rhapsody_app.get_build_no()
-
-    def test_get_rhapsody_dir(self, rhapsody_app: RhapsodyApplication) -> None:
-        with pytest.raises(AttributeError):
-            rhapsody_app.get_rhapsody_dir()
+        # The getBuildNo() method does not exist on the COM object, but the
+        # exposed BuildNo property is readable.
+        assert isinstance(rhapsody_app.get_build_no(), str)
 
     def test_get_omroot(self, rhapsody_app: RhapsodyApplication) -> None:
-        with pytest.raises(AttributeError):
-            rhapsody_app.get_omroot()
+        # The getOMROOT() method does not exist on the COM object, but the
+        # exposed OMROOT property is readable.
+        assert isinstance(rhapsody_app.get_omroot(), str)

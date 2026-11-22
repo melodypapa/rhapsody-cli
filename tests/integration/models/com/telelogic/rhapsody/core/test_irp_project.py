@@ -186,8 +186,9 @@ class TestIRPProjectGenerated:
 
     def test_delete_component(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.delete_component(None)  # type: ignore[arg-type]
+            component = test_project.add_component(self._unique("DelComp"))
+            assert component is not None
+            test_project.delete_component(component)
         finally:
             pass
 
@@ -225,8 +226,9 @@ class TestIRPProjectGenerated:
 
     def test_set_active_configuration(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.set_active_configuration(None)  # type: ignore[arg-type]
+            current = test_project.get_active_configuration()
+            assert current is not None
+            assert test_project.set_active_configuration(current) is None  # type: ignore[func-returns-value]
         finally:
             pass
 
@@ -238,8 +240,9 @@ class TestIRPProjectGenerated:
 
     def test_set_active_component(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.set_active_component(None)  # type: ignore[arg-type]
+            current = test_project.get_active_component()
+            assert current is not None
+            assert test_project.set_active_component(current) is None  # type: ignore[func-returns-value]
         finally:
             pass
 
@@ -336,36 +339,39 @@ class TestIRPProjectGenerated:
 
     def test_gateway_export_to_xml(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.gateway_export_to_xml(self._unique("arg"))
+            assert test_project.gateway_export_to_xml(self._unique("arg")) is None  # type: ignore[func-returns-value]
         finally:
             pass
 
     def test_gateway_export_to_xml2(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.gateway_export_to_xml2(self._unique("arg"), self._unique("arg"))
+            assert test_project.gateway_export_to_xml2(self._unique("arg"), self._unique("arg")) is None  # type: ignore[func-returns-value]
         finally:
             pass
 
     def test_generate_report(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.generate_report(self._unique("arg"), self._unique("arg"))
+            assert test_project.generate_report(self._unique("arg"), self._unique("arg")) is None  # type: ignore[func-returns-value]
         finally:
             pass
 
     def test_add_custom_view_on_browser(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.add_custom_view_on_browser(None)  # type: ignore[arg-type]
+            view = test_project.add_package(self._unique("ViewElem"))
+            assert view is not None
+            assert test_project.add_custom_view_on_browser(view) is None  # type: ignore[func-returns-value]
+            assert test_project.remove_custom_view_on_browser(view) is None  # type: ignore[func-returns-value]
+            view.delete_from_project()
         finally:
             pass
 
     def test_add_custom_view_on_diagram(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.add_custom_view_on_diagram(None)  # type: ignore[arg-type]
+            view = test_project.add_package(self._unique("ViewElem"))
+            assert view is not None
+            assert test_project.add_custom_view_on_diagram(view) is None  # type: ignore[func-returns-value]
+            assert test_project.remove_custom_view_on_diagram(view) is None  # type: ignore[func-returns-value]
+            view.delete_from_project()
         finally:
             pass
 
@@ -386,20 +392,6 @@ class TestIRPProjectGenerated:
         try:
             with pytest.raises(RhapsodyRuntimeException):
                 test_project.get_active_custom_views_on_diagram()
-        finally:
-            pass
-
-    def test_remove_custom_view_on_browser(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(AttributeError):
-                test_project.remove_custom_view_on_browser(None)  # type: ignore[arg-type]
-        finally:
-            pass
-
-    def test_remove_custom_view_on_diagram(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(AttributeError):
-                test_project.remove_custom_view_on_diagram(None)  # type: ignore[arg-type]
         finally:
             pass
 
@@ -432,8 +424,8 @@ class TestIRPProjectGenerated:
 
     def test_enable_rhapsody_model_manager(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(TypeError):
-                test_project.enable_rhapsody_model_manager(0)  # type: ignore[call-arg]
+            with pytest.raises(NotImplementedError):
+                test_project.enable_rhapsody_model_manager()
         finally:
             pass
 
@@ -567,8 +559,8 @@ class TestIRPProjectGenerated:
 
     def test_set_global_configuration(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(TypeError):
-                test_project.set_global_configuration(self._unique("arg"))  # type: ignore[call-arg]
+            with pytest.raises(NotImplementedError):
+                test_project.set_global_configuration(self._unique("gc"), self._unique("name"))
         finally:
             pass
 
@@ -580,22 +572,25 @@ class TestIRPProjectGenerated:
 
     def test_set_object_explicit(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.set_object_explicit(None)  # type: ignore[arg-type]
+            pkg = test_project.add_package(self._unique("ObjElem"))
+            assert pkg is not None
+            assert test_project.set_object_explicit(pkg) is None  # type: ignore[func-returns-value]
+            pkg.delete_from_project()
         finally:
             pass
 
     def test_set_object_implicit(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.set_object_implicit(None)  # type: ignore[arg-type]
+            pkg = test_project.add_package(self._unique("ObjElem"))
+            assert pkg is not None
+            assert test_project.set_object_implicit(pkg) is None  # type: ignore[func-returns-value]
+            pkg.delete_from_project()
         finally:
             pass
 
     def test_set_use_unique_stereotype_and_ref_cache(self, test_project: IRPProject) -> None:
         try:
-            with pytest.raises(AttributeError):
-                test_project.set_use_unique_stereotype_and_ref_cache(0)
+            assert test_project.set_use_unique_stereotype_and_ref_cache(0) is None  # type: ignore[func-returns-value]
         finally:
             pass
 

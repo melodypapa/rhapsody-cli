@@ -128,8 +128,9 @@ class TestIRPUseCaseGenerated:
         pkg = test_project.add_package(self._unique("UsePkg"))
         use_case = pkg.add_use_case(self._unique("UC"))
         try:
-            with pytest.raises(AttributeError):
-                use_case.add_describing_diagram(None)  # type: ignore[arg-type]
+            diagram = pkg.add_object_model_diagram(self._unique("DescDiagram"))
+            assert diagram is not None
+            assert use_case.add_describing_diagram(diagram) is None  # type: ignore[func-returns-value]
         finally:
             pkg.delete_from_project()
 
@@ -146,8 +147,10 @@ class TestIRPUseCaseGenerated:
         pkg = test_project.add_package(self._unique("UsePkg"))
         use_case = pkg.add_use_case(self._unique("UC"))
         try:
-            with pytest.raises(AttributeError):
-                use_case.delete_describing_diagram(None)  # type: ignore[arg-type]
+            diagram = pkg.add_object_model_diagram(self._unique("DelDiagram"))
+            assert diagram is not None
+            assert use_case.add_describing_diagram(diagram) is None  # type: ignore[func-returns-value]
+            assert use_case.delete_describing_diagram(diagram) is None  # type: ignore[func-returns-value]
         finally:
             pkg.delete_from_project()
 
@@ -214,7 +217,7 @@ class TestIRPUseCaseGenerated:
         pkg = test_project.add_package(self._unique("UsePkg"))
         use_case = pkg.add_use_case(self._unique("UC"))
         try:
-            with pytest.raises(TypeError):
-                use_case.update_contained_diagrams_on_server()  # type: ignore[call-arg]
+            with pytest.raises(NotImplementedError):
+                use_case.update_contained_diagrams_on_server(1)
         finally:
             pkg.delete_from_project()

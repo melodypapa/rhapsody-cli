@@ -232,15 +232,6 @@ def test_bring_window_to_top_delegates_to_com() -> None:
 # --- Project lifecycle ---
 
 
-def test_close_all_projects_delegates_to_com() -> None:
-    fake_app = MagicMock(name="FakeApplication")
-    app = RhapsodyApplication(fake_app)
-
-    app.close_all_projects()
-
-    fake_app.closeAllProjects.assert_called_once_with()
-
-
 def test_save_all_delegates_to_com() -> None:
     fake_app = MagicMock(name="FakeApplication")
     app = RhapsodyApplication(fake_app)
@@ -268,14 +259,6 @@ def test_get_build_no_returns_string() -> None:
     app = RhapsodyApplication(fake_app)
 
     assert app.get_build_no() == "12345"
-
-
-def test_get_rhapsody_dir_returns_string() -> None:
-    fake_app = MagicMock(name="FakeApplication")
-    fake_app.getRhapsodyDir.return_value = "C:/Program Files/Rhapsody"
-    app = RhapsodyApplication(fake_app)
-
-    assert app.get_rhapsody_dir() == "C:/Program Files/Rhapsody"
 
 
 def test_get_omroot_returns_string() -> None:

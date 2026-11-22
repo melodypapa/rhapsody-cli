@@ -1,9 +1,11 @@
-"""Integration tests for IRP_port with live Rhapsody COM API."""
+"""Integration tests for IRPPort with live Rhapsody COM API."""
 
 import uuid
 
 import pytest
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class import IRPClass
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port import IRPPort
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
@@ -29,18 +31,13 @@ class TestIRPPortIntegration:
         try:
             port = test_class.add_new_aggr("Port", self._unique("port"))
             assert isinstance(port, IRPPort)
-            with pytest.raises(AttributeError):
-                port.get_is_behavioral()
-            with pytest.raises(AttributeError):
-                port.get_is_reversed()
-            with pytest.raises(AttributeError):
-                port.get_port_contract()
-            with pytest.raises(AttributeError):
-                port.set_is_behavioral(1)
-            with pytest.raises(AttributeError):
-                port.set_is_reversed(0)
-            with pytest.raises(AttributeError):
-                port.set_port_contract(test_class)
+            assert port.get_is_behavioral() in (0, 1)
+            assert port.get_is_reversed() in (0, 1)
+            contract = port.get_port_contract()
+            assert contract is None or isinstance(contract, IRPClass)
+            assert port.set_is_behavioral(1) is None  # type: ignore[func-returns-value]
+            assert port.set_is_reversed(0) is None  # type: ignore[func-returns-value]
+            assert port.set_port_contract(test_class) is None  # type: ignore[func-returns-value]
             with pytest.raises(NotImplementedError):
                 port.get_contract()
             with pytest.raises(NotImplementedError):
@@ -54,17 +51,11 @@ class TestIRPPortIntegration:
         try:
             port = test_class.add_new_aggr("Port", self._unique("ifPort"))
             assert isinstance(port, IRPPort)
-            with pytest.raises(AttributeError):
-                port.get_provided_interfaces()
-            with pytest.raises(AttributeError):
-                port.get_required_interfaces()
-            with pytest.raises(AttributeError):
-                port.add_provided_interface(test_class)
-            with pytest.raises(AttributeError):
-                port.remove_provided_interface(test_class)
-            with pytest.raises(AttributeError):
-                port.add_required_interface(test_class)
-            with pytest.raises(AttributeError):
-                port.remove_required_interface(test_class)
+            assert isinstance(port.get_provided_interfaces(), IRPCollection)
+            assert isinstance(port.get_required_interfaces(), IRPCollection)
+            assert port.add_provided_interface(test_class) is None  # type: ignore[func-returns-value]
+            assert port.remove_provided_interface(test_class) is None  # type: ignore[func-returns-value]
+            assert port.add_required_interface(test_class) is None  # type: ignore[func-returns-value]
+            assert port.remove_required_interface(test_class) is None  # type: ignore[func-returns-value]
         finally:
             test_class.delete_from_project()

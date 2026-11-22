@@ -49,8 +49,14 @@ def _safe_cleanup_test_project(app: RhapsodyApplication, project_dir: Path) -> N
         project_dir: Path to the project directory to clean up
     """
     try:
-        # Close all projects first to release COM file handles
-        app.close_all_projects()
+        # Close all open projects first to release COM file handles.
+        # IRPApplication exposes no closeAllProjects COM member, so close each
+        # project individually through its exposed close() member.
+        for project in app.get_projects():
+            try:
+                project.close()
+            except Exception as exc:
+                print(f"Warning: could not close project {project.get_name()!r}: {exc}")
 
         # Wait a moment for file handles to be released (Windows file system latency)
         time.sleep(0.5)

@@ -6,12 +6,12 @@ quits Rhapsody on its own.
 
 Because every Rhapsody-using fixture (integration ``rhapsody_app``, system
 ``rhapsody_available``) depends on ``rhapsody_instance``, pytest sets it up
-first and finalizes it LAST -- after all other teardown such as
-``close_all_projects``. Quitting last avoids COM calls against an
-already-terminated server, which previously surfaced as Windows fatal
-exceptions (RPC_E_DISCONNECTED / RPC_S_SERVER_UNAVAILABLE) during session
-teardown when the system layer's ``disconnect`` quit Rhapsody before the
-integration layer's ``close_all_projects`` ran.
+first and finalizes it LAST -- after all other teardown such as the
+integration layer's project-by-project close. Quitting last avoids COM calls
+against an already-terminated server, which previously surfaced as Windows
+fatal exceptions (RPC_E_DISCONNECTED / RPC_S_SERVER_UNAVAILABLE) during
+session teardown when the system layer's ``disconnect`` quit Rhapsody before
+the integration layer's project closing ran.
 
 Unit tests do not request ``rhapsody_instance``, so it is never created for
 unit-only runs.
