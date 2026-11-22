@@ -67,6 +67,7 @@ def test_load_authority_round_trip(tmp_path: Path) -> None:
         catalog={"IRPExample": {"addItem": "method"}},
         documented_aliases={"IRPExample": {"get_add": "addItem"}},
         documented_unavailable={"IRPExample": ["toList"]},
+        signatures={},
     )
 
     write_authority(data, target)

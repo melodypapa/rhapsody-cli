@@ -307,6 +307,143 @@ def _resolve_generated_interface_source(generated_module_path: Path, interface_n
     return interface_source if interface_source.is_file() else generated_module_path
 
 
+_VT_NAMES = {2: "int", 3: "int", 8: "str", 9: "com", 11: "bool", 4: "float", 5: "float", 12: "object", 16: "int"}
+
+
+def collect_generated_signatures(interface_source: Path, interface_name: str) -> Dict[str, Dict[str, object]]:
+    """Return {member: {count, names, codes, types}} from a makepy interface source.
+
+    Arity comes from the generated ``def`` parameter list; types come from the
+    first ``InvokeTypes`` tuple ``((code, flags), ...)`` in the method body.
+    """
+    if not interface_source.is_file():
+        return {}
+    try:
+        tree = ast.parse(interface_source.read_text(encoding="utf-8", errors="replace"), filename=str(interface_source))
+    except (OSError, SyntaxError):
+        return {}
+    cls = next((n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == interface_name), None)
+    if cls is None:
+        return {}
+    sigs: Dict[str, Dict[str, object]] = {}
+    for node in cls.body:
+        if not isinstance(node, ast.FunctionDef) or node.name.startswith("_"):
+            continue
+        names = [a.arg for a in node.args.args if a.arg != "self"]
+        codes: List[int] = []
+        for sub in ast.walk(node):
+            if isinstance(sub, ast.Call) and isinstance(sub.func, ast.Attribute) and sub.func.attr == "InvokeTypes" and len(sub.args) >= 5:
+                tup = sub.args[4]
+                if isinstance(tup, ast.Tuple):
+                    for element in tup.elts:
+                        if isinstance(element, ast.Tuple) and element.elts and isinstance(element.elts[0], ast.Constant) and isinstance(element.elts[0].value, int):
+                            codes.append(element.elts[0].value)
+                break
+        sigs[node.name] = {"count": len(names), "names": names, "codes": codes, "types": [_VT_NAMES.get(c, "object") for c in codes]}
+    return sigs
+
+
+def collect_registered_pywin32_signatures(interface_name: str) -> Dict[str, Dict[str, object]]:
+    """Capture pywin32 signatures from the registered type library (no live Rhapsody)."""
+    _validate_interface_name(interface_name)
+    try:
+        import win32com.client.gencache as gencache
+        import win32com.client.selecttlb as selecttlb
+
+        libs = [spec for spec in selecttlb.EnumTlbs() if spec.desc == _TYPELIB_DESCRIPTION]
+        if not libs:
+            raise RuntimeError("registered Rhapsody type library not found")
+        lib = libs[0]
+        module = gencache.EnsureModule(lib.clsid, lib.lcid, int(lib.major), int(lib.minor))
+        source = getattr(module, "__file__", None)
+        if not isinstance(source, str):
+            raise RuntimeError("pywin32 did not return generated source")
+        return collect_generated_signatures(_resolve_generated_interface_source(Path(source), interface_name), interface_name)
+    except Exception as exc:
+        raise RuntimeError(f"Could not capture pywin32 signatures for {interface_name}: {exc}") from exc
+
+
+def collect_wrapper_call_arities(interface_name: str, models_root: Path) -> Dict[str, List[int]]:
+    """Return {COM member name: [arg counts]} for every call_com(lambda: self._com.Name(...)) in the wrapper."""
+    _validate_interface_name(interface_name)
+    candidates = _wrapper_class_candidates(interface_name)
+    source_paths = [models_root.parent / "application.py"] if interface_name == "IRPApplication" else sorted(models_root.rglob("*.py"))
+    result: Dict[str, List[int]] = {}
+    for source_path in source_paths:
+        if not source_path.is_file():
+            continue
+        try:
+            tree = ast.parse(source_path.read_text(encoding="utf-8"), filename=str(source_path))
+        except (OSError, SyntaxError):
+            continue
+        target = next((c for c in tree.body if isinstance(c, ast.ClassDef) and c.name in candidates), None)
+        if target is None:
+            continue
+        for node in ast.walk(target):
+            if not (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) and node.func.attr == "call_com" and node.args):
+                continue
+            lam = node.args[0]
+            if isinstance(lam, ast.Lambda) and isinstance(lam.body, ast.Call) and isinstance(lam.body.func, ast.Attribute):
+                if isinstance(lam.body.func.value, ast.Attribute) and lam.body.func.value.attr == "_com":
+                    result.setdefault(lam.body.func.attr, []).append(len(lam.body.args))
+    return result
+
+
+def collect_wrapper_arg_types(interface_name: str, models_root: Path) -> Dict[str, List[str]]:
+    """Return {COM member: [declared wrapper param types]} for call_com methods.
+
+    Types come from the wrapper method's parameter annotations (the declared
+    Python-facing contract), mapped to the same vocabulary as pywin32 types
+    (str/int/bool/com/object). This avoids inferring "object" from variables.
+    """
+    _validate_interface_name(interface_name)
+    candidates = _wrapper_class_candidates(interface_name)
+    source_paths = [models_root.parent / "application.py"] if interface_name == "IRPApplication" else sorted(models_root.rglob("*.py"))
+    result: Dict[str, List[str]] = {}
+    for source_path in source_paths:
+        if not source_path.is_file():
+            continue
+        try:
+            tree = ast.parse(source_path.read_text(encoding="utf-8"), filename=str(source_path))
+        except (OSError, SyntaxError):
+            continue
+        target = next((c for c in tree.body if isinstance(c, ast.ClassDef) and c.name in candidates), None)
+        if target is None:
+            continue
+        for method in target.body:
+            if not isinstance(method, ast.FunctionDef):
+                continue
+            # find COM members called in this method
+            called: Set[str] = set()
+            for node in ast.walk(method):
+                if not (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) and node.func.attr == "call_com" and node.args):
+                    continue
+                lam = node.args[0]
+                if isinstance(lam, ast.Lambda) and isinstance(lam.body, ast.Call) and isinstance(lam.body.func, ast.Attribute):
+                    if isinstance(lam.body.func.value, ast.Attribute) and lam.body.func.value.attr == "_com":
+                        called.add(lam.body.func.attr)
+            if not called:
+                continue
+            # declared param types from annotations (skip self)
+            declared = []
+            for arg in method.args.args[1:]:
+                ann = ast.unparse(arg.annotation) if arg.annotation else "object"
+                base = ann.split(".")[-1].strip('"').lower()
+                if base in ("str", "string"):
+                    declared.append("str")
+                elif base in ("int", "long"):
+                    declared.append("int")
+                elif base == "bool":
+                    declared.append("bool")
+                elif base.startswith("irp") or base.startswith("rp"):
+                    declared.append("com")
+                else:
+                    declared.append("object")
+            for name in called:
+                result.setdefault(name, []).extend(declared)
+    return result
+
+
 def collect_registered_pywin32_members(interface_name: str) -> Dict[str, str]:
     """Read a makepy interface from the registered type library without connecting to Rhapsody."""
     _validate_interface_name(interface_name)
@@ -402,6 +539,57 @@ def _classify_deviation(
         recommendation = "Review the related API spellings and document the intended mapping."
 
     return "; ".join(statuses), recommendation
+
+
+def build_signature_rows(
+    python_members: Dict[str, Set[str]],
+    pywin32_signatures: Dict[str, Dict[str, object]],
+    wrapper_arities: Dict[str, List[int]],
+    wrapper_arg_types: Optional[Dict[str, List[str]]] = None,
+) -> Rows:
+    """Return deviation rows for COM call arity mismatches.
+
+    A wrapper that calls a pywin32 method with a different number of arguments
+    than the type library declares cannot work at runtime; report it as a
+    SIGNATURE_ARITY_MISMATCH so it is actionable in the API report.
+    """
+    rows: Rows = []
+    lookup = {name.lower(): sig for name, sig in pywin32_signatures.items()}
+    for com_name, counts in sorted(wrapper_arities.items()):
+        sig = lookup.get(com_name.lower())
+        if sig is None:
+            continue
+        count_val = sig.get("count")
+        expected = int(count_val) if isinstance(count_val, int) else 0
+        names_val = sig.get("names")
+        types_val = sig.get("types")
+        names_list: List[object] = names_val if isinstance(names_val, list) else []
+        types_list: List[object] = types_val if isinstance(types_val, list) else []
+        if any(count != expected for count in counts):
+            names = ", ".join(str(n) for n in names_list) or "—"
+            types = ", ".join(str(ty) for ty in types_list) or "—"
+            wrapper_labels = "; ".join(sorted(python_members.get(com_name, set()))) or f"call_com -> {com_name}"
+            rows.append((
+                wrapper_labels,
+                "—",
+                f"{com_name} (method; params: {names})",
+                "SIGNATURE_ARITY_MISMATCH",
+                f"Wrapper passes {counts} arg(s) but pywin32 declares {expected} (types: {types}). Pass the documented parameters.",
+            ))
+        elif wrapper_arg_types:
+            expected_types = [str(x) for x in types_list]
+            actual_types = wrapper_arg_types.get(com_name, [])
+            if expected_types and actual_types and len(expected_types) == len(actual_types):
+                if expected_types != actual_types:
+                    wrapper_labels = "; ".join(sorted(python_members.get(com_name, set()))) or f"call_com -> {com_name}"
+                    rows.append((
+                        wrapper_labels,
+                        "—",
+                        f"{com_name} (method; types: {', '.join(expected_types)})",
+                        "SIGNATURE_TYPE_MISMATCH",
+                        f"Wrapper passes types {actual_types} but pywin32 declares {expected_types}. Match the documented COM parameter types.",
+                    ))
+    return rows
 
 
 def apply_pywin32_authority(rows: Rows, interface_name: str, authority: AuthorityData) -> Tuple[Rows, Rows, Rows]:
@@ -638,6 +826,7 @@ def render_markdown_report(
     backlog_rows: Optional[Rows] = None,
     matched_rows: Optional[Rows] = None,
     java_package: str = JAVA_PACKAGE,
+    signature_rows: Optional[Rows] = None,
 ) -> str:
     """Render a comparison summary, five-column deviation table, and AI repair guidance."""
     lines = [
@@ -672,6 +861,9 @@ def render_markdown_report(
         _append_report_table(lines, "## Wrapper Backlog", backlog_rows or [])
 
     _append_report_table(lines, "## Correct Items", matched_rows or [])
+
+    if signature_rows:
+        _append_report_table(lines, "## Signature Validation", signature_rows)
 
     lines.extend(["", "## AI Fix Guidance"])
     if not rows:
@@ -735,8 +927,12 @@ def main(argv: Optional[List[str]] = None) -> int:
             pywin32_members = authority["catalog"].get(args.java_interface)
             if pywin32_members is None:
                 raise ValueError(f"No pywin32 authority snapshot for {args.java_interface}")
+            pywin32_signatures = authority.get("signatures", {}).get(args.java_interface, {})
         else:
             pywin32_members = collect_registered_pywin32_members(args.java_interface)
+            pywin32_signatures = collect_registered_pywin32_signatures(args.java_interface)
+        wrapper_arities = collect_wrapper_call_arities(args.java_interface, models_root)
+        wrapper_arg_types = collect_wrapper_arg_types(args.java_interface, models_root)
         owned_families = {_canonical_member_name(name) for name in python_members} | {_canonical_member_name(name) for name in java_members}
         pywin32_members = {name: kind for name, kind in pywin32_members.items() if _canonical_member_name(name) in owned_families}
     except (OSError, ValueError, RuntimeError) as exc:
@@ -744,6 +940,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         return 2
 
     raw_rows = build_deviation_rows(python_members, java_members, pywin32_members)
+    signature_rows = build_signature_rows(python_members, pywin32_signatures, wrapper_arities, wrapper_arg_types)
     if args.source == "authority":
         rows, informational_rows, backlog_rows = apply_pywin32_authority(raw_rows, args.java_interface, authority)
     else:
@@ -770,6 +967,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             backlog_rows=backlog_rows,
             matched_rows=matched_rows,
             java_package=java_package,
+            signature_rows=signature_rows,
         )
         report_path.write_text(markdown, encoding="utf-8")
     except OSError as exc:

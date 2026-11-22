@@ -38,5 +38,11 @@
 | set_size() -> setSize | setSize (method) | setSize (method) | MATCH | — |
 | set_string() -> setString | setString (method) | setString (method) | MATCH | — |
 
+## Signature Validation
+
+| Python model wrapper | Java API | pywin32 | Status | Recommended change |
+| --- | --- | --- | --- | --- |
+| set_string() -> setString | — | setString (method; types: int, object) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['int', 'str'] but pywin32 declares ['int', 'object']. Match the documented COM parameter types. |
+
 ## AI Fix Guidance
 No deviations require changes.

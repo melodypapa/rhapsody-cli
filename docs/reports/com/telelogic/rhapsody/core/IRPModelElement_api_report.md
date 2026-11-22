@@ -127,5 +127,11 @@
 | set_tag_value() -> setTagValue | setTagValue (method) | setTagValue (method) | MATCH | — |
 | synchronize_template_instantiation() -> synchronizeTemplateInstantiation | synchronizeTemplateInstantiation (method) | synchronizeTemplateInstantiation (method) | MATCH | — |
 
+## Signature Validation
+
+| Python model wrapper | Java API | pywin32 | Status | Recommended change |
+| --- | --- | --- | --- | --- |
+| get_error_message() -> getErrorMessage | — | getErrorMessage (method; params: _MIDL__IRPModelElement0002_) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [0] arg(s) but pywin32 declares 1 (types: —). Pass the documented parameters. |
+
 ## AI Fix Guidance
 No deviations require changes.

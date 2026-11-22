@@ -41,5 +41,12 @@
 | get_extension_points() -> extensionPoints | getExtensionPoints (method) | extensionPoints (property) | MATCH | — |
 | get_is_behavior_overriden() -> isBehaviorOverriden; set_is_behavior_overriden() (no static COM member) | getIsBehaviorOverriden (method); setIsBehaviorOverriden (method) | isBehaviorOverriden (property) | MATCH | — |
 
+## Signature Validation
+
+| Python model wrapper | Java API | pywin32 | Status | Recommended change |
+| --- | --- | --- | --- | --- |
+| find_entry_point() -> findEntryPoint | — | findEntryPoint (method; types: com) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['str'] but pywin32 declares ['com']. Match the documented COM parameter types. |
+| find_extension_point() -> findExtensionPoint | — | findExtensionPoint (method; types: com) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['str'] but pywin32 declares ['com']. Match the documented COM parameter types. |
+
 ## AI Fix Guidance
 No deviations require changes.

@@ -51,5 +51,11 @@
 | set_separate_save_unit() -> setSeparateSaveUnit | setSeparateSaveUnit (method) | setSeparateSaveUnit (method) | MATCH | — |
 | unload() -> unload | unload (method) | unload (method) | MATCH | — |
 
+## Signature Validation
+
+| Python model wrapper | Java API | pywin32 | Status | Recommended change |
+| --- | --- | --- | --- | --- |
+| set_read_only() -> setReadOnly | — | setReadOnly (method; types: int) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['bool'] but pywin32 declares ['int']. Match the documented COM parameter types. |
+
 ## AI Fix Guidance
 No deviations require changes.

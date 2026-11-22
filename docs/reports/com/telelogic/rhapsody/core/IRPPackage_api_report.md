@@ -126,6 +126,29 @@
 | get_user_defined_stereotypes() -> userDefinedStereotypes | getUserDefinedStereotypes (method) | userDefinedStereotypes (property) | MATCH | — |
 | populate_remote_requirements() -> populateRemoteRequirements | populateRemoteRequirements (method) | populateRemoteRequirements (method) | MATCH | — |
 
+## Signature Validation
+
+| Python model wrapper | Java API | pywin32 | Status | Recommended change |
+| --- | --- | --- | --- | --- |
+| add_activity_diagram() -> addActivityDiagram | — | addActivityDiagram (method; params: —) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 0 (types: —). Pass the documented parameters. |
+| add_association() -> addAssociation | — | addAssociation (method; params: end1, end2, name) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 3 (types: com, com, str). Pass the documented parameters. |
+| add_global_object() -> addGlobalObject | — | addGlobalObject (method; params: name, otherClassName, otherClassPackageName) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 3 (types: str, str, str). Pass the documented parameters. |
+| add_link() -> addLink | — | addLink (method; params: fromPart, toPart, assoc, fromPort, toPort) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 5 (types: com, com, com, com, com). Pass the documented parameters. |
+| add_link_between_sysml_ports() -> addLinkBetweenSYSMLPorts | — | addLinkBetweenSYSMLPorts (method; params: fromPart, toPart, assoc, fromPort, toPort) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [2] arg(s) but pywin32 declares 5 (types: com, com, com, com, com). Pass the documented parameters. |
+| add_statechart_diagram() -> addStatechart | — | addStatechart (method; params: —) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 0 (types: —). Pass the documented parameters. |
+| delete_collaboration_diagram() -> deleteCollaborationDiagram | — | deleteCollaborationDiagram (method; types: str) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
+| delete_component_diagram() -> deleteComponentDiagram | — | deleteComponentDiagram (method; types: str) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
+| delete_deployment_diagram() -> deleteDeploymentDiagram | — | deleteDeploymentDiagram (method; types: str) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
+| delete_node() -> deleteNode | — | deleteNode (method; types: str) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
+| delete_object_model_diagram() -> deleteObjectModelDiagram | — | deleteObjectModelDiagram (method; types: str) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
+| delete_package() -> deletePackage | — | deletePackage (method; params: —) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 0 (types: —). Pass the documented parameters. |
+| delete_panel_diagram() -> deletePanelDiagram | — | deletePanelDiagram (method; types: str) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
+| delete_sequence_diagram() -> deleteSequenceDiagram | — | deleteSequenceDiagram (method; types: str) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
+| delete_timing_diagram() -> deleteTimingDiagram | — | deleteTimingDiagram (method; types: str) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
+| delete_use_case_diagram() -> deleteUseCaseDiagram | — | deleteUseCaseDiagram (method; types: str) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
+| find_all_by_name() -> findAllByName | — | findAllByName (method; params: name, metaClass) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 2 (types: str, str). Pass the documented parameters. |
+| set_remote_requirements_populate_mode() -> setRemoteRequirementsPopulateMode | — | setRemoteRequirementsPopulateMode (method; types: str) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['int'] but pywin32 declares ['str']. Match the documented COM parameter types. |
+
 ## AI Fix Guidance
 
 ### Finding 1: JAVA_DOC_MISSING
