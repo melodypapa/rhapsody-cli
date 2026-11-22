@@ -1190,18 +1190,15 @@ class IRPModelElement(AbstractRPModelElement):
         return int(AbstractRPModelElement.get_com_property(self._com, "requirementTraceabilityHandle"))
 
     def get_rmm_url(self) -> str:
-        """Returns the Rhapsody Model Manager url for the model element.
-
-        Returns:
-            The RMM URL as a string.
+        """Return the Rhapsody Model Manager URL for the model element.
 
         Raises:
-            RhapsodyRuntimeException: if the RMM URL cannot be retrieved.
+            NotImplementedError: This Java API method is not exposed by pywin32.
 
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getRmmUrl()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getRmmUrl", "rmmUrl"))
+        raise NotImplementedError("getRmmUrl is not exposed in the Rhapsody COM automation type library.")
 
     def get_save_unit(self) -> IRPUnit:
         """Returns the unit that the model element is saved in.
@@ -1500,9 +1497,7 @@ class IRPModelElement(AbstractRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::setDescriptionHTML(java.lang.String descriptionHTML)
         """
-        raise NotImplementedError(
-            "setDescriptionHTML is documented as 'Not implemented - should not be used' in the Rhapsody Java API. " "This method is not available in the COM automation interface."
-        )
+        raise NotImplementedError("setDescriptionHTML is documented as 'Not implemented - should not be used' in the Rhapsody Java API. This method is not available in the COM automation interface.")
 
     def set_description_rtf(self, description_rtf: str) -> None:
         """Specifies the RTF string to use for the description of the model element.

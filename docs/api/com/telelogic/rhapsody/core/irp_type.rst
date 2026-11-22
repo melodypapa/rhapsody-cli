@@ -26,9 +26,13 @@ The IRPType interface represents a named type definition.
      - enumerationLiterals (property); isPredefined (property); isTypedef (property);
      typedefBaseType (property)
      - get_enumeration_literals(), get_is_predefined(), get_is_typedef(),
-     get_typedef_base_type(), set_typedef_base_type()
-     - COM_MEMBER_NOT_EXPOSED. The Java-shaped members are absent from the pywin32
-       catalog; sites are left unchanged and documented in ``IRPType_api_report.md``.
+     get_typedef_base_type(), set_typedef_base_type() via
+     get_com_property/set_com_property
+     - COM_MEMBER_NOT_EXPOSED resolved. The Java-shaped members are absent from the
+       pywin32 catalog; bindings migrated to the authoritative properties
+       (``enumerationLiterals``, ``isPredefined``, ``isTypedef``, ``typedefBaseType``)
+       as recommended in ``IRPType_api_report.md``. Python get_* names retained
+       by repo convention; COM property shape honoured in the binding.
    * - getIsTypedefConstant (method); setIsTypedefConstant (method);
      getIsTypedefOrdered (method); setIsTypedefOrdered (method);
      getIsTypedefReference (method); setIsTypedefReference (method)

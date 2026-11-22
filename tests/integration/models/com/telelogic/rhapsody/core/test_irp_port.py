@@ -4,20 +4,9 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.exceptions import RhapsodyRuntimeException
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port import IRPPort
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
-
-
-def _assert_failure_or_none(call, exceptions=(RhapsodyRuntimeException, AttributeError, TypeError)) -> None:  # type: ignore[no-untyped-def]
-    """Assert a documented COM outcome: a known failure or a None result."""
-    try:
-        result = call()
-    except exceptions as exc:
-        assert exc is not None
-    else:
-        assert result is None
 
 
 @pytest.mark.integration
@@ -40,16 +29,22 @@ class TestIRPPortIntegration:
         try:
             port = test_class.add_new_aggr("Port", self._unique("port"))
             assert isinstance(port, IRPPort)
-            for call in (port.get_is_behavioral, port.get_is_reversed, port.get_port_contract):
-                _assert_failure_or_none(call)
-            for call in (  # type: ignore[assignment]
-                lambda: port.set_is_behavioral(1),
-                lambda: port.set_is_reversed(0),
-                lambda: port.set_port_contract(test_class),
-                lambda: port.get_contract(),
-                lambda: port.set_contract(test_class),
-            ):
-                _assert_failure_or_none(call)
+            with pytest.raises(AttributeError):
+                port.get_is_behavioral()
+            with pytest.raises(AttributeError):
+                port.get_is_reversed()
+            with pytest.raises(AttributeError):
+                port.get_port_contract()
+            with pytest.raises(AttributeError):
+                port.set_is_behavioral(1)
+            with pytest.raises(AttributeError):
+                port.set_is_reversed(0)
+            with pytest.raises(AttributeError):
+                port.set_port_contract(test_class)
+            with pytest.raises(NotImplementedError):
+                port.get_contract()
+            with pytest.raises(NotImplementedError):
+                port.set_contract(test_class)
         finally:
             test_class.delete_from_project()
 
@@ -59,14 +54,17 @@ class TestIRPPortIntegration:
         try:
             port = test_class.add_new_aggr("Port", self._unique("ifPort"))
             assert isinstance(port, IRPPort)
-            for call in (port.get_provided_interfaces, port.get_required_interfaces):
-                _assert_failure_or_none(call)
-            for call in (  # type: ignore[assignment]
-                lambda: port.add_provided_interface(test_class),
-                lambda: port.remove_provided_interface(test_class),
-                lambda: port.add_required_interface(test_class),
-                lambda: port.remove_required_interface(test_class),
-            ):
-                _assert_failure_or_none(call)
+            with pytest.raises(AttributeError):
+                port.get_provided_interfaces()
+            with pytest.raises(AttributeError):
+                port.get_required_interfaces()
+            with pytest.raises(AttributeError):
+                port.add_provided_interface(test_class)
+            with pytest.raises(AttributeError):
+                port.remove_provided_interface(test_class)
+            with pytest.raises(AttributeError):
+                port.add_required_interface(test_class)
+            with pytest.raises(AttributeError):
+                port.remove_required_interface(test_class)
         finally:
             test_class.delete_from_project()

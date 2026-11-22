@@ -4,15 +4,14 @@
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `IRPProject` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`)
 - Members: Python `74`, Java `70`, pywin32 `73`
-- Deviations: `14`
+- Deviations: `11`
 - Deviations by status:
   - `COM_MEMBER_NOT_EXPOSED`: 4
   - `JAVA_DOC_MISSING`: 7
-  - `PYWIN32_MEMBER_MISSING`: 3
 
-- Informational binding differences (expected): `0`
+- Informational binding differences (expected): `3`
 - Wrapper backlog (supported members without wrappers): `3`
-- Documented aliases: `0`, documented unavailable: `0`
+- Documented aliases: `0`, documented unavailable: `3`
 
 ## Comparison details
 
@@ -22,13 +21,10 @@
 | add_class() -> addClass | — | addClass (method) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
 | add_node() -> addNode | — | addNode (method) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
 | delete_node() -> deleteNode | — | deleteNode (method) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
-| enable_rhapsody_model_manager() -> enableRhapsodyModelManager | enableRhapsodyModelManager (method) | — | PYWIN32_MEMBER_MISSING | Use a member exposed by the registered type library or verify the Rhapsody version. |
 | find_node() -> findNode | — | findNode (method) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
 | gateway_export_to_xml() -> gatewayExportToXML | gatewayExportToXML (method) | GatewayExportToXML (method) | COM_MEMBER_NOT_EXPOSED | Change the COM call to a member exposed by the registered pywin32 interface. |
 | gateway_export_to_xml2() -> gatewayExportToXML2 | gatewayExportToXML2 (method) | GatewayExportToXML2 (method) | COM_MEMBER_NOT_EXPOSED | Change the COM call to a member exposed by the registered pywin32 interface. |
 | generate_report() -> generateReport | generateReport (method) | GenerateReport (method) | COM_MEMBER_NOT_EXPOSED | Change the COM call to a member exposed by the registered pywin32 interface. |
-| set_global_configuration() -> globalConfiguration; set_global_configuration() -> setGlobalConfiguration | setGlobalConfiguration (method) | — | PYWIN32_MEMBER_MISSING | Use a member exposed by the registered type library or verify the Rhapsody version. |
-| migrate_design_manager_links() -> migrateDesignManagerLinks | migrateDesignManagerLinks (method) | — | PYWIN32_MEMBER_MISSING | Use a member exposed by the registered type library or verify the Rhapsody version. |
 | get_nodes() -> nodes | — | nodes (property) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
 | get_packages() -> packages | — | packages (property) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
 | set_use_unique_stereotype_and_ref_cache() -> setUseUniqueStereotypeAndRefCache; set_use_unique_stereotype_and_ref_cache() -> useUniqueStereotypeAndRefCache | setUseUniqueStereotypeAndRefCache (method) | UseUniqueStereotypeAndRefCache (property) | COM_MEMBER_NOT_EXPOSED | Use the UseUniqueStereotypeAndRefCache property or a getter/setter fallback instead of calling setUseUniqueStereotypeAndRefCache and useUniqueStereotypeAndRefCache directly. |
@@ -37,7 +33,9 @@
 
 | Python model wrapper | Java API | pywin32 | Status | Recommended change |
 | --- | --- | --- | --- | --- |
-| — | — | — | — | — |
+| enable_rhapsody_model_manager() (no static COM member) | enableRhapsodyModelManager (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| set_global_configuration() (no static COM member) | setGlobalConfiguration (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| migrate_design_manager_links() (no static COM member) | migrateDesignManagerLinks (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
 
 ## Wrapper Backlog
 
@@ -146,16 +144,7 @@
 - **Recommended change:** Confirm this COM member is a supported extension and document its status.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
-### Finding 5: PYWIN32_MEMBER_MISSING
-- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
-- **Current Python wrapper/COM call:** enable_rhapsody_model_manager() -> enableRhapsodyModelManager
-- **Expected Python method(s):** `enable_rhapsody_model_manager`
-- **Java signature(s):** `IRPProject.enableRhapsodyModelManager()`
-- **pywin32 member(s):** —
-- **Recommended change:** Use a member exposed by the registered type library or verify the Rhapsody version.
-- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
-
-### Finding 6: JAVA_DOC_MISSING
+### Finding 5: JAVA_DOC_MISSING
 - **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
 - **Current Python wrapper/COM call:** find_node() -> findNode
 - **Expected Python method(s):** —
@@ -164,7 +153,7 @@
 - **Recommended change:** Confirm this COM member is a supported extension and document its status.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
-### Finding 7: COM_MEMBER_NOT_EXPOSED
+### Finding 6: COM_MEMBER_NOT_EXPOSED
 - **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
 - **Current Python wrapper/COM call:** gateway_export_to_xml() -> gatewayExportToXML
 - **Expected Python method(s):** `gateway_export_to_xml`
@@ -173,7 +162,7 @@
 - **Recommended change:** Change the COM call to a member exposed by the registered pywin32 interface.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
-### Finding 8: COM_MEMBER_NOT_EXPOSED
+### Finding 7: COM_MEMBER_NOT_EXPOSED
 - **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
 - **Current Python wrapper/COM call:** gateway_export_to_xml2() -> gatewayExportToXML2
 - **Expected Python method(s):** `gateway_export_to_xml2`
@@ -182,7 +171,7 @@
 - **Recommended change:** Change the COM call to a member exposed by the registered pywin32 interface.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
-### Finding 9: COM_MEMBER_NOT_EXPOSED
+### Finding 8: COM_MEMBER_NOT_EXPOSED
 - **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
 - **Current Python wrapper/COM call:** generate_report() -> generateReport
 - **Expected Python method(s):** `generate_report`
@@ -191,25 +180,7 @@
 - **Recommended change:** Change the COM call to a member exposed by the registered pywin32 interface.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
-### Finding 10: PYWIN32_MEMBER_MISSING
-- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
-- **Current Python wrapper/COM call:** set_global_configuration() -> globalConfiguration; set_global_configuration() -> setGlobalConfiguration
-- **Expected Python method(s):** `set_global_configuration`
-- **Java signature(s):** `IRPProject.setGlobalConfiguration(java.lang.String, java.lang.String)`
-- **pywin32 member(s):** —
-- **Recommended change:** Use a member exposed by the registered type library or verify the Rhapsody version.
-- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
-
-### Finding 11: PYWIN32_MEMBER_MISSING
-- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
-- **Current Python wrapper/COM call:** migrate_design_manager_links() -> migrateDesignManagerLinks
-- **Expected Python method(s):** `migrate_design_manager_links`
-- **Java signature(s):** `IRPProject.migrateDesignManagerLinks()`
-- **pywin32 member(s):** —
-- **Recommended change:** Use a member exposed by the registered type library or verify the Rhapsody version.
-- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
-
-### Finding 12: JAVA_DOC_MISSING
+### Finding 9: JAVA_DOC_MISSING
 - **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
 - **Current Python wrapper/COM call:** get_nodes() -> nodes
 - **Expected Python method(s):** —
@@ -218,7 +189,7 @@
 - **Recommended change:** Confirm this COM member is a supported extension and document its status.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
-### Finding 13: JAVA_DOC_MISSING
+### Finding 10: JAVA_DOC_MISSING
 - **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
 - **Current Python wrapper/COM call:** get_packages() -> packages
 - **Expected Python method(s):** —
@@ -227,7 +198,7 @@
 - **Recommended change:** Confirm this COM member is a supported extension and document its status.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
-### Finding 14: COM_MEMBER_NOT_EXPOSED
+### Finding 11: COM_MEMBER_NOT_EXPOSED
 - **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
 - **Current Python wrapper/COM call:** set_use_unique_stereotype_and_ref_cache() -> setUseUniqueStereotypeAndRefCache; set_use_unique_stereotype_and_ref_cache() -> useUniqueStereotypeAndRefCache
 - **Expected Python method(s):** `set_use_unique_stereotype_and_ref_cache`

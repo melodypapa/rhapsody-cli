@@ -204,36 +204,29 @@ class IRPPort(RPInstance):
         AbstractRPModelElement.call_com(lambda: self._com.removeRequiredInterface(new_val._com))
 
     def get_contract(self) -> IRPClass:
-        """Returns the contract defined for the port.
+        """Return the port contract using the deprecated API name.
 
-        Deprecated:
-            This method exists for backward compatibility. Use
-            :meth:`get_port_contract` instead.
-
-        Returns:
-            The wrapped ``IRPClass`` used as the port's contract.
+        Raises:
+            NotImplementedError: This Java API method is not exposed by pywin32.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPort::getContract()
         """
-        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class import IRPClass
+        raise NotImplementedError("getContract is not exposed in the Rhapsody COM automation type library.")
 
-        return cast(IRPClass, AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getContract", "contract")))
-
-    def set_contract(self, contract: IRPModelElement) -> None:
-        """Specifies the contract to use for the port.
-
-        Deprecated:
-            This method exists for backward compatibility. Use
-            :meth:`set_port_contract` instead.
+    def set_contract(self, contract: IRPClass) -> None:
+        """Set the port contract using the deprecated API name.
 
         Args:
-            contract: The class (``IRPClass``) to use as the port's contract.
+            contract: The class to use as the port's contract.
+
+        Raises:
+            NotImplementedError: This Java API method is not exposed by pywin32.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPort::setContract(com.telelogic.rhapsody.core.IRPClass contract)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setContract", "contract", contract._com)
+        raise NotImplementedError("setContract is not exposed in the Rhapsody COM automation type library.")
 
 
 AbstractRPModelElement.register_wrapper("Port", IRPPort)

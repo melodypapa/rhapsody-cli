@@ -4,25 +4,24 @@
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `IRPModelElement` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_model_element.py`)
 - Members: Python `113`, Java `118`, pywin32 `104`
-- Deviations: `1`
+- Deviations: `0`
 - Deviations by status:
-  - `PYWIN32_MEMBER_MISSING`: 1
+  - None
 
-- Informational binding differences (expected): `0`
+- Informational binding differences (expected): `1`
 - Wrapper backlog (supported members without wrappers): `4`
-- Documented aliases: `0`, documented unavailable: `0`
+- Documented aliases: `0`, documented unavailable: `1`
 
 ## Comparison details
 
 | Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |
 | --- | --- | --- | --- | --- |
-| get_rmm_url() -> getRmmUrl; get_rmm_url() -> rmmUrl | getRmmUrl (method) | — | PYWIN32_MEMBER_MISSING | Use a member exposed by the registered type library or verify the Rhapsody version. |
 
 ## Expected Binding Differences
 
 | Python model wrapper | Java API | pywin32 | Status | Recommended change |
 | --- | --- | --- | --- | --- |
-| — | — | — | — | — |
+| get_rmm_url() (no static COM member) | getRmmUrl (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
 
 ## Wrapper Backlog
 
@@ -135,12 +134,4 @@
 | synchronize_template_instantiation() -> synchronizeTemplateInstantiation | synchronizeTemplateInstantiation (method) | synchronizeTemplateInstantiation (method) | MATCH | — |
 
 ## AI Fix Guidance
-
-### Finding 1: PYWIN32_MEMBER_MISSING
-- **Target:** `IRPModelElement` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_model_element.py`
-- **Current Python wrapper/COM call:** get_rmm_url() -> getRmmUrl; get_rmm_url() -> rmmUrl
-- **Expected Python method(s):** `get_rmm_url`
-- **Java signature(s):** `IRPModelElement.getRmmUrl()`
-- **pywin32 member(s):** —
-- **Recommended change:** Use a member exposed by the registered type library or verify the Rhapsody version.
-- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
+No deviations require changes.

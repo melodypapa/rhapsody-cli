@@ -4,37 +4,35 @@
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `IRPPackage` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`)
 - Members: Python `101`, Java `100`, pywin32 `94`
-- Deviations: `11`
+- Deviations: `5`
 - Deviations by status:
   - `JAVA_DOC_MISSING`: 1
   - `PYTHON_METHOD_NAME_MISMATCH`: 4
-  - `PYWIN32_MEMBER_MISSING`: 6
 
-- Informational binding differences (expected): `0`
+- Informational binding differences (expected): `6`
 - Wrapper backlog (supported members without wrappers): `0`
-- Documented aliases: `0`, documented unavailable: `0`
+- Documented aliases: `0`, documented unavailable: `6`
 
 ## Comparison details
 
 | Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |
 | --- | --- | --- | --- | --- |
 | add_association() -> addAssociation | — | addAssociation (method) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
-| add_instance_specification() -> addInstanceSpecification | addInstanceSpecification (method) | — | PYWIN32_MEMBER_MISSING | Use a member exposed by the registered type library or verify the Rhapsody version. |
 | add_statechart_diagram() -> addStatechart | addStatechart (method) | addStatechart (method) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| login_to_remote_artifact_server() -> loginToRemoteArtifactServer | loginToRemoteArtifactServer (method) | — | PYWIN32_MEMBER_MISSING | Use a member exposed by the registered type library or verify the Rhapsody version. |
 | get_nested_packages() -> packages | getPackages (method) | packages (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
 | recalculate_events_base_id() -> reCalculateEventsBaseId | reCalculateEventsBaseId (method) | reCalculateEventsBaseId (method) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| get_root_instance_specifications() -> getRootInstanceSpecifications; get_root_instance_specifications() -> rootInstanceSpecifications | getRootInstanceSpecifications (method) | — | PYWIN32_MEMBER_MISSING | Use a member exposed by the registered type library or verify the Rhapsody version. |
 | get_saved_in_separate_directory() -> savedInSeperateDirectory; set_saved_in_separate_directory() -> savedInSeperateDirectory | getSavedInSeperateDirectory (method); setSavedInSeperateDirectory (method) | savedInSeperateDirectory (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| update_contained_diagrams_on_server() -> updateContainedDiagramsOnServer | updateContainedDiagramsOnServer (method) | — | PYWIN32_MEMBER_MISSING | Use a member exposed by the registered type library or verify the Rhapsody version. |
-| update_contained_matrices_on_server() -> updateContainedMatricesOnServer | updateContainedMatricesOnServer (method) | — | PYWIN32_MEMBER_MISSING | Use a member exposed by the registered type library or verify the Rhapsody version. |
-| update_contained_tables_on_server() -> updateContainedTablesOnServer | updateContainedTablesOnServer (method) | — | PYWIN32_MEMBER_MISSING | Use a member exposed by the registered type library or verify the Rhapsody version. |
 
 ## Expected Binding Differences
 
 | Python model wrapper | Java API | pywin32 | Status | Recommended change |
 | --- | --- | --- | --- | --- |
-| — | — | — | — | — |
+| add_instance_specification() (no static COM member) | addInstanceSpecification (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| login_to_remote_artifact_server() (no static COM member) | loginToRemoteArtifactServer (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| get_root_instance_specifications() (no static COM member) | getRootInstanceSpecifications (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| update_contained_diagrams_on_server() (no static COM member) | updateContainedDiagramsOnServer (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| update_contained_matrices_on_server() (no static COM member) | updateContainedMatricesOnServer (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| update_contained_tables_on_server() (no static COM member) | updateContainedTablesOnServer (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
 
 ## Wrapper Backlog
 
@@ -146,16 +144,7 @@
 - **Recommended change:** Confirm this COM member is a supported extension and document its status.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
-### Finding 2: PYWIN32_MEMBER_MISSING
-- **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
-- **Current Python wrapper/COM call:** add_instance_specification() -> addInstanceSpecification
-- **Expected Python method(s):** `add_instance_specification`
-- **Java signature(s):** `IRPPackage.addInstanceSpecification(java.lang.String, com.telelogic.rhapsody.core.IRPClassifier)`
-- **pywin32 member(s):** —
-- **Recommended change:** Use a member exposed by the registered type library or verify the Rhapsody version.
-- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
-
-### Finding 3: PYTHON_METHOD_NAME_MISMATCH
+### Finding 2: PYTHON_METHOD_NAME_MISMATCH
 - **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
 - **Current Python wrapper/COM call:** add_statechart_diagram() -> addStatechart
 - **Expected Python method(s):** `add_statechart`
@@ -164,16 +153,7 @@
 - **Recommended change:** Rename the Python method to the snake_case Java API name or document the alias.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
-### Finding 4: PYWIN32_MEMBER_MISSING
-- **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
-- **Current Python wrapper/COM call:** login_to_remote_artifact_server() -> loginToRemoteArtifactServer
-- **Expected Python method(s):** `login_to_remote_artifact_server`
-- **Java signature(s):** `IRPPackage.loginToRemoteArtifactServer()`
-- **pywin32 member(s):** —
-- **Recommended change:** Use a member exposed by the registered type library or verify the Rhapsody version.
-- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
-
-### Finding 5: PYTHON_METHOD_NAME_MISMATCH
+### Finding 3: PYTHON_METHOD_NAME_MISMATCH
 - **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
 - **Current Python wrapper/COM call:** get_nested_packages() -> packages
 - **Expected Python method(s):** `get_packages`
@@ -182,7 +162,7 @@
 - **Recommended change:** Rename the Python method to the snake_case Java API name or document the alias.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
-### Finding 6: PYTHON_METHOD_NAME_MISMATCH
+### Finding 4: PYTHON_METHOD_NAME_MISMATCH
 - **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
 - **Current Python wrapper/COM call:** recalculate_events_base_id() -> reCalculateEventsBaseId
 - **Expected Python method(s):** `re_calculate_events_base_id`
@@ -191,47 +171,11 @@
 - **Recommended change:** Rename the Python method to the snake_case Java API name or document the alias.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
-### Finding 7: PYWIN32_MEMBER_MISSING
-- **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
-- **Current Python wrapper/COM call:** get_root_instance_specifications() -> getRootInstanceSpecifications; get_root_instance_specifications() -> rootInstanceSpecifications
-- **Expected Python method(s):** `get_root_instance_specifications`
-- **Java signature(s):** `IRPPackage.getRootInstanceSpecifications()`
-- **pywin32 member(s):** —
-- **Recommended change:** Use a member exposed by the registered type library or verify the Rhapsody version.
-- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
-
-### Finding 8: PYTHON_METHOD_NAME_MISMATCH
+### Finding 5: PYTHON_METHOD_NAME_MISMATCH
 - **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
 - **Current Python wrapper/COM call:** get_saved_in_separate_directory() -> savedInSeperateDirectory; set_saved_in_separate_directory() -> savedInSeperateDirectory
 - **Expected Python method(s):** `get_saved_in_seperate_directory`, `set_saved_in_seperate_directory`
 - **Java signature(s):** `IRPPackage.getSavedInSeperateDirectory()`, `IRPPackage.setSavedInSeperateDirectory(int)`
 - **pywin32 member(s):** savedInSeperateDirectory (property)
 - **Recommended change:** Rename the Python method to the snake_case Java API name or document the alias.
-- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
-
-### Finding 9: PYWIN32_MEMBER_MISSING
-- **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
-- **Current Python wrapper/COM call:** update_contained_diagrams_on_server() -> updateContainedDiagramsOnServer
-- **Expected Python method(s):** `update_contained_diagrams_on_server`
-- **Java signature(s):** `IRPPackage.updateContainedDiagramsOnServer(int)`
-- **pywin32 member(s):** —
-- **Recommended change:** Use a member exposed by the registered type library or verify the Rhapsody version.
-- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
-
-### Finding 10: PYWIN32_MEMBER_MISSING
-- **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
-- **Current Python wrapper/COM call:** update_contained_matrices_on_server() -> updateContainedMatricesOnServer
-- **Expected Python method(s):** `update_contained_matrices_on_server`
-- **Java signature(s):** `IRPPackage.updateContainedMatricesOnServer(int)`
-- **pywin32 member(s):** —
-- **Recommended change:** Use a member exposed by the registered type library or verify the Rhapsody version.
-- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
-
-### Finding 11: PYWIN32_MEMBER_MISSING
-- **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
-- **Current Python wrapper/COM call:** update_contained_tables_on_server() -> updateContainedTablesOnServer
-- **Expected Python method(s):** `update_contained_tables_on_server`
-- **Java signature(s):** `IRPPackage.updateContainedTablesOnServer(int)`
-- **pywin32 member(s):** —
-- **Recommended change:** Use a member exposed by the registered type library or verify the Rhapsody version.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.

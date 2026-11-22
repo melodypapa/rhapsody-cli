@@ -151,8 +151,19 @@ class IRPClass(IRPClassifier):
             com.telelogic.rhapsody.core.IRPClass::addEventReceptionWithEvent(java.lang.String name, com.telelogic.rhapsody.core.IRPEvent event)
         """
         raise NotImplementedError(
-            "addEventReceptionWithEvent is not exposed in the Rhapsody COM automation type library. " "Use add_event_reception(name) instead and set the event via the reception object."
+            "addEventReceptionWithEvent is not exposed in the Rhapsody COM automation type library. Use add_event_reception(name) instead and set the event via the reception object."
         )
+
+    def update_contained_diagrams_on_server(self, enforce_update: int) -> int:
+        """Update this class's diagrams on the server.
+
+        Raises:
+            NotImplementedError: The Java API method is not exposed by pywin32.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPClass::updateContainedDiagramsOnServer(int enforceUpdate)
+        """
+        raise NotImplementedError("updateContainedDiagramsOnServer is not exposed in the Rhapsody COM automation type library.")
 
     def add_link(self, from_part: IRPModelElement, to_part: IRPModelElement, assoc: IRPModelElement, from_port: IRPModelElement, to_port: IRPModelElement) -> RPLink:
         """Creates a link between two parts belonging to a class.

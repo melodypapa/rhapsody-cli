@@ -676,16 +676,16 @@ class IRPProject(IRPPackage):
         """
         AbstractRPModelElement.call_com(lambda: self._com.applyRoundtripDiffMerge())
 
-    def enable_rhapsody_model_manager(self, enabled: int) -> None:
-        """Enables or disables Rhapsody Model Manager integration for the project.
+    def enable_rhapsody_model_manager(self) -> None:
+        """Enable Rhapsody Model Manager for the project.
 
-        Args:
-            enabled: ``1`` to enable, ``0`` to disable.
+        Raises:
+            NotImplementedError: This Java API method is not exposed by pywin32.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::enableRhapsodyModelManager(int enabled)
+            com.telelogic.rhapsody.core.IRPProject::enableRhapsodyModelManager()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.enableRhapsodyModelManager(enabled))
+        raise NotImplementedError("enableRhapsodyModelManager is not exposed in the Rhapsody COM automation type library.")
 
     def find_elements_with_oslc_link(self, link: str) -> IRPCollection:
         """Returns the elements that have an OSLC link matching the specified link.
@@ -735,12 +735,15 @@ class IRPProject(IRPPackage):
         return int(AbstractRPModelElement.call_com(lambda: self._com.isActivelyManaged()))
 
     def migrate_design_manager_links(self) -> None:
-        """Migrates Design Manager links for the project.
+        """Migrate Design Manager links for the project.
+
+        Raises:
+            NotImplementedError: This Java API method is not exposed by pywin32.
 
         Reference:
             com.telelogic.rhapsody.core.IRPProject::migrateDesignManagerLinks()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.migrateDesignManagerLinks())
+        raise NotImplementedError("migrateDesignManagerLinks is not exposed in the Rhapsody COM automation type library.")
 
     # --- Rose Import methods ---
     def import_package_from_rose(self, file_path: str) -> IRPPackage:
@@ -896,16 +899,20 @@ class IRPProject(IRPPackage):
         """
         AbstractRPModelElement.set_com_property(self._com, "defaultDirectoryScheme", scheme)
 
-    def set_global_configuration(self, config: str) -> None:
-        """Sets the global configuration of the project.
+    def set_global_configuration(self, gc_uri: str, name: str) -> int:
+        """Set the global configuration used for the project.
 
         Args:
-            config: The global configuration to set.
+            gc_uri: The URI of the global configuration.
+            name: The name of the global configuration.
+
+        Raises:
+            NotImplementedError: This Java API method is not exposed by pywin32.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::setGlobalConfiguration(java.lang.String config)
+            com.telelogic.rhapsody.core.IRPProject::setGlobalConfiguration(java.lang.String GCUri, java.lang.String name)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setGlobalConfiguration", "globalConfiguration", config)
+        raise NotImplementedError("setGlobalConfiguration is not exposed in the Rhapsody COM automation type library.")
 
     def set_notify_plugin_on_elements_changed(self, enabled: int) -> None:
         """Sets whether plugins are notified when elements change.

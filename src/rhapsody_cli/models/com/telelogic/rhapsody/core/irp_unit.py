@@ -223,23 +223,18 @@ class IRPUnit(IRPModelElement):
         return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "structureDiagrams"))
 
     def get_unit_path(self, b_full_path: int) -> str:
-        """Returns the path of the unit, including the filename.
+        """Return the unit path, including the filename.
 
         Args:
-            b_full_path: ``1`` to return the full path, ``0`` to return a
-                relative path. For relative paths, the path returned is relative
-                to the saved unit that owns this unit.
-
-        Returns:
-            The path of the unit, including the filename.
+            b_full_path: ``1`` for a full path or ``0`` for a relative path.
 
         Raises:
-            RhapsodyRuntimeException: if the unit path cannot be retrieved.
+            NotImplementedError: This Java API method is not exposed by pywin32.
 
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::getUnitPath(int bFullPath)
         """
-        return str(AbstractRPModelElement.call_com(lambda: self._com.getUnitPath(b_full_path)))
+        raise NotImplementedError("getUnitPath is not exposed in the Rhapsody COM automation type library.")
 
     def is_read_only(self) -> bool:
         """Checks whether the file used to store the unit is read-only.

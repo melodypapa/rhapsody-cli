@@ -8,9 +8,9 @@
 - Deviations by status:
   - None
 
-- Informational binding differences (expected): `1`
+- Informational binding differences (expected): `0`
 - Wrapper backlog (supported members without wrappers): `0`
-- Documented aliases: `0`, documented unavailable: `0`
+- Documented aliases: `0`, documented unavailable: `1`
 
 ## Comparison details
 
@@ -21,7 +21,7 @@
 
 | Python model wrapper | Java API | pywin32 | Status | Recommended change |
 | --- | --- | --- | --- | --- |
-| get_unit_path() -> getUnitPath; set_unit_path() -> setUnitPath | getUnitPath (method); setUnitPath (method) | setUnitPath (method) | ACCESSOR_ALIAS_MISMATCH | Review the related API spellings and document the intended mapping. |
+| — | — | — | — | — |
 
 ## Wrapper Backlog
 
@@ -46,6 +46,7 @@
 | get_nested_save_units() -> getNestedSaveUnits | getNestedSaveUnits (method) | getNestedSaveUnits (method) | MATCH | — |
 | get_nested_save_units_count() -> getNestedSaveUnitsCount | getNestedSaveUnitsCount (method) | getNestedSaveUnitsCount (method) | MATCH | — |
 | get_structure_diagrams() -> structureDiagrams | getStructureDiagrams (method) | structureDiagrams (property) | MATCH | — |
+| get_unit_path() (no static COM member); set_unit_path() -> setUnitPath | getUnitPath (method); setUnitPath (method) | setUnitPath (method) | MATCH | — |
 | is_read_only() -> isReadOnly | isReadOnly (method) | isReadOnly (method) | MATCH | — |
 | is_reference_unit() -> isReferenceUnit | isReferenceUnit (method) | isReferenceUnit (method) | MATCH | — |
 | is_separate_save_unit() -> isSeparateSaveUnit | isSeparateSaveUnit (method) | isSeparateSaveUnit (method) | MATCH | — |

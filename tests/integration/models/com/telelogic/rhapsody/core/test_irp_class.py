@@ -4,7 +4,7 @@ These tests require a running Rhapsody instance with an open project.
 """
 
 import time
-from typing import Callable, cast
+from typing import cast
 
 import pytest
 
@@ -14,16 +14,6 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPacka
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type import IRPType
 from rhapsody_cli.models.elements.interactions import RPEventReception
-
-
-def _assert_com_outcome(call: Callable[[], object]) -> None:
-    """Accept a documented COM failure or a completed call without raising."""
-    try:
-        result = call()
-    except Exception as exc:
-        assert isinstance(exc, (RhapsodyRuntimeException, AttributeError, TypeError, ValueError, KeyError, NotImplementedError))
-    else:
-        assert result is None or not isinstance(result, BaseException)
 
 
 @pytest.mark.integration
@@ -89,7 +79,8 @@ class TestIRPClassIntegration:
         test_class = pkg.add_class(class_name)
         try:
             assert test_class.is_abstract is False
-            _assert_com_outcome(lambda: setattr(test_class, "is_abstract", True))
+            with pytest.raises(NotImplementedError):
+                test_class.is_abstract = True
         finally:
             test_class.delete_from_project()
 
@@ -149,7 +140,17 @@ class TestIRPClassIntegration:
         test_class = pkg.add_class(class_name)
         try:
             event = pkg.add_event(event_name)
-            _assert_com_outcome(lambda: test_class.add_event_reception_with_event(reception_name, cast(RPEvent, event)))
+            with pytest.raises(NotImplementedError, match="addEventReceptionWithEvent is not exposed in the Rhapsody COM"):
+                test_class.add_event_reception_with_event(reception_name, cast(RPEvent, event))
+        finally:
+            test_class.delete_from_project()
+
+    def test_update_contained_diagrams_on_server_raises_not_implemented(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("UnavailableDiagramPkg"))
+        test_class = pkg.add_class(self._unique("UnavailableDiagramClass"))
+        try:
+            with pytest.raises(NotImplementedError):
+                test_class.update_contained_diagrams_on_server(1)
         finally:
             test_class.delete_from_project()
 
@@ -309,7 +310,9 @@ class TestIRPClassIntegration:
         pkg = test_project.add_package(self._unique("LinkPkg"))
         cls = pkg.add_class(self._unique("LinkCls"))
         try:
-            _assert_com_outcome(lambda: cls.add_link(cls, cls, cls, cls, cls))
-            _assert_com_outcome(lambda: cls.add_link_to_part_via_port(cls, cls, cls, cls))
+            with pytest.raises(RhapsodyRuntimeException):
+                cls.add_link(cls, cls, cls, cls, cls)
+            with pytest.raises(RhapsodyRuntimeException):
+                cls.add_link_to_part_via_port(cls, cls, cls, cls)
         finally:
             cls.delete_from_project()

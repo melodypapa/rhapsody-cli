@@ -98,16 +98,16 @@ def test_class_add_event_reception_wraps_result() -> None:
     assert result.get_name() == "onEvent"
 
 
-def test_class_add_event_reception_with_event_unwraps_and_wraps() -> None:
+def test_class_add_event_reception_with_event_raises_without_com_dispatch() -> None:
     fake = make_fake_element("Class")
     event = make_fake_element("Event", properties={"name": "Tick"})
-    reception = make_fake_element("EventReception", properties={"name": "onTick"})
-    fake.addEventReceptionWithEvent.return_value = reception
     klass = IRPClass(fake)
 
     with pytest.raises(NotImplementedError):
         wrapped_event = AbstractRPModelElement.wrap(event)
         klass.add_event_reception_with_event("onTick", cast(RPEvent, wrapped_event))
+
+    fake.addEventReceptionWithEvent.assert_not_called()
 
 
 def test_class_add_link_unwraps_all_args_and_wraps_result() -> None:
@@ -338,8 +338,13 @@ def test_class_set_is_final_calls_pywin32_method() -> None:
     fake.setIsFinal.assert_called_once_with(1)
 
 
-def test_class_does_not_expose_unavailable_server_diagram_update() -> None:
-    assert not hasattr(IRPClass, "update_contained_diagrams_on_server")
+def test_class_update_contained_diagrams_on_server_raises_without_com_dispatch() -> None:
+    fake = make_fake_element("Class")
+
+    with pytest.raises(NotImplementedError):
+        IRPClass(fake).update_contained_diagrams_on_server(1)
+
+    fake.updateContainedDiagramsOnServer.assert_not_called()
 
 
 def test_class_module_has_no_legacy_dual_binding_helpers() -> None:

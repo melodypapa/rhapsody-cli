@@ -14,7 +14,7 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IR
 from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
+    from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass, IRPClassifier
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_use_case import IRPUseCase
     from rhapsody_cli.models.elements.activity.model_activity import RPFlow, RPFlowItem
@@ -1130,19 +1130,20 @@ class IRPPackage(IRPUnit):
         return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "nestedComponents"))
 
     # --- Instance specification methods ---
-    def add_instance_specification(self, name: str) -> IRPModelElement:
-        """Adds a new instance specification to the package.
+    def add_instance_specification(self, name: str, classifier: IRPClassifier) -> IRPModelElement:
+        """Add an instance specification for a classifier.
 
         Args:
             name: The name of the new instance specification.
+            classifier: The classifier that the instance specification should instantiate.
 
-        Returns:
-            The wrapped instance specification element created.
+        Raises:
+            NotImplementedError: This Java API method is not exposed by pywin32.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPPackage::addInstanceSpecification(java.lang.String name)
+            com.telelogic.rhapsody.core.IRPPackage::addInstanceSpecification(java.lang.String name, com.telelogic.rhapsody.core.IRPClassifier classifier)
         """
-        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addInstanceSpecification(name))))
+        raise NotImplementedError("addInstanceSpecification is not exposed in the Rhapsody COM automation type library.")
 
     def get_instance_specifications(self) -> IRPCollection:
         """Returns all instance specifications contained in this package.
@@ -1248,29 +1249,26 @@ class IRPPackage(IRPUnit):
         return int(AbstractRPModelElement.call_com(lambda: self._com.getRemoteRequirementsPopulateMode()))
 
     def get_root_instance_specifications(self) -> IRPCollection:
-        """Returns all root instance specifications in this package.
+        """Return root instance specifications in this package.
 
-        Returns:
-            An ``IRPCollection`` of instance specification elements.
+        Raises:
+            NotImplementedError: This Java API method is not exposed by pywin32.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getRootInstanceSpecifications()
         """
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getRootInstanceSpecifications", "rootInstanceSpecifications"))
+        raise NotImplementedError("getRootInstanceSpecifications is not exposed in the Rhapsody COM automation type library.")
 
-    def login_to_remote_artifact_server(self, server_url: str, username: str, password: str) -> None:
-        """Logs in to the remote artifact server.
+    def login_to_remote_artifact_server(self) -> None:
+        """Log in to the remote artifact server for this package.
 
-        Args:
-            server_url: The URL of the remote artifact server.
-            username: The username for authentication.
-            password: The password for authentication.
+        Raises:
+            NotImplementedError: This Java API method is not exposed by pywin32.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPPackage::loginToRemoteArtifactServer(
-                java.lang.String serverUrl, java.lang.String username, java.lang.String password)
+            com.telelogic.rhapsody.core.IRPPackage::loginToRemoteArtifactServer()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.loginToRemoteArtifactServer(server_url, username, password))
+        raise NotImplementedError("loginToRemoteArtifactServer is not exposed in the Rhapsody COM automation type library.")
 
     def populate_remote_requirements(self) -> None:
         """Populates remote requirements for this package.
@@ -1299,13 +1297,19 @@ class IRPPackage(IRPUnit):
         """
         AbstractRPModelElement.call_com(lambda: self._com.setRemoteRequirementsPopulateMode(mode))
 
-    def update_contained_diagrams_on_server(self) -> None:
-        """Updates the contained diagrams on the server.
+    def update_contained_diagrams_on_server(self, enforce_update: int) -> int:
+        """Update the contained diagrams on the server.
+
+        Args:
+            enforce_update: ``0`` updates changed views only; ``1`` forces an update.
+
+        Raises:
+            NotImplementedError: This Java API method is not exposed by pywin32.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPPackage::updateContainedDiagramsOnServer()
+            com.telelogic.rhapsody.core.IRPPackage::updateContainedDiagramsOnServer(int enforceUpdate)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.updateContainedDiagramsOnServer())
+        raise NotImplementedError("updateContainedDiagramsOnServer is not exposed in the Rhapsody COM automation type library.")
 
     # --- SysML Methods (Task 4) ---
     def add_implicit_object(self, name: str) -> RPInstance:
@@ -1409,21 +1413,33 @@ class IRPPackage(IRPUnit):
         """
         AbstractRPModelElement.set_com_property(self._com, "savedInSeperateDirectory", value)
 
-    def update_contained_matrices_on_server(self) -> None:
-        """Updates the contained matrices on the server.
+    def update_contained_matrices_on_server(self, enforce_update: int) -> int:
+        """Update the contained matrices on the server.
+
+        Args:
+            enforce_update: ``0`` updates changed views only; ``1`` forces an update.
+
+        Raises:
+            NotImplementedError: This Java API method is not exposed by pywin32.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPPackage::updateContainedMatricesOnServer()
+            com.telelogic.rhapsody.core.IRPPackage::updateContainedMatricesOnServer(int enforceUpdate)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.updateContainedMatricesOnServer())
+        raise NotImplementedError("updateContainedMatricesOnServer is not exposed in the Rhapsody COM automation type library.")
 
-    def update_contained_tables_on_server(self) -> None:
-        """Updates the contained tables on the server.
+    def update_contained_tables_on_server(self, enforce_update: int) -> int:
+        """Update the contained tables on the server.
+
+        Args:
+            enforce_update: ``0`` updates changed views only; ``1`` forces an update.
+
+        Raises:
+            NotImplementedError: This Java API method is not exposed by pywin32.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPPackage::updateContainedTablesOnServer()
+            com.telelogic.rhapsody.core.IRPPackage::updateContainedTablesOnServer(int enforceUpdate)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.updateContainedTablesOnServer())
+        raise NotImplementedError("updateContainedTablesOnServer is not exposed in the Rhapsody COM automation type library.")
 
 
 AbstractRPModelElement.register_wrapper("Package", IRPPackage)

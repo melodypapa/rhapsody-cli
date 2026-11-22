@@ -4,25 +4,24 @@
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `IRPPort` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_port.py`)
 - Members: Python `14`, Java `14`, pywin32 `9`
-- Deviations: `1`
+- Deviations: `0`
 - Deviations by status:
-  - `PYWIN32_MEMBER_MISSING`: 1
+  - None
 
-- Informational binding differences (expected): `0`
+- Informational binding differences (expected): `1`
 - Wrapper backlog (supported members without wrappers): `0`
-- Documented aliases: `0`, documented unavailable: `0`
+- Documented aliases: `0`, documented unavailable: `2`
 
 ## Comparison details
 
 | Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |
 | --- | --- | --- | --- | --- |
-| get_contract() -> contract; get_contract() -> getContract; set_contract() -> contract; set_contract() -> setContract | getContract (method); setContract (method) | — | PYWIN32_MEMBER_MISSING | Use a member exposed by the registered type library or verify the Rhapsody version. |
 
 ## Expected Binding Differences
 
 | Python model wrapper | Java API | pywin32 | Status | Recommended change |
 | --- | --- | --- | --- | --- |
-| — | — | — | — | — |
+| get_contract() (no static COM member); set_contract() (no static COM member) | getContract (method); setContract (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
 
 ## Wrapper Backlog
 
@@ -45,12 +44,4 @@
 | remove_required_interface() -> removeRequiredInterface | removeRequiredInterface (method) | removeRequiredInterface (method) | MATCH | — |
 
 ## AI Fix Guidance
-
-### Finding 1: PYWIN32_MEMBER_MISSING
-- **Target:** `IRPPort` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_port.py`
-- **Current Python wrapper/COM call:** get_contract() -> contract; get_contract() -> getContract; set_contract() -> contract; set_contract() -> setContract
-- **Expected Python method(s):** `get_contract`, `set_contract`
-- **Java signature(s):** `IRPPort.getContract()`, `IRPPort.setContract(com.telelogic.rhapsody.core.IRPClass)`
-- **pywin32 member(s):** —
-- **Recommended change:** Use a member exposed by the registered type library or verify the Rhapsody version.
-- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
+No deviations require changes.

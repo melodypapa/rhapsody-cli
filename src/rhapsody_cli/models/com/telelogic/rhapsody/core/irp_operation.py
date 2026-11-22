@@ -396,15 +396,19 @@ class IRPOperation(IRPInterfaceItem):
         """
         AbstractRPModelElement.call_com(lambda: self._com.setVisibility(visibility))
 
-    def update_contained_diagrams_on_server(self) -> None:
+    def update_contained_diagrams_on_server(self, enforce_update: int) -> int:
         """Updates the contained diagrams on the server.
 
-        This method is relevant when working with Design Manager.
+        Args:
+            enforce_update: Whether to update views regardless of recent changes.
+
+        Raises:
+            NotImplementedError: This Java API method is not exposed by pywin32.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPOperation::updateContainedDiagramsOnServer()
+            com.telelogic.rhapsody.core.IRPOperation::updateContainedDiagramsOnServer(int enforceUpdate)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.updateContainedDiagramsOnServer())
+        raise NotImplementedError("updateContainedDiagramsOnServer is not exposed in the Rhapsody COM automation type library.")
 
 
 AbstractRPModelElement.register_wrapper("Operation", IRPOperation)

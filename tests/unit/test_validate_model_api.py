@@ -626,6 +626,32 @@ def test_apply_pywin32_authority_marks_documented_unavailable_member() -> None:
     ]
 
 
+def test_apply_pywin32_authority_marks_partial_accessor_unavailable() -> None:
+    rows = [
+        (
+            "get_unit_path() (no static COM member); set_unit_path() -> setUnitPath",
+            "getUnitPath (method); setUnitPath (method)",
+            "setUnitPath (method)",
+            "ACCESSOR_ALIAS_MISMATCH",
+            "Review the related API spellings.",
+        )
+    ]
+
+    deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPUnit", _authority(unavailable={"IRPUnit": ["getUnitPath"]}))
+
+    assert deviations == []
+    assert backlog == []
+    assert informational == [
+        (
+            "get_unit_path() (no static COM member); set_unit_path() -> setUnitPath",
+            "getUnitPath (method); setUnitPath (method)",
+            "setUnitPath (method)",
+            "UNAVAILABLE_DOCUMENTED",
+            "Documented decision: intentionally unsupported; no change.",
+        )
+    ]
+
+
 def test_apply_pywin32_authority_marks_documented_unavailable_java_only_member() -> None:
     rows = [
         (

@@ -2819,6 +2819,40 @@
       "setDescriptionHTML",
       "setIsAbstract",
       "updateContainedDiagramsOnServer"
+    ],
+    "IRPCollection": [
+      "addGraphicalItem",
+      "toList"
+    ],
+    "IRPModelElement": [
+      "getRmmUrl"
+    ],
+    "IRPOperation": [
+      "updateContainedDiagramsOnServer"
+    ],
+    "IRPPackage": [
+      "addInstanceSpecification",
+      "getRootInstanceSpecifications",
+      "loginToRemoteArtifactServer",
+      "updateContainedDiagramsOnServer",
+      "updateContainedMatricesOnServer",
+      "updateContainedTablesOnServer"
+    ],
+    "IRPPort": [
+      "getContract",
+      "setContract"
+    ],
+    "IRPProject": [
+      "enableRhapsodyModelManager",
+      "migrateDesignManagerLinks",
+      "setGlobalConfiguration"
+    ],
+    "IRPUnit": [
+      "getUnitPath"
+    ],
+    "IRPUseCase": [
+      "addEventReceptionWithEvent",
+      "updateContainedDiagramsOnServer"
     ]
   }
 }

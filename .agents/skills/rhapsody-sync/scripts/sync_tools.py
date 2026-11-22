@@ -1,5 +1,6 @@
 """Shared helpers for validating and verifying one Rhapsody API sync."""
 
+import ast
 import json
 import re
 import sys
@@ -187,6 +188,67 @@ def _canonical_import(root: Path, source_path: str) -> Tuple[Path, str]:
     return absolute_path, ".".join(module_parts)
 
 
+def parse_wrapper_bindings(wrapper_source: str) -> List[Tuple[str, str]]:
+    """Extract (com_member, expected_shape) pairs from a synced wrapper body.
+
+    Recognised binding forms (per AGENTS.md / SKILL §3):
+      * ``call_com(lambda: self._com.Name(...))`` -> ("Name", "method")
+      * ``get_com_property(self._com, "Name")``  -> ("Name", "property")
+      * ``set_com_property(self._com, "Name", ...)`` -> ("Name", "property")
+
+    Both ``self.call_com`` and ``AbstractRPModelElement.call_com`` (and the
+    ``com_utils.call_com`` form) are handled because the call target is not
+    what determines the COM member -- the lambda body / property argument is.
+    """
+    bindings: List[Tuple[str, str]] = []
+    tree = ast.parse(wrapper_source)
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call) or not isinstance(node.func, ast.Attribute):
+            continue
+        attr = node.func.attr
+        if attr == "call_com" and node.args:
+            lam = node.args[0]
+            if isinstance(lam, ast.Lambda) and isinstance(lam.body, ast.Call) and isinstance(lam.body.func, ast.Attribute):
+                if isinstance(lam.body.func.value, ast.Attribute) and lam.body.func.value.attr == "_com":
+                    bindings.append((lam.body.func.attr, "method"))
+        elif attr in ("get_com_property", "set_com_property") and len(node.args) >= 2:
+            arg = node.args[1]
+            if isinstance(arg, ast.Constant) and isinstance(arg.value, str):
+                bindings.append((arg.value, "property"))
+    return bindings
+
+
+def verify_wrapper_bindings(root: Path, interface_name: str, wrapper_source: str) -> List[str]:
+    """Check every wrapper COM binding against the committed pywin32 catalog.
+
+    A wrapper member must forward to exactly one pywin32-exposed member, with a
+    method-shaped member called via ``call_com`` and a property-shaped member
+    read/written via ``get_com_property`` / ``set_com_property``. Names are
+    matched case-insensitively (COM identifiers are case-insensitive and the
+    catalog preserves the type library's PascalCase). A member absent from the
+    catalog, or bound with the wrong shape, is a sync defect and fails Step 8.
+    """
+    catalog_path = root / "docs" / "reports" / "pywin32_authority.json"
+    if not catalog_path.is_file():
+        return [f"pywin32 authority catalog not found: {catalog_path}"]
+    catalog = json.loads(catalog_path.read_text(encoding="utf-8")).get("catalog", {})
+    entries = catalog.get(interface_name)
+    if entries is None:
+        return [f"pywin32 catalog has no entry for {interface_name}"]
+    lowered = {str(name).lower(): (name, shape) for name, shape in entries.items()}
+    issues: List[str] = []
+    for member, shape in parse_wrapper_bindings(wrapper_source):
+        found = lowered.get(member.lower())
+        if found is None:
+            issues.append(f"{interface_name} binding '{member}' is absent from the pywin32 catalog")
+        elif found[1] != shape:
+            issues.append(
+                f"{interface_name} binding '{member}' is {shape}-shaped in the wrapper "
+                f"but the pywin32 catalog declares '{found[0]}' as {found[1]}"
+            )
+    return issues
+
+
 def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) -> List[str]:
     """Check package placement, requirement entry, and RST coverage against a validator report."""
     issues: List[str] = []
@@ -231,6 +293,10 @@ def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) ->
         issues.append(f"Wrapper package mismatch: expected {expected_package_dir}, found {absolute_wrapper.parent}")
     if not absolute_wrapper.is_file():
         issues.append(f"Wrapper source does not exist: {absolute_wrapper}")
+    else:
+        # Step 3/4 enforcement: every wrapper COM binding must exist in the
+        # pywin32 catalog with the correct method/property shape.
+        issues.extend(verify_wrapper_bindings(root, simple_name, absolute_wrapper.read_text(encoding="utf-8")))
 
     class_stem = absolute_wrapper.stem
     java_snake = _java_interface_snake(simple_name)

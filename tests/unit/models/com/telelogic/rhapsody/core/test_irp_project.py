@@ -2,6 +2,8 @@
 
 from typing import cast
 
+import pytest
+
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
@@ -381,13 +383,14 @@ def test_project_apply_roundtrip_diff_merge_delegates_to_com() -> None:
     fake.applyRoundtripDiffMerge.assert_called_once_with()
 
 
-def test_project_enable_rhapsody_model_manager_delegates_to_com() -> None:
+def test_project_enable_rhapsody_model_manager_raises_not_implemented() -> None:
     fake = make_fake_element("Project")
     project = IRPProject(fake)
 
-    project.enable_rhapsody_model_manager(1)
+    with pytest.raises(NotImplementedError):
+        project.enable_rhapsody_model_manager()
 
-    fake.enableRhapsodyModelManager.assert_called_once_with(1)
+    fake.enableRhapsodyModelManager.assert_not_called()
 
 
 def test_project_find_elements_with_oslc_link_returns_collection() -> None:
@@ -442,13 +445,14 @@ def test_project_is_actively_managed_returns_int() -> None:
     assert result == 1
 
 
-def test_project_migrate_design_manager_links_delegates_to_com() -> None:
+def test_project_migrate_design_manager_links_raises_not_implemented() -> None:
     fake = make_fake_element("Project")
     project = IRPProject(fake)
 
-    project.migrate_design_manager_links()
+    with pytest.raises(NotImplementedError):
+        project.migrate_design_manager_links()
 
-    fake.migrateDesignManagerLinks.assert_called_once_with()
+    fake.migrateDesignManagerLinks.assert_not_called()
 
 
 # --- Task 10: Rose Import methods ---
@@ -590,13 +594,14 @@ def test_project_set_default_directory_scheme_delegates_to_com() -> None:
     assert fake.defaultDirectoryScheme == 2
 
 
-def test_project_set_global_configuration_delegates_to_com() -> None:
+def test_project_set_global_configuration_raises_not_implemented() -> None:
     fake = make_fake_element("Project")
     project = IRPProject(fake)
 
-    project.set_global_configuration("MyConfig")
+    with pytest.raises(NotImplementedError):
+        project.set_global_configuration("gc://uri", "MyConfig")
 
-    fake.setGlobalConfiguration.assert_called_once_with("MyConfig")
+    fake.setGlobalConfiguration.assert_not_called()
 
 
 def test_project_set_notify_plugin_on_elements_changed_delegates_to_com() -> None:
@@ -957,10 +962,13 @@ def test_generated_apply_roundtrip_diff_merge() -> None:
     IRPProject(fake).apply_roundtrip_diff_merge()
 
 
-def test_generated_enable_rhapsody_model_manager() -> None:
+def test_generated_enable_rhapsody_model_manager_raises_not_implemented() -> None:
     fake = make_fake_element("Project")
-    fake.enableRhapsodyModelManager.return_value = None
-    IRPProject(fake).enable_rhapsody_model_manager(1)
+
+    with pytest.raises(NotImplementedError):
+        IRPProject(fake).enable_rhapsody_model_manager()
+
+    fake.enableRhapsodyModelManager.assert_not_called()
 
 
 def test_generated_find_elements_with_oslc_link() -> None:
@@ -991,10 +999,13 @@ def test_generated_is_actively_managed() -> None:
     assert result is not None
 
 
-def test_generated_migrate_design_manager_links() -> None:
+def test_generated_migrate_design_manager_links_raises_not_implemented() -> None:
     fake = make_fake_element("Project")
-    fake.migrateDesignManagerLinks.return_value = None
-    IRPProject(fake).migrate_design_manager_links()
+
+    with pytest.raises(NotImplementedError):
+        IRPProject(fake).migrate_design_manager_links()
+
+    fake.migrateDesignManagerLinks.assert_not_called()
 
 
 def test_generated_import_package_from_rose() -> None:
@@ -1085,9 +1096,13 @@ def test_generated_set_default_directory_scheme() -> None:
     IRPProject(fake).set_default_directory_scheme(1)
 
 
-def test_generated_set_global_configuration() -> None:
+def test_generated_set_global_configuration_raises_not_implemented() -> None:
     fake = make_fake_element("Project")
-    IRPProject(fake).set_global_configuration("x")
+
+    with pytest.raises(NotImplementedError):
+        IRPProject(fake).set_global_configuration("uri", "x")
+
+    fake.setGlobalConfiguration.assert_not_called()
 
 
 def test_generated_set_notify_plugin_on_elements_changed() -> None:

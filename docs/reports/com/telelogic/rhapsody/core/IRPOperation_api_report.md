@@ -4,19 +4,18 @@
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `IRPOperation` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_operation.py`)
 - Members: Python `32`, Java `32`, pywin32 `21`
-- Deviations: `1`
+- Deviations: `0`
 - Deviations by status:
-  - `PYWIN32_MEMBER_MISSING`: 1
+  - None
 
-- Informational binding differences (expected): `3`
+- Informational binding differences (expected): `4`
 - Wrapper backlog (supported members without wrappers): `0`
-- Documented aliases: `0`, documented unavailable: `0`
+- Documented aliases: `0`, documented unavailable: `1`
 
 ## Comparison details
 
 | Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |
 | --- | --- | --- | --- | --- |
-| update_contained_diagrams_on_server() -> updateContainedDiagramsOnServer | updateContainedDiagramsOnServer (method) | — | PYWIN32_MEMBER_MISSING | Use a member exposed by the registered type library or verify the Rhapsody version. |
 
 ## Expected Binding Differences
 
@@ -24,6 +23,7 @@
 | --- | --- | --- | --- | --- |
 | get_is_const() -> isConst; set_is_const() -> setIsConst | getIsConst (method); setIsConst (method) | isConst (property) | ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Use a property-aware getter/setter fallback or document the binding mismatch. |
 | get_is_final() -> isFinal; set_is_final() -> setIsFinal | getIsFinal (method); setIsFinal (method) | isFinal (property) | ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Use a property-aware getter/setter fallback or document the binding mismatch. |
+| update_contained_diagrams_on_server() (no static COM member) | updateContainedDiagramsOnServer (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
 | get_visibility() -> visibility; set_visibility() -> setVisibility | getVisibility (method); setVisibility (method) | visibility (property) | ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Use a property-aware getter/setter fallback or document the binding mismatch. |
 
 ## Wrapper Backlog
@@ -55,12 +55,4 @@
 | get_returns() -> returns; set_returns() -> returns | getReturns (method); setReturns (method) | returns (property) | MATCH | — |
 
 ## AI Fix Guidance
-
-### Finding 1: PYWIN32_MEMBER_MISSING
-- **Target:** `IRPOperation` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_operation.py`
-- **Current Python wrapper/COM call:** update_contained_diagrams_on_server() -> updateContainedDiagramsOnServer
-- **Expected Python method(s):** `update_contained_diagrams_on_server`
-- **Java signature(s):** `IRPOperation.updateContainedDiagramsOnServer(int)`
-- **pywin32 member(s):** —
-- **Recommended change:** Use a member exposed by the registered type library or verify the Rhapsody version.
-- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
+No deviations require changes.

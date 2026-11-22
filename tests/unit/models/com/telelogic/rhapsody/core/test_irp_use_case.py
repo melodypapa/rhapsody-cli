@@ -109,11 +109,13 @@ def test_generated_add_describing_diagram() -> None:
     IRPUseCase(fake).add_describing_diagram(make_fake_element("Class", properties={"name": "x"}))
 
 
-def test_generated_add_event_reception_with_event() -> None:
+def test_generated_add_event_reception_with_event_raises_not_implemented() -> None:
     fake = make_fake_element("UseCase")
-    fake.addEventReceptionWithEvent.return_value = make_fake_element("Class", properties={"name": "x"})
-    result = IRPUseCase(fake).add_event_reception_with_event("x", make_fake_element("Class", properties={"name": "x"}))
-    assert result is not None
+
+    with pytest.raises(NotImplementedError):
+        IRPUseCase(fake).add_event_reception_with_event("x", make_fake_element("Class", properties={"name": "x"}))
+
+    fake.addEventReceptionWithEvent.assert_not_called()
 
 
 def test_generated_delete_describing_diagram() -> None:
@@ -167,7 +169,10 @@ def test_generated_set_is_behavior_overriden() -> None:
         IRPUseCase(fake).set_is_behavior_overriden(1)
 
 
-def test_generated_update_contained_diagrams_on_server() -> None:
+def test_generated_update_contained_diagrams_on_server_raises_not_implemented() -> None:
     fake = make_fake_element("UseCase")
-    fake.updateContainedDiagramsOnServer.return_value = None
-    IRPUseCase(fake).update_contained_diagrams_on_server()
+
+    with pytest.raises(NotImplementedError):
+        IRPUseCase(fake).update_contained_diagrams_on_server(1)
+
+    fake.updateContainedDiagramsOnServer.assert_not_called()

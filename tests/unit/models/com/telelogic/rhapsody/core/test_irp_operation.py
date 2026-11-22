@@ -2,6 +2,8 @@
 
 from unittest.mock import MagicMock
 
+import pytest
+
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument import IRPArgument
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import IRPInterfaceItem
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
@@ -230,7 +232,10 @@ def test_method_shaped_setters_delegate_to_com() -> None:
     fake.setVisibility.assert_called_once_with("private")
 
 
-def test_update_contained_diagrams_on_server_delegates_to_com() -> None:
+def test_update_contained_diagrams_on_server_raises_not_implemented_without_com_dispatch() -> None:
     fake = make_fake_element("Operation")
-    IRPOperation(fake).update_contained_diagrams_on_server()
-    fake.updateContainedDiagramsOnServer.assert_called_once_with()
+
+    with pytest.raises(NotImplementedError):
+        IRPOperation(fake).update_contained_diagrams_on_server(1)
+
+    fake.updateContainedDiagramsOnServer.assert_not_called()

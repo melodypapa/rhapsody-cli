@@ -108,21 +108,19 @@ class IRPUseCase(IRPClassifier):
         AbstractRPModelElement.call_com(lambda: self._com.addDescribingDiagram(diagram._com))
 
     def add_event_reception_with_event(self, name: str, event: RPEvent) -> RPEventReception:
-        """Adds an event reception with the specified event.
+        """Add an event reception with the specified event.
 
         Args:
             name: The name to use for the new event reception.
             event: The wrapped event to use for the event reception.
 
-        Returns:
-            The wrapped event reception created.
+        Raises:
+            NotImplementedError: This Java API method is not exposed by pywin32.
 
         Reference:
             com.telelogic.rhapsody.core.IRPUseCase::addEventReceptionWithEvent(java.lang.String name, com.telelogic.rhapsody.core.IRPEvent event)
         """
-        from rhapsody_cli.models.elements.interactions.model_interactions import RPEventReception
-
-        return cast(RPEventReception, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addEventReceptionWithEvent(name, event._com))))
+        raise NotImplementedError("addEventReceptionWithEvent is not exposed in the Rhapsody COM automation type library.")
 
     def delete_describing_diagram(self, diagram: RPDiagram) -> None:
         """Deletes a describing diagram from the use case.
@@ -236,15 +234,19 @@ class IRPUseCase(IRPClassifier):
             "details."
         )
 
-    def update_contained_diagrams_on_server(self) -> None:
-        """Updates the contained diagrams on the server.
+    def update_contained_diagrams_on_server(self, enforce_update: int) -> int:
+        """Update the contained diagrams on the server.
 
-        This method is relevant when working with Design Manager.
+        Args:
+            enforce_update: ``0`` updates changed views only; ``1`` forces an update.
+
+        Raises:
+            NotImplementedError: This Java API method is not exposed by pywin32.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPUseCase::updateContainedDiagramsOnServer()
+            com.telelogic.rhapsody.core.IRPUseCase::updateContainedDiagramsOnServer(int enforceUpdate)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.updateContainedDiagramsOnServer())
+        raise NotImplementedError("updateContainedDiagramsOnServer is not exposed in the Rhapsody COM automation type library.")
 
 
 AbstractRPModelElement.register_wrapper("UseCase", IRPUseCase)

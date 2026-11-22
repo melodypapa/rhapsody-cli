@@ -3,7 +3,7 @@
 ## Summary
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `IRPClass` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_class.py`)
-- Members: Python `25`, Java `29`, pywin32 `24`
+- Members: Python `26`, Java `29`, pywin32 `24`
 - Deviations: `0`
 - Deviations by status:
   - None
@@ -22,7 +22,7 @@
 | Python model wrapper | Java API | pywin32 | Status | Recommended change |
 | --- | --- | --- | --- | --- |
 | add_event_reception_with_event() (no static COM member) | addEventReceptionWithEvent (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
-| — | updateContainedDiagramsOnServer (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| update_contained_diagrams_on_server() (no static COM member) | updateContainedDiagramsOnServer (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
 
 ## Wrapper Backlog
 

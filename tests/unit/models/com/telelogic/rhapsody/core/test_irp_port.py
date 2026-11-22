@@ -1,5 +1,7 @@
 """Tests for rhapsody_cli.models.elements.relations.IRPPort."""
 
+import pytest
+
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
@@ -150,27 +152,25 @@ def test_port_remove_required_interface_delegates_to_com() -> None:
     fake.removeRequiredInterface.assert_called_once_with(interface_fake)
 
 
-def test_port_get_contract_wraps_result() -> None:
-    contract_fake = make_fake_element("Class", properties={"name": "IEngine"})
-    fake = make_fake_element("Port")
-    fake.getContract.return_value = contract_fake
-    port = IRPPort(fake)
-
-    result = port.get_contract()
-
-    assert isinstance(result, IRPClass)
-    assert result.get_name() == "IEngine"
-
-
-def test_port_set_contract_delegates_to_com() -> None:
-    contract_fake = make_fake_element("Class", properties={"name": "IEngine"})
-    contract = IRPClass(contract_fake)
+def test_port_get_contract_raises_not_implemented_without_com_dispatch() -> None:
     fake = make_fake_element("Port")
     port = IRPPort(fake)
 
-    port.set_contract(contract)
+    with pytest.raises(NotImplementedError):
+        port.get_contract()
 
-    fake.setContract.assert_called_once_with(contract_fake)
+    fake.getContract.assert_not_called()
+
+
+def test_port_set_contract_raises_not_implemented_without_com_dispatch() -> None:
+    contract = IRPClass(make_fake_element("Class", properties={"name": "IEngine"}))
+    fake = make_fake_element("Port")
+    port = IRPPort(fake)
+
+    with pytest.raises(NotImplementedError):
+        port.set_contract(contract)
+
+    fake.setContract.assert_not_called()
 
 
 def test_classifier_get_ports_returns_actual_rpport_instances() -> None:

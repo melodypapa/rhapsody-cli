@@ -2,6 +2,8 @@
 
 from typing import cast
 
+import pytest
+
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
@@ -327,25 +329,24 @@ def test_package_get_remote_requirements_populate_mode_returns_int() -> None:
     assert result == 1
 
 
-def test_package_get_root_instance_specifications_returns_collection() -> None:
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-
-    fake = make_fake_element("Package")
-    instance_spec = make_fake_element("InstanceSpecification", properties={"name": "IS1"})
-    fake.getRootInstanceSpecifications.return_value = make_fake_collection([instance_spec])
-    package = IRPPackage(fake)
-
-    result = package.get_root_instance_specifications()
-    assert isinstance(result, IRPCollection)
-
-
-def test_package_login_to_remote_artifact_server_delegates_to_com() -> None:
+def test_package_get_root_instance_specifications_raises_not_implemented() -> None:
     fake = make_fake_element("Package")
     package = IRPPackage(fake)
 
-    package.login_to_remote_artifact_server("http://server.com", "user", "pass")
+    with pytest.raises(NotImplementedError):
+        package.get_root_instance_specifications()
 
-    fake.loginToRemoteArtifactServer.assert_called_once_with("http://server.com", "user", "pass")
+    fake.getRootInstanceSpecifications.assert_not_called()
+
+
+def test_package_login_to_remote_artifact_server_raises_not_implemented() -> None:
+    fake = make_fake_element("Package")
+    package = IRPPackage(fake)
+
+    with pytest.raises(NotImplementedError):
+        package.login_to_remote_artifact_server()
+
+    fake.loginToRemoteArtifactServer.assert_not_called()
 
 
 def test_package_populate_remote_requirements_delegates_to_com() -> None:
@@ -375,13 +376,14 @@ def test_package_set_remote_requirements_populate_mode_delegates_to_com() -> Non
     fake.setRemoteRequirementsPopulateMode.assert_called_once_with(2)
 
 
-def test_package_update_contained_diagrams_on_server_delegates_to_com() -> None:
+def test_package_update_contained_diagrams_on_server_raises_not_implemented() -> None:
     fake = make_fake_element("Package")
     package = IRPPackage(fake)
 
-    package.update_contained_diagrams_on_server()
+    with pytest.raises(NotImplementedError):
+        package.update_contained_diagrams_on_server(1)
 
-    fake.updateContainedDiagramsOnServer.assert_called_once_with()
+    fake.updateContainedDiagramsOnServer.assert_not_called()
 
 
 # --- SysML Methods (Task 4) Tests ---
@@ -476,22 +478,24 @@ def test_package_set_saved_in_separate_directory_delegates_to_com() -> None:
     assert fake.savedInSeperateDirectory == 1
 
 
-def test_package_update_contained_matrices_on_server_delegates_to_com() -> None:
+def test_package_update_contained_matrices_on_server_raises_not_implemented() -> None:
     fake = make_fake_element("Package")
     package = IRPPackage(fake)
 
-    package.update_contained_matrices_on_server()
+    with pytest.raises(NotImplementedError):
+        package.update_contained_matrices_on_server(1)
 
-    fake.updateContainedMatricesOnServer.assert_called_once_with()
+    fake.updateContainedMatricesOnServer.assert_not_called()
 
 
-def test_package_update_contained_tables_on_server_delegates_to_com() -> None:
+def test_package_update_contained_tables_on_server_raises_not_implemented() -> None:
     fake = make_fake_element("Package")
     package = IRPPackage(fake)
 
-    package.update_contained_tables_on_server()
+    with pytest.raises(NotImplementedError):
+        package.update_contained_tables_on_server(1)
 
-    fake.updateContainedTablesOnServer.assert_called_once_with()
+    fake.updateContainedTablesOnServer.assert_not_called()
 
 
 def test_generated_add_class() -> None:
@@ -983,11 +987,14 @@ def test_generated_get_nested_components() -> None:
     assert result is not None
 
 
-def test_generated_add_instance_specification() -> None:
+def test_generated_add_instance_specification_raises_not_implemented() -> None:
     fake = make_fake_element("Package")
-    fake.addInstanceSpecification.return_value = make_fake_element("Class", properties={"name": "x"})
-    result = IRPPackage(fake).add_instance_specification("x")
-    assert result is not None
+    classifier = make_fake_element("Class", properties={"name": "x"})
+
+    with pytest.raises(NotImplementedError):
+        IRPPackage(fake).add_instance_specification("x", classifier)
+
+    fake.addInstanceSpecification.assert_not_called()
 
 
 def test_generated_get_instance_specifications() -> None:
@@ -1042,16 +1049,22 @@ def test_generated_get_remote_requirements_populate_mode() -> None:
     assert result is not None
 
 
-def test_generated_get_root_instance_specifications() -> None:
+def test_generated_get_root_instance_specifications_raises_not_implemented() -> None:
     fake = make_fake_element("Package")
-    result = IRPPackage(fake).get_root_instance_specifications()
-    assert result is not None
+
+    with pytest.raises(NotImplementedError):
+        IRPPackage(fake).get_root_instance_specifications()
+
+    fake.getRootInstanceSpecifications.assert_not_called()
 
 
-def test_generated_login_to_remote_artifact_server() -> None:
+def test_generated_login_to_remote_artifact_server_raises_not_implemented() -> None:
     fake = make_fake_element("Package")
-    fake.loginToRemoteArtifactServer.return_value = None
-    IRPPackage(fake).login_to_remote_artifact_server("x", "x", "x")
+
+    with pytest.raises(NotImplementedError):
+        IRPPackage(fake).login_to_remote_artifact_server()
+
+    fake.loginToRemoteArtifactServer.assert_not_called()
 
 
 def test_generated_populate_remote_requirements() -> None:
@@ -1072,10 +1085,13 @@ def test_generated_set_remote_requirements_populate_mode() -> None:
     IRPPackage(fake).set_remote_requirements_populate_mode(1)
 
 
-def test_generated_update_contained_diagrams_on_server() -> None:
+def test_generated_update_contained_diagrams_on_server_raises_not_implemented() -> None:
     fake = make_fake_element("Package")
-    fake.updateContainedDiagramsOnServer.return_value = None
-    IRPPackage(fake).update_contained_diagrams_on_server()
+
+    with pytest.raises(NotImplementedError):
+        IRPPackage(fake).update_contained_diagrams_on_server(1)
+
+    fake.updateContainedDiagramsOnServer.assert_not_called()
 
 
 def test_generated_add_implicit_object() -> None:
@@ -1129,13 +1145,19 @@ def test_generated_set_saved_in_separate_directory() -> None:
     IRPPackage(fake).set_saved_in_separate_directory(1)
 
 
-def test_generated_update_contained_matrices_on_server() -> None:
+def test_generated_update_contained_matrices_on_server_raises_not_implemented() -> None:
     fake = make_fake_element("Package")
-    fake.updateContainedMatricesOnServer.return_value = None
-    IRPPackage(fake).update_contained_matrices_on_server()
+
+    with pytest.raises(NotImplementedError):
+        IRPPackage(fake).update_contained_matrices_on_server(1)
+
+    fake.updateContainedMatricesOnServer.assert_not_called()
 
 
-def test_generated_update_contained_tables_on_server() -> None:
+def test_generated_update_contained_tables_on_server_raises_not_implemented() -> None:
     fake = make_fake_element("Package")
-    fake.updateContainedTablesOnServer.return_value = None
-    IRPPackage(fake).update_contained_tables_on_server()
+
+    with pytest.raises(NotImplementedError):
+        IRPPackage(fake).update_contained_tables_on_server(1)
+
+    fake.updateContainedTablesOnServer.assert_not_called()

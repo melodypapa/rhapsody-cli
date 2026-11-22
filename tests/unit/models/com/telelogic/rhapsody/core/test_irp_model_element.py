@@ -308,28 +308,25 @@ def test_collection_get_item_falls_back_to_item_property_when_method_missing() -
     fake.Item.assert_called_once_with(1)
 
 
-def test_collection_add_graphical_item_delegates_to_com() -> None:
+def test_collection_add_graphical_item_raises_not_implemented() -> None:
     fake = make_fake_collection([])
     collection = IRPCollection(fake)
     item = make_fake_element("Class")
 
-    collection.add_graphical_item(IRPModelElement(item))
+    with pytest.raises(NotImplementedError):
+        collection.add_graphical_item(IRPModelElement(item))
 
-    fake.addGraphicalItem.assert_called_once_with(item)
+    fake.addGraphicalItem.assert_not_called()
 
 
-def test_collection_to_list_returns_python_list() -> None:
-    inner_a = make_fake_element("Class", properties={"name": "A"})
-    inner_b = make_fake_element("Class", properties={"name": "B"})
-    fake = make_fake_collection([inner_a, inner_b])
+def test_collection_to_list_raises_not_implemented() -> None:
+    fake = make_fake_collection([make_fake_element("Class", properties={"name": "A"})])
     collection = IRPCollection(fake)
 
-    result = collection.to_list()
+    with pytest.raises(NotImplementedError):
+        collection.to_list()
 
-    assert isinstance(result, list)
-    assert len(result) == 2
-    assert result[0].get_name() == "A"
-    assert result[1].get_name() == "B"
+    fake.Item.assert_not_called()
 
 
 def test_collection_set_size_delegates_to_com() -> None:
@@ -1082,11 +1079,14 @@ def test_model_element_get_requirement_traceability_handle_returns_int() -> None
     assert element.get_requirement_traceability_handle() == 42
 
 
-def test_model_element_get_rmm_url_returns_str() -> None:
-    fake = make_fake_element("Class", getRmmUrl="https://rmm/element/1")
+def test_model_element_get_rmm_url_raises_not_implemented() -> None:
+    fake = make_fake_element("Class")
     element = IRPModelElement(fake)
 
-    assert element.get_rmm_url() == "https://rmm/element/1"
+    with pytest.raises(NotImplementedError):
+        element.get_rmm_url()
+
+    fake.getRmmUrl.assert_not_called()
 
 
 def test_model_element_get_save_unit_wraps_result() -> None:

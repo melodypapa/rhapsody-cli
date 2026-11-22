@@ -412,9 +412,30 @@ def apply_pywin32_authority(rows: Rows, interface_name: str, authority: Authorit
     aliases = authority["documented_aliases"].get(interface_name, {})
     unavailable = set(authority["documented_unavailable"].get(interface_name, []))
 
+    def _java_members(row: Tuple[str, str, str, str, str]) -> Set[str]:
+        return {entry[: -len(" (method)")] for entry in row[1].split("; ") if entry.endswith(" (method)")}
+
     def _documented_unavailable(row: Tuple[str, str, str, str, str]) -> bool:
-        java_names = {entry[: -len(" (method)")] for entry in row[1].split("; ") if entry.endswith(" (method)")}
+        java_names = _java_members(row)
         return bool(java_names) and java_names.issubset(unavailable)
+
+    def _has_documented_partial_unavailability(row: Tuple[str, str, str, str, str]) -> bool:
+        java_names = _java_members(row)
+        pywin32_entries: Dict[str, str] = {}
+        for entry in row[2].split("; "):
+            name, separator, kind = entry.rpartition(" (")
+            if separator and kind.endswith(")"):
+                pywin32_entries[name] = kind[:-1]
+
+        missing_java_names: Set[str] = set()
+        for java_name in java_names:
+            if java_name in pywin32_entries:
+                continue
+            property_suffix = java_name[3:] if java_name.startswith(("get", "set")) and len(java_name) > 3 and java_name[3].isupper() else ""
+            has_property_alias = any("property" in kind and name.casefold() == property_suffix.casefold() for name, kind in pywin32_entries.items()) if property_suffix else False
+            if not has_property_alias:
+                missing_java_names.add(java_name)
+        return bool(missing_java_names) and missing_java_names.issubset(unavailable)
 
     for row in rows:
         statuses = row[3].split("; ")
@@ -440,9 +461,8 @@ def apply_pywin32_authority(rows: Rows, interface_name: str, authority: Authorit
             resolved = ["ALIAS_DOCUMENTED" if status == "PYTHON_METHOD_NAME_MISMATCH" else status for status in statuses]
             informational.append((row[0], row[1], row[2], "; ".join(resolved), _DOCUMENTED_ALIAS_RECOMMENDATION))
             continue
-        if _documented_unavailable(row) and not actionable:
-            resolved = ["UNAVAILABLE_DOCUMENTED" if status in _UNAVAILABLE_RESOLVED_STATUSES else status for status in statuses]
-            informational.append((row[0], row[1], row[2], "; ".join(resolved), _DOCUMENTED_UNAVAILABLE_RECOMMENDATION))
+        if (_documented_unavailable(row) or _has_documented_partial_unavailability(row)) and not actionable:
+            informational.append((row[0], row[1], row[2], "UNAVAILABLE_DOCUMENTED", _DOCUMENTED_UNAVAILABLE_RECOMMENDATION))
             continue
         if actionable:
             deviations.append((row[0], row[1], row[2], "; ".join(remaining), row[4]))

@@ -2,6 +2,8 @@
 
 from typing import cast
 
+import pytest
+
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
@@ -55,25 +57,25 @@ def test_mutators_delegate_to_single_com_members() -> None:
     fake.empty.assert_called_once_with()
 
 
-def test_to_list_returns_materialized_elements() -> None:
-    items = [make_fake_element("Class", properties={"name": "A"})]
-    collection = IRPCollection(make_fake_collection(items))
+def test_to_list_raises_not_implemented_without_com_dispatch() -> None:
+    fake = make_fake_collection([make_fake_element("Class", properties={"name": "A"})])
+    collection = IRPCollection(fake)
 
-    result = collection.to_list()
+    with pytest.raises(NotImplementedError):
+        collection.to_list()
 
-    assert isinstance(result, list)
-    assert len(result) == 1
+    fake.Item.assert_not_called()
 
 
-def test_add_graphical_item_delegates_to_com() -> None:
-
+def test_add_graphical_item_raises_not_implemented_without_com_dispatch() -> None:
     fake = make_fake_collection([])
     collection = IRPCollection(fake)
     element = IRPModelElement(make_fake_element("Class"))
 
-    collection.add_graphical_item(element)
+    with pytest.raises(NotImplementedError):
+        collection.add_graphical_item(element)
 
-    fake.addGraphicalItem.assert_called_once_with(element._com)
+    fake.addGraphicalItem.assert_not_called()
 
 
 def test_negative_index_raises_index_error() -> None:

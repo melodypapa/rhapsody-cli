@@ -3,6 +3,8 @@
 import re
 from pathlib import Path
 
+import pytest
+
 from rhapsody_cli.models.com.telelogic.rhapsody.core import AddToModelMode, IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core import irp_unit as irp_unit_module
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
@@ -180,12 +182,14 @@ def test_unit_get_structure_diagrams_uses_pywin32_property() -> None:
     fake.getStructureDiagrams.assert_not_called()
 
 
-def test_unit_get_unit_path_passes_flag_and_returns_str() -> None:
-    fake = make_fake_element("Package", getUnitPath="C:\\proj\\foo.sbs")
+def test_unit_get_unit_path_raises_not_implemented_without_com_dispatch() -> None:
+    fake = make_fake_element("Package")
     unit = IRPUnit(fake)
 
-    assert unit.get_unit_path(1) == "C:\\proj\\foo.sbs"
-    fake.getUnitPath.assert_called_once_with(1)
+    with pytest.raises(NotImplementedError):
+        unit.get_unit_path(1)
+
+    fake.getUnitPath.assert_not_called()
 
 
 def test_unit_is_reference_unit_returns_int() -> None:

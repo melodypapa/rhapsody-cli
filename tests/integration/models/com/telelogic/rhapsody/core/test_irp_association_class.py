@@ -4,24 +4,12 @@ These tests require a running Rhapsody instance with an open project.
 """
 
 import uuid
-from typing import Callable
 
 import pytest
 
-from rhapsody_cli.exceptions import RhapsodyRuntimeException
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_association_class import IRPAssociationClass
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
-
-
-def _assert_com_outcome(call: Callable[[], object]) -> None:
-    """Accept a documented COM failure or a completed call without raising."""
-    try:
-        result = call()
-    except Exception as exc:
-        assert isinstance(exc, (RhapsodyRuntimeException, AttributeError, TypeError, ValueError, KeyError, NotImplementedError))
-    else:
-        assert result is None or not isinstance(result, BaseException)
 
 
 @pytest.mark.integration
@@ -61,6 +49,7 @@ class TestRPAssociationClassIntegration:
                 assoc.get_is_class,
                 lambda: assoc.set_is_class(1),
             ):
-                _assert_com_outcome(lambda c=call: c())  # type: ignore[misc]
+                with pytest.raises(AttributeError):
+                    call()
         finally:
             cls.delete_from_project()

@@ -58,6 +58,8 @@ def _write_fixture_project(root: Path, rst_deviations: str, with_tests: bool = T
     wrapper_dir.mkdir(parents=True)
     (root / "scripts").mkdir()
     (root / "scripts" / "validate_model_api.py").write_text("", encoding="utf-8")
+    (root / "docs" / "reports").mkdir(parents=True)
+    (root / "docs" / "reports" / "pywin32_authority.json").write_text('{"catalog": {"IRPThing": {}}}', encoding="utf-8")
     (java_dir / "IRPThing.html").write_text("<html>IRPThing</html>", encoding="utf-8")
     (wrapper_dir / "model_thing.py").write_text("class RPThing: pass\n", encoding="utf-8")
     (root / "docs" / "requirements" / Path(*package_parts)).mkdir(parents=True)
@@ -312,6 +314,8 @@ def _write_application_fixture(root: Path) -> Path:
     (java_dir / "IRPApplication.html").write_text("<html>IRPApplication</html>", encoding="utf-8")
     (root / "scripts").mkdir(parents=True)
     (root / "scripts" / "validate_model_api.py").write_text("", encoding="utf-8")
+    (root / "docs" / "reports").mkdir(parents=True)
+    (root / "docs" / "reports" / "pywin32_authority.json").write_text('{"catalog": {"IRPApplication": {}}}', encoding="utf-8")
 
     app_dir = root / "src" / "rhapsody_cli"
     app_dir.mkdir(parents=True)
@@ -384,3 +388,45 @@ def test_verifier_ignores_wrapper_backlog_members(tmp_path: Path) -> None:
 
     assert "someJavaOnlyMember" in text
     assert "someJavaOnlyMember" not in tools.extract_deviation_members(text)
+
+
+def test_binding_check_flags_absent_com_member(tmp_path: Path) -> None:
+    """A wrapper calling a Java-named member absent from pywin32 must fail Step 8."""
+    tools = _load_sync_tools()
+    (tmp_path / "docs" / "reports").mkdir(parents=True)
+    (tmp_path / "docs" / "reports" / "pywin32_authority.json").write_text('{"catalog": {"IRPType": {}}}', encoding="utf-8")
+    wrapper = '''
+class IRPType:
+    def get_thing(self):
+        return self.call_com(lambda: self._com.getThing())
+'''
+    issues = tools.verify_wrapper_bindings(tmp_path, "IRPType", wrapper)
+    assert any("getThing" in issue and "absent" in issue.lower() for issue in issues)
+
+
+def test_binding_check_flags_wrong_shape(tmp_path: Path) -> None:
+    """A property-shaped COM member called via call_com must be flagged."""
+    tools = _load_sync_tools()
+    (tmp_path / "docs" / "reports").mkdir(parents=True)
+    (tmp_path / "docs" / "reports" / "pywin32_authority.json").write_text('{"catalog": {"IRPType": {"thing": "property"}}}', encoding="utf-8")
+    wrapper = '''
+class IRPType:
+    def get_thing(self):
+        return self.call_com(lambda: self._com.thing())
+'''
+    issues = tools.verify_wrapper_bindings(tmp_path, "IRPType", wrapper)
+    assert any("thing" in issue and "shape" in issue.lower() for issue in issues)
+
+
+def test_binding_check_accepts_valid_bindings(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    (tmp_path / "docs" / "reports").mkdir(parents=True)
+    (tmp_path / "docs" / "reports" / "pywin32_authority.json").write_text('{"catalog": {"IRPType": {"Thing": "method", "flag": "property"}}}', encoding="utf-8")
+    wrapper = '''
+class IRPType:
+    def get_thing(self):
+        return self.call_com(lambda: self._com.Thing())
+    def get_flag(self):
+        return self.get_com_property(self._com, "flag")
+'''
+    assert tools.verify_wrapper_bindings(tmp_path, "IRPType", wrapper) == []
