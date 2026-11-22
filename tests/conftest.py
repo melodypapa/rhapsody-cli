@@ -45,6 +45,13 @@ def rhapsody_instance() -> Generator[Optional[RhapsodyApplication], None, None]:
     time.sleep(2)
     yield app
     try:
+        # Save all projects before quitting: otherwise Rhapsody shows a modal
+        # "Save changes to <project>?" dialog (e.g. for TestProject.rpyx) that
+        # blocks the COM automation thread. saveAll is a pywin32-exposed method.
+        try:
+            app.save_all()
+        except Exception:
+            pass  # best-effort: instance may already be closed
         app.quit()
     except Exception:
         # Best-effort: the instance may have been closed externally. A COM fault
