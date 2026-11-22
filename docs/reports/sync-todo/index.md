@@ -9,7 +9,10 @@ all eight steps pass and the run's commit exists.
 ## Layout (2026-11-22)
 
 API reports are grouped by their declared Java package; the current core reports live in
-`docs/reports/com/telelogic/rhapsody/core/`. One open row (IRPApplication Step 8) lives in [Group-unfinished-1.md](Group-unfinished-1.md); completed rows
+`docs/reports/com/telelogic/rhapsody/core/`. One open row (IRPApplication Step 8) lives in [Group-unfinished-1.md](Group-unfinished-1.md), and the
+10 highest-importance unsynced classes are queued in [Group-unfinished-2.md](Group-unfinished-2.md),
+the remaining 103 in [Groups 3–13](Group-unfinished-3.md) (10 per group, importance-ordered);
+completed rows
 archive to [Group-finished.md](Group-finished.md) (a batch file is deleted when its last row
 archives). Queue order: core.py base classes first (their migration removes the inherited
 dual-binding fallback for every subclass), then leaves.
@@ -18,8 +21,22 @@ dual-binding fallback for every subclass), then leaves.
 | --- | --- | --- | --- | --- |
 | [Group-unfinished-1.md](Group-unfinished-1.md) | 1 | 3 | IRPApplication closeout | ⬜ 1 open (Step 8 only) |
 | [Group-finished.md](Group-finished.md) | 15 | ~219 | IRPClass → IRPModelElement | ✅ 15 archived |
+| [Group-unfinished-2.md](Group-unfinished-2.md) | 10 | ~133 | IRPState → IRPCollaboration | ⬜ 10 open (new) |
+| [Group-unfinished-3.md](Group-unfinished-3.md) | 10 | ~104 | IRPSearchQuery → IRPFile | ⬜ 10 open |
+| [Group-unfinished-4.md](Group-unfinished-4.md) | 10 | ~36 | IRPVariable → IRPEventReception | ⬜ 10 open |
+| [Group-unfinished-5.md](Group-unfinished-5.md) | 10 | ~27 | IRPActor → IRPSendAction | ⬜ 10 open |
+| [Group-unfinished-6.md](Group-unfinished-6.md) | 10 | ~13 | IRPInternalOEMPlugin → IRPPin | ⬜ 10 open |
+| [Group-unfinished-7.md](Group-unfinished-7.md) | 10 | ~25 | IRPPlugInWindow → IRPInstanceSpecification | ⬜ 10 open |
+| [Group-unfinished-8.md](Group-unfinished-8.md) | 10 | ~14 | IRPInstanceSlot → IRPGraphicalProperty | ⬜ 10 open |
+| [Group-unfinished-9.md](Group-unfinished-9.md) | 10 | ~13 | IRPExternalIDERegistry → IRPTimingDiagram | ⬜ 10 open |
+| [Group-unfinished-10.md](Group-unfinished-10.md) | 10 | ~7 | IRPCodeGenSimplifiersRegistry → IRPDeploymentDiagram | ⬜ 10 open |
+| [Group-unfinished-11.md](Group-unfinished-11.md) | 10 | ~4 | IRPComponentDiagram → IRPExternalRoundtripInvoker | ⬜ 10 open |
+| [Group-unfinished-12.md](Group-unfinished-12.md) | 10 | ~0 | IRPASCIIFile → IRPStructureDiagram | ⬜ 10 open |
+| [Group-unfinished-13.md](Group-unfinished-13.md) | 3 | ~0 | IRPExtensionPoint → IRPIntegrator | ⬜ 3 open |
 
-Progress: **15/16 rows archived**. All 13 rows from Group-unfinished-1 reached 8/8 except
+Progress: **15/129 rows tracked as archived** (128 wrapper classes + 1 application layer;
+10 queued in Group-unfinished-2, 103 in Groups 3–13). All 13 rows from
+Group-unfinished-1 reached 8/8 except
 IRPApplication, whose Step 8 stays open on integration layer-only coverage (44.68%). Commits
 `6cbebc3` (sync), `1778607` (test-rule compliance) and `5175b93` (COM hardening) carry the batch.
 
@@ -84,6 +101,15 @@ not re-derive scope or decisions already recorded in the row's Notes.
 - **core.py split (complete):** `models/core.py` now holds only `AbstractRPModelElement`; the
   forwarder definitions are gone and every sync row has moved its class to the canonical core
   package. `IRPModelElement.get_rmm_url` remains a catalog-absent blocker site, unchanged.
+- **Group-unfinished-2 (2026-11-22):** the 10 highest-importance / most-used unsynced model
+  classes are queued in one batch. None has a committed API report or a catalog entry yet, so
+  every row's Step 1/3 starts with regenerating the catalog and report on Windows with Rhapsody;
+  JavaDoc HTML for all 10 exists under `docs/java_api/com/telelogic/rhapsody/core/` locally.
+- **Full queue coverage (2026-11-22):** every wrapper class in `src/rhapsody_cli/models/` and the
+  application layer now has a row in a Group file. Groups 3–13 hold the lower-importance
+  remainder in descending usage order. Support-layer wrappers (codegen, files, IDE) are queued
+  too; §2 must confirm whether their canonical home is the core package or their current
+  `models/support/` location before any move.
 - **Uncovered interfaces have no rows yet:** ~380 further legacy sites (Interactions, Graphics,
   Codegen support, StateVertex/State, Relation, Configuration, Activity, Component, RPVariable,
   RPTag, Files, Annotation/Requirement, Statechart, Templates, IDE support, Instance,
