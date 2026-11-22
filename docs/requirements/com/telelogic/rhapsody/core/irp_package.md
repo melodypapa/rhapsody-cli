@@ -1,6 +1,6 @@
-## SWR_CORE_00002: IRPPackage Wrapper
+## SWR_ELEM_00002: IRPPackage Wrapper
 
-**ID:** SWR_CORE_00002
+**ID:** SWR_ELEM_00002
 **Title:** IRPPackage wraps IRPPackage, a container for classes, actors, and other elements
 **Status:** Implemented
 **Priority:** High

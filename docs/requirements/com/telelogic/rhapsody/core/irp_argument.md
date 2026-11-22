@@ -1,6 +1,6 @@
-## SWR_CORE_00008: IRPArgument Wrapper
+## SWR_ELEM_00016: IRPArgument Wrapper
 
-**ID:** SWR_CORE_00008
+**ID:** SWR_ELEM_00016
 **Title:** IRPArgument wraps IRPArgument, an operation argument or parameter
 **Status:** Implemented
 **Priority:** Medium

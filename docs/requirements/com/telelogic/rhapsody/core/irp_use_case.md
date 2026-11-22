@@ -1,6 +1,6 @@
-## SWR_CORE_00014: IRPUseCase Wrapper
+## SWR_ELEM_00012: IRPUseCase Wrapper
 
-**ID:** SWR_CORE_00014
+**ID:** SWR_ELEM_00012
 **Title:** IRPUseCase wraps IRPUseCase, a use case in the model
 **Status:** Implemented
 **Priority:** Medium
@@ -11,10 +11,14 @@ points (`add_extension_point`, `get_extension_points`, `find_extension_point`,
 `delete_extension_point`, `get_entry_points`, `find_entry_point`,
 `delete_entry_point`), describing diagrams (`add_describing_diagram`,
 `get_describing_diagram`, `get_describing_diagrams`, `delete_describing_diagram`),
-event receptions (`add_event_reception_with_event`), and behavior override state
-(`get_is_behavior_overriden`, `set_is_behavior_overriden`). The setter is a
-documented-unavailable `NotImplementedError` stub because `setIsBehaviorOverriden`
-is absent from the registered type library for use cases. Sibling class
+event receptions (`add_event_reception_with_event`), behavior override state
+(`get_is_behavior_overriden`, `set_is_behavior_overriden`), and Design Manager
+server refresh (`update_contained_diagrams_on_server`). Three members are
+documented-unavailable `NotImplementedError` stubs because their COM members are
+absent from the registered type library for this build: `set_is_behavior_overriden`
+(`setIsBehaviorOverriden`), `add_event_reception_with_event`
+(`addEventReceptionWithEvent`), and `update_contained_diagrams_on_server`
+(`updateContainedDiagramsOnServer`). Sibling class
 `RPExtensionPoint` stays in the legacy module (0 legacy sites, out of scope).
 Every catalog-backed COM call targets exactly one pywin32 member: `extensionPoints`,
 `entryPoints`, `describingDiagrams` and `isBehaviorOverriden` are properties read

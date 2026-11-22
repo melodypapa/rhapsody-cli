@@ -1,6 +1,6 @@
-## SWR_CORE_00010: IRPType Wrapper
+## SWR_ELEM_00020: IRPType Wrapper
 
-**ID:** SWR_CORE_00010
+**ID:** SWR_ELEM_00020
 **Title:** IRPType wraps IRPType, a named type definition
 **Status:** Implemented
 **Priority:** Medium

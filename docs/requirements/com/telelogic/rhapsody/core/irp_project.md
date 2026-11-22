@@ -1,6 +1,6 @@
-## SWR_CORE_00001: IRPProject Wrapper
+## SWR_ELEM_00001: IRPProject Wrapper
 
-**ID:** SWR_CORE_00001
+**ID:** SWR_ELEM_00001
 **Title:** IRPProject wraps IRPProject, the top-level project container
 **Status:** Implemented
 **Priority:** High

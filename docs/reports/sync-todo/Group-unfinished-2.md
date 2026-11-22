@@ -23,10 +23,11 @@ only when all eight steps are `[x]` and its commit exists.)
 | 9 | IRPTableLayout (RPTableLayout) | 122 | 14 | 50 | 5 | High-frequency graphics helper despite narrow domain; 50 owned members. |
 | 10 | IRPCollaboration (RPCollaboration) | 77 | 11 | 39 | 1 | Common containment wrapper; completes the high-use set. |
 
-Excluded deliberately: stale legacy copies of already-synced interfaces (`IRPType`,
-`IRPUseCase`, `IRPAttribute`, `IRPArgument` still present in old modules); support-layer
-utilities with no model semantics (`RPSearchQuery`, `RPowPaneMgr`, …); and diagram leaf
-classes with zero owned methods (`RPComponentDiagram`, `RPPanelDiagram`, …).
+Excluded from this batch (queued elsewhere): the stale legacy copies of already-synced
+interfaces (`IRPType`, `IRPUseCase`, `IRPAttribute`, `IRPArgument` in old modules) were
+removed outright in the 2026-11-22 review fix rather than queued; the remaining names
+(`RPSearchQuery`, `RPowPaneMgr`, `RPComponentDiagram`, `RPPanelDiagram`, …) are queued in
+lower Groups 3–13 by descending importance.
 
 ## Prerequisites (blocking for every row)
 

@@ -1,6 +1,6 @@
-## SWR_CORE_00007: IRPAttribute Wrapper
+## SWR_ELEM_00007: IRPAttribute Wrapper
 
-**ID:** SWR_CORE_00007
+**ID:** SWR_ELEM_00007
 **Title:** IRPAttribute wraps IRPAttribute, a class/package-level attribute or variable
 **Status:** Implemented
 **Priority:** High

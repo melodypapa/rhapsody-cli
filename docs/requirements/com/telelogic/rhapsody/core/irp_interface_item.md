@@ -1,6 +1,6 @@
-## SWR_CORE_00013: IRPInterfaceItem Wrapper
+## SWR_ELEM_00018: IRPInterfaceItem Wrapper
 
-**ID:** SWR_CORE_00013
+**ID:** SWR_ELEM_00018
 **Title:** IRPInterfaceItem wraps IRPInterfaceItem, the base for operation-like elements
 **Status:** Implemented
 **Priority:** Medium

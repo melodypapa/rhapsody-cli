@@ -1,6 +1,6 @@
-## SWR_CORE_00006: IRPOperation Wrapper
+## SWR_ELEM_00006: IRPOperation Wrapper
 
-**ID:** SWR_CORE_00006
+**ID:** SWR_ELEM_00006
 **Title:** IRPOperation wraps IRPOperation, a class/package-level operation or function
 **Status:** Implemented
 **Priority:** High

@@ -250,6 +250,13 @@ Documentation Structure
 
 .. toctree::
    :maxdepth: 1
+   :caption: Per-Class Wrapper Requirements (canonical Java package):
+   :glob:
+
+   requirements/com/telelogic/rhapsody/core/*
+
+.. toctree::
+   :maxdepth: 1
    :caption: Test Specifications:
    :glob:
 

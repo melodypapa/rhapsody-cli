@@ -301,22 +301,22 @@ The package follows a systematic wrapping pattern:
 1. **Connection Layer**: `RhapsodyApplication` manages COM connections
 2. **Wrapping Pattern**: Each wrapper stores `_com` and delegates all calls
 3. **Type Registry**: Central registry maps Rhapsody types to Python wrappers
-4. **Automatic Fallback**: Unknown types fall back to generic `RPModelElement`
-5. **Collection Wrapping**: `RPCollection` provides Pythonic iteration
+4. **Automatic Fallback**: Unknown types fall back to generic `IRPModelElement`
+5. **Collection Wrapping**: `IRPCollection` provides Pythonic iteration
 
 ### Class Hierarchy
 
 Mirrors the Rhapsody Java API hierarchy:
 
 ```
-RPModelElement (wraps IRPModelElement - base for all model elements)
-└─ RPUnit (wraps IRPUnit - elements that can be saved as files)
-   ├─ RPProject (wraps IRPProject)
-   ├─ RPPackage (wraps IRPPackage)
-   ├─ RPClassifier (wraps IRPClassifier)
-   │  ├─ IRPClass (wraps IRPClass; import from rhapsody_cli.models.com.telelogic.rhapsody.core)
+IRPModelElement (wraps IRPModelElement - base for all model elements; canonical package)
+└─ IRPUnit (wraps IRPUnit - elements that can be saved as files)
+   ├─ IRPProject (wraps IRPProject)
+   ├─ IRPPackage (wraps IRPPackage)
+   ├─ IRPClassifier (wraps IRPClassifier)
+   │  ├─ IRPClass (wraps IRPClass)
    │  ├─ RPActor (wraps IRPActor)
-   │  ├─ RPUseCase (wraps IRPUseCase)
+   │  ├─ IRPUseCase (wraps IRPUseCase)
    │  └─ ... (15+ classifier types)
    └─ ... (96 total wrapped element types)
 ```
@@ -426,7 +426,7 @@ The package currently wraps **96 element types** including:
 
 **Leaf Elements**: Attribute, Tag, Requirement, Variable, Annotation, Constraint, EnumerationLiteral, Diagram, Comment
 
-Plus **hundreds of generic methods** from `RPModelElement` available on all element types.
+Plus **hundreds of generic methods** from `IRPModelElement` available on all element types.
 
 ## Contributing
 
@@ -486,8 +486,8 @@ MIT License - see [LICENSE](LICENSE) file for details.
 | Aspect | Java API | rhapsody-cli |
 |--------|----------|--------------|
 | Method Names | `getName()` | `get_name()` ✓ |
-| Class Hierarchy | `IRPClass extends IRPClassifier` | `RPClass(RPClassifier)` ✓ |
-| Collections | `IRPCollection` | `RPCollection` ✓ |
+| Class Hierarchy | `IRPClass extends IRPClassifier` | `IRPClass(IRPClassifier)` ✓ |
+| Collections | `IRPCollection` | `IRPCollection` ✓ |
 | Error Handling | COM errors | `RhapsodyRuntimeException` ✓ |
 | Type Safety | Checked at compile | mypy strict mode ✓ |
 | Testing | Requires Rhapsody | Mocked COM objects ✓ |

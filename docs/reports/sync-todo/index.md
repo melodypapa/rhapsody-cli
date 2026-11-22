@@ -35,23 +35,29 @@ dual-binding fallback for every subclass), then leaves.
 | [Group-unfinished-13.md](Group-unfinished-13.md) | 3 | ~0 | IRPExtensionPoint → IRPIntegrator | ⬜ 3 open |
 
 Progress: **15/129 rows tracked as archived** (128 wrapper classes + 1 application layer;
-10 queued in Group-unfinished-2, 103 in Groups 3–13). All 13 rows from
+10 queued in Group-unfinished-2, 103 in Groups 3–13). All 12 model rows from
 Group-unfinished-1 reached 8/8 except
 IRPApplication, whose Step 8 stays open on integration layer-only coverage (44.68%). Commits
 `6cbebc3` (sync), `1778607` (test-rule compliance) and `5175b93` (COM hardening) carry the batch.
 
 Report/status refresh (2026-11-22): all 16 API reports were regenerated from the registered
 type library and grouped under `docs/reports/com/telelogic/rhapsody/core/`. Verification after
-the sync: unit suite **1944 passed**, integration suite **439 passed** (live Rhapsody), system
-suite **54 passed / 3 skipped**, skill self-tests **18 passed**; ruff/black/mypy clean. All 15
+the sync: unit suite **1938 passed** (after the review-fix commit; duplicates removed),
+integration suite **445 collected** (live re-run pending on Windows), system suite collected,
+skill self-tests **20 passed**; ruff/black/mypy clean; an AST cross-check proves zero
+catalog-absent COM members and zero legacy probe call sites across the 16 canonical wrappers.
+All 15
 synced wrappers reach 100% statement/branch coverage independently at both unit and integration
 layers, with zero skip/xfail markers. IRPApplication's Step 8 remains open on integration
 layer-only coverage (44.68%) because most application methods have no safe live COM path.
 
 ## Resume rule
 
-Take the first row still `[ ]` in queue order from
-[Group-unfinished-1.md](Group-unfinished-1.md). Execute one rhapsody-sync run for that
+Take the first row still `[ ]` in queue order: the open IRPApplication Step 8 row in
+[Group-unfinished-1.md](Group-unfinished-1.md), then the queued rows in
+[Group-unfinished-2.md](Group-unfinished-2.md) through [Group-unfinished-13.md](Group-unfinished-13.md)
+(once their Windows-side Step 1/3 report regeneration unblocks them). Execute one rhapsody-sync
+run for that
 interface following SKILL.md §1–§8 exactly as enumerated in the row's steps; tick a step when
 its evidence lands (never batch-tick at the end); move the row to
 [Group-finished.md](Group-finished.md) only after its commit exists and no step is open. Do
@@ -100,7 +106,16 @@ not re-derive scope or decisions already recorded in the row's Notes.
   its toctree. `verify_sync.py` checks the per-class paths strictly (no legacy fallback).
 - **core.py split (complete):** `models/core.py` now holds only `AbstractRPModelElement`; the
   forwarder definitions are gone and every sync row has moved its class to the canonical core
-  package. `IRPModelElement.get_rmm_url` remains a catalog-absent blocker site, unchanged.
+  package. `IRPModelElement.get_rmm_url` is a documented-unavailable `NotImplementedError` stub
+  (its `getRmmUrl` member is absent from the catalog), not a probe site.
+- **Per-class SWR IDs (2026-11-22, review fix):** the 12 per-class requirement documents carry
+  unique IDs — the six entries moved out of `swr_elem_requirements.md` kept their original IDs
+  (`SWR_ELEM_00001/2/3/6/7/12` → project/package/classifier/operation/attribute/use_case); the
+  six new documents took the next free IDs (`SWR_ELEM_00016..00020` → argument/association_class/
+  interface_item/port/type, `SWR_CORE_00011` → application, which stays a non-element wrapper in
+  the CORE series like `irp_unit`). `traceability_matrix.md` implementation rows point at the
+  real current paths; rows mapping `SWR_ELEM_00016..00020` / `SWR_CORE_00011` into the UTS/ITS
+  inventory are still to be added when those suites are documented.
 - **Group-unfinished-2 (2026-11-22):** the 10 highest-importance / most-used unsynced model
   classes are queued in one batch. None has a committed API report or a catalog entry yet, so
   every row's Step 1/3 starts with regenerating the catalog and report on Windows with Rhapsody;
@@ -110,14 +125,8 @@ not re-derive scope or decisions already recorded in the row's Notes.
   remainder in descending usage order. Support-layer wrappers (codegen, files, IDE) are queued
   too; §2 must confirm whether their canonical home is the core package or their current
   `models/support/` location before any move.
-- **Uncovered interfaces have no rows yet:** ~380 further legacy sites (Interactions, Graphics,
-  Codegen support, StateVertex/State, Relation, Configuration, Activity, Component, RPVariable,
-  RPTag, Files, Annotation/Requirement, Statechart, Templates, IDE support, Instance,
-  Generalization, AssociationRole, Stereotype, ClassifierRole, SysMLPort, Values, HyperLink,
-  Dependency, Diagram, Node, EnumerationLiteral/Comment/Constraint, Actor, Collaboration).
-  Add rows only after the catalog and their reports are regenerated on Windows
-  (`python scripts/pywin32_authority.py --source typelib`). Never migrate blind.
 - **Termination (pending):** only IRPApplication's Step 8 is open. After it archives, delete
-  `_get_method_or_property` / `_set_method_or_property` from `com_utils.py` / `core.py`, drop the legacy notes from
+  `_get_method_or_property` / `_set_method_or_property` from `com_utils.py` / `core.py` (all
+  wrapper call sites are gone as of the 2026-11-22 review fix — only the definitions remain), drop the legacy notes from
   `AGENTS.md`, `docs/CODE_GUIDELINES.md`, and the sync skill, and confirm
-  `grep -r "_method_or_property" src/` is empty.
+  `grep -rn "_method_or_property" src/ --include='*.py'` finds only the deleted definitions.

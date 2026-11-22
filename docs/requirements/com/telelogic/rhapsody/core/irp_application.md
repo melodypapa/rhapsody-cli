@@ -22,4 +22,5 @@ binding differences left unchanged. `connect`, `disconnect`, `close_all_projects
 and `get_rhapsody_dir` are python-only facade helpers with no static COM member;
 they have live callers throughout the codebase, so their removal is a blocker
 recorded rather than performed.
+**Implementation:** src/rhapsody_cli/application.py:RhapsodyApplication
 **Last Changed:** 2026-11-22

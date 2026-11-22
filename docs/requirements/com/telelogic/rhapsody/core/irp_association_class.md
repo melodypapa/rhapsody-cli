@@ -1,6 +1,6 @@
-## SWR_CORE_00012: IRPAssociationClass Wrapper
+## SWR_ELEM_00017: IRPAssociationClass Wrapper
 
-**ID:** SWR_CORE_00012
+**ID:** SWR_ELEM_00017
 **Title:** IRPAssociationClass wraps IRPAssociationClass, a class acting as an association
 **Status:** Implemented
 **Priority:** Medium

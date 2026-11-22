@@ -147,33 +147,33 @@ Three-layer traceability for the rhapsody-cli project:
 
 | Requirement ID | Implementation |
 |----------------|----------------|
-| SWR_CORE_00001 | src/rhapsody_cli/models/_core.py:RPModelElement |
-| SWR_CORE_00002 | src/rhapsody_cli/models/_core.py:RPUnit |
-| SWR_CORE_00003 | src/rhapsody_cli/models/_core.py:IRPCollection |
-| SWR_CORE_00004 | src/rhapsody_cli/models/_core.py:call_com |
-| SWR_CORE_00005 | src/rhapsody_cli/models/_core.py:wrap |
-| SWR_CORE_00006 | src/rhapsody_cli/models/_core.py:register_wrapper |
-| SWR_CORE_00007 | src/rhapsody_cli/models/_core.py:_wrap_if_element |
-| SWR_CORE_00008 | src/rhapsody_cli/models/_core.py:wrap |
-| SWR_CORE_00009 | src/rhapsody_cli/models/_core.py:IRPCollection.__getitem__ |
-| SWR_CORE_00010 | src/rhapsody_cli/models/_core.py |
+| SWR_CORE_00001 | src/rhapsody_cli/models/core.py:IRPModelElement |
+| SWR_CORE_00002 | src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_unit.py:IRPUnit |
+| SWR_CORE_00003 | src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_collection.py:IRPCollection |
+| SWR_CORE_00004 | src/rhapsody_cli/com_utils.py:call_com |
+| SWR_CORE_00005 | src/rhapsody_cli/models/core.py:AbstractRPModelElement.wrap |
+| SWR_CORE_00006 | src/rhapsody_cli/models/core.py:AbstractRPModelElement.register_wrapper |
+| SWR_CORE_00007 | src/rhapsody_cli/models/core.py:AbstractRPModelElement._wrap_if_element |
+| SWR_CORE_00008 | src/rhapsody_cli/models/core.py:AbstractRPModelElement.wrap |
+| SWR_CORE_00009 | src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_collection.py:IRPCollection.__getitem__ |
+| SWR_CORE_00010 | src/rhapsody_cli/com_utils.py |
 
 ### ELEM (Model Element Wrappers)
 
 | Requirement ID | Implementation |
 |----------------|----------------|
-| SWR_ELEM_00001 | src/rhapsody_cli/models/elements/containment.py:IRPProject |
-| SWR_ELEM_00002 | src/rhapsody_cli/models/elements/containment.py:IRPPackage |
-| SWR_ELEM_00003 | src/rhapsody_cli/models/elements/classifiers.py:IRPClassifier |
-| SWR_ELEM_00004 | src/rhapsody_cli/models/elements/classifiers.py:RPClass |
-| SWR_ELEM_00005 | src/rhapsody_cli/models/elements/classifiers.py:RPActor |
-| SWR_ELEM_00006 | src/rhapsody_cli/models/elements/classifiers.py:IRPOperation |
-| SWR_ELEM_00007 | src/rhapsody_cli/models/elements/variables.py:IRPAttribute |
-| SWR_ELEM_00008 | src/rhapsody_cli/models/elements/diagrams.py:RPDiagram |
-| SWR_ELEM_00009 | src/rhapsody_cli/models/elements/relations.py:RPInstance |
-| SWR_ELEM_00010 | src/rhapsody_cli/models/elements/requirements.py:RPRequirement |
-| SWR_ELEM_00011 | src/rhapsody_cli/models/elements/classifiers.py:RPStatechart |
-| SWR_ELEM_00012 | src/rhapsody_cli/models/elements/classifiers.py:IRPUseCase |
+| SWR_ELEM_00001 | src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py:IRPProject |
+| SWR_ELEM_00002 | src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py:IRPPackage |
+| SWR_ELEM_00003 | src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_classifier.py:IRPClassifier |
+| SWR_ELEM_00004 | src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_class.py:IRPClass |
+| SWR_ELEM_00005 | src/rhapsody_cli/models/elements/classifiers/model_actor.py:RPActor |
+| SWR_ELEM_00006 | src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_operation.py:IRPOperation |
+| SWR_ELEM_00007 | src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_attribute.py:IRPAttribute |
+| SWR_ELEM_00008 | src/rhapsody_cli/models/elements/diagrams/model_diagrams.py:RPDiagram |
+| SWR_ELEM_00009 | src/rhapsody_cli/models/elements/relations/model_instance.py:RPInstance |
+| SWR_ELEM_00010 | src/rhapsody_cli/models/elements/requirements/model_requirements.py:RPRequirement |
+| SWR_ELEM_00011 | src/rhapsody_cli/models/elements/classifiers/model_statechart.py:RPStatechart |
+| SWR_ELEM_00012 | src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_use_case.py:IRPUseCase |
 | SWR_ELEM_00013 | src/rhapsody_cli/models/elements/__init__.py |
 
 ### CLI (Command-Line Interface)
@@ -204,7 +204,7 @@ Three-layer traceability for the rhapsody-cli project:
 | SWR_EXC_00001 | src/rhapsody_cli/exceptions/core.py:RhapsodyRuntimeException |
 | SWR_EXC_00002 | src/rhapsody_cli/exceptions/core.py:RhapsodyConnectionError |
 | SWR_EXC_00003 | src/rhapsody_cli/exceptions/__init__.py |
-| SWR_EXC_00004 | src/rhapsody_cli/models/_core.py:call_com |
+| SWR_EXC_00004 | src/rhapsody_cli/com_utils.py:call_com |
 
 ---
 
