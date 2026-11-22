@@ -248,10 +248,7 @@ class TestIRPUnitCrossProjectIntegration:
             pkg.save()
             assert pkg.is_reference_unit() == 0
         finally:
-            try:
-                pkg.delete_from_project()
-            except RhapsodyRuntimeException:
-                pass  # COM refuses deletion of a just-unloaded unit in this build
+            pkg.delete_from_project()
 
     def test_cross_project_and_lifecycle_members(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("UnitOpsPkg"))
@@ -268,7 +265,4 @@ class TestIRPUnitCrossProjectIntegration:
                 pkg.set_unit_path("x")
             assert pkg.unload() is None  # type: ignore[func-returns-value]
         finally:
-            try:
-                pkg.delete_from_project()
-            except RhapsodyRuntimeException:
-                pass  # COM refuses deletion of a just-unloaded unit in this build
+            pkg.delete_from_project()
