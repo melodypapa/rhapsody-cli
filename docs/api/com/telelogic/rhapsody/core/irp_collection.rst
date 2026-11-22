@@ -11,75 +11,30 @@ The IRPCollection interface is Rhapsody's generic collection of model elements.
 - **Python wrapper:** IRPCollection
 - **Python import:** ``from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPCollection``
 - **Canonical Python import:** ``rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection``
-  (re-exported from ``rhapsody_cli.models.core`` to preserve existing imports)
 
+API reference
+-------------
 
-`add_graphical_item` and `to_list` are documented blockers: their Java members
-(`addGraphicalItem`, `toList`) are absent from the committed pywin32 catalog, so the call
-sites stay unchanged until Windows typelib evidence lands. Every other member calls exactly
-one pywin32-exposed COM member: `Count` is read as a property via ``get_com_property``, `Item`
-and the mutators are invoked as methods via ``call_com``. The Python-implementation column
-reflects the post-migration single-member labels.
+Wraps ``IRPCollection``: an iterable/indexable container of elements.
 
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection.IRPCollection.add_graphical_item
 
-.. list-table:: Verified IRPCollection deviations and dispositions
-   :header-rows: 1
-   :widths: 34 24 24 18
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection.IRPCollection.add_item
 
-   * - JavaDoc member/signature
-     - COM/pywin32 exposure
-     - Python implementation
-     - Deviation and treatment
-   * - addGraphicalItem (method)
-     - —
-     - add_graphical_item() -> addGraphicalItem
-     - PYWIN32_MEMBER_MISSING; Use a member exposed by the registered type library or verify the Rhapsody version.
-   * - toList (method)
-     - —
-     - to_list() (no static COM member)
-     - PYWIN32_MEMBER_MISSING; Use a member exposed by the registered type library or verify the Rhapsody version.
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection.IRPCollection.empty
 
-.. list-table:: Correct items (verified direct bindings)
-   :header-rows: 1
-   :widths: 34 24 24 18
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection.IRPCollection.get_count
 
-   * - JavaDoc member/signature
-     - COM/pywin32 exposure
-     - Python implementation
-     - Deviation and treatment
-   * - addItem (method)
-     - addItem (method)
-     - add_item() -> addItem
-     - MATCH; —
-   * - empty (method)
-     - empty (method)
-     - empty() -> empty
-     - MATCH; —
-   * - getCount (method)
-     - Count (property)
-     - get_count() -> Count
-     - MATCH; —
-   * - getItem (method)
-     - Item (method)
-     - get_item() -> Item
-     - MATCH; —
-   * - remove (method)
-     - remove (method)
-     - remove() -> remove
-     - MATCH; —
-   * - setInteger (method)
-     - setInteger (method)
-     - set_integer() -> setInteger
-     - MATCH; —
-   * - setModelElement (method)
-     - setModelElement (method)
-     - set_model_element() -> setModelElement
-     - MATCH; —
-   * - setSize (method)
-     - setSize (method)
-     - set_size() -> setSize
-     - MATCH; —
-   * - setString (method)
-     - setString (method)
-     - set_string() -> setString
-     - MATCH; —
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection.IRPCollection.get_item
+
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection.IRPCollection.remove
+
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection.IRPCollection.set_integer
+
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection.IRPCollection.set_model_element
+
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection.IRPCollection.set_size
+
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection.IRPCollection.set_string
+
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection.IRPCollection.to_list

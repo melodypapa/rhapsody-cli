@@ -11,27 +11,36 @@ The IRPPort interface represents a port on a classifier.
 - **Python wrapper:** IRPPort
 - **Python import:** ``from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPPort``
 - **Canonical module:** ``rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port`` (the
-  package also re-exports ``IRPPort`` lazily).
 
-.. list-table:: Verified IRPPort binding differences and dispositions
-   :header-rows: 1
-   :widths: 34 24 24 18
+API reference
+-------------
 
-   * - JavaDoc member/signature
-     - COM/pywin32 exposure
-     - Python implementation
-     - Deviation and treatment
-   * - getContract (method); setContract (method)
-     - getContract/setContract/contract absent from the committed catalog
-     - get_contract()/set_contract() legacy dual-binding sites unchanged
-     - PYWIN32_MEMBER_MISSING. The members are absent from every catalog; no blind
-       migration was attempted. The sites are documented blockers pending Windows
-       typelib evidence; use ``get_port_contract``/``set_port_contract`` instead.
-   * - getIsBehavioral (method); setIsBehavioral (method); getIsReversed (method);
-     setIsReversed (method); getPortContract (method); setPortContract (method);
-     getProvidedInterfaces (method); getRequiredInterfaces (method)
-     - isBehavioral (property); isReversed (property); portContract (property);
-     providedInterfaces (property); requiredInterfaces (property)
-     - get_is_behavioral()/set_is_behavioral()/... via get_com_property/set_com_property
-     - METHOD_PROPERTY_MISMATCH; Python ``get_*``/``set_*`` names retained by repo
-       convention, COM property shape honoured in the binding.
+Wraps ``IRPPort``: represents a port on a classifier in the model.
+
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.add_provided_interface
+
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.add_required_interface
+
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.get_contract
+
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.get_is_behavioral
+
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.get_is_reversed
+
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.get_port_contract
+
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.get_provided_interfaces
+
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.get_required_interfaces
+
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.remove_provided_interface
+
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.remove_required_interface
+
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.set_contract
+
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.set_is_behavioral
+
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.set_is_reversed
+
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.set_port_contract

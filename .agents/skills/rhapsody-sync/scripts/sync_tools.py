@@ -5,18 +5,12 @@ import json
 import re
 import sys
 from pathlib import Path
-from typing import List, Optional, Set, Tuple
+from typing import List, Optional, Tuple
 
 _INTERFACE_PATTERN = re.compile(r"^# Rhapsody API Validation: (IRP[A-Za-z0-9_]+)$", re.MULTILINE)
 _WRAPPER_PATTERN = re.compile(r"^- Target wrapper: `([^`]+)` \(`([^`]+)`\)$", re.MULTILINE)
 _JAVA_PACKAGE_PATTERN = re.compile(r"^- Java package: `([A-Za-z0-9_.]+)`$", re.MULTILINE)
-_MEMBER_PATTERN = re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\s*\(")
 _RST_INTERFACE_ANCHOR = ".. _rhapsody-java-interface-"
-# Every non-MATCH report row is a deviation and requires an RST row — including
-# "Wrapper Backlog" members (COM-supported members without Python wrappers):
-# unwrapped API surface is a deviation from Java-API parity, with the RST
-# recording the "intentionally unsupported" disposition.
-_REPORT_SECTIONS = {"Comparison details", "Expected Binding Differences", "Wrapper Backlog"}
 
 
 def split_interface_name(interface_name: str) -> Tuple[str, Optional[str]]:
@@ -129,27 +123,23 @@ def parse_report_java_package(report_text: str) -> Optional[str]:
     return match.group(1) if match else None
 
 
-def extract_deviation_members(report_text: str) -> Set[str]:
-    """Collect API names from every non-MATCH report table.
+def parse_wrapper_public_members(wrapper_source: str, wrapper_class: str) -> List[str]:
+    """Return the wrapper class's public members, sorted.
 
-    Covers the comparison table, expected binding differences, and the wrapper
-    backlog: unwrapped-but-COM-supported members are deviations too, and the
-    RST page must record their "intentionally unsupported" disposition.
+    The RST page is an API reference of the Python wrapper, so coverage is
+    defined over this set: public methods and properties (underscore-private
+    helpers and dunders are implementation details).
     """
-    members: Set[str] = set()
-    active_section: Optional[str] = None
-    for line in report_text.splitlines():
-        if line.startswith("## "):
-            active_section = line[3:].strip()
-            continue
-        if active_section not in _REPORT_SECTIONS or not line.startswith("|"):
-            continue
-        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
-        if len(cells) < 4 or cells[0] == "Python model wrapper" or all(set(cell) <= {"-", " "} for cell in cells):
-            continue
-        for cell in cells[:3]:
-            members.update(_MEMBER_PATTERN.findall(cell))
-    return members
+    tree = ast.parse(wrapper_source)
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ClassDef) and node.name == wrapper_class:
+            names = {
+                item.name
+                for item in node.body
+                if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)) and not item.name.startswith("_")
+            }
+            return sorted(names)
+    return []
 
 
 def _get_rst_interface_section(rst_text: str, interface_name: str) -> Optional[str]:
@@ -382,25 +372,21 @@ def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) ->
         "Java interface": simple_name,
         "Python wrapper": wrapper_class,
         "canonical Python import": canonical_import,
-        "JavaDoc member/signature header": "javadoc member/signature",
-        "COM/pywin32 header": "com/pywin32",
-        "Python implementation header": "python implementation",
-        "deviation/treatment header": "deviation and treatment",
+        "API reference heading": "api reference",
     }
     lowered_rst_section = rst_section.lower()
     for label, value in required_values.items():
         if value.lower() not in lowered_rst_section:
             issues.append(f"RST section for {simple_name} is missing {label}: {value}")
 
-    deviation_members = extract_deviation_members(report_text)
-    if deviation_members:
-        if ".. list-table::" not in rst_section:
-            issues.append(f"RST section for {simple_name} has deviations but no reStructuredText list-table")
-        missing_members = sorted(member for member in deviation_members if member not in rst_section)
-        if missing_members:
-            issues.append(f"RST section for {simple_name} omits reported deviation members: {', '.join(missing_members)}")
-    elif "no deviations" not in lowered_rst_section:
-        issues.append(f"RST section for {simple_name} should explicitly state that there are no deviations")
+    # The RST page is a JavaDoc-style API reference of the Python wrapper: it
+    # must document every public member. Deviations live in the generated
+    # report, not here.
+    wrapper_source = absolute_wrapper.read_text(encoding="utf-8") if absolute_wrapper.is_file() else ""
+    public_members = parse_wrapper_public_members(wrapper_source, wrapper_class)
+    undocumented = [name for name in public_members if not re.search(rf"\b{re.escape(name)}\b", rst_section)]
+    if undocumented:
+        issues.append(f"RST section for {simple_name} omits public wrapper member documentation: {', '.join(undocumented)}")
 
     if not java_doc.is_file():
         issues.append(f"JavaDoc page does not exist: {java_doc}")

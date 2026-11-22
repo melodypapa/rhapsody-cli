@@ -26,7 +26,7 @@ Before any analysis or edit, publish the TODO list: use an available task-list t
 - [ ] §4 Write/upgrade the fake-COM unit tests first (red), then migrate the binding call sites (green) — each Python member's shape (method vs `@property`) follows the COM shape, and synced wrappers use `from __future__ import annotations` with unquoted type references.
 - [ ] §5 Add/update integration tests in the mirrored test package.
 - [ ] §6 Update the class requirement document (per-class, package path).
-- [ ] §7 Update the class RST page (per-class, package path) and list each verified deviation.
+- [ ] §7 Write the class RST API reference (per-class, package path) documenting every public wrapper member.
 - [ ] §8 Run validation (unit suite, gate, validate_interface, verify_sync); summarize unresolved items.
 - [ ] Render this checklist as the final sync report.
 - [ ] Member: addExample() — [ ] JavaDoc [ ] COM [ ] wrapper [ ] disposition
@@ -131,7 +131,7 @@ the legacy monolith `docs/requirements/swr_elem_requirements.md`, move its entry
 per-class file — do not duplicate it; leave unrelated and not-yet-migrated entries in the
 monolith until their own sync run moves them.
 
-## 7. Update the class RST document
+## 7. Write the class RST API reference
 
 Create or update the class's API page at `docs/api/<java.package.path>/<snake_case>.rst` —
 `<java.package.path>` is the same report-declared Java package as in section 6, mirrored
@@ -141,16 +141,22 @@ page with the verifier-recognized anchor `.. _rhapsody-java-interface-<INTERFACE
 include the Java interface, Java package, JavaDoc-derived description, Python wrapper, and
 canonical import path. Promote the class heading to the page title.
 
-List each verified deviation between JavaDoc, COM/pywin32, and Python implementation in a
-valid reStructuredText `list-table` with headers `JavaDoc member/signature`,
-`COM/pywin32 exposure`, `Python implementation`, and `Deviation and treatment`. Include
-method-vs-property shape and evidence-backed resolution; if there are no deviations, say so
-explicitly. The verifier checks that the page contains every member reported by the API
-validator. Rows for python-only members removed in section 4 disappear at report
-regeneration — do not keep them in the table. Keep the page reachable by listing it in
-`docs/api/elements.rst`'s toctree under
-the Java package heading (one entry per synced class). When migrating a class out of the
-legacy `elements.rst` sections, move its section — do not duplicate it; leave unrelated and
+**The page is a JavaDoc-style API reference of the Python wrapper — not a deviation
+report.** After the identity block, add an `API reference` section that introduces the
+class (description borrowed from the JavaDoc) and documents **every public member** of the
+wrapper: its Python signature and a description borrowed from the JavaDoc, translated to
+the wrapper's contract. Prefer `.. autofunction::` / `.. autoattribute::` directives per
+member so descriptions flow from the wrapper docstrings (which mirror the JavaDoc) instead
+of duplicating them; explicit member sections are acceptable when a member needs extra
+narrative. `verify_sync.py` fails the page when any public wrapper member's name does not
+appear in it.
+
+Keep deviations out of the RST: they are the generated report's content (section 3's
+`<INTERFACE>_api_report.md`, regenerated and committed every sync per section 8), not the
+API reference's. Do not reproduce deviation or backlog tables here. Keep the page reachable
+by listing it in `docs/api/elements.rst`'s toctree under
+the Java package heading (one entry per synced class). When migrating a class out of
+the legacy `elements.rst` sections, move its section — do not duplicate it; leave unrelated and
 not-yet-migrated classes unchanged. Keep RST navigation valid.
 
 ## 8. Verify and report
@@ -165,7 +171,7 @@ PYTHONPATH=src python -m pytest tests/unit -q -o addopts=
 PYTHONPATH=src python -m pytest tests/integration -q -o addopts=
 ```
 
-`verify_sync.py` checks that the report declares `- Java package: <package>` in its Summary and that the value agrees with the JavaDoc, then verifies Java-package-derived wrapper placement, the class requirement entry, and the RST anchor/table coverage against the generated report. It also parses the wrapper body and checks every COM binding (`call_com(lambda: self._com.Name(...))`, `get_com_property`/`set_com_property(..., "Name", ...)`) against `docs/reports/pywin32_authority.json`: each member must exist for the interface and match the catalog's method/property shape (names compared case-insensitively, since COM identifiers are case-insensitive). A Java-named member absent from pywin32, or a member bound with the wrong shape, fails Step 8 — this catches syncs that document a `COM_MEMBER_NOT_EXPOSED` blocker but leave the wrapper calling the unexposed name. It also scans the mirrored integration test file and fails Step 8 on any `pytest.raises` other than `NotImplementedError` (section 5), so a wrong binding cannot be kept green by asserting its failure. An exit code of `1` lists incomplete or mismatched artifacts. Also run import/registration checks, relevant lint/type checks, and RST/Sphinx validation when available.
+`verify_sync.py` checks that the report declares `- Java package: <package>` in its Summary and that the value agrees with the JavaDoc, then verifies Java-package-derived wrapper placement, the class requirement entry, and the RST anchor plus API-reference coverage: the RST page must document every public member of the wrapper class (names compared against the wrapper source). It also parses the wrapper body and checks every COM binding (`call_com(lambda: self._com.Name(...))`, `get_com_property`/`set_com_property(..., "Name", ...)`) against `docs/reports/pywin32_authority.json`: each member must exist for the interface and match the catalog's method/property shape (names compared case-insensitively, since COM identifiers are case-insensitive). A Java-named member absent from pywin32, or a member bound with the wrong shape, fails Step 8 — this catches syncs that document a `COM_MEMBER_NOT_EXPOSED` blocker but leave the wrapper calling the unexposed name. It also scans the mirrored integration test file and fails Step 8 on any `pytest.raises` other than `NotImplementedError` (section 5), so a wrong binding cannot be kept green by asserting its failure. An exit code of `1` lists incomplete or mismatched artifacts. Also run import/registration checks, relevant lint/type checks, and RST/Sphinx validation when available.
 
 Verification rules:
 

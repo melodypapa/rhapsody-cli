@@ -11,23 +11,12 @@ The IRPArgument interface represents an argument of an operation.
 - **Python wrapper:** IRPArgument
 - **Python import:** ``from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPArgument``
 - **Canonical module:** ``rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument`` (the
-  package also re-exports ``IRPArgument`` lazily).
 
-No deviations require code changes. ``argumentDirection`` is a pywin32 property read
-and written via ``get_com_property``/``set_com_property``; the Python
-``get_argument_direction``/``set_argument_direction`` names are retained by repo
-convention.
+API reference
+-------------
 
-.. list-table:: Verified IRPArgument deviations and dispositions
-   :header-rows: 1
-   :widths: 34 24 24 18
+Wraps ``IRPArgument``: an argument/parameter of an operation.
 
-   * - JavaDoc member/signature
-     - COM/pywin32 exposure
-     - Python implementation
-     - Deviation and treatment
-   * - —
-     - —
-     - —
-     - No deviations. ``getArgumentDirection``/``setArgumentDirection`` map to the
-       catalogued ``argumentDirection`` property.
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument.IRPArgument.get_argument_direction
+
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument.IRPArgument.set_argument_direction
