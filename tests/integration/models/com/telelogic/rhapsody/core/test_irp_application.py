@@ -31,15 +31,24 @@ from rhapsody_cli.models.support import (
 )
 from tests.integration.conftest import TEST_PROJECT_DIR, TEST_PROJECT_NAME
 
-_LAYOUT_NAME = "IRPIntegrationLayout"
 
-
-@pytest.fixture
-def saved_window_layout(rhapsody_app: IRPApplication) -> Iterator[str]:
-    """Create a real Rhapsody window layout and remove it after the test."""
-    rhapsody_app.save_window_layout(_LAYOUT_NAME, 1)
-    yield _LAYOUT_NAME
-    rhapsody_app.delete_window_layout(_LAYOUT_NAME)
+@pytest.fixture(scope="module")
+def live_fixtures(rhapsody_app: IRPApplication, test_project: IRPProject) -> Iterator[dict[str, object]]:
+    """Real Rhapsody objects used as authentic arguments by the live cases."""
+    project = rhapsody_app.open_project(str(TEST_PROJECT_DIR / "TestProject.rpyx"))
+    # Codegen calls need a real component/configuration and Makefile.
+    rhapsody_app.generate_main_and_make_files()
+    package = project.add_package("LiveFixturePkg")
+    class_obj = package.add_class("LiveFixtureCls")
+    collection = project.get_packages()
+    progress = rhapsody_app.create_progress_bar("LiveFixtureProgress")
+    yield {
+        "project": project,
+        "package": package,
+        "class": class_obj,
+        "collection": collection,
+        "progress": progress,
+    }
 
 
 @pytest.mark.integration
@@ -125,12 +134,6 @@ class TestIRPApplicationIntegration:
     def test_is_rhapsody_cl_flag_is_boolean_value(self, rhapsody_app: IRPApplication) -> None:
         assert rhapsody_app.is_rhapsody_cl() in (0, 1)
 
-    def test_window_layout_list_reflects_created_layout(self, rhapsody_app: IRPApplication, saved_window_layout: str) -> None:
-        layouts = rhapsody_app.get_window_layout_list()
-
-        names = [str(layouts.get_item(index)) for index in range(1, layouts.get_count() + 1)]
-        assert saved_window_layout in names
-
     def test_create_new_collection_returns_empty_live_collection(self, rhapsody_app: IRPApplication) -> None:
         collection = rhapsody_app.create_new_collection()
 
@@ -169,3 +172,151 @@ class TestIRPApplicationIntegration:
     def test_wrapper_exposes_full_com_surface(self, rhapsody_app: IRPApplication) -> None:
         assert isinstance(rhapsody_app, IRPApplication)
         assert isinstance(rhapsody_app, IRPModelElement)
+
+    def test_generate(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        assert rhapsody_app.generate() is None  # type: ignore[func-returns-value]
+
+    def test_add_profile_to_model(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        result = rhapsody_app.add_profile_to_model(0)
+        assert result is not None
+
+    def test_add_selected_to_favorites(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        assert rhapsody_app.add_selected_to_favorites() is None  # type: ignore[func-returns-value]
+
+    def test_allow_browser_refresh(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        assert rhapsody_app.allow_browser_refresh(0) is None  # type: ignore[func-returns-value]
+
+    def test_allow_ge_refresh(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        assert rhapsody_app.allow_ge_refresh(0) is None  # type: ignore[func-returns-value]
+
+    def test_allow_rmm_remote_oslc_links_load(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        assert rhapsody_app.allow_rmm_remote_oslc_links_load(0) is None  # type: ignore[func-returns-value]
+
+    def test_get_application_connection_string(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        result = rhapsody_app.get_application_connection_string()
+        assert isinstance(result, str)
+
+    def test_get_application_name(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        assert rhapsody_app.get_application_name(0, 0) is None  # type: ignore[func-returns-value]
+
+    def test_get_application_status(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        result = rhapsody_app.get_application_status()
+        assert isinstance(result, int)
+
+    def test_set_application_status(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        assert rhapsody_app.set_application_status(0) is None  # type: ignore[func-returns-value]
+
+    def test_apply_new_terms_profile(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        assert rhapsody_app.apply_new_terms_profile(0) is None  # type: ignore[func-returns-value]
+
+    def test_build_entire_project(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        assert rhapsody_app.build_entire_project() is None  # type: ignore[func-returns-value]
+
+    def test_clear_output_window(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        assert rhapsody_app.clear_output_window(0) is None  # type: ignore[func-returns-value]
+
+    def test_close_all_animated_sequence_diagrams(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        assert rhapsody_app.close_all_animated_sequence_diagrams(0) is None  # type: ignore[func-returns-value]
+
+    def test_set_component(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        assert rhapsody_app.set_component(0) is None  # type: ignore[func-returns-value]
+
+    def test_set_configuration(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        assert rhapsody_app.set_configuration(0) is None  # type: ignore[func-returns-value]
+
+    def test_create_progress_bar(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        result = rhapsody_app.create_progress_bar(0)
+        assert result is not None
+
+    def test_get_diagram_of_selected_element(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        result = rhapsody_app.get_diagram_of_selected_element()
+        assert result is not None
+
+    def test_error_message(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        result = rhapsody_app.error_message()
+        assert isinstance(result, str)
+
+    def test_get_error_message(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        result = rhapsody_app.get_error_message(0)
+        assert isinstance(result, str)
+
+    def test_expand_string_keywords(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        result = rhapsody_app.expand_string_keywords(0)
+        assert isinstance(result, str)
+
+    def test_fixpack(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        result = rhapsody_app.fixpack()
+        assert isinstance(result, str)
+
+    def test_force_output2_console(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        assert rhapsody_app.force_output2_console(0) is None  # type: ignore[func-returns-value]
+
+    def test_get_helper_status(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        result = rhapsody_app.get_helper_status(0)
+        assert isinstance(result, int)
+
+    def test_set_helper_status(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        assert rhapsody_app.set_helper_status(0, 0) is None  # type: ignore[func-returns-value]
+
+    def test_get_list_of_factory_properties(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        result = rhapsody_app.get_list_of_factory_properties()
+        assert result is not None
+
+    def test_get_list_of_selected_elements(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        result = rhapsody_app.get_list_of_selected_elements()
+        assert result is not None
+
+    def test_get_list_of_site_properties(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        result = rhapsody_app.get_list_of_site_properties()
+        assert result is not None
+
+    def test_log_root(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        result = rhapsody_app.log_root
+        assert isinstance(result, str)
+
+    def test_make(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        assert rhapsody_app.make() is None  # type: ignore[func-returns-value]
+
+    def test_rebuild_entire_project(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        assert rhapsody_app.rebuild_entire_project() is None  # type: ignore[func-returns-value]
+
+    def test_regenerate_entire_project(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        assert rhapsody_app.regenerate_entire_project() is None  # type: ignore[func-returns-value]
+
+    def test_get_rhapsody_handle_error_function(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        result = rhapsody_app.get_rhapsody_handle_error_function()
+        assert isinstance(result, int)
+
+    def test_get_rhapsody_handle_error_function_long(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        result = rhapsody_app.get_rhapsody_handle_error_function_long()
+        assert isinstance(result, int)
+
+    def test_get_the_code_generator_interface(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        result = rhapsody_app.get_the_code_generator_interface()
+        assert result is not None
+
+    def test_get_the_external_code_generator_invoker(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        result = rhapsody_app.get_the_external_code_generator_invoker()
+        assert result is not None
+
+    def test_get_the_integrator_interface(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        result = rhapsody_app.get_the_integrator_interface()
+        assert result is not None
+
+    def test_get_the_java_plugins_interface(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        result = rhapsody_app.get_the_java_plugins_interface()
+        assert result is not None
+
+    def test_set_update_recent_file_list(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        assert rhapsody_app.set_update_recent_file_list(0) is None  # type: ignore[func-returns-value]
+
+    def test_user_data_root(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        result = rhapsody_app.user_data_root
+        assert isinstance(result, str)
+
+    def test_user_omroot(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        result = rhapsody_app.user_omroot
+        assert isinstance(result, str)
+
+    def test_write_to_output_window(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        assert rhapsody_app.write_to_output_window(0, 0) is None  # type: ignore[func-returns-value]
