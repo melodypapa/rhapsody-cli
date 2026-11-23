@@ -133,11 +133,7 @@ def parse_wrapper_public_members(wrapper_source: str, wrapper_class: str) -> Lis
     tree = ast.parse(wrapper_source)
     for node in ast.walk(tree):
         if isinstance(node, ast.ClassDef) and node.name == wrapper_class:
-            names = {
-                item.name
-                for item in node.body
-                if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)) and not item.name.startswith("_")
-            }
+            names = {item.name for item in node.body if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)) and not item.name.startswith("_")}
             return sorted(names)
     return []
 
@@ -179,19 +175,21 @@ def _canonical_import(root: Path, source_path: str) -> Tuple[Path, str]:
     return absolute_path, ".".join(module_parts)
 
 
-def parse_wrapper_bindings(wrapper_source: str) -> List[Tuple[str, str]]:
-    """Extract (com_member, expected_shape) pairs from a synced wrapper body.
+def parse_wrapper_bindings(wrapper_source: str) -> List[Tuple[str, str, int]]:
+    """Extract (com_member, expected_shape, call_arity) triples from a synced wrapper body.
 
     Recognised binding forms (per AGENTS.md / SKILL §3):
-      * ``call_com(lambda: self._com.Name(...))`` -> ("Name", "method")
-      * ``get_com_property(self._com, "Name")``  -> ("Name", "property")
-      * ``set_com_property(self._com, "Name", ...)`` -> ("Name", "property")
+      * ``call_com(lambda: self._com.Name(...))`` -> ("Name", "method", arg_count)
+      * ``get_com_property(self._com, "Name")``  -> ("Name", "property", 0)
+      * ``set_com_property(self._com, "Name", ...)`` -> ("Name", "property", 0)
 
+    ``call_arity`` is the number of arguments the lambda passes to the COM
+    member (0 for property access, which passes no positional COM arguments).
     Both ``self.call_com`` and ``AbstractRPModelElement.call_com`` (and the
     ``com_utils.call_com`` form) are handled because the call target is not
     what determines the COM member -- the lambda body / property argument is.
     """
-    bindings: List[Tuple[str, str]] = []
+    bindings: List[Tuple[str, str, int]] = []
     tree = ast.parse(wrapper_source)
     for node in ast.walk(tree):
         if not isinstance(node, ast.Call) or not isinstance(node.func, ast.Attribute):
@@ -201,11 +199,11 @@ def parse_wrapper_bindings(wrapper_source: str) -> List[Tuple[str, str]]:
             lam = node.args[0]
             if isinstance(lam, ast.Lambda) and isinstance(lam.body, ast.Call) and isinstance(lam.body.func, ast.Attribute):
                 if isinstance(lam.body.func.value, ast.Attribute) and lam.body.func.value.attr == "_com":
-                    bindings.append((lam.body.func.attr, "method"))
+                    bindings.append((lam.body.func.attr, "method", len(lam.body.args)))
         elif attr in ("get_com_property", "set_com_property") and len(node.args) >= 2:
             arg = node.args[1]
             if isinstance(arg, ast.Constant) and isinstance(arg.value, str):
-                bindings.append((arg.value, "property"))
+                bindings.append((arg.value, "property", 0))
     return bindings
 
 
@@ -218,25 +216,40 @@ def verify_wrapper_bindings(root: Path, interface_name: str, wrapper_source: str
     matched case-insensitively (COM identifiers are case-insensitive and the
     catalog preserves the type library's PascalCase). A member absent from the
     catalog, or bound with the wrong shape, is a sync defect and fails Step 8.
+    When the authority carries a ``signatures`` section, a method binding whose
+    call arity falls outside the declared parameter band (``required``..``count``)
+    fails Step 8 as well — a correct member name with the wrong argument count
+    still fails at runtime. Members without a committed signature are checked
+    for existence and shape only.
     """
     catalog_path = root / "docs" / "reports" / "pywin32_authority.json"
     if not catalog_path.is_file():
         return [f"pywin32 authority catalog not found: {catalog_path}"]
-    catalog = json.loads(catalog_path.read_text(encoding="utf-8")).get("catalog", {})
-    entries = catalog.get(interface_name)
+    authority_data = json.loads(catalog_path.read_text(encoding="utf-8"))
+    entries = authority_data.get("catalog", {}).get(interface_name)
     if entries is None:
         return [f"pywin32 catalog has no entry for {interface_name}"]
     lowered = {str(name).lower(): (name, shape) for name, shape in entries.items()}
+    lowered_signatures = {str(name).lower(): sig for name, sig in authority_data.get("signatures", {}).get(interface_name, {}).items()}
     issues: List[str] = []
-    for member, shape in parse_wrapper_bindings(wrapper_source):
+    for member, shape, arity in parse_wrapper_bindings(wrapper_source):
         found = lowered.get(member.lower())
         if found is None:
             issues.append(f"{interface_name} binding '{member}' is absent from the pywin32 catalog")
-        elif found[1] != shape:
-            issues.append(
-                f"{interface_name} binding '{member}' is {shape}-shaped in the wrapper "
-                f"but the pywin32 catalog declares '{found[0]}' as {found[1]}"
-            )
+            continue
+        if found[1] != shape:
+            issues.append(f"{interface_name} binding '{member}' is {shape}-shaped in the wrapper " f"but the pywin32 catalog declares '{found[0]}' as {found[1]}")
+            continue
+        if shape != "method":
+            continue
+        signature = lowered_signatures.get(member.lower())
+        count_val = signature.get("count") if isinstance(signature, dict) else None
+        if not isinstance(count_val, int):
+            continue
+        required_val = signature.get("required")
+        required = int(required_val) if isinstance(required_val, int) else int(count_val)
+        if arity > int(count_val) or arity < required:
+            issues.append(f"{interface_name} binding '{member}' has call arity {arity} but the pywin32 signature " f"declares {int(count_val)} parameter(s) ({required} required)")
     return issues
 
 
@@ -255,10 +268,7 @@ def verify_integration_exception_catches(test_source: str) -> List[str]:
     allowed = {"NotImplementedError"}
     for node in ast.walk(tree):
         if isinstance(node, ast.Try) and node.handlers:
-            issues.append(
-                f"try/except handler at line {node.lineno} catches exceptions in an integration test "
-                f"(SKILL section 5); assert the real outcome or record a blocker"
-            )
+            issues.append(f"try/except handler at line {node.lineno} catches exceptions in an integration test " f"(SKILL section 5); assert the real outcome or record a blocker")
         if not isinstance(node, ast.With):
             continue
         for item in node.items:
@@ -278,8 +288,7 @@ def verify_integration_exception_catches(test_source: str) -> List[str]:
             bad = names - allowed
             if bad:
                 issues.append(
-                    f"integration test asserts disallowed exception(s) {sorted(bad)} at line {node.lineno} "
-                    f"(only NotImplementedError for JavaDoc-defined/pywin32-absent stubs is allowed)"
+                    f"integration test asserts disallowed exception(s) {sorted(bad)} at line {node.lineno} " f"(only NotImplementedError for JavaDoc-defined/pywin32-absent stubs is allowed)"
                 )
     return issues
 

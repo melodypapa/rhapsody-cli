@@ -161,13 +161,13 @@ def test_parses_public_wrapper_members() -> None:
         "        return 0\n\n"
         "    @property\n"
         "    def kind(self) -> str:\n"
-        "        return \"\"\n\n"
+        '        return ""\n\n'
         "    def add_example(self, name: str) -> None:\n"
         "        pass\n\n"
         "    def _helper(self) -> None:\n"
         "        pass\n\n"
         "    def __repr__(self) -> str:\n"
-        "        return \"\"\n"
+        '        return ""\n'
     )
 
     assert tools.parse_wrapper_public_members(source, "RPThing") == ["add_example", "get_value", "kind"]
@@ -326,7 +326,7 @@ def _write_application_fixture(root: Path) -> Path:
     (app_dir / "application.py").write_text(
         "class RhapsodyApplication:\n"
         "    def get_build_no(self) -> str:\n"
-        "        return \"\"\n\n"
+        '        return ""\n\n'
         "    def connect(self) -> None:\n"
         "        pass\n\n"
         "    def _attach(self) -> None:\n"
@@ -403,11 +403,11 @@ def test_binding_check_flags_absent_com_member(tmp_path: Path) -> None:
     tools = _load_sync_tools()
     (tmp_path / "docs" / "reports").mkdir(parents=True)
     (tmp_path / "docs" / "reports" / "pywin32_authority.json").write_text('{"catalog": {"IRPType": {}}}', encoding="utf-8")
-    wrapper = '''
+    wrapper = """
 class IRPType:
     def get_thing(self):
         return self.call_com(lambda: self._com.getThing())
-'''
+"""
     issues = tools.verify_wrapper_bindings(tmp_path, "IRPType", wrapper)
     assert any("getThing" in issue and "absent" in issue.lower() for issue in issues)
 
@@ -417,11 +417,11 @@ def test_binding_check_flags_wrong_shape(tmp_path: Path) -> None:
     tools = _load_sync_tools()
     (tmp_path / "docs" / "reports").mkdir(parents=True)
     (tmp_path / "docs" / "reports" / "pywin32_authority.json").write_text('{"catalog": {"IRPType": {"thing": "property"}}}', encoding="utf-8")
-    wrapper = '''
+    wrapper = """
 class IRPType:
     def get_thing(self):
         return self.call_com(lambda: self._com.thing())
-'''
+"""
     issues = tools.verify_wrapper_bindings(tmp_path, "IRPType", wrapper)
     assert any("thing" in issue and "shape" in issue.lower() for issue in issues)
 
@@ -430,29 +430,29 @@ def test_binding_check_accepts_valid_bindings(tmp_path: Path) -> None:
     tools = _load_sync_tools()
     (tmp_path / "docs" / "reports").mkdir(parents=True)
     (tmp_path / "docs" / "reports" / "pywin32_authority.json").write_text('{"catalog": {"IRPType": {"Thing": "method", "flag": "property"}}}', encoding="utf-8")
-    wrapper = '''
+    wrapper = """
 class IRPType:
     def get_thing(self):
         return self.call_com(lambda: self._com.Thing())
     def get_flag(self):
         return self.get_com_property(self._com, "flag")
-'''
+"""
     assert tools.verify_wrapper_bindings(tmp_path, "IRPType", wrapper) == []
 
 
 def test_integration_check_allows_only_not_implemented_error() -> None:
     tools = _load_sync_tools()
-    ok = '''
+    ok = """
 def test_stub():
     with pytest.raises(NotImplementedError):
         wrapper.java_only_method()
-'''
+"""
     assert tools.verify_integration_exception_catches(ok) == []
 
 
 def test_integration_check_flags_disallowed_exceptions() -> None:
     tools = _load_sync_tools()
-    bad = '''
+    bad = """
 def test_a():
     with pytest.raises(AttributeError):
         wrapper.method()
@@ -462,7 +462,7 @@ def test_b():
 def test_c():
     with pytest.raises((TypeError, ValueError)):
         wrapper.method()
-'''
+"""
     issues = tools.verify_integration_exception_catches(bad)
     assert len(issues) == 3
     assert any("AttributeError" in i for i in issues)
@@ -474,13 +474,13 @@ def test_integration_check_flags_try_except_handlers() -> None:
     """Section 5 forbids try/except in integration test bodies: a caught
     failure masquerades as a pass. try/finally cleanup stays allowed."""
     tools = _load_sync_tools()
-    bad = '''
+    bad = """
 def test_a():
     try:
         assert wrapper.method() is not None
     except Exception:
         pass
-'''
+"""
     issues = tools.verify_integration_exception_catches(bad)
     assert len(issues) == 1
     assert "try/except" in issues[0]
@@ -491,7 +491,7 @@ def test_integration_check_allows_try_finally_cleanup() -> None:
     canonical mirrored integration tests rely on it, and the documented
     NotImplementedError stub assertion stays permitted."""
     tools = _load_sync_tools()
-    ok = '''
+    ok = """
 def test_a():
     element = package.add_element("x")
     try:
@@ -500,13 +500,14 @@ def test_a():
         element.delete_from_project()
     with pytest.raises(NotImplementedError):
         wrapper.java_only_method()
-'''
+"""
     assert tools.verify_integration_exception_catches(ok) == []
 
 
 def test_signature_arity_mismatch_detected(tmp_path: Path) -> None:
     """A wrapper call with wrong arg count is reported against pywin32 signatures."""
     import importlib.util
+
     spec = importlib.util.spec_from_file_location("valmod", SYNC_TOOLS_PATH.parents[4] / "scripts" / "validate_model_api.py")
     val = importlib.util.module_from_spec(spec)
     assert spec.loader
@@ -519,6 +520,7 @@ def test_signature_arity_mismatch_detected(tmp_path: Path) -> None:
 
 def test_signature_type_mismatch_detected(tmp_path: Path) -> None:
     import importlib.util
+
     spec = importlib.util.spec_from_file_location("valmod2", SYNC_TOOLS_PATH.parents[4] / "scripts" / "validate_model_api.py")
     val = importlib.util.module_from_spec(spec)
     assert spec.loader
@@ -528,3 +530,57 @@ def test_signature_type_mismatch_detected(tmp_path: Path) -> None:
     arg_types = {"SetThing": ["int"]}
     rows = val.build_signature_rows({"SetThing": {"set_thing() -> SetThing"}}, signatures, arities, arg_types)
     assert any("SIGNATURE_TYPE_MISMATCH" in r[3] for r in rows)
+
+
+def test_verify_wrapper_bindings_flags_arity_mismatch(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    """Step 8 enforces the signature arity the skill documents: a wrapper
+    calling an exposed member with the wrong argument count fails."""
+    (tmp_path / "docs" / "reports").mkdir(parents=True)
+    (tmp_path / "docs" / "reports" / "pywin32_authority.json").write_text(
+        '{"catalog": {"IRPType": {"FindThing": "method"}}, "signatures": {"IRPType": {"FindThing": {"count": 2, "names": ["a", "b"], "types": ["str", "str"], "codes": [8, 8]}}}}',
+        encoding="utf-8",
+    )
+    wrapper = """
+class IRPType:
+    def find_thing(self, a):
+        return self.call_com(lambda: self._com.FindThing(a))
+"""
+
+    issues = tools.verify_wrapper_bindings(tmp_path, "IRPType", wrapper)
+
+    assert any("arity" in issue.lower() and "FindThing" in issue for issue in issues)
+
+
+def test_verify_wrapper_bindings_accepts_matching_arity(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    (tmp_path / "docs" / "reports").mkdir(parents=True)
+    (tmp_path / "docs" / "reports" / "pywin32_authority.json").write_text(
+        '{"catalog": {"IRPType": {"FindThing": "method"}}, "signatures": {"IRPType": {"FindThing": {"count": 2, "names": ["a", "b"], "types": ["str", "str"], "codes": [8, 8]}}}}',
+        encoding="utf-8",
+    )
+    wrapper = """
+class IRPType:
+    def find_thing(self, a, b):
+        return self.call_com(lambda: self._com.FindThing(a, b))
+"""
+
+    assert tools.verify_wrapper_bindings(tmp_path, "IRPType", wrapper) == []
+
+
+def test_verify_wrapper_bindings_skips_arity_when_signature_absent(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    """Without a committed signature for the member there is no arity
+    evidence — the binding check stays limited to existence and shape."""
+    (tmp_path / "docs" / "reports").mkdir(parents=True)
+    (tmp_path / "docs" / "reports" / "pywin32_authority.json").write_text(
+        '{"catalog": {"IRPType": {"FindThing": "method"}}}',
+        encoding="utf-8",
+    )
+    wrapper = """
+class IRPType:
+    def find_thing(self, a):
+        return self.call_com(lambda: self._com.FindThing(a))
+"""
+
+    assert tools.verify_wrapper_bindings(tmp_path, "IRPType", wrapper) == []

@@ -4,7 +4,8 @@
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `IRPProject` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`)
 - Members: Python `74`, Java `70`, pywin32 `73`
-- Deviation items: `13` (actionable `7`, expected binding differences `3`, wrapper backlog `3`)
+- Deviation items: `39` (actionable `33`, expected binding differences `3`, wrapper backlog `3`)
+- Status legend: `MATCH` verified binding · `UNAVAILABLE_DOCUMENTED` pywin32 lacks the member (NotImplementedError stub) · `ALIAS_DOCUMENTED` documented alias · actionable rows are named by code in `Comparison details`
 
 ## Comparison details
 
@@ -17,6 +18,32 @@
 | find_node() -> findNode | — | findNode (method) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
 | get_nodes() -> nodes | — | nodes (property) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
 | get_packages() -> packages | — | packages (property) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
+| gateway_export_to_xml() -> GatewayExportToXML | — | GatewayExportToXML (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 2 parameter(s) (2 required; params: filename, params; types: str, str). Pass the documented parameters. |
+| gateway_export_to_xml2() -> GatewayExportToXML2 | — | GatewayExportToXML2 (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [2] arg(s) but pywin32 declares 3 parameter(s) (3 required; params: filename, params, proj; types: str, str, com). Pass the documented parameters. |
+| generate_report() -> GenerateReport | — | GenerateReport (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [2] arg(s) but pywin32 declares 6 parameter(s) (6 required; params: modelscope, templatename, docType, filename, showDocument, silentMode; types: str, str, str, str, int, int). Pass the documented parameters. |
+| add_custom_view_on_diagram() -> addCustomViewOnDiagram | — | addCustomViewOnDiagram (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 2 parameter(s) (2 required; params: diagram, customView; types: com, com). Pass the documented parameters. |
+| add_spell_checker_result() -> addSpellCheckerResult | — | addSpellCheckerResult (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [2] arg(s) but pywin32 declares 1 parameter(s) (1 required; params: value; types: str). Pass the documented parameters. |
+| apply_browser_custom_views_on_diagrams() -> applyBrowserCustomViewsOnDiagrams | — | applyBrowserCustomViewsOnDiagrams (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [0] arg(s) but pywin32 declares 1 parameter(s) (1 required; params: newVal; types: int). Pass the documented parameters. |
+| apply_roundtrip_diff_merge() -> applyRoundtripDiffMerge | — | applyRoundtripDiffMerge (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [0] arg(s) but pywin32 declares 3 parameter(s) (3 required; params: magicNumber, shadowModel, filesToUpdate; types: int, com, com). Pass the documented parameters. |
+| clean_unresolved_elements() -> cleanUnresolvedElements | — | cleanUnresolvedElements (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [0] arg(s) but pywin32 declares 1 parameter(s) (1 required; params: rootElement; types: com). Pass the documented parameters. |
+| close_csv_file() -> closeCSVFile | — | closeCSVFile (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [0] arg(s) but pywin32 declares 1 parameter(s) (1 required; params: fullCSVFileName; types: str). Pass the documented parameters. |
+| delete_node() -> deleteNode | — | deleteNode (method) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
+| find_element_by_binary_id() -> findElementByBinaryID | — | findElementByBinaryID (method) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['str'] but pywin32 declares ['object']. Match the documented COM parameter types. |
+| find_element_by_file_name() -> findElementByFileName | — | findElementByFileName (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 2 parameter(s) (2 required; params: theFolderName, theFileName; types: str, str). Pass the documented parameters. |
+| find_elements_with_oslc_link() -> findElementsWithOSLCLink | — | findElementsWithOSLCLink (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 2 parameter(s) (2 required; params: type, purl; types: str, str). Pass the documented parameters. |
+| get_active_custom_views_on_diagram() -> getActiveCustomViewsOnDiagram | — | getActiveCustomViewsOnDiagram (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [0] arg(s) but pywin32 declares 1 parameter(s) (1 required; params: diagram; types: com). Pass the documented parameters. |
+| get_new_progress_bar() -> getNewProgressBar | — | getNewProgressBar (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [0] arg(s) but pywin32 declares 2 parameter(s) (2 required; params: amount, name; types: int, str). Pass the documented parameters. |
+| get_requirements_by_id() -> getRequirementsByID | — | getRequirementsByID (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 2 parameter(s) (2 required; params: requirementID, returnFirstFoundOnly; types: str, int). Pass the documented parameters. |
+| get_roundtrip_shadow_model() -> getRoundtripShadowModel | — | getRoundtripShadowModel (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [0] arg(s) but pywin32 declares 1 parameter(s) (1 required; params: magicNumber; types: int). Pass the documented parameters. |
+| import_package_from_rose() -> importPackageFromRose | — | importPackageFromRose (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 3 parameter(s) (3 required; params: projectName, packageName, logFileName; types: str, str, str). Pass the documented parameters. |
+| import_project_from_rose() -> importProjectFromRose | — | importProjectFromRose (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 2 parameter(s) (2 required; params: projectName, logFileName; types: str, str). Pass the documented parameters. |
+| locate_in_ide() -> locateInIDE | — | locateInIDE (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [0] arg(s) but pywin32 declares 3 parameter(s) (3 required; params: config, filename, lineNumber; types: com, str, int). Pass the documented parameters. |
+| reload_csv_file() -> reloadCSVFile | — | reloadCSVFile (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [0] arg(s) but pywin32 declares 1 parameter(s) (1 required; params: fullCSVFileName; types: str). Pass the documented parameters. |
+| remove_custom_view_on_diagram() -> removeCustomViewOnDiagram | — | removeCustomViewOnDiagram (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 2 parameter(s) (2 required; params: diagram, customView; types: com, com). Pass the documented parameters. |
+| save_as_prev_version() -> saveAsPrevVersion | — | saveAsPrevVersion (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 2 parameter(s) (2 required; params: filename, prevVersion; types: str, str). Pass the documented parameters. |
+| set_active_component() -> setActiveComponent | — | setActiveComponent (method) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
+| set_active_configuration() -> setActiveConfiguration | — | setActiveConfiguration (method) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
+| set_wait_dialog_watchdog_value() -> setWaitDialogWatchdogValue | — | setWaitDialogWatchdogValue (method) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['int'] but pywin32 declares ['str']. Match the documented COM parameter types. |
 
 ## Expected Binding Differences
 
@@ -33,6 +60,10 @@
 | — | moveToDesignManager (method) | moveToDesignManager (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | moveToDesignManagerAfterLogin (method) | moveToDesignManagerAfterLogin (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 | — | save (method) | save (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
+
+<details>
+<summary>Correct items (60) — bindings verified against pywin32</summary>
+
 
 ## Correct Items
 
@@ -99,98 +130,44 @@
 | set_wait_dialog_watchdog_value() -> setWaitDialogWatchdogValue | setWaitDialogWatchdogValue (method) | setWaitDialogWatchdogValue (method) | MATCH | — |
 | start_transaction_of_no_cg_interest() -> startTransactionOfNoCGInterest | startTransactionOfNoCGInterest (method) | startTransactionOfNoCGInterest (method) | MATCH | — |
 
-## Signature Validation
-
-| Python model wrapper | Java API | pywin32 | Status | Recommended change |
-| --- | --- | --- | --- | --- |
-| gateway_export_to_xml() -> GatewayExportToXML | — | GatewayExportToXML (method; params: filename, params) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 2 (types: str, str). Pass the documented parameters. |
-| gateway_export_to_xml2() -> GatewayExportToXML2 | — | GatewayExportToXML2 (method; params: filename, params, proj) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [2] arg(s) but pywin32 declares 3 (types: str, str, com). Pass the documented parameters. |
-| generate_report() -> GenerateReport | — | GenerateReport (method; params: modelscope, templatename, docType, filename, showDocument, silentMode) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [2] arg(s) but pywin32 declares 6 (types: str, str, str, str, int, int). Pass the documented parameters. |
-| add_custom_view_on_diagram() -> addCustomViewOnDiagram | — | addCustomViewOnDiagram (method; params: diagram, customView) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 2 (types: com, com). Pass the documented parameters. |
-| add_spell_checker_result() -> addSpellCheckerResult | — | addSpellCheckerResult (method; params: value) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [2] arg(s) but pywin32 declares 1 (types: str). Pass the documented parameters. |
-| apply_browser_custom_views_on_diagrams() -> applyBrowserCustomViewsOnDiagrams | — | applyBrowserCustomViewsOnDiagrams (method; params: newVal) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [0] arg(s) but pywin32 declares 1 (types: int). Pass the documented parameters. |
-| apply_roundtrip_diff_merge() -> applyRoundtripDiffMerge | — | applyRoundtripDiffMerge (method; params: magicNumber, shadowModel, filesToUpdate) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [0] arg(s) but pywin32 declares 3 (types: int, com, com). Pass the documented parameters. |
-| clean_unresolved_elements() -> cleanUnresolvedElements | — | cleanUnresolvedElements (method; params: rootElement) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [0] arg(s) but pywin32 declares 1 (types: com). Pass the documented parameters. |
-| close_csv_file() -> closeCSVFile | — | closeCSVFile (method; params: fullCSVFileName) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [0] arg(s) but pywin32 declares 1 (types: str). Pass the documented parameters. |
-| delete_node() -> deleteNode | — | deleteNode (method; types: str) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
-| find_element_by_binary_id() -> findElementByBinaryID | — | findElementByBinaryID (method; types: object) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['str'] but pywin32 declares ['object']. Match the documented COM parameter types. |
-| find_element_by_file_name() -> findElementByFileName | — | findElementByFileName (method; params: theFolderName, theFileName) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 2 (types: str, str). Pass the documented parameters. |
-| find_elements_with_oslc_link() -> findElementsWithOSLCLink | — | findElementsWithOSLCLink (method; params: type, purl) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 2 (types: str, str). Pass the documented parameters. |
-| get_active_custom_views_on_diagram() -> getActiveCustomViewsOnDiagram | — | getActiveCustomViewsOnDiagram (method; params: diagram) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [0] arg(s) but pywin32 declares 1 (types: com). Pass the documented parameters. |
-| get_new_progress_bar() -> getNewProgressBar | — | getNewProgressBar (method; params: amount, name) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [0] arg(s) but pywin32 declares 2 (types: int, str). Pass the documented parameters. |
-| get_requirements_by_id() -> getRequirementsByID | — | getRequirementsByID (method; params: requirementID, returnFirstFoundOnly) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 2 (types: str, int). Pass the documented parameters. |
-| get_roundtrip_shadow_model() -> getRoundtripShadowModel | — | getRoundtripShadowModel (method; params: magicNumber) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [0] arg(s) but pywin32 declares 1 (types: int). Pass the documented parameters. |
-| import_package_from_rose() -> importPackageFromRose | — | importPackageFromRose (method; params: projectName, packageName, logFileName) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 3 (types: str, str, str). Pass the documented parameters. |
-| import_project_from_rose() -> importProjectFromRose | — | importProjectFromRose (method; params: projectName, logFileName) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 2 (types: str, str). Pass the documented parameters. |
-| locate_in_ide() -> locateInIDE | — | locateInIDE (method; params: config, filename, lineNumber) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [0] arg(s) but pywin32 declares 3 (types: com, str, int). Pass the documented parameters. |
-| reload_csv_file() -> reloadCSVFile | — | reloadCSVFile (method; params: fullCSVFileName) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [0] arg(s) but pywin32 declares 1 (types: str). Pass the documented parameters. |
-| remove_custom_view_on_diagram() -> removeCustomViewOnDiagram | — | removeCustomViewOnDiagram (method; params: diagram, customView) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 2 (types: com, com). Pass the documented parameters. |
-| save_as_prev_version() -> saveAsPrevVersion | — | saveAsPrevVersion (method; params: filename, prevVersion) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 2 (types: str, str). Pass the documented parameters. |
-| set_active_component() -> setActiveComponent | — | setActiveComponent (method; types: str) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
-| set_active_configuration() -> setActiveConfiguration | — | setActiveConfiguration (method; types: str) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
-| set_wait_dialog_watchdog_value() -> setWaitDialogWatchdogValue | — | setWaitDialogWatchdogValue (method; types: str) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['int'] but pywin32 declares ['str']. Match the documented COM parameter types. |
+</details>
 
 ## AI Fix Guidance
 
-### Finding 1: JAVA_DOC_MISSING
+### JAVA_DOC_MISSING (7 findings)
 - **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
-- **Current Python wrapper/COM call:** add_actor() -> addActor
-- **Expected Python method(s):** —
-- **Java signature(s):** —
-- **pywin32 member(s):** addActor (method)
+- **Affected call(s):** add_actor() -> addActor; add_class() -> addClass; add_node() -> addNode; delete_node() -> deleteNode; find_node() -> findNode; get_nodes() -> nodes; get_packages() -> packages
 - **Recommended change:** Confirm this COM member is a supported extension and document its status.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
-### Finding 2: JAVA_DOC_MISSING
+### SIGNATURE_ARITY_MISMATCH (21 findings)
 - **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
-- **Current Python wrapper/COM call:** add_class() -> addClass
-- **Expected Python method(s):** —
-- **Java signature(s):** —
-- **pywin32 member(s):** addClass (method)
-- **Recommended change:** Confirm this COM member is a supported extension and document its status.
+- **Affected call(s):** gateway_export_to_xml() -> GatewayExportToXML; gateway_export_to_xml2() -> GatewayExportToXML2; generate_report() -> GenerateReport; add_custom_view_on_diagram() -> addCustomViewOnDiagram; add_spell_checker_result() -> addSpellCheckerResult; apply_browser_custom_views_on_diagrams() -> applyBrowserCustomViewsOnDiagrams; apply_roundtrip_diff_merge() -> applyRoundtripDiffMerge; clean_unresolved_elements() -> cleanUnresolvedElements; close_csv_file() -> closeCSVFile; find_element_by_file_name() -> findElementByFileName; find_elements_with_oslc_link() -> findElementsWithOSLCLink; get_active_custom_views_on_diagram() -> getActiveCustomViewsOnDiagram; get_new_progress_bar() -> getNewProgressBar; get_requirements_by_id() -> getRequirementsByID; get_roundtrip_shadow_model() -> getRoundtripShadowModel; import_package_from_rose() -> importPackageFromRose; import_project_from_rose() -> importProjectFromRose; locate_in_ide() -> locateInIDE; reload_csv_file() -> reloadCSVFile; remove_custom_view_on_diagram() -> removeCustomViewOnDiagram; save_as_prev_version() -> saveAsPrevVersion
+- **Recommended change:** Wrapper passes [1] arg(s) but pywin32 declares 2 parameter(s) (2 required; params: filename, params; types: str, str). Pass the documented parameters.
+- **Recommended change:** Wrapper passes [2] arg(s) but pywin32 declares 3 parameter(s) (3 required; params: filename, params, proj; types: str, str, com). Pass the documented parameters.
+- **Recommended change:** Wrapper passes [2] arg(s) but pywin32 declares 6 parameter(s) (6 required; params: modelscope, templatename, docType, filename, showDocument, silentMode; types: str, str, str, str, int, int). Pass the documented parameters.
+- **Recommended change:** Wrapper passes [1] arg(s) but pywin32 declares 2 parameter(s) (2 required; params: diagram, customView; types: com, com). Pass the documented parameters.
+- **Recommended change:** Wrapper passes [2] arg(s) but pywin32 declares 1 parameter(s) (1 required; params: value; types: str). Pass the documented parameters.
+- **Recommended change:** Wrapper passes [0] arg(s) but pywin32 declares 1 parameter(s) (1 required; params: newVal; types: int). Pass the documented parameters.
+- **Recommended change:** Wrapper passes [0] arg(s) but pywin32 declares 3 parameter(s) (3 required; params: magicNumber, shadowModel, filesToUpdate; types: int, com, com). Pass the documented parameters.
+- **Recommended change:** Wrapper passes [0] arg(s) but pywin32 declares 1 parameter(s) (1 required; params: rootElement; types: com). Pass the documented parameters.
+- **Recommended change:** Wrapper passes [0] arg(s) but pywin32 declares 1 parameter(s) (1 required; params: fullCSVFileName; types: str). Pass the documented parameters.
+- **Recommended change:** Wrapper passes [1] arg(s) but pywin32 declares 2 parameter(s) (2 required; params: theFolderName, theFileName; types: str, str). Pass the documented parameters.
+- **Recommended change:** Wrapper passes [1] arg(s) but pywin32 declares 2 parameter(s) (2 required; params: type, purl; types: str, str). Pass the documented parameters.
+- **Recommended change:** Wrapper passes [0] arg(s) but pywin32 declares 1 parameter(s) (1 required; params: diagram; types: com). Pass the documented parameters.
+- **Recommended change:** Wrapper passes [0] arg(s) but pywin32 declares 2 parameter(s) (2 required; params: amount, name; types: int, str). Pass the documented parameters.
+- **Recommended change:** Wrapper passes [1] arg(s) but pywin32 declares 2 parameter(s) (2 required; params: requirementID, returnFirstFoundOnly; types: str, int). Pass the documented parameters.
+- **Recommended change:** Wrapper passes [0] arg(s) but pywin32 declares 1 parameter(s) (1 required; params: magicNumber; types: int). Pass the documented parameters.
+- **Recommended change:** Wrapper passes [1] arg(s) but pywin32 declares 3 parameter(s) (3 required; params: projectName, packageName, logFileName; types: str, str, str). Pass the documented parameters.
+- **Recommended change:** Wrapper passes [1] arg(s) but pywin32 declares 2 parameter(s) (2 required; params: projectName, logFileName; types: str, str). Pass the documented parameters.
+- **Recommended change:** Wrapper passes [0] arg(s) but pywin32 declares 3 parameter(s) (3 required; params: config, filename, lineNumber; types: com, str, int). Pass the documented parameters.
+- **Recommended change:** Wrapper passes [1] arg(s) but pywin32 declares 2 parameter(s) (2 required; params: filename, prevVersion; types: str, str). Pass the documented parameters.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
-### Finding 3: JAVA_DOC_MISSING
+### SIGNATURE_TYPE_MISMATCH (5 findings)
 - **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
-- **Current Python wrapper/COM call:** add_node() -> addNode
-- **Expected Python method(s):** —
-- **Java signature(s):** —
-- **pywin32 member(s):** addNode (method)
-- **Recommended change:** Confirm this COM member is a supported extension and document its status.
-- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
-
-### Finding 4: JAVA_DOC_MISSING
-- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
-- **Current Python wrapper/COM call:** delete_node() -> deleteNode
-- **Expected Python method(s):** —
-- **Java signature(s):** —
-- **pywin32 member(s):** deleteNode (method)
-- **Recommended change:** Confirm this COM member is a supported extension and document its status.
-- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
-
-### Finding 5: JAVA_DOC_MISSING
-- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
-- **Current Python wrapper/COM call:** find_node() -> findNode
-- **Expected Python method(s):** —
-- **Java signature(s):** —
-- **pywin32 member(s):** findNode (method)
-- **Recommended change:** Confirm this COM member is a supported extension and document its status.
-- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
-
-### Finding 6: JAVA_DOC_MISSING
-- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
-- **Current Python wrapper/COM call:** get_nodes() -> nodes
-- **Expected Python method(s):** —
-- **Java signature(s):** —
-- **pywin32 member(s):** nodes (property)
-- **Recommended change:** Confirm this COM member is a supported extension and document its status.
-- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
-
-### Finding 7: JAVA_DOC_MISSING
-- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
-- **Current Python wrapper/COM call:** get_packages() -> packages
-- **Expected Python method(s):** —
-- **Java signature(s):** —
-- **pywin32 member(s):** packages (property)
-- **Recommended change:** Confirm this COM member is a supported extension and document its status.
+- **Affected call(s):** delete_node() -> deleteNode; find_element_by_binary_id() -> findElementByBinaryID; set_active_component() -> setActiveComponent; set_active_configuration() -> setActiveConfiguration; set_wait_dialog_watchdog_value() -> setWaitDialogWatchdogValue
+- **Recommended change:** Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types.
+- **Recommended change:** Wrapper passes types ['str'] but pywin32 declares ['object']. Match the documented COM parameter types.
+- **Recommended change:** Wrapper passes types ['int'] but pywin32 declares ['str']. Match the documented COM parameter types.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.

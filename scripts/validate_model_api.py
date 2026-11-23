@@ -339,7 +339,13 @@ def collect_generated_signatures(interface_source: Path, interface_name: str) ->
                         if isinstance(element, ast.Tuple) and element.elts and isinstance(element.elts[0], ast.Constant) and isinstance(element.elts[0].value, int):
                             codes.append(element.elts[0].value)
                 break
-        sigs[node.name] = {"count": len(names), "names": names, "codes": codes, "types": [_VT_NAMES.get(c, "object") for c in codes]}
+        sigs[node.name] = {
+            "count": len(names),
+            "required": len(names) - len(node.args.defaults),
+            "names": names,
+            "codes": codes,
+            "types": [_VT_NAMES.get(c, "object") for c in codes],
+        }
     return sigs
 
 
@@ -440,6 +446,8 @@ def collect_wrapper_arg_types(interface_name: str, models_root: Path) -> Dict[st
                     declared.append("int")
                 elif base == "bool":
                     declared.append("bool")
+                elif base in ("float", "double"):
+                    declared.append("float")
                 elif base.startswith("irp") or base.startswith("rp"):
                     declared.append("com")
                 else:
@@ -546,17 +554,24 @@ def _classify_deviation(
     return "; ".join(statuses), recommendation
 
 
+_NUMERIC_VARIANTS = {"int", "bool", "float"}
+
+
 def build_signature_rows(
     python_members: Dict[str, Set[str]],
     pywin32_signatures: Dict[str, Dict[str, object]],
     wrapper_arities: Dict[str, List[int]],
     wrapper_arg_types: Optional[Dict[str, List[str]]] = None,
 ) -> Rows:
-    """Return deviation rows for COM call arity mismatches.
+    """Return deviation rows for COM call signature mismatches.
 
     A wrapper that calls a pywin32 method with a different number of arguments
     than the type library declares cannot work at runtime; report it as a
-    SIGNATURE_ARITY_MISMATCH so it is actionable in the API report.
+    SIGNATURE_ARITY_MISMATCH so it is actionable in the API report. COM
+    automation converts between the numeric/bool variants at the boundary, so
+    only a real vocabulary difference (e.g. str vs numeric) is reported as a
+    SIGNATURE_TYPE_MISMATCH. A signature entry without a declared count is
+    insufficient evidence and is skipped rather than flagged.
     """
     rows: Rows = []
     lookup = {name.lower(): sig for name, sig in pywin32_signatures.items()}
@@ -565,35 +580,44 @@ def build_signature_rows(
         if sig is None:
             continue
         count_val = sig.get("count")
-        expected = int(count_val) if isinstance(count_val, int) else 0
+        if not isinstance(count_val, int):
+            continue
+        expected = int(count_val)
+        required_val = sig.get("required")
+        required = int(required_val) if isinstance(required_val, int) else expected
         names_val = sig.get("names")
         types_val = sig.get("types")
         names_list: List[object] = names_val if isinstance(names_val, list) else []
         types_list: List[object] = types_val if isinstance(types_val, list) else []
-        if any(count != expected for count in counts):
-            names = ", ".join(str(n) for n in names_list) or "—"
-            types = ", ".join(str(ty) for ty in types_list) or "—"
-            wrapper_labels = "; ".join(sorted(python_members.get(com_name, set()))) or f"call_com -> {com_name}"
-            rows.append((
-                wrapper_labels,
-                "—",
-                f"{com_name} (method; params: {names})",
-                "SIGNATURE_ARITY_MISMATCH",
-                f"Wrapper passes {counts} arg(s) but pywin32 declares {expected} (types: {types}). Pass the documented parameters.",
-            ))
-        elif wrapper_arg_types:
+        names = ", ".join(str(n) for n in names_list) or "—"
+        types = ", ".join(str(ty) for ty in types_list) or "—"
+        wrapper_labels = "; ".join(sorted(python_members.get(com_name, set()))) or f"call_com -> {com_name}"
+        if any(count > expected or count < required for count in counts):
+            rows.append(
+                (
+                    wrapper_labels,
+                    "—",
+                    f"{com_name} (method)",
+                    "SIGNATURE_ARITY_MISMATCH",
+                    f"Wrapper passes {sorted(set(counts))} arg(s) but pywin32 declares {expected} parameter(s) "
+                    f"({required} required; params: {names}; types: {types}). Pass the documented parameters.",
+                )
+            )
+            continue
+        if wrapper_arg_types:
             expected_types = [str(x) for x in types_list]
             actual_types = wrapper_arg_types.get(com_name, [])
             if expected_types and actual_types and len(expected_types) == len(actual_types):
-                if expected_types != actual_types:
-                    wrapper_labels = "; ".join(sorted(python_members.get(com_name, set()))) or f"call_com -> {com_name}"
-                    rows.append((
-                        wrapper_labels,
-                        "—",
-                        f"{com_name} (method; types: {', '.join(expected_types)})",
-                        "SIGNATURE_TYPE_MISMATCH",
-                        f"Wrapper passes types {actual_types} but pywin32 declares {expected_types}. Match the documented COM parameter types.",
-                    ))
+                if any(exp != act and (exp not in _NUMERIC_VARIANTS or act not in _NUMERIC_VARIANTS) for exp, act in zip(expected_types, actual_types)):
+                    rows.append(
+                        (
+                            wrapper_labels,
+                            "—",
+                            f"{com_name} (method)",
+                            "SIGNATURE_TYPE_MISMATCH",
+                            f"Wrapper passes types {actual_types} but pywin32 declares {expected_types}. Match the documented COM parameter types.",
+                        )
+                    )
     return rows
 
 
@@ -831,7 +855,6 @@ def render_markdown_report(
     backlog_rows: Optional[Rows] = None,
     matched_rows: Optional[Rows] = None,
     java_package: str = JAVA_PACKAGE,
-    signature_rows: Optional[Rows] = None,
 ) -> str:
     """Render a comparison summary, five-column deviation table, and AI repair guidance."""
     lines = [
@@ -844,6 +867,8 @@ def render_markdown_report(
         f"- Deviation items: `{len(rows) + len(informational_rows or []) + len(backlog_rows or [])}` "
         f"(actionable `{len(rows)}`, expected binding differences `{len(informational_rows or [])}`, "
         f"wrapper backlog `{len(backlog_rows or [])}`)",
+        "- Status legend: `MATCH` verified binding · `UNAVAILABLE_DOCUMENTED` pywin32 lacks the member (NotImplementedError stub) · "
+        "`ALIAS_DOCUMENTED` documented alias · actionable rows are named by code in `Comparison details`",
     ]
 
     lines.extend(
@@ -865,34 +890,43 @@ def render_markdown_report(
         _append_report_table(lines, "## Expected Binding Differences", informational_rows or [])
         _append_report_table(lines, "## Wrapper Backlog", backlog_rows or [])
 
+    correct_count = len(matched_rows or [])
+    lines.extend(
+        [
+            "",
+            "<details>",
+            f"<summary>Correct items ({correct_count}) — bindings verified against pywin32</summary>",
+            "",
+        ]
+    )
     _append_report_table(lines, "## Correct Items", matched_rows or [])
-
-    if signature_rows:
-        _append_report_table(lines, "## Signature Validation", signature_rows)
+    lines.extend(["", "</details>"])
 
     lines.extend(["", "## AI Fix Guidance"])
     if not rows:
         lines.append("No deviations require changes.")
         return "\n".join(lines) + "\n"
 
-    for index, row in enumerate(rows, start=1):
-        python_cell, java_cell, pywin32_cell, status, recommendation = row
-        java_names = [entry[: -len(" (method)")] for entry in java_cell.split("; ") if entry.endswith(" (method)")]
-        expected_python_names = sorted({_camel_to_snake(name) for name in java_names})
-        signatures = sorted(signature for name in java_names for signature in java_signatures.get(name, set()))
+    seen_statuses: Dict[str, int] = {}
+    for row in rows:
+        seen_statuses[row[3]] = seen_statuses.get(row[3], 0) + 1
+    for status, occurrences in seen_statuses.items():
+        group_rows = [row for row in rows if row[3] == status]
+        java_names = sorted({entry[: -len(" (method)")] for entry in " ".join(row[1] for row in group_rows).split("; ") if entry.endswith(" (method)")})
+        signatures = sorted({signature for name in java_names for signature in java_signatures.get(name, set())})
         lines.extend(
             [
                 "",
-                f"### Finding {index}: {status}",
+                f"### {status} ({occurrences} finding{'s' if occurrences != 1 else ''})",
                 f"- **Target:** `{wrapper_class}` in `{wrapper_path}`",
-                f"- **Current Python wrapper/COM call:** {python_cell}",
-                f"- **Expected Python method(s):** {', '.join(f'`{name}`' for name in expected_python_names) or '—'}",
-                f"- **Java signature(s):** {', '.join(f'`{signature}`' for signature in signatures) or '—'}",
-                f"- **pywin32 member(s):** {pywin32_cell}",
-                f"- **Recommended change:** {recommendation}",
-                "- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.",
+                f"- **Affected call(s):** {'; '.join(row[0] for row in group_rows)}",
             ]
         )
+        if signatures:
+            lines.append(f"- **Java signature(s):** {', '.join(f'`{signature}`' for signature in signatures)}")
+        for recommendation in dict.fromkeys(row[4] for row in group_rows):
+            lines.append(f"- **Recommended change:** {recommendation}")
+        lines.append("- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.")
     return "\n".join(lines) + "\n"
 
 
@@ -947,8 +981,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         print(f"Error: {exc}", file=sys.stderr)
         return 2
 
-    raw_rows = build_deviation_rows(python_members, java_members, pywin32_members)
     signature_rows = build_signature_rows(python_members, pywin32_signatures, wrapper_arities, wrapper_arg_types)
+    raw_rows = build_deviation_rows(python_members, java_members, pywin32_members) + signature_rows
     if args.source == "authority":
         rows, informational_rows, backlog_rows = apply_pywin32_authority(raw_rows, args.java_interface, authority)
     else:
@@ -975,7 +1009,6 @@ def main(argv: Optional[List[str]] = None) -> int:
             backlog_rows=backlog_rows,
             matched_rows=matched_rows,
             java_package=java_package,
-            signature_rows=signature_rows,
         )
         report_path.write_text(markdown, encoding="utf-8")
     except OSError as exc:

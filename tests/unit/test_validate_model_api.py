@@ -468,8 +468,9 @@ def test_markdown_report_includes_status_and_recommendation_for_build_no() -> No
     assert report.index("## Summary") < report.index("| Python model wrapper")
     assert "| Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |" in report
     assert "Target wrapper: `RhapsodyApplication` (`src/rhapsody_cli/application.py`)" in report
+    assert "### COM_MEMBER_NOT_EXPOSED; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH (1 finding)" in report
+    assert "**Affected call(s):** get_build_no() -> getBuildNo" in report
     assert "**Java signature(s):** `IRPApplication.getBuildNo()`" in report
-    assert "**Expected Python method(s):** `get_build_no`" in report
     assert "Use the BuildNo property or a getter/setter fallback instead of calling getBuildNo directly." in report
     assert "## AI Fix Guidance" in report
 
@@ -550,13 +551,14 @@ def _authority(
     catalog: Optional[Dict[str, Dict[str, str]]] = None,
     aliases: Optional[Dict[str, Dict[str, str]]] = None,
     unavailable: Optional[Dict[str, List[str]]] = None,
+    signatures: Optional[Dict[str, Dict[str, Dict[str, object]]]] = None,
 ) -> AuthorityData:
     """Build an AuthorityData carrying only the documented-decision maps under test."""
     return AuthorityData(
         catalog=catalog or {},
         documented_aliases=aliases or {},
         documented_unavailable=unavailable or {},
-        signatures={},
+        signatures=signatures or {},
     )
 
 
@@ -789,3 +791,104 @@ def test_irpclass_report_has_no_actionable_deviations() -> None:
     section = text.split("## Comparison details", 1)[1].split("## Expected Binding Differences", 1)[0]
     rows = [line for line in section.splitlines() if line.startswith("| ") and "Python model wrapper" not in line and "---" not in line]
     assert rows == [], rows
+
+
+def test_signature_findings_are_actionable_deviations(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Signature findings flow through the deviation bucketing: they count in
+    the Summary, land in Comparison details, and fail the run (exit 1) —
+    they are never parked in a side section that nothing enforces."""
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(
+        validator,
+        "load_authority",
+        lambda: _authority(
+            catalog={"IRPExample": {"FindThing": "method"}},
+            signatures={"IRPExample": {"FindThing": {"count": 2, "names": ["a", "b"], "types": ["str", "str"], "codes": [8, 8]}}},
+        ),
+    )
+    monkeypatch.setattr(validator, "resolve_java_interface_docs", lambda interface_name, docs_root: ("com.telelogic.rhapsody.core", docs_root))
+    monkeypatch.setattr(validator, "collect_java_signatures", lambda interface_name, docs_root, **kwargs: {"FindThing": {"IRPExample.FindThing(a, b)"}})
+    monkeypatch.setattr(validator, "collect_java_members", lambda interface_name, docs_root, **kwargs: {"FindThing"})
+    monkeypatch.setattr(validator, "collect_python_members", lambda interface_name, models_root, **kwargs: {"FindThing": {"find_thing() -> FindThing"}})
+    monkeypatch.setattr(validator, "collect_wrapper_call_arities", lambda interface_name, models_root: {"FindThing": [1]})
+    monkeypatch.setattr(validator, "collect_wrapper_arg_types", lambda interface_name, models_root: {})
+    real_wrapper = Path(validator.__file__).resolve().parents[1] / "src" / "rhapsody_cli" / "application.py"
+    monkeypatch.setattr(validator, "resolve_python_wrapper", lambda interface_name, models_root: ("IRPExample", real_wrapper))
+
+    assert validator.main(["IRPExample", "--source", "authority"]) == 1
+
+    report = (tmp_path / Path(*validator.JAVA_PACKAGE.split(".")) / "IRPExample_api_report.md").read_text(encoding="utf-8")
+    assert "SIGNATURE_ARITY_MISMATCH" in report.split("## Expected Binding Differences", 1)[0]
+    assert "## Signature Validation" not in report
+    assert "(actionable `1`" in report
+
+
+def test_build_signature_rows_skips_members_without_declared_count() -> None:
+    """A malformed signature entry is insufficient evidence — skip the member,
+    never fall back to expecting zero parameters."""
+    rows = validator.build_signature_rows({"FindThing": {"find_thing() -> FindThing"}}, {"FindThing": {"names": ["a"], "types": ["str"]}}, {"FindThing": [1]}, {})
+
+    assert rows == []
+
+
+def test_build_signature_rows_treats_numeric_variants_as_coercible() -> None:
+    """COM automation converts between numeric/bool variants at the boundary;
+    only a real vocabulary difference (e.g. str vs numeric) is a mismatch."""
+    signatures = {"SetThing": {"count": 1, "names": ["v"], "types": ["int"], "codes": [3]}}
+    arities = {"SetThing": [1]}
+    python_members = {"SetThing": {"set_thing() -> SetThing"}}
+
+    assert validator.build_signature_rows(python_members, signatures, arities, {"SetThing": ["bool"]}) == []
+    assert validator.build_signature_rows(python_members, signatures, arities, {"SetThing": ["float"]}) == []
+    rows = validator.build_signature_rows(python_members, signatures, arities, {"SetThing": ["str"]})
+    assert any("SIGNATURE_TYPE_MISMATCH" in row[3] for row in rows)
+
+
+def test_build_signature_rows_accepts_arg_counts_within_optional_defaults() -> None:
+    """makepy declares COM optional parameters with Python defaults: any count
+    from `required` up to `count` is a legal call."""
+    signatures = {"DoThing": {"count": 3, "required": 1, "names": ["a", "b", "c"], "types": ["str", "int", "int"], "codes": [8, 3, 3]}}
+    python_members = {"DoThing": {"do_thing() -> DoThing"}}
+
+    assert validator.build_signature_rows(python_members, signatures, {"DoThing": [1]}, {}) == []
+    assert validator.build_signature_rows(python_members, signatures, {"DoThing": [3]}, {}) == []
+    rows = validator.build_signature_rows(python_members, signatures, {"DoThing": [4]}, {})
+    assert any("SIGNATURE_ARITY_MISMATCH" in row[3] for row in rows)
+
+
+def test_build_signature_rows_keeps_pywin32_cell_parseable() -> None:
+    """The pywin32 cell stays `name (method)` so the report-based catalog
+    export keeps parsing signature rows like every other table row."""
+    signatures = {"FindThing": {"count": 2, "names": ["a", "b"], "types": ["str", "str"], "codes": [8, 8]}}
+    rows = validator.build_signature_rows({"FindThing": {"find_thing() -> FindThing"}}, signatures, {"FindThing": [1]}, {})
+
+    assert rows and rows[0][2] == "FindThing (method)"
+    assert "; " not in rows[0][2]
+
+
+def test_collect_wrapper_arg_types_maps_float_annotations(tmp_path: Path) -> None:
+    source = tmp_path / "model_thing.py"
+    source.write_text(
+        "class IRPThing:\n" "    def set_scale(self, v: float):\n" "        return self.call_com(lambda: self._com.SetScale(v))\n",
+        encoding="utf-8",
+    )
+
+    assert validator.collect_wrapper_arg_types("IRPThing", tmp_path) == {"SetScale": ["float"]}
+
+
+def test_collect_generated_signatures_counts_required_parameters(tmp_path: Path) -> None:
+    """`count` is every declared parameter; `required` excludes trailing
+    parameters that makepy gives Python defaults for."""
+    source = tmp_path / "generated.py"
+    source.write_text(
+        "class IRPThing:\n"
+        "    def DoThing(self, a, b, c=None):\n"
+        "        return self._oleobj_.InvokeTypes(101, 0, 2, ((8, 0, 2, 'IN'),), ((8, 1, 0, 'IN'), (3, 1, 0, 'IN'), (3, 1, 0, 'IN')), a, b, c)\n",
+        encoding="utf-8",
+    )
+
+    signatures = validator.collect_generated_signatures(source, "IRPThing")
+
+    assert signatures["DoThing"]["count"] == 3
+    assert signatures["DoThing"]["required"] == 2
+    assert signatures["DoThing"]["types"] == ["str", "int", "int"]
