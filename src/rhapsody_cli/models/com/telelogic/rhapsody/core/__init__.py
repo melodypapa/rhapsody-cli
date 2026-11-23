@@ -8,6 +8,7 @@ from importlib import import_module
 from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_application import IRPApplication
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument import IRPArgument
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_association_class import IRPAssociationClass
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute import IRPAttribute
@@ -40,10 +41,12 @@ _EXPORT_MODULES = {
     "IRPType": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type",
     "IRPUseCase": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_use_case",
     "IRPUnit": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_unit",
+    "IRPApplication": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_application",
 }
 
 __all__ = [
     "AddToModelMode",
+    "IRPApplication",
     "IRPArgument",
     "IRPAssociationClass",
     "IRPAttribute",

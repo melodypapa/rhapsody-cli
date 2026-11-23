@@ -233,15 +233,17 @@ def test_stub_setter_shares_row_with_getter(tmp_path: Path) -> None:
     assert "getDescriptionHTML (method); setDescriptionHTML (method)" == accessor_rows[0][1]
 
 
-def test_collect_python_members_maps_application_interface_to_application_facade(tmp_path: Path) -> None:
+def test_collect_python_members_resolves_irp_application_canonically(tmp_path: Path) -> None:
+    """IRPApplication resolves like every other interface: the canonical
+    models package wrapper (the application.py facade special case is gone)."""
     models_root = tmp_path / "models"
     models_root.mkdir()
-    (tmp_path / "application.py").write_text(
-        """class RhapsodyApplication:
+    (models_root / "irp_application.py").write_text(
+        """class IRPApplication:
     def get_version(self):
-        return self._com.version()
+        return self.call_com(lambda: self._com.version())
     def get_build_no(self):
-        return self._com.getBuildNo()
+        return self.get_com_property(self._com, "BuildNo")
 """,
         encoding="utf-8",
     )
@@ -249,19 +251,19 @@ def test_collect_python_members_maps_application_interface_to_application_facade
     members = collect_python_members("IRPApplication", models_root)
 
     assert "get_version() -> version" in members["version"]
-    assert "get_build_no() -> getBuildNo" in members["getBuildNo"]
+    assert "get_build_no() -> BuildNo" in members["BuildNo"]
 
 
-def test_resolve_python_wrapper_maps_application_interface_to_facade_file(tmp_path: Path) -> None:
+def test_resolve_python_wrapper_resolves_irp_application_canonically(tmp_path: Path) -> None:
     models_root = tmp_path / "models"
     models_root.mkdir()
-    application_source = tmp_path / "application.py"
-    application_source.write_text("class RhapsodyApplication: pass", encoding="utf-8")
+    canonical_source = models_root / "irp_application.py"
+    canonical_source.write_text("class IRPApplication: pass", encoding="utf-8")
 
     wrapper_name, wrapper_source = resolve_python_wrapper("IRPApplication", models_root)
 
-    assert wrapper_name == "RhapsodyApplication"
-    assert wrapper_source == application_source
+    assert wrapper_name == "IRPApplication"
+    assert wrapper_source == canonical_source
 
 
 def test_collect_generated_members_lists_methods_and_properties(tmp_path: Path) -> None:
