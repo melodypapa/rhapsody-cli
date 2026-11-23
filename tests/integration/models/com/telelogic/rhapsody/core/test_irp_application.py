@@ -64,7 +64,9 @@ class TestIRPApplicationIntegration:
         assert opened.get_name() == TEST_PROJECT_NAME
 
     def test_active_project_is_the_test_project(self, rhapsody_app: IRPApplication, test_project: IRPProject) -> None:
-        assert rhapsody_app.active_project().get_name() == TEST_PROJECT_NAME
+        active = rhapsody_app.active_project()
+        assert active is not None
+        assert active.get_name() == TEST_PROJECT_NAME
 
     def test_create_new_project_returns_the_created_project(self, rhapsody_app: IRPApplication, tmp_path: Path, test_project: IRPProject) -> None:
         project_dir = tmp_path / "NewProj"
@@ -72,8 +74,11 @@ class TestIRPApplicationIntegration:
 
         created = rhapsody_app.create_new_project(str(project_dir), "CreatedProject")
 
+        assert created is not None
         assert created.get_name() == "CreatedProject"
-        assert rhapsody_app.active_project().get_name() == "CreatedProject"
+        active = rhapsody_app.active_project()
+        assert active is not None
+        assert active.get_name() == "CreatedProject"
         created.delete_from_project()
         rhapsody_app.open_project(str(TEST_PROJECT_DIR / "TestProject.rpyx"))
 
@@ -177,7 +182,7 @@ class TestIRPApplicationIntegration:
         assert rhapsody_app.generate() is None  # type: ignore[func-returns-value]
 
     def test_add_profile_to_model(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
-        result = rhapsody_app.add_profile_to_model(0)
+        result = rhapsody_app.add_profile_to_model("0")
         assert result is not None
 
     def test_add_selected_to_favorites(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
@@ -197,7 +202,7 @@ class TestIRPApplicationIntegration:
         assert isinstance(result, str)
 
     def test_get_application_name(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
-        assert rhapsody_app.get_application_name(0, 0) is None  # type: ignore[func-returns-value]
+        assert rhapsody_app.get_application_name("0", "0") is None  # type: ignore[func-returns-value]
 
     def test_get_application_status(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
         result = rhapsody_app.get_application_status()
@@ -207,25 +212,25 @@ class TestIRPApplicationIntegration:
         assert rhapsody_app.set_application_status(0) is None  # type: ignore[func-returns-value]
 
     def test_apply_new_terms_profile(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
-        assert rhapsody_app.apply_new_terms_profile(0) is None  # type: ignore[func-returns-value]
+        assert rhapsody_app.apply_new_terms_profile("0") is None  # type: ignore[func-returns-value]
 
     def test_build_entire_project(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
         assert rhapsody_app.build_entire_project() is None  # type: ignore[func-returns-value]
 
     def test_clear_output_window(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
-        assert rhapsody_app.clear_output_window(0) is None  # type: ignore[func-returns-value]
+        assert rhapsody_app.clear_output_window("0") is None  # type: ignore[func-returns-value]
 
     def test_close_all_animated_sequence_diagrams(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
         assert rhapsody_app.close_all_animated_sequence_diagrams(0) is None  # type: ignore[func-returns-value]
 
     def test_set_component(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
-        assert rhapsody_app.set_component(0) is None  # type: ignore[func-returns-value]
+        assert rhapsody_app.set_component("0") is None  # type: ignore[func-returns-value]
 
     def test_set_configuration(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
-        assert rhapsody_app.set_configuration(0) is None  # type: ignore[func-returns-value]
+        assert rhapsody_app.set_configuration("0") is None  # type: ignore[func-returns-value]
 
     def test_create_progress_bar(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
-        result = rhapsody_app.create_progress_bar(0)
+        result = rhapsody_app.create_progress_bar("0")
         assert result is not None
 
     def test_get_diagram_of_selected_element(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
@@ -237,11 +242,11 @@ class TestIRPApplicationIntegration:
         assert isinstance(result, str)
 
     def test_get_error_message(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
-        result = rhapsody_app.get_error_message(0)
+        result = rhapsody_app.get_error_message("0")
         assert isinstance(result, str)
 
     def test_expand_string_keywords(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
-        result = rhapsody_app.expand_string_keywords(0)
+        result = rhapsody_app.expand_string_keywords("0")
         assert isinstance(result, str)
 
     def test_fixpack(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
@@ -252,11 +257,11 @@ class TestIRPApplicationIntegration:
         assert rhapsody_app.force_output2_console(0) is None  # type: ignore[func-returns-value]
 
     def test_get_helper_status(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
-        result = rhapsody_app.get_helper_status(0)
+        result = rhapsody_app.get_helper_status("0")
         assert isinstance(result, int)
 
     def test_set_helper_status(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
-        assert rhapsody_app.set_helper_status(0, 0) is None  # type: ignore[func-returns-value]
+        assert rhapsody_app.set_helper_status("0", 0) is None  # type: ignore[func-returns-value]
 
     def test_get_list_of_factory_properties(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
         result = rhapsody_app.get_list_of_factory_properties()
@@ -319,4 +324,4 @@ class TestIRPApplicationIntegration:
         assert isinstance(result, str)
 
     def test_write_to_output_window(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
-        assert rhapsody_app.write_to_output_window(0, 0) is None  # type: ignore[func-returns-value]
+        assert rhapsody_app.write_to_output_window("0", "0") is None  # type: ignore[func-returns-value]

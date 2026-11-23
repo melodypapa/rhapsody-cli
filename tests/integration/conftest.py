@@ -143,7 +143,7 @@ def rhapsody_session(rhapsody_app: RhapsodyApplication) -> Generator[RhapsodyApp
 def _require_rhapsody(rhapsody_app: RhapsodyApplication) -> None:
     """Skip the entire integration session if no Rhapsody instance is available."""
     try:
-        rhapsody_app.is_hidden_ui
+        _ = rhapsody_app.is_hidden_ui
     except Exception as exc:
         pytest.skip(f"No running Rhapsody available: {exc}", allow_module_level=False)
 
