@@ -52,7 +52,7 @@ def _safe_cleanup_test_project(app: RhapsodyApplication, project_dir: Path) -> N
         # Close all open projects first to release COM file handles.
         # IRPApplication exposes no closeAllProjects COM member, so close each
         # project individually through its exposed close() member.
-        for project in app.get_projects():
+        for project in app.projects:
             try:
                 project.close()
             except Exception as exc:
@@ -143,7 +143,7 @@ def rhapsody_session(rhapsody_app: RhapsodyApplication) -> Generator[RhapsodyApp
 def _require_rhapsody(rhapsody_app: RhapsodyApplication) -> None:
     """Skip the entire integration session if no Rhapsody instance is available."""
     try:
-        rhapsody_app.get_is_hidden_ui()
+        rhapsody_app.is_hidden_ui
     except Exception as exc:
         pytest.skip(f"No running Rhapsody available: {exc}", allow_module_level=False)
 

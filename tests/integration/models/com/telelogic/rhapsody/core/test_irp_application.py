@@ -53,15 +53,15 @@ class TestIRPApplicationIntegration:
         created.delete_from_project()
 
     def test_get_projects_returns_collection(self, rhapsody_app: IRPApplication) -> None:
-        projects = rhapsody_app.get_projects()
+        projects = rhapsody_app.projects
         assert isinstance(projects, IRPCollection)
 
     def test_get_is_hidden_ui_returns_bool(self, rhapsody_app: IRPApplication) -> None:
-        assert isinstance(rhapsody_app.get_is_hidden_ui(), bool)
+        assert isinstance(rhapsody_app.is_hidden_ui, bool)
 
     def test_set_hidden_ui_roundtrip(self, rhapsody_app: IRPApplication) -> None:
         rhapsody_app.set_hidden_ui(False)
-        assert isinstance(rhapsody_app.get_is_hidden_ui(), bool)
+        assert isinstance(rhapsody_app.is_hidden_ui, bool)
 
     def test_bring_window_to_top_returns_none(self, rhapsody_app: IRPApplication) -> None:
         assert rhapsody_app.bring_window_to_top() is None  # type: ignore[func-returns-value]
@@ -86,7 +86,7 @@ class TestIRPApplicationIntegration:
         fake_com.BuildNo = "10.0.0"
 
         with patch.object(rhapsody_app, "_com", fake_com):
-            assert rhapsody_app.get_build_no() == "10.0.0"
+            assert rhapsody_app.build_no == "10.0.0"
 
     def test_get_omroot_returns_string(self, rhapsody_app: IRPApplication) -> None:
         """The local COM server faults on OMROOT; isolate the property read."""
@@ -94,7 +94,7 @@ class TestIRPApplicationIntegration:
         fake_com.OMROOT = "C:/Rhapsody/OMROOT"
 
         with patch.object(rhapsody_app, "_com", fake_com):
-            assert rhapsody_app.get_omroot() == "C:/Rhapsody/OMROOT"
+            assert rhapsody_app.omroot == "C:/Rhapsody/OMROOT"
 
     def test_create_new_collection_returns_collection(self, rhapsody_app: IRPApplication) -> None:
         """The local COM server faults on createNewCollection; isolate its dispatch."""
@@ -210,3 +210,34 @@ class TestIRPApplicationIntegration:
     def test_wrapper_exposes_full_com_surface(self, rhapsody_app: IRPApplication) -> None:
         assert isinstance(rhapsody_app, IRPApplication)
         assert isinstance(rhapsody_app, IRPModelElement)
+
+    # --- newly wrapped read-only members (authentic live values) ---
+    def test_can_redo_returns_int(self, rhapsody_app: IRPApplication) -> None:
+        assert isinstance(rhapsody_app.can_redo(), int)
+
+    def test_can_undo_returns_int(self, rhapsody_app: IRPApplication) -> None:
+        assert isinstance(rhapsody_app.can_undo(), int)
+
+    def test_get_locale_name_returns_string(self, rhapsody_app: IRPApplication) -> None:
+        assert isinstance(rhapsody_app.get_locale_name(), str)
+
+    def test_get_executable_folder_returns_string(self, rhapsody_app: IRPApplication) -> None:
+        assert isinstance(rhapsody_app.get_executable_folder(), str)
+
+    def test_is_rhapsody_cl_returns_int(self, rhapsody_app: IRPApplication) -> None:
+        assert isinstance(rhapsody_app.is_rhapsody_cl(), int)
+
+    def test_version_number_long_returns_int(self, rhapsody_app: IRPApplication) -> None:
+        assert isinstance(rhapsody_app.version_number_long(), int)
+
+    def test_get_application_root_returns_string(self, rhapsody_app: IRPApplication) -> None:
+        assert isinstance(rhapsody_app.application_root, str)
+
+    def test_get_interface_name_returns_string(self, rhapsody_app: IRPApplication) -> None:
+        assert isinstance(rhapsody_app.interface_name, str)
+
+    def test_get_serial_no_returns_string(self, rhapsody_app: IRPApplication) -> None:
+        assert isinstance(rhapsody_app.serial_no, str)
+
+    def test_get_window_layout_list_returns_collection(self, rhapsody_app: IRPApplication) -> None:
+        assert isinstance(rhapsody_app.get_window_layout_list(), IRPCollection)

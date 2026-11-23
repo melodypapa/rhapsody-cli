@@ -51,7 +51,7 @@ class ProjectListAction(RhapsodyContextAction):
         """List open projects."""
         try:
             app = self._connect_app()
-            projects = app.get_projects()
+            projects = app.projects
 
             if not projects or len(projects) == 0:
                 self.logger.info("No open projects")

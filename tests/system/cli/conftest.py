@@ -121,7 +121,7 @@ def cli_project(test_project_dir: Path, cli_connection: None) -> Generator[str, 
     # Close project via Python API
     try:
         app = RhapsodyApplication.connect(attach_only=True)
-        for proj in app.get_projects():
+        for proj in app.projects:
             if proj.get_name() == project_name:
                 # A live close() only removes the project from the list and raises
                 # a modal "Projects can only be removed from project lists" dialog

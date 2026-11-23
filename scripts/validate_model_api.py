@@ -483,7 +483,7 @@ def _camel_to_snake(name: str) -> str:
 def _canonical_member_name(member_name: str) -> str:
     if member_name.startswith("python-only:"):
         return member_name
-    if member_name.startswith(("get", "set")) and len(member_name) > 3 and member_name[3].isupper():
+    if member_name[:3].lower() in ("get", "set") and len(member_name) > 3 and member_name[3].isupper():
         member_name = member_name[3:]
     return member_name[:1].lower() + member_name[1:]
 
