@@ -17,6 +17,7 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProje
 from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
+    from rhapsody_cli.exceptions import RhapsodyRuntimeException  # noqa: F401
     from rhapsody_cli.models.support import (
         RPCodeGenSimplifiersRegistry,
         RPDiagSynthAPI,
@@ -27,7 +28,6 @@ if TYPE_CHECKING:
         RPSearchManager,
         RPSelection,
     )
-    from rhapsody_cli.exceptions import RhapsodyRuntimeException  # noqa: F401
 
 
 class IRPApplication(IRPModelElement):
@@ -52,7 +52,7 @@ class IRPApplication(IRPModelElement):
         """
         return IRPProject(self.call_com(lambda: self._com.openProject(filename)))
 
-    def create_new_project(self, project_location: str, project_name: str) -> IRPProject:
+    def create_new_project(self, project_location: str, project_name: str) -> IRPProject | None:
         """Create a new Rhapsody project.
 
         Args:
@@ -60,7 +60,8 @@ class IRPApplication(IRPModelElement):
             project_name: The name to use for the project (used for the .rpy file).
 
         Returns:
-            IRPProject: The newly created project, active after creation.
+            IRPProject | None: The newly created active project, or ``None`` if Rhapsody
+                does not report an active project after creation.
 
         Reference:
             com.telelogic.rhapsody.core.IRPApplication::createNewProject(java.lang.String projectLocation, java.lang.String projectName)
@@ -68,25 +69,18 @@ class IRPApplication(IRPModelElement):
         self.call_com(lambda: self._com.createNewProject(project_location, project_name))
         return self.active_project()
 
-    def active_project(self) -> IRPProject:
-        """Return the project currently open in Rhapsody.
+    def active_project(self) -> IRPProject | None:
+        """Return the active project, or ``None`` if no project is open.
 
         Returns:
-            IRPProject: The project currently open in Rhapsody.
-
-        Raises:
-            RhapsodyRuntimeException: If no project is currently open in
-                Rhapsody (the COM call returns None).
+            IRPProject | None: The currently open project, or ``None`` when the
+                COM member reports no active project.
 
         Reference:
             com.telelogic.rhapsody.core.IRPApplication::activeProject()
         """
         result = self.call_com(lambda: self._com.activeProject())
-        if result is None:
-            from rhapsody_cli.exceptions import RhapsodyRuntimeException
-
-            raise RhapsodyRuntimeException("No active project is open in Rhapsody")
-        return IRPProject(result)
+        return IRPProject(result) if result is not None else None
 
     def get_projects(self) -> IRPCollection:
         """Return all open projects in Rhapsody.
@@ -175,11 +169,11 @@ class IRPApplication(IRPModelElement):
         """
         self.call_com(lambda: self._com.saveAll())
 
-    def get_version(self) -> str:
-        """Get the Rhapsody version string.
+    def version(self) -> str:
+        """Get the Rhapsody version.
 
         Returns:
-            The version string (e.g. ``"8.3.1"``).
+            str: The Rhapsody version string.
 
         Reference:
             com.telelogic.rhapsody.core.IRPApplication::version()

@@ -28,7 +28,7 @@ class RhapsodyApplication(IRPApplication):
     """Connects to the Rhapsody application and exposes its COM surface.
 
     Subclasses the canonical :class:`IRPApplication` wrapper: all COM members
-    (``get_version``, ``open_project``, ``get_projects``, ...) are inherited
+    (``version``, ``open_project``, ``get_projects``, ...) are inherited
     from it; this facade adds only the connection lifecycle
     (:meth:`connect`, :meth:`disconnect`) that selects attach-vs-launch
     behaviour — pure Python orchestration with no COM member of its own.
@@ -53,10 +53,11 @@ class RhapsodyApplication(IRPApplication):
             RhapsodyConnectionError: If pywin32 is unavailable or no running
                 Rhapsody instance can be found.
         """
-        if win32_client is None:
+        client = win32_client
+        if client is None:
             raise RhapsodyConnectionError("pywin32 is not available; Rhapsody automation requires Windows.")
         try:
-            com_obj = com_utils.call_com(lambda: win32_client.GetActiveObject(_PROG_ID))
+            com_obj = com_utils.call_com(lambda: client.GetActiveObject(_PROG_ID))
         except RhapsodyRuntimeException as exc:
             raise RhapsodyConnectionError(f"No running Rhapsody instance found: {exc}") from exc
         return cls(com_obj)
@@ -72,10 +73,11 @@ class RhapsodyApplication(IRPApplication):
             RhapsodyConnectionError: If pywin32 is unavailable or launching
                 Rhapsody fails.
         """
-        if win32_client is None:
+        client = win32_client
+        if client is None:
             raise RhapsodyConnectionError("pywin32 is not available; Rhapsody automation requires Windows.")
         try:
-            com_obj = com_utils.call_com(lambda: win32_client.Dispatch(_PROG_ID))
+            com_obj = com_utils.call_com(lambda: client.Dispatch(_PROG_ID))
         except RhapsodyRuntimeException as exc:
             raise RhapsodyConnectionError(f"Failed to launch Rhapsody: {exc}") from exc
         return cls(com_obj)

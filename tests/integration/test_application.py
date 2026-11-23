@@ -27,8 +27,8 @@ class TestRhapsodyApplicationIntegration:
     def test_bring_window_to_top(self, rhapsody_app: RhapsodyApplication) -> None:
         assert rhapsody_app.bring_window_to_top() is None  # type: ignore[func-returns-value]
 
-    def test_get_version(self, rhapsody_app: RhapsodyApplication) -> None:
-        assert isinstance(rhapsody_app.get_version(), str)
+    def test_version(self, rhapsody_app: RhapsodyApplication) -> None:
+        assert isinstance(rhapsody_app.version(), str)
 
     def test_get_build_no(self, rhapsody_app: RhapsodyApplication) -> None:
         # The getBuildNo() method does not exist on the COM object, but the

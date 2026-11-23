@@ -99,6 +99,17 @@ class RhapsodyContextAction(AbstractAction):
             self._app = RhapsodyApplication.connect()
         return self._app
 
+    def _get_active_project(self) -> IRPProject:
+        """Return the active project or raise a CLI error when none is open."""
+        try:
+            project = self._connect_app().active_project()
+            if project is None:
+                raise CliExecutionError("No active project is open")
+            self._project = project
+            return project
+        except RhapsodyConnectionError as exc:
+            self._handle_connection_error(exc)
+
     def _print_formatted_output(self, data: object, headers: List[str], table_rows: List[List[str]], *, force_table: bool = False) -> None:
         """Format `data` per this action's output_format and print to stdout.
 
@@ -220,22 +231,6 @@ class ElementManagementAction(RhapsodyContextAction):
                 query vs. delete have different descriptions).
         """
         parser.add_argument("--recursive", action="store_true", help=help_text)
-
-    def _get_active_project(self) -> IRPProject:
-        """Get the active project, handling errors appropriately.
-
-        Returns:
-            The active project object.
-
-        Raises:
-            CliExecutionError: If no active project or connection error occurs.
-        """
-        try:
-            app = self._connect_app()
-            self._project = app.active_project()
-            return self._project
-        except RhapsodyConnectionError as e:
-            self._handle_connection_error(e)
 
     def _get_active_root(self) -> IRPModelElement:
         """Return the root element of the active project.

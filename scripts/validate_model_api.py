@@ -595,8 +595,7 @@ def build_signature_rows(
                     "—",
                     f"{com_name} (method)",
                     "SIGNATURE_ARITY_MISMATCH",
-                    f"Wrapper passes {sorted(set(counts))} arg(s) but pywin32 declares {expected} parameter(s) "
-                    f"({required} required; params: {names}; types: {types}). Pass the documented parameters.",
+                    f"Wrapper passes {sorted(set(counts))} arg(s) but pywin32 declares {expected} parameter(s) ({required} required; params: {names}; types: {types}). Pass the documented parameters.",
                 )
             )
             continue

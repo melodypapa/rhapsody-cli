@@ -146,6 +146,15 @@ class TestElementManagementActionGetActiveProject:
         assert result is fake_project
         assert action._project is fake_project
 
+    def test_get_active_project_raises_cli_error_when_no_project_is_active(self) -> None:
+        action = _FakeElementAction(command_id="fake")
+        fake_app = MagicMock(name="FakeApplication")
+        fake_app.active_project.return_value = None
+        action._connect_app = lambda: fake_app  # type: ignore[method-assign]
+
+        with pytest.raises(CliExecutionError, match="No active project is open"):
+            action._get_active_project()
+
     def test_get_active_project_propagates_connection_error(self) -> None:
         """RhapsodyConnectionError from _connect_app() should surface as CliExecutionError."""
 

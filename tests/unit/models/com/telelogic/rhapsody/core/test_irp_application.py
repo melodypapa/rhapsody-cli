@@ -6,10 +6,10 @@ connection lifecycle (connect/attach/launch/disconnect) is owned by the
 ``RhapsodyApplication`` facade and tested in ``tests/unit/test_application.py``.
 """
 
-import pytest
+from __future__ import annotations
+
 from unittest.mock import MagicMock
 
-from rhapsody_cli.exceptions import RhapsodyRuntimeException
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_application import IRPApplication
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
@@ -46,6 +46,14 @@ def test_create_new_project_calls_com_and_returns_active_project() -> None:
     assert project.get_name() == "NewProject"
 
 
+def test_create_new_project_propagates_missing_active_project() -> None:
+    fake_app = make_fake_element("Application")
+    fake_app.activeProject.return_value = None
+    app = _app(fake_app)
+
+    assert app.create_new_project("C:/models", "NewProject") is None
+
+
 def test_active_project_wraps_result_as_irp_project() -> None:
     fake_app = make_fake_element("Application")
     fake_project = make_fake_element("Project", properties={"name": "ActiveOne"})
@@ -58,14 +66,13 @@ def test_active_project_wraps_result_as_irp_project() -> None:
     assert project.get_name() == "ActiveOne"
 
 
-def test_active_project_raises_when_no_project_open() -> None:
-    """activeProject() must not silently return an IRPProject wrapping None."""
+def test_active_project_returns_none_when_no_project_is_open() -> None:
     fake_app = make_fake_element("Application")
     fake_app.activeProject.return_value = None
     app = _app(fake_app)
 
-    with pytest.raises(RhapsodyRuntimeException, match="No active project is open"):
-        app.active_project()
+    assert app.active_project() is None
+    fake_app.activeProject.assert_called_once_with()
 
 
 def test_get_projects_reads_projects_property() -> None:
@@ -84,7 +91,7 @@ def test_quit_delegates_to_com() -> None:
     fake_app = make_fake_element("Application")
     app = _app(fake_app)
 
-    assert app.quit() is None
+    app.quit()
     fake_app.quit.assert_called_once_with()
 
 
@@ -99,7 +106,7 @@ def test_set_hidden_ui_calls_sethiddenui_method() -> None:
     fake = make_fake_element("Application")
     app = _app(fake)
 
-    assert app.set_hidden_ui(False) is None
+    app.set_hidden_ui(False)
     fake.setHiddenUI.assert_called_once_with(False)
 
 
@@ -107,7 +114,7 @@ def test_bring_window_to_top_delegates_to_com() -> None:
     fake = make_fake_element("Application")
     app = _app(fake)
 
-    assert app.bring_window_to_top() is None
+    app.bring_window_to_top()
     fake.bringWindowToTop.assert_called_once_with()
 
 
@@ -115,16 +122,16 @@ def test_save_all_delegates_to_com() -> None:
     fake = make_fake_element("Application")
     app = _app(fake)
 
-    assert app.save_all() is None
+    app.save_all()
     fake.saveAll.assert_called_once_with()
 
 
-def test_get_version_returns_version_method_result() -> None:
+def test_version_returns_version_method_result() -> None:
     fake = make_fake_element("Application")
     fake.version.return_value = "8.3.1"
     app = _app(fake)
 
-    assert app.get_version() == "8.3.1"
+    assert app.version() == "8.3.1"
 
 
 def test_get_build_no_reads_buildno_property() -> None:
@@ -276,7 +283,7 @@ def test_generate_delegates_to_com() -> None:
     fake = make_fake_element("Application")
     app = _app(fake)
 
-    assert app.generate() is None
+    app.generate()
     fake.generate.assert_called_once_with()
 
 
@@ -285,7 +292,7 @@ def test_generate_elements_passes_collection_com() -> None:
     app = _app(fake)
     collection = IRPCollection(make_fake_collection([]))
 
-    assert app.generate_elements(collection) is None
+    app.generate_elements(collection)
     fake.generateElements.assert_called_once_with(collection._com)
 
 
@@ -293,7 +300,7 @@ def test_generate_entire_project_delegates_to_com() -> None:
     fake = make_fake_element("Application")
     app = _app(fake)
 
-    assert app.generate_entire_project() is None
+    app.generate_entire_project()
     fake.generateEntireProject.assert_called_once_with()
 
 
@@ -301,7 +308,7 @@ def test_regenerate_delegates_to_com() -> None:
     fake = make_fake_element("Application")
     app = _app(fake)
 
-    assert app.regenerate() is None
+    app.regenerate()
     fake.regenerate.assert_called_once_with()
 
 
@@ -309,7 +316,7 @@ def test_add_to_model_delegates_to_com() -> None:
     fake = make_fake_element("Application")
     app = _app(fake)
 
-    assert app.add_to_model("C:/models/Unit.sbs", 1) is None
+    app.add_to_model("C:/models/Unit.sbs", 1)
     fake.addToModel.assert_called_once_with("C:/models/Unit.sbs", 1)
 
 
@@ -317,7 +324,7 @@ def test_add_to_model_ex_delegates_to_com() -> None:
     fake = make_fake_element("Application")
     app = _app(fake)
 
-    assert app.add_to_model_ex("C:/models/Unit.sbs", 0, 1, 0) is None
+    app.add_to_model_ex("C:/models/Unit.sbs", 0, 1, 0)
     fake.addToModelEx.assert_called_once_with("C:/models/Unit.sbs", 0, 1, 0)
 
 
@@ -325,7 +332,7 @@ def test_set_log_delegates_to_com() -> None:
     fake = make_fake_element("Application")
     app = _app(fake)
 
-    assert app.set_log("C:/logs/rhapsody.log") is None
+    app.set_log("C:/logs/rhapsody.log")
     fake.setLog.assert_called_once_with("C:/logs/rhapsody.log")
 
 
@@ -333,5 +340,5 @@ def test_check_model_delegates_to_com() -> None:
     fake = make_fake_element("Application")
     app = _app(fake)
 
-    assert app.check_model() is None
+    app.check_model()
     fake.checkModel.assert_called_once_with()

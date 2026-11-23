@@ -155,6 +155,7 @@ class TestClassCLI:
 
         app = RhapsodyApplication.connect(attach_only=True)
         project = app.active_project()
+        assert project is not None, "The CLI fixture must leave an active project open"
         container = project.find_nested_element_recursive(container_cls_name, "Class")
         assert container is not None, f"Could not find container class {container_cls_name}"
         assert isinstance(container, IRPClass), f"Expected IRPClass, got {type(container)}"

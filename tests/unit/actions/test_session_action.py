@@ -23,7 +23,7 @@ class TestConnectAction:
         monkeypatch.setattr(SessionManager, "SESSION_DIR", session_dir)
 
         mock_app = MagicMock()
-        mock_app.get_version.return_value = "9.0.0"
+        mock_app.version.return_value = "9.0.0"
 
         with patch("rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app):
             action = ConnectAction()
@@ -68,7 +68,7 @@ class TestConnectAction:
         monkeypatch.setattr(SessionManager, "SESSION_DIR", session_dir)
 
         mock_app = MagicMock()
-        mock_app.get_version.return_value = "9.0.0"
+        mock_app.version.return_value = "9.0.0"
 
         with patch("rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app):
             action = ConnectAction()
@@ -86,7 +86,7 @@ class TestConnectAction:
         monkeypatch.setattr(SessionManager, "SESSION_DIR", session_dir)
 
         mock_app = MagicMock()
-        mock_app.get_version.return_value = "9.0.0"
+        mock_app.version.return_value = "9.0.0"
 
         with patch("rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app) as mock_connect:
             action = ConnectAction()
@@ -118,7 +118,7 @@ class TestConnectAction:
         monkeypatch.setattr(SessionManager, "SESSION_DIR", session_dir)
 
         mock_app = MagicMock()
-        mock_app.get_version.return_value = "9.0.0"
+        mock_app.version.return_value = "9.0.0"
 
         with patch("rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app) as mock_connect:
             action = ConnectAction()
@@ -139,7 +139,7 @@ class TestConnectAction:
         monkeypatch.setattr(SessionManager, "SESSION_DIR", session_dir)
 
         mock_app = MagicMock()
-        mock_app.get_version.return_value = "9.0.0"
+        mock_app.version.return_value = "9.0.0"
 
         with patch("rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app):
             action = ConnectAction()
@@ -158,7 +158,7 @@ class TestConnectAction:
         monkeypatch.setenv("RHAPSODY_CLI_TIMEOUT", "20")
 
         mock_app = MagicMock()
-        mock_app.get_version.return_value = "9.0.0"
+        mock_app.version.return_value = "9.0.0"
 
         with patch("rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app):
             action = ConnectAction()
@@ -176,7 +176,7 @@ class TestConnectAction:
         monkeypatch.setattr(SessionManager, "SESSION_DIR", session_dir)
 
         mock_app = MagicMock()
-        mock_app.get_version.return_value = "9.0.0"
+        mock_app.version.return_value = "9.0.0"
 
         with patch("rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app):
             action = ConnectAction()
@@ -194,7 +194,7 @@ class TestConnectAction:
         monkeypatch.setattr(SessionManager, "SESSION_DIR", session_dir)
 
         mock_app = MagicMock()
-        mock_app.get_version.return_value = "9.0.0"
+        mock_app.version.return_value = "9.0.0"
 
         with patch("rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app):
             action = ConnectAction()
@@ -337,7 +337,7 @@ class TestStatusAction:
         monkeypatch.setattr(SessionManager, "SESSION_DIR", session_dir)
 
         mock_app = MagicMock()
-        mock_app.get_version.return_value = "9.0.0"
+        mock_app.version.return_value = "9.0.0"
 
         with patch("rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app):
             action = StatusAction()
@@ -407,7 +407,7 @@ class TestStatusAction:
         monkeypatch.setattr(SessionManager, "SESSION_DIR", session_dir)
 
         mock_app = MagicMock()
-        mock_app.get_version.return_value = "9.0.0"
+        mock_app.version.return_value = "9.0.0"
 
         with patch("rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app):
             action = StatusAction()
@@ -456,7 +456,7 @@ class TestVersionAction:
         """Version shows CLI version (no session → CLI version only)."""
         # Isolate SESSION_DIR: integration/system tests leave a real session file in
         # the home directory during a full-suite run, which would otherwise make this
-        # test take the connected branch and hit live COM (unmocked get_version()).
+        # test take the connected branch and hit live COM (unmocked version()).
         session_dir = tmp_path / ".rhapsody-cli"
         monkeypatch.setattr(SessionManager, "SESSION_DIR", session_dir)
 
@@ -486,7 +486,7 @@ class TestVersionAction:
         monkeypatch.setattr(SessionManager, "SESSION_DIR", session_dir)
 
         mock_app = MagicMock()
-        mock_app.get_version.return_value = "9.0.0"
+        mock_app.version.return_value = "9.0.0"
 
         with patch("rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app):
             action = VersionAction()
