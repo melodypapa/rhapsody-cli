@@ -208,7 +208,7 @@ class StatusAction(AbstractAction):
         # Show Rhapsody version
         try:
             app = RhapsodyApplication.connect(attach_only=True)
-            version = app.get_version()
+            version = app.version()
             print(f"Rhapsody version: {version}")
         except RhapsodyConnectionError:
             print("Warning: Rhapsody not running")
@@ -238,7 +238,7 @@ class VersionAction(AbstractAction):
         if session and session_manager.is_valid(session):
             try:
                 app = RhapsodyApplication.connect(attach_only=True)
-                version = app.get_version()
+                version = app.version()
                 print(f"Rhapsody version: {version}")
             except RhapsodyConnectionError:
                 pass  # Not running, that's OK

@@ -52,7 +52,7 @@ def _safe_cleanup_test_project(app: RhapsodyApplication, project_dir: Path) -> N
         # Close all open projects first to release COM file handles.
         # IRPApplication exposes no closeAllProjects COM member, so close each
         # project individually through its exposed close() member.
-        for project in app.get_projects():
+        for project in app.projects:
             try:
                 project.close()
             except Exception as exc:
@@ -143,7 +143,7 @@ def rhapsody_session(rhapsody_app: RhapsodyApplication) -> Generator[RhapsodyApp
 def _require_rhapsody(rhapsody_app: RhapsodyApplication) -> None:
     """Skip the entire integration session if no Rhapsody instance is available."""
     try:
-        rhapsody_app.get_is_hidden_ui()
+        _ = rhapsody_app.is_hidden_ui
     except Exception as exc:
         pytest.skip(f"No running Rhapsody available: {exc}", allow_module_level=False)
 
@@ -163,6 +163,8 @@ def test_project(rhapsody_app: RhapsodyApplication, request: FixtureRequest) -> 
 
     # Create a new test project
     project = rhapsody_app.create_new_project(str(TEST_PROJECT_DIR), TEST_PROJECT_NAME)
+    if project is None:
+        raise RuntimeError("Rhapsody did not report an active project after project creation")
 
     # Enable auto-save on the project at creation to ensure automatic persistence
     project.allow_auto_save(1)
@@ -226,10 +228,12 @@ def second_test_project(rhapsody_app: RhapsodyApplication, request: FixtureReque
         project_path = Path(temp_dir) / "SecondTestProject"
         project_path.mkdir(parents=True, exist_ok=True)
 
-        try:
-            # Create the second test project
-            second_project = rhapsody_app.create_new_project(str(project_path), "SecondTestProject")
+        # Create the second test project
+        second_project = rhapsody_app.create_new_project(str(project_path), "SecondTestProject")
+        if second_project is None:
+            raise RuntimeError("Rhapsody did not report an active project after project creation")
 
+        try:
             # Enable auto-save on the project at creation to ensure automatic persistence
             second_project.allow_auto_save(1)
 

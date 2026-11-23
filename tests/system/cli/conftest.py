@@ -112,14 +112,16 @@ def cli_project(test_project_dir: Path, cli_connection: None) -> Generator[str, 
 
     # Attach to existing Rhapsody instance (launched by cli_connection)
     app = RhapsodyApplication.connect(attach_only=True)
-    app.create_new_project(str(test_project_dir), project_name)
+    project = app.create_new_project(str(test_project_dir), project_name)
+    if project is None:
+        raise RuntimeError("Rhapsody did not report an active project after project creation")
 
     yield project_name
 
     # Close project via Python API
     try:
         app = RhapsodyApplication.connect(attach_only=True)
-        for proj in app.get_projects():
+        for proj in app.projects:
             if proj.get_name() == project_name:
                 # A live close() only removes the project from the list and raises
                 # a modal "Projects can only be removed from project lists" dialog

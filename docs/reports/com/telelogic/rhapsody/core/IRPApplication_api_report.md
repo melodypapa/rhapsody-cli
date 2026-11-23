@@ -2,171 +2,30 @@
 
 ## Summary
 - Java package: `com.telelogic.rhapsody.core`
-- Target wrapper: `RhapsodyApplication` (`src/rhapsody_cli/application.py`)
-- Members: Python `31`, Java `176`, pywin32 `172`
-- Deviation items: `143` (actionable `1`, expected binding differences `3`, wrapper backlog `139`)
+- Target wrapper: `IRPApplication` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_application.py`)
+- Members: Python `192`, Java `195`, pywin32 `192`
+- Deviation items: `0` (actionable `0`, expected binding differences `0`, wrapper backlog `0`)
 - Status legend: `MATCH` verified binding · `UNAVAILABLE_DOCUMENTED` pywin32 lacks the member (NotImplementedError stub) · `ALIAS_DOCUMENTED` documented alias · actionable rows are named by code in `Comparison details`
 
 ## Comparison details
 
 | Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |
 | --- | --- | --- | --- | --- |
-| get_version() -> version | version (method) | version (method) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
 
 ## Expected Binding Differences
 
 | Python model wrapper | Java API | pywin32 | Status | Recommended change |
 | --- | --- | --- | --- | --- |
-| — | getPlugInWindow (method) | — | JAVA_ONLY_MEMBER | Verify the Java documentation against the installed COM type library. |
-| connect() (no static COM member) | — | — | PYTHON_ONLY_MEMBER | Keep this as a local facade helper or map it to a documented API member. |
-| disconnect() (no static COM member) | — | — | PYTHON_ONLY_MEMBER | Keep this as a local facade helper or map it to a documented API member. |
+| — | — | — | — | — |
 
 ## Wrapper Backlog
 
 | Python model wrapper | Java API | pywin32 | Status | Recommended change |
 | --- | --- | --- | --- | --- |
-| — | addProfileToModel (method) | addProfileToModel (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | addSelectedToFavorites (method) | addSelectedToFavorites (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | addToModelByReference (method) | addToModelByReference (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | addToModelFromURL (method) | addToModelFromURL (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | addUnitsToModel (method) | addUnitsToModel (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | allowBrowserRefresh (method) | allowBrowserRefresh (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | allowGERefresh (method) | allowGERefresh (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getApplicationConnectionString (method) | getApplicationConnectionString (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getApplicationName (method) | getApplicationName (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getApplicationRoot (method) | ApplicationRoot (property) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getApplicationStatus (method); setApplicationStatus (method) | getApplicationStatus (method); setApplicationStatus (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | applyNewTermsProfile (method) | applyNewTermsProfile (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | arcCheckOut (method) | arcCheckOut (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | build (method) | build (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | buildEntireProject (method) | buildEntireProject (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | buildWithDependencies (method) | buildWithDependencies (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | canRedo (method) | canRedo (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | canUndo (method) | canUndo (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | checkIn (method) | checkIn (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | checkOut (method) | checkOut (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | clean (method) | clean (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | clearOutputWindow (method) | clearOutputWindow (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | closeAllAnimatedSequenceDiagrams (method) | closeAllAnimatedSequenceDiagrams (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | compareSequenceDiagram (method) | compareSequenceDiagram (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | setComponent (method) | setComponent (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | setConfiguration (method) | setConfiguration (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | connectToArchive (method) | connectToArchive (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | connectToImportedModel (method) | connectToImportedModel (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | connectToTarget (method) | connectToTarget (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | createAndInsertProject (method) | createAndInsertProject (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | createDomainFromProfile (method) | createDomainFromProfile (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getDMBoolProperty (method); setDMBoolProperty (method) | getDMBoolProperty (method); setDMBoolProperty (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getDMModelWorkspaceFolder (method) | getDMModelWorkspaceFolder (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getDMProperty (method); setDMProperty (method) | getDMProperty (method); setDMProperty (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | dMRefreshRecursive (method) | dMRefreshRecursive (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | dMSyncAndRefresh (method) | dMSyncAndRefresh (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | dbgCheckComIn (method) | dbgCheckComIn (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | dbgCheckComOut (method) | dbgCheckComOut (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | deferredAddToModel (method) | deferredAddToModel (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | deleteProjectFromList (method) | deleteProjectFromList (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getDiagramOfSelectedElement (method) | getDiagramOfSelectedElement (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | disconnectFromTarget (method) | disconnectFromTarget (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | downloadToTarget (method) | downloadToTarget (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | endUndoTransaction (method) | endUndoTransaction (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | enterAnimationCommand (method) | enterAnimationCommand (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | errorMessage (method); getErrorMessage (method) | errorMessage (method); getErrorMessage (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getExecutableFolder (method) | getExecutableFolder (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | executeCommand (method) | ExecuteCommand (method) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | executeCommandLine (method) | executeCommandLine (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | executeTransformationSequence (method) | executeTransformationSequence (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | expandStringKeywords (method) | expandStringKeywords (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | fixpack (method) | fixpack (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | forceOutput2Console (method) | forceOutput2Console (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | forceRoundtrip (method) | forceRoundtrip (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | forceRoundtripElements (method) | forceRoundtripElements (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | generateMainAndMakeFiles (method) | generateMainAndMakeFiles (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | generateWithDependencies (method) | generateWithDependencies (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | highLightElement (method) | highLightElement (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | highlightByHandle (method) | highlightByHandle (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | importClasses (method) | importClasses (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | importDesignManagerModel (method) | importDesignManagerModel (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | importSyncSimulinkBlock2 (method) | importSyncSimulinkBlock2 (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | importTlb (method) | importTlb (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getIniFileParameterValue (method) | getIniFileParameterValue (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | insertProject (method) | insertProject (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | insertProjectFromDesignManager (method) | insertProjectFromDesignManager (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getInterfaceName (method) | interfaceName (property) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | invokePluginsMethod (method) | invokePluginsMethod (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | invokeRPE (method) | invokeRPE (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getIsLoadOnDemand (method); setIsLoadOnDemand (method) | isLoadOnDemand (property) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | isRhapsodyCL (method) | isRhapsodyCL (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | isRhapsodyFileType (method) | isRhapsodyFileType (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getLanguage (method); setLanguage (method) | Language (property) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getListOfFactoryProperties (method) | getListOfFactoryProperties (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getListOfSelectedElements (method) | getListOfSelectedElements (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getListOfSiteProperties (method) | getListOfSiteProperties (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getLocaleName (method) | getLocaleName (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getLogRoot (method) | LogRoot (property) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | loginToDesignManagerWithAlias (method) | loginToDesignManagerWithAlias (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | loginToDesignManagerWithCertificate (method) | loginToDesignManagerWithCertificate (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | loginToDesignManagerWithUsername (method) | loginToDesignManagerWithUsername (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | make (method) | make (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | mergeElements (method) | mergeElements (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getModelElementFromSource (method) | getModelElementFromSource (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | newProjectOnDesignManager (method) | newProjectOnDesignManager (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | notifyFileChanged (method) | notifyFileChanged (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | openActiveXView (method) | OpenActiveXView (method) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | openAdvancedSearchAndReplaceDialog (method) | openAdvancedSearchAndReplaceDialog (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | openDiagramView (method) | OpenDiagramView (method) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | openFileList (method) | openFileList (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | openProjectFromDesignManager (method) | openProjectFromDesignManager (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | openProjectFromDesignManagerAfterLogin (method) | openProjectFromDesignManagerAfterLogin (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | openProjectFromURL (method) | openProjectFromURL (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | openProjectWithLastSession (method) | openProjectWithLastSession (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | openProjectWithoutSubUnits (method) | openProjectWithoutSubUnits (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getOutputWindowText (method) | getOutputWindowText (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | rebuild (method) | rebuild (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | rebuildEntireProject (method) | rebuildEntireProject (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | rebuildWithDependencies (method) | rebuildWithDependencies (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | redo (method) | redo (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | refactorSelectedOperation (method) | refactorSelectedOperation (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | refreshAllViews (method) | refreshAllViews (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | regenerateElements (method) | regenerateElements (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | regenerateEntireProject (method) | regenerateEntireProject (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | regenerateWithDependencies (method) | regenerateWithDependencies (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | registerCOMClient (method) | registerCOMClient (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | report (method) | report (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getRhapsodyHandleErrorFunction (method) | getRhapsodyHandleErrorFunction (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getRhapsodyHandleErrorFunctionLong (method) | getRhapsodyHandleErrorFunctionLong (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | rhpCheckinLicense (method) | RhpCheckinLicense (method) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | rhpCheckoutLicense (method) | RhpCheckoutLicense (method) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | roundtrip (method) | roundtrip (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | roundtripElements (method) | roundtripElements (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | runApplication (method) | runApplication (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | runHelper (method) | runHelper (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | runHelperWithParameters (method) | runHelperWithParameters (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | selectGraphElements (method) | selectGraphElements (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | selectModelElements (method) | selectModelElements (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getSelectedElement (method) | getSelectedElement (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getSelectedGraphElements (method) | getSelectedGraphElements (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getSerialNo (method) | SerialNo (property) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | startUndoTransaction (method) | startUndoTransaction (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | syncBuild (method) | syncBuild (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | terminateApplication (method) | terminateApplication (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getTheCodeGeneratorInterface (method) | getTheCodeGeneratorInterface (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getTheExternalCodeGeneratorInvoker (method) | getTheExternalCodeGeneratorInvoker (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getTheIntegratorInterface (method) | getTheIntegratorInterface (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getTheJavaPluginsInterface (method) | getTheJavaPluginsInterface (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getTheRoundtripInterface (method) | getTheRoundtripInterface (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getToolSet (method); setToolSet (method) | ToolSet (property) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | undo (method) | undo (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | unloadFromTarget (method) | unloadFromTarget (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | unregisterCOMClient (method) | unregisterCOMClient (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | setUpdateRecentFileList (method) | setUpdateRecentFileList (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | updateRmmDataToNewVersion (method) | updateRmmDataToNewVersion (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getUserDataRoot (method) | UserDataRoot (property) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getUserOMROOT (method) | UserOMROOT (property) | MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | versionNumberLong (method) | versionNumberLong (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | writeToOutputWindow (method) | writeToOutputWindow (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
+| — | — | — | — | — |
 
 <details>
-<summary>Correct items (28) — bindings verified against pywin32</summary>
+<summary>Correct items (186) — bindings verified against pywin32</summary>
 
 
 ## Correct Items
@@ -174,41 +33,193 @@
 | Python model wrapper | Java API | pywin32 | Status | Recommended change |
 | --- | --- | --- | --- | --- |
 | active_project() -> activeProject | activeProject (method) | activeProject (method) | MATCH | — |
+| add_profile_to_model() -> addProfileToModel | addProfileToModel (method) | addProfileToModel (method) | MATCH | — |
+| add_selected_to_favorites() -> addSelectedToFavorites | addSelectedToFavorites (method) | addSelectedToFavorites (method) | MATCH | — |
 | add_to_model() -> addToModel | addToModel (method) | addToModel (method) | MATCH | — |
+| add_to_model_by_reference() -> addToModelByReference | addToModelByReference (method) | addToModelByReference (method) | MATCH | — |
 | add_to_model_ex() -> addToModelEx | addToModelEx (method) | addToModelEx (method) | MATCH | — |
+| add_to_model_from_url() -> addToModelFromURL | addToModelFromURL (method) | addToModelFromURL (method) | MATCH | — |
+| add_units_to_model() -> addUnitsToModel | addUnitsToModel (method) | addUnitsToModel (method) | MATCH | — |
+| allow_browser_refresh() -> allowBrowserRefresh | allowBrowserRefresh (method) | allowBrowserRefresh (method) | MATCH | — |
+| allow_ge_refresh() -> allowGERefresh | allowGERefresh (method) | allowGERefresh (method) | MATCH | — |
+| allow_rmm_remote_oslc_links_load() -> allowRmmRemoteOslcLinksLoad | allowRmmRemoteOslcLinksLoad (method) | allowRmmRemoteOslcLinksLoad (method) | MATCH | — |
+| application_root() -> ApplicationRoot | getApplicationRoot (method) | ApplicationRoot (property) | MATCH | — |
+| apply_new_terms_profile() -> applyNewTermsProfile | applyNewTermsProfile (method) | applyNewTermsProfile (method) | MATCH | — |
+| apply_window_layout() -> applyWindowLayout | applyWindowLayout (method) | applyWindowLayout (method) | MATCH | — |
+| arc_check_out() -> arcCheckOut | arcCheckOut (method) | arcCheckOut (method) | MATCH | — |
 | bring_window_to_top() -> bringWindowToTop | bringWindowToTop (method) | bringWindowToTop (method) | MATCH | — |
+| build() -> build | build (method) | build (method) | MATCH | — |
+| build_entire_project() -> buildEntireProject | buildEntireProject (method) | buildEntireProject (method) | MATCH | — |
+| build_no() -> BuildNo | getBuildNo (method) | BuildNo (property) | MATCH | — |
+| build_with_dependencies() -> buildWithDependencies | buildWithDependencies (method) | buildWithDependencies (method) | MATCH | — |
+| can_redo() -> canRedo | canRedo (method) | canRedo (method) | MATCH | — |
+| can_undo() -> canUndo | canUndo (method) | canUndo (method) | MATCH | — |
+| check_in() -> checkIn | checkIn (method) | checkIn (method) | MATCH | — |
 | check_model() -> checkModel | checkModel (method) | checkModel (method) | MATCH | — |
+| check_out() -> checkOut | checkOut (method) | checkOut (method) | MATCH | — |
+| clean() -> clean | clean (method) | clean (method) | MATCH | — |
+| clear_output_window() -> clearOutputWindow | clearOutputWindow (method) | clearOutputWindow (method) | MATCH | — |
+| close_all_animated_sequence_diagrams() -> closeAllAnimatedSequenceDiagrams | closeAllAnimatedSequenceDiagrams (method) | closeAllAnimatedSequenceDiagrams (method) | MATCH | — |
+| compare_sequence_diagram() -> compareSequenceDiagram | compareSequenceDiagram (method) | compareSequenceDiagram (method) | MATCH | — |
+| connect_to_archive() -> connectToArchive | connectToArchive (method) | connectToArchive (method) | MATCH | — |
+| connect_to_imported_model() -> connectToImportedModel | connectToImportedModel (method) | connectToImportedModel (method) | MATCH | — |
+| connect_to_target() -> connectToTarget | connectToTarget (method) | connectToTarget (method) | MATCH | — |
+| create_and_insert_project() -> createAndInsertProject | createAndInsertProject (method) | createAndInsertProject (method) | MATCH | — |
+| create_domain_from_profile() -> createDomainFromProfile | createDomainFromProfile (method) | createDomainFromProfile (method) | MATCH | — |
+| create_embedded_web_view_window() -> createEmbeddedWebViewWindow | createEmbeddedWebViewWindow (method) | createEmbeddedWebViewWindow (method) | MATCH | — |
 | create_new_collection() -> createNewCollection | createNewCollection (method) | createNewCollection (method) | MATCH | — |
 | create_new_project() -> createNewProject | createNewProject (method) | createNewProject (method) | MATCH | — |
+| create_progress_bar() -> createProgressBar | createProgressBar (method) | createProgressBar (method) | MATCH | — |
+| d_m_refresh_recursive() -> dMRefreshRecursive | dMRefreshRecursive (method) | dMRefreshRecursive (method) | MATCH | — |
+| d_m_sync_and_refresh() -> dMSyncAndRefresh | dMSyncAndRefresh (method) | dMSyncAndRefresh (method) | MATCH | — |
+| dbg_check_com_in() -> dbgCheckComIn | dbgCheckComIn (method) | dbgCheckComIn (method) | MATCH | — |
+| dbg_check_com_out() -> dbgCheckComOut | dbgCheckComOut (method) | dbgCheckComOut (method) | MATCH | — |
+| deferred_add_to_model() -> deferredAddToModel | deferredAddToModel (method) | deferredAddToModel (method) | MATCH | — |
+| delete_project_from_list() -> deleteProjectFromList | deleteProjectFromList (method) | deleteProjectFromList (method) | MATCH | — |
+| delete_window_layout() -> deleteWindowLayout | deleteWindowLayout (method) | deleteWindowLayout (method) | MATCH | — |
+| disconnect_from_target() -> disconnectFromTarget | disconnectFromTarget (method) | disconnectFromTarget (method) | MATCH | — |
+| download_to_target() -> downloadToTarget | downloadToTarget (method) | downloadToTarget (method) | MATCH | — |
+| end_undo_transaction() -> endUndoTransaction | endUndoTransaction (method) | endUndoTransaction (method) | MATCH | — |
+| enter_animation_command() -> enterAnimationCommand | enterAnimationCommand (method) | enterAnimationCommand (method) | MATCH | — |
+| error_message() -> errorMessage; get_error_message() -> getErrorMessage | errorMessage (method); getErrorMessage (method) | errorMessage (method); getErrorMessage (method) | MATCH | — |
+| execute_command() -> ExecuteCommand | executeCommand (method) | ExecuteCommand (method) | MATCH | — |
+| execute_command_line() -> executeCommandLine | executeCommandLine (method) | executeCommandLine (method) | MATCH | — |
+| execute_transformation_sequence() -> executeTransformationSequence | executeTransformationSequence (method) | executeTransformationSequence (method) | MATCH | — |
+| expand_string_keywords() -> expandStringKeywords | expandStringKeywords (method) | expandStringKeywords (method) | MATCH | — |
+| export_window_layout() -> exportWindowLayout | exportWindowLayout (method) | exportWindowLayout (method) | MATCH | — |
+| fixpack() -> fixpack | fixpack (method) | fixpack (method) | MATCH | — |
+| force_output2_console() -> forceOutput2Console | forceOutput2Console (method) | forceOutput2Console (method) | MATCH | — |
+| force_roundtrip() -> forceRoundtrip | forceRoundtrip (method) | forceRoundtrip (method) | MATCH | — |
+| force_roundtrip_elements() -> forceRoundtripElements | forceRoundtripElements (method) | forceRoundtripElements (method) | MATCH | — |
 | generate() -> generate | generate (method) | generate (method) | MATCH | — |
 | generate_elements() -> generateElements | generateElements (method) | generateElements (method) | MATCH | — |
 | generate_entire_project() -> generateEntireProject | generateEntireProject (method) | generateEntireProject (method) | MATCH | — |
-| get_build_no() -> BuildNo | getBuildNo (method) | BuildNo (property) | MATCH | — |
+| generate_main_and_make_files() -> generateMainAndMakeFiles | generateMainAndMakeFiles (method) | generateMainAndMakeFiles (method) | MATCH | — |
+| generate_with_dependencies() -> generateWithDependencies | generateWithDependencies (method) | generateWithDependencies (method) | MATCH | — |
+| get_application_connection_string() -> getApplicationConnectionString | getApplicationConnectionString (method) | getApplicationConnectionString (method) | MATCH | — |
+| get_application_name() -> getApplicationName | getApplicationName (method) | getApplicationName (method) | MATCH | — |
+| get_application_status() -> getApplicationStatus; set_application_status() -> setApplicationStatus | getApplicationStatus (method); setApplicationStatus (method) | getApplicationStatus (method); setApplicationStatus (method) | MATCH | — |
 | get_code_gen_simplifiers_registry() -> getCodeGenSimplifiersRegistry | getCodeGenSimplifiersRegistry (method) | getCodeGenSimplifiersRegistry (method) | MATCH | — |
 | get_diag_synth_api() -> getDiagSynthAPI | getDiagSynthAPI (method) | getDiagSynthAPI (method) | MATCH | — |
+| get_diagram_of_selected_element() -> getDiagramOfSelectedElement | getDiagramOfSelectedElement (method) | getDiagramOfSelectedElement (method) | MATCH | — |
+| get_dm_bool_property() -> getDMBoolProperty; set_dm_bool_property() -> setDMBoolProperty | getDMBoolProperty (method); setDMBoolProperty (method) | getDMBoolProperty (method); setDMBoolProperty (method) | MATCH | — |
+| get_dm_model_workspace_folder() -> getDMModelWorkspaceFolder | getDMModelWorkspaceFolder (method) | getDMModelWorkspaceFolder (method) | MATCH | — |
+| get_dm_property() -> getDMProperty; set_dm_property() -> setDMProperty | getDMProperty (method); setDMProperty (method) | getDMProperty (method); setDMProperty (method) | MATCH | — |
+| get_executable_folder() -> getExecutableFolder | getExecutableFolder (method) | getExecutableFolder (method) | MATCH | — |
 | get_external_checker_registry() -> getExternalCheckerRegistry | getExternalCheckerRegistry (method) | getExternalCheckerRegistry (method) | MATCH | — |
 | get_external_ide_registry() -> getExternalIDERegistry | getExternalIDERegistry (method) | getExternalIDERegistry (method) | MATCH | — |
 | get_external_roundtrip_invoker() -> getExternalRoundtripInvoker | getExternalRoundtripInvoker (method) | getExternalRoundtripInvoker (method) | MATCH | — |
-| get_is_hidden_ui() -> isHiddenUI | getIsHiddenUI (method) | isHiddenUI (property) | MATCH | — |
-| get_omroot() -> OMROOT | getOMROOT (method) | OMROOT (property) | MATCH | — |
+| get_helper_status() -> getHelperStatus; set_helper_status() -> setHelperStatus | getHelperStatus (method); setHelperStatus (method) | getHelperStatus (method); setHelperStatus (method) | MATCH | — |
+| get_ini_file_parameter_value() -> getIniFileParameterValue | getIniFileParameterValue (method) | getIniFileParameterValue (method) | MATCH | — |
+| get_list_of_factory_properties() -> getListOfFactoryProperties | getListOfFactoryProperties (method) | getListOfFactoryProperties (method) | MATCH | — |
+| get_list_of_selected_elements() -> getListOfSelectedElements | getListOfSelectedElements (method) | getListOfSelectedElements (method) | MATCH | — |
+| get_list_of_site_properties() -> getListOfSiteProperties | getListOfSiteProperties (method) | getListOfSiteProperties (method) | MATCH | — |
+| get_locale_name() -> getLocaleName | getLocaleName (method) | getLocaleName (method) | MATCH | — |
+| get_model_element_from_source() -> getModelElementFromSource | getModelElementFromSource (method) | getModelElementFromSource (method) | MATCH | — |
+| get_output_window_text() -> getOutputWindowText | getOutputWindowText (method) | getOutputWindowText (method) | MATCH | — |
 | get_ow_pane_mgr() -> getOWPaneMgr | getOWPaneMgr (method) | getOWPaneMgr (method) | MATCH | — |
-| get_projects() -> projects | getProjects (method) | projects (property) | MATCH | — |
+| get_plug_in_window() -> GetPlugInWindow | getPlugInWindow (method) | GetPlugInWindow (method) | MATCH | — |
+| get_progress_bar() -> getProgressBar | getProgressBar (method) | getProgressBar (method) | MATCH | — |
+| get_rhapsody_handle_error_function() -> getRhapsodyHandleErrorFunction | getRhapsodyHandleErrorFunction (method) | getRhapsodyHandleErrorFunction (method) | MATCH | — |
+| get_rhapsody_handle_error_function_long() -> getRhapsodyHandleErrorFunctionLong | getRhapsodyHandleErrorFunctionLong (method) | getRhapsodyHandleErrorFunctionLong (method) | MATCH | — |
 | get_search_manager() -> getSearchManager | getSearchManager (method) | getSearchManager (method) | MATCH | — |
+| get_selected_element() -> getSelectedElement | getSelectedElement (method) | getSelectedElement (method) | MATCH | — |
+| get_selected_graph_elements() -> getSelectedGraphElements | getSelectedGraphElements (method) | getSelectedGraphElements (method) | MATCH | — |
 | get_selection() -> getSelection | getSelection (method) | getSelection (method) | MATCH | — |
+| get_the_code_generator_interface() -> getTheCodeGeneratorInterface | getTheCodeGeneratorInterface (method) | getTheCodeGeneratorInterface (method) | MATCH | — |
+| get_the_external_code_generator_invoker() -> getTheExternalCodeGeneratorInvoker | getTheExternalCodeGeneratorInvoker (method) | getTheExternalCodeGeneratorInvoker (method) | MATCH | — |
+| get_the_integrator_interface() -> getTheIntegratorInterface | getTheIntegratorInterface (method) | getTheIntegratorInterface (method) | MATCH | — |
+| get_the_java_plugins_interface() -> getTheJavaPluginsInterface | getTheJavaPluginsInterface (method) | getTheJavaPluginsInterface (method) | MATCH | — |
+| get_the_roundtrip_interface() -> getTheRoundtripInterface | getTheRoundtripInterface (method) | getTheRoundtripInterface (method) | MATCH | — |
+| get_web_view_url() -> getWebViewURL; set_web_view_url() -> setWebViewURL | getWebViewURL (method); setWebViewURL (method) | getWebViewURL (method); setWebViewURL (method) | MATCH | — |
+| get_window_layout_list() -> getWindowLayoutList | getWindowLayoutList (method) | getWindowLayoutList (method) | MATCH | — |
+| high_light_element() -> highLightElement | highLightElement (method) | highLightElement (method) | MATCH | — |
+| highlight_by_handle() -> highlightByHandle | highlightByHandle (method) | highlightByHandle (method) | MATCH | — |
+| import_classes() -> importClasses | importClasses (method) | importClasses (method) | MATCH | — |
+| import_design_manager_model() -> importDesignManagerModel | importDesignManagerModel (method) | importDesignManagerModel (method) | MATCH | — |
+| import_sync_simulink_block2() -> importSyncSimulinkBlock2 | importSyncSimulinkBlock2 (method) | importSyncSimulinkBlock2 (method) | MATCH | — |
+| import_tlb() -> importTlb | importTlb (method) | importTlb (method) | MATCH | — |
+| import_window_layout() -> importWindowLayout | importWindowLayout (method) | importWindowLayout (method) | MATCH | — |
+| insert_project() -> insertProject | insertProject (method) | insertProject (method) | MATCH | — |
+| insert_project_from_design_manager() -> insertProjectFromDesignManager | insertProjectFromDesignManager (method) | insertProjectFromDesignManager (method) | MATCH | — |
+| interface_name() -> interfaceName | getInterfaceName (method) | interfaceName (property) | MATCH | — |
+| invoke_plugins_method() -> invokePluginsMethod | invokePluginsMethod (method) | invokePluginsMethod (method) | MATCH | — |
+| invoke_rpe() -> invokeRPE | invokeRPE (method) | invokeRPE (method) | MATCH | — |
+| is_hidden_ui() -> isHiddenUI | getIsHiddenUI (method) | isHiddenUI (property) | MATCH | — |
+| is_load_on_demand() -> isLoadOnDemand | getIsLoadOnDemand (method); setIsLoadOnDemand (method) | isLoadOnDemand (property) | MATCH | — |
+| is_rhapsody_cl() -> isRhapsodyCL | isRhapsodyCL (method) | isRhapsodyCL (method) | MATCH | — |
+| is_rhapsody_file_type() -> isRhapsodyFileType | isRhapsodyFileType (method) | isRhapsodyFileType (method) | MATCH | — |
+| is_valid_web_view() -> isValidWebView | isValidWebView (method) | isValidWebView (method) | MATCH | — |
+| language() -> Language | getLanguage (method); setLanguage (method) | Language (property) | MATCH | — |
+| log_root() -> LogRoot | getLogRoot (method) | LogRoot (property) | MATCH | — |
+| login_to_design_manager_with_alias() -> loginToDesignManagerWithAlias | loginToDesignManagerWithAlias (method) | loginToDesignManagerWithAlias (method) | MATCH | — |
+| login_to_design_manager_with_certificate() -> loginToDesignManagerWithCertificate | loginToDesignManagerWithCertificate (method) | loginToDesignManagerWithCertificate (method) | MATCH | — |
+| login_to_design_manager_with_username() -> loginToDesignManagerWithUsername | loginToDesignManagerWithUsername (method) | loginToDesignManagerWithUsername (method) | MATCH | — |
+| make() -> make | make (method) | make (method) | MATCH | — |
+| merge_elements() -> mergeElements | mergeElements (method) | mergeElements (method) | MATCH | — |
+| new_project_on_design_manager() -> newProjectOnDesignManager | newProjectOnDesignManager (method) | newProjectOnDesignManager (method) | MATCH | — |
+| notify_file_changed() -> notifyFileChanged | notifyFileChanged (method) | notifyFileChanged (method) | MATCH | — |
+| omroot() -> OMROOT | getOMROOT (method) | OMROOT (property) | MATCH | — |
+| open_active_x_view() -> OpenActiveXView | openActiveXView (method) | OpenActiveXView (method) | MATCH | — |
+| open_advanced_search_and_replace_dialog() -> openAdvancedSearchAndReplaceDialog | openAdvancedSearchAndReplaceDialog (method) | openAdvancedSearchAndReplaceDialog (method) | MATCH | — |
+| open_diagram_view() -> OpenDiagramView | openDiagramView (method) | OpenDiagramView (method) | MATCH | — |
+| open_file_list() -> openFileList | openFileList (method) | openFileList (method) | MATCH | — |
 | open_project() -> openProject | openProject (method) | openProject (method) | MATCH | — |
+| open_project_from_design_manager() -> openProjectFromDesignManager | openProjectFromDesignManager (method) | openProjectFromDesignManager (method) | MATCH | — |
+| open_project_from_design_manager_after_login() -> openProjectFromDesignManagerAfterLogin | openProjectFromDesignManagerAfterLogin (method) | openProjectFromDesignManagerAfterLogin (method) | MATCH | — |
+| open_project_from_url() -> openProjectFromURL | openProjectFromURL (method) | openProjectFromURL (method) | MATCH | — |
+| open_project_with_last_session() -> openProjectWithLastSession | openProjectWithLastSession (method) | openProjectWithLastSession (method) | MATCH | — |
+| open_project_without_sub_units() -> openProjectWithoutSubUnits | openProjectWithoutSubUnits (method) | openProjectWithoutSubUnits (method) | MATCH | — |
+| projects() -> projects | getProjects (method) | projects (property) | MATCH | — |
 | quit() -> quit | quit (method) | quit (method) | MATCH | — |
+| rebuild() -> rebuild | rebuild (method) | rebuild (method) | MATCH | — |
+| rebuild_entire_project() -> rebuildEntireProject | rebuildEntireProject (method) | rebuildEntireProject (method) | MATCH | — |
+| rebuild_with_dependencies() -> rebuildWithDependencies | rebuildWithDependencies (method) | rebuildWithDependencies (method) | MATCH | — |
+| redo() -> redo | redo (method) | redo (method) | MATCH | — |
+| refactor_selected_operation() -> refactorSelectedOperation | refactorSelectedOperation (method) | refactorSelectedOperation (method) | MATCH | — |
+| refresh_all_views() -> refreshAllViews | refreshAllViews (method) | refreshAllViews (method) | MATCH | — |
 | regenerate() -> regenerate | regenerate (method) | regenerate (method) | MATCH | — |
+| regenerate_elements() -> regenerateElements | regenerateElements (method) | regenerateElements (method) | MATCH | — |
+| regenerate_entire_project() -> regenerateEntireProject | regenerateEntireProject (method) | regenerateEntireProject (method) | MATCH | — |
+| regenerate_with_dependencies() -> regenerateWithDependencies | regenerateWithDependencies (method) | regenerateWithDependencies (method) | MATCH | — |
+| register_com_client() -> registerCOMClient | registerCOMClient (method) | registerCOMClient (method) | MATCH | — |
+| remove_progress_bar() -> removeProgressBar | removeProgressBar (method) | removeProgressBar (method) | MATCH | — |
+| rename_window_layout() -> renameWindowLayout | renameWindowLayout (method) | renameWindowLayout (method) | MATCH | — |
+| report() -> report | report (method) | report (method) | MATCH | — |
+| reset_window_layout() -> resetWindowLayout | resetWindowLayout (method) | resetWindowLayout (method) | MATCH | — |
+| rhp_checkin_license() -> RhpCheckinLicense | rhpCheckinLicense (method) | RhpCheckinLicense (method) | MATCH | — |
+| rhp_checkout_license() -> RhpCheckoutLicense | rhpCheckoutLicense (method) | RhpCheckoutLicense (method) | MATCH | — |
+| roundtrip() -> roundtrip | roundtrip (method) | roundtrip (method) | MATCH | — |
+| roundtrip_elements() -> roundtripElements | roundtripElements (method) | roundtripElements (method) | MATCH | — |
+| run_application() -> runApplication | runApplication (method) | runApplication (method) | MATCH | — |
+| run_helper() -> runHelper | runHelper (method) | runHelper (method) | MATCH | — |
+| run_helper_with_parameters() -> runHelperWithParameters | runHelperWithParameters (method) | runHelperWithParameters (method) | MATCH | — |
 | save_all() -> saveAll | saveAll (method) | saveAll (method) | MATCH | — |
+| save_check_model_result() -> saveCheckModelResult | saveCheckModelResult (method) | saveCheckModelResult (method) | MATCH | — |
+| save_window_layout() -> saveWindowLayout | saveWindowLayout (method) | saveWindowLayout (method) | MATCH | — |
+| select_graph_elements() -> selectGraphElements | selectGraphElements (method) | selectGraphElements (method) | MATCH | — |
+| select_model_elements() -> selectModelElements | selectModelElements (method) | selectModelElements (method) | MATCH | — |
+| serial_no() -> SerialNo | getSerialNo (method) | SerialNo (property) | MATCH | — |
+| set_component() -> setComponent | setComponent (method) | setComponent (method) | MATCH | — |
+| set_configuration() -> setConfiguration | setConfiguration (method) | setConfiguration (method) | MATCH | — |
 | set_hidden_ui() -> setHiddenUI | setHiddenUI (method) | setHiddenUI (method) | MATCH | — |
 | set_log() -> setLog | setLog (method) | setLog (method) | MATCH | — |
+| set_update_recent_file_list() -> setUpdateRecentFileList | setUpdateRecentFileList (method) | setUpdateRecentFileList (method) | MATCH | — |
+| start_undo_transaction() -> startUndoTransaction | startUndoTransaction (method) | startUndoTransaction (method) | MATCH | — |
+| sync_build() -> syncBuild | syncBuild (method) | syncBuild (method) | MATCH | — |
+| terminate_application() -> terminateApplication | terminateApplication (method) | terminateApplication (method) | MATCH | — |
+| tool_set() -> ToolSet | getToolSet (method); setToolSet (method) | ToolSet (property) | MATCH | — |
+| undo() -> undo | undo (method) | undo (method) | MATCH | — |
+| unload_from_target() -> unloadFromTarget | unloadFromTarget (method) | unloadFromTarget (method) | MATCH | — |
+| unregister_com_client() -> unregisterCOMClient | unregisterCOMClient (method) | unregisterCOMClient (method) | MATCH | — |
+| update_rmm_data_to_new_version() -> updateRmmDataToNewVersion | updateRmmDataToNewVersion (method) | updateRmmDataToNewVersion (method) | MATCH | — |
+| user_data_root() -> UserDataRoot | getUserDataRoot (method) | UserDataRoot (property) | MATCH | — |
+| user_omroot() -> UserOMROOT | getUserOMROOT (method) | UserOMROOT (property) | MATCH | — |
+| version() -> version | version (method) | version (method) | MATCH | — |
+| version_number_long() -> versionNumberLong | versionNumberLong (method) | versionNumberLong (method) | MATCH | — |
+| write_to_output_window() -> writeToOutputWindow | writeToOutputWindow (method) | writeToOutputWindow (method) | MATCH | — |
 
 </details>
 
 ## AI Fix Guidance
-
-### PYTHON_METHOD_NAME_MISMATCH (1 finding)
-- **Target:** `RhapsodyApplication` in `src/rhapsody_cli/application.py`
-- **Affected call(s):** get_version() -> version
-- **Java signature(s):** `IRPApplication.version()`
-- **Recommended change:** Rename the Python method to the snake_case Java API name or document the alias.
-- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
+No deviations require changes.

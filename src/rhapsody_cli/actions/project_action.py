@@ -51,7 +51,7 @@ class ProjectListAction(RhapsodyContextAction):
         """List open projects."""
         try:
             app = self._connect_app()
-            projects = app.get_projects()
+            projects = app.projects
 
             if not projects or len(projects) == 0:
                 self.logger.info("No open projects")
@@ -138,8 +138,8 @@ class ProjectExportAction(RhapsodyContextAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         try:
+            project = self._get_active_project()
             app = self._connect_app()
-            project = app.active_project()
             exporter = RhapsodyExporter(app=app)
             data = exporter.export(project)
             yaml_io = RhapsodyYaml()
@@ -169,8 +169,8 @@ class ProjectImportAction(RhapsodyContextAction):
 
     def execute(self, args: argparse.Namespace) -> None:
         try:
+            project = self._get_active_project()
             app = self._connect_app()
-            project = app.active_project()
             yaml_io = RhapsodyYaml()
             data = yaml_io.read(args.file)
             importer = RhapsodyImporter(app=app)

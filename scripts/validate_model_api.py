@@ -178,8 +178,6 @@ def _get_referenced_member_name(method: ast.FunctionDef) -> Optional[str]:
 
 def _wrapper_class_candidates(interface_name: str) -> List[str]:
     """Return accepted wrapper class names, preferring the exact Java interface name."""
-    if interface_name == "IRPApplication":
-        return ["RhapsodyApplication"]
     return [interface_name, "RP" + interface_name[3:]]
 
 
@@ -189,9 +187,8 @@ def resolve_python_wrapper(interface_name: str, models_root: Path) -> Tuple[str,
     if not models_root.is_dir():
         raise FileNotFoundError(f"Python model directory not found: {models_root}")
 
-    is_application_interface = interface_name == "IRPApplication"
     candidates = _wrapper_class_candidates(interface_name)
-    source_paths = [models_root.parent / "application.py"] if is_application_interface else sorted(models_root.rglob("*.py"))
+    source_paths = sorted(models_root.rglob("*.py"))
     for source_path in source_paths:
         try:
             tree = ast.parse(source_path.read_text(encoding="utf-8"), filename=str(source_path))
@@ -209,8 +206,7 @@ def collect_python_members(interface_name: str, models_root: Path, include_bases
     if not models_root.is_dir():
         raise FileNotFoundError(f"Python model directory not found: {models_root}")
 
-    is_application_interface = interface_name == "IRPApplication"
-    source_paths = [models_root.parent / "application.py"] if is_application_interface else sorted(models_root.rglob("*.py"))
+    source_paths = sorted(models_root.rglob("*.py"))
     classes: Dict[str, ast.ClassDef] = {}
     for source_path in source_paths:
         try:
@@ -373,7 +369,7 @@ def collect_wrapper_call_arities(interface_name: str, models_root: Path) -> Dict
     """Return {COM member name: [arg counts]} for every call_com(lambda: self._com.Name(...)) in the wrapper."""
     _validate_interface_name(interface_name)
     candidates = _wrapper_class_candidates(interface_name)
-    source_paths = [models_root.parent / "application.py"] if interface_name == "IRPApplication" else sorted(models_root.rglob("*.py"))
+    source_paths = sorted(models_root.rglob("*.py"))
     result: Dict[str, List[int]] = {}
     for source_path in source_paths:
         if not source_path.is_file():
@@ -404,7 +400,7 @@ def collect_wrapper_arg_types(interface_name: str, models_root: Path) -> Dict[st
     """
     _validate_interface_name(interface_name)
     candidates = _wrapper_class_candidates(interface_name)
-    source_paths = [models_root.parent / "application.py"] if interface_name == "IRPApplication" else sorted(models_root.rglob("*.py"))
+    source_paths = sorted(models_root.rglob("*.py"))
     result: Dict[str, List[str]] = {}
     for source_path in source_paths:
         if not source_path.is_file():
@@ -487,7 +483,7 @@ def _camel_to_snake(name: str) -> str:
 def _canonical_member_name(member_name: str) -> str:
     if member_name.startswith("python-only:"):
         return member_name
-    if member_name.startswith(("get", "set")) and len(member_name) > 3 and member_name[3].isupper():
+    if member_name[:3].lower() in ("get", "set") and len(member_name) > 3 and member_name[3].isupper():
         member_name = member_name[3:]
     return member_name[:1].lower() + member_name[1:]
 
@@ -599,8 +595,7 @@ def build_signature_rows(
                     "—",
                     f"{com_name} (method)",
                     "SIGNATURE_ARITY_MISMATCH",
-                    f"Wrapper passes {sorted(set(counts))} arg(s) but pywin32 declares {expected} parameter(s) "
-                    f"({required} required; params: {names}; types: {types}). Pass the documented parameters.",
+                    f"Wrapper passes {sorted(set(counts))} arg(s) but pywin32 declares {expected} parameter(s) ({required} required; params: {names}; types: {types}). Pass the documented parameters.",
                 )
             )
             continue

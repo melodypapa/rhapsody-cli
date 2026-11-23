@@ -2799,6 +2799,21 @@
     }
   },
   "documented_aliases": {
+    "IRPApplication": {
+      "application_root": "get_application_root",
+      "build_no": "get_build_no",
+      "interface_name": "get_interface_name",
+      "is_hidden_ui": "get_is_hidden_ui",
+      "is_load_on_demand": "get_is_load_on_demand",
+      "language": "get_language",
+      "log_root": "get_log_root",
+      "omroot": "get_omroot",
+      "projects": "get_projects",
+      "serial_no": "get_serial_no",
+      "tool_set": "get_tool_set",
+      "user_data_root": "get_user_data_root",
+      "user_omroot": "get_user_omroot"
+    },
     "IRPClass": {
       "get_description_html": "description_html",
       "is_abstract": "get_is_abstract",
