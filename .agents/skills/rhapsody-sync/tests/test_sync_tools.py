@@ -502,3 +502,29 @@ def test_a():
         wrapper.java_only_method()
 '''
     assert tools.verify_integration_exception_catches(ok) == []
+
+
+def test_signature_arity_mismatch_detected(tmp_path: Path) -> None:
+    """A wrapper call with wrong arg count is reported against pywin32 signatures."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("valmod", SYNC_TOOLS_PATH.parents[4] / "scripts" / "validate_model_api.py")
+    val = importlib.util.module_from_spec(spec)
+    assert spec.loader
+    spec.loader.exec_module(val)
+    signatures = {"FindThing": {"count": 2, "names": ["a", "b"], "types": ["str", "str"], "codes": [8, 8]}}
+    arities = {"FindThing": [1]}
+    rows = val.build_signature_rows({"FindThing": {"find_thing() -> FindThing"}}, signatures, arities, {})
+    assert any("SIGNATURE_ARITY_MISMATCH" in r[3] for r in rows)
+
+
+def test_signature_type_mismatch_detected(tmp_path: Path) -> None:
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("valmod2", SYNC_TOOLS_PATH.parents[4] / "scripts" / "validate_model_api.py")
+    val = importlib.util.module_from_spec(spec)
+    assert spec.loader
+    spec.loader.exec_module(val)
+    signatures = {"SetThing": {"count": 1, "names": ["v"], "types": ["str"], "codes": [8]}}
+    arities = {"SetThing": [1]}
+    arg_types = {"SetThing": ["int"]}
+    rows = val.build_signature_rows({"SetThing": {"set_thing() -> SetThing"}}, signatures, arities, arg_types)
+    assert any("SIGNATURE_TYPE_MISMATCH" in r[3] for r in rows)

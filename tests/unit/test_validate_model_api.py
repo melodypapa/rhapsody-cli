@@ -556,6 +556,7 @@ def _authority(
         catalog=catalog or {},
         documented_aliases=aliases or {},
         documented_unavailable=unavailable or {},
+        signatures={},
     )
 
 

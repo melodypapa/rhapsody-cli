@@ -18,6 +18,7 @@ class AuthorityData(TypedDict):
     catalog: Dict[str, Dict[str, str]]
     documented_aliases: Dict[str, Dict[str, str]]
     documented_unavailable: Dict[str, List[str]]
+    signatures: Dict[str, Dict[str, Dict[str, object]]]
 
 
 def export_catalog_from_reports(reports_dir: Path) -> Dict[str, Dict[str, str]]:
@@ -49,6 +50,7 @@ def build_authority(reports_dir: Path) -> AuthorityData:
         catalog=export_catalog_from_reports(reports_dir),
         documented_aliases={},
         documented_unavailable={},
+        signatures={},
     )
 
 
@@ -59,13 +61,18 @@ def build_authority_from_typelib(reports_dir: Path) -> AuthorityData:
     yields an incomplete catalog. The registered type library is the
     authoritative source when it is available.
     """
-    from scripts.validate_model_api import collect_registered_pywin32_members
+    from scripts.validate_model_api import collect_registered_pywin32_members, collect_registered_pywin32_signatures
 
     catalog: Dict[str, Dict[str, str]] = {}
+    signatures: Dict[str, Dict[str, Dict[str, object]]] = {}
     for report_path in sorted(reports_dir.rglob("*" + _REPORT_SUFFIX)):
         interface_name = report_path.name[: -len(_REPORT_SUFFIX)]
         catalog[interface_name] = collect_registered_pywin32_members(interface_name)
-    return AuthorityData(catalog=catalog, documented_aliases={}, documented_unavailable={})
+        try:
+            signatures[interface_name] = collect_registered_pywin32_signatures(interface_name)
+        except Exception:
+            signatures[interface_name] = {}
+    return AuthorityData(catalog=catalog, documented_aliases={}, documented_unavailable={}, signatures=signatures)
 
 
 def load_authority(path: Path = AUTHORITY_PATH) -> AuthorityData:
@@ -78,6 +85,7 @@ def load_authority(path: Path = AUTHORITY_PATH) -> AuthorityData:
         catalog=data["catalog"],
         documented_aliases=data["documented_aliases"],
         documented_unavailable=data["documented_unavailable"],
+        signatures=data.get("signatures", {}),
     )
 
 
