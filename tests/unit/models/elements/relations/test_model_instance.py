@@ -4,7 +4,6 @@ from typing import cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.relations import RPInstance, RPRelation
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -74,7 +73,7 @@ def test_instance_get_out_links_returns_collection() -> None:
 def test_instance_is_registered_for_meta_class_instance() -> None:
     fake = make_fake_element("Instance", properties={"name": "driver1"})
 
-    wrapped = AbstractRPModelElement.wrap(fake)
+    wrapped = IRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, RPInstance)
 
@@ -89,7 +88,7 @@ def test_instance_is_registered_for_meta_class_object() -> None:
     """
     fake = make_fake_element("Object", properties={"name": "driver1"})
 
-    wrapped = AbstractRPModelElement.wrap(fake)
+    wrapped = IRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, RPInstance)
 
@@ -161,7 +160,7 @@ def test_instance_set_instantiated_by_unwraps_arg() -> None:
     op = make_fake_element("Operation", properties={"name": "create"})
     instance = RPInstance(fake)
 
-    instance.set_instantiated_by(cast(IRPModelElement, AbstractRPModelElement.wrap(op)))
+    instance.set_instantiated_by(cast(IRPModelElement, IRPModelElement.wrap(op)))
 
     fake.setInstantiatedBy.assert_called_once_with(op)
 

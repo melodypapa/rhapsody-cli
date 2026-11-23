@@ -5,8 +5,8 @@ import pytest
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port import IRPPort
-from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.relations import RPInstance
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -22,7 +22,7 @@ def test_port_is_an_instance() -> None:
 def test_port_is_registered_for_meta_class_port() -> None:
     fake = make_fake_element("Port")
 
-    wrapped = AbstractRPModelElement.wrap(fake)
+    wrapped = IRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, IRPPort)
 

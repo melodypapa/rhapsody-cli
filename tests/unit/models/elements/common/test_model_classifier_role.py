@@ -3,7 +3,6 @@
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.common import RPClassifierRole
 from rhapsody_cli.models.elements.relations import RPInstance
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
@@ -18,7 +17,7 @@ class TestRPClassifierRole:
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("ClassifierRole", properties={"name": "L1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPClassifierRole)
 
     def test_get_formal_classifier_wraps_result(self) -> None:

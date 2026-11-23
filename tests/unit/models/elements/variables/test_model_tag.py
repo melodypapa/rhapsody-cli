@@ -1,6 +1,6 @@
 """Tests for rhapsody_cli.models.elements.variables.RPTag."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.elements.variables import RPTag, RPVariable
 from tests.unit.models.fakes import make_fake_element
 
@@ -16,6 +16,6 @@ def test_tag_is_a_variable() -> None:
 def test_tag_is_registered_for_meta_class_tag() -> None:
     fake = make_fake_element("Tag", properties={"name": "MyTag"})
 
-    wrapped = AbstractRPModelElement.wrap(fake)
+    wrapped = IRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, RPTag)

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.containment.model_component_instance import RPComponentInstance
@@ -35,7 +35,7 @@ class RPNode(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPNode::addComponentInstance(java.lang.String name)
         """
-        return cast("RPComponentInstance", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addComponentInstance(name))))
+        return cast("RPComponentInstance", self.wrap(self.call_com(lambda: self._com.addComponentInstance(name))))
 
     def delete_component_instance(self, instance: "RPComponentInstance") -> None:
         """Deletes a component instance from the node.
@@ -63,7 +63,7 @@ class RPNode(IRPUnit):
         result = self.call_com(lambda: self._com.findComponentInstance(name))
         if result is None:
             return None
-        return cast("RPComponentInstance", AbstractRPModelElement.wrap(result))
+        return cast("RPComponentInstance", self.wrap(result))
 
     def get_cpu_type(self) -> str:
         """Returns the CPU type of the node.
@@ -99,4 +99,4 @@ class RPNode(IRPUnit):
         self._set_method_or_property(self._com, "setCPUtype", "CPUtype", value)
 
 
-AbstractRPModelElement.register_wrapper("Node", RPNode)
+IRPModelElement.register_wrapper("Node", RPNode)

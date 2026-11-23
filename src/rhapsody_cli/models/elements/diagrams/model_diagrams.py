@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, Optional, cast
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.graphics.model_graphics import RPGraphElement
@@ -57,7 +56,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::closeDiagram()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.closeDiagram())
+        self.call_com(lambda: self._com.closeDiagram())
 
     def add_text_box(self, text: str, x_position: int, y_position: int, width: int, height: int) -> "RPGraphElement":
         """Adds a text box using the specified text, starting point, width, and height.
@@ -75,7 +74,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::addTextBox(java.lang.String text, int xPosition, int yPosition, int nWidth, int nHeight)
         """
-        return cast("RPGraphElement", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addTextBox(text, x_position, y_position, width, height))))
+        return cast("RPGraphElement", self.wrap(self.call_com(lambda: self._com.addTextBox(text, x_position, y_position, width, height))))
 
     def get_custom_views(self) -> IRPCollection:
         """Gets the custom views that were applied to this diagram view.
@@ -89,7 +88,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::getCustomViews()
         """
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getCustomViews", "customViews"))
+        return IRPCollection(self._get_method_or_property(self._com, "getCustomViews", "customViews"))
 
     def get_corresponding_graphic_elements(self, model_element: IRPModelElement) -> IRPCollection:
         """Returns the graphical elements that represent the specified model element.
@@ -106,7 +105,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::getCorrespondingGraphicElements(com.telelogic.rhapsody.core.IRPModelElement modelElement)
         """
-        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getCorrespondingGraphicElements(model_element._com)))
+        return IRPCollection(self.call_com(lambda: self._com.getCorrespondingGraphicElements(model_element._com)))
 
     def add_free_shape_by_type(self, type_: str, x: int, y: int, width: int, height: int) -> "RPGraphElement":
         """Adds a free shape to the diagram by type.
@@ -124,7 +123,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::addFreeShapeByType(java.lang.String type, int x, int y, int width, int height)
         """
-        return cast("RPGraphElement", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addFreeShapeByType(type_, x, y, width, height))))
+        return cast("RPGraphElement", self.wrap(self.call_com(lambda: self._com.addFreeShapeByType(type_, x, y, width, height))))
 
     def add_image(self, image_path: str, x: int, y: int, width: int, height: int) -> "RPGraphElement":
         """Adds an image to the diagram.
@@ -142,7 +141,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::addImage(java.lang.String imagePath, int x, int y, int width, int height)
         """
-        return cast("RPGraphElement", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addImage(image_path, x, y, width, height))))
+        return cast("RPGraphElement", self.wrap(self.call_com(lambda: self._com.addImage(image_path, x, y, width, height))))
 
     def add_new_edge_by_type(self, type_: str, source: "RPGraphElement", target: "RPGraphElement") -> "RPGraphElement":
         """Adds a new edge to the diagram by type.
@@ -158,7 +157,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::addNewEdgeByType(java.lang.String type, com.telelogic.rhapsody.core.IRPGraphElement source, com.telelogic.rhapsody.core.IRPGraphElement target)
         """
-        return cast("RPGraphElement", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewEdgeByType(type_, source._com, target._com))))
+        return cast("RPGraphElement", self.wrap(self.call_com(lambda: self._com.addNewEdgeByType(type_, source._com, target._com))))
 
     def add_new_edge_for_element(self, element: IRPModelElement) -> "RPGraphElement":
         """Adds a new edge for the specified element.
@@ -172,7 +171,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::addNewEdgeForElement(com.telelogic.rhapsody.core.IRPModelElement element)
         """
-        return cast("RPGraphElement", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewEdgeForElement(element._com))))
+        return cast("RPGraphElement", self.wrap(self.call_com(lambda: self._com.addNewEdgeForElement(element._com))))
 
     def add_new_node_by_type(self, type_: str, x: int, y: int, width: int, height: int) -> "RPGraphElement":
         """Adds a new node to the diagram by type.
@@ -190,7 +189,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::addNewNodeByType(java.lang.String type, int x, int y, int width, int height)
         """
-        return cast("RPGraphElement", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewNodeByType(type_, x, y, width, height))))
+        return cast("RPGraphElement", self.wrap(self.call_com(lambda: self._com.addNewNodeByType(type_, x, y, width, height))))
 
     def add_new_node_for_element(self, element: IRPModelElement, x: int, y: int, width: int, height: int) -> "RPGraphElement":
         """Adds a new node for the specified element.
@@ -208,7 +207,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::addNewNodeForElement(com.telelogic.rhapsody.core.IRPModelElement element, int x, int y, int width, int height)
         """
-        return cast("RPGraphElement", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewNodeForElement(element._com, x, y, width, height))))
+        return cast("RPGraphElement", self.wrap(self.call_com(lambda: self._com.addNewNodeForElement(element._com, x, y, width, height))))
 
     def create_diagram_view(self, name: str) -> "RPGraphElement":
         """Creates a diagram view with the specified name.
@@ -222,7 +221,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::createDiagramView(java.lang.String name)
         """
-        return cast("RPGraphElement", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.createDiagramView(name))))
+        return cast("RPGraphElement", self.wrap(self.call_com(lambda: self._com.createDiagramView(name))))
 
     def get_diagram_view_of(self, name: str) -> Optional["RPGraphElement"]:
         """Returns the diagram view with the specified name.
@@ -236,8 +235,8 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::getDiagramViewOf(java.lang.String name)
         """
-        result = AbstractRPModelElement.call_com(lambda: self._com.getDiagramViewOf(name))
-        return cast("RPGraphElement", AbstractRPModelElement.wrap(result)) if result else None
+        result = self.call_com(lambda: self._com.getDiagramViewOf(name))
+        return cast("RPGraphElement", self.wrap(result)) if result else None
 
     def get_diagram_views(self) -> IRPCollection:
         """Returns the diagram views for this diagram.
@@ -248,7 +247,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::getDiagramViews()
         """
-        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getDiagramViews()))
+        return IRPCollection(self.call_com(lambda: self._com.getDiagramViews()))
 
     def is_diagram_view(self) -> int:
         """Checks if this is a diagram view.
@@ -259,7 +258,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::isDiagramView()
         """
-        return int(AbstractRPModelElement.call_com(lambda: self._com.isDiagramView()))
+        return int(self.call_com(lambda: self._com.isDiagramView()))
 
     def open_diagram_view(self, name: str) -> None:
         """Opens the diagram view with the specified name.
@@ -270,7 +269,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::openDiagramView(java.lang.String name)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.openDiagramView(name))
+        self.call_com(lambda: self._com.openDiagramView(name))
 
     def rearrange_ports(self) -> None:
         """Rearranges the ports on the diagram.
@@ -278,7 +277,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::rearrangePorts()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.rearrangePorts())
+        self.call_com(lambda: self._com.rearrangePorts())
 
     def set_custom_views(self, views: IRPCollection) -> None:
         """Sets the custom views for this diagram.
@@ -289,7 +288,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::setCustomViews(com.telelogic.rhapsody.core.IRPCollection views)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setCustomViews(views._com))
+        self.call_com(lambda: self._com.setCustomViews(views._com))
 
     def update_view_on_server(self) -> None:
         """Updates the view on the server.
@@ -297,7 +296,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::updateViewOnServer()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.updateViewOnServer())
+        self.call_com(lambda: self._com.updateViewOnServer())
 
     def complete_relations(self) -> None:
         """Completes the relations in the diagram.
@@ -305,7 +304,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::completeRelations()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.completeRelations())
+        self.call_com(lambda: self._com.completeRelations())
 
     def get_elements_in_diagram(self) -> IRPCollection:
         """Returns the model elements in this diagram.
@@ -316,7 +315,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::getElementsInDiagram()
         """
-        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getElementsInDiagram()))
+        return IRPCollection(self.call_com(lambda: self._com.getElementsInDiagram()))
 
     def get_graphical_elements(self) -> IRPCollection:
         """Returns the graphical elements in this diagram.
@@ -327,7 +326,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::getGraphicalElements()
         """
-        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getGraphicalElements()))
+        return IRPCollection(self.call_com(lambda: self._com.getGraphicalElements()))
 
     def get_last_visualization_modified_time(self) -> str:
         """Returns the last visualization modified time.
@@ -338,7 +337,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::getLastVisualizationModifiedTime()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getLastVisualizationModifiedTime", "lastVisualizationModifiedTime"))
+        return str(self._get_method_or_property(self._com, "getLastVisualizationModifiedTime", "lastVisualizationModifiedTime"))
 
     def get_picture(self) -> "RPGraphElement":
         """Returns the picture for this diagram.
@@ -349,7 +348,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::getPicture()
         """
-        return cast("RPGraphElement", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.getPicture())))
+        return cast("RPGraphElement", self.wrap(self.call_com(lambda: self._com.getPicture())))
 
     def get_picture_as(self, format_: str) -> "RPGraphElement":
         """Returns the picture in the specified format.
@@ -363,7 +362,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::getPictureAs(java.lang.String format)
         """
-        return cast("RPGraphElement", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.getPictureAs(format_))))
+        return cast("RPGraphElement", self.wrap(self.call_com(lambda: self._com.getPictureAs(format_))))
 
     def get_picture_as_divided_metafiles(self) -> IRPCollection:
         """Returns the picture as divided metafiles.
@@ -374,7 +373,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::getPictureAsDividedMetafiles()
         """
-        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getPictureAsDividedMetafiles()))
+        return IRPCollection(self.call_com(lambda: self._com.getPictureAsDividedMetafiles()))
 
     def get_picture_ex(self, x: int, y: int, width: int, height: int) -> "RPGraphElement":
         """Returns a picture for the specified region.
@@ -391,7 +390,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::getPictureEx(int x, int y, int width, int height)
         """
-        return cast("RPGraphElement", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.getPictureEx(x, y, width, height))))
+        return cast("RPGraphElement", self.wrap(self.call_com(lambda: self._com.getPictureEx(x, y, width, height))))
 
     def get_pictures_with_image_map(self, first_file_name: str, diagram_map: "IRPCollection") -> "IRPCollection":
         """Saves the diagram as EMF file(s) and populates the given collection with image-map info.
@@ -418,7 +417,7 @@ class RPDiagram(IRPUnit):
             com.telelogic.rhapsody.core.IRPDiagram::getPicturesWithImageMap(
                 java.lang.String firstFileName, com.telelogic.rhapsody.core.IRPCollection diagrammap)
         """
-        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getPicturesWithImageMap(first_file_name, diagram_map._com)))
+        return IRPCollection(self.call_com(lambda: self._com.getPicturesWithImageMap(first_file_name, diagram_map._com)))
 
     def is_open(self) -> int:
         """Checks if the diagram is open.
@@ -429,7 +428,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::isOpen()
         """
-        return int(AbstractRPModelElement.call_com(lambda: self._com.isOpen()))
+        return int(self.call_com(lambda: self._com.isOpen()))
 
     def is_show_diagram_frame(self) -> int:
         """Checks if the diagram frame is shown.
@@ -440,7 +439,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::isShowDiagramFrame()
         """
-        return int(AbstractRPModelElement.call_com(lambda: self._com.isShowDiagramFrame()))
+        return int(self.call_com(lambda: self._com.isShowDiagramFrame()))
 
     def open_diagram(self) -> None:
         """Opens the diagram.
@@ -448,7 +447,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::openDiagram()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.openDiagram())
+        self.call_com(lambda: self._com.openDiagram())
 
     def populate_diagram(self) -> None:
         """Populates the diagram.
@@ -456,7 +455,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::populateDiagram()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.populateDiagram())
+        self.call_com(lambda: self._com.populateDiagram())
 
     def remove_graph_elements(self, elements: IRPCollection) -> None:
         """Removes the specified graph elements from the diagram.
@@ -467,7 +466,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::removeGraphElements(com.telelogic.rhapsody.core.IRPCollection elements)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.removeGraphElements(elements._com))
+        self.call_com(lambda: self._com.removeGraphElements(elements._com))
 
     def set_show_diagram_frame(self, show: int) -> None:
         """Sets whether to show the diagram frame.
@@ -478,7 +477,7 @@ class RPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::setShowDiagramFrame(int show)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setShowDiagramFrame(show))
+        self.call_com(lambda: self._com.setShowDiagramFrame(show))
 
 
-AbstractRPModelElement.register_wrapper("ActivityDiagram", RPDiagram)
+IRPModelElement.register_wrapper("ActivityDiagram", RPDiagram)

@@ -11,7 +11,6 @@ from typing import cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 
 
 class AddToModelMode(IntEnum):
@@ -76,7 +75,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::copyToAnotherProject(com.telelogic.rhapsody.core.IRPModelElement parentInTarget)
         """
-        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.copyToAnotherProject(parent_in_target._com))))
+        return cast(IRPModelElement, self.wrap(self.call_com(lambda: self._com.copyToAnotherProject(parent_in_target._com))))
 
     def get_add_to_model_mode(self) -> int:
         """Returns an indication of how the unit was added to the model.
@@ -91,7 +90,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::getAddToModelMode()
         """
-        return int(AbstractRPModelElement.call_com(lambda: self._com.getAddToModelMode()))
+        return int(self.call_com(lambda: self._com.getAddToModelMode()))
 
     def get_cm_header(self) -> str:
         """Returns the header used by the Configuration Management tool for the unit.
@@ -102,7 +101,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::getCMHeader()
         """
-        return str(AbstractRPModelElement.get_com_property(self._com, "CMHeader"))
+        return str(self.get_com_property(self._com, "CMHeader"))
 
     def get_cm_state(self) -> int:
         """Returns the configuration management state of the unit.
@@ -113,7 +112,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::getCMState()
         """
-        return int(AbstractRPModelElement.call_com(lambda: self._com.getCMState()))
+        return int(self.call_com(lambda: self._com.getCMState()))
 
     def get_current_directory(self) -> str:
         """Gets the name of the directory that contains the file used to store the unit.
@@ -127,7 +126,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::getCurrentDirectory()
         """
-        return str(AbstractRPModelElement.get_com_property(self._com, "currentDirectory"))
+        return str(self.get_com_property(self._com, "currentDirectory"))
 
     def get_filename(self) -> str:
         """Gets the name of the file used to store the unit.
@@ -140,7 +139,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::getFilename()
         """
-        return str(AbstractRPModelElement.get_com_property(self._com, "filename"))
+        return str(self.get_com_property(self._com, "filename"))
 
     def get_include_in_next_load(self) -> int:
         """Checks whether the unit is going to be loaded the next time the model is loaded.
@@ -152,7 +151,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::getIncludeInNextLoad()
         """
-        return int(AbstractRPModelElement.get_com_property(self._com, "includeInNextLoad"))
+        return int(self.get_com_property(self._com, "includeInNextLoad"))
 
     def get_is_stub(self) -> int:
         """Checks whether the unit is currently unloaded.
@@ -163,7 +162,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::getIsStub()
         """
-        return int(AbstractRPModelElement.get_com_property(self._com, "isStub"))
+        return int(self.get_com_property(self._com, "isStub"))
 
     def get_language(self) -> str:
         """Gets the language of the unit.
@@ -174,7 +173,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::getLanguage()
         """
-        return str(AbstractRPModelElement.call_com(lambda: self._com.getLanguage()))
+        return str(self.call_com(lambda: self._com.getLanguage()))
 
     def get_last_modified_time(self) -> str:
         """Returns the time at which the file representing the unit was last modified.
@@ -185,7 +184,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::getLastModifiedTime()
         """
-        return str(AbstractRPModelElement.call_com(lambda: self._com.getLastModifiedTime()))
+        return str(self.call_com(lambda: self._com.getLastModifiedTime()))
 
     def get_nested_save_units(self) -> IRPCollection:
         """Returns a collection of any sub-elements of the unit that were saved as individual files.
@@ -196,7 +195,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::getNestedSaveUnits()
         """
-        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getNestedSaveUnits()))
+        return IRPCollection(self.call_com(lambda: self._com.getNestedSaveUnits()))
 
     def get_nested_save_units_count(self) -> int:
         """Returns the number of sub-elements of the unit that were saved as individual files.
@@ -207,7 +206,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::getNestedSaveUnitsCount()
         """
-        return int(AbstractRPModelElement.call_com(lambda: self._com.getNestedSaveUnitsCount()))
+        return int(self.call_com(lambda: self._com.getNestedSaveUnitsCount()))
 
     def get_structure_diagrams(self) -> IRPCollection:
         """Returns a collection of any structure diagrams that are sub-elements of the unit.
@@ -220,7 +219,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::getStructureDiagrams()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "structureDiagrams"))
+        return IRPCollection(self.get_com_property(self._com, "structureDiagrams"))
 
     def get_unit_path(self, b_full_path: int) -> str:
         """Return the unit path, including the filename.
@@ -245,7 +244,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::isReadOnly()
         """
-        return bool(AbstractRPModelElement.call_com(lambda: self._com.isReadOnly()))
+        return bool(self.call_com(lambda: self._com.isReadOnly()))
 
     def is_reference_unit(self) -> int:
         """Checks whether the unit was added to the model as a reference.
@@ -256,7 +255,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::isReferenceUnit()
         """
-        return int(AbstractRPModelElement.call_com(lambda: self._com.isReferenceUnit()))
+        return int(self.call_com(lambda: self._com.isReferenceUnit()))
 
     def is_separate_save_unit(self) -> int:
         """Checks whether the current IRPUnit object is saved in its own file.
@@ -271,7 +270,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::isSeparateSaveUnit()
         """
-        return int(AbstractRPModelElement.call_com(lambda: self._com.isSeparateSaveUnit()))
+        return int(self.call_com(lambda: self._com.isSeparateSaveUnit()))
 
     def load(self, with_subs: int) -> IRPModelElement:
         """Loads the unit.
@@ -286,7 +285,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::load(int withSubs)
         """
-        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.load(with_subs))))
+        return cast(IRPModelElement, self.wrap(self.call_com(lambda: self._com.load(with_subs))))
 
     def move_to_another_project_leave_a_reference(self, parent_in_target: IRPModelElement) -> IRPModelElement:
         """Moves the unit to a different project, and adds a reference to it in the original project.
@@ -301,7 +300,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::moveToAnotherProjectLeaveAReference(com.telelogic.rhapsody.core.IRPModelElement parentInTarget)
         """
-        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.moveToAnotherProjectLeaveAReference(parent_in_target._com))))
+        return cast(IRPModelElement, self.wrap(self.call_com(lambda: self._com.moveToAnotherProjectLeaveAReference(parent_in_target._com))))
 
     def reference_to_another_project(self, parent_in_target: IRPModelElement) -> IRPModelElement:
         """Creates a reference to the unit in a different project.
@@ -316,7 +315,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::referenceToAnotherProject(com.telelogic.rhapsody.core.IRPModelElement parentInTarget)
         """
-        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.referenceToAnotherProject(parent_in_target._com))))
+        return cast(IRPModelElement, self.wrap(self.call_com(lambda: self._com.referenceToAnotherProject(parent_in_target._com))))
 
     def save(self, with_subs: int = 0) -> None:
         """Saves the unit.
@@ -327,7 +326,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::save(int)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.save(with_subs))
+        self.call_com(lambda: self._com.save(with_subs))
 
     def set_cm_header(self, cm_header: str) -> None:
         """Sets the Configuration Management tool header for the unit.
@@ -338,7 +337,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::setCMHeader(java.lang.String cmHeader)
         """
-        AbstractRPModelElement.set_com_property(self._com, "CMHeader", cm_header)
+        self.set_com_property(self._com, "CMHeader", cm_header)
 
     def set_filename(self, filename: str) -> None:
         """Specifies the name that should be used for the file representing the unit.
@@ -353,7 +352,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::setFilename(java.lang.String filename)
         """
-        AbstractRPModelElement.set_com_property(self._com, "filename", filename)
+        self.set_com_property(self._com, "filename", filename)
 
     def set_include_in_next_load(self, include_in_next_load: int) -> None:
         """Toggles whether the unit is going to be loaded the next time the model is loaded.
@@ -365,7 +364,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::setIncludeInNextLoad(int)
         """
-        AbstractRPModelElement.set_com_property(self._com, "includeInNextLoad", include_in_next_load)
+        self.set_com_property(self._com, "includeInNextLoad", include_in_next_load)
 
     def set_language(self, new_language: str, recursive: int) -> None:
         """Specifies the programming language that should be used when code is generated for the unit.
@@ -381,7 +380,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::setLanguage(java.lang.String newLanguage, int recursive)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setLanguage(new_language, recursive))
+        self.call_com(lambda: self._com.setLanguage(new_language, recursive))
 
     def set_read_only(self, read_only: bool) -> None:
         """Toggles the read-only status of the file used to store the unit.
@@ -393,7 +392,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::setReadOnly(int)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setReadOnly(1 if read_only else 0))
+        self.call_com(lambda: self._com.setReadOnly(1 if read_only else 0))
 
     def set_separate_save_unit(self, p_val: int) -> None:
         """Specifies whether the current IRPUnit object should be saved in its own file.
@@ -405,7 +404,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::setSeparateSaveUnit(int)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setSeparateSaveUnit(p_val))
+        self.call_com(lambda: self._com.setSeparateSaveUnit(p_val))
 
     def set_unit_path(self, new_path: str) -> None:
         """Specifies the path that should be used to locate the unit when it is added to a model "By Reference".
@@ -417,7 +416,7 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::setUnitPath(java.lang.String newPath)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setUnitPath(new_path))
+        self.call_com(lambda: self._com.setUnitPath(new_path))
 
     def unload(self) -> None:
         """Unloads the unit.
@@ -425,4 +424,4 @@ class IRPUnit(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPUnit::unload()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.unload())
+        self.call_com(lambda: self._com.unload())

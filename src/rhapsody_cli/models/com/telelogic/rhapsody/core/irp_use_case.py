@@ -11,7 +11,6 @@ from typing import TYPE_CHECKING, cast
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.diagrams import RPDiagram
@@ -52,7 +51,7 @@ class IRPUseCase(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPUseCase::addExtensionPoint(java.lang.String entryPoint)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.addExtensionPoint(entry_point))
+        self.call_com(lambda: self._com.addExtensionPoint(entry_point))
 
     def get_extension_points(self) -> IRPCollection:
         """Returns all extension points defined on the use case.
@@ -66,7 +65,7 @@ class IRPUseCase(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPUseCase::getExtensionPoints()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "extensionPoints"))
+        return IRPCollection(self.get_com_property(self._com, "extensionPoints"))
 
     def get_entry_points(self) -> IRPCollection:
         """Returns all entry points defined on the use case.
@@ -80,7 +79,7 @@ class IRPUseCase(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPUseCase::getEntryPoints()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "entryPoints"))
+        return IRPCollection(self.get_com_property(self._com, "entryPoints"))
 
     def get_describing_diagrams(self) -> IRPCollection:
         """Returns all diagrams that describe this use case.
@@ -94,7 +93,7 @@ class IRPUseCase(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPUseCase::getDescribingDiagrams()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "describingDiagrams"))
+        return IRPCollection(self.get_com_property(self._com, "describingDiagrams"))
 
     def add_describing_diagram(self, diagram: RPDiagram) -> None:
         """Adds a diagram to describe this use case.
@@ -105,7 +104,7 @@ class IRPUseCase(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPUseCase::addDescribingDiagram(com.telelogic.rhapsody.core.IRPDiagram diagram)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.addDescribingDiagram(diagram._com))
+        self.call_com(lambda: self._com.addDescribingDiagram(diagram._com))
 
     def add_event_reception_with_event(self, name: str, event: RPEvent) -> RPEventReception:
         """Add an event reception with the specified event.
@@ -131,7 +130,7 @@ class IRPUseCase(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPUseCase::deleteDescribingDiagram(com.telelogic.rhapsody.core.IRPDiagram diagram)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteDescribingDiagram(diagram._com))
+        self.call_com(lambda: self._com.deleteDescribingDiagram(diagram._com))
 
     def delete_entry_point(self, entry_point: str) -> None:
         """Deletes an entry point from the use case.
@@ -142,7 +141,7 @@ class IRPUseCase(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPUseCase::deleteEntryPoint(java.lang.String entryPoint)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteEntryPoint(entry_point))
+        self.call_com(lambda: self._com.deleteEntryPoint(entry_point))
 
     def delete_extension_point(self, extension_point: str) -> None:
         """Deletes an extension point from the use case.
@@ -153,7 +152,7 @@ class IRPUseCase(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPUseCase::deleteExtensionPoint(java.lang.String extensionPoint)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteExtensionPoint(extension_point))
+        self.call_com(lambda: self._com.deleteExtensionPoint(extension_point))
 
     def find_entry_point(self, name: str) -> IRPModelElement | None:
         """Finds an entry point by name.
@@ -167,7 +166,7 @@ class IRPUseCase(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPUseCase::findEntryPoint(java.lang.String name)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findEntryPoint(name)))
+        return self.wrap(self.call_com(lambda: self._com.findEntryPoint(name)))
 
     def find_extension_point(self, name: str) -> IRPModelElement | None:
         """Finds an extension point by name.
@@ -181,7 +180,7 @@ class IRPUseCase(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPUseCase::findExtensionPoint(java.lang.String name)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findExtensionPoint(name)))
+        return self.wrap(self.call_com(lambda: self._com.findExtensionPoint(name)))
 
     def get_describing_diagram(self, name: str) -> RPDiagram:
         """Returns a specific describing diagram by name.
@@ -197,7 +196,7 @@ class IRPUseCase(IRPClassifier):
         """
         from rhapsody_cli.models.elements.diagrams.model_diagrams import RPDiagram
 
-        return cast(RPDiagram, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.getDescribingDiagram(name))))
+        return cast(RPDiagram, self.wrap(self.call_com(lambda: self._com.getDescribingDiagram(name))))
 
     def get_is_behavior_overriden(self) -> int:
         """Checks whether the behavior of this use case is overridden.
@@ -208,7 +207,7 @@ class IRPUseCase(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPUseCase::getIsBehaviorOverriden()
         """
-        return int(AbstractRPModelElement.get_com_property(self._com, "isBehaviorOverriden"))
+        return int(self.get_com_property(self._com, "isBehaviorOverriden"))
 
     def set_is_behavior_overriden(self, is_overriden: int) -> None:
         """Sets whether the behavior of this use case is overridden.
@@ -249,4 +248,4 @@ class IRPUseCase(IRPClassifier):
         raise NotImplementedError("updateContainedDiagramsOnServer is not exposed in the Rhapsody COM automation type library.")
 
 
-AbstractRPModelElement.register_wrapper("UseCase", IRPUseCase)
+IRPModelElement.register_wrapper("UseCase", IRPUseCase)

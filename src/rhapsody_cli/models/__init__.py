@@ -7,10 +7,10 @@ from rhapsody_cli.models import (
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_unit import IRPUnit
-from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.core import ComHelper
 
 __all__ = [
-    "AbstractRPModelElement",
+    "ComHelper",
     "IRPCollection",
     "IRPModelElement",
     "IRPUnit",

@@ -3,8 +3,8 @@
 import pytest
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_use_case import IRPUseCase
-from rhapsody_cli.models.core import AbstractRPModelElement
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
@@ -62,7 +62,7 @@ def test_usecase_get_describing_diagrams_returns_collection() -> None:
 def test_usecase_is_registered_for_meta_class_usecase() -> None:
     fake = make_fake_element("UseCase", properties={"name": "Login"})
 
-    wrapped = AbstractRPModelElement.wrap(fake)
+    wrapped = IRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, IRPUseCase)
 

@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, cast
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import IRPInterfaceItem
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.interactions import (
     RPDestructionEvent,
     RPEvent,
@@ -38,7 +37,7 @@ class TestRPEvent:
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("Event", properties={"name": "Evt1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPEvent)
 
     def test_get_base_event_wraps_result(self) -> None:
@@ -83,7 +82,7 @@ class TestRPEventReception:
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("EventReception", properties={"name": "ER1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPEventReception)
 
     def test_get_event_wraps_result(self) -> None:
@@ -112,7 +111,7 @@ class TestRPExecutionOccurrence:
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("ExecutionOccurrence", properties={"name": "EO1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPExecutionOccurrence)
 
     def test_get_message_wraps_result(self) -> None:
@@ -133,7 +132,7 @@ class TestRPGuard:
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("Guard", properties={"name": "G1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPGuard)
 
     def test_get_body_returns_string(self) -> None:
@@ -158,7 +157,7 @@ class TestRPInteractionOccurrence:
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("InteractionOccurrence", properties={"name": "IO1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPInteractionOccurrence)
 
     def test_get_message_points_returns_collection(self) -> None:
@@ -195,7 +194,7 @@ class TestRPInteractionOperand:
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("InteractionOperand", properties={"name": "IOp1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPInteractionOperand)
 
     def test_get_contained_messages_returns_collection(self) -> None:
@@ -228,7 +227,7 @@ class TestRPInteractionOperator:
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("InteractionOperator", properties={"name": "Alt"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPInteractionOperator)
 
     def test_get_interaction_operands_returns_collection(self) -> None:
@@ -261,7 +260,7 @@ class TestRPMessage:
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("Message", properties={"name": "Msg1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPMessage)
 
     def test_add_source_execution_occurrence_wraps_result(self) -> None:
@@ -524,7 +523,7 @@ class TestRPTransition:
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("Transition", properties={"name": "T1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPTransition)
 
     def test_get_inherits_from_wraps_result(self) -> None:
@@ -712,7 +711,7 @@ class TestRPTrigger:
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("Trigger", properties={"name": "Trg1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPTrigger)
 
     def test_get_body_returns_string(self) -> None:
@@ -757,5 +756,5 @@ class TestRPDestructionEvent:
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("DestructionEvent", properties={"name": "DE1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPDestructionEvent)

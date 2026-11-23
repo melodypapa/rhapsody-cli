@@ -2,7 +2,6 @@
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.common import RPSysMLPort
 from tests.unit.models.fakes import make_fake_element
 
@@ -16,7 +15,7 @@ class TestRPSysMLPort:
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("SysMLPort", properties={"name": "P1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPSysMLPort)
 
     def test_get_is_reversed_returns_int(self) -> None:

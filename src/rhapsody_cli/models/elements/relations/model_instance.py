@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.relations.model_relation import RPRelation
 
 if TYPE_CHECKING:
@@ -46,7 +45,7 @@ class RPInstance(RPRelation):
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::getAllNestedElements()
         """
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getAllNestedElements", "allNestedElements"))
+        return IRPCollection(self._get_method_or_property(self._com, "getAllNestedElements", "allNestedElements"))
 
     def get_attribute_value(self, attribute_name: str) -> str:
         """Gets the value of an attribute on the instance.
@@ -63,7 +62,7 @@ class RPInstance(RPRelation):
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::getAttributeValue(java.lang.String attName)
         """
-        return AbstractRPModelElement.call_com(lambda: str(self._com.getAttributeValue(attribute_name)))
+        return self.call_com(lambda: str(self._com.getAttributeValue(attribute_name)))
 
     def set_attribute_value(self, attribute_name: str, attribute_value: str) -> None:
         """Sets the value of an attribute on the instance.
@@ -78,7 +77,7 @@ class RPInstance(RPRelation):
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::setAttributeValue(java.lang.String attName, java.lang.String attValue)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setAttributeValue(attribute_name, attribute_value))
+        self.call_com(lambda: self._com.setAttributeValue(attribute_name, attribute_value))
 
     def get_in_links(self) -> IRPCollection:
         """Returns all incoming links to this instance.
@@ -92,7 +91,7 @@ class RPInstance(RPRelation):
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::getInLinks()
         """
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getInLinks", "inLinks"))
+        return IRPCollection(self._get_method_or_property(self._com, "getInLinks", "inLinks"))
 
     def get_out_links(self) -> IRPCollection:
         """Returns all outgoing links from this instance.
@@ -106,7 +105,7 @@ class RPInstance(RPRelation):
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::getOutLinks()
         """
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getOutLinks", "outLinks"))
+        return IRPCollection(self._get_method_or_property(self._com, "getOutLinks", "outLinks"))
 
     def add_relation_to_the_whole(self, rel_name: str) -> "RPRelation":
         """Adds a relation to the whole for this instance.
@@ -123,7 +122,7 @@ class RPInstance(RPRelation):
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::addRelationToTheWhole(java.lang.String relName)
         """
-        return cast("RPRelation", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addRelationToTheWhole(rel_name))))
+        return cast("RPRelation", self.wrap(self.call_com(lambda: self._com.addRelationToTheWhole(rel_name))))
 
     def get_instantiated_by(self) -> "IRPOperation":
         """Returns the operation that instantiates this instance.
@@ -137,7 +136,7 @@ class RPInstance(RPRelation):
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::getInstantiatedBy()
         """
-        return cast("IRPOperation", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getInstantiatedBy", "instantiatedBy")))
+        return cast("IRPOperation", self.wrap(self._get_method_or_property(self._com, "getInstantiatedBy", "instantiatedBy")))
 
     def get_list_of_initializer_arguments(self) -> IRPCollection:
         """Returns the list of initializer arguments for this instance.
@@ -151,7 +150,7 @@ class RPInstance(RPRelation):
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::getListOfInitializerArguments()
         """
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getListOfInitializerArguments", "listOfInitializerArguments"))
+        return IRPCollection(self._get_method_or_property(self._com, "getListOfInitializerArguments", "listOfInitializerArguments"))
 
     def set_explicit(self) -> None:
         """Sets the instance to be explicit.
@@ -162,7 +161,7 @@ class RPInstance(RPRelation):
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::setExplicit()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setExplicit())
+        self.call_com(lambda: self._com.setExplicit())
 
     def set_implicit(self) -> None:
         """Sets the instance to be implicit.
@@ -173,7 +172,7 @@ class RPInstance(RPRelation):
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::setImplicit()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setImplicit())
+        self.call_com(lambda: self._com.setImplicit())
 
     def set_initializer_argument_value(self, arg_name: str, arg_value: str) -> None:
         """Sets the value of an initializer argument on the instance.
@@ -188,7 +187,7 @@ class RPInstance(RPRelation):
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::setInitializerArgumentValue(java.lang.String argName, java.lang.String argValue)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setInitializerArgumentValue(arg_name, arg_value))
+        self.call_com(lambda: self._com.setInitializerArgumentValue(arg_name, arg_value))
 
     def set_instantiated_by(self, instantiated_by: IRPModelElement) -> None:
         """Sets the operation that instantiates this instance.
@@ -202,7 +201,7 @@ class RPInstance(RPRelation):
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::setInstantiatedBy(com.telelogic.rhapsody.core.IRPOperation instantiatedBy)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setInstantiatedBy", "instantiatedBy", instantiated_by._com)
+        self._set_method_or_property(self._com, "setInstantiatedBy", "instantiatedBy", instantiated_by._com)
 
     def update_contained_diagrams_on_server(self, enforce_update: int) -> int:
         """Updates the views on the Rhapsody Model Manager server for all diagrams.
@@ -220,10 +219,10 @@ class RPInstance(RPRelation):
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::updateContainedDiagramsOnServer(int enforceUpdate)
         """
-        return int(AbstractRPModelElement.call_com(lambda: self._com.updateContainedDiagramsOnServer(enforce_update)))
+        return int(self.call_com(lambda: self._com.updateContainedDiagramsOnServer(enforce_update)))
 
 
-AbstractRPModelElement.register_wrapper("Instance", RPInstance)
+IRPModelElement.register_wrapper("Instance", RPInstance)
 # Also register "Object" metaClass (used in live Rhapsody for instance elements)
 # See: https://github.com/melodypapa/rhapsody-cli/issues/96
-AbstractRPModelElement.register_wrapper("Object", RPInstance)
+IRPModelElement.register_wrapper("Object", RPInstance)

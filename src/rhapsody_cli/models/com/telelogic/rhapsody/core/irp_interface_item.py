@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument import IRPArgument
@@ -51,7 +51,7 @@ class IRPInterfaceItem(IRPClassifier):
         """
         from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument import IRPArgument
 
-        return cast(IRPArgument, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addArgument(new_val))))
+        return cast(IRPArgument, self.wrap(self.call_com(lambda: self._com.addArgument(new_val))))
 
     def add_argument_before_position(self, new_val: str, pos: int) -> IRPArgument:
         """Adds a new argument at the specified position in the argument list.
@@ -72,7 +72,7 @@ class IRPInterfaceItem(IRPClassifier):
         """
         from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument import IRPArgument
 
-        return cast(IRPArgument, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addArgumentBeforePosition(new_val, pos))))
+        return cast(IRPArgument, self.wrap(self.call_com(lambda: self._com.addArgumentBeforePosition(new_val, pos))))
 
     def get_arguments(self) -> IRPCollection:
         """Returns all the arguments for the operation.
@@ -83,7 +83,7 @@ class IRPInterfaceItem(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPInterfaceItem::getArguments()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "arguments"))
+        return IRPCollection(self.get_com_property(self._com, "arguments"))
 
     def get_signature(self) -> str:
         """Returns the signature of the operation.
@@ -94,7 +94,7 @@ class IRPInterfaceItem(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPInterfaceItem::getSignature()
         """
-        return str(AbstractRPModelElement.get_com_property(self._com, "signature"))
+        return str(self.get_com_property(self._com, "signature"))
 
     def get_signature_no_arg_names(self) -> str:
         """Returns the signature of the operation without the argument names.
@@ -105,7 +105,7 @@ class IRPInterfaceItem(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPInterfaceItem::getSignatureNoArgNames()
         """
-        return str(AbstractRPModelElement.call_com(lambda: self._com.getSignatureNoArgNames()))
+        return str(self.call_com(lambda: self._com.getSignatureNoArgNames()))
 
     def get_signature_no_arg_types(self) -> str:
         """Returns the signature of the operation without the argument types.
@@ -116,7 +116,7 @@ class IRPInterfaceItem(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPInterfaceItem::getSignatureNoArgTypes()
         """
-        return str(AbstractRPModelElement.call_com(lambda: self._com.getSignatureNoArgTypes()))
+        return str(self.call_com(lambda: self._com.getSignatureNoArgTypes()))
 
     def match_on_signature(self, item: IRPInterfaceItem) -> bool:
         """Compares the signature of this operation with another operation's signature.
@@ -134,7 +134,7 @@ class IRPInterfaceItem(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPInterfaceItem::matchOnSignature(com.telelogic.rhapsody.core.IRPInterfaceItem Item)
         """
-        return bool(AbstractRPModelElement.call_com(lambda: self._com.matchOnSignature(item._com)))
+        return bool(self.call_com(lambda: self._com.matchOnSignature(item._com)))
 
 
-AbstractRPModelElement.register_wrapper("InterfaceItem", IRPInterfaceItem)
+IRPModelElement.register_wrapper("InterfaceItem", IRPInterfaceItem)

@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.common.model_misc import RPEnumerationLiteral
@@ -77,7 +77,7 @@ class IRPType(IRPClassifier):
         """
         from rhapsody_cli.models.elements.common.model_misc import RPEnumerationLiteral
 
-        return cast(RPEnumerationLiteral, AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addEnumerationLiteral(name))))
+        return cast(RPEnumerationLiteral, self.wrap(self.call_com(lambda: self._com.addEnumerationLiteral(name))))
 
     def delete_enumeration_literal(self, literal: RPEnumerationLiteral) -> None:
         """Deletes the specified enumeration literal from this type.
@@ -105,7 +105,7 @@ class IRPType(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPType::getDeclaration()
         """
-        return str(AbstractRPModelElement.get_com_property(self._com, "declaration"))
+        return str(self.get_com_property(self._com, "declaration"))
 
     def get_enumeration_literals(self) -> IRPCollection:
         """Returns the enumeration literals of the type.
@@ -119,7 +119,7 @@ class IRPType(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPType::getEnumerationLiterals()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "enumerationLiterals"))
+        return IRPCollection(self.get_com_property(self._com, "enumerationLiterals"))
 
     def get_is_predefined(self) -> int:
         """Returns whether the type is predefined.
@@ -133,7 +133,7 @@ class IRPType(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPType::getIsPredefined()
         """
-        return int(AbstractRPModelElement.get_com_property(self._com, "isPredefined"))
+        return int(self.get_com_property(self._com, "isPredefined"))
 
     def get_is_typedef(self) -> int:
         """Returns whether the type is a typedef.
@@ -147,7 +147,7 @@ class IRPType(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPType::getIsTypedef()
         """
-        return int(AbstractRPModelElement.get_com_property(self._com, "isTypedef"))
+        return int(self.get_com_property(self._com, "isTypedef"))
 
     def get_is_typedef_constant(self) -> int:
         """Returns whether the typedef is a constant.
@@ -161,7 +161,7 @@ class IRPType(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPType::getIsTypedefConstant()
         """
-        return int(AbstractRPModelElement.get_com_property(self._com, "isTypedefConstant"))
+        return int(self.get_com_property(self._com, "isTypedefConstant"))
 
     def get_is_typedef_ordered(self) -> int:
         """Returns whether the typedef is ordered.
@@ -175,7 +175,7 @@ class IRPType(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPType::getIsTypedefOrdered()
         """
-        return int(AbstractRPModelElement.get_com_property(self._com, "isTypedefOrdered"))
+        return int(self.get_com_property(self._com, "isTypedefOrdered"))
 
     def get_is_typedef_reference(self) -> int:
         """Returns whether the typedef is a reference.
@@ -189,7 +189,7 @@ class IRPType(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPType::getIsTypedefReference()
         """
-        return int(AbstractRPModelElement.get_com_property(self._com, "isTypedefReference"))
+        return int(self.get_com_property(self._com, "isTypedefReference"))
 
     def get_kind(self) -> str:
         """Returns the kind of the type.
@@ -203,7 +203,7 @@ class IRPType(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPType::getKind()
         """
-        return str(AbstractRPModelElement.get_com_property(self._com, "kind"))
+        return str(self.get_com_property(self._com, "kind"))
 
     def get_typedef_base_type(self) -> IRPClassifier:
         """Returns the base type of the typedef.
@@ -217,7 +217,7 @@ class IRPType(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPType::getTypedefBaseType()
         """
-        return cast(IRPClassifier, AbstractRPModelElement.wrap(AbstractRPModelElement.get_com_property(self._com, "typedefBaseType")))
+        return cast(IRPClassifier, self.wrap(self.get_com_property(self._com, "typedefBaseType")))
 
     def get_typedef_multiplicity(self) -> str:
         """Returns the multiplicity of the typedef.
@@ -231,7 +231,7 @@ class IRPType(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPType::getTypedefMultiplicity()
         """
-        return str(AbstractRPModelElement.get_com_property(self._com, "typedefMultiplicity"))
+        return str(self.get_com_property(self._com, "typedefMultiplicity"))
 
     def is_array(self) -> int:
         """Checks whether the type is an array.
@@ -469,7 +469,7 @@ class IRPType(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPType::setDeclaration(java.lang.String declaration)
         """
-        AbstractRPModelElement.set_com_property(self._com, "declaration", declaration)
+        self.set_com_property(self._com, "declaration", declaration)
 
     def set_is_typedef_constant(self, is_typedef_constant: int) -> None:
         """Sets whether the typedef is a constant.
@@ -484,7 +484,7 @@ class IRPType(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPType::setIsTypedefConstant(int isTypedefConstant)
         """
-        AbstractRPModelElement.set_com_property(self._com, "isTypedefConstant", is_typedef_constant)
+        self.set_com_property(self._com, "isTypedefConstant", is_typedef_constant)
 
     def set_is_typedef_ordered(self, is_typedef_ordered: int) -> None:
         """Sets whether the typedef is ordered.
@@ -499,7 +499,7 @@ class IRPType(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPType::setIsTypedefOrdered(int isTypedefOrdered)
         """
-        AbstractRPModelElement.set_com_property(self._com, "isTypedefOrdered", is_typedef_ordered)
+        self.set_com_property(self._com, "isTypedefOrdered", is_typedef_ordered)
 
     def set_is_typedef_reference(self, is_typedef_reference: int) -> None:
         """Sets whether the typedef is a reference.
@@ -514,7 +514,7 @@ class IRPType(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPType::setIsTypedefReference(int isTypedefReference)
         """
-        AbstractRPModelElement.set_com_property(self._com, "isTypedefReference", is_typedef_reference)
+        self.set_com_property(self._com, "isTypedefReference", is_typedef_reference)
 
     def set_kind(self, kind: str) -> None:
         """Sets the kind of the type.
@@ -528,7 +528,7 @@ class IRPType(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPType::setKind(java.lang.String kind)
         """
-        AbstractRPModelElement.set_com_property(self._com, "kind", kind)
+        self.set_com_property(self._com, "kind", kind)
 
     def set_typedef_base_type(self, typedef_base_type: IRPClassifier) -> None:
         """Sets the base type of the typedef.
@@ -542,7 +542,7 @@ class IRPType(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPType::setTypedefBaseType(com.telelogic.rhapsody.core.IRPClassifier typedefBaseType)
         """
-        AbstractRPModelElement.set_com_property(self._com, "typedefBaseType", typedef_base_type._com)
+        self.set_com_property(self._com, "typedefBaseType", typedef_base_type._com)
 
     def set_typedef_multiplicity(self, typedef_multiplicity: str) -> None:
         """Sets the multiplicity of the typedef.
@@ -556,7 +556,7 @@ class IRPType(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPType::setTypedefMultiplicity(java.lang.String typedefMultiplicity)
         """
-        AbstractRPModelElement.set_com_property(self._com, "typedefMultiplicity", typedef_multiplicity)
+        self.set_com_property(self._com, "typedefMultiplicity", typedef_multiplicity)
 
 
-AbstractRPModelElement.register_wrapper("Type", IRPType)
+IRPModelElement.register_wrapper("Type", IRPType)

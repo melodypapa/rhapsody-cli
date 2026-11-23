@@ -5,7 +5,6 @@ from com.telelogic.rhapsody.core.
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 
 
 class RPAnnotation(IRPUnit):
@@ -37,7 +36,7 @@ class RPAnnotation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPAnnotation::addAnchor(com.telelogic.rhapsody.core.IRPModelElement target)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.addAnchor(target._com))
+        self.call_com(lambda: self._com.addAnchor(target._com))
 
     def get_anchored_by_me(self) -> IRPCollection:
         """Gets the list of model elements that are anchored to the annotation.
@@ -48,7 +47,7 @@ class RPAnnotation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPAnnotation::getAnchoredByMe()
         """
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getAnchoredByMe", "anchoredByMe"))
+        return IRPCollection(self._get_method_or_property(self._com, "getAnchoredByMe", "anchoredByMe"))
 
     def get_body(self) -> str:
         """Gets the text of the specification for the annotation.
@@ -59,7 +58,7 @@ class RPAnnotation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPAnnotation::getBody()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getBody", "body"))
+        return str(self._get_method_or_property(self._com, "getBody", "body"))
 
     def get_specification(self) -> str:
         """Gets the text of the specification for the annotation.
@@ -70,7 +69,7 @@ class RPAnnotation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPAnnotation::getSpecification()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getSpecification", "specification"))
+        return str(self._get_method_or_property(self._com, "getSpecification", "specification"))
 
     def get_specification_rtf(self) -> str:
         """Returns the specification of the annotation in RTF format.
@@ -81,7 +80,7 @@ class RPAnnotation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPAnnotation::getSpecificationRTF()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getSpecificationRTF", "specificationRTF"))
+        return str(self._get_method_or_property(self._com, "getSpecificationRTF", "specificationRTF"))
 
     def is_specification_rtf(self) -> bool:
         """Checks whether the specification is in RTF format.
@@ -92,7 +91,7 @@ class RPAnnotation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPAnnotation::isSpecificationRTF()
         """
-        return bool(AbstractRPModelElement._get_method_or_property(self._com, "isSpecificationRTF", "specificationRTF"))
+        return bool(self._get_method_or_property(self._com, "isSpecificationRTF", "specificationRTF"))
 
     def remove_anchor(self, target: IRPModelElement) -> None:
         """Removes the anchor to the specified model element.
@@ -103,7 +102,7 @@ class RPAnnotation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPAnnotation::removeAnchor(com.telelogic.rhapsody.core.IRPModelElement target)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.removeAnchor(target._com))
+        self.call_com(lambda: self._com.removeAnchor(target._com))
 
     def set_body(self, body: str) -> None:
         """Adds a specification to the annotation.
@@ -114,7 +113,7 @@ class RPAnnotation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPAnnotation::setBody(java.lang.String body)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setBody", "body", body)
+        self._set_method_or_property(self._com, "setBody", "body", body)
 
     def set_specification(self, specification: str) -> None:
         """Adds a specification to the annotation.
@@ -125,7 +124,7 @@ class RPAnnotation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPAnnotation::setSpecification(java.lang.String specification)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setSpecification", "specification", specification)
+        self._set_method_or_property(self._com, "setSpecification", "specification", specification)
 
     def set_specification_rtf(self, specification_rtf: str) -> None:
         """Specifies the RTF string to use for the specification of the annotation.
@@ -136,7 +135,7 @@ class RPAnnotation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPAnnotation::setSpecificationRTF(java.lang.String specificationRTF)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setSpecificationRTF", "specificationRTF", specification_rtf)
+        self._set_method_or_property(self._com, "setSpecificationRTF", "specificationRTF", specification_rtf)
 
 
 class RPRequirement(RPAnnotation):
@@ -157,7 +156,7 @@ class RPRequirement(RPAnnotation):
         Reference:
             com.telelogic.rhapsody.core.IRPRequirement::getRequirementID()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getRequirementID", "requirementID"))
+        return str(self._get_method_or_property(self._com, "getRequirementID", "requirementID"))
 
     def set_requirement_id(self, requirement_id: str) -> None:
         """Sets the ID for the requirement.
@@ -168,8 +167,8 @@ class RPRequirement(RPAnnotation):
         Reference:
             com.telelogic.rhapsody.core.IRPRequirement::setRequirementID(java.lang.String requirementID)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setRequirementID", "requirementID", requirement_id)
+        self._set_method_or_property(self._com, "setRequirementID", "requirementID", requirement_id)
 
 
-AbstractRPModelElement.register_wrapper("Annotation", RPAnnotation)
-AbstractRPModelElement.register_wrapper("Requirement", RPRequirement)
+IRPModelElement.register_wrapper("Annotation", RPAnnotation)
+IRPModelElement.register_wrapper("Requirement", RPRequirement)

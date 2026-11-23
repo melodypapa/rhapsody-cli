@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.elements.relations.model_instance import RPInstance
 
 if TYPE_CHECKING:
@@ -29,7 +29,7 @@ class RPComponentInstance(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPComponentInstance::getComponentType()
         """
-        return cast("RPComponent", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getComponentType())))
+        return cast("RPComponent", self.wrap(self.call_com(lambda: self._com.getComponentType())))
 
     def get_node(self) -> "RPNode":
         """Returns the node containing this component instance.
@@ -40,7 +40,7 @@ class RPComponentInstance(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPComponentInstance::getNode()
         """
-        return cast("RPNode", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getNode())))
+        return cast("RPNode", self.wrap(self.call_com(lambda: self._com.getNode())))
 
     def set_component_type(self, component: "RPComponent") -> None:
         """Sets the component type for this instance.
@@ -54,4 +54,4 @@ class RPComponentInstance(RPInstance):
         self.call_com(lambda: self._com.setComponentType(component._com))
 
 
-AbstractRPModelElement.register_wrapper("ComponentInstance", RPComponentInstance)
+IRPModelElement.register_wrapper("ComponentInstance", RPComponentInstance)

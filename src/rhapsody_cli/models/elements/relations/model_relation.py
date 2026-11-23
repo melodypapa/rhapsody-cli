@@ -6,7 +6,6 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
@@ -65,7 +64,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::addQualifier(com.telelogic.rhapsody.core.IRPModelElement pVal)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.addQualifier(p_val._com))
+        self.call_com(lambda: self._com.addQualifier(p_val._com))
 
     def get_association_class(self) -> "IRPAssociationClass":
         """Returns the association class linked to this relation, if any.
@@ -79,7 +78,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getAssociationClass()
         """
-        return cast("IRPAssociationClass", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getAssociationClass", "associationClass")))
+        return cast("IRPAssociationClass", self.wrap(self._get_method_or_property(self._com, "getAssociationClass", "associationClass")))
 
     def get_inverse(self) -> "RPRelation":
         """Gets the inverse relation for this (bidirectional) relation.
@@ -93,7 +92,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getInverse()
         """
-        return cast(RPRelation, AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getInverse", "inverse")))
+        return cast(RPRelation, self.wrap(self._get_method_or_property(self._com, "getInverse", "inverse")))
 
     def get_is_navigable(self) -> bool:
         """Checks whether the relation is navigable.
@@ -107,7 +106,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getIsNavigable()
         """
-        return bool(AbstractRPModelElement._get_method_or_property(self._com, "getIsNavigable", "isNavigable"))
+        return bool(self._get_method_or_property(self._com, "getIsNavigable", "isNavigable"))
 
     def get_is_symmetric(self) -> bool:
         """Checks whether the relation is symmetric.
@@ -121,7 +120,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getIsSymmetric()
         """
-        return bool(AbstractRPModelElement._get_method_or_property(self._com, "getIsSymmetric", "isSymmetric"))
+        return bool(self._get_method_or_property(self._com, "getIsSymmetric", "isSymmetric"))
 
     def get_multiplicity(self) -> str:
         """Gets the multiplicity of the relation.
@@ -135,7 +134,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getMultiplicity()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getMultiplicity", "multiplicity"))
+        return str(self._get_method_or_property(self._com, "getMultiplicity", "multiplicity"))
 
     def get_object_as_object_type(self) -> "IRPClass":
         """Gets the object's class, treated as the object's type.
@@ -149,7 +148,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getObjectAsObjectType()
         """
-        return cast("IRPClass", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getObjectAsObjectType", "objectAsObjectType")))
+        return cast("IRPClass", self.wrap(self._get_method_or_property(self._com, "getObjectAsObjectType", "objectAsObjectType")))
 
     def get_of_class(self) -> "IRPClassifier":
         """Gets the classifier that owns this relation.
@@ -163,7 +162,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getOfClass()
         """
-        return cast("IRPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getOfClass", "ofClass")))
+        return cast("IRPClassifier", self.wrap(self._get_method_or_property(self._com, "getOfClass", "ofClass")))
 
     def get_other_class(self) -> "IRPClassifier":
         """Gets the class that this class is related to via this relation.
@@ -174,7 +173,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getOtherClass()
         """
-        return cast("IRPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getOtherClass", "otherClass")))
+        return cast("IRPClassifier", self.wrap(self._get_method_or_property(self._com, "getOtherClass", "otherClass")))
 
     def get_qualifier(self) -> str:
         """Gets the qualifier text for the association.
@@ -188,7 +187,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getQualifier()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getQualifier", "qualifier"))
+        return str(self._get_method_or_property(self._com, "getQualifier", "qualifier"))
 
     def get_qualifiers(self) -> IRPCollection:
         """Gets the collection of qualifier model elements for the association.
@@ -202,7 +201,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getQualifiers()
         """
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getQualifiers", "qualifiers"))
+        return IRPCollection(self._get_method_or_property(self._com, "getQualifiers", "qualifiers"))
 
     def get_qualifier_type(self) -> "IRPClassifier":
         """For associations that use qualifiers, returns the type of the qualifier.
@@ -213,7 +212,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getQualifierType()
         """
-        return cast("IRPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getQualifierType", "qualifierType")))
+        return cast("IRPClassifier", self.wrap(self._get_method_or_property(self._com, "getQualifierType", "qualifierType")))
 
     def get_relation_label(self) -> str:
         """Gets the label of the relation.
@@ -227,7 +226,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getRelationLabel()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getRelationLabel", "relationLabel"))
+        return str(self._get_method_or_property(self._com, "getRelationLabel", "relationLabel"))
 
     def get_relation_link_name(self) -> str:
         """Gets the link name of the relation.
@@ -241,7 +240,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getRelationLinkName()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getRelationLinkName", "relationLinkName"))
+        return str(self._get_method_or_property(self._com, "getRelationLinkName", "relationLinkName"))
 
     def get_relation_role_name(self) -> str:
         """Gets the role name of the relation.
@@ -255,7 +254,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getRelationRoleName()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getRelationRoleName", "relationRoleName"))
+        return str(self._get_method_or_property(self._com, "getRelationRoleName", "relationRoleName"))
 
     def get_relation_type(self) -> str:
         """Gets the type of the relation.
@@ -269,7 +268,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getRelationType()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getRelationType", "relationType"))
+        return str(self._get_method_or_property(self._com, "getRelationType", "relationType"))
 
     def get_visibility(self) -> str:
         """Gets the visibility of the relation.
@@ -283,7 +282,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::getVisibility()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getVisibility", "visibility"))
+        return str(self._get_method_or_property(self._com, "getVisibility", "visibility"))
 
     def is_typeless_object(self) -> bool:
         """Checks whether the object at the other end of the relation has no type.
@@ -297,7 +296,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::isTypelessObject()
         """
-        return bool(AbstractRPModelElement._get_method_or_property(self._com, "isTypelessObject", "typelessObject"))
+        return bool(self._get_method_or_property(self._com, "isTypelessObject", "typelessObject"))
 
     def make_unidirect(self) -> None:
         """Makes the relation unidirectional.
@@ -308,7 +307,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::makeUnidirect()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.makeUnidirect())
+        self.call_com(lambda: self._com.makeUnidirect())
 
     def remove_qualifier(self, p_val: IRPModelElement) -> None:
         """Removes a qualifier from the association.
@@ -322,7 +321,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::removeQualifier(com.telelogic.rhapsody.core.IRPModelElement pVal)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.removeQualifier(p_val._com))
+        self.call_com(lambda: self._com.removeQualifier(p_val._com))
 
     def set_inverse(self, role_name: str, link_type: str) -> None:
         """Sets the inverse role name and link type for the relation.
@@ -337,7 +336,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::setInverse(java.lang.String roleName, java.lang.String linkType)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setInverse(role_name, link_type))
+        self.call_com(lambda: self._com.setInverse(role_name, link_type))
 
     def set_is_navigable(self, is_navigable: bool) -> None:
         """Sets whether the relation is navigable.
@@ -351,7 +350,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::setIsNavigable(int isNavigable)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setIsNavigable", "isNavigable", 1 if is_navigable else 0)
+        self._set_method_or_property(self._com, "setIsNavigable", "isNavigable", 1 if is_navigable else 0)
 
     def set_multiplicity(self, multiplicity: str) -> None:
         """Sets the multiplicity of the relation.
@@ -365,7 +364,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::setMultiplicity(java.lang.String multiplicity)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setMultiplicity", "multiplicity", multiplicity)
+        self._set_method_or_property(self._com, "setMultiplicity", "multiplicity", multiplicity)
 
     def set_of_class(self, of_class: IRPClassifier) -> None:
         """Sets the classifier that owns this relation.
@@ -379,7 +378,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::setOfClass(com.telelogic.rhapsody.core.IRPClassifier ofClass)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setOfClass", "ofClass", of_class._com)
+        self._set_method_or_property(self._com, "setOfClass", "ofClass", of_class._com)
 
     def set_other_class(self, other_class: IRPClassifier) -> None:
         """Sets the class that this class is related to via this relation.
@@ -393,7 +392,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::setOtherClass(com.telelogic.rhapsody.core.IRPClassifier otherClass)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setOtherClass", "otherClass", other_class._com)
+        self._set_method_or_property(self._com, "setOtherClass", "otherClass", other_class._com)
 
     def set_qualifier(self, qualifier: str) -> None:
         """Sets the qualifier text for the association.
@@ -407,7 +406,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::setQualifier(java.lang.String qualifier)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setQualifier", "qualifier", qualifier)
+        self._set_method_or_property(self._com, "setQualifier", "qualifier", qualifier)
 
     def set_qualifier_type(self, p_val: IRPClassifier) -> None:
         """Sets the type to use for the qualifier for the association.
@@ -418,7 +417,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::setQualifierType(com.telelogic.rhapsody.core.IRPClassifier pVal)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setQualifierType", "qualifierType", p_val._com)
+        self._set_method_or_property(self._com, "setQualifierType", "qualifierType", p_val._com)
 
     def set_relation_label(self, relation_label: str) -> None:
         """Sets the label of the relation.
@@ -432,7 +431,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::setRelationLabel(java.lang.String relationLabel)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setRelationLabel", "relationLabel", relation_label)
+        self._set_method_or_property(self._com, "setRelationLabel", "relationLabel", relation_label)
 
     def set_relation_link_name(self, relation_link_name: str) -> None:
         """Sets the link name of the relation.
@@ -446,7 +445,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::setRelationLinkName(java.lang.String relationLinkName)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setRelationLinkName", "relationLinkName", relation_link_name)
+        self._set_method_or_property(self._com, "setRelationLinkName", "relationLinkName", relation_link_name)
 
     def set_relation_role_name(self, relation_role_name: str) -> None:
         """Sets the role name of the relation.
@@ -460,7 +459,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::setRelationRoleName(java.lang.String relationRoleName)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setRelationRoleName", "relationRoleName", relation_role_name)
+        self._set_method_or_property(self._com, "setRelationRoleName", "relationRoleName", relation_role_name)
 
     def set_relation_type(self, relation_type: str) -> None:
         """Sets the type of the relation.
@@ -474,7 +473,7 @@ class RPRelation(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPRelation::setRelationType(java.lang.String relationType)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setRelationType", "relationType", relation_type)
+        self._set_method_or_property(self._com, "setRelationType", "relationType", relation_type)
 
 
-AbstractRPModelElement.register_wrapper("Relation", RPRelation)
+IRPModelElement.register_wrapper("Relation", RPRelation)

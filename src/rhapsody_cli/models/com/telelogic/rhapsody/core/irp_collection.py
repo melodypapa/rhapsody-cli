@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Iterator
 
-from rhapsody_cli import com_utils
+from rhapsody_cli.models.core import ComHelper
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
@@ -43,7 +43,7 @@ class IRPCollection:
         Reference:
             com.telelogic.rhapsody.core.IRPCollection::getCount()
         """
-        return int(com_utils.get_com_property(self._com, "Count"))
+        return int(ComHelper.get_com_property(self._com, "Count"))
 
     def get_item(self, index: int) -> Any:
         """Returns the element at the specified index in the collection.
@@ -61,10 +61,8 @@ class IRPCollection:
         Reference:
             com.telelogic.rhapsody.core.IRPCollection::getItem(int)
         """
-        raw_item = com_utils.call_com(lambda: self._com.Item(index))
-        from rhapsody_cli.models.core import AbstractRPModelElement
-
-        return AbstractRPModelElement._wrap_if_element(raw_item)
+        raw_item = ComHelper.call_com(lambda: self._com.Item(index))
+        return ComHelper._wrap_if_element(raw_item)
 
     def add_item(self, element: IRPModelElement) -> None:
         """Adds an element to the collection.
@@ -79,7 +77,7 @@ class IRPCollection:
         Reference:
             com.telelogic.rhapsody.core.IRPCollection::addItem(com.telelogic.rhapsody.core.IRPModelElement)
         """
-        com_utils.call_com(lambda: self._com.addItem(element._com))
+        ComHelper.call_com(lambda: self._com.addItem(element._com))
 
     def add_graphical_item(self, item: IRPModelElement) -> None:
         """Add a graphical element to the collection.
@@ -118,7 +116,7 @@ class IRPCollection:
         Reference:
             com.telelogic.rhapsody.core.IRPCollection::setSize(int)
         """
-        com_utils.call_com(lambda: self._com.setSize(size))
+        ComHelper.call_com(lambda: self._com.setSize(size))
 
     def remove(self, index: int) -> None:
         """Removes the element at the specified index.
@@ -132,7 +130,7 @@ class IRPCollection:
         Reference:
             com.telelogic.rhapsody.core.IRPCollection::remove(int)
         """
-        com_utils.call_com(lambda: self._com.remove(index))
+        ComHelper.call_com(lambda: self._com.remove(index))
 
     def set_string(self, index: int, value: str) -> None:
         """Sets a string value at the specified index.
@@ -147,7 +145,7 @@ class IRPCollection:
         Reference:
             com.telelogic.rhapsody.core.IRPCollection::setString(int, java.lang.String)
         """
-        com_utils.call_com(lambda: self._com.setString(index, value))
+        ComHelper.call_com(lambda: self._com.setString(index, value))
 
     def set_model_element(self, index: int, element: IRPModelElement) -> None:
         """Sets a model element at the specified index.
@@ -162,7 +160,7 @@ class IRPCollection:
         Reference:
             com.telelogic.rhapsody.core.IRPCollection::setModelElement(int, com.telelogic.rhapsody.core.IRPModelElement)
         """
-        com_utils.call_com(lambda: self._com.setModelElement(index, element._com))
+        ComHelper.call_com(lambda: self._com.setModelElement(index, element._com))
 
     def empty(self) -> None:
         """Removes all elements from the collection.
@@ -173,7 +171,7 @@ class IRPCollection:
         Reference:
             com.telelogic.rhapsody.core.IRPCollection::empty()
         """
-        com_utils.call_com(lambda: self._com.empty())
+        ComHelper.call_com(lambda: self._com.empty())
 
     def set_integer(self, index: int, value: int) -> None:
         """Sets an integer value at the specified index.
@@ -188,7 +186,7 @@ class IRPCollection:
         Reference:
             com.telelogic.rhapsody.core.IRPCollection::setInteger(int, int)
         """
-        com_utils.call_com(lambda: self._com.setInteger(index, value))
+        ComHelper.call_com(lambda: self._com.setInteger(index, value))
 
     def __len__(self) -> int:
         return self.get_count()

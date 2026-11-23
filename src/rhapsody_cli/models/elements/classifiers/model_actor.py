@@ -3,7 +3,7 @@
 from typing import TYPE_CHECKING
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
-from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.interactions.model_interactions import RPEvent, RPEventReception
@@ -61,7 +61,7 @@ class RPActor(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPActor::getIsBehaviorOverriden()
         """
-        return bool(AbstractRPModelElement._get_method_or_property(self._com, "getIsBehaviorOverriden", "isBehaviorOverriden"))
+        return bool(self._get_method_or_property(self._com, "getIsBehaviorOverriden", "isBehaviorOverriden"))
 
     def set_is_behavior_overriden(self, is_overridden: bool) -> None:
         """Specifies whether the actor should inherit the behavior defined in its base class's statechart.
@@ -77,7 +77,7 @@ class RPActor(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPActor::setIsBehaviorOverriden(int)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setIsBehaviorOverriden", "isBehaviorOverriden", 1 if is_overridden else 0)
+        self._set_method_or_property(self._com, "setIsBehaviorOverriden", "isBehaviorOverriden", 1 if is_overridden else 0)
 
     def update_contained_diagrams_on_server(self) -> None:
         """Updates the contained diagrams on the remote requirements server.
@@ -88,7 +88,7 @@ class RPActor(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPActor::updateContainedDiagramsOnServer()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.updateContainedDiagramsOnServer())
+        self.call_com(lambda: self._com.updateContainedDiagramsOnServer())
 
 
-AbstractRPModelElement.register_wrapper("Actor", RPActor)
+IRPModelElement.register_wrapper("Actor", RPActor)

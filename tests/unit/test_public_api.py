@@ -1,7 +1,7 @@
 """Tests for the public rhapsody_cli package API surface."""
 
 import rhapsody_cli
-from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from tests.unit.models.fakes import make_fake_element
 
 
@@ -29,6 +29,6 @@ def test_importing_package_registers_all_core_element_wrappers() -> None:
         ("ActivityDiagram", "RPDiagram", "rhapsody_cli.models.elements.diagrams.model_diagrams"),
     ]:
         fake = make_fake_element(meta_class, properties={"name": "X"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert type(wrapped).__name__ == expected_name, meta_class
         assert type(wrapped).__module__ == expected_module, meta_class

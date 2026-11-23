@@ -179,15 +179,16 @@ def parse_wrapper_bindings(wrapper_source: str) -> List[Tuple[str, str, int]]:
     """Extract (com_member, expected_shape, call_arity) triples from a synced wrapper body.
 
     Recognised binding forms (per AGENTS.md / SKILL §3):
-      * ``call_com(lambda: self._com.Name(...))`` -> ("Name", "method", arg_count)
-      * ``get_com_property(self._com, "Name")``  -> ("Name", "property", 0)
-      * ``set_com_property(self._com, "Name", ...)`` -> ("Name", "property", 0)
+      * ``self.call_com(lambda: self._com.Name(...))`` -> ("Name", "method", arg_count)
+      * ``self.get_com_property(self._com, "Name")``  -> ("Name", "property", 0)
+      * ``self.set_com_property(self._com, "Name", ...)`` -> ("Name", "property", 0)
 
     ``call_arity`` is the number of arguments the lambda passes to the COM
     member (0 for property access, which passes no positional COM arguments).
-    Both ``self.call_com`` and ``AbstractRPModelElement.call_com`` (and the
-    ``com_utils.call_com`` form) are handled because the call target is not
-    what determines the COM member -- the lambda body / property argument is.
+    Any ``call_com`` / ``get_com_property`` / ``set_com_property`` attribute
+    call is recognised -- in synced wrappers these are the classmethods
+    inherited from ``ComHelper`` via ``self.`` -- because the call target is
+    not what determines the COM member; the lambda body / property argument is.
     """
     bindings: List[Tuple[str, str, int]] = []
     tree = ast.parse(wrapper_source)

@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.activity.model_activity import (
     RPFlow,
     RPFlowchart,
@@ -36,7 +35,7 @@ class TestRPFlow:
         fake = make_fake_element("Flow")
         element = make_fake_element("Class", properties={"name": "ConveyedClass"})
         flow = RPFlow(fake)
-        flow.add_conveyed(cast(IRPModelElement, AbstractRPModelElement.wrap(element)))
+        flow.add_conveyed(cast(IRPModelElement, IRPModelElement.wrap(element)))
         fake.addConveyed.assert_called_once_with(element)
 
     def test_get_conveyed_returns_collection(self) -> None:
@@ -106,7 +105,7 @@ class TestRPFlow:
         fake = make_fake_element("Flow")
         element = make_fake_element("Class", properties={"name": "ConveyedClass"})
         flow = RPFlow(fake)
-        flow.remove_conveyed(cast(IRPModelElement, AbstractRPModelElement.wrap(element)))
+        flow.remove_conveyed(cast(IRPModelElement, IRPModelElement.wrap(element)))
         fake.removeConveyed.assert_called_once_with(element)
 
     def test_set_direction_delegates(self) -> None:
@@ -119,7 +118,7 @@ class TestRPFlow:
         fake = make_fake_element("Flow")
         end1 = make_fake_element("State", properties={"name": "End1State"})
         flow = RPFlow(fake)
-        flow.set_end1(cast(IRPModelElement, AbstractRPModelElement.wrap(end1)))
+        flow.set_end1(cast(IRPModelElement, IRPModelElement.wrap(end1)))
         fake.setEnd1.assert_called_once_with(end1)
 
     def test_set_end1_via_port_delegates(self) -> None:
@@ -128,8 +127,8 @@ class TestRPFlow:
         port = make_fake_element("Port", properties={"name": "MyPort"})
         flow = RPFlow(fake)
         flow.set_end1_via_port(
-            cast("RPInstance", AbstractRPModelElement.wrap(instance)),
-            cast("IRPPort", AbstractRPModelElement.wrap(port)),
+            cast("RPInstance", IRPModelElement.wrap(instance)),
+            cast("IRPPort", IRPModelElement.wrap(port)),
         )
         fake.setEnd1ViaPort.assert_called_once_with(instance, port)
 
@@ -139,8 +138,8 @@ class TestRPFlow:
         sysml_port = make_fake_element("SysMLPort", properties={"name": "MySysMLPort"})
         flow = RPFlow(fake)
         flow.set_end1_via_sys_ml_port(
-            cast("RPInstance", AbstractRPModelElement.wrap(instance)),
-            cast("RPSysMLPort", AbstractRPModelElement.wrap(sysml_port)),
+            cast("RPInstance", IRPModelElement.wrap(instance)),
+            cast("RPSysMLPort", IRPModelElement.wrap(sysml_port)),
         )
         fake.setEnd1ViaSysMLPort.assert_called_once_with(instance, sysml_port)
 
@@ -148,7 +147,7 @@ class TestRPFlow:
         fake = make_fake_element("Flow")
         end2 = make_fake_element("State", properties={"name": "End2State"})
         flow = RPFlow(fake)
-        flow.set_end2(cast(IRPModelElement, AbstractRPModelElement.wrap(end2)))
+        flow.set_end2(cast(IRPModelElement, IRPModelElement.wrap(end2)))
         fake.setEnd2.assert_called_once_with(end2)
 
     def test_set_end2_via_port_delegates(self) -> None:
@@ -157,8 +156,8 @@ class TestRPFlow:
         port = make_fake_element("Port", properties={"name": "MyPort"})
         flow = RPFlow(fake)
         flow.set_end2_via_port(
-            cast("RPInstance", AbstractRPModelElement.wrap(instance)),
-            cast("IRPPort", AbstractRPModelElement.wrap(port)),
+            cast("RPInstance", IRPModelElement.wrap(instance)),
+            cast("IRPPort", IRPModelElement.wrap(port)),
         )
         fake.setEnd2ViaPort.assert_called_once_with(instance, port)
 
@@ -168,14 +167,14 @@ class TestRPFlow:
         sysml_port = make_fake_element("SysMLPort", properties={"name": "MySysMLPort"})
         flow = RPFlow(fake)
         flow.set_end2_via_sys_ml_port(
-            cast("RPInstance", AbstractRPModelElement.wrap(instance)),
-            cast("RPSysMLPort", AbstractRPModelElement.wrap(sysml_port)),
+            cast("RPInstance", IRPModelElement.wrap(instance)),
+            cast("RPSysMLPort", IRPModelElement.wrap(sysml_port)),
         )
         fake.setEnd2ViaSysMLPort.assert_called_once_with(instance, sysml_port)
 
     def test_is_registered_for_meta_class_flow(self) -> None:
         fake = make_fake_element("Flow", properties={"name": "MyFlow"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPFlow)
 
 
@@ -192,7 +191,7 @@ class TestRPFlowItem:
         fake = make_fake_element("FlowItem")
         element = make_fake_element("Class", properties={"name": "RepresentedClass"})
         flow_item = RPFlowItem(fake)
-        flow_item.add_represented(cast(IRPModelElement, AbstractRPModelElement.wrap(element)))
+        flow_item.add_represented(cast(IRPModelElement, IRPModelElement.wrap(element)))
         fake.addRepresented.assert_called_once_with(element)
 
     def test_get_represented_returns_collection(self) -> None:
@@ -209,12 +208,12 @@ class TestRPFlowItem:
         fake = make_fake_element("FlowItem")
         element = make_fake_element("Class", properties={"name": "RepresentedClass"})
         flow_item = RPFlowItem(fake)
-        flow_item.remove_represented(cast(IRPModelElement, AbstractRPModelElement.wrap(element)))
+        flow_item.remove_represented(cast(IRPModelElement, IRPModelElement.wrap(element)))
         fake.removeRepresented.assert_called_once_with(element)
 
     def test_is_registered_for_meta_class_flow_item(self) -> None:
         fake = make_fake_element("FlowItem", properties={"name": "MyFlowItem"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPFlowItem)
 
 
@@ -262,7 +261,7 @@ class TestRPFlowchart:
         state = make_fake_element("State", properties={"name": "CallBehaviorState"})
         fake.addCallBehavior.return_value = state
         flowchart = RPFlowchart(fake)
-        result = flowchart.add_call_behavior(cast(IRPModelElement, AbstractRPModelElement.wrap(referenced)))
+        result = flowchart.add_call_behavior(cast(IRPModelElement, IRPModelElement.wrap(referenced)))
         assert result.get_name() == "CallBehaviorState"
         fake.addCallBehavior.assert_called_once_with(referenced)
 
@@ -292,7 +291,7 @@ class TestRPFlowchart:
         state = make_fake_element("State", properties={"name": "RefActivityState"})
         fake.addReferenceActivity.return_value = state
         flowchart = RPFlowchart(fake)
-        result = flowchart.add_reference_activity(cast(IRPModelElement, AbstractRPModelElement.wrap(referenced)))
+        result = flowchart.add_reference_activity(cast(IRPModelElement, IRPModelElement.wrap(referenced)))
         assert result.get_name() == "RefActivityState"
         fake.addReferenceActivity.assert_called_once_with(referenced)
 
@@ -346,12 +345,12 @@ class TestRPFlowchart:
         fake = make_fake_element("Flowchart")
         owner = make_fake_element("Operation", properties={"name": "myOperation"})
         flowchart = RPFlowchart(fake)
-        flowchart.set_its_owner(cast("IRPOperation", AbstractRPModelElement.wrap(owner)))
+        flowchart.set_its_owner(cast("IRPOperation", IRPModelElement.wrap(owner)))
         fake.setItsOwner.assert_called_once_with(owner)
 
     def test_is_registered_for_meta_class_flowchart(self) -> None:
         fake = make_fake_element("Flowchart", properties={"name": "MyActivity"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPFlowchart)
 
 
@@ -368,7 +367,7 @@ class TestRPObjectNode:
         fake = make_fake_element("ObjectNode")
         state = make_fake_element("State", properties={"name": "InStateValue"})
         node = RPObjectNode(fake)
-        node.add_in_state(cast(IRPModelElement, AbstractRPModelElement.wrap(state)))
+        node.add_in_state(cast(IRPModelElement, IRPModelElement.wrap(state)))
         fake.addInState.assert_called_once_with(state)
 
     def test_get_in_state_returns_string(self) -> None:
@@ -398,7 +397,7 @@ class TestRPObjectNode:
         fake = make_fake_element("ObjectNode")
         state = make_fake_element("State", properties={"name": "InStateValue"})
         node = RPObjectNode(fake)
-        node.remove_in_state(cast(IRPModelElement, AbstractRPModelElement.wrap(state)))
+        node.remove_in_state(cast(IRPModelElement, IRPModelElement.wrap(state)))
         fake.removeInState.assert_called_once_with(state)
 
     def test_set_in_state_delegates(self) -> None:
@@ -411,12 +410,12 @@ class TestRPObjectNode:
         fake = make_fake_element("ObjectNode")
         represents = make_fake_element("Class", properties={"name": "MyClass"})
         node = RPObjectNode(fake)
-        node.set_represents(cast(IRPModelElement, AbstractRPModelElement.wrap(represents)))
+        node.set_represents(cast(IRPModelElement, IRPModelElement.wrap(represents)))
         fake.setRepresents.assert_called_once_with(represents)
 
     def test_is_registered_for_meta_class_object_node(self) -> None:
         fake = make_fake_element("ObjectNode", properties={"name": "MyObjectNode"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPObjectNode)
 
 
@@ -470,10 +469,10 @@ class TestRPSwimlane:
         fake = make_fake_element("Swimlane")
         represents = make_fake_element("Class", properties={"name": "MyClass"})
         swimlane = RPSwimlane(fake)
-        swimlane.set_represents(cast(IRPModelElement, AbstractRPModelElement.wrap(represents)))
+        swimlane.set_represents(cast(IRPModelElement, IRPModelElement.wrap(represents)))
         fake.setRepresents.assert_called_once_with(represents)
 
     def test_is_registered_for_meta_class_swimlane(self) -> None:
         fake = make_fake_element("Swimlane", properties={"name": "MySwimlane"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPSwimlane)

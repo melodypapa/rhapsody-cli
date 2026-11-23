@@ -8,7 +8,6 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.containment.model_profile import RPProfile
@@ -49,7 +48,7 @@ class RPVariable(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPVariable::addElementDefaultValue(com.telelogic.rhapsody.core.IRPModelElement newDefaultVal)
         """
-        return cast("RPInstanceValue", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addElementDefaultValue(new_default_val._com))))
+        return cast("RPInstanceValue", self.wrap(self.call_com(lambda: self._com.addElementDefaultValue(new_default_val._com))))
 
     def add_string_default_value(self, new_default_val: str) -> "RPLiteralSpecification":
         """For tags with multiplicity greater than 1, adds a string as an additional value.
@@ -63,7 +62,7 @@ class RPVariable(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPVariable::addStringDefaultValue(java.lang.String newDefaultVal)
         """
-        return cast("RPLiteralSpecification", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addStringDefaultValue(new_default_val))))
+        return cast("RPLiteralSpecification", self.wrap(self.call_com(lambda: self._com.addStringDefaultValue(new_default_val))))
 
     def get_declaration(self) -> str:
         """Returns the type declaration if an on-the-fly type was used for the element.
@@ -74,7 +73,7 @@ class RPVariable(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPVariable::getDeclaration()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getDeclaration", "declaration"))
+        return str(self._get_method_or_property(self._com, "getDeclaration", "declaration"))
 
     def get_default_value(self) -> str:
         """Returns the default value that was set for the variable.
@@ -85,7 +84,7 @@ class RPVariable(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPVariable::getDefaultValue()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getDefaultValue", "defaultValue"))
+        return str(self._get_method_or_property(self._com, "getDefaultValue", "defaultValue"))
 
     def get_type(self) -> "IRPClassifier":
         """Returns the type of the variable.
@@ -96,7 +95,7 @@ class RPVariable(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPVariable::getType()
         """
-        return cast("IRPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getType", "type")))
+        return cast("IRPClassifier", self.wrap(self._get_method_or_property(self._com, "getType", "type")))
 
     def get_value_specifications(self) -> IRPCollection:
         """Returns the initial values declared for elements with multiplicity greater than one.
@@ -107,7 +106,7 @@ class RPVariable(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPVariable::getValueSpecifications()
         """
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getValueSpecifications", "valueSpecifications"))
+        return IRPCollection(self._get_method_or_property(self._com, "getValueSpecifications", "valueSpecifications"))
 
     def set_declaration(self, declaration: str) -> None:
         """Specifies an on-the-fly declaration for the type of the element.
@@ -118,7 +117,7 @@ class RPVariable(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPVariable::setDeclaration(java.lang.String declaration)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setDeclaration", "declaration", declaration)
+        self._set_method_or_property(self._com, "setDeclaration", "declaration", declaration)
 
     def set_default_value(self, default_value: str) -> None:
         """Sets a new default value for the variable.
@@ -129,7 +128,7 @@ class RPVariable(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPVariable::setDefaultValue(java.lang.String defaultValue)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setDefaultValue", "defaultValue", default_value)
+        self._set_method_or_property(self._com, "setDefaultValue", "defaultValue", default_value)
 
     def set_type(self, type_: IRPClassifier) -> None:
         """Sets the type of the variable.
@@ -140,7 +139,7 @@ class RPVariable(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPVariable::setType(com.telelogic.rhapsody.core.IRPClassifier type)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setType", "type", type_._com)
+        self._set_method_or_property(self._com, "setType", "type", type_._com)
 
     def set_type_declaration(self, new_val: str) -> None:
         """Specifies an on-the-fly type declaration, reusing a matching existing type if found.
@@ -154,10 +153,10 @@ class RPVariable(IRPUnit):
         # TODO: Under Rhapsody2.Application.1 the 'typeDeclaration' property is not settable (or the
         # 'setTypeDeclaration' method is absent), so this silently no-ops. Persist the type declaration
         # via the metatype property system in a future Rhapsody build.
-        AbstractRPModelElement._set_method_or_property(self._com, "setTypeDeclaration", "typeDeclaration", new_val)
+        self._set_method_or_property(self._com, "setTypeDeclaration", "typeDeclaration", new_val)
 
 
-AbstractRPModelElement.register_wrapper("Variable", RPVariable)
+IRPModelElement.register_wrapper("Variable", RPVariable)
 
 
 class RPTag(RPVariable):
@@ -185,7 +184,7 @@ class RPTag(RPVariable):
         Reference:
             com.telelogic.rhapsody.core.IRPTag::getBase()
         """
-        return cast("RPTag", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getBase", "base")))
+        return cast("RPTag", self.wrap(self._get_method_or_property(self._com, "getBase", "base")))
 
     def get_from_profile(self) -> "RPProfile":
         """Returns the profile from which the tag originates.
@@ -196,7 +195,7 @@ class RPTag(RPVariable):
         Reference:
             com.telelogic.rhapsody.core.IRPTag::getFromProfile()
         """
-        return cast("RPProfile", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getFromProfile", "fromProfile")))
+        return cast("RPProfile", self.wrap(self._get_method_or_property(self._com, "getFromProfile", "fromProfile")))
 
     def get_multiplicity(self) -> str:
         """Gets the multiplicity specified for the tag.
@@ -207,7 +206,7 @@ class RPTag(RPVariable):
         Reference:
             com.telelogic.rhapsody.core.IRPTag::getMultiplicity()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getMultiplicity", "multiplicity"))
+        return str(self._get_method_or_property(self._com, "getMultiplicity", "multiplicity"))
 
     def get_tag_meta_class(self) -> str:
         """Returns the meta class of the tag.
@@ -218,7 +217,7 @@ class RPTag(RPVariable):
         Reference:
             com.telelogic.rhapsody.core.IRPTag::getTagMetaClass()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getTagMetaClass", "tagMetaClass"))
+        return str(self._get_method_or_property(self._com, "getTagMetaClass", "tagMetaClass"))
 
     def get_value(self) -> str:
         """Returns the value of the tag.
@@ -229,7 +228,7 @@ class RPTag(RPVariable):
         Reference:
             com.telelogic.rhapsody.core.IRPTag::getValue()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getValue", "value"))
+        return str(self._get_method_or_property(self._com, "getValue", "value"))
 
     def set_multiplicity(self, multiplicity: str) -> None:
         """Specifies the multiplicity for the tag.
@@ -240,7 +239,7 @@ class RPTag(RPVariable):
         Reference:
             com.telelogic.rhapsody.core.IRPTag::setMultiplicity(java.lang.String multiplicity)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setMultiplicity", "multiplicity", multiplicity)
+        self._set_method_or_property(self._com, "setMultiplicity", "multiplicity", multiplicity)
 
     def set_tag_meta_class(self, tag_meta_class: str) -> None:
         """Sets the meta class of the tag.
@@ -251,7 +250,7 @@ class RPTag(RPVariable):
         Reference:
             com.telelogic.rhapsody.core.IRPTag::setTagMetaClass(java.lang.String tagMetaClass)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setTagMetaClass", "tagMetaClass", tag_meta_class)
+        self._set_method_or_property(self._com, "setTagMetaClass", "tagMetaClass", tag_meta_class)
 
     def set_value(self, value: str) -> None:
         """Sets the value of the tag.
@@ -262,7 +261,7 @@ class RPTag(RPVariable):
         Reference:
             com.telelogic.rhapsody.core.IRPTag::setValue(java.lang.String value)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setValue", "value", value)
+        self._set_method_or_property(self._com, "setValue", "value", value)
 
 
-AbstractRPModelElement.register_wrapper("Tag", RPTag)
+IRPModelElement.register_wrapper("Tag", RPTag)

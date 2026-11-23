@@ -3,7 +3,6 @@
 from typing import TYPE_CHECKING, Optional
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.relations.model_dependency import RPDependency
 
 if TYPE_CHECKING:
@@ -34,7 +33,7 @@ class RPHyperLink(RPDependency):
         Reference:
             com.telelogic.rhapsody.core.IRPHyperLink::getTarget()
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getTarget", "target"))
+        return self.wrap(self._get_method_or_property(self._com, "getTarget", "target"))
 
     def get_url(self) -> str:
         """Returns the URL of the hyperlink.
@@ -45,7 +44,7 @@ class RPHyperLink(RPDependency):
         Reference:
             com.telelogic.rhapsody.core.IRPHyperLink::getURL()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getURL", "url"))
+        return str(self._get_method_or_property(self._com, "getURL", "url"))
 
     def set_display_option(self, display_option: int) -> None:
         """Sets the display option for the hyperlink.
@@ -56,7 +55,7 @@ class RPHyperLink(RPDependency):
         Reference:
             com.telelogic.rhapsody.core.IRPHyperLink::setDisplayOption(int displayOption)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setDisplayOption(display_option))
+        self.call_com(lambda: self._com.setDisplayOption(display_option))
 
     def set_target(self, target: IRPModelElement) -> None:
         """Sets the target element of the hyperlink.
@@ -67,7 +66,7 @@ class RPHyperLink(RPDependency):
         Reference:
             com.telelogic.rhapsody.core.IRPHyperLink::setTarget(com.telelogic.rhapsody.core.IRPModelElement target)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setTarget(target._com))
+        self.call_com(lambda: self._com.setTarget(target._com))
 
     def set_url(self, url: str) -> None:
         """Sets the URL of the hyperlink.
@@ -78,7 +77,7 @@ class RPHyperLink(RPDependency):
         Reference:
             com.telelogic.rhapsody.core.IRPHyperLink::setURL(java.lang.String url)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setURL(url))
+        self.call_com(lambda: self._com.setURL(url))
 
 
-AbstractRPModelElement.register_wrapper("HyperLink", RPHyperLink)
+IRPModelElement.register_wrapper("HyperLink", RPHyperLink)

@@ -6,8 +6,8 @@ import pytest
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument import IRPArgument
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import IRPInterfaceItem
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
-from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.activity.model_activity import RPFlowchart
 from tests.unit.models.fakes import make_fake_element
 
@@ -150,7 +150,7 @@ def test_operation_create_auto_flow_chart_delegates_to_com() -> None:
 def test_operation_is_registered_for_meta_class_operation() -> None:
     fake = make_fake_element("Operation", properties={"name": "doIt"})
 
-    wrapped = AbstractRPModelElement.wrap(fake)
+    wrapped = IRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, IRPOperation)
 

@@ -1,6 +1,6 @@
 """Tests for rhapsody_cli.models.elements.containment.RPComponentInstance."""
 
-from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.elements.containment import RPComponent, RPComponentInstance
 from rhapsody_cli.models.elements.relations import RPInstance
 from tests.unit.models.fakes import make_fake_element
@@ -17,7 +17,7 @@ def test_component_instance_is_an_instance() -> None:
 def test_component_instance_is_registered_for_meta_class_component_instance() -> None:
     fake = make_fake_element("ComponentInstance", properties={"name": "CompInst1"})
 
-    wrapped = AbstractRPModelElement.wrap(fake)
+    wrapped = IRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, RPComponentInstance)
 

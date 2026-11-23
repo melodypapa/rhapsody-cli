@@ -2,7 +2,6 @@
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.values import (
     RPInstanceSlot,
     RPInstanceSpecification,
@@ -22,7 +21,7 @@ class TestRPInstanceSlot:
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("InstanceSlot", properties={"name": "Slot1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPInstanceSlot)
 
     def test_add_element_value_delegates_and_wraps(self) -> None:
@@ -78,7 +77,7 @@ class TestRPInstanceSpecification:
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("InstanceSpecification", properties={"name": "IS1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPInstanceSpecification)
 
     def test_add_instance_slot_delegates_and_wraps(self) -> None:
@@ -133,7 +132,7 @@ class TestRPInstanceSpecification:
 class TestRPInstanceValue:
     def test_is_registered(self) -> None:
         fake = make_fake_element("InstanceValue", properties={"name": "IV1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPInstanceValue)
 
     def test_get_value_wraps_result(self) -> None:
@@ -156,7 +155,7 @@ class TestRPInstanceValue:
 class TestRPLiteralSpecification:
     def test_is_registered(self) -> None:
         fake = make_fake_element("LiteralSpecification", properties={"name": "LS1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPLiteralSpecification)
 
     def test_get_value_returns_string(self) -> None:
@@ -174,7 +173,7 @@ class TestRPLiteralSpecification:
 class TestRPValueSpecification:
     def test_is_registered(self) -> None:
         fake = make_fake_element("ValueSpecification", properties={"name": "VS1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPValueSpecification)
 
     def test_can_be_instantiated(self) -> None:

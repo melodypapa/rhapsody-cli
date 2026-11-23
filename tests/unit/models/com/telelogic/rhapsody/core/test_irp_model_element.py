@@ -12,7 +12,6 @@ import rhapsody_cli.models.core as core_module
 from rhapsody_cli.exceptions import RhapsodyRuntimeException
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.classifiers import RPStereotype
 from rhapsody_cli.models.elements.diagrams import RPDiagram
 from rhapsody_cli.models.elements.relations import RPDependency, RPRelation
@@ -26,7 +25,7 @@ class _FakeClassWrapper(IRPModelElement):
 
 
 def test_call_com_returns_value_on_success() -> None:
-    result = AbstractRPModelElement.call_com(lambda: 42)
+    result = IRPModelElement.call_com(lambda: 42)
 
     assert result == 42
 
@@ -36,7 +35,7 @@ def test_call_com_translates_com_error() -> None:
         raise make_com_error("getName failed")
 
     with pytest.raises(RhapsodyRuntimeException, match="getName failed"):
-        AbstractRPModelElement.call_com(failing)
+        IRPModelElement.call_com(failing)
 
 
 def test_call_com_does_not_translate_other_exceptions() -> None:
@@ -44,14 +43,14 @@ def test_call_com_does_not_translate_other_exceptions() -> None:
         raise ValueError("not a COM error")
 
     with pytest.raises(ValueError, match="not a COM error"):
-        AbstractRPModelElement.call_com(failing)
+        IRPModelElement.call_com(failing)
 
 
 def test_get_com_property_reads_the_pywin32_property_directly() -> None:
     fake = MagicMock(spec=["isAbstract"])
     fake.isAbstract = 1
 
-    assert AbstractRPModelElement.get_com_property(fake, "isAbstract") == 1
+    assert IRPModelElement.get_com_property(fake, "isAbstract") == 1
 
 
 def test_get_com_property_translates_com_error() -> None:
@@ -61,13 +60,13 @@ def test_get_com_property_translates_com_error() -> None:
             raise make_com_error("isAbstract read failed")
 
     with pytest.raises(RhapsodyRuntimeException, match="isAbstract read failed"):
-        AbstractRPModelElement.get_com_property(_FailingCom(), "isAbstract")
+        IRPModelElement.get_com_property(_FailingCom(), "isAbstract")
 
 
 def test_set_com_property_writes_the_pywin32_property_directly() -> None:
     fake = MagicMock(spec=["isActive"])
 
-    AbstractRPModelElement.set_com_property(fake, "isActive", 0)
+    IRPModelElement.set_com_property(fake, "isActive", 0)
 
     assert fake.isActive == 0
 
@@ -83,7 +82,7 @@ def test_set_com_property_translates_com_error() -> None:
             raise make_com_error("isActive write failed")
 
     with pytest.raises(RhapsodyRuntimeException, match="isActive write failed"):
-        AbstractRPModelElement.set_com_property(_FailingCom(), "isActive", 1)
+        IRPModelElement.set_com_property(_FailingCom(), "isActive", 1)
 
 
 def test_core_module_no_longer_exports_backward_compatibility_wrappers() -> None:
@@ -162,7 +161,7 @@ def test_wrap_falls_back_to_meta_class_property_when_method_missing() -> None:
     fake = MagicMock(spec=["metaClass"])
     fake.metaClass = "Class"
 
-    element = AbstractRPModelElement.wrap(fake)
+    element = IRPModelElement.wrap(fake)
 
     assert element is not None and element.get_meta_class() == "Class"
 
@@ -385,10 +384,10 @@ def test_collection_set_integer_delegates_to_com() -> None:
 
 
 def test_wrap_dispatches_to_registered_wrapper() -> None:
-    AbstractRPModelElement.register_wrapper("FakeMetaType", _FakeClassWrapper)
+    IRPModelElement.register_wrapper("FakeMetaType", _FakeClassWrapper)
     fake = make_fake_element("FakeMetaType", properties={"name": "Thing"})
 
-    wrapped = AbstractRPModelElement.wrap(fake)
+    wrapped = IRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, _FakeClassWrapper)
     assert wrapped.get_name() == "Thing"
@@ -397,14 +396,14 @@ def test_wrap_dispatches_to_registered_wrapper() -> None:
 def test_wrap_falls_back_to_model_element_for_unregistered_type() -> None:
     fake = make_fake_element("SomeUnmappedType", properties={"name": "Mystery"})
 
-    wrapped = AbstractRPModelElement.wrap(fake)
+    wrapped = IRPModelElement.wrap(fake)
 
     assert type(wrapped) is IRPModelElement
     assert wrapped.get_name() == "Mystery"
 
 
 def test_wrap_handles_none_com_object() -> None:
-    wrapped = AbstractRPModelElement.wrap(None)
+    wrapped = IRPModelElement.wrap(None)
 
     assert wrapped is None
 
@@ -1472,12 +1471,12 @@ def test_rp_model_element_uses_no_legacy_dual_binding_helpers() -> None:
         for node in tree.body:
             if not isinstance(node, _ast.ClassDef):
                 continue
-            if node.name not in ("IRPModelElement", "AbstractRPModelElement"):
+            if node.name not in ("IRPModelElement", "ComHelper"):
                 continue
             for fn in node.body:
                 if not isinstance(fn, _ast.FunctionDef):
                     continue
-                if node.name == "AbstractRPModelElement" and fn.name not in ("wrap",):
+                if node.name == "ComHelper" and fn.name not in ("wrap",):
                     continue  # the legacy forwarder definitions stay until the last class migrates
                 if fn.name == "get_rmm_url":
                     continue  # documented_unavailable: getRmmUrl/rmmUrl absent from the pywin32 catalog — site left unchanged

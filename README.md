@@ -327,7 +327,7 @@ Supporting new Rhapsody element types is mechanical:
 
 1. Define a wrapper class inheriting from the appropriate base
 2. Implement methods delegating to `self._com`
-3. Register in the type registry with `register_wrapper()`
+3. Register in the type registry with `IRPModelElement.register_wrapper()`
 4. Add unit tests following the established pattern
 
 ## Documentation

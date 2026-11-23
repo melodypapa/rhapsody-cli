@@ -2,7 +2,6 @@
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.templates import (
     RPTemplateInstantiation,
     RPTemplateInstantiationParameter,
@@ -14,7 +13,7 @@ from tests.unit.models.fakes import make_fake_collection, make_fake_element
 class TestRPTemplateInstantiation:
     def test_is_registered(self) -> None:
         fake = make_fake_element("TemplateInstantiation", properties={"name": "TI1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPTemplateInstantiation)
 
     def test_get_template_instantiation_parameters_returns_collection(self) -> None:
@@ -35,7 +34,7 @@ class TestRPTemplateInstantiationParameter:
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("TemplateInstantiationParameter", properties={"name": "p1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPTemplateInstantiationParameter)
 
     def test_get_arg_value_returns_string(self) -> None:
@@ -70,7 +69,7 @@ class TestRPTemplateInstantiationParameter:
 class TestRPTemplateParameter:
     def test_is_registered(self) -> None:
         fake = make_fake_element("TemplateParameter", properties={"name": "tp1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPTemplateParameter)
 
     def test_get_parameter_kind_returns_string(self) -> None:

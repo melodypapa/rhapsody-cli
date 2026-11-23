@@ -2,7 +2,6 @@
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 
 
 class RPEnumerationLiteral(IRPModelElement):
@@ -23,7 +22,7 @@ class RPEnumerationLiteral(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPEnumerationLiteral::getValue()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getValue", "value"))
+        return str(self._get_method_or_property(self._com, "getValue", "value"))
 
     def set_value(self, value: str) -> None:
         """Sets the value of the enumeration literal.
@@ -34,10 +33,10 @@ class RPEnumerationLiteral(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPEnumerationLiteral::setValue(java.lang.String value)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setValue(value))
+        self.call_com(lambda: self._com.setValue(value))
 
 
-AbstractRPModelElement.register_wrapper("EnumerationLiteral", RPEnumerationLiteral)
+IRPModelElement.register_wrapper("EnumerationLiteral", RPEnumerationLiteral)
 
 
 class RPComment(IRPModelElement):
@@ -50,7 +49,7 @@ class RPComment(IRPModelElement):
     pass
 
 
-AbstractRPModelElement.register_wrapper("Comment", RPComment)
+IRPModelElement.register_wrapper("Comment", RPComment)
 
 
 class RPConstraint(IRPModelElement):
@@ -70,7 +69,7 @@ class RPConstraint(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPConstraint::getConstraintsByMe()
         """
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getConstraintsByMe", "constraintsByMe"))
+        return IRPCollection(self._get_method_or_property(self._com, "getConstraintsByMe", "constraintsByMe"))
 
 
-AbstractRPModelElement.register_wrapper("Constraint", RPConstraint)
+IRPModelElement.register_wrapper("Constraint", RPConstraint)

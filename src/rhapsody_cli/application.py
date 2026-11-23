@@ -17,7 +17,6 @@ except ImportError:  # pragma: no cover - pywin32 is Windows-only
     # themselves will simply fail at runtime with a clear error instead.
     win32_client = None
 
-from rhapsody_cli import com_utils
 from rhapsody_cli.exceptions import RhapsodyConnectionError, RhapsodyRuntimeException
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_application import IRPApplication
 
@@ -57,7 +56,7 @@ class RhapsodyApplication(IRPApplication):
         if client is None:
             raise RhapsodyConnectionError("pywin32 is not available; Rhapsody automation requires Windows.")
         try:
-            com_obj = com_utils.call_com(lambda: client.GetActiveObject(_PROG_ID))
+            com_obj = cls.call_com(lambda: client.GetActiveObject(_PROG_ID))
         except RhapsodyRuntimeException as exc:
             raise RhapsodyConnectionError(f"No running Rhapsody instance found: {exc}") from exc
         return cls(com_obj)
@@ -77,7 +76,7 @@ class RhapsodyApplication(IRPApplication):
         if client is None:
             raise RhapsodyConnectionError("pywin32 is not available; Rhapsody automation requires Windows.")
         try:
-            com_obj = com_utils.call_com(lambda: client.Dispatch(_PROG_ID))
+            com_obj = cls.call_com(lambda: client.Dispatch(_PROG_ID))
         except RhapsodyRuntimeException as exc:
             raise RhapsodyConnectionError(f"Failed to launch Rhapsody: {exc}") from exc
         return cls(com_obj)

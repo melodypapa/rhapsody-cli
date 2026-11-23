@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, cast
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.relations.model_instance import RPInstance
 
 if TYPE_CHECKING:
@@ -42,7 +41,7 @@ class RPClassifierRole(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifierRole::getFormalClassifier()
         """
-        return cast("IRPClassifier", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getFormalClassifier())))
+        return cast("IRPClassifier", self.wrap(self.call_com(lambda: self._com.getFormalClassifier())))
 
     def get_formal_instance(self) -> "RPInstance":
         """Returns the object that is realized by the lifeline, for cases where a lifeline represents an object and not just a classifier.
@@ -56,7 +55,7 @@ class RPClassifierRole(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifierRole::getFormalInstance()
         """
-        return cast("RPInstance", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getFormalInstance())))
+        return cast("RPInstance", self.wrap(self.call_com(lambda: self._com.getFormalInstance())))
 
     def get_referenced_sequence_diagram(self) -> "RPSequenceDiagram":
         """Returns the sequence diagram referenced by the lifeline.
@@ -70,7 +69,7 @@ class RPClassifierRole(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifierRole::getReferencedSequenceDiagram()
         """
-        return cast("RPSequenceDiagram", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getReferencedSequenceDiagram())))
+        return cast("RPSequenceDiagram", self.wrap(self.call_com(lambda: self._com.getReferencedSequenceDiagram())))
 
     def get_referencing_classifier_roles_recursively(self) -> "IRPCollection":
         """Returns a collection of all the lifelines in referenced sequence diagrams, recursively including all lifelines in the decomposition hierarchy.
@@ -191,7 +190,7 @@ class RPSysMLPort(RPInstance):
                 com.telelogic.rhapsody.core.IRPSysMLPort toPort,
                 com.telelogic.rhapsody.core.IRPPackage newOwner)
         """
-        return cast("RPLink", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addLink(from_part._com, to_part._com, assoc._com, to_port._com, new_owner._com))))
+        return cast("RPLink", self.wrap(self.call_com(lambda: self._com.addLink(from_part._com, to_part._com, assoc._com, to_port._com, new_owner._com))))
 
     def get_is_reversed(self) -> int:
         """Checks whether the flowport was specified as conjugated.
@@ -234,7 +233,7 @@ class RPSysMLPort(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPSysMLPort::getType()
         """
-        return cast("IRPClassifier", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getType())))
+        return cast("IRPClassifier", self.wrap(self.call_com(lambda: self._com.getType())))
 
     def set_is_reversed(self, is_reversed: int) -> None:
         """Specifies whether the flowport should be conjugated.
@@ -281,5 +280,5 @@ class RPSysMLPort(RPInstance):
         self.call_com(lambda: self._com.setType(type_._com))
 
 
-AbstractRPModelElement.register_wrapper("ClassifierRole", RPClassifierRole)
-AbstractRPModelElement.register_wrapper("SysMLPort", RPSysMLPort)
+IRPModelElement.register_wrapper("ClassifierRole", RPClassifierRole)
+IRPModelElement.register_wrapper("SysMLPort", RPSysMLPort)

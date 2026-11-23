@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, Optional, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.interactions.model_interactions import RPMessage
 from rhapsody_cli.models.elements.statemachine.model_statemachine import RPState
 from rhapsody_cli.models.elements.values.model_values import RPValueSpecification
@@ -35,7 +34,7 @@ class RPAcceptEventAction(RPState):
         Reference:
             com.telelogic.rhapsody.core.IRPAcceptEventAction::getEvent()
         """
-        return cast("RPEvent", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getEvent", "event")))
+        return cast("RPEvent", self.wrap(self._get_method_or_property(self._com, "getEvent", "event")))
 
     def set_event(self, event: "RPEvent") -> None:
         """Specifies the event that the action should wait for.
@@ -46,7 +45,7 @@ class RPAcceptEventAction(RPState):
         Reference:
             com.telelogic.rhapsody.core.IRPAcceptEventAction::setEvent(com.telelogic.rhapsody.core.IRPEvent event)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setEvent", "event", event._com)
+        self._set_method_or_property(self._com, "setEvent", "event", event._com)
 
 
 class RPAcceptTimeEvent(RPState):
@@ -69,7 +68,7 @@ class RPAcceptTimeEvent(RPState):
         Reference:
             com.telelogic.rhapsody.core.IRPAcceptTimeEvent::getDurationTime()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getDurationTime", "durationTime"))
+        return str(self._get_method_or_property(self._com, "getDurationTime", "durationTime"))
 
     def set_duration_time(self, duration_time: str) -> None:
         """Specifies the duration that should be used for this element.
@@ -80,7 +79,7 @@ class RPAcceptTimeEvent(RPState):
         Reference:
             com.telelogic.rhapsody.core.IRPAcceptTimeEvent::setDurationTime(java.lang.String durationTime)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setDurationTime", "durationTime", duration_time)
+        self._set_method_or_property(self._com, "setDurationTime", "durationTime", duration_time)
 
 
 class RPAction(IRPModelElement):
@@ -101,7 +100,7 @@ class RPAction(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPAction::getBody()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getBody", "body"))
+        return str(self._get_method_or_property(self._com, "getBody", "body"))
 
     def set_body(self, body: str) -> None:
         """Specifies the code that serves as the action for the transition.
@@ -112,7 +111,7 @@ class RPAction(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPAction::setBody(java.lang.String body)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setBody", "body", body)
+        self._set_method_or_property(self._com, "setBody", "body", body)
 
 
 class RPActionBlock(RPMessage):
@@ -148,7 +147,7 @@ class RPCallOperation(RPState):
         Reference:
             com.telelogic.rhapsody.core.IRPCallOperation::getOperation()
         """
-        return cast("IRPInterfaceItem", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getOperation", "operation")))
+        return cast("IRPInterfaceItem", self.wrap(self._get_method_or_property(self._com, "getOperation", "operation")))
 
     def get_target(self) -> "RPRelation":
         """Returns the target specified for this call operation element.
@@ -159,7 +158,7 @@ class RPCallOperation(RPState):
         Reference:
             com.telelogic.rhapsody.core.IRPCallOperation::getTarget()
         """
-        return cast("RPRelation", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getTarget", "target")))
+        return cast("RPRelation", self.wrap(self._get_method_or_property(self._com, "getTarget", "target")))
 
     def set_operation(self, operation: "IRPInterfaceItem") -> None:
         """Specifies the operation to use for this call operation element.
@@ -170,7 +169,7 @@ class RPCallOperation(RPState):
         Reference:
             com.telelogic.rhapsody.core.IRPCallOperation::setOperation(com.telelogic.rhapsody.core.IRPInterfaceItem operation)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setOperation", "operation", operation._com)
+        self._set_method_or_property(self._com, "setOperation", "operation", operation._com)
 
     def set_target(self, target: "RPRelation") -> None:
         """Specifies the target to use for this call operation element.
@@ -181,7 +180,7 @@ class RPCallOperation(RPState):
         Reference:
             com.telelogic.rhapsody.core.IRPCallOperation::setTarget(com.telelogic.rhapsody.core.IRPRelation target)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setTarget", "target", target._com)
+        self._set_method_or_property(self._com, "setTarget", "target", target._com)
 
 
 class RPContextSpecification(RPValueSpecification):
@@ -210,7 +209,7 @@ class RPContextSpecification(RPValueSpecification):
         Reference:
             com.telelogic.rhapsody.core.IRPContextSpecification::getMultiplicities()
         """
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getMultiplicities", "multiplicities"))
+        return IRPCollection(self._get_method_or_property(self._com, "getMultiplicities", "multiplicities"))
 
     def get_value(self) -> "IRPCollection":
         """Returns the collection of strings that represents the model elements constituting the full path to the element.
@@ -221,7 +220,7 @@ class RPContextSpecification(RPValueSpecification):
         Reference:
             com.telelogic.rhapsody.core.IRPContextSpecification::getValue()
         """
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getValue", "value"))
+        return IRPCollection(self._get_method_or_property(self._com, "getValue", "value"))
 
     def set_multiplicities(self, multiplicities: "IRPCollection") -> None:
         """Specifies the collection of indices to use for the model elements in the "value" collection.
@@ -233,7 +232,7 @@ class RPContextSpecification(RPValueSpecification):
         Reference:
             com.telelogic.rhapsody.core.IRPContextSpecification::setMultiplicities(com.telelogic.rhapsody.core.IRPCollection multiplicities)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setMultiplicities(multiplicities._com))
+        self.call_com(lambda: self._com.setMultiplicities(multiplicities._com))
 
     def set_value(self, value: "IRPCollection") -> None:
         """Specifies the collection of strings that represents the model elements constituting the full path to the element.
@@ -245,7 +244,7 @@ class RPContextSpecification(RPValueSpecification):
         Reference:
             com.telelogic.rhapsody.core.IRPContextSpecification::setValue(com.telelogic.rhapsody.core.IRPCollection value)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setValue(value._com))
+        self.call_com(lambda: self._com.setValue(value._com))
 
 
 class RPSendAction(RPAction):
@@ -274,7 +273,7 @@ class RPSendAction(RPAction):
         Reference:
             com.telelogic.rhapsody.core.IRPSendAction::addArgumentValue(java.lang.String value, int position)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.addArgumentValue(value, position))
+        self.call_com(lambda: self._com.addArgumentValue(value, position))
 
     def get_arg_vals(self) -> "IRPCollection":
         """Returns a collection of the argument values set for the event associated with the Send Action element.
@@ -286,7 +285,7 @@ class RPSendAction(RPAction):
         Reference:
             com.telelogic.rhapsody.core.IRPSendAction::getArgVals()
         """
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getArgVals", "argVals"))
+        return IRPCollection(self._get_method_or_property(self._com, "getArgVals", "argVals"))
 
     def get_event(self) -> "RPEvent":
         """Gets the event sent by the Send Action element.
@@ -297,7 +296,7 @@ class RPSendAction(RPAction):
         Reference:
             com.telelogic.rhapsody.core.IRPSendAction::getEvent()
         """
-        return cast("RPEvent", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getEvent", "event")))
+        return cast("RPEvent", self.wrap(self._get_method_or_property(self._com, "getEvent", "event")))
 
     def get_invoked_operation(self) -> "IRPInterfaceItem":
         """Returns the interface item element that is invoked by the Send Action element.
@@ -308,7 +307,7 @@ class RPSendAction(RPAction):
         Reference:
             com.telelogic.rhapsody.core.IRPSendAction::getInvokedOperation()
         """
-        return cast("IRPInterfaceItem", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getInvokedOperation", "invokedOperation")))
+        return cast("IRPInterfaceItem", self.wrap(self._get_method_or_property(self._com, "getInvokedOperation", "invokedOperation")))
 
     def get_target(self) -> Optional["IRPModelElement"]:
         """Gets the event target of the Send Action element.
@@ -319,7 +318,7 @@ class RPSendAction(RPAction):
         Reference:
             com.telelogic.rhapsody.core.IRPSendAction::getTarget()
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getTarget", "target"))
+        return self.wrap(self._get_method_or_property(self._com, "getTarget", "target"))
 
     def set_event(self, event: "RPEvent") -> None:
         """Specifies the event sent by the Send Action element.
@@ -330,7 +329,7 @@ class RPSendAction(RPAction):
         Reference:
             com.telelogic.rhapsody.core.IRPSendAction::setEvent(com.telelogic.rhapsody.core.IRPEvent event)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setEvent", "event", event._com)
+        self._set_method_or_property(self._com, "setEvent", "event", event._com)
 
     def set_invoked_operation(self, invoked_operation: "IRPInterfaceItem") -> None:
         """Sets the invoked operation property.
@@ -344,7 +343,7 @@ class RPSendAction(RPAction):
         Reference:
             com.telelogic.rhapsody.core.IRPSendAction::setInvokedOperation(com.telelogic.rhapsody.core.IRPInterfaceItem invokedOperation)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setInvokedOperation", "invokedOperation", invoked_operation._com)
+        self._set_method_or_property(self._com, "setInvokedOperation", "invokedOperation", invoked_operation._com)
 
     def set_target(self, target: "IRPModelElement") -> None:
         """Sets the specified model element to be the target of the Send Action element.
@@ -356,14 +355,14 @@ class RPSendAction(RPAction):
         Reference:
             com.telelogic.rhapsody.core.IRPSendAction::setTarget(com.telelogic.rhapsody.core.IRPModelElement target)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setTarget", "target", target._com)
+        self._set_method_or_property(self._com, "setTarget", "target", target._com)
 
 
 # Register wrappers for Rhapsody meta classes
-AbstractRPModelElement.register_wrapper("AcceptEventAction", RPAcceptEventAction)
-AbstractRPModelElement.register_wrapper("AcceptTimeEvent", RPAcceptTimeEvent)
-AbstractRPModelElement.register_wrapper("Action", RPAction)
-AbstractRPModelElement.register_wrapper("ActionBlock", RPActionBlock)
-AbstractRPModelElement.register_wrapper("CallOperation", RPCallOperation)
-AbstractRPModelElement.register_wrapper("ContextSpecification", RPContextSpecification)
-AbstractRPModelElement.register_wrapper("SendAction", RPSendAction)
+IRPModelElement.register_wrapper("AcceptEventAction", RPAcceptEventAction)
+IRPModelElement.register_wrapper("AcceptTimeEvent", RPAcceptTimeEvent)
+IRPModelElement.register_wrapper("Action", RPAction)
+IRPModelElement.register_wrapper("ActionBlock", RPActionBlock)
+IRPModelElement.register_wrapper("CallOperation", RPCallOperation)
+IRPModelElement.register_wrapper("ContextSpecification", RPContextSpecification)
+IRPModelElement.register_wrapper("SendAction", RPSendAction)
