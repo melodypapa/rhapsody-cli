@@ -3,7 +3,6 @@
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type import IRPType
-from rhapsody_cli.models.core import AbstractRPModelElement
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
@@ -16,7 +15,7 @@ class TestRPType:
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("Type", properties={"name": "T1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, IRPType)
 
     def test_add_enumeration_literal_delegates_and_wraps(self) -> None:

@@ -7,10 +7,10 @@ import pytest
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class import IRPClass
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type import IRPType
-from rhapsody_cli.models.core import AbstractRPModelElement
 
 
 @pytest.mark.integration
@@ -279,7 +279,7 @@ class TestIRPTypeIntegration:
         try:
             # The typedefBaseType property is readable but COM in this build
             # rejects writes; assert the binding shape via a mocked setter.
-            with patch.object(AbstractRPModelElement, "set_com_property") as setter:
+            with patch.object(IRPModelElement, "set_com_property") as setter:
                 ti.set_typedef_base_type(base)
                 setter.assert_called_once_with(ti._com, "typedefBaseType", base._com)
         finally:

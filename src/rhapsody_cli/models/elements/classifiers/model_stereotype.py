@@ -3,7 +3,7 @@
 from typing import TYPE_CHECKING
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
-from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
     pass
@@ -31,7 +31,7 @@ class RPStereotype(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPStereotype::addMetaClass(java.lang.String metaClass)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.addMetaClass(meta_class))
+        self.call_com(lambda: self._com.addMetaClass(meta_class))
 
     def get_icon(self) -> str:
         """Returns the path to the icon file used for this stereotype.
@@ -42,7 +42,7 @@ class RPStereotype(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPStereotype::getIcon()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getIcon", "icon"))
+        return str(self._get_method_or_property(self._com, "getIcon", "icon"))
 
     def get_is_new_term(self) -> int:
         """Checks whether this stereotype is marked as a "new term".
@@ -53,7 +53,7 @@ class RPStereotype(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPStereotype::getIsNewTerm()
         """
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsNewTerm", "isNewTerm"))
+        return int(self._get_method_or_property(self._com, "getIsNewTerm", "isNewTerm"))
 
     def get_of_meta_class(self) -> str:
         """Returns the names of the metaclasses that the stereotype can be applied to.
@@ -64,7 +64,7 @@ class RPStereotype(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPStereotype::getOfMetaClass()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getOfMetaClass", "ofMetaClass"))
+        return str(self._get_method_or_property(self._com, "getOfMetaClass", "ofMetaClass"))
 
     def remove_meta_class(self, meta_class: str) -> None:
         """Removes a metaclass from the stereotype's applicable metaclasses.
@@ -75,7 +75,7 @@ class RPStereotype(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPStereotype::removeMetaClass(java.lang.String metaClass)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.removeMetaClass(meta_class))
+        self.call_com(lambda: self._com.removeMetaClass(meta_class))
 
     def set_is_new_term(self, is_new_term: int) -> None:
         """Sets whether this stereotype is marked as a "new term".
@@ -98,4 +98,4 @@ class RPStereotype(IRPClassifier):
         )
 
 
-AbstractRPModelElement.register_wrapper("Stereotype", RPStereotype)
+IRPModelElement.register_wrapper("Stereotype", RPStereotype)

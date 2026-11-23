@@ -5,9 +5,9 @@ from unittest.mock import patch
 
 import pytest
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
-from rhapsody_cli.models.core import AbstractRPModelElement
 
 
 @pytest.mark.integration
@@ -164,20 +164,20 @@ class TestRPOperationIntegration:
         try:
             op = test_class.add_operation(self._unique("setterOp"))
             # Property-shaped setters bind to documented COM properties.
-            with patch.object(AbstractRPModelElement, "set_com_property") as setter:
+            with patch.object(IRPModelElement, "set_com_property") as setter:
                 assert op.set_body("return 0;") is None  # type: ignore[func-returns-value]
                 setter.assert_called_once_with(op._com, "body", "return 0;")
-            with patch.object(AbstractRPModelElement, "set_com_property") as setter:
+            with patch.object(IRPModelElement, "set_com_property") as setter:
                 assert op.set_initializer("value = 0;") is None  # type: ignore[func-returns-value]
                 setter.assert_called_once_with(op._com, "initializer", "value = 0;")
             # Method-shaped setters bind to Java-named COM members via call_com.
-            with patch.object(AbstractRPModelElement, "call_com") as com_call:
+            with patch.object(IRPModelElement, "call_com") as com_call:
                 assert op.set_visibility("private") is None  # type: ignore[func-returns-value]
                 com_call.assert_called_once()
-            with patch.object(AbstractRPModelElement, "call_com") as com_call:
+            with patch.object(IRPModelElement, "call_com") as com_call:
                 assert op.set_is_const(1) is None  # type: ignore[func-returns-value]
                 com_call.assert_called_once()
-            with patch.object(AbstractRPModelElement, "call_com") as com_call:
+            with patch.object(IRPModelElement, "call_com") as com_call:
                 assert op.set_is_final(1) is None  # type: ignore[func-returns-value]
                 com_call.assert_called_once()
             with pytest.raises(NotImplementedError):

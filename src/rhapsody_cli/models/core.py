@@ -1,18 +1,23 @@
 """Core wrapping machinery shared by all rhapsody_cli element wrappers.
 
-``AbstractRPModelElement.call_com()`` translates COM failures into ``RhapsodyRuntimeException``.
-``AbstractRPModelElement`` is the abstract base class providing common utilities.
-``IRPModelElement`` is the base interface for every wrapped Rhapsody model
-element, mirroring ``com.telelogic.rhapsody.core.IRPModelElement``.
-``AbstractRPModelElement.wrap()`` dispatches a raw COM object to its matching wrapper class using
-a registry populated by each element module at import time.
+``ComHelper.call_com()`` translates COM failures into ``RhapsodyRuntimeException``.
+``ComHelper`` provides the shared COM helpers and is inherited only by
+``IRPModelElement``, the base interface for every wrapped Rhapsody model
+element (mirroring ``com.telelogic.rhapsody.core.IRPModelElement``).
+``ComHelper.wrap()`` dispatches a raw COM object to its matching wrapper
+class using a registry populated by each element module at import time.
 """
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Callable, TypeVar
 
-from rhapsody_cli import com_utils
+from rhapsody_cli.exceptions import RhapsodyRuntimeException
+
+try:
+    import pywintypes
+except ImportError:  # pragma: no cover - pywintypes is Windows-only
+    pywintypes = None
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
@@ -21,16 +26,18 @@ if TYPE_CHECKING:
 T = TypeVar("T")
 
 
-class AbstractRPModelElement:
-    """Abstract base class providing common utilities for all Rhapsody element wrappers.
+class ComHelper:
+    """Mixin providing the single COM boundary for ``IRPModelElement``.
 
-    Implements class methods for COM interaction, element wrapping, and registry management.
+    Not a Java interface and not instantiated directly: it owns COM error
+    translation, property access, element wrapping and wrapper registration
+    for ``IRPModelElement`` and every subclass that inherits from it.
     """
 
     #: Maps a Rhapsody ``getMetaClass()`` string (e.g. "Class", "Package") to the
     #: wrapper class that should represent it. Populated by each element module
     #: at import time via ``register_wrapper``. Unmapped meta classes fall back
-    #: to ``IRPModelElement`` in ``AbstractRPModelElement.wrap()``.
+    #: to ``IRPModelElement`` in ``ComHelper.wrap()``.
     _WRAPPER_REGISTRY: dict[str, type[IRPModelElement]] = {}
 
     @classmethod
@@ -40,11 +47,13 @@ class AbstractRPModelElement:
 
     @classmethod
     def call_com(cls, func: Callable[[], T]) -> T:
-        """Invoke a COM call, translating COM errors into RhapsodyRuntimeException.
-
-        Forwards to :func:`rhapsody_cli.com_utils.call_com`.
-        """
-        return com_utils.call_com(func)
+        """Invoke a COM call, translating ``pywintypes.com_error`` into ``RhapsodyRuntimeException``."""
+        try:
+            return func()
+        except Exception as exc:
+            if pywintypes is not None and isinstance(exc, pywintypes.com_error):
+                raise RhapsodyRuntimeException(str(exc)) from exc
+            raise
 
     @classmethod
     def _wrap_if_element(cls, value: Any) -> Any:
@@ -77,32 +86,48 @@ class AbstractRPModelElement:
     def _get_method_or_property(cls, com_obj: object, method_name: str, prop_name: str) -> Any:
         """Read a value from ``com_obj``, preferring the Java-style method.
 
-        Forwards to :func:`rhapsody_cli.com_utils._get_method_or_property`.
+        Some Rhapsody COM automation Prog IDs (e.g. the Java-mirroring
+        ``Rhapsody.Application``) expose model element attributes as methods
+        (``getName()``, ``getGUID()``, ...), while others (e.g.
+        ``Rhapsody2.Application.1``) expose the same data as bare COM
+        properties (``name``, ``GUID``, ...). Prefer the method when present,
+        and fall back to the bare property otherwise.
+
+        Returns ``Any`` because COM property values are dynamically typed.
+
+        .. deprecated::
+            Legacy dual-binding probe. Synced wrappers call exactly one
+            pywin32-exposed member via :meth:`call_com` / :meth:`get_com_property`.
         """
-        return com_utils._get_method_or_property(com_obj, method_name, prop_name)
+        if hasattr(com_obj, method_name):
+            return cls.call_com(lambda: getattr(com_obj, method_name)())
+        return cls.call_com(lambda: getattr(com_obj, prop_name))
 
     @classmethod
     def _set_method_or_property(cls, com_obj: object, method_name: str, prop_name: str, value: object) -> None:
         """Write a value to ``com_obj``, preferring the Java-style setter method.
 
-        Forwards to :func:`rhapsody_cli.com_utils._set_method_or_property`.
-
-        .. deprecated:: Legacy dual-binding probe; synced wrappers use :meth:`get_com_property` / :meth:`set_com_property`.
+        .. deprecated::
+            Legacy dual-binding probe. Synced wrappers use :meth:`set_com_property`.
         """
-        com_utils._set_method_or_property(com_obj, method_name, prop_name, value)
+        if hasattr(com_obj, method_name):
+            cls.call_com(lambda: getattr(com_obj, method_name)(value))
+        else:
+            cls.call_com(lambda: setattr(com_obj, prop_name, value))
 
     @classmethod
     def get_com_property(cls, com_obj: object, prop_name: str) -> Any:
         """Read one pywin32-exposed COM property (authoritative name; no fallback).
 
-        Forwards to :func:`rhapsody_cli.com_utils.get_com_property`.
+        The generated pywin32 interface (``docs/reports/pywin32_authority.json``)
+        is the single source of truth for the member name and shape.
         """
-        return com_utils.get_com_property(com_obj, prop_name)
+        return cls.call_com(lambda: getattr(com_obj, prop_name))
 
     @classmethod
     def set_com_property(cls, com_obj: object, prop_name: str, value: object) -> None:
         """Write one pywin32-exposed COM property (authoritative name; no fallback).
 
-        Forwards to :func:`rhapsody_cli.com_utils.set_com_property`.
+        See :meth:`get_com_property` for the pywin32-authoritative naming rule.
         """
-        com_utils.set_com_property(com_obj, prop_name, value)
+        cls.call_com(lambda: setattr(com_obj, prop_name, value))

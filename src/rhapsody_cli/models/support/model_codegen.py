@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, Optional
 from rhapsody_cli.application import RhapsodyApplication
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.graphics.model_graphics import RPTableLayout
 
 if TYPE_CHECKING:
@@ -987,7 +986,7 @@ class RPSearchQuery(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPSearchQuery::getView(int Index)
         """
-        return AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getView(index)))
+        return self.wrap(self.call_com(lambda: self._com.getView(index)))
 
     def get_view_count(self) -> int:
         """Returns the number of views in the list of views that are to be
@@ -1390,7 +1389,7 @@ class RPSearchQuery(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPSearchQuery::getSearchScopeObject()
         """
-        return AbstractRPModelElement.wrap(self._get_method_or_property(self._com, "getSearchScopeObject", "searchScopeObject"))
+        return self.wrap(self._get_method_or_property(self._com, "getSearchScopeObject", "searchScopeObject"))
 
     def get_search_text(self) -> str:
         """Returns the text that was specified as the text to search for.
@@ -1692,7 +1691,7 @@ class RPSearchResult(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPSearchResult::getMatchedObject()
         """
-        return AbstractRPModelElement.wrap(self._get_method_or_property(self._com, "getMatchedObject", "matchedObject"))
+        return self.wrap(self._get_method_or_property(self._com, "getMatchedObject", "matchedObject"))
 
     def get_name(self) -> str:
         """Returns the property name.

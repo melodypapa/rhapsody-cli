@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.activity.model_actions import (
     RPAcceptEventAction,
     RPAcceptTimeEvent,
@@ -41,12 +40,12 @@ class TestRPAcceptEventAction:
         fake = make_fake_element("AcceptEventAction")
         event = make_fake_element("Event", properties={"name": "MyEvent"})
         aea = RPAcceptEventAction(fake)
-        aea.set_event(cast("RPEvent", AbstractRPModelElement.wrap(event)))
+        aea.set_event(cast("RPEvent", IRPModelElement.wrap(event)))
         fake.setEvent.assert_called_once_with(event)
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("AcceptEventAction", properties={"name": "AEA1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPAcceptEventAction)
 
 
@@ -70,7 +69,7 @@ class TestRPAcceptTimeEvent:
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("AcceptTimeEvent", properties={"name": "ATE1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPAcceptTimeEvent)
 
 
@@ -94,7 +93,7 @@ class TestRPAction:
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("Action", properties={"name": "Act1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPAction)
 
 
@@ -107,7 +106,7 @@ class TestRPActionBlock:
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("ActionBlock", properties={"name": "AB1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPActionBlock)
 
 
@@ -138,19 +137,19 @@ class TestRPCallOperation:
         fake = make_fake_element("CallOperation")
         op = make_fake_element("Operation", properties={"name": "myOp"})
         co = RPCallOperation(fake)
-        co.set_operation(cast("IRPInterfaceItem", AbstractRPModelElement.wrap(op)))
+        co.set_operation(cast("IRPInterfaceItem", IRPModelElement.wrap(op)))
         fake.setOperation.assert_called_once_with(op)
 
     def test_set_target_delegates(self) -> None:
         fake = make_fake_element("CallOperation")
         target = make_fake_element("Relation", properties={"name": "myTarget"})
         co = RPCallOperation(fake)
-        co.set_target(cast("RPRelation", AbstractRPModelElement.wrap(target)))
+        co.set_target(cast("RPRelation", IRPModelElement.wrap(target)))
         fake.setTarget.assert_called_once_with(target)
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("CallOperation", properties={"name": "CO1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPCallOperation)
 
 
@@ -193,7 +192,7 @@ class TestRPContextSpecification:
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("ContextSpecification", properties={"name": "CS1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPContextSpecification)
 
 
@@ -246,24 +245,24 @@ class TestRPSendAction:
         fake = make_fake_element("SendAction")
         event = make_fake_element("Event", properties={"name": "MyEvent"})
         sa = RPSendAction(fake)
-        sa.set_event(cast("RPEvent", AbstractRPModelElement.wrap(event)))
+        sa.set_event(cast("RPEvent", IRPModelElement.wrap(event)))
         fake.setEvent.assert_called_once_with(event)
 
     def test_set_invoked_operation_delegates(self) -> None:
         fake = make_fake_element("SendAction")
         op = make_fake_element("Operation", properties={"name": "myOp"})
         sa = RPSendAction(fake)
-        sa.set_invoked_operation(cast("IRPInterfaceItem", AbstractRPModelElement.wrap(op)))
+        sa.set_invoked_operation(cast("IRPInterfaceItem", IRPModelElement.wrap(op)))
         fake.setInvokedOperation.assert_called_once_with(op)
 
     def test_set_target_delegates(self) -> None:
         fake = make_fake_element("SendAction")
         target = make_fake_element("Class", properties={"name": "MyClass"})
         sa = RPSendAction(fake)
-        sa.set_target(cast(IRPModelElement, AbstractRPModelElement.wrap(target)))
+        sa.set_target(cast(IRPModelElement, IRPModelElement.wrap(target)))
         fake.setTarget.assert_called_once_with(target)
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("SendAction", properties={"name": "SA1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPSendAction)

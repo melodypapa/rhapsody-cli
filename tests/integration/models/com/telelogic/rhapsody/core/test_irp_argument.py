@@ -6,9 +6,9 @@ from unittest.mock import patch
 import pytest
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument import IRPArgument
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
-from rhapsody_cli.models.core import AbstractRPModelElement
 
 
 @pytest.mark.integration
@@ -34,7 +34,7 @@ class TestIRPArgumentIntegration:
             assert isinstance(argument, IRPArgument)
             original = argument.get_argument_direction()
             assert isinstance(original, str)
-            with patch.object(AbstractRPModelElement, "set_com_property") as setter:
+            with patch.object(IRPModelElement, "set_com_property") as setter:
                 assert argument.set_argument_direction("out") is None  # type: ignore[func-returns-value]
                 setter.assert_called_once_with(argument._com, "argumentDirection", "out")
         finally:

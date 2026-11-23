@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, Optional, cast
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import IRPInterfaceItem
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.containment.model_collaboration import RPCollaboration
 
 if TYPE_CHECKING:
@@ -38,16 +37,16 @@ class RPEvent(IRPInterfaceItem):
     # No deprecated IRPEvent methods.
 
     def get_base_event(self) -> "RPEvent":
-        return cast("RPEvent", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getBaseEvent", "baseEvent")))
+        return cast("RPEvent", self.wrap(self._get_method_or_property(self._com, "getBaseEvent", "baseEvent")))
 
     def get_super_event(self) -> "RPEvent":
-        return cast("RPEvent", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getSuperEvent", "superEvent")))
+        return cast("RPEvent", self.wrap(self._get_method_or_property(self._com, "getSuperEvent", "superEvent")))
 
     def set_base_event(self, base_event: "RPEvent") -> None:
-        AbstractRPModelElement._set_method_or_property(self._com, "setBaseEvent", "baseEvent", base_event._com)
+        self._set_method_or_property(self._com, "setBaseEvent", "baseEvent", base_event._com)
 
     def set_super_event(self, super_event: "RPEvent") -> None:
-        AbstractRPModelElement._set_method_or_property(self._com, "setSuperEvent", "superEvent", super_event._com)
+        self._set_method_or_property(self._com, "setSuperEvent", "superEvent", super_event._com)
 
 
 class RPEventReception(IRPInterfaceItem):
@@ -63,10 +62,10 @@ class RPEventReception(IRPInterfaceItem):
     # No deprecated IRPEventReception methods.
 
     def get_event(self) -> "RPEvent":
-        return cast("RPEvent", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getEvent", "event")))
+        return cast("RPEvent", self.wrap(self._get_method_or_property(self._com, "getEvent", "event")))
 
     def set_event(self, p_val: "RPEvent") -> None:
-        AbstractRPModelElement._set_method_or_property(self._com, "setEvent", "event", p_val._com)
+        self._set_method_or_property(self._com, "setEvent", "event", p_val._com)
 
 
 class RPExecutionOccurrence(IRPModelElement):
@@ -78,7 +77,7 @@ class RPExecutionOccurrence(IRPModelElement):
     # No deprecated IRPExecutionOccurrence methods.
 
     def get_message(self) -> "RPMessage":
-        return cast("RPMessage", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getMessage", "message")))
+        return cast("RPMessage", self.wrap(self._get_method_or_property(self._com, "getMessage", "message")))
 
 
 class RPGuard(IRPModelElement):
@@ -91,10 +90,10 @@ class RPGuard(IRPModelElement):
     # No deprecated IRPGuard methods.
 
     def get_body(self) -> str:
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getBody", "body"))
+        return str(self._get_method_or_property(self._com, "getBody", "body"))
 
     def set_body(self, body: str) -> None:
-        AbstractRPModelElement._set_method_or_property(self._com, "setBody", "body", body)
+        self._set_method_or_property(self._com, "setBody", "body", body)
 
 
 class RPInteractionOccurrence(IRPModelElement):
@@ -108,13 +107,13 @@ class RPInteractionOccurrence(IRPModelElement):
     # No deprecated IRPInteractionOccurrence methods.
 
     def get_message_points(self) -> "IRPCollection":
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getMessagePoints", "messagePoints"))
+        return IRPCollection(self._get_method_or_property(self._com, "getMessagePoints", "messagePoints"))
 
     def get_reference_sequence_diagram(self) -> "RPSequenceDiagram":
-        return cast("RPSequenceDiagram", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getReferenceSequenceDiagram", "referenceSequenceDiagram")))
+        return cast("RPSequenceDiagram", self.wrap(self._get_method_or_property(self._com, "getReferenceSequenceDiagram", "referenceSequenceDiagram")))
 
     def set_reference_sequence_diagram(self, reference_sequence_diagram: "RPSequenceDiagram") -> None:
-        AbstractRPModelElement._set_method_or_property(self._com, "setReferenceSequenceDiagram", "referenceSequenceDiagram", reference_sequence_diagram._com)
+        self._set_method_or_property(self._com, "setReferenceSequenceDiagram", "referenceSequenceDiagram", reference_sequence_diagram._com)
 
 
 class RPInteractionOperand(RPCollaboration):
@@ -129,13 +128,13 @@ class RPInteractionOperand(RPCollaboration):
     # No deprecated IRPInteractionOperand methods.
 
     def get_contained_messages(self) -> "IRPCollection":
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getContainedMessages", "containedMessages"))
+        return IRPCollection(self._get_method_or_property(self._com, "getContainedMessages", "containedMessages"))
 
     def get_interaction_constraint(self) -> str:
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getInteractionConstraint", "interactionConstraint"))
+        return str(self._get_method_or_property(self._com, "getInteractionConstraint", "interactionConstraint"))
 
     def set_interaction_constraint(self, interaction_constraint: str) -> None:
-        AbstractRPModelElement._set_method_or_property(self._com, "setInteractionConstraint", "interactionConstraint", interaction_constraint)
+        self._set_method_or_property(self._com, "setInteractionConstraint", "interactionConstraint", interaction_constraint)
 
 
 class RPInteractionOperator(IRPModelElement):
@@ -149,13 +148,13 @@ class RPInteractionOperator(IRPModelElement):
     # No deprecated IRPInteractionOperator methods.
 
     def get_interaction_operands(self) -> "IRPCollection":
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getInteractionOperands", "interactionOperands"))
+        return IRPCollection(self._get_method_or_property(self._com, "getInteractionOperands", "interactionOperands"))
 
     def get_interaction_type(self) -> str:
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getInteractionType", "interactionType"))
+        return str(self._get_method_or_property(self._com, "getInteractionType", "interactionType"))
 
     def set_interaction_type(self, interaction_type: str) -> None:
-        AbstractRPModelElement._set_method_or_property(self._com, "setInteractionType", "interactionType", interaction_type)
+        self._set_method_or_property(self._com, "setInteractionType", "interactionType", interaction_type)
 
 
 class RPMessage(IRPModelElement):
@@ -202,112 +201,112 @@ class RPMessage(IRPModelElement):
     # No deprecated IRPMessage methods.
 
     def add_source_execution_occurrence(self) -> "RPExecutionOccurrence":
-        return cast("RPExecutionOccurrence", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addSourceExecutionOccurrence())))
+        return cast("RPExecutionOccurrence", self.wrap(self.call_com(lambda: self._com.addSourceExecutionOccurrence())))
 
     def add_target_execution_occurrence(self) -> "RPExecutionOccurrence":
-        return cast("RPExecutionOccurrence", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addTargetExecutionOccurrence())))
+        return cast("RPExecutionOccurrence", self.wrap(self.call_com(lambda: self._com.addTargetExecutionOccurrence())))
 
     def get_actual_parameter_list(self) -> "IRPCollection":
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getActualParameterList", "actualParameterList"))
+        return IRPCollection(self._get_method_or_property(self._com, "getActualParameterList", "actualParameterList"))
 
     def get_communication_connection(self) -> "RPAssociationRole":
-        return cast("RPAssociationRole", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getCommunicationConnection", "communicationConnection")))
+        return cast("RPAssociationRole", self.wrap(self._get_method_or_property(self._com, "getCommunicationConnection", "communicationConnection")))
 
     def get_condition(self) -> str:
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getCondition", "condition"))
+        return str(self._get_method_or_property(self._com, "getCondition", "condition"))
 
     def get_duration_constraint(self) -> str:
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getDurationConstraint", "durationConstraint"))
+        return str(self._get_method_or_property(self._com, "getDurationConstraint", "durationConstraint"))
 
     def get_duration_observation(self) -> str:
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getDurationObservation", "durationObservation"))
+        return str(self._get_method_or_property(self._com, "getDurationObservation", "durationObservation"))
 
     def get_flow_port(self) -> "RPSysMLPort":
-        return cast("RPSysMLPort", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getFlowPort", "flowPort")))
+        return cast("RPSysMLPort", self.wrap(self._get_method_or_property(self._com, "getFlowPort", "flowPort")))
 
     def get_formal_interface_item(self) -> "IRPInterfaceItem":
-        return cast("IRPInterfaceItem", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getFormalInterfaceItem", "formalInterfaceItem")))
+        return cast("IRPInterfaceItem", self.wrap(self._get_method_or_property(self._com, "getFormalInterfaceItem", "formalInterfaceItem")))
 
     def get_formal_type(self) -> "Optional[IRPModelElement]":
-        return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getFormalType", "formalType"))
+        return self.wrap(self._get_method_or_property(self._com, "getFormalType", "formalType"))
 
     def get_invariant(self) -> str:
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getInvariant", "invariant"))
+        return str(self._get_method_or_property(self._com, "getInvariant", "invariant"))
 
     def get_message_type(self) -> str:
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getMessageType", "messageType"))
+        return str(self._get_method_or_property(self._com, "getMessageType", "messageType"))
 
     def get_port(self) -> "IRPPort":
-        return cast("IRPPort", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getPort", "port")))
+        return cast("IRPPort", self.wrap(self._get_method_or_property(self._com, "getPort", "port")))
 
     def get_return_value(self) -> str:
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getReturnValue", "returnValue"))
+        return str(self._get_method_or_property(self._com, "getReturnValue", "returnValue"))
 
     def get_sequence_number(self) -> str:
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getSequenceNumber", "sequenceNumber"))
+        return str(self._get_method_or_property(self._com, "getSequenceNumber", "sequenceNumber"))
 
     def get_signature(self) -> str:
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getSignature", "signature"))
+        return str(self._get_method_or_property(self._com, "getSignature", "signature"))
 
     def get_source(self) -> "RPClassifierRole":
-        return cast("RPClassifierRole", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getSource", "source")))
+        return cast("RPClassifierRole", self.wrap(self._get_method_or_property(self._com, "getSource", "source")))
 
     def get_source_execution_occurrence(self) -> "RPExecutionOccurrence":
-        return cast("RPExecutionOccurrence", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getSourceExecutionOccurrence", "sourceExecutionOccurrence")))
+        return cast("RPExecutionOccurrence", self.wrap(self._get_method_or_property(self._com, "getSourceExecutionOccurrence", "sourceExecutionOccurrence")))
 
     def get_target(self) -> "RPClassifierRole":
-        return cast("RPClassifierRole", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getTarget", "target")))
+        return cast("RPClassifierRole", self.wrap(self._get_method_or_property(self._com, "getTarget", "target")))
 
     def get_target_execution_occurrence(self) -> "RPExecutionOccurrence":
-        return cast("RPExecutionOccurrence", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getTargetExecutionOccurrence", "targetExecutionOccurrence")))
+        return cast("RPExecutionOccurrence", self.wrap(self._get_method_or_property(self._com, "getTargetExecutionOccurrence", "targetExecutionOccurrence")))
 
     def get_time_constraint(self) -> str:
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getTimeConstraint", "timeConstraint"))
+        return str(self._get_method_or_property(self._com, "getTimeConstraint", "timeConstraint"))
 
     def get_time_observation(self) -> str:
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getTimeObservation", "timeObservation"))
+        return str(self._get_method_or_property(self._com, "getTimeObservation", "timeObservation"))
 
     def get_timer_value(self) -> str:
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getTimerValue", "timerValue"))
+        return str(self._get_method_or_property(self._com, "getTimerValue", "timerValue"))
 
     def reroute(self) -> None:
-        AbstractRPModelElement.call_com(lambda: self._com.reroute())
+        self.call_com(lambda: self._com.reroute())
 
     def set_actual_parameter_list(self, p_val: "IRPCollection") -> None:
-        AbstractRPModelElement.call_com(lambda: self._com.setActualParameterList(p_val._com))
+        self.call_com(lambda: self._com.setActualParameterList(p_val._com))
 
     def set_duration_constraint(self, duration_constraint: str) -> None:
-        AbstractRPModelElement._set_method_or_property(self._com, "setDurationConstraint", "durationConstraint", duration_constraint)
+        self._set_method_or_property(self._com, "setDurationConstraint", "durationConstraint", duration_constraint)
 
     def set_duration_observation(self, duration_observation: str) -> None:
-        AbstractRPModelElement._set_method_or_property(self._com, "setDurationObservation", "durationObservation", duration_observation)
+        self._set_method_or_property(self._com, "setDurationObservation", "durationObservation", duration_observation)
 
     def set_flow_port(self, flow_port: "RPSysMLPort") -> None:
-        AbstractRPModelElement._set_method_or_property(self._com, "setFlowPort", "flowPort", flow_port._com)
+        self._set_method_or_property(self._com, "setFlowPort", "flowPort", flow_port._com)
 
     def set_formal_interface_item(self, new_val: "IRPInterfaceItem") -> None:
-        AbstractRPModelElement._set_method_or_property(self._com, "setFormalInterfaceItem", "formalInterfaceItem", new_val._com)
+        self._set_method_or_property(self._com, "setFormalInterfaceItem", "formalInterfaceItem", new_val._com)
 
     def set_formal_type(self, formal_type: "IRPModelElement") -> None:
-        AbstractRPModelElement._set_method_or_property(self._com, "setFormalType", "formalType", formal_type._com)
+        self._set_method_or_property(self._com, "setFormalType", "formalType", formal_type._com)
 
     def set_invariant(self, invariant: str) -> None:
-        AbstractRPModelElement._set_method_or_property(self._com, "setInvariant", "invariant", invariant)
+        self._set_method_or_property(self._com, "setInvariant", "invariant", invariant)
 
     def set_port(self, port: "IRPPort") -> None:
-        AbstractRPModelElement._set_method_or_property(self._com, "setPort", "port", port._com)
+        self._set_method_or_property(self._com, "setPort", "port", port._com)
 
     def set_return_value(self, return_value: str) -> None:
-        AbstractRPModelElement._set_method_or_property(self._com, "setReturnValue", "returnValue", return_value)
+        self._set_method_or_property(self._com, "setReturnValue", "returnValue", return_value)
 
     def set_time_constraint(self, time_constraint: str) -> None:
-        AbstractRPModelElement._set_method_or_property(self._com, "setTimeConstraint", "timeConstraint", time_constraint)
+        self._set_method_or_property(self._com, "setTimeConstraint", "timeConstraint", time_constraint)
 
     def set_time_observation(self, time_observation: str) -> None:
-        AbstractRPModelElement._set_method_or_property(self._com, "setTimeObservation", "timeObservation", time_observation)
+        self._set_method_or_property(self._com, "setTimeObservation", "timeObservation", time_observation)
 
     def set_timer_value(self, timer_value: str) -> None:
-        AbstractRPModelElement._set_method_or_property(self._com, "setTimerValue", "timerValue", timer_value)
+        self._set_method_or_property(self._com, "setTimerValue", "timerValue", timer_value)
 
 
 class RPTransition(IRPModelElement):
@@ -341,73 +340,73 @@ class RPTransition(IRPModelElement):
     # No deprecated IRPTransition methods.
 
     def get_inherits_from(self) -> "RPTransition":
-        return cast("RPTransition", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getInheritsFrom", "inheritsFrom")))
+        return cast("RPTransition", self.wrap(self._get_method_or_property(self._com, "getInheritsFrom", "inheritsFrom")))
 
     def get_is_overridden(self) -> int:
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsOverridden", "isOverridden"))
+        return int(self._get_method_or_property(self._com, "getIsOverridden", "isOverridden"))
 
     def get_its_action(self) -> "RPAction":
-        return cast("RPAction", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getItsAction", "itsAction")))
+        return cast("RPAction", self.wrap(self._get_method_or_property(self._com, "getItsAction", "itsAction")))
 
     def get_its_guard(self) -> "RPGuard":
-        return cast("RPGuard", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getItsGuard", "itsGuard")))
+        return cast("RPGuard", self.wrap(self._get_method_or_property(self._com, "getItsGuard", "itsGuard")))
 
     def get_its_label(self) -> str:
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getItsLabel", "itsLabel"))
+        return str(self._get_method_or_property(self._com, "getItsLabel", "itsLabel"))
 
     def get_its_source(self) -> "RPStateVertex":
-        return cast("RPStateVertex", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getItsSource", "itsSource")))
+        return cast("RPStateVertex", self.wrap(self._get_method_or_property(self._com, "getItsSource", "itsSource")))
 
     def get_its_statechart(self) -> "RPStatechart":
-        return cast("RPStatechart", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getItsStatechart", "itsStatechart")))
+        return cast("RPStatechart", self.wrap(self._get_method_or_property(self._com, "getItsStatechart", "itsStatechart")))
 
     def get_its_target(self) -> "RPStateVertex":
-        return cast("RPStateVertex", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getItsTarget", "itsTarget")))
+        return cast("RPStateVertex", self.wrap(self._get_method_or_property(self._com, "getItsTarget", "itsTarget")))
 
     def get_its_trigger(self) -> "RPTrigger":
-        return cast("RPTrigger", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getItsTrigger", "itsTrigger")))
+        return cast("RPTrigger", self.wrap(self._get_method_or_property(self._com, "getItsTrigger", "itsTrigger")))
 
     def get_of_state(self) -> "RPState":
-        return cast("RPState", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getOfState", "ofState")))
+        return cast("RPState", self.wrap(self._get_method_or_property(self._com, "getOfState", "ofState")))
 
     def is_default_transition(self) -> int:
-        return int(AbstractRPModelElement.call_com(lambda: self._com.isDefaultTransition()))
+        return int(self.call_com(lambda: self._com.isDefaultTransition()))
 
     def is_static_reaction(self) -> int:
-        return int(AbstractRPModelElement.call_com(lambda: self._com.isStaticReaction()))
+        return int(self.call_com(lambda: self._com.isStaticReaction()))
 
     def its_compound_source(self) -> "IRPCollection":
-        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.itsCompoundSource()))
+        return IRPCollection(self.call_com(lambda: self._com.itsCompoundSource()))
 
     def override_inheritance(self) -> None:
-        AbstractRPModelElement.call_com(lambda: self._com.overrideInheritance())
+        self.call_com(lambda: self._com.overrideInheritance())
 
     def reset_label_inheritance(self) -> "RPTransition":
-        return cast("RPTransition", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.resetLabelInheritance())))
+        return cast("RPTransition", self.wrap(self.call_com(lambda: self._com.resetLabelInheritance())))
 
     def set_its_action(self, action: str) -> "RPAction":
-        return cast("RPAction", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.setItsAction(action))))
+        return cast("RPAction", self.wrap(self.call_com(lambda: self._com.setItsAction(action))))
 
     def set_its_guard(self, guard: str) -> "RPGuard":
-        return cast("RPGuard", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.setItsGuard(guard))))
+        return cast("RPGuard", self.wrap(self.call_com(lambda: self._com.setItsGuard(guard))))
 
     def set_its_label(self, trigger: str, guard: str, action: str) -> None:
-        AbstractRPModelElement.call_com(lambda: self._com.setItsLabel(trigger, guard, action))
+        self.call_com(lambda: self._com.setItsLabel(trigger, guard, action))
 
     def set_its_source(self, its_source: "RPStateVertex") -> None:
-        AbstractRPModelElement._set_method_or_property(self._com, "setItsSource", "itsSource", its_source._com)
+        self._set_method_or_property(self._com, "setItsSource", "itsSource", its_source._com)
 
     def set_its_statechart(self, its_statechart: "RPStatechart") -> None:
-        AbstractRPModelElement._set_method_or_property(self._com, "setItsStatechart", "itsStatechart", its_statechart._com)
+        self._set_method_or_property(self._com, "setItsStatechart", "itsStatechart", its_statechart._com)
 
     def set_its_target(self, its_target: "RPStateVertex") -> None:
-        AbstractRPModelElement._set_method_or_property(self._com, "setItsTarget", "itsTarget", its_target._com)
+        self._set_method_or_property(self._com, "setItsTarget", "itsTarget", its_target._com)
 
     def set_its_trigger(self, trigger: str) -> "RPTrigger":
-        return cast("RPTrigger", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.setItsTrigger(trigger))))
+        return cast("RPTrigger", self.wrap(self.call_com(lambda: self._com.setItsTrigger(trigger))))
 
     def unoverride_inheritance(self) -> None:
-        AbstractRPModelElement.call_com(lambda: self._com.unoverrideInheritance())
+        self.call_com(lambda: self._com.unoverrideInheritance())
 
 
 class RPTrigger(IRPModelElement):
@@ -423,19 +422,19 @@ class RPTrigger(IRPModelElement):
     # No deprecated IRPTrigger methods.
 
     def get_body(self) -> str:
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getBody", "body"))
+        return str(self._get_method_or_property(self._com, "getBody", "body"))
 
     def get_its_operation(self) -> "IRPInterfaceItem":
-        return cast("IRPInterfaceItem", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getItsOperation", "itsOperation")))
+        return cast("IRPInterfaceItem", self.wrap(self._get_method_or_property(self._com, "getItsOperation", "itsOperation")))
 
     def is_operation(self) -> int:
-        return int(AbstractRPModelElement.call_com(lambda: self._com.isOperation()))
+        return int(self.call_com(lambda: self._com.isOperation()))
 
     def is_timeout(self) -> int:
-        return int(AbstractRPModelElement.call_com(lambda: self._com.isTimeout()))
+        return int(self.call_com(lambda: self._com.isTimeout()))
 
     def set_body(self, body: str) -> None:
-        AbstractRPModelElement._set_method_or_property(self._com, "setBody", "body", body)
+        self._set_method_or_property(self._com, "setBody", "body", body)
 
 
 class RPDestructionEvent(RPMessage):
@@ -449,14 +448,14 @@ class RPDestructionEvent(RPMessage):
     pass
 
 
-AbstractRPModelElement.register_wrapper("Message", RPMessage)
-AbstractRPModelElement.register_wrapper("Event", RPEvent)
-AbstractRPModelElement.register_wrapper("Transition", RPTransition)
-AbstractRPModelElement.register_wrapper("Trigger", RPTrigger)
-AbstractRPModelElement.register_wrapper("Guard", RPGuard)
-AbstractRPModelElement.register_wrapper("DestructionEvent", RPDestructionEvent)
-AbstractRPModelElement.register_wrapper("ExecutionOccurrence", RPExecutionOccurrence)
-AbstractRPModelElement.register_wrapper("EventReception", RPEventReception)
-AbstractRPModelElement.register_wrapper("InteractionOccurrence", RPInteractionOccurrence)
-AbstractRPModelElement.register_wrapper("InteractionOperand", RPInteractionOperand)
-AbstractRPModelElement.register_wrapper("InteractionOperator", RPInteractionOperator)
+IRPModelElement.register_wrapper("Message", RPMessage)
+IRPModelElement.register_wrapper("Event", RPEvent)
+IRPModelElement.register_wrapper("Transition", RPTransition)
+IRPModelElement.register_wrapper("Trigger", RPTrigger)
+IRPModelElement.register_wrapper("Guard", RPGuard)
+IRPModelElement.register_wrapper("DestructionEvent", RPDestructionEvent)
+IRPModelElement.register_wrapper("ExecutionOccurrence", RPExecutionOccurrence)
+IRPModelElement.register_wrapper("EventReception", RPEventReception)
+IRPModelElement.register_wrapper("InteractionOccurrence", RPInteractionOccurrence)
+IRPModelElement.register_wrapper("InteractionOperand", RPInteractionOperand)
+IRPModelElement.register_wrapper("InteractionOperator", RPInteractionOperator)

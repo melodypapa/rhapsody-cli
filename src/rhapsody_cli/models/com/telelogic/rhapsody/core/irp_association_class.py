@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.elements.relations.model_relation import RPRelation
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class import IRPClass
-from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 
 class IRPAssociationClass(IRPClass):
@@ -37,7 +37,7 @@ class IRPAssociationClass(IRPClass):
         """
         from rhapsody_cli.models.elements.relations.model_relation import RPRelation
 
-        return cast(RPRelation, AbstractRPModelElement.wrap(AbstractRPModelElement.get_com_property(self._com, "end1")))
+        return cast(RPRelation, self.wrap(self.get_com_property(self._com, "end1")))
 
     def get_end2(self) -> RPRelation:
         """Returns the second end of the association.
@@ -50,7 +50,7 @@ class IRPAssociationClass(IRPClass):
         """
         from rhapsody_cli.models.elements.relations.model_relation import RPRelation
 
-        return cast(RPRelation, AbstractRPModelElement.wrap(AbstractRPModelElement.get_com_property(self._com, "end2")))
+        return cast(RPRelation, self.wrap(self.get_com_property(self._com, "end2")))
 
     def get_is_class(self) -> int:
         """Checks whether this association class is also a class.
@@ -61,7 +61,7 @@ class IRPAssociationClass(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPAssociationClass::getIsClass()
         """
-        return int(AbstractRPModelElement.get_com_property(self._com, "isClass"))
+        return int(self.get_com_property(self._com, "isClass"))
 
     def set_is_class(self, is_class: int) -> None:
         """Sets whether this association class is also a class.
@@ -72,7 +72,7 @@ class IRPAssociationClass(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPAssociationClass::setIsClass(int isClass)
         """
-        AbstractRPModelElement.set_com_property(self._com, "isClass", is_class)
+        self.set_com_property(self._com, "isClass", is_class)
 
 
-AbstractRPModelElement.register_wrapper("AssociationClass", IRPAssociationClass)
+IRPModelElement.register_wrapper("AssociationClass", IRPAssociationClass)

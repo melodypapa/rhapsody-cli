@@ -2,7 +2,7 @@
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.elements.containment import RPCollaboration
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -18,7 +18,7 @@ def test_collaboration_is_a_unit() -> None:
 def test_collaboration_is_registered_for_meta_class_collaboration() -> None:
     fake = make_fake_element("Collaboration", properties={"name": "Collab1"})
 
-    wrapped = AbstractRPModelElement.wrap(fake)
+    wrapped = IRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, RPCollaboration)
 

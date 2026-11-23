@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.containment.model_component import RPComponent
@@ -249,7 +249,7 @@ class RPConfiguration(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPConfiguration::getItsComponent()
         """
-        return cast("RPComponent", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getItsComponent())))
+        return cast("RPComponent", self.wrap(self.call_com(lambda: self._com.getItsComponent())))
 
     def get_libraries(self) -> str:
         """Returns the libraries for the configuration.
@@ -571,4 +571,4 @@ class RPConfiguration(IRPUnit):
         self.call_com(lambda: self._com.setTimeModel(value))
 
 
-AbstractRPModelElement.register_wrapper("Configuration", RPConfiguration)
+IRPModelElement.register_wrapper("Configuration", RPConfiguration)

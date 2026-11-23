@@ -11,7 +11,6 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
-from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.interactions.model_interactions import RPEvent, RPEventReception
 from tests.unit.models.fakes import make_fake_element
 
@@ -81,7 +80,7 @@ def test_class_add_class_nested_wraps_result() -> None:
 def test_class_is_registered_for_meta_class_class() -> None:
     fake = make_fake_element("Class", properties={"name": "Widget"})
 
-    wrapped = AbstractRPModelElement.wrap(fake)
+    wrapped = IRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, IRPClass)
 
@@ -104,7 +103,7 @@ def test_class_add_event_reception_with_event_raises_without_com_dispatch() -> N
     klass = IRPClass(fake)
 
     with pytest.raises(NotImplementedError):
-        wrapped_event = AbstractRPModelElement.wrap(event)
+        wrapped_event = IRPModelElement.wrap(event)
         klass.add_event_reception_with_event("onTick", cast(RPEvent, wrapped_event))
 
     fake.addEventReceptionWithEvent.assert_not_called()
@@ -122,11 +121,11 @@ def test_class_add_link_unwraps_all_args_and_wraps_result() -> None:
     klass = IRPClass(fake)
 
     result = klass.add_link(
-        cast(IRPModelElement, AbstractRPModelElement.wrap(from_part)),
-        cast(IRPModelElement, AbstractRPModelElement.wrap(to_part)),
-        cast(IRPModelElement, AbstractRPModelElement.wrap(assoc)),
-        cast(IRPModelElement, AbstractRPModelElement.wrap(from_port)),
-        cast(IRPModelElement, AbstractRPModelElement.wrap(to_port)),
+        cast(IRPModelElement, IRPModelElement.wrap(from_part)),
+        cast(IRPModelElement, IRPModelElement.wrap(to_part)),
+        cast(IRPModelElement, IRPModelElement.wrap(assoc)),
+        cast(IRPModelElement, IRPModelElement.wrap(from_port)),
+        cast(IRPModelElement, IRPModelElement.wrap(to_port)),
     )
 
     fake.addLink.assert_called_once_with(from_part, to_part, assoc, from_port, to_port)
@@ -144,10 +143,10 @@ def test_class_add_link_to_part_via_port_unwraps_and_wraps() -> None:
     klass = IRPClass(fake)
 
     result = klass.add_link_to_part_via_port(
-        cast(IRPModelElement, AbstractRPModelElement.wrap(to_part)),
-        cast(IRPModelElement, AbstractRPModelElement.wrap(part_port)),
-        cast(IRPModelElement, AbstractRPModelElement.wrap(class_port)),
-        cast(IRPModelElement, AbstractRPModelElement.wrap(assoc)),
+        cast(IRPModelElement, IRPModelElement.wrap(to_part)),
+        cast(IRPModelElement, IRPModelElement.wrap(part_port)),
+        cast(IRPModelElement, IRPModelElement.wrap(class_port)),
+        cast(IRPModelElement, IRPModelElement.wrap(assoc)),
     )
 
     fake.addLinkToPartViaPort.assert_called_once_with(to_part, part_port, class_port, assoc)
@@ -204,7 +203,7 @@ def test_class_delete_constructor_unwraps_arg() -> None:
     ctor = make_fake_element("Operation", properties={"name": "Widget"})
     klass = IRPClass(fake)
 
-    wrapped_ctor = AbstractRPModelElement.wrap(ctor)
+    wrapped_ctor = IRPModelElement.wrap(ctor)
     klass.delete_constructor(cast(IRPOperation, wrapped_ctor))
 
     fake.deleteConstructor.assert_called_once_with(ctor)
@@ -224,7 +223,7 @@ def test_class_delete_event_reception_unwraps_arg() -> None:
     reception = make_fake_element("EventReception", properties={"name": "onEvent"})
     klass = IRPClass(fake)
 
-    wrapped_reception = AbstractRPModelElement.wrap(reception)
+    wrapped_reception = IRPModelElement.wrap(reception)
     klass.delete_event_reception(cast(RPEventReception, wrapped_reception))
 
     fake.deleteEventReception.assert_called_once_with(reception)
@@ -235,7 +234,7 @@ def test_class_delete_reception_unwraps_arg() -> None:
     reception = make_fake_element("EventReception", properties={"name": "onSignal"})
     klass = IRPClass(fake)
 
-    wrapped_reception = AbstractRPModelElement.wrap(reception)
+    wrapped_reception = IRPModelElement.wrap(reception)
     klass.delete_reception(cast(RPEventReception, wrapped_reception))
 
     fake.deleteReception.assert_called_once_with(reception)
@@ -365,4 +364,4 @@ def test_class_canonical_module_registers_wrapper() -> None:
 
     fake = make_fake_element("Class")
 
-    assert isinstance(AbstractRPModelElement.wrap(fake), CanonicalRPClass)
+    assert isinstance(IRPModelElement.wrap(fake), CanonicalRPClass)

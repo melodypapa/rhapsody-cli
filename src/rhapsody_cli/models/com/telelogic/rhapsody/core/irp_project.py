@@ -11,7 +11,6 @@ from typing import TYPE_CHECKING, cast
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
-from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
@@ -122,7 +121,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::addPackage(java.lang.String name)
         """
-        return cast(IRPPackage, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addPackage(name))))
+        return cast(IRPPackage, self.wrap(self.call_com(lambda: self._com.addPackage(name))))
 
     def close(self) -> None:
         """Closes the project.
@@ -130,7 +129,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::close()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.close())
+        self.call_com(lambda: self._com.close())
 
     def become_active_project(self) -> None:
         """Makes this project the active project in Rhapsody.
@@ -140,7 +139,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::becomeActiveProject()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.becomeActiveProject())
+        self.call_com(lambda: self._com.becomeActiveProject())
 
     def find_component(self, name: str) -> RPComponent:
         """Finds a component in the project by name.
@@ -156,7 +155,7 @@ class IRPProject(IRPPackage):
         """
         from rhapsody_cli.models.elements.containment.model_component import RPComponent
 
-        return cast(RPComponent, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findComponent(name))))
+        return cast(RPComponent, self.wrap(self.call_com(lambda: self._com.findComponent(name))))
 
     def get_packages(self) -> IRPCollection:
         """Returns all top-level packages in the project.
@@ -167,7 +166,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getPackages()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "packages"))
+        return IRPCollection(self.get_com_property(self._com, "packages"))
 
     def add_class(self, name: str) -> IRPClass:
         """Adds a new class to the project's top level.
@@ -183,7 +182,7 @@ class IRPProject(IRPPackage):
         """
         from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
 
-        return cast(IRPClass, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addClass(name))))
+        return cast(IRPClass, self.wrap(self.call_com(lambda: self._com.addClass(name))))
 
     def add_actor(self, name: str) -> RPActor:
         """Adds a new actor to the project's top level.
@@ -199,7 +198,7 @@ class IRPProject(IRPPackage):
         """
         from rhapsody_cli.models.elements.classifiers.model_actor import RPActor
 
-        return cast(RPActor, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addActor(name))))
+        return cast(RPActor, self.wrap(self.call_com(lambda: self._com.addActor(name))))
 
     def get_components(self) -> IRPCollection:
         """Returns all components in the project.
@@ -210,7 +209,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getComponents()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "components"))
+        return IRPCollection(self.get_com_property(self._com, "components"))
 
     def find_element_by_guid(self, guid: str) -> IRPModelElement | None:
         """Finds an element in the project by GUID.
@@ -224,7 +223,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::findElementByGUID(java.lang.String theGUID)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findElementByGUID(guid)))
+        return self.wrap(self.call_com(lambda: self._com.findElementByGUID(guid)))
 
     # --- Component methods ---
     def add_component(self, name: str) -> RPComponent:
@@ -241,7 +240,7 @@ class IRPProject(IRPPackage):
         """
         from rhapsody_cli.models.elements.containment.model_component import RPComponent
 
-        return cast(RPComponent, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addComponent(name))))
+        return cast(RPComponent, self.wrap(self.call_com(lambda: self._com.addComponent(name))))
 
     def delete_component(self, component: IRPModelElement) -> None:
         """Deletes a component from the project.
@@ -252,7 +251,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::deleteComponent(com.telelogic.rhapsody.core.IRPComponent component)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteComponent(component._com))
+        self.call_com(lambda: self._com.deleteComponent(component._com))
 
     # --- Node methods ---
     def add_node(self, name: str) -> RPNode:
@@ -269,7 +268,7 @@ class IRPProject(IRPPackage):
         """
         from rhapsody_cli.models.elements.containment.model_node import RPNode
 
-        return cast(RPNode, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNode(name))))
+        return cast(RPNode, self.wrap(self.call_com(lambda: self._com.addNode(name))))
 
     def get_nodes(self) -> IRPCollection:
         """Returns all nodes in the project.
@@ -280,7 +279,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getNodes()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "nodes"))
+        return IRPCollection(self.get_com_property(self._com, "nodes"))
 
     def find_node(self, name: str) -> RPNode:
         """Finds a node in the project by name.
@@ -296,7 +295,7 @@ class IRPProject(IRPPackage):
         """
         from rhapsody_cli.models.elements.containment.model_node import RPNode
 
-        return cast(RPNode, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findNode(name))))
+        return cast(RPNode, self.wrap(self.call_com(lambda: self._com.findNode(name))))
 
     def delete_node(self, node: IRPModelElement) -> None:
         """Deletes a node from the project.
@@ -307,7 +306,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::deleteNode(com.telelogic.rhapsody.core.IRPNode node)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteNode(node._com))
+        self.call_com(lambda: self._com.deleteNode(node._com))
 
     # --- Configuration methods ---
     def get_active_configuration(self) -> RPConfiguration:
@@ -321,7 +320,7 @@ class IRPProject(IRPPackage):
         """
         from rhapsody_cli.models.elements.containment.model_configuration import RPConfiguration
 
-        return cast(RPConfiguration, AbstractRPModelElement.wrap(AbstractRPModelElement.get_com_property(self._com, "activeConfiguration")))
+        return cast(RPConfiguration, self.wrap(self.get_com_property(self._com, "activeConfiguration")))
 
     def set_active_configuration(self, config: IRPModelElement) -> None:
         """Sets the active configuration of the project.
@@ -332,7 +331,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::setActiveConfiguration(com.telelogic.rhapsody.core.IRPConfiguration config)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setActiveConfiguration(config._com))
+        self.call_com(lambda: self._com.setActiveConfiguration(config._com))
 
     def get_active_component(self) -> RPComponent:
         """Returns the active component of the project.
@@ -345,7 +344,7 @@ class IRPProject(IRPPackage):
         """
         from rhapsody_cli.models.elements.containment.model_component import RPComponent
 
-        return cast(RPComponent, AbstractRPModelElement.wrap(AbstractRPModelElement.get_com_property(self._com, "activeComponent")))
+        return cast(RPComponent, self.wrap(self.get_com_property(self._com, "activeComponent")))
 
     def set_active_component(self, component: IRPModelElement) -> None:
         """Sets the active component of the project.
@@ -356,7 +355,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::setActiveComponent(com.telelogic.rhapsody.core.IRPComponent component)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setActiveComponent(component._com))
+        self.call_com(lambda: self._com.setActiveComponent(component._com))
 
     # --- Stereotype methods ---
     def get_all_stereotypes(self) -> IRPCollection:
@@ -368,7 +367,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getAllStereotypes()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "allStereotypes"))
+        return IRPCollection(self.get_com_property(self._com, "allStereotypes"))
 
     def get_new_collaboration(self) -> RPCollaboration:
         """Returns a new collaboration object.
@@ -381,7 +380,7 @@ class IRPProject(IRPPackage):
         """
         from rhapsody_cli.models.elements.containment.model_collaboration import RPCollaboration
 
-        return cast(RPCollaboration, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.getNewCollaboration())))
+        return cast(RPCollaboration, self.wrap(self.call_com(lambda: self._com.getNewCollaboration())))
 
     # --- Profile methods ---
     def add_profile(self, name: str) -> IRPModelElement:
@@ -396,7 +395,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::addProfile(java.lang.String name)
         """
-        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addProfile(name))))
+        return cast(IRPModelElement, self.wrap(self.call_com(lambda: self._com.addProfile(name))))
 
     def get_profiles(self) -> IRPCollection:
         """Returns all profiles in the project.
@@ -407,7 +406,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getProfiles()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "profiles"))
+        return IRPCollection(self.get_com_property(self._com, "profiles"))
 
     # --- Save methods ---
     def save_as(self, file_path: str) -> None:
@@ -419,7 +418,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::saveAs(java.lang.String filePath)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.saveAs(file_path))
+        self.call_com(lambda: self._com.saveAs(file_path))
 
     # --- Find by binary ID ---
     def find_element_by_binary_id(self, binary_id: str) -> IRPModelElement | None:
@@ -434,7 +433,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::findElementByBinaryID(java.lang.String binaryID)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findElementByBinaryID(binary_id)))
+        return self.wrap(self.call_com(lambda: self._com.findElementByBinaryID(binary_id)))
 
     def find_element_by_file_name(self, file_name: str) -> IRPModelElement | None:
         """Finds an element in the project by file name.
@@ -448,7 +447,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::findElementByFileName(java.lang.String fileName)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findElementByFileName(file_name)))
+        return self.wrap(self.call_com(lambda: self._com.findElementByFileName(file_name)))
 
     # --- Code generation methods ---
     def get_code_generated_files(self) -> IRPCollection:
@@ -460,7 +459,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getCodeGeneratedFiles()
         """
-        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getCodeGeneratedFiles()))
+        return IRPCollection(self.call_com(lambda: self._com.getCodeGeneratedFiles()))
 
     # --- Other methods ---
     def allow_auto_save(self, allow: int) -> None:
@@ -472,7 +471,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::allowAutoSave(int allow)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.allowAutoSave(allow))
+        self.call_com(lambda: self._com.allowAutoSave(allow))
 
     def allow_non_unique_names(self, allow: int) -> None:
         """Sets whether non-unique names are allowed for elements.
@@ -483,7 +482,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::allowNonUniqueNames(int allow)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.allowNonUniqueNames(allow))
+        self.call_com(lambda: self._com.allowNonUniqueNames(allow))
 
     def get_cg_simplified_model_package(self) -> IRPPackage:
         """Returns the code generation simplified model package.
@@ -494,7 +493,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getCgSimplifiedModelPackage()
         """
-        return cast(IRPPackage, AbstractRPModelElement.wrap(AbstractRPModelElement.get_com_property(self._com, "cgSimplifiedModelPackage")))
+        return cast(IRPPackage, self.wrap(self.get_com_property(self._com, "cgSimplifiedModelPackage")))
 
     def locate_in_ide(self) -> None:
         """Locates this project in the Rhapsody IDE.
@@ -502,7 +501,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::locateInIDE()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.locateInIDE())
+        self.call_com(lambda: self._com.locateInIDE())
 
     def is_modified_recursive(self) -> bool:
         """Checks whether the project or any of its contents have unsaved changes.
@@ -513,7 +512,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::isModifiedRecursive()
         """
-        return bool(AbstractRPModelElement.call_com(lambda: self._com.isModifiedRecursive()))
+        return bool(self.call_com(lambda: self._com.isModifiedRecursive()))
 
     def highlight_from_code(self, file_path: str, line_number: int) -> None:
         """Highlights the element in Rhapsody based on code location.
@@ -525,7 +524,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::highlightFromCode(java.lang.String filePath, int lineNumber)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.highlightFromCode(file_path, line_number))
+        self.call_com(lambda: self._com.highlightFromCode(file_path, line_number))
 
     # --- Gateway/Report methods ---
     def gateway_export_to_xml(self, file_path: str) -> None:
@@ -537,7 +536,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::gatewayExportToXML(java.lang.String filePath)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.GatewayExportToXML(file_path))
+        self.call_com(lambda: self._com.GatewayExportToXML(file_path))
 
     def gateway_export_to_xml2(self, file_path: str, options: str) -> None:
         """Exports the project to an XML file using the Gateway tool with options.
@@ -549,7 +548,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::gatewayExportToXML2(java.lang.String filePath, java.lang.String options)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.GatewayExportToXML2(file_path, options))
+        self.call_com(lambda: self._com.GatewayExportToXML2(file_path, options))
 
     def generate_report(self, template_path: str, output_path: str) -> None:
         """Generates a report from the project using the specified template.
@@ -561,7 +560,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::generateReport(java.lang.String templatePath, java.lang.String outputPath)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.GenerateReport(template_path, output_path))
+        self.call_com(lambda: self._com.GenerateReport(template_path, output_path))
 
     # --- Custom Views methods ---
     def add_custom_view_on_browser(self, view: IRPModelElement) -> None:
@@ -573,7 +572,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::addCustomViewOnBrowser(com.telelogic.rhapsody.core.IRPCustomView view)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.addCustomViewOnBrowser(view._com))
+        self.call_com(lambda: self._com.addCustomViewOnBrowser(view._com))
 
     def add_custom_view_on_diagram(self, view: IRPModelElement) -> None:
         """Adds a custom view to be applied on diagrams.
@@ -584,7 +583,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::addCustomViewOnDiagram(com.telelogic.rhapsody.core.IRPCustomView view)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.addCustomViewOnDiagram(view._com))
+        self.call_com(lambda: self._com.addCustomViewOnDiagram(view._com))
 
     def apply_browser_custom_views_on_diagrams(self) -> None:
         """Applies the browser custom views on diagrams.
@@ -592,7 +591,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::applyBrowserCustomViewsOnDiagrams()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.applyBrowserCustomViewsOnDiagrams())
+        self.call_com(lambda: self._com.applyBrowserCustomViewsOnDiagrams())
 
     def get_active_custom_views_on_browser(self) -> IRPCollection:
         """Returns the active custom views applied on the browser.
@@ -603,7 +602,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getActiveCustomViewsOnBrowser()
         """
-        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getActiveCustomViewsOnBrowser()))
+        return IRPCollection(self.call_com(lambda: self._com.getActiveCustomViewsOnBrowser()))
 
     def get_active_custom_views_on_diagram(self) -> IRPCollection:
         """Returns the active custom views applied on diagrams.
@@ -614,7 +613,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getActiveCustomViewsOnDiagram()
         """
-        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getActiveCustomViewsOnDiagram()))
+        return IRPCollection(self.call_com(lambda: self._com.getActiveCustomViewsOnDiagram()))
 
     def remove_custom_view_on_browser(self, view: IRPModelElement) -> None:
         """Removes a custom view from the browser.
@@ -625,7 +624,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::removeCustomViewOnBrowser(com.telelogic.rhapsody.core.IRPCustomView view)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.removeCustomViewOnBrowser(view._com))
+        self.call_com(lambda: self._com.removeCustomViewOnBrowser(view._com))
 
     def remove_custom_view_on_diagram(self, view: IRPModelElement) -> None:
         """Removes a custom view from diagrams.
@@ -636,7 +635,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::removeCustomViewOnDiagram(com.telelogic.rhapsody.core.IRPCustomView view)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.removeCustomViewOnDiagram(view._com))
+        self.call_com(lambda: self._com.removeCustomViewOnDiagram(view._com))
 
     # --- CSV methods ---
     def close_csv_file(self) -> None:
@@ -645,7 +644,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::closeCSVFile()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.closeCSVFile())
+        self.call_com(lambda: self._com.closeCSVFile())
 
     def open_csv_file(self, file_path: str, mode: int) -> None:
         """Opens a CSV file for requirements import.
@@ -657,7 +656,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::openCSVFile(java.lang.String filePath, int mode)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.openCSVFile(file_path, mode))
+        self.call_com(lambda: self._com.openCSVFile(file_path, mode))
 
     def reload_csv_file(self) -> None:
         """Reloads the CSV file currently open in the project.
@@ -665,7 +664,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::reloadCSVFile()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.reloadCSVFile())
+        self.call_com(lambda: self._com.reloadCSVFile())
 
     # --- Remote/Roundtrip methods ---
     def apply_roundtrip_diff_merge(self) -> None:
@@ -674,7 +673,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::applyRoundtripDiffMerge()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.applyRoundtripDiffMerge())
+        self.call_com(lambda: self._com.applyRoundtripDiffMerge())
 
     def enable_rhapsody_model_manager(self) -> None:
         """Enable Rhapsody Model Manager for the project.
@@ -699,7 +698,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::findElementsWithOSLCLink(java.lang.String link)
         """
-        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.findElementsWithOSLCLink(link)))
+        return IRPCollection(self.call_com(lambda: self._com.findElementsWithOSLCLink(link)))
 
     def get_remote_resource_packages(self) -> IRPCollection:
         """Returns the remote resource packages of the project.
@@ -710,7 +709,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getRemoteResourcePackages()
         """
-        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getRemoteResourcePackages()))
+        return IRPCollection(self.call_com(lambda: self._com.getRemoteResourcePackages()))
 
     def get_roundtrip_shadow_model(self) -> object:
         """Returns the roundtrip shadow model of the project.
@@ -721,7 +720,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getRoundtripShadowModel()
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.getRoundtripShadowModel()))
+        return self.wrap(self.call_com(lambda: self._com.getRoundtripShadowModel()))
 
     def is_actively_managed(self) -> int:
         """Checks whether the project is actively managed by Rhapsody Model Manager.
@@ -732,7 +731,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::isActivelyManaged()
         """
-        return int(AbstractRPModelElement.call_com(lambda: self._com.isActivelyManaged()))
+        return int(self.call_com(lambda: self._com.isActivelyManaged()))
 
     def migrate_design_manager_links(self) -> None:
         """Migrate Design Manager links for the project.
@@ -758,7 +757,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::importPackageFromRose(java.lang.String filePath)
         """
-        return cast(IRPPackage, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.importPackageFromRose(file_path))))
+        return cast(IRPPackage, self.wrap(self.call_com(lambda: self._com.importPackageFromRose(file_path))))
 
     def import_project_from_rose(self, file_path: str) -> None:
         """Imports a project from a Rational Rose model file.
@@ -769,7 +768,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::importProjectFromRose(java.lang.String filePath)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.importProjectFromRose(file_path))
+        self.call_com(lambda: self._com.importProjectFromRose(file_path))
 
     # --- Events methods ---
     def check_events_base_ids_solve_collisions(self) -> int:
@@ -781,7 +780,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::checkEventsBaseIdsSolveCollisions()
         """
-        return int(AbstractRPModelElement.call_com(lambda: self._com.checkEventsBaseIdsSolveCollisions()))
+        return int(self.call_com(lambda: self._com.checkEventsBaseIdsSolveCollisions()))
 
     def recalculate_events_base_ids(self) -> None:
         """Recalculates the events base IDs for the project.
@@ -789,7 +788,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::recalculateEventsBaseIds()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.recalculateEventsBaseIds())
+        self.call_com(lambda: self._com.recalculateEventsBaseIds())
 
     # --- Misc methods ---
     def add_spell_checker_result(self, word: str, suggestion: str) -> None:
@@ -802,7 +801,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::addSpellCheckerResult(java.lang.String word, java.lang.String suggestion)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.addSpellCheckerResult(word, suggestion))
+        self.call_com(lambda: self._com.addSpellCheckerResult(word, suggestion))
 
     def clean_unresolved_elements(self) -> None:
         """Cleans unresolved elements from the project.
@@ -810,7 +809,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::cleanUnresolvedElements()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.cleanUnresolvedElements())
+        self.call_com(lambda: self._com.cleanUnresolvedElements())
 
     def end_transaction_of_no_cg_interest(self) -> None:
         """Ends a transaction of no code generation interest.
@@ -818,7 +817,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::endTransactionOfNoCGInterest()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.endTransactionOfNoCGInterest())
+        self.call_com(lambda: self._com.endTransactionOfNoCGInterest())
 
     def get_default_directory_scheme(self) -> int:
         """Returns the default directory scheme of the project.
@@ -829,7 +828,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getDefaultDirectoryScheme()
         """
-        return int(AbstractRPModelElement.get_com_property(self._com, "defaultDirectoryScheme"))
+        return int(self.get_com_property(self._com, "defaultDirectoryScheme"))
 
     def get_new_progress_bar(self) -> RPProgressBar:
         """Returns a new progress bar.
@@ -842,7 +841,7 @@ class IRPProject(IRPPackage):
         """
         from rhapsody_cli.models.support.model_ide import RPProgressBar
 
-        return cast(RPProgressBar, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.getNewProgressBar())))
+        return cast(RPProgressBar, self.wrap(self.call_com(lambda: self._com.getNewProgressBar())))
 
     def get_notify_plugin_on_elements_changed(self) -> int:
         """Checks whether plugins are notified when elements change.
@@ -853,7 +852,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getNotifyPluginOnElementsChanged()
         """
-        return int(AbstractRPModelElement.call_com(lambda: self._com.getNotifyPluginOnElementsChanged()))
+        return int(self.call_com(lambda: self._com.getNotifyPluginOnElementsChanged()))
 
     def get_requirements_by_id(self, id: str) -> IRPCollection:
         """Returns the requirements matching the specified ID.
@@ -867,7 +866,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getRequirementsByID(java.lang.String id)
         """
-        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getRequirementsByID(id)))
+        return IRPCollection(self.call_com(lambda: self._com.getRequirementsByID(id)))
 
     def remove(self) -> None:
         """Removes the project.
@@ -875,7 +874,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::remove()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.remove())
+        self.call_com(lambda: self._com.remove())
 
     def save_as_prev_version(self, file_path: str) -> None:
         """Saves the project to a previous version file path.
@@ -886,7 +885,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::saveAsPrevVersion(java.lang.String filePath)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.saveAsPrevVersion(file_path))
+        self.call_com(lambda: self._com.saveAsPrevVersion(file_path))
 
     def set_default_directory_scheme(self, scheme: int) -> None:
         """Sets the default directory scheme of the project.
@@ -897,7 +896,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::setDefaultDirectoryScheme(int scheme)
         """
-        AbstractRPModelElement.set_com_property(self._com, "defaultDirectoryScheme", scheme)
+        self.set_com_property(self._com, "defaultDirectoryScheme", scheme)
 
     def set_global_configuration(self, gc_uri: str, name: str) -> int:
         """Set the global configuration used for the project.
@@ -923,7 +922,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::setNotifyPluginOnElementsChanged(int enabled)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setNotifyPluginOnElementsChanged(enabled))
+        self.call_com(lambda: self._com.setNotifyPluginOnElementsChanged(enabled))
 
     def set_object_explicit(self, obj: IRPModelElement) -> None:
         """Sets the specified object as explicit.
@@ -934,7 +933,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::setObjectExplicit(com.telelogic.rhapsody.core.IRPModelElement obj)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setObjectExplicit(obj._com))
+        self.call_com(lambda: self._com.setObjectExplicit(obj._com))
 
     def set_object_implicit(self, obj: IRPModelElement) -> None:
         """Sets the specified object as implicit.
@@ -945,7 +944,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::setObjectImplicit(com.telelogic.rhapsody.core.IRPModelElement obj)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setObjectImplicit(obj._com))
+        self.call_com(lambda: self._com.setObjectImplicit(obj._com))
 
     def set_use_unique_stereotype_and_ref_cache(self, enabled: int) -> None:
         """Sets whether to use a unique stereotype and reference cache.
@@ -956,7 +955,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::setUseUniqueStereotypeAndRefCache(int enabled)
         """
-        AbstractRPModelElement.set_com_property(self._com, "UseUniqueStereotypeAndRefCache", enabled)
+        self.set_com_property(self._com, "UseUniqueStereotypeAndRefCache", enabled)
 
     def set_wait_dialog_watchdog_value(self, value: int) -> None:
         """Sets the wait dialog watchdog value.
@@ -967,7 +966,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::setWaitDialogWatchdogValue(int value)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setWaitDialogWatchdogValue(value))
+        self.call_com(lambda: self._com.setWaitDialogWatchdogValue(value))
 
     def start_transaction_of_no_cg_interest(self) -> None:
         """Starts a transaction of no code generation interest.
@@ -975,7 +974,7 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::startTransactionOfNoCGInterest()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.startTransactionOfNoCGInterest())
+        self.call_com(lambda: self._com.startTransactionOfNoCGInterest())
 
 
-AbstractRPModelElement.register_wrapper("Project", IRPProject)
+IRPModelElement.register_wrapper("Project", IRPProject)

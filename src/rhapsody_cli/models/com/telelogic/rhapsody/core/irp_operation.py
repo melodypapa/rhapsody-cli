@@ -9,7 +9,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import IRPInterfaceItem
-from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument import IRPArgument
@@ -65,7 +65,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::getBody()
         """
-        return str(AbstractRPModelElement.get_com_property(self._com, "body"))
+        return str(self.get_com_property(self._com, "body"))
 
     def get_is_abstract(self) -> bool:
         """Checks whether this operation is abstract.
@@ -76,7 +76,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::getIsAbstract()
         """
-        return bool(AbstractRPModelElement.get_com_property(self._com, "isAbstract"))
+        return bool(self.get_com_property(self._com, "isAbstract"))
 
     def set_is_abstract(self, is_abstract: int) -> None:
         """Sets whether this operation is abstract.
@@ -87,7 +87,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::setIsAbstract(boolean isAbstract)
         """
-        AbstractRPModelElement.set_com_property(self._com, "isAbstract", is_abstract)
+        self.set_com_property(self._com, "isAbstract", is_abstract)
 
     def get_is_static(self) -> bool:
         """Checks whether this operation is static.
@@ -98,7 +98,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::getIsStatic()
         """
-        return bool(AbstractRPModelElement.get_com_property(self._com, "isStatic"))
+        return bool(self.get_com_property(self._com, "isStatic"))
 
     def set_is_static(self, is_static: int) -> None:
         """Sets whether this operation is static.
@@ -109,7 +109,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::setIsStatic(boolean isStatic)
         """
-        AbstractRPModelElement.set_com_property(self._com, "isStatic", is_static)
+        self.set_com_property(self._com, "isStatic", is_static)
 
     def get_is_virtual(self) -> bool:
         """Checks whether this operation is virtual (for C++ or C# classes).
@@ -120,7 +120,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::getIsVirtual()
         """
-        return bool(AbstractRPModelElement.get_com_property(self._com, "isVirtual"))
+        return bool(self.get_com_property(self._com, "isVirtual"))
 
     def set_is_virtual(self, is_virtual: int) -> None:
         """Sets whether this operation is virtual (for C++ or C# classes).
@@ -131,7 +131,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::setIsVirtual(boolean isVirtual)
         """
-        AbstractRPModelElement.set_com_property(self._com, "isVirtual", is_virtual)
+        self.set_com_property(self._com, "isVirtual", is_virtual)
 
     def get_returns(self) -> IRPClassifier:
         """Returns the type specification for the operation's return value.
@@ -144,7 +144,7 @@ class IRPOperation(IRPInterfaceItem):
         """
         from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 
-        return cast(IRPClassifier, AbstractRPModelElement.wrap(AbstractRPModelElement.get_com_property(self._com, "returns")))
+        return cast(IRPClassifier, self.wrap(self.get_com_property(self._com, "returns")))
 
     def get_return_type_declaration(self) -> str:
         """Returns the on-the-fly return type declaration for the operation.
@@ -155,7 +155,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::getReturnTypeDeclaration()
         """
-        return str(AbstractRPModelElement.call_com(lambda: self._com.getReturnTypeDeclaration()))
+        return str(self.call_com(lambda: self._com.getReturnTypeDeclaration()))
 
     def create_auto_flow_chart(self) -> None:
         """Automatically generates a flowchart for the operation.
@@ -163,7 +163,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::createAutoFlowChart()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.createAutoFlowChart())
+        self.call_com(lambda: self._com.createAutoFlowChart())
 
     def set_returns(self, returns: IRPClassifier) -> None:
         """Sets the return type of the operation to an existing classifier.
@@ -174,7 +174,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::setReturns(com.telelogic.rhapsody.core.IRPClassifier returns)
         """
-        AbstractRPModelElement.set_com_property(self._com, "returns", returns._com)
+        self.set_com_property(self._com, "returns", returns._com)
 
     def set_return_type_declaration(self, new_val: str) -> None:
         """Specifies an on-the-fly return type declaration for the operation.
@@ -186,7 +186,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::setReturnTypeDeclaration(java.lang.String newVal)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setReturnTypeDeclaration(new_val))
+        self.call_com(lambda: self._com.setReturnTypeDeclaration(new_val))
 
     def delete_argument(self, argument: IRPArgument) -> None:
         """Deletes the specified argument from the operation.
@@ -197,7 +197,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::deleteArgument(com.telelogic.rhapsody.core.IRPArgument argument)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteArgument(argument._com))
+        self.call_com(lambda: self._com.deleteArgument(argument._com))
 
     def delete_flowchart(self) -> None:
         """Deletes the flowchart associated with the operation.
@@ -205,7 +205,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::deleteFlowchart()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteFlowchart())
+        self.call_com(lambda: self._com.deleteFlowchart())
 
     def get_flowchart(self) -> RPFlowchart:
         """Returns the flowchart associated with the operation.
@@ -218,7 +218,7 @@ class IRPOperation(IRPInterfaceItem):
         """
         from rhapsody_cli.models.elements.activity.model_activity import RPFlowchart
 
-        return cast(RPFlowchart, AbstractRPModelElement.wrap(AbstractRPModelElement.get_com_property(self._com, "flowchart")))
+        return cast(RPFlowchart, self.wrap(self.get_com_property(self._com, "flowchart")))
 
     def get_implementation_signature(self) -> str:
         """Returns the implementation signature of the operation.
@@ -229,7 +229,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::getImplementationSignature()
         """
-        return str(AbstractRPModelElement.call_com(lambda: self._com.getImplementationSignature()))
+        return str(self.call_com(lambda: self._com.getImplementationSignature()))
 
     def get_initializer(self) -> str:
         """Returns the initializer for the operation.
@@ -240,7 +240,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::getInitializer()
         """
-        return str(AbstractRPModelElement.get_com_property(self._com, "initializer"))
+        return str(self.get_com_property(self._com, "initializer"))
 
     def get_is_cg_derived(self) -> int:
         """Checks whether the operation's code is derived from code generation.
@@ -251,7 +251,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::getIsCgDerived()
         """
-        return int(AbstractRPModelElement.get_com_property(self._com, "isCgDerived"))
+        return int(self.get_com_property(self._com, "isCgDerived"))
 
     def get_is_const(self) -> int:
         """Checks whether the operation is const (C++).
@@ -262,7 +262,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::getIsConst()
         """
-        return int(AbstractRPModelElement.get_com_property(self._com, "isConst"))
+        return int(self.get_com_property(self._com, "isConst"))
 
     def get_is_ctor(self) -> int:
         """Checks whether the operation is a constructor.
@@ -273,7 +273,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::getIsCtor()
         """
-        return int(AbstractRPModelElement.get_com_property(self._com, "isCtor"))
+        return int(self.get_com_property(self._com, "isCtor"))
 
     def get_is_dtor(self) -> int:
         """Checks whether the operation is a destructor.
@@ -284,7 +284,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::getIsDtor()
         """
-        return int(AbstractRPModelElement.get_com_property(self._com, "isDtor"))
+        return int(self.get_com_property(self._com, "isDtor"))
 
     def get_is_final(self) -> int:
         """Checks whether the operation is final.
@@ -295,7 +295,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::getIsFinal()
         """
-        return int(AbstractRPModelElement.get_com_property(self._com, "isFinal"))
+        return int(self.get_com_property(self._com, "isFinal"))
 
     def get_is_inline(self) -> int:
         """Checks whether the operation is inline.
@@ -306,7 +306,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::getIsInline()
         """
-        return int(AbstractRPModelElement.get_com_property(self._com, "isInline"))
+        return int(self.get_com_property(self._com, "isInline"))
 
     def get_is_trigger(self) -> int:
         """Checks whether the operation is used as a trigger.
@@ -317,7 +317,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::getIsTrigger()
         """
-        return int(AbstractRPModelElement.get_com_property(self._com, "isTrigger"))
+        return int(self.get_com_property(self._com, "isTrigger"))
 
     def get_visibility(self) -> str:
         """Returns the visibility of the operation.
@@ -328,7 +328,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::getVisibility()
         """
-        return str(AbstractRPModelElement.get_com_property(self._com, "visibility"))
+        return str(self.get_com_property(self._com, "visibility"))
 
     def set_body(self, body: str) -> None:
         """Sets the body/implementation of the operation.
@@ -339,7 +339,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::setBody(java.lang.String body)
         """
-        AbstractRPModelElement.set_com_property(self._com, "body", body)
+        self.set_com_property(self._com, "body", body)
 
     def set_flowchart(self, flowchart: RPFlowchart) -> None:
         """Sets the flowchart associated with the operation.
@@ -350,7 +350,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::setFlowchart(com.telelogic.rhapsody.core.IRPActivityDiagram flowchart)
         """
-        AbstractRPModelElement.set_com_property(self._com, "flowchart", flowchart._com)
+        self.set_com_property(self._com, "flowchart", flowchart._com)
 
     def set_initializer(self, initializer: str) -> None:
         """Sets the initializer for the operation.
@@ -361,7 +361,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::setInitializer(java.lang.String initializer)
         """
-        AbstractRPModelElement.set_com_property(self._com, "initializer", initializer)
+        self.set_com_property(self._com, "initializer", initializer)
 
     def set_is_const(self, is_const: int) -> None:
         """Sets whether the operation is const (C++).
@@ -372,7 +372,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::setIsConst(int isConst)
         """
-        AbstractRPModelElement.set_com_property(self._com, "isConst", is_const)
+        self.set_com_property(self._com, "isConst", is_const)
 
     def set_is_final(self, is_final: int) -> None:
         """Sets whether the operation is final.
@@ -383,7 +383,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::setIsFinal(int isFinal)
         """
-        AbstractRPModelElement.set_com_property(self._com, "isFinal", is_final)
+        self.set_com_property(self._com, "isFinal", is_final)
 
     def set_visibility(self, visibility: str) -> None:
         """Sets the visibility of the operation.
@@ -394,7 +394,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::setVisibility(java.lang.String visibility)
         """
-        AbstractRPModelElement.set_com_property(self._com, "visibility", visibility)
+        self.set_com_property(self._com, "visibility", visibility)
 
     def update_contained_diagrams_on_server(self, enforce_update: int) -> int:
         """Updates the contained diagrams on the server.
@@ -411,4 +411,4 @@ class IRPOperation(IRPInterfaceItem):
         raise NotImplementedError("updateContainedDiagramsOnServer is not exposed in the Rhapsody COM automation type library.")
 
 
-AbstractRPModelElement.register_wrapper("Operation", IRPOperation)
+IRPModelElement.register_wrapper("Operation", IRPOperation)

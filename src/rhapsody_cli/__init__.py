@@ -3,7 +3,7 @@
 Method names on wrapped elements mirror the Rhapsody Java API
 (`com.telelogic.rhapsody.core`) exactly, so existing Rhapsody Java API
 knowledge transfers directly. Importing this package registers all core
-element wrappers with the internal ``AbstractRPModelElement.wrap()`` dispatch factory.
+element wrappers with the internal ``ComHelper.wrap()`` dispatch factory.
 """
 
 __version__ = "0.2.1"

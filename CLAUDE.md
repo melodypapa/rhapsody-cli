@@ -188,13 +188,13 @@ New element types must register at module import time:
 
 ```python
 # src/rhapsody_cli/models/elements/myclass.py
-from rhapsody_cli.models.core import RPModelElement, AbstractRPModelElement
+from rhapsody_cli.models.core import RPModelElement, IRPModelElement
 
 class RPMyClass(RPModelElement):
     """Wraps IRPMyClass."""
     pass
 
-AbstractRPModelElement.register_wrapper("MyClass", RPMyClass)
+IRPModelElement.register_wrapper("MyClass", RPMyClass)
 ```
 
 Then add the import to the subpackage's `__init__.py` so registration fires on package import.
@@ -208,7 +208,7 @@ Then add the import to the subpackage's `__init__.py` so registration fires on p
 - **Parameterized getters** → MUST use `call_com` directly (`_get_method_or_property` drops extra args)
 - **Single-arg setters** → Use `_set_method_or_property(self._com, "setX", "x", value)`
 - **Multi-arg setters** → MUST use `call_com` directly
-- **Return wrapped element** → Use `AbstractRPModelElement.wrap(...)` or specific wrapper constructor
+- **Return wrapped element** → Use `self.wrap(...)` or specific wrapper constructor
 - **Return collection** → Use `RPCollection(self.call_com(...))`
 
 ```python
@@ -292,7 +292,7 @@ class MyAction(RhapsodyContextAction):
 
 1. Create `src/rhapsody_cli/models/elements/<subpackage>/model_myclass.py` (choose subpackage based on element type: `classifiers/`, `containment/`, `relations/`, etc.)
 2. Define `RPMyClass(RPModelElement)` with methods mirroring the Java API (use snake_case for Python method names, camelCase for internal COM calls)
-3. Call `AbstractRPModelElement.register_wrapper("MyClass", RPMyClass)` at module level
+3. Call `IRPModelElement.register_wrapper("MyClass", RPMyClass)` at module level
 4. Write tests in `tests/unit/models/elements/test_myclass.py` using fakes from `tests/unit/models/fakes.py`
 5. Add the import to the subpackage's `__init__.py` so registration fires on import
 

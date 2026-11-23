@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
@@ -56,7 +55,7 @@ class IRPClass(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPClass::addSuperclass(com.telelogic.rhapsody.core.IRPClass superClass)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.addSuperclass(super_class._com))
+        self.call_com(lambda: self._com.addSuperclass(super_class._com))
 
     def add_constructor(self, arguments_data: str) -> IRPOperation:
         """Adds a constructor operation to this class.
@@ -72,7 +71,7 @@ class IRPClass(IRPClassifier):
         """
         from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
 
-        return cast(IRPOperation, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addConstructor(arguments_data))))
+        return cast(IRPOperation, self.wrap(self.call_com(lambda: self._com.addConstructor(arguments_data))))
 
     def add_destructor(self) -> IRPOperation:
         """Adds a destructor operation to this class.
@@ -85,12 +84,12 @@ class IRPClass(IRPClassifier):
         """
         from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
 
-        return cast(IRPOperation, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addDestructor())))
+        return cast(IRPOperation, self.wrap(self.call_com(lambda: self._com.addDestructor())))
 
     @property
     def is_abstract(self) -> bool:
         """Checks whether this class is abstract."""
-        return bool(AbstractRPModelElement.get_com_property(self._com, "isAbstract"))
+        return bool(self.get_com_property(self._com, "isAbstract"))
 
     @is_abstract.setter
     def is_abstract(self, is_abstract: bool) -> None:
@@ -109,7 +108,7 @@ class IRPClass(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPClass::addClass(java.lang.String name)
         """
-        return cast(IRPClass, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addClass(name))))
+        return cast(IRPClass, self.wrap(self.call_com(lambda: self._com.addClass(name))))
 
     def add_event_reception(self, name: str) -> RPEventReception:
         """Adds an event reception to the current class.
@@ -127,7 +126,7 @@ class IRPClass(IRPClassifier):
         """
         from rhapsody_cli.models.elements.interactions.model_interactions import RPEventReception
 
-        return cast(RPEventReception, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addEventReception(name))))
+        return cast(RPEventReception, self.wrap(self.call_com(lambda: self._com.addEventReception(name))))
 
     def add_event_reception_with_event(self, name: str, event: RPEvent) -> RPEventReception:
         """Adds a new event reception, using the specified event.
@@ -195,7 +194,7 @@ class IRPClass(IRPClassifier):
         """
         from rhapsody_cli.models.elements.graphics.model_graphics import RPLink
 
-        return cast(RPLink, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addLink(from_part._com, to_part._com, assoc._com, from_port._com, to_port._com))))
+        return cast(RPLink, self.wrap(self.call_com(lambda: self._com.addLink(from_part._com, to_part._com, assoc._com, from_port._com, to_port._com))))
 
     def add_link_to_part_via_port(self, to_part: IRPModelElement, part_port: IRPModelElement, class_port: IRPModelElement, assoc: IRPModelElement) -> RPLink:
         """Creates a delegation connector between a class and one of its parts.
@@ -225,7 +224,7 @@ class IRPClass(IRPClassifier):
         """
         from rhapsody_cli.models.elements.graphics.model_graphics import RPLink
 
-        return cast(RPLink, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addLinkToPartViaPort(to_part._com, part_port._com, class_port._com, assoc._com))))
+        return cast(RPLink, self.wrap(self.call_com(lambda: self._com.addLinkToPartViaPort(to_part._com, part_port._com, class_port._com, assoc._com))))
 
     def add_reception(self, name: str) -> RPEventReception:
         """Adds a reception to the current class.
@@ -241,7 +240,7 @@ class IRPClass(IRPClassifier):
         """
         from rhapsody_cli.models.elements.interactions.model_interactions import RPEventReception
 
-        return cast(RPEventReception, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addReception(name))))
+        return cast(RPEventReception, self.wrap(self.call_com(lambda: self._com.addReception(name))))
 
     def add_triggered_operation(self, name: str) -> IRPOperation:
         """Adds a new triggered operation to the current class.
@@ -257,7 +256,7 @@ class IRPClass(IRPClassifier):
         """
         from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
 
-        return cast(IRPOperation, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addTriggeredOperation(name))))
+        return cast(IRPOperation, self.wrap(self.call_com(lambda: self._com.addTriggeredOperation(name))))
 
     def add_type(self, name: str) -> IRPType:
         """Adds a new type to the current class.
@@ -273,7 +272,7 @@ class IRPClass(IRPClassifier):
         """
         from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type import IRPType
 
-        return cast(IRPType, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addType(name))))
+        return cast(IRPType, self.wrap(self.call_com(lambda: self._com.addType(name))))
 
     def delete_class(self, name: str) -> None:
         """Deletes the specified class from the current class.
@@ -284,7 +283,7 @@ class IRPClass(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPClass::deleteClass(java.lang.String name)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteClass(name))
+        self.call_com(lambda: self._com.deleteClass(name))
 
     def delete_constructor(self, constructor: IRPOperation) -> None:
         """Deletes the specified constructor from the current class.
@@ -295,7 +294,7 @@ class IRPClass(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPClass::deleteConstructor(com.telelogic.rhapsody.core.IRPOperation constructor)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteConstructor(constructor._com))
+        self.call_com(lambda: self._com.deleteConstructor(constructor._com))
 
     def delete_destructor(self) -> None:
         """Deletes the destructor for the class.
@@ -303,7 +302,7 @@ class IRPClass(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPClass::deleteDestructor()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteDestructor())
+        self.call_com(lambda: self._com.deleteDestructor())
 
     def delete_event_reception(self, p_val: RPEventReception) -> None:
         """Deletes the specified event reception.
@@ -316,7 +315,7 @@ class IRPClass(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPClass::deleteEventReception(com.telelogic.rhapsody.core.IRPEventReception pVal)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteEventReception(p_val._com))
+        self.call_com(lambda: self._com.deleteEventReception(p_val._com))
 
     def delete_reception(self, p_val: RPEventReception) -> None:
         """Deletes the specified reception from the current class.
@@ -327,7 +326,7 @@ class IRPClass(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPClass::deleteReception(com.telelogic.rhapsody.core.IRPEventReception pVal)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteReception(p_val._com))
+        self.call_com(lambda: self._com.deleteReception(p_val._com))
 
     def delete_superclass(self, super_class: IRPClass) -> None:
         """Removes the inheritance relationship with the specified base class.
@@ -338,7 +337,7 @@ class IRPClass(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPClass::deleteSuperclass(com.telelogic.rhapsody.core.IRPClass superClass)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteSuperclass(super_class._com))
+        self.call_com(lambda: self._com.deleteSuperclass(super_class._com))
 
     def delete_type(self, name: str) -> None:
         """Deletes the specified type from the current class.
@@ -349,32 +348,32 @@ class IRPClass(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPClass::deleteType(java.lang.String name)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteType(name))
+        self.call_com(lambda: self._com.deleteType(name))
 
     @property
     def is_active(self) -> int:
         """``1`` if the class runs on its own thread, ``0`` if sequential."""
-        return int(AbstractRPModelElement.get_com_property(self._com, "isActive"))
+        return int(self.get_com_property(self._com, "isActive"))
 
     @is_active.setter
     def is_active(self, is_active: int) -> None:
         """Set to ``1`` for active, ``0`` for sequential."""
-        AbstractRPModelElement.set_com_property(self._com, "isActive", is_active)
+        self.set_com_property(self._com, "isActive", is_active)
 
     @property
     def is_behavior_overriden(self) -> int:
         """``1`` if the class does not inherit its base statechart behavior, else ``0``."""
-        return int(AbstractRPModelElement.get_com_property(self._com, "isBehaviorOverriden"))
+        return int(self.get_com_property(self._com, "isBehaviorOverriden"))
 
     @is_behavior_overriden.setter
     def is_behavior_overriden(self, is_behavior_overriden: int) -> None:
         """Set to ``1`` to not inherit the base statechart behavior, ``0`` to inherit."""
-        AbstractRPModelElement.set_com_property(self._com, "isBehaviorOverriden", is_behavior_overriden)
+        self.set_com_property(self._com, "isBehaviorOverriden", is_behavior_overriden)
 
     @property
     def is_composite(self) -> int:
         """``1`` if the class is a composite class, ``0`` otherwise."""
-        return int(AbstractRPModelElement.get_com_property(self._com, "isComposite"))
+        return int(self.get_com_property(self._com, "isComposite"))
 
     def get_is_final(self) -> int:
         """Returns ``1`` if the class is final, ``0`` otherwise.
@@ -382,7 +381,7 @@ class IRPClass(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPClass.getIsFinal()
         """
-        return int(AbstractRPModelElement.call_com(lambda: self._com.getIsFinal()))
+        return int(self.call_com(lambda: self._com.getIsFinal()))
 
     def set_is_final(self, is_final: int) -> None:
         """Set to ``1`` to make the class final, ``0`` otherwise.
@@ -393,12 +392,12 @@ class IRPClass(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPClass.setIsFinal(int isFinal)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setIsFinal(is_final))
+        self.call_com(lambda: self._com.setIsFinal(is_final))
 
     @property
     def is_reactive(self) -> int:
         """``1`` if the class has a statechart or activity diagram, ``0`` otherwise."""
-        return int(AbstractRPModelElement.get_com_property(self._com, "isReactive"))
+        return int(self.get_com_property(self._com, "isReactive"))
 
 
-AbstractRPModelElement.register_wrapper("Class", IRPClass)
+IRPModelElement.register_wrapper("Class", IRPClass)

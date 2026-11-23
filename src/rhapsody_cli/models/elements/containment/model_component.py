@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.containment.model_configuration import RPConfiguration
@@ -72,7 +72,7 @@ class RPComponent(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPComponent::addConfiguration(java.lang.String name)
         """
-        return cast("RPConfiguration", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addConfiguration(name))))
+        return cast("RPConfiguration", self.wrap(self.call_com(lambda: self._com.addConfiguration(name))))
 
     def add_file(self, name: str) -> "IRPUnit":
         """Adds a new file to the component.
@@ -86,7 +86,7 @@ class RPComponent(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPComponent::addFile(java.lang.String name)
         """
-        return cast("IRPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addFile(name))))
+        return cast("IRPUnit", self.wrap(self.call_com(lambda: self._com.addFile(name))))
 
     def add_folder(self, name: str) -> "IRPUnit":
         """Adds a new folder to the component.
@@ -100,7 +100,7 @@ class RPComponent(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPComponent::addFolder(java.lang.String name)
         """
-        return cast("IRPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addFolder(name))))
+        return cast("IRPUnit", self.wrap(self.call_com(lambda: self._com.addFolder(name))))
 
     def add_nested_component(self, name: str) -> "RPComponent":
         """Adds a nested component to this component.
@@ -114,7 +114,7 @@ class RPComponent(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPComponent::addNestedComponent(java.lang.String name)
         """
-        return cast("RPComponent", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addNestedComponent(name))))
+        return cast("RPComponent", self.wrap(self.call_com(lambda: self._com.addNestedComponent(name))))
 
     def add_scope_element(self, element: IRPUnit) -> None:
         """Adds a scope element to the component.
@@ -197,7 +197,7 @@ class RPComponent(IRPUnit):
         result = self.call_com(lambda: self._com.findConfiguration(name))
         if result is None:
             return None
-        return cast("RPConfiguration", AbstractRPModelElement.wrap(result))
+        return cast("RPConfiguration", self.wrap(result))
 
     def get_additional_sources(self) -> str:
         """Returns the additional sources for the component.
@@ -230,7 +230,7 @@ class RPComponent(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPComponent::getConfigByDependency()
         """
-        return cast("RPConfiguration", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getConfigByDependency())))
+        return cast("RPConfiguration", self.wrap(self.call_com(lambda: self._com.getConfigByDependency())))
 
     def get_configurations(self) -> "IRPCollection":
         """Returns all configurations in the component.
@@ -255,7 +255,7 @@ class RPComponent(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPComponent::getFile(java.lang.String name)
         """
-        return cast("IRPUnit", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getFile(name))))
+        return cast("IRPUnit", self.wrap(self.call_com(lambda: self._com.getFile(name))))
 
     def get_file_name(self) -> str:
         """Returns the file name for the component.
@@ -555,4 +555,4 @@ class RPComponent(IRPUnit):
         self.call_com(lambda: self._com.updateContainedDiagramsOnServer())
 
 
-AbstractRPModelElement.register_wrapper("Component", RPComponent)
+IRPModelElement.register_wrapper("Component", RPComponent)

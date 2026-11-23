@@ -16,7 +16,7 @@ from unittest.mock import patch
 import pytest
 
 from rhapsody_cli import RhapsodyApplication
-from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.session import SessionManager
 
 
@@ -126,7 +126,7 @@ def cli_project(test_project_dir: Path, cli_connection: None) -> Generator[str, 
                 # A live close() only removes the project from the list and raises
                 # a modal "Projects can only be removed from project lists" dialog
                 # that blocks subsequent tests. Assert the COM binding instead.
-                with patch.object(AbstractRPModelElement, "call_com") as com_call:
+                with patch.object(IRPModelElement, "call_com") as com_call:
                     proj.close()
                     com_call.assert_called_once()
                 break

@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.statemachine import RPState, RPStateVertex
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -85,7 +84,7 @@ class TestRPStateVertex:
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("StateVertex", properties={"name": "SV1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPStateVertex)
 
 
@@ -446,5 +445,5 @@ class TestRPState:
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("State", properties={"name": "S1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPState)

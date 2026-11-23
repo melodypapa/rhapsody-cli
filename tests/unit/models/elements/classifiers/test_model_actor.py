@@ -6,7 +6,6 @@ import pytest
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.classifiers import RPActor
 from rhapsody_cli.models.elements.interactions import RPEvent
 from tests.unit.models.fakes import make_fake_element
@@ -59,6 +58,6 @@ def test_actor_update_contained_diagrams_on_server_delegates_to_com() -> None:
 def test_actor_is_registered_for_meta_class_actor() -> None:
     fake = make_fake_element("Actor", properties={"name": "Driver"})
 
-    wrapped = AbstractRPModelElement.wrap(fake)
+    wrapped = IRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, RPActor)

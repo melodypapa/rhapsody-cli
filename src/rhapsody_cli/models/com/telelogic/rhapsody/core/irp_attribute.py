@@ -6,7 +6,7 @@ Canonical module for :class:`IRPAttribute`; see the class requirement document a
 
 from __future__ import annotations
 
-from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.elements.variables.model_variables import RPVariable
 
 
@@ -38,7 +38,7 @@ class IRPAttribute(RPVariable):
         Reference:
             com.telelogic.rhapsody.core.IRPAttribute::getIsConstant()
         """
-        return int(AbstractRPModelElement.get_com_property(self._com, "isConstant"))
+        return int(self.get_com_property(self._com, "isConstant"))
 
     def get_is_ordered(self) -> int:
         """Checks whether the attribute is ordered.
@@ -49,7 +49,7 @@ class IRPAttribute(RPVariable):
         Reference:
             com.telelogic.rhapsody.core.IRPAttribute::getIsOrdered()
         """
-        return int(AbstractRPModelElement.get_com_property(self._com, "isOrdered"))
+        return int(self.get_com_property(self._com, "isOrdered"))
 
     def get_is_reference(self) -> int:
         """Checks whether the attribute is a reference.
@@ -60,7 +60,7 @@ class IRPAttribute(RPVariable):
         Reference:
             com.telelogic.rhapsody.core.IRPAttribute::getIsReference()
         """
-        return int(AbstractRPModelElement.get_com_property(self._com, "isReference"))
+        return int(self.get_com_property(self._com, "isReference"))
 
     def set_is_constant(self, is_constant: bool) -> None:
         """Specifies whether the attribute should be defined as constant.
@@ -71,7 +71,7 @@ class IRPAttribute(RPVariable):
         Reference:
             com.telelogic.rhapsody.core.IRPAttribute::setIsConstant(int isConstant)
         """
-        AbstractRPModelElement.set_com_property(self._com, "isConstant", 1 if is_constant else 0)
+        self.set_com_property(self._com, "isConstant", 1 if is_constant else 0)
 
     def set_is_ordered(self, is_ordered: bool) -> None:
         """Specifies whether the attribute should be ordered.
@@ -82,7 +82,7 @@ class IRPAttribute(RPVariable):
         Reference:
             com.telelogic.rhapsody.core.IRPAttribute::setIsOrdered(int isOrdered)
         """
-        AbstractRPModelElement.set_com_property(self._com, "isOrdered", 1 if is_ordered else 0)
+        self.set_com_property(self._com, "isOrdered", 1 if is_ordered else 0)
 
     def set_is_reference(self, is_reference: bool) -> None:
         """Specifies whether the attribute should be a reference.
@@ -93,7 +93,7 @@ class IRPAttribute(RPVariable):
         Reference:
             com.telelogic.rhapsody.core.IRPAttribute::setIsReference(int isReference)
         """
-        AbstractRPModelElement.set_com_property(self._com, "isReference", 1 if is_reference else 0)
+        self.set_com_property(self._com, "isReference", 1 if is_reference else 0)
 
     def get_multiplicity(self) -> str:
         """Gets the multiplicity specified for the attribute.
@@ -104,7 +104,7 @@ class IRPAttribute(RPVariable):
         Reference:
             com.telelogic.rhapsody.core.IRPAttribute::getMultiplicity()
         """
-        return str(AbstractRPModelElement.get_com_property(self._com, "multiplicity"))
+        return str(self.get_com_property(self._com, "multiplicity"))
 
     def set_multiplicity(self, multiplicity: str) -> None:
         """Specifies the multiplicity for the attribute.
@@ -115,7 +115,7 @@ class IRPAttribute(RPVariable):
         Reference:
             com.telelogic.rhapsody.core.IRPAttribute::setMultiplicity(java.lang.String multiplicity)
         """
-        AbstractRPModelElement.set_com_property(self._com, "multiplicity", multiplicity)
+        self.set_com_property(self._com, "multiplicity", multiplicity)
 
     def get_is_static(self) -> bool:
         """Checks whether the attribute was defined as static.
@@ -126,7 +126,7 @@ class IRPAttribute(RPVariable):
         Reference:
             com.telelogic.rhapsody.core.IRPAttribute::getIsStatic()
         """
-        return bool(AbstractRPModelElement.get_com_property(self._com, "isStatic"))
+        return bool(self.get_com_property(self._com, "isStatic"))
 
     def set_is_static(self, is_static: bool) -> None:
         """Specifies whether an attribute should be defined as static.
@@ -137,7 +137,7 @@ class IRPAttribute(RPVariable):
         Reference:
             com.telelogic.rhapsody.core.IRPAttribute::setIsStatic(int isStatic)
         """
-        AbstractRPModelElement.set_com_property(self._com, "isStatic", 1 if is_static else 0)
+        self.set_com_property(self._com, "isStatic", 1 if is_static else 0)
 
     def get_visibility(self) -> str:
         """Gets the visibility specified for the attribute.
@@ -148,7 +148,7 @@ class IRPAttribute(RPVariable):
         Reference:
             com.telelogic.rhapsody.core.IRPAttribute::getVisibility()
         """
-        return str(AbstractRPModelElement.get_com_property(self._com, "visibility"))
+        return str(self.get_com_property(self._com, "visibility"))
 
     def set_visibility(self, visibility: str) -> None:
         """Specifies the visibility of the attribute.
@@ -159,7 +159,7 @@ class IRPAttribute(RPVariable):
         Reference:
             com.telelogic.rhapsody.core.IRPAttribute::setVisibility(java.lang.String visibility)
         """
-        AbstractRPModelElement.set_com_property(self._com, "visibility", visibility)
+        self.set_com_property(self._com, "visibility", visibility)
 
 
-AbstractRPModelElement.register_wrapper("Attribute", IRPAttribute)
+IRPModelElement.register_wrapper("Attribute", IRPAttribute)

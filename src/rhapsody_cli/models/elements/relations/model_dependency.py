@@ -3,7 +3,6 @@
 from typing import TYPE_CHECKING, Optional
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
     pass
@@ -32,7 +31,7 @@ class RPDependency(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPDependency::getDependent()
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getDependent", "dependent"))
+        return self.wrap(self._get_method_or_property(self._com, "getDependent", "dependent"))
 
     def get_depends_on(self) -> Optional[IRPModelElement]:
         """Returns the model element that is depended upon.
@@ -43,7 +42,7 @@ class RPDependency(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPDependency::getDependsOn()
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getDependsOn", "dependsOn"))
+        return self.wrap(self._get_method_or_property(self._com, "getDependsOn", "dependsOn"))
 
     def is_need_to_migrate(self) -> int:
         """Checks whether the dependency needs to be migrated.
@@ -54,7 +53,7 @@ class RPDependency(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPDependency::isNeedToMigrate()
         """
-        return int(AbstractRPModelElement.call_com(lambda: self._com.isNeedToMigrate()))
+        return int(self.call_com(lambda: self._com.isNeedToMigrate()))
 
     def set_dependent(self, dependent: IRPModelElement) -> None:
         """Sets the model element that is dependent.
@@ -65,7 +64,7 @@ class RPDependency(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPDependency::setDependent(com.telelogic.rhapsody.core.IRPModelElement dependent)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setDependent(dependent._com))
+        self.call_com(lambda: self._com.setDependent(dependent._com))
 
     def set_depends_on(self, depends_on: IRPModelElement) -> None:
         """Sets the model element that is depended upon.
@@ -76,7 +75,7 @@ class RPDependency(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPDependency::setDependsOn(com.telelogic.rhapsody.core.IRPModelElement dependsOn)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setDependsOn(depends_on._com))
+        self.call_com(lambda: self._com.setDependsOn(depends_on._com))
 
     def set_link_type(self, link_type: str) -> None:
         """Sets the link type of the dependency.
@@ -87,7 +86,7 @@ class RPDependency(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPDependency::setLinkType(java.lang.String linkType)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setLinkType(link_type))
+        self.call_com(lambda: self._com.setLinkType(link_type))
 
     def set_owner_without_changing_dependent(self, owner: IRPModelElement) -> None:
         """Sets the owner of the dependency without changing the dependent.
@@ -98,7 +97,7 @@ class RPDependency(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPDependency::setOwnerWithoutChangingDependent(IRPModelElement owner)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setOwnerWithoutChangingDependent(owner._com))
+        self.call_com(lambda: self._com.setOwnerWithoutChangingDependent(owner._com))
 
 
-AbstractRPModelElement.register_wrapper("Dependency", RPDependency)
+IRPModelElement.register_wrapper("Dependency", RPDependency)

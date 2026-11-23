@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, Optional, cast
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.classifiers.model_statechart import RPStatechart
 from rhapsody_cli.models.elements.statemachine.model_statemachine import RPState
 
@@ -101,7 +100,7 @@ class RPFlow(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPFlow::getEnd1()
         """
-        return AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getEnd1()))
+        return self.wrap(self.call_com(lambda: self._com.getEnd1()))
 
     def get_end1_port(self) -> "IRPPort":
         """Returns the port at the first end of the flow.
@@ -115,7 +114,7 @@ class RPFlow(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPFlow::getEnd1Port()
         """
-        return cast("IRPPort", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getEnd1Port())))
+        return cast("IRPPort", self.wrap(self.call_com(lambda: self._com.getEnd1Port())))
 
     def get_end1_sys_ml_port(self) -> "RPSysMLPort":
         """Returns the SysML port at the first end of the flow.
@@ -129,7 +128,7 @@ class RPFlow(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPFlow::getEnd1SysMLPort()
         """
-        return cast("RPSysMLPort", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getEnd1SysMLPort())))
+        return cast("RPSysMLPort", self.wrap(self.call_com(lambda: self._com.getEnd1SysMLPort())))
 
     def get_end2(self) -> "Optional[IRPModelElement]":
         """Returns the second end of the flow.
@@ -143,7 +142,7 @@ class RPFlow(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPFlow::getEnd2()
         """
-        return AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getEnd2()))
+        return self.wrap(self.call_com(lambda: self._com.getEnd2()))
 
     def get_end2_port(self) -> "IRPPort":
         """Returns the port at the second end of the flow.
@@ -157,7 +156,7 @@ class RPFlow(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPFlow::getEnd2Port()
         """
-        return cast("IRPPort", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getEnd2Port())))
+        return cast("IRPPort", self.wrap(self.call_com(lambda: self._com.getEnd2Port())))
 
     def get_end2_sys_ml_port(self) -> "RPSysMLPort":
         """Returns the SysML port at the second end of the flow.
@@ -171,7 +170,7 @@ class RPFlow(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPFlow::getEnd2SysMLPort()
         """
-        return cast("RPSysMLPort", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getEnd2SysMLPort())))
+        return cast("RPSysMLPort", self.wrap(self.call_com(lambda: self._com.getEnd2SysMLPort())))
 
     def remove_conveyed(self, p_element: "IRPModelElement") -> None:
         """Removes a conveyed element from the flow.
@@ -382,7 +381,7 @@ class RPFlowchart(RPStatechart):
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::addAcceptEventAction(java.lang.String name, com.telelogic.rhapsody.core.IRPState parent)
         """
-        return cast("RPAcceptEventAction", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addAcceptEventAction(name, parent._com))))
+        return cast("RPAcceptEventAction", self.wrap(self.call_com(lambda: self._com.addAcceptEventAction(name, parent._com))))
 
     def add_accept_time_event(self, name: str, parent: "RPState") -> "RPAcceptTimeEvent":
         """Adds a new Accept Time Event element to the activity.
@@ -402,7 +401,7 @@ class RPFlowchart(RPStatechart):
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::addAcceptTimeEvent(java.lang.String name, com.telelogic.rhapsody.core.IRPState parent)
         """
-        return cast("RPAcceptTimeEvent", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addAcceptTimeEvent(name, parent._com))))
+        return cast("RPAcceptTimeEvent", self.wrap(self.call_com(lambda: self._com.addAcceptTimeEvent(name, parent._com))))
 
     def add_activity_parameter(self, name: str) -> "RPPin":
         """Adds an activity parameter to the frame of the activity.
@@ -416,7 +415,7 @@ class RPFlowchart(RPStatechart):
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::addActivityParameter(java.lang.String name)
         """
-        return cast("RPPin", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addActivityParameter(name))))
+        return cast("RPPin", self.wrap(self.call_com(lambda: self._com.addActivityParameter(name))))
 
     def add_call_behavior(self, referenced: "IRPModelElement") -> "RPState":
         """Adds a new Call Behavior element to the activity.
@@ -431,7 +430,7 @@ class RPFlowchart(RPStatechart):
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::addCallBehavior(com.telelogic.rhapsody.core.IRPModelElement referenced)
         """
-        return cast("RPState", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addCallBehavior(referenced._com))))
+        return cast("RPState", self.wrap(self.call_com(lambda: self._com.addCallBehavior(referenced._com))))
 
     def add_call_operation(self, name: str, parent: "RPState") -> "RPCallOperation":
         """Adds a new Call Operation element to the activity.
@@ -450,7 +449,7 @@ class RPFlowchart(RPStatechart):
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::addCallOperation(java.lang.String name, com.telelogic.rhapsody.core.IRPState parent)
         """
-        return cast("RPCallOperation", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addCallOperation(name, parent._com))))
+        return cast("RPCallOperation", self.wrap(self.call_com(lambda: self._com.addCallOperation(name, parent._com))))
 
     def add_object_node(self, name: str, parent: "RPState") -> "RPObjectNode":
         """Adds a new Object Node element to the activity.
@@ -469,7 +468,7 @@ class RPFlowchart(RPStatechart):
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::addObjectNode(java.lang.String name, com.telelogic.rhapsody.core.IRPState parent)
         """
-        return cast("RPObjectNode", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addObjectNode(name, parent._com))))
+        return cast("RPObjectNode", self.wrap(self.call_com(lambda: self._com.addObjectNode(name, parent._com))))
 
     def add_reference_activity(self, referenced: "IRPModelElement") -> "RPState":
         """Adds a new Call Behavior element to the activity. Performs same action as the addCallBehavior method.
@@ -484,7 +483,7 @@ class RPFlowchart(RPStatechart):
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::addReferenceActivity(com.telelogic.rhapsody.core.IRPModelElement referenced)
         """
-        return cast("RPState", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addReferenceActivity(referenced._com))))
+        return cast("RPState", self.wrap(self.call_com(lambda: self._com.addReferenceActivity(referenced._com))))
 
     def add_swimlane(self, name: str) -> "RPSwimlane":
         """Adds a new swimlane to the activity.
@@ -498,7 +497,7 @@ class RPFlowchart(RPStatechart):
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::addSwimlane(java.lang.String name)
         """
-        return cast("RPSwimlane", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addSwimlane(name))))
+        return cast("RPSwimlane", self.wrap(self.call_com(lambda: self._com.addSwimlane(name))))
 
     def get_flowchart_diagram(self) -> "RPActivityDiagram":
         """Returns the IRPActivityDiagram object associated with the activity.
@@ -509,7 +508,7 @@ class RPFlowchart(RPStatechart):
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::getFlowchartDiagram()
         """
-        return cast("RPActivityDiagram", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getFlowchartDiagram())))
+        return cast("RPActivityDiagram", self.wrap(self.call_com(lambda: self._com.getFlowchartDiagram())))
 
     def get_is_analysis_only(self) -> int:
         """Checks whether the activity is defined as analysis-only, meaning that it is used only for modeling purposes and code is not generated for the activity.
@@ -531,7 +530,7 @@ class RPFlowchart(RPStatechart):
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::getItsOwner()
         """
-        return cast("IRPOperation", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getItsOwner())))
+        return cast("IRPOperation", self.wrap(self.call_com(lambda: self._com.getItsOwner())))
 
     def get_swimlanes(self) -> "IRPCollection":
         """Returns a collection of all the swimlanes in the activity.
@@ -629,7 +628,7 @@ class RPObjectNode(RPState):
         Reference:
             com.telelogic.rhapsody.core.IRPObjectNode::getRepresents()
         """
-        return AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getRepresents()))
+        return self.wrap(self.call_com(lambda: self._com.getRepresents()))
 
     def remove_in_state(self, val: "IRPModelElement") -> None:
         """Removes the specified state from the list of "In State" states for the object node.
@@ -689,7 +688,7 @@ class RPSwimlane(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPSwimlane::addSwimlane(java.lang.String name)
         """
-        return cast("RPSwimlane", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addSwimlane(name))))
+        return cast("RPSwimlane", self.wrap(self.call_com(lambda: self._com.addSwimlane(name))))
 
     def get_contents(self) -> "IRPCollection":
         """Returns a collection of the elements contained in the swimlane.
@@ -714,7 +713,7 @@ class RPSwimlane(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPSwimlane::getRepresents()
         """
-        return AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getRepresents()))
+        return self.wrap(self.call_com(lambda: self._com.getRepresents()))
 
     def get_swimlanes(self) -> "IRPCollection":
         """Returns a collection of the swimlanes that are nested under this swimlane.
@@ -746,8 +745,8 @@ class RPSwimlane(IRPModelElement):
 
 
 # Register wrappers for meta classes
-AbstractRPModelElement.register_wrapper("Flow", RPFlow)
-AbstractRPModelElement.register_wrapper("FlowItem", RPFlowItem)
-AbstractRPModelElement.register_wrapper("Flowchart", RPFlowchart)
-AbstractRPModelElement.register_wrapper("ObjectNode", RPObjectNode)
-AbstractRPModelElement.register_wrapper("Swimlane", RPSwimlane)
+IRPModelElement.register_wrapper("Flow", RPFlow)
+IRPModelElement.register_wrapper("FlowItem", RPFlowItem)
+IRPModelElement.register_wrapper("Flowchart", RPFlowchart)
+IRPModelElement.register_wrapper("ObjectNode", RPObjectNode)
+IRPModelElement.register_wrapper("Swimlane", RPSwimlane)

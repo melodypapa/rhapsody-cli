@@ -14,7 +14,6 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class import IRPClass
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
-from rhapsody_cli.models.core import AbstractRPModelElement
 
 
 @pytest.mark.integration
@@ -127,13 +126,13 @@ class TestIRPProjectGenerated:
                 pkg.delete_from_project()
 
     def test_close(self, test_project: IRPProject) -> None:
-        with patch.object(AbstractRPModelElement, "call_com") as com_call:
+        with patch.object(IRPModelElement, "call_com") as com_call:
             assert test_project.close() is None  # type: ignore[func-returns-value]
             com_call.assert_called_once()
 
     def test_become_active_project(self, test_project: IRPProject) -> None:
         # Changing the active project would break the session-shared fixture.
-        with patch.object(AbstractRPModelElement, "call_com") as com_call:
+        with patch.object(IRPModelElement, "call_com") as com_call:
             assert test_project.become_active_project() is None  # type: ignore[func-returns-value]
             com_call.assert_called_once()
 
@@ -540,7 +539,7 @@ class TestIRPProjectGenerated:
         # A live remove() deletes the session-shared project and raises a modal
         # "Projects can only be removed from project lists" dialog. Assert the
         # COM binding shape instead.
-        with patch.object(AbstractRPModelElement, "call_com") as com_call:
+        with patch.object(IRPModelElement, "call_com") as com_call:
             assert test_project.remove() is None  # type: ignore[func-returns-value]
             com_call.assert_called_once()
 

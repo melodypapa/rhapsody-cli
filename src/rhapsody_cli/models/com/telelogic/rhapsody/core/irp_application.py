@@ -15,7 +15,6 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCo
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_unit import IRPUnit
-from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.exceptions import RhapsodyRuntimeException  # noqa: F401
@@ -2939,4 +2938,4 @@ class IRPApplication(IRPModelElement):
         return self.call_com(lambda: self._com.GetPlugInWindow(n_plug_in_id, n_window_id, n_create_new))
 
 
-AbstractRPModelElement.register_wrapper("Application", IRPApplication)
+IRPModelElement.register_wrapper("Application", IRPApplication)

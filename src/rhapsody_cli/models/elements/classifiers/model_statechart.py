@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, Optional, cast
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.diagrams.model_diagram_types import RPStatechartDiagram
@@ -73,7 +72,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::addNewNodeByType(java.lang.String metaType, int xPosition, int yPosition, int nWidth, int nHeight)
         """
-        return cast("RPGraphNode", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewNodeByType(meta_type, x_position, y_position, width, height))))
+        return cast("RPGraphNode", self.wrap(self.call_com(lambda: self._com.addNewNodeByType(meta_type, x_position, y_position, width, height))))
 
     def create_graphics(self) -> None:
         """Creates the graphical representation of the statechart's elements.
@@ -86,7 +85,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::createGraphics()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.createGraphics())
+        self.call_com(lambda: self._com.createGraphics())
 
     def close_diagram(self) -> None:
         """Closes the statechart diagram.
@@ -94,7 +93,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::closeDiagram()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.closeDiagram())
+        self.call_com(lambda: self._com.closeDiagram())
 
     def delete_state(self, state: IRPModelElement) -> None:
         """Deletes a state from the statechart.
@@ -105,7 +104,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::deleteState(com.telelogic.rhapsody.core.IRPState state)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteState(state._com))
+        self.call_com(lambda: self._com.deleteState(state._com))
 
     def add_free_shape_by_type(self, meta_type: str, x_position: int, y_position: int, width: int, height: int) -> "RPGraphNode":
         """Adds a free shape to the statechart.
@@ -123,7 +122,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::addFreeShapeByType(java.lang.String metaType, int xPosition, int yPosition, int nWidth, int nHeight)
         """
-        return cast("RPGraphNode", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addFreeShapeByType(meta_type, x_position, y_position, width, height))))
+        return cast("RPGraphNode", self.wrap(self.call_com(lambda: self._com.addFreeShapeByType(meta_type, x_position, y_position, width, height))))
 
     def add_image(self, x_position: int, y_position: int, width: int, height: int) -> "RPGraphNode":
         """Adds an image to the statechart.
@@ -140,7 +139,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::addImage(int xPosition, int yPosition, int nWidth, int nHeight)
         """
-        return cast("RPGraphNode", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addImage(x_position, y_position, width, height))))
+        return cast("RPGraphNode", self.wrap(self.call_com(lambda: self._com.addImage(x_position, y_position, width, height))))
 
     def add_new_edge_by_type(self, meta_type: str, source: IRPModelElement, target: IRPModelElement) -> "RPGraphEdge":
         """Adds a transition edge of the specified type to the statechart.
@@ -157,7 +156,7 @@ class RPStatechart(IRPClass):
             com.telelogic.rhapsody.core.IRPStatechart::addNewEdgeByType(
                 java.lang.String metaType, IRPModelElement source, IRPModelElement target)
         """
-        return cast("RPGraphEdge", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewEdgeByType(meta_type, source._com, target._com))))
+        return cast("RPGraphEdge", self.wrap(self.call_com(lambda: self._com.addNewEdgeByType(meta_type, source._com, target._com))))
 
     def add_new_edge_for_element(self, element: IRPModelElement, source: IRPModelElement, target: IRPModelElement) -> "RPGraphEdge":
         """Adds a graphical edge for an existing model element to the statechart.
@@ -174,7 +173,7 @@ class RPStatechart(IRPClass):
             com.telelogic.rhapsody.core.IRPStatechart::addNewEdgeForElement(
                 IRPModelElement element, IRPModelElement source, IRPModelElement target)
         """
-        return cast("RPGraphEdge", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewEdgeForElement(element._com, source._com, target._com))))
+        return cast("RPGraphEdge", self.wrap(self.call_com(lambda: self._com.addNewEdgeForElement(element._com, source._com, target._com))))
 
     def add_new_node_for_element(self, element: IRPModelElement, x_position: int, y_position: int, width: int, height: int) -> "RPGraphNode":
         """Adds a graphical node for an existing model element to the statechart.
@@ -192,7 +191,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::addNewNodeForElement(com.telelogic.rhapsody.core.IRPModelElement element, int xPosition, int yPosition, int nWidth, int nHeight)
         """
-        return cast("RPGraphNode", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewNodeForElement(element._com, x_position, y_position, width, height))))
+        return cast("RPGraphNode", self.wrap(self.call_com(lambda: self._com.addNewNodeForElement(element._com, x_position, y_position, width, height))))
 
     def add_text_box(self, x_position: int, y_position: int, width: int, height: int) -> "RPGraphNode":
         """Adds a text box to the statechart.
@@ -209,7 +208,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::addTextBox(int xPosition, int yPosition, int nWidth, int nHeight)
         """
-        return cast("RPGraphNode", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addTextBox(x_position, y_position, width, height))))
+        return cast("RPGraphNode", self.wrap(self.call_com(lambda: self._com.addTextBox(x_position, y_position, width, height))))
 
     def open_diagram_view(self) -> None:
         """Opens the statechart diagram view in the Rhapsody GUI.
@@ -217,7 +216,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::openDiagramView()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.openDiagramView())
+        self.call_com(lambda: self._com.openDiagramView())
 
     def add_new_accept_event_action(self, name: str) -> Optional["IRPModelElement"]:
         """Adds a new accept event action to the statechart.
@@ -231,7 +230,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::addNewAcceptEventAction(java.lang.String name)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewAcceptEventAction(name)))
+        return self.wrap(self.call_com(lambda: self._com.addNewAcceptEventAction(name)))
 
     def add_new_accept_time_event(self, name: str) -> Optional["IRPModelElement"]:
         """Adds a new accept time event to the statechart.
@@ -245,7 +244,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::addNewAcceptTimeEvent(java.lang.String name)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewAcceptTimeEvent(name)))
+        return self.wrap(self.call_com(lambda: self._com.addNewAcceptTimeEvent(name)))
 
     def get_all_triggers(self) -> IRPCollection:
         """Returns all triggers defined in the statechart.
@@ -256,7 +255,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getAllTriggers()
         """
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getAllTriggers", "allTriggers"))
+        return IRPCollection(self._get_method_or_property(self._com, "getAllTriggers", "allTriggers"))
 
     def get_elements_in_diagram(self) -> IRPCollection:
         """Returns all model elements displayed in the statechart diagram.
@@ -267,7 +266,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getElementsInDiagram()
         """
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getElementsInDiagram", "elementsInDiagram"))
+        return IRPCollection(self._get_method_or_property(self._com, "getElementsInDiagram", "elementsInDiagram"))
 
     def get_graphical_elements(self) -> IRPCollection:
         """Returns all graphical elements in the statechart.
@@ -278,7 +277,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getGraphicalElements()
         """
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getGraphicalElements", "graphicalElements"))
+        return IRPCollection(self._get_method_or_property(self._com, "getGraphicalElements", "graphicalElements"))
 
     def get_inherits_from(self) -> "RPStatechart":
         """Returns the statechart that this statechart inherits from.
@@ -289,7 +288,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getInheritsFrom()
         """
-        return cast("RPStatechart", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getInheritsFrom", "inheritsFrom")))
+        return cast("RPStatechart", self.wrap(self._get_method_or_property(self._com, "getInheritsFrom", "inheritsFrom")))
 
     def get_is_main_behavior(self) -> int:
         """Checks whether this statechart is the main behavior of its owning class.
@@ -300,7 +299,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getIsMainBehavior()
         """
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsMainBehavior", "isMainBehavior"))
+        return int(self._get_method_or_property(self._com, "getIsMainBehavior", "isMainBehavior"))
 
     def get_is_overridden(self) -> int:
         """Checks whether this statechart overrides an inherited statechart.
@@ -311,7 +310,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getIsOverridden()
         """
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsOverridden", "isOverridden"))
+        return int(self._get_method_or_property(self._com, "getIsOverridden", "isOverridden"))
 
     def get_its_class(self) -> "IRPClass":
         """Returns the class that owns this statechart.
@@ -322,7 +321,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getItsClass()
         """
-        return cast("IRPClass", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getItsClass", "itsClass")))
+        return cast("IRPClass", self.wrap(self._get_method_or_property(self._com, "getItsClass", "itsClass")))
 
     def get_picture(self) -> object:
         """Returns the picture representation of the statechart.
@@ -333,7 +332,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getPicture()
         """
-        return AbstractRPModelElement._get_method_or_property(self._com, "getPicture", "picture")
+        return self._get_method_or_property(self._com, "getPicture", "picture")
 
     def get_picture_as(self, format: str) -> object:
         """Returns the picture representation in the specified format.
@@ -347,7 +346,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getPictureAs(java.lang.String format)
         """
-        return AbstractRPModelElement.call_com(lambda: self._com.getPictureAs(format))
+        return self.call_com(lambda: self._com.getPictureAs(format))
 
     def get_picture_as_divided_metafiles(self) -> IRPCollection:
         """Returns the picture as divided metafiles.
@@ -358,7 +357,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getPictureAsDividedMetafiles()
         """
-        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getPictureAsDividedMetafiles()))
+        return IRPCollection(self.call_com(lambda: self._com.getPictureAsDividedMetafiles()))
 
     def get_pictures_with_image_map(self, first_file_name: str, diagram_map: "IRPCollection") -> "IRPCollection":
         """Saves the statechart as EMF file(s) and populates the given collection with image-map info.
@@ -380,7 +379,7 @@ class RPStatechart(IRPClass):
             com.telelogic.rhapsody.core.IRPStatechart::getPicturesWithImageMap(
                 java.lang.String firstFileName, com.telelogic.rhapsody.core.IRPCollection diagrammap)
         """
-        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getPicturesWithImageMap(first_file_name, diagram_map._com)))
+        return IRPCollection(self.call_com(lambda: self._com.getPicturesWithImageMap(first_file_name, diagram_map._com)))
 
     def get_root_state(self) -> Optional["IRPModelElement"]:
         """Returns the root state of the statechart.
@@ -391,7 +390,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getRootState()
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getRootState", "rootState"))
+        return self.wrap(self._get_method_or_property(self._com, "getRootState", "rootState"))
 
     def get_statechart_diagram(self) -> "RPStatechartDiagram":
         """Returns the statechart diagram associated with this statechart.
@@ -402,7 +401,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getStatechartDiagram()
         """
-        return cast("RPStatechartDiagram", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getStatechartDiagram", "statechartDiagram")))
+        return cast("RPStatechartDiagram", self.wrap(self._get_method_or_property(self._com, "getStatechartDiagram", "statechartDiagram")))
 
     def override_inheritance(self) -> None:
         """Overrides the inherited statechart.
@@ -410,7 +409,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::overrideInheritance()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.overrideInheritance())
+        self.call_com(lambda: self._com.overrideInheritance())
 
     def populate_diagram(self) -> None:
         """Populates the diagram with elements.
@@ -418,7 +417,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::populateDiagram()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.populateDiagram())
+        self.call_com(lambda: self._com.populateDiagram())
 
     def set_as_main_behavior(self, is_main: int) -> None:
         """Sets whether this statechart is the main behavior.
@@ -429,7 +428,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::setAsMainBehavior(int isMain)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setAsMainBehavior(is_main))
+        self.call_com(lambda: self._com.setAsMainBehavior(is_main))
 
     def set_show_diagram_frame(self, show_frame: int) -> None:
         """Sets whether to show the diagram frame.
@@ -440,7 +439,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::setShowDiagramFrame(int showFrame)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setShowDiagramFrame(show_frame))
+        self.call_com(lambda: self._com.setShowDiagramFrame(show_frame))
 
     def unoverride_inheritance(self) -> None:
         """Removes the override of the inherited statechart.
@@ -448,7 +447,7 @@ class RPStatechart(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::unoverrideInheritance()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.unoverrideInheritance())
+        self.call_com(lambda: self._com.unoverrideInheritance())
 
 
-AbstractRPModelElement.register_wrapper("Statechart", RPStatechart)
+IRPModelElement.register_wrapper("Statechart", RPStatechart)

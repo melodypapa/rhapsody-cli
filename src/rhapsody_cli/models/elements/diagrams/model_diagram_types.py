@@ -3,7 +3,7 @@
 from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.elements.diagrams.model_diagrams import RPDiagram
 
 if TYPE_CHECKING:
@@ -32,8 +32,8 @@ class RPCollaborationDiagram(RPDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPCollaborationDiagram::getLogicalCollaboration()
         """
-        result = AbstractRPModelElement.call_com(lambda: self._com.getLogicalCollaboration())
-        return cast("RPCollaboration", AbstractRPModelElement.wrap(result))
+        result = self.call_com(lambda: self._com.getLogicalCollaboration())
+        return cast("RPCollaboration", self.wrap(result))
 
 
 class RPComponentDiagram(RPDiagram):
@@ -104,8 +104,8 @@ class RPSequenceDiagram(RPDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPSequenceDiagram::getLogicalCollaboration()
         """
-        result = AbstractRPModelElement.call_com(lambda: self._com.getLogicalCollaboration())
-        return cast("RPCollaboration", AbstractRPModelElement.wrap(result))
+        result = self.call_com(lambda: self._com.getLogicalCollaboration())
+        return cast("RPCollaboration", self.wrap(result))
 
     def get_related_use_cases(self) -> "IRPCollection":
         """Returns use cases related to this sequence diagram.
@@ -118,7 +118,7 @@ class RPSequenceDiagram(RPDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPSequenceDiagram::getRelatedUseCases()
         """
-        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getRelatedUseCases()))
+        return IRPCollection(self.call_com(lambda: self._com.getRelatedUseCases()))
 
 
 class RPStatechartDiagram(RPDiagram):
@@ -153,7 +153,7 @@ class RPStatechartDiagram(RPDiagram):
                 int xStartPosition, int yStartPosition,
                 int xEndPosition, int yEndPosition)
         """
-        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.addAndLine(source_state._com, x_start_position, y_start_position, y_end_position, y_end_position)))
+        return IRPCollection(self.call_com(lambda: self._com.addAndLine(source_state._com, x_start_position, y_start_position, y_end_position, y_end_position)))
 
     def create_graphics(self) -> None:
         """Creates the graphical representation of the elements in the statechart.
@@ -167,7 +167,7 @@ class RPStatechartDiagram(RPDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechartDiagram::createGraphics()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.createGraphics())
+        self.call_com(lambda: self._com.createGraphics())
 
     def get_statechart(self) -> "RPStatechart":
         """Returns the statechart object underlying the statechart diagram.
@@ -178,8 +178,8 @@ class RPStatechartDiagram(RPDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPStatechartDiagram::getStatechart()
         """
-        result = AbstractRPModelElement.call_com(lambda: self._com.getStatechart())
-        return cast("RPStatechart", AbstractRPModelElement.wrap(result))
+        result = self.call_com(lambda: self._com.getStatechart())
+        return cast("RPStatechart", self.wrap(result))
 
 
 class RPStructureDiagram(RPDiagram):
@@ -229,7 +229,7 @@ class RPTimingDiagram(RPSequenceDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPTimingDiagram::getIsElaborated()
         """
-        return int(AbstractRPModelElement.call_com(lambda: self._com.getIsElaborated()))
+        return int(self.call_com(lambda: self._com.getIsElaborated()))
 
     def set_is_elaborated(self, is_elaborated: int) -> None:
         """Specifies whether the diagram should be an elaborated or compact timing diagram.
@@ -244,7 +244,7 @@ class RPTimingDiagram(RPSequenceDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPTimingDiagram::setIsElaborated(int isElaborated)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setIsElaborated(is_elaborated))
+        self.call_com(lambda: self._com.setIsElaborated(is_elaborated))
 
 
 class RPActivityDiagram(RPStatechartDiagram):
@@ -275,7 +275,7 @@ class RPActivityDiagram(RPStatechartDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPActivityDiagram::decomposeSwimlane(com.telelogic.rhapsody.core.IRPGraphElement graphSwimlane)
         """
-        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.decomposeSwimlane(graph_swimlane._com)))
+        return IRPCollection(self.call_com(lambda: self._com.decomposeSwimlane(graph_swimlane._com)))
 
     def get_flowchart(self) -> "RPFlowchart":
         """Returns the flowchart object underlying the activity diagram.
@@ -286,19 +286,19 @@ class RPActivityDiagram(RPStatechartDiagram):
         Reference:
             com.telelogic.rhapsody.core.IRPActivityDiagram::getFlowchart()
         """
-        result = AbstractRPModelElement.call_com(lambda: self._com.getFlowchart())
-        return cast("RPFlowchart", AbstractRPModelElement.wrap(result))
+        result = self.call_com(lambda: self._com.getFlowchart())
+        return cast("RPFlowchart", self.wrap(result))
 
 
 # Registration — ActivityDiagram intentionally not re-registered here
 # (existing "ActivityDiagram" -> RPDiagram mapping preserved in model_diagrams.py)
-AbstractRPModelElement.register_wrapper("CollaborationDiagram", RPCollaborationDiagram)
-AbstractRPModelElement.register_wrapper("ComponentDiagram", RPComponentDiagram)
-AbstractRPModelElement.register_wrapper("DeploymentDiagram", RPDeploymentDiagram)
-AbstractRPModelElement.register_wrapper("ObjectModelDiagram", RPObjectModelDiagram)
-AbstractRPModelElement.register_wrapper("PanelDiagram", RPPanelDiagram)
-AbstractRPModelElement.register_wrapper("SequenceDiagram", RPSequenceDiagram)
-AbstractRPModelElement.register_wrapper("StatechartDiagram", RPStatechartDiagram)
-AbstractRPModelElement.register_wrapper("StructureDiagram", RPStructureDiagram)
-AbstractRPModelElement.register_wrapper("UseCaseDiagram", RPUseCaseDiagram)
-AbstractRPModelElement.register_wrapper("TimingDiagram", RPTimingDiagram)
+IRPModelElement.register_wrapper("CollaborationDiagram", RPCollaborationDiagram)
+IRPModelElement.register_wrapper("ComponentDiagram", RPComponentDiagram)
+IRPModelElement.register_wrapper("DeploymentDiagram", RPDeploymentDiagram)
+IRPModelElement.register_wrapper("ObjectModelDiagram", RPObjectModelDiagram)
+IRPModelElement.register_wrapper("PanelDiagram", RPPanelDiagram)
+IRPModelElement.register_wrapper("SequenceDiagram", RPSequenceDiagram)
+IRPModelElement.register_wrapper("StatechartDiagram", RPStatechartDiagram)
+IRPModelElement.register_wrapper("StructureDiagram", RPStructureDiagram)
+IRPModelElement.register_wrapper("UseCaseDiagram", RPUseCaseDiagram)
+IRPModelElement.register_wrapper("TimingDiagram", RPTimingDiagram)

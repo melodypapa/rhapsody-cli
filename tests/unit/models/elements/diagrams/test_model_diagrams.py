@@ -3,7 +3,6 @@
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.diagrams.model_diagrams import RPDiagram
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -66,7 +65,7 @@ def test_diagram_get_corresponding_graphic_elements_returns_collection() -> None
 def test_diagram_is_registered_for_meta_class_activity_diagram() -> None:
     fake = make_fake_element("ActivityDiagram", properties={"name": "MainFlow"})
 
-    wrapped = AbstractRPModelElement.wrap(fake)
+    wrapped = IRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, RPDiagram)
 

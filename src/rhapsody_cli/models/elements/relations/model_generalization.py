@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.elements.classifiers.model_usecase import RPExtensionPoint
@@ -36,7 +35,7 @@ class RPGeneralization(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPGeneralization::getBaseClass()
         """
-        return cast(IRPClassifier, AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getBaseClass", "baseClass")))
+        return cast(IRPClassifier, self.wrap(self._get_method_or_property(self._com, "getBaseClass", "baseClass")))
 
     def get_derived_class(self) -> IRPClassifier:
         """Returns the derived class (child) of the generalization.
@@ -47,7 +46,7 @@ class RPGeneralization(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPGeneralization::getDerivedClass()
         """
-        return cast(IRPClassifier, AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getDerivedClass", "derivedClass")))
+        return cast(IRPClassifier, self.wrap(self._get_method_or_property(self._com, "getDerivedClass", "derivedClass")))
 
     def get_extension_point(self) -> "RPExtensionPoint":
         """Returns the extension point for this generalization (for use case extension).
@@ -58,7 +57,7 @@ class RPGeneralization(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPGeneralization::getExtensionPoint()
         """
-        return cast("RPExtensionPoint", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getExtensionPoint", "extensionPoint")))
+        return cast("RPExtensionPoint", self.wrap(self._get_method_or_property(self._com, "getExtensionPoint", "extensionPoint")))
 
     def get_is_virtual(self) -> int:
         """Checks whether this generalization is virtual.
@@ -69,7 +68,7 @@ class RPGeneralization(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPGeneralization::getIsVirtual()
         """
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsVirtual", "isVirtual"))
+        return int(self._get_method_or_property(self._com, "getIsVirtual", "isVirtual"))
 
     def get_visibility(self) -> str:
         """Returns the visibility of the generalization.
@@ -80,7 +79,7 @@ class RPGeneralization(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPGeneralization::getVisibility()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getVisibility", "visibility"))
+        return str(self._get_method_or_property(self._com, "getVisibility", "visibility"))
 
     def set_base_class(self, base_class: IRPClassifier) -> None:
         """Sets the base class (parent) of the generalization.
@@ -91,7 +90,7 @@ class RPGeneralization(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPGeneralization::setBaseClass(com.telelogic.rhapsody.core.IRPClassifier baseClass)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setBaseClass(base_class._com))
+        self.call_com(lambda: self._com.setBaseClass(base_class._com))
 
     def set_derived_class(self, derived_class: IRPClassifier) -> None:
         """Sets the derived class (child) of the generalization.
@@ -102,7 +101,7 @@ class RPGeneralization(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPGeneralization::setDerivedClass(com.telelogic.rhapsody.core.IRPClassifier derivedClass)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setDerivedClass(derived_class._com))
+        self.call_com(lambda: self._com.setDerivedClass(derived_class._com))
 
     def set_extension_point(self, extension_point: IRPModelElement) -> None:
         """Sets the extension point for this generalization.
@@ -113,7 +112,7 @@ class RPGeneralization(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPGeneralization::setExtensionPoint(com.telelogic.rhapsody.core.IRPExtensionPoint extensionPoint)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setExtensionPoint(extension_point._com))
+        self.call_com(lambda: self._com.setExtensionPoint(extension_point._com))
 
     def set_is_virtual(self, is_virtual: int) -> None:
         """Sets whether this generalization is virtual.
@@ -124,7 +123,7 @@ class RPGeneralization(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPGeneralization::setIsVirtual(int isVirtual)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setIsVirtual(is_virtual))
+        self.call_com(lambda: self._com.setIsVirtual(is_virtual))
 
     def set_visibility(self, visibility: str) -> None:
         """Sets the visibility of the generalization.
@@ -135,7 +134,7 @@ class RPGeneralization(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPGeneralization::setVisibility(java.lang.String visibility)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setVisibility(visibility))
+        self.call_com(lambda: self._com.setVisibility(visibility))
 
 
-AbstractRPModelElement.register_wrapper("Generalization", RPGeneralization)
+IRPModelElement.register_wrapper("Generalization", RPGeneralization)

@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, Optional, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
@@ -37,7 +36,7 @@ class RPInstanceSlot(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPInstanceSlot::addElementValue(com.telelogic.rhapsody.core.IRPModelElement val)
         """
-        return cast("RPInstanceValue", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addElementValue(val._com))))
+        return cast("RPInstanceValue", self.wrap(self.call_com(lambda: self._com.addElementValue(val._com))))
 
     def add_string_value(self, val: str) -> "RPLiteralSpecification":
         """Adds a string value to this instance slot.
@@ -54,7 +53,7 @@ class RPInstanceSlot(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPInstanceSlot::addStringValue(java.lang.String val)
         """
-        return cast("RPLiteralSpecification", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addStringValue(val))))
+        return cast("RPLiteralSpecification", self.wrap(self.call_com(lambda: self._com.addStringValue(val))))
 
     def get_slot_property(self) -> Optional["IRPModelElement"]:
         """Returns the slot property of this instance slot.
@@ -68,7 +67,7 @@ class RPInstanceSlot(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPInstanceSlot::getSlotProperty()
         """
-        return AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getSlotProperty()))
+        return self.wrap(self.call_com(lambda: self._com.getSlotProperty()))
 
     def get_values(self) -> "IRPCollection":
         """Returns the values of this instance slot.
@@ -129,7 +128,7 @@ class RPInstanceSpecification(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPInstanceSpecification::addInstanceSlot(java.lang.String name, com.telelogic.rhapsody.core.IRPModelElement slotProperty)
         """
-        return cast("RPInstanceSlot", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.addInstanceSlot(name, slot_property._com))))
+        return cast("RPInstanceSlot", self.wrap(self.call_com(lambda: self._com.addInstanceSlot(name, slot_property._com))))
 
     def get_classifier(self) -> "IRPClassifier":
         """Returns the classifier of this instance specification.
@@ -143,7 +142,7 @@ class RPInstanceSpecification(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPInstanceSpecification::getClassifier()
         """
-        return cast("IRPClassifier", AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getClassifier())))
+        return cast("IRPClassifier", self.wrap(self.call_com(lambda: self._com.getClassifier())))
 
     def get_instance_slots(self) -> "IRPCollection":
         """Returns the instance slots of this instance specification.
@@ -236,7 +235,7 @@ class RPInstanceValue(RPValueSpecification):
         Reference:
             com.telelogic.rhapsody.core.IRPInstanceValue::getValue()
         """
-        return AbstractRPModelElement.wrap(self.call_com(lambda: self._com.getValue()))
+        return self.wrap(self.call_com(lambda: self._com.getValue()))
 
     def set_value(self, value: "IRPModelElement") -> None:
         """Sets the value to store.
@@ -283,8 +282,8 @@ class RPLiteralSpecification(RPValueSpecification):
         self._set_method_or_property(self._com, "setValue", "value", value)
 
 
-AbstractRPModelElement.register_wrapper("InstanceSlot", RPInstanceSlot)
-AbstractRPModelElement.register_wrapper("InstanceSpecification", RPInstanceSpecification)
-AbstractRPModelElement.register_wrapper("ValueSpecification", RPValueSpecification)
-AbstractRPModelElement.register_wrapper("InstanceValue", RPInstanceValue)
-AbstractRPModelElement.register_wrapper("LiteralSpecification", RPLiteralSpecification)
+IRPModelElement.register_wrapper("InstanceSlot", RPInstanceSlot)
+IRPModelElement.register_wrapper("InstanceSpecification", RPInstanceSpecification)
+IRPModelElement.register_wrapper("ValueSpecification", RPValueSpecification)
+IRPModelElement.register_wrapper("InstanceValue", RPInstanceValue)
+IRPModelElement.register_wrapper("LiteralSpecification", RPLiteralSpecification)

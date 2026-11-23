@@ -7,7 +7,6 @@ import pytest
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
-from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.activity import RPFlow, RPFlowItem
 from rhapsody_cli.models.elements.common import RPSysMLPort
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
@@ -72,7 +71,7 @@ def test_package_add_global_function_delegates_to_com() -> None:
 def test_package_is_registered_for_meta_class_package() -> None:
     fake = make_fake_element("Package", properties={"name": "MyPkg"})
 
-    wrapped = AbstractRPModelElement.wrap(fake)
+    wrapped = IRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, IRPPackage)
 

@@ -13,8 +13,8 @@ import pytest
 from pytest import Config, FixtureRequest
 
 from rhapsody_cli import RhapsodyApplication
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
-from rhapsody_cli.models.core import AbstractRPModelElement
 
 # Add unit directory to Python path so imports from unit tests work
 sys.path.insert(0, str(Path(__file__).parent.parent / "unit"))
@@ -244,7 +244,7 @@ def second_test_project(rhapsody_app: RhapsodyApplication, request: FixtureReque
             try:
                 # Live close() raises a modal "Projects can only be removed from
                 # project lists" dialog; assert the COM binding instead.
-                with patch.object(AbstractRPModelElement, "call_com") as com_call:
+                with patch.object(IRPModelElement, "call_com") as com_call:
                     second_project.close()
                     com_call.assert_called_once()
             except Exception:

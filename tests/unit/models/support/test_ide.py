@@ -2,7 +2,7 @@ from typing import cast
 
 from rhapsody_cli.application import RhapsodyApplication
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.support.model_ide import (
     RPAXViewCtrl,
     RPExternalIDERegistry,
@@ -150,7 +150,7 @@ class TestRPInternalOEMPlugin:
         target = make_fake_element("X")
         fake.rhpPluginSetApplication.return_value = 1
         obj = RPInternalOEMPlugin(fake)
-        result = obj.rhp_plugin_set_application(cast(RhapsodyApplication, AbstractRPModelElement.wrap(target)))
+        result = obj.rhp_plugin_set_application(cast(RhapsodyApplication, IRPModelElement.wrap(target)))
         fake.rhpPluginSetApplication.assert_called_once_with(target)
         assert result == 1
 

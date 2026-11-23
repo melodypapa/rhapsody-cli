@@ -10,7 +10,6 @@ from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.relations.model_instance import RPInstance
 
 if TYPE_CHECKING:
@@ -48,7 +47,7 @@ class IRPPort(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPPort::getIsBehavioral()
         """
-        return int(AbstractRPModelElement.get_com_property(self._com, "isBehavioral"))
+        return int(self.get_com_property(self._com, "isBehavioral"))
 
     def set_is_behavioral(self, is_behavioral: int) -> None:
         """Specifies whether the port should be a behavioral port.
@@ -62,7 +61,7 @@ class IRPPort(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPPort::setIsBehavioral(int isBehavioral)
         """
-        AbstractRPModelElement.set_com_property(self._com, "isBehavioral", is_behavioral)
+        self.set_com_property(self._com, "isBehavioral", is_behavioral)
 
     def get_is_reversed(self) -> int:
         """Checks whether the port's direction is reversed.
@@ -76,7 +75,7 @@ class IRPPort(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPPort::getIsReversed()
         """
-        return int(AbstractRPModelElement.get_com_property(self._com, "isReversed"))
+        return int(self.get_com_property(self._com, "isReversed"))
 
     def set_is_reversed(self, is_reversed: int) -> None:
         """Specifies whether the port's direction should be reversed.
@@ -90,7 +89,7 @@ class IRPPort(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPPort::setIsReversed(int isReversed)
         """
-        AbstractRPModelElement.set_com_property(self._com, "isReversed", is_reversed)
+        self.set_com_property(self._com, "isReversed", is_reversed)
 
     def get_port_contract(self) -> IRPClass:
         """Returns the contract defined for the port.
@@ -106,7 +105,7 @@ class IRPPort(RPInstance):
         """
         from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class import IRPClass
 
-        return cast(IRPClass, AbstractRPModelElement.wrap(AbstractRPModelElement.get_com_property(self._com, "portContract")))
+        return cast(IRPClass, self.wrap(self.get_com_property(self._com, "portContract")))
 
     def set_port_contract(self, port_contract: IRPModelElement) -> None:
         """Specifies the contract to use for the port.
@@ -117,7 +116,7 @@ class IRPPort(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPPort::setPortContract(com.telelogic.rhapsody.core.IRPClass portContract)
         """
-        AbstractRPModelElement.set_com_property(self._com, "portContract", port_contract._com)
+        self.set_com_property(self._com, "portContract", port_contract._com)
 
     def get_provided_interfaces(self) -> IRPCollection:
         """Returns the interfaces provided by the port.
@@ -131,7 +130,7 @@ class IRPPort(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPPort::getProvidedInterfaces()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "providedInterfaces"))
+        return IRPCollection(self.get_com_property(self._com, "providedInterfaces"))
 
     def add_provided_interface(self, new_val: IRPModelElement) -> None:
         """Adds a provided interface to the port.
@@ -145,7 +144,7 @@ class IRPPort(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPPort::addProvidedInterface(com.telelogic.rhapsody.core.IRPClass newVal)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.addProvidedInterface(new_val._com))
+        self.call_com(lambda: self._com.addProvidedInterface(new_val._com))
 
     def remove_provided_interface(self, new_val: IRPModelElement) -> None:
         """Removes a provided interface from the port.
@@ -159,7 +158,7 @@ class IRPPort(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPPort::removeProvidedInterface(com.telelogic.rhapsody.core.IRPClass newVal)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.removeProvidedInterface(new_val._com))
+        self.call_com(lambda: self._com.removeProvidedInterface(new_val._com))
 
     def get_required_interfaces(self) -> IRPCollection:
         """Returns the interfaces required by the port.
@@ -173,7 +172,7 @@ class IRPPort(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPPort::getRequiredInterfaces()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "requiredInterfaces"))
+        return IRPCollection(self.get_com_property(self._com, "requiredInterfaces"))
 
     def add_required_interface(self, new_val: IRPModelElement) -> None:
         """Adds a required interface to the port.
@@ -187,7 +186,7 @@ class IRPPort(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPPort::addRequiredInterface(com.telelogic.rhapsody.core.IRPClass newVal)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.addRequiredInterface(new_val._com))
+        self.call_com(lambda: self._com.addRequiredInterface(new_val._com))
 
     def remove_required_interface(self, new_val: IRPModelElement) -> None:
         """Removes a required interface from the port.
@@ -201,7 +200,7 @@ class IRPPort(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPPort::removeRequiredInterface(com.telelogic.rhapsody.core.IRPClass newVal)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.removeRequiredInterface(new_val._com))
+        self.call_com(lambda: self._com.removeRequiredInterface(new_val._com))
 
     def get_contract(self) -> IRPClass:
         """Return the port contract using the deprecated API name.
@@ -229,4 +228,4 @@ class IRPPort(RPInstance):
         raise NotImplementedError("setContract is not exposed in the Rhapsody COM automation type library.")
 
 
-AbstractRPModelElement.register_wrapper("Port", IRPPort)
+IRPModelElement.register_wrapper("Port", IRPPort)

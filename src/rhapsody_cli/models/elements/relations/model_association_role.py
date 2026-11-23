@@ -3,7 +3,7 @@
 from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.elements.relations.model_instance import RPInstance
 
 if TYPE_CHECKING:
@@ -29,7 +29,7 @@ class RPAssociationRole(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPAssociationRole::getClassifierRoles()
         """
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getClassifierRoles", "classifierRoles"))
+        return IRPCollection(self._get_method_or_property(self._com, "getClassifierRoles", "classifierRoles"))
 
     def get_formal_relations(self) -> IRPCollection:
         """Returns the formal relations for this association role.
@@ -40,7 +40,7 @@ class RPAssociationRole(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPAssociationRole::getFormalRelations()
         """
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getFormalRelations", "formalRelations"))
+        return IRPCollection(self._get_method_or_property(self._com, "getFormalRelations", "formalRelations"))
 
     def get_role_type(self) -> "IRPClassifier":
         """Returns the role type (classifier) for this association role.
@@ -51,7 +51,7 @@ class RPAssociationRole(RPInstance):
         Reference:
             com.telelogic.rhapsody.core.IRPAssociationRole::getRoleType()
         """
-        return cast("IRPClassifier", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getRoleType", "roleType")))
+        return cast("IRPClassifier", self.wrap(self._get_method_or_property(self._com, "getRoleType", "roleType")))
 
 
-AbstractRPModelElement.register_wrapper("AssociationRole", RPAssociationRole)
+IRPModelElement.register_wrapper("AssociationRole", RPAssociationRole)

@@ -6,7 +6,6 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 from rhapsody_cli.models.elements.variables import RPVariable
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -26,7 +25,7 @@ def test_variable_add_element_default_value_wraps_result() -> None:
     fake.addElementDefaultValue.return_value = new_value
     variable = RPVariable(fake)
 
-    result = variable.add_element_default_value(cast(IRPModelElement, AbstractRPModelElement.wrap(element)))
+    result = variable.add_element_default_value(cast(IRPModelElement, IRPModelElement.wrap(element)))
 
     fake.addElementDefaultValue.assert_called_once_with(element)
     assert result.get_name() == "Extra"

@@ -15,7 +15,6 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCo
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
-from rhapsody_cli.models.core import AbstractRPModelElement
 
 
 @pytest.mark.integration
@@ -1388,7 +1387,7 @@ class TestRPModelElementDiagnosticsUiIntegration:
             cls = pkg.add_class(self._unique("HLCls"))
             # A live call opens a modal GUI window that blocks the automation
             # session; assert the COM binding shape instead.
-            with patch.object(AbstractRPModelElement, "call_com") as com_call:
+            with patch.object(IRPModelElement, "call_com") as com_call:
                 assert cls.high_light_element() is None  # type: ignore[func-returns-value]
                 com_call.assert_called_once()
         finally:
@@ -1409,7 +1408,7 @@ class TestRPModelElementDiagnosticsUiIntegration:
             cls = pkg.add_class(self._unique("FeatCls"))
             # A live call opens a modal "Features" window that blocks later
             # project operations; assert the COM binding shape instead.
-            with patch.object(AbstractRPModelElement, "call_com") as com_call:
+            with patch.object(IRPModelElement, "call_com") as com_call:
                 assert cls.open_features_dialog(0) is None  # type: ignore[func-returns-value]
                 com_call.assert_called_once()
         finally:

@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, Optional, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import IRPInterfaceItem
@@ -43,7 +42,7 @@ class RPStateVertex(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPStateVertex::addFlow(java.lang.String type, com.telelogic.rhapsody.core.IRPStateVertex to)
         """
-        return cast("RPTransition", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addFlow(type_, to._com))))
+        return cast("RPTransition", self.wrap(self.call_com(lambda: self._com.addFlow(type_, to._com))))
 
     def add_transition(self, to: "RPStateVertex") -> "RPTransition":
         """Adds a transition from this element to the specified element.
@@ -57,7 +56,7 @@ class RPStateVertex(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPStateVertex::addTransition(com.telelogic.rhapsody.core.IRPStateVertex to)
         """
-        return cast("RPTransition", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addTransition(to._com))))
+        return cast("RPTransition", self.wrap(self.call_com(lambda: self._com.addTransition(to._com))))
 
     def delete_transition(self, transition: "RPTransition") -> None:
         """Deletes the specified transition.
@@ -68,7 +67,7 @@ class RPStateVertex(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPStateVertex::deleteTransition(com.telelogic.rhapsody.core.IRPTransition transition)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteTransition(transition._com))
+        self.call_com(lambda: self._com.deleteTransition(transition._com))
 
     def get_in_transitions(self) -> "IRPCollection":
         """Returns all of the transitions that enter the element.
@@ -84,7 +83,7 @@ class RPStateVertex(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPStateVertex::getInTransitions()
         """
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getInTransitions", "inTransitions"))
+        return IRPCollection(self._get_method_or_property(self._com, "getInTransitions", "inTransitions"))
 
     def get_out_transitions(self) -> "IRPCollection":
         """Returns all of the transitions that exit the element.
@@ -100,7 +99,7 @@ class RPStateVertex(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPStateVertex::getOutTransitions()
         """
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getOutTransitions", "outTransitions"))
+        return IRPCollection(self._get_method_or_property(self._com, "getOutTransitions", "outTransitions"))
 
     def get_parent(self) -> "RPState":
         """Returns the element's parent.
@@ -114,7 +113,7 @@ class RPStateVertex(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPStateVertex::getParent()
         """
-        return RPState(AbstractRPModelElement._get_method_or_property(self._com, "getParent", "parent"))
+        return RPState(self._get_method_or_property(self._com, "getParent", "parent"))
 
     def set_parent(self, parent: "RPState") -> None:
         """Sets the parent state of the element.
@@ -125,7 +124,7 @@ class RPStateVertex(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPStateVertex::setParent(com.telelogic.rhapsody.core.IRPState parent)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setParent(parent._com))
+        self.call_com(lambda: self._com.setParent(parent._com))
 
 
 class RPState(RPStateVertex):
@@ -198,7 +197,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::addActivityFinal()
         """
-        return RPState(AbstractRPModelElement.call_com(lambda: self._com.addActivityFinal()))
+        return RPState(self.call_com(lambda: self._com.addActivityFinal()))
 
     def add_connector(self, type_: str) -> "RPConnector":
         """Adds a connector element of the specified type to the state.
@@ -214,7 +213,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::addConnector(java.lang.String type)
         """
-        return cast("RPConnector", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addConnector(type_))))
+        return cast("RPConnector", self.wrap(self.call_com(lambda: self._com.addConnector(type_))))
 
     def add_internal_transition(self, trigger: "IRPInterfaceItem") -> "RPTransition":
         """Adds an internal transition to the state.
@@ -231,7 +230,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::addInternalTransition(com.telelogic.rhapsody.core.IRPInterfaceItem trigger)
         """
-        return cast("RPTransition", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addInternalTransition(trigger._com))))
+        return cast("RPTransition", self.wrap(self.call_com(lambda: self._com.addInternalTransition(trigger._com))))
 
     def add_state(self, name: str) -> "RPState":
         """Adds a new substate to this state.
@@ -249,7 +248,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::addState(java.lang.String name)
         """
-        return RPState(AbstractRPModelElement.call_com(lambda: self._com.addState(name)))
+        return RPState(self.call_com(lambda: self._com.addState(name)))
 
     def add_static_reaction(self, trigger: "IRPInterfaceItem") -> "RPTransition":
         """Adds an internal transition to the state.
@@ -263,7 +262,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::addStaticReaction(com.telelogic.rhapsody.core.IRPInterfaceItem trigger)
         """
-        return cast("RPTransition", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addStaticReaction(trigger._com))))
+        return cast("RPTransition", self.wrap(self.call_com(lambda: self._com.addStaticReaction(trigger._com))))
 
     def add_termination_state(self) -> "RPState":
         """Adds a termination state to a statechart.
@@ -277,7 +276,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::addTerminationState()
         """
-        return RPState(AbstractRPModelElement.call_com(lambda: self._com.addTerminationState()))
+        return RPState(self.call_com(lambda: self._com.addTerminationState()))
 
     def create_default_transition(self, from_: "RPState") -> "RPTransition":
         """Creates a default transition to this state from the state specified with the parameter.
@@ -292,7 +291,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::createDefaultTransition(com.telelogic.rhapsody.core.IRPState from)
         """
-        return cast("RPTransition", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.createDefaultTransition(from_._com))))
+        return cast("RPTransition", self.wrap(self.call_com(lambda: self._com.createDefaultTransition(from_._com))))
 
     def create_nested_statechart(self) -> "RPStatechart":
         """Deprecated. Use ``createSubStatechart()`` instead.
@@ -314,7 +313,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::createSubStatechart()
         """
-        return cast("RPStatechart", AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.createSubStatechart())))
+        return cast("RPStatechart", self.wrap(self.call_com(lambda: self._com.createSubStatechart())))
 
     def delete_connector(self, connector: "RPConnector") -> None:
         """Deletes the specified connector element.
@@ -325,7 +324,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::deleteConnector(com.telelogic.rhapsody.core.IRPConnector connector)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteConnector(connector._com))
+        self.call_com(lambda: self._com.deleteConnector(connector._com))
 
     def delete_internal_transition(self, p_val: "RPTransition") -> None:
         """Deletes the specified internal transition.
@@ -339,7 +338,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::deleteInternalTransition(com.telelogic.rhapsody.core.IRPTransition pVal)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteInternalTransition(p_val._com))
+        self.call_com(lambda: self._com.deleteInternalTransition(p_val._com))
 
     def delete_static_reaction(self, p_val: "RPTransition") -> None:
         """Deletes the specified internal transition.
@@ -350,7 +349,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::deleteStaticReaction(com.telelogic.rhapsody.core.IRPTransition pVal)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteStaticReaction(p_val._com))
+        self.call_com(lambda: self._com.deleteStaticReaction(p_val._com))
 
     def get_default_transition(self) -> "RPTransition":
         """Returns the default transition within the state.
@@ -361,7 +360,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::getDefaultTransition()
         """
-        return cast("RPTransition", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getDefaultTransition", "defaultTransition")))
+        return cast("RPTransition", self.wrap(self._get_method_or_property(self._com, "getDefaultTransition", "defaultTransition")))
 
     def get_entry_action(self) -> str:
         """Returns the entry action that was defined for the state.
@@ -372,7 +371,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::getEntryAction()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getEntryAction", "entryAction"))
+        return str(self._get_method_or_property(self._com, "getEntryAction", "entryAction"))
 
     def get_exit_action(self) -> str:
         """Returns the exit action that was defined for the state.
@@ -383,7 +382,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::getExitAction()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getExitAction", "exitAction"))
+        return str(self._get_method_or_property(self._com, "getExitAction", "exitAction"))
 
     def get_full_name_in_statechart(self) -> str:
         """Returns the full name of the state within the statechart, including its hierarchical position.
@@ -398,7 +397,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::getFullNameInStatechart()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getFullNameInStatechart", "fullNameInStatechart"))
+        return str(self._get_method_or_property(self._com, "getFullNameInStatechart", "fullNameInStatechart"))
 
     def get_inherits_from(self) -> "RPState":
         """Returns the corresponding state from the statechart of the class that this class is derived from.
@@ -410,7 +409,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::getInheritsFrom()
         """
-        return RPState(AbstractRPModelElement._get_method_or_property(self._com, "getInheritsFrom", "inheritsFrom"))
+        return RPState(self._get_method_or_property(self._com, "getInheritsFrom", "inheritsFrom"))
 
     def get_internal_transitions(self) -> "IRPCollection":
         """Returns a collection of the state's internal transitions.
@@ -421,7 +420,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::getInternalTransitions()
         """
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getInternalTransitions", "internalTransitions"))
+        return IRPCollection(self._get_method_or_property(self._com, "getInternalTransitions", "internalTransitions"))
 
     def get_is_overridden(self) -> int:
         """Checks whether there is still an inheritance relationship between this state and the corresponding state from the statechart of the class that this class is derived from.
@@ -433,7 +432,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::getIsOverridden()
         """
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsOverridden", "isOverridden"))
+        return int(self._get_method_or_property(self._com, "getIsOverridden", "isOverridden"))
 
     def get_is_reference_activity(self) -> int:
         """Checks whether this element is a call behavior element.
@@ -449,7 +448,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::getIsReferenceActivity()
         """
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "getIsReferenceActivity", "isReferenceActivity"))
+        return int(self._get_method_or_property(self._com, "getIsReferenceActivity", "isReferenceActivity"))
 
     def get_its_statechart(self) -> "RPStatechart":
         """Returns the statechart that this state belongs to.
@@ -460,7 +459,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::getItsStatechart()
         """
-        return cast("RPStatechart", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getItsStatechart", "itsStatechart")))
+        return cast("RPStatechart", self.wrap(self._get_method_or_property(self._com, "getItsStatechart", "itsStatechart")))
 
     def get_its_swimlane(self) -> "RPSwimlane":
         """Returns the swimlane that the action is located in.
@@ -471,7 +470,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::getItsSwimlane()
         """
-        return cast("RPSwimlane", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getItsSwimlane", "itsSwimlane")))
+        return cast("RPSwimlane", self.wrap(self._get_method_or_property(self._com, "getItsSwimlane", "itsSwimlane")))
 
     def get_logical_states(self) -> "IRPCollection":
         """Returns a collection of all the substates of the current state and all the first-level substates of those states, down to the second level.
@@ -483,7 +482,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::getLogicalStates()
         """
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getLogicalStates", "logicalStates"))
+        return IRPCollection(self._get_method_or_property(self._com, "getLogicalStates", "logicalStates"))
 
     def get_nested_statechart(self) -> "RPStatechart":
         """Returns the state's sub-statechart.
@@ -494,7 +493,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::getNestedStatechart()
         """
-        return cast("RPStatechart", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getNestedStatechart", "nestedStatechart")))
+        return cast("RPStatechart", self.wrap(self._get_method_or_property(self._com, "getNestedStatechart", "nestedStatechart")))
 
     def get_reference_to_activity(self) -> Optional["IRPModelElement"]:
         """For call behavior elements, returns the activity that is referenced.
@@ -505,7 +504,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::getReferenceToActivity()
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getReferenceToActivity", "referenceToActivity"))
+        return self.wrap(self._get_method_or_property(self._com, "getReferenceToActivity", "referenceToActivity"))
 
     def get_send_action(self) -> "RPSendAction":
         """Returns the Send Action element associated with the state.
@@ -521,7 +520,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::getSendAction()
         """
-        return cast("RPSendAction", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getSendAction", "sendAction")))
+        return cast("RPSendAction", self.wrap(self._get_method_or_property(self._com, "getSendAction", "sendAction")))
 
     def get_state_type(self) -> str:
         """Returns the type of the state, for example, an And state or a Termination state.
@@ -535,7 +534,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::getStateType()
         """
-        return str(AbstractRPModelElement._get_method_or_property(self._com, "getStateType", "stateType"))
+        return str(self._get_method_or_property(self._com, "getStateType", "stateType"))
 
     def get_static_reactions(self) -> "IRPCollection":
         """Returns a collection of the state's internal transitions.
@@ -546,7 +545,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::getStaticReactions()
         """
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getStaticReactions", "staticReactions"))
+        return IRPCollection(self._get_method_or_property(self._com, "getStaticReactions", "staticReactions"))
 
     def get_sub_state_vertices(self) -> "IRPCollection":
         """Returns a collection of all the first-level elements contained in this state, including both node and connector elements.
@@ -561,7 +560,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::getSubStateVertices()
         """
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getSubStateVertices", "subStateVertices"))
+        return IRPCollection(self._get_method_or_property(self._com, "getSubStateVertices", "subStateVertices"))
 
     def get_sub_states(self) -> "IRPCollection":
         """Returns a collection of the substates contained in this state.
@@ -577,7 +576,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::getSubStates()
         """
-        return IRPCollection(AbstractRPModelElement._get_method_or_property(self._com, "getSubStates", "subStates"))
+        return IRPCollection(self._get_method_or_property(self._com, "getSubStates", "subStates"))
 
     def get_the_entry_action(self) -> "RPAction":
         """Returns the entry action element of the state.
@@ -591,7 +590,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::getTheEntryAction()
         """
-        return cast("RPAction", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getTheEntryAction", "theEntryAction")))
+        return cast("RPAction", self.wrap(self._get_method_or_property(self._com, "getTheEntryAction", "theEntryAction")))
 
     def get_the_exit_action(self) -> "RPAction":
         """Returns the exit action element of the state.
@@ -605,7 +604,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::getTheExitAction()
         """
-        return cast("RPAction", AbstractRPModelElement.wrap(AbstractRPModelElement._get_method_or_property(self._com, "getTheExitAction", "theExitAction")))
+        return cast("RPAction", self.wrap(self._get_method_or_property(self._com, "getTheExitAction", "theExitAction")))
 
     def is_and(self) -> int:
         """Checks whether the state contains one or more And Lines.
@@ -616,7 +615,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::isAnd()
         """
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "isAnd", "isAnd"))
+        return int(self._get_method_or_property(self._com, "isAnd", "isAnd"))
 
     def is_compound(self) -> int:
         """Checks whether the state is a compound state, meaning a state that contains one or more substates.
@@ -627,7 +626,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::isCompound()
         """
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "isCompound", "isCompound"))
+        return int(self._get_method_or_property(self._com, "isCompound", "isCompound"))
 
     def is_leaf(self) -> int:
         """Checks whether the state is a leaf state, meaning a state that does not contain any substates.
@@ -639,7 +638,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::isLeaf()
         """
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "isLeaf", "isLeaf"))
+        return int(self._get_method_or_property(self._com, "isLeaf", "isLeaf"))
 
     def is_root(self) -> int:
         """Checks whether the state is the root state of the statechart.
@@ -650,7 +649,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::isRoot()
         """
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "isRoot", "isRoot"))
+        return int(self._get_method_or_property(self._com, "isRoot", "isRoot"))
 
     def is_send_action_state(self) -> int:
         """Checks whether the state is a Send Action element.
@@ -661,7 +660,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::isSendActionState()
         """
-        return int(AbstractRPModelElement._get_method_or_property(self._com, "isSendActionState", "isSendActionState"))
+        return int(self._get_method_or_property(self._com, "isSendActionState", "isSendActionState"))
 
     def override_inheritance(self) -> None:
         """Breaks the inheritance relationship between this state and the corresponding state from the statechart of the class that this class is derived from.
@@ -669,7 +668,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::overrideInheritance()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.overrideInheritance())
+        self.call_com(lambda: self._com.overrideInheritance())
 
     def reset_entry_action_inheritance(self) -> "RPState":
         """Restores the inheritance relationship between this state and the corresponding state from the statechart of the class that this class is derived from, for the entry action.
@@ -680,7 +679,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::resetEntryActionInheritance()
         """
-        return RPState(AbstractRPModelElement.call_com(lambda: self._com.resetEntryActionInheritance()))
+        return RPState(self.call_com(lambda: self._com.resetEntryActionInheritance()))
 
     def reset_exit_action_inheritance(self) -> "RPState":
         """Restores the inheritance relationship between this state and the corresponding state from the statechart of the class that this class is derived from, for the exit action.
@@ -691,7 +690,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::resetExitActionInheritance()
         """
-        return RPState(AbstractRPModelElement.call_com(lambda: self._com.resetExitActionInheritance()))
+        return RPState(self.call_com(lambda: self._com.resetExitActionInheritance()))
 
     def set_entry_action(self, entry_action: str) -> None:
         """Sets the entry action for the state.
@@ -702,7 +701,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::setEntryAction(java.lang.String entryAction)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setEntryAction", "entryAction", entry_action)
+        self._set_method_or_property(self._com, "setEntryAction", "entryAction", entry_action)
 
     def set_exit_action(self, exit_action: str) -> None:
         """Sets the exit action for the state.
@@ -713,7 +712,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::setExitAction(java.lang.String exitAction)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setExitAction", "exitAction", exit_action)
+        self._set_method_or_property(self._com, "setExitAction", "exitAction", exit_action)
 
     def set_internal_transition(self, trig_val: str, guard_val: str, action_val: str) -> None:
         """Sets the internal transition for the state.
@@ -729,7 +728,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::setInternalTransition(java.lang.String trigVal, java.lang.String guardVal, java.lang.String actionVal)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setInternalTransition(trig_val, guard_val, action_val))
+        self.call_com(lambda: self._com.setInternalTransition(trig_val, guard_val, action_val))
 
     def set_its_swimlane(self, its_swimlane: "RPSwimlane") -> None:
         """Specifies the swimlane that the action should be in.
@@ -740,7 +739,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::setItsSwimlane(com.telelogic.rhapsody.core.IRPSwimlane itsSwimlane)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setItsSwimlane(its_swimlane._com))
+        self.call_com(lambda: self._com.setItsSwimlane(its_swimlane._com))
 
     def set_reference_to_activity(self, reference_to_activity: "IRPModelElement") -> None:
         """For call behavior elements, sets the activity that is referenced by the element.
@@ -752,7 +751,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::setReferenceToActivity(com.telelogic.rhapsody.core.IRPModelElement referenceToActivity)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setReferenceToActivity(reference_to_activity._com))
+        self.call_com(lambda: self._com.setReferenceToActivity(reference_to_activity._com))
 
     def set_state_type(self, state_type: str) -> None:
         """Specifies the type of the state.
@@ -767,7 +766,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::setStateType(java.lang.String stateType)
         """
-        AbstractRPModelElement._set_method_or_property(self._com, "setStateType", "stateType", state_type)
+        self._set_method_or_property(self._com, "setStateType", "stateType", state_type)
 
     def set_static_reaction(self, trig_val: str, guard_val: str, action_val: str) -> None:
         """Adds a new internal transition to the state.
@@ -780,7 +779,7 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::setStaticReaction(java.lang.String trigVal, java.lang.String guardVal, java.lang.String actionVal)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.setStaticReaction(trig_val, guard_val, action_val))
+        self.call_com(lambda: self._com.setStaticReaction(trig_val, guard_val, action_val))
 
     def unoverride_inheritance(self) -> None:
         """Restores the inheritance relationship between this state and the corresponding state from the statechart of the class that this class is derived from.
@@ -791,8 +790,8 @@ class RPState(RPStateVertex):
         Reference:
             com.telelogic.rhapsody.core.IRPState::unoverrideInheritance()
         """
-        AbstractRPModelElement.call_com(lambda: self._com.unoverrideInheritance())
+        self.call_com(lambda: self._com.unoverrideInheritance())
 
 
-AbstractRPModelElement.register_wrapper("StateVertex", RPStateVertex)
-AbstractRPModelElement.register_wrapper("State", RPState)
+IRPModelElement.register_wrapper("StateVertex", RPStateVertex)
+IRPModelElement.register_wrapper("State", RPState)

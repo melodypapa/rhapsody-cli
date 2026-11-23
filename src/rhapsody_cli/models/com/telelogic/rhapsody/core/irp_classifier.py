@@ -11,7 +11,6 @@ from typing import TYPE_CHECKING, cast
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.core import AbstractRPModelElement
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute import IRPAttribute
@@ -94,7 +93,7 @@ class IRPClassifier(IRPUnit):
         """
         from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute import IRPAttribute
 
-        return cast(IRPAttribute, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addAttribute(name))))
+        return cast(IRPAttribute, self.wrap(self.call_com(lambda: self._com.addAttribute(name))))
 
     def add_operation(self, name: str) -> IRPOperation:
         """Adds a new operation to the classifier.
@@ -110,7 +109,7 @@ class IRPClassifier(IRPUnit):
         """
         from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
 
-        return cast(IRPOperation, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addOperation(name))))
+        return cast(IRPOperation, self.wrap(self.call_com(lambda: self._com.addOperation(name))))
 
     def get_attributes(self) -> IRPCollection:
         """Returns all attributes defined on the classifier.
@@ -121,7 +120,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getAttributes()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "attributes"))
+        return IRPCollection(self.get_com_property(self._com, "attributes"))
 
     def get_operations(self) -> IRPCollection:
         """Returns all operations defined on the classifier.
@@ -132,7 +131,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getOperations()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "operations"))
+        return IRPCollection(self.get_com_property(self._com, "operations"))
 
     def add_generalization(self, base_classifier: IRPClassifier) -> None:
         """Adds a generalization relationship from this classifier to another.
@@ -143,7 +142,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::addGeneralization(com.telelogic.rhapsody.core.IRPClassifier pVal)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.addGeneralization(base_classifier._com))
+        self.call_com(lambda: self._com.addGeneralization(base_classifier._com))
 
     def add_statechart(self) -> RPStatechart:
         """Adds a statechart behavior to this classifier.
@@ -156,7 +155,7 @@ class IRPClassifier(IRPUnit):
         """
         from rhapsody_cli.models.elements.classifiers.model_statechart import RPStatechart
 
-        return cast(RPStatechart, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addStatechart())))
+        return cast(RPStatechart, self.wrap(self.call_com(lambda: self._com.addStatechart())))
 
     def add_activity_diagram(self) -> RPFlowchart:
         """Creates a new activity diagram.
@@ -169,7 +168,7 @@ class IRPClassifier(IRPUnit):
         """
         from rhapsody_cli.models.elements.activity.model_activity import RPFlowchart
 
-        return cast(RPFlowchart, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addActivityDiagram())))
+        return cast(RPFlowchart, self.wrap(self.call_com(lambda: self._com.addActivityDiagram())))
 
     def add_flow_items(self, name: str) -> RPFlowItem:
         """Adds a new item flow to the classifier.
@@ -185,7 +184,7 @@ class IRPClassifier(IRPUnit):
         """
         from rhapsody_cli.models.elements.activity.model_activity import RPFlowItem
 
-        return cast(RPFlowItem, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addFlowItems(name))))
+        return cast(RPFlowItem, self.wrap(self.call_com(lambda: self._com.addFlowItems(name))))
 
     def add_flows(self, name: str) -> RPFlow:
         """Adds a new flow to the classifier.
@@ -201,7 +200,7 @@ class IRPClassifier(IRPUnit):
         """
         from rhapsody_cli.models.elements.activity.model_activity import RPFlow
 
-        return cast(RPFlow, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addFlows(name))))
+        return cast(RPFlow, self.wrap(self.call_com(lambda: self._com.addFlows(name))))
 
     def add_relation(
         self, other_class_name: str, other_class_package_name: str, role_name1: str, link_type1: str, multiplicity1: str, role_name2: str, link_type2: str, multiplicity2: str, link_name: str
@@ -253,8 +252,8 @@ class IRPClassifier(IRPUnit):
 
         return cast(
             RPRelation,
-            AbstractRPModelElement.wrap(
-                AbstractRPModelElement.call_com(
+            self.wrap(
+                self.call_com(
                     lambda: self._com.addRelation(
                         other_class_name,
                         other_class_package_name,
@@ -317,8 +316,8 @@ class IRPClassifier(IRPUnit):
 
         return cast(
             RPRelation,
-            AbstractRPModelElement.wrap(
-                AbstractRPModelElement.call_com(
+            self.wrap(
+                self.call_com(
                     lambda: self._com.addRelationTo(
                         other_classifier._com,
                         role_name1,
@@ -366,8 +365,8 @@ class IRPClassifier(IRPUnit):
 
         return cast(
             RPRelation,
-            AbstractRPModelElement.wrap(
-                AbstractRPModelElement.call_com(
+            self.wrap(
+                self.call_com(
                     lambda: self._com.addUnidirectionalRelation(
                         other_class_name,
                         other_class_package_name,
@@ -410,8 +409,8 @@ class IRPClassifier(IRPUnit):
 
         return cast(
             RPRelation,
-            AbstractRPModelElement.wrap(
-                AbstractRPModelElement.call_com(
+            self.wrap(
+                self.call_com(
                     lambda: self._com.addUnidirectionalRelationTo(
                         other_classifier._com,
                         role_name,
@@ -432,7 +431,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::deleteAttribute(com.telelogic.rhapsody.core.IRPAttribute attribute)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteAttribute(attribute._com))
+        self.call_com(lambda: self._com.deleteAttribute(attribute._com))
 
     def delete_flow_items(self, p_item: RPFlowItem) -> None:
         """Deletes the specified item flow.
@@ -443,7 +442,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::deleteFlowItems(com.telelogic.rhapsody.core.IRPFlowItem pItem)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteFlowItems(p_item._com))
+        self.call_com(lambda: self._com.deleteFlowItems(p_item._com))
 
     def delete_flows(self, p_flow: RPFlow) -> None:
         """Deletes the specified flow.
@@ -454,7 +453,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::deleteFlows(com.telelogic.rhapsody.core.IRPFlow pFlow)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteFlows(p_flow._com))
+        self.call_com(lambda: self._com.deleteFlows(p_flow._com))
 
     def delete_generalization(self, super_class: IRPClassifier) -> None:
         """Deletes the generalization relationship between this classifier and the specified base classifier.
@@ -466,7 +465,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::deleteGeneralization(com.telelogic.rhapsody.core.IRPClassifier superClass)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteGeneralization(super_class._com))
+        self.call_com(lambda: self._com.deleteGeneralization(super_class._com))
 
     def delete_operation(self, operation: IRPOperation) -> None:
         """Deletes the specified operation.
@@ -477,7 +476,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::deleteOperation(com.telelogic.rhapsody.core.IRPOperation operation)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteOperation(operation._com))
+        self.call_com(lambda: self._com.deleteOperation(operation._com))
 
     def delete_relation(self, relation: RPRelation) -> None:
         """Deletes the specified relation.
@@ -488,7 +487,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::deleteRelation(com.telelogic.rhapsody.core.IRPRelation relation)
         """
-        AbstractRPModelElement.call_com(lambda: self._com.deleteRelation(relation._com))
+        self.call_com(lambda: self._com.deleteRelation(relation._com))
 
     def find_attribute(self, new_val: str) -> IRPAttribute:
         """Returns the attribute with the name specified.
@@ -504,7 +503,7 @@ class IRPClassifier(IRPUnit):
         """
         from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute import IRPAttribute
 
-        return cast(IRPAttribute, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findAttribute(new_val))))
+        return cast(IRPAttribute, self.wrap(self.call_com(lambda: self._com.findAttribute(new_val))))
 
     def find_base_classifier(self, new_val: str) -> IRPClassifier:
         """Returns the base classifier with the specified name.
@@ -518,7 +517,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::findBaseClassifier(java.lang.String newVal)
         """
-        return cast(IRPClassifier, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findBaseClassifier(new_val))))
+        return cast(IRPClassifier, self.wrap(self.call_com(lambda: self._com.findBaseClassifier(new_val))))
 
     def find_derived_classifier(self, new_val: str) -> IRPClassifier:
         """Returns the derived classifier with the specified name.
@@ -532,7 +531,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::findDerivedClassifier(java.lang.String newVal)
         """
-        return cast(IRPClassifier, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findDerivedClassifier(new_val))))
+        return cast(IRPClassifier, self.wrap(self.call_com(lambda: self._com.findDerivedClassifier(new_val))))
 
     def find_generalization(self, new_val: str) -> RPGeneralization:
         """Returns the generalization relationship between this classifier and the named classifier.
@@ -551,7 +550,7 @@ class IRPClassifier(IRPUnit):
         """
         from rhapsody_cli.models.elements.relations.model_generalization import RPGeneralization
 
-        return cast(RPGeneralization, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findGeneralization(new_val))))
+        return cast(RPGeneralization, self.wrap(self.call_com(lambda: self._com.findGeneralization(new_val))))
 
     def find_interface_item(self, signature: str) -> IRPInterfaceItem:
         """Gets the operation or event reception that matches the signature provided.
@@ -570,7 +569,7 @@ class IRPClassifier(IRPUnit):
         """
         from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import IRPInterfaceItem
 
-        return cast(IRPInterfaceItem, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findInterfaceItem(signature))))
+        return cast(IRPInterfaceItem, self.wrap(self.call_com(lambda: self._com.findInterfaceItem(signature))))
 
     def find_nested_classifier(self, new_val: str) -> IRPClassifier:
         """Searches for the nested classifier with the name specified.
@@ -588,7 +587,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::findNestedClassifier(java.lang.String newVal)
         """
-        return cast(IRPClassifier, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findNestedClassifier(new_val))))
+        return cast(IRPClassifier, self.wrap(self.call_com(lambda: self._com.findNestedClassifier(new_val))))
 
     def find_nested_classifier_recursive(self, new_val: str) -> IRPModelElement | None:
         """Searches recursively for the classifier with the name specified.
@@ -607,7 +606,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::findNestedClassifierRecursive(java.lang.String newVal)
         """
-        return AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findNestedClassifierRecursive(new_val)))
+        return self.wrap(self.call_com(lambda: self._com.findNestedClassifierRecursive(new_val)))
 
     def find_relation(self, new_val: str) -> RPRelation:
         """Returns the association whose name was specified as a parameter.
@@ -623,7 +622,7 @@ class IRPClassifier(IRPUnit):
         """
         from rhapsody_cli.models.elements.relations.model_relation import RPRelation
 
-        return cast(RPRelation, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findRelation(new_val))))
+        return cast(RPRelation, self.wrap(self.call_com(lambda: self._com.findRelation(new_val))))
 
     def find_trigger(self, name: str) -> IRPInterfaceItem:
         """Returns the trigger with the specified name in the classifier's statechart.
@@ -639,7 +638,7 @@ class IRPClassifier(IRPUnit):
         """
         from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import IRPInterfaceItem
 
-        return cast(IRPInterfaceItem, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.findTrigger(name))))
+        return cast(IRPInterfaceItem, self.wrap(self.call_com(lambda: self._com.findTrigger(name))))
 
     def get_activity_diagram(self) -> RPFlowchart:
         """Returns the activity diagram defined for the classifier.
@@ -656,7 +655,7 @@ class IRPClassifier(IRPUnit):
         """
         from rhapsody_cli.models.elements.activity.model_activity import RPFlowchart
 
-        return cast(RPFlowchart, AbstractRPModelElement.wrap(AbstractRPModelElement.get_com_property(self._com, "activityDiagram")))
+        return cast(RPFlowchart, self.wrap(self.get_com_property(self._com, "activityDiagram")))
 
     def get_attributes_including_bases(self) -> IRPCollection:
         """Returns all the classifier's attributes, including inherited ones.
@@ -668,7 +667,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getAttributesIncludingBases()
         """
-        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getAttributesIncludingBases()))
+        return IRPCollection(self.call_com(lambda: self._com.getAttributesIncludingBases()))
 
     def get_base_classifiers(self) -> IRPCollection:
         """Returns the classifiers that serve as base classifiers for this classifier.
@@ -679,7 +678,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getBaseClassifiers()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "baseClassifiers"))
+        return IRPCollection(self.get_com_property(self._com, "baseClassifiers"))
 
     def get_behavioral_diagrams(self) -> IRPCollection:
         """Returns all the statecharts and activities defined for the classifier.
@@ -692,7 +691,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getBehavioralDiagrams()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "behavioralDiagrams"))
+        return IRPCollection(self.get_com_property(self._com, "behavioralDiagrams"))
 
     def get_derived_classifiers(self) -> IRPCollection:
         """Returns all the classifiers derived from this classifier.
@@ -703,7 +702,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getDerivedClassifiers()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "derivedClassifiers"))
+        return IRPCollection(self.get_com_property(self._com, "derivedClassifiers"))
 
     def get_flow_items(self) -> IRPCollection:
         """Returns all the classifier's item flows.
@@ -714,7 +713,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getFlowItems()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "flowItems"))
+        return IRPCollection(self.get_com_property(self._com, "flowItems"))
 
     def get_flows(self) -> IRPCollection:
         """Returns all the classifier's flows.
@@ -725,7 +724,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getFlows()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "flows"))
+        return IRPCollection(self.get_com_property(self._com, "flows"))
 
     def get_generalizations(self) -> IRPCollection:
         """Returns all the classifier's generalization relationships.
@@ -736,7 +735,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getGeneralizations()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "generalizations"))
+        return IRPCollection(self.get_com_property(self._com, "generalizations"))
 
     def get_interface_items(self) -> IRPCollection:
         """Returns the classifier's elements of type IRPInterfaceItem.
@@ -749,7 +748,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getInterfaceItems()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "interfaceItems"))
+        return IRPCollection(self.get_com_property(self._com, "interfaceItems"))
 
     def get_interface_items_including_bases(self) -> IRPCollection:
         """Returns the classifier's IRPInterfaceItem elements, including inherited ones.
@@ -764,7 +763,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getInterfaceItemsIncludingBases()
         """
-        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getInterfaceItemsIncludingBases()))
+        return IRPCollection(self.call_com(lambda: self._com.getInterfaceItemsIncludingBases()))
 
     def get_links(self) -> IRPCollection:
         """Returns all the classifier's link relationships.
@@ -775,7 +774,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getLinks()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "links"))
+        return IRPCollection(self.get_com_property(self._com, "links"))
 
     def get_nested_classifiers(self) -> IRPCollection:
         """Returns the classifiers nested below the current classifier.
@@ -789,7 +788,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getNestedClassifiers()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "nestedClassifiers"))
+        return IRPCollection(self.get_com_property(self._com, "nestedClassifiers"))
 
     def get_ports(self) -> IRPCollection:
         """Returns all the classifier's ports.
@@ -800,7 +799,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getPorts()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "ports"))
+        return IRPCollection(self.get_com_property(self._com, "ports"))
 
     def add_port(self, name: str) -> IRPModelElement:
         """Adds a new port to this classifier.
@@ -816,7 +815,7 @@ class IRPClassifier(IRPUnit):
         Returns:
             The wrapped ``IRPPort`` created.
         """
-        return cast(IRPModelElement, AbstractRPModelElement.wrap(AbstractRPModelElement.call_com(lambda: self._com.addNewAggr("Port", name))))
+        return cast(IRPModelElement, self.wrap(self.call_com(lambda: self._com.addNewAggr("Port", name))))
 
     def get_relations(self) -> IRPCollection:
         """Returns all the classifier's associations.
@@ -827,7 +826,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getRelations()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "relations"))
+        return IRPCollection(self.get_com_property(self._com, "relations"))
 
     def get_relations_including_bases(self) -> IRPCollection:
         """Returns all the classifier's associations, including inherited ones.
@@ -839,7 +838,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getRelationsIncludingBases()
         """
-        return IRPCollection(AbstractRPModelElement.call_com(lambda: self._com.getRelationsIncludingBases()))
+        return IRPCollection(self.call_com(lambda: self._com.getRelationsIncludingBases()))
 
     def get_sequence_diagrams(self) -> IRPCollection:
         """Returns the classifier's sequence diagrams.
@@ -850,7 +849,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getSequenceDiagrams()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "sequenceDiagrams"))
+        return IRPCollection(self.get_com_property(self._com, "sequenceDiagrams"))
 
     def get_source_artifacts(self) -> IRPCollection:
         """Gets the source artifacts for the classifier.
@@ -861,7 +860,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getSourceArtifacts()
         """
-        return IRPCollection(AbstractRPModelElement.get_com_property(self._com, "sourceArtifacts"))
+        return IRPCollection(self.get_com_property(self._com, "sourceArtifacts"))
 
     def get_statechart(self) -> RPStatechart:
         """Returns the statechart defined for the classifier.
@@ -878,4 +877,4 @@ class IRPClassifier(IRPUnit):
         """
         from rhapsody_cli.models.elements.classifiers.model_statechart import RPStatechart
 
-        return cast(RPStatechart, AbstractRPModelElement.wrap(AbstractRPModelElement.get_com_property(self._com, "statechart")))
+        return cast(RPStatechart, self.wrap(self.get_com_property(self._com, "statechart")))

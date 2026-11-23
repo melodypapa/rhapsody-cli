@@ -1,7 +1,7 @@
 """Tests for rhapsody_cli.elements.attribute.IRPAttribute."""
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute import IRPAttribute
-from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.elements.variables.model_variables import RPVariable
 from tests.unit.models.fakes import make_fake_element
 
@@ -65,7 +65,7 @@ def test_attribute_set_visibility_delegates_to_com() -> None:
 def test_attribute_is_registered_for_meta_class_attribute() -> None:
     fake = make_fake_element("Attribute", properties={"name": "count"})
 
-    wrapped = AbstractRPModelElement.wrap(fake)
+    wrapped = IRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, IRPAttribute)
 

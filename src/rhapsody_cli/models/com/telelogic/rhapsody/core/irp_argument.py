@@ -6,7 +6,7 @@ Canonical module for :class:`IRPArgument`; see the class requirement document at
 
 from __future__ import annotations
 
-from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.elements.variables.model_variables import RPVariable
 
 
@@ -28,7 +28,7 @@ class IRPArgument(RPVariable):
         Reference:
             com.telelogic.rhapsody.core.IRPArgument::getArgumentDirection()
         """
-        return str(AbstractRPModelElement.get_com_property(self._com, "argumentDirection"))
+        return str(self.get_com_property(self._com, "argumentDirection"))
 
     def set_argument_direction(self, argument_direction: str) -> None:
         """Sets the direction of the argument.
@@ -39,7 +39,7 @@ class IRPArgument(RPVariable):
         Reference:
             com.telelogic.rhapsody.core.IRPArgument::setArgumentDirection(java.lang.String argumentDirection)
         """
-        AbstractRPModelElement.set_com_property(self._com, "argumentDirection", argument_direction)
+        self.set_com_property(self._com, "argumentDirection", argument_direction)
 
 
-AbstractRPModelElement.register_wrapper("Argument", IRPArgument)
+IRPModelElement.register_wrapper("Argument", IRPArgument)

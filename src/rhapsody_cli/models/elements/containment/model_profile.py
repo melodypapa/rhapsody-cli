@@ -1,7 +1,7 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPProfile``."""
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
-from rhapsody_cli.models.core import AbstractRPModelElement
 
 
 class RPProfile(IRPPackage):
@@ -14,4 +14,4 @@ class RPProfile(IRPPackage):
     pass
 
 
-AbstractRPModelElement.register_wrapper("Profile", RPProfile)
+IRPModelElement.register_wrapper("Profile", RPProfile)

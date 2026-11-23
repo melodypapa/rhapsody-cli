@@ -1,7 +1,7 @@
 """Tests for graphics package — RPGraphElement, RPGraphEdge, and 12 other classes (Task 15)."""
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.core import AbstractRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.elements.graphics import (
     RPConditionMark,
     RPConnector,
@@ -24,7 +24,7 @@ from tests.unit.models.fakes import make_fake_collection, make_fake_element
 class TestRPGraphElementTask15:
     def test_is_registered(self) -> None:
         fake = make_fake_element("GraphElement", properties={"name": "ge1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPGraphElement)
 
     def test_get_interface_name_returns_str(self) -> None:
@@ -125,7 +125,7 @@ class TestRPGraphElementTask15:
 class TestRPGraphEdgeTask15:
     def test_is_registered(self) -> None:
         fake = make_fake_element("GraphEdge", properties={"name": "edge1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPGraphEdge)
 
     def test_is_graph_element(self) -> None:
@@ -174,7 +174,7 @@ class TestRPGraphEdgeTask15:
 class TestRPGraphNodeTask15:
     def test_is_registered(self) -> None:
         fake = make_fake_element("GraphNode", properties={"name": "node1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPGraphNode)
 
     def test_is_graph_element(self) -> None:
@@ -225,7 +225,7 @@ class TestRPGraphNodeTask15:
 class TestRPConnectorTask15:
     def test_is_registered(self) -> None:
         fake = make_fake_element("Connector", properties={"name": "conn1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPConnector)
 
     def test_is_condition_connector_returns_int(self) -> None:
@@ -292,7 +292,7 @@ class TestRPConnectorTask15:
 class TestRPPinTask15:
     def test_is_registered(self) -> None:
         fake = make_fake_element("Pin", properties={"name": "pin1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPPin)
 
     def test_is_connector(self) -> None:
@@ -331,7 +331,7 @@ class TestRPPinTask15:
 class TestRPConditionMarkTask15:
     def test_is_registered(self) -> None:
         fake = make_fake_element("ConditionMark", properties={"name": "cm1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPConditionMark)
 
     def test_is_message(self) -> None:
@@ -345,7 +345,7 @@ class TestRPConditionMarkTask15:
 class TestRPGraphicalPropertyTask15:
     def test_is_registered(self) -> None:
         fake = make_fake_element("GraphicalProperty", properties={"name": "gp1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPGraphicalProperty)
 
     def test_get_key_returns_str(self) -> None:
@@ -366,7 +366,7 @@ class TestRPGraphicalPropertyTask15:
 class TestRPImageMapTask15:
     def test_is_registered(self) -> None:
         fake = make_fake_element("ImageMap", properties={"name": "im1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPImageMap)
 
     def test_get_name_returns_str(self) -> None:
@@ -394,7 +394,7 @@ class TestRPImageMapTask15:
 class TestRPLinkTask15:
     def test_is_registered(self) -> None:
         fake = make_fake_element("Link", properties={"name": "link1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPLink)
 
     def test_get_end1_name_returns_str(self) -> None:
@@ -434,7 +434,7 @@ class TestRPLinkTask15:
 class TestRPMessagePointTask15:
     def test_is_registered(self) -> None:
         fake = make_fake_element("MessagePoint", properties={"name": "mp1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPMessagePoint)
 
     def test_get_type_returns_str(self) -> None:
@@ -457,7 +457,7 @@ class TestRPMessagePointTask15:
 class TestRPTableLayoutTask15:
     def test_is_registered(self) -> None:
         fake = make_fake_element("TableLayout", properties={"name": "tl1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPTableLayout)
 
     def test_get_collapse_first_column_returns_int(self) -> None:
@@ -502,7 +502,7 @@ class TestRPTableLayoutTask15:
 class TestRPTableViewTask15:
     def test_is_registered(self) -> None:
         fake = make_fake_element("TableView", properties={"name": "tv1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPTableView)
 
     def test_get_row_count_returns_int(self) -> None:
@@ -541,7 +541,7 @@ class TestRPTableViewTask15:
 class TestRPMatrixLayoutTask15:
     def test_is_registered(self) -> None:
         fake = make_fake_element("MatrixLayout", properties={"name": "ml1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPMatrixLayout)
 
     def test_get_from_element_types_returns_collection(self) -> None:
@@ -556,7 +556,7 @@ class TestRPMatrixLayoutTask15:
 class TestRPMatrixViewTask15:
     def test_is_registered(self) -> None:
         fake = make_fake_element("MatrixView", properties={"name": "mv1"})
-        wrapped = AbstractRPModelElement.wrap(fake)
+        wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, RPMatrixView)
 
     def test_get_column_count_returns_int(self) -> None:
