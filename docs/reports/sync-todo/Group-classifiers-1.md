@@ -20,7 +20,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - Note: behavioural container (97 src / 14 test, 31 owned methods). Already extends the synced `IRPClass`; a direct leaf migration once its report exists.
   - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
   - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Step 3 — §3 compare evidence: regenerate report + catalog entry; reconcile owned members; one pywin32 member per call; catalog-absent sites = blockers
+  - [ ] Step 3 — §3 compare evidence: regenerate report + catalog entry; reconcile owned members; one pywin32 member per call; catalog-absent sites = blockers BLOCKER 2026-11-24: no committed API report at `docs/reports/com/telelogic/rhapsody/core/IRPStatechart_api_report.md` and no `pywin32_authority.json` catalog entry; SKILL §3 forbids offline edits without COM evidence. Wrapper/tests/docs unchanged; regenerate report + catalog on Windows with Rhapsody, then resume.
   - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy sites; full unit suite green
   - [ ] Step 5 — §5 integration tests: mirrored path, live run on Windows
   - [ ] Step 6 — §6 SWR update: per-class requirement document `irp_statechart.md`
