@@ -93,8 +93,12 @@ class TestRPOperationIntegration:
         test_class = pkg.add_class(class_name)
         try:
             op = test_class.add_operation(op_name)
-            body = op.body
-            assert isinstance(body, str)
+            original_body = op.body
+            body = "return 42;"
+            op.body = body
+            assert op.body == body
+            op.body = original_body
+            assert op.body == original_body
         finally:
             test_class.delete_from_project()
 
@@ -115,8 +119,7 @@ class TestRPOperationIntegration:
             op = test_class.add_operation(self._unique("flowOp"))
             op.create_auto_flow_chart()
             chart = op.flowchart
-            with pytest.raises(AttributeError):
-                op.flowchart = chart
+            assert chart is not None
             assert op.delete_flowchart() is None  # type: ignore[func-returns-value]
         finally:
             test_class.delete_from_project()

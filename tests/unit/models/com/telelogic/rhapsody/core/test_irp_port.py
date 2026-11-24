@@ -1,13 +1,12 @@
-"""Tests for rhapsody_cli.models.elements.relations.IRPPort."""
+"""Tests for rhapsody_cli.models.com.telelogic.rhapsody.core.IRPPort."""
 
 import pytest
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass, IRPInstance
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port import IRPPort
-from rhapsody_cli.models.elements.relations import RPInstance
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
@@ -15,7 +14,7 @@ def test_port_is_an_instance() -> None:
     fake = make_fake_element("Port", properties={"name": "clientPort"})
     port = IRPPort(fake)
 
-    assert isinstance(port, RPInstance)
+    assert isinstance(port, IRPInstance)
     assert port.name == "clientPort"
 
 

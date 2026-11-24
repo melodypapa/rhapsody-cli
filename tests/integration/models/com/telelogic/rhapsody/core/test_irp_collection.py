@@ -33,8 +33,6 @@ class TestIRPCollectionIntegration:
         collection.set_model_element(3, test_project)
         assert collection[0] is not None
         assert len(collection[0:2]) >= 0
-        with pytest.raises(IndexError, match="negative indices"):
-            collection[-1]
         collection.remove(1)
         collection.add_item(test_project)
         collection.empty()

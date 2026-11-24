@@ -19,7 +19,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
 - [ ] irp_tag_api_report (IRPTag · RPTag · rhapsody_cli/models/elements/variables/model_variables.py · 8 legacy sites)
   - Note: usage 37 src / 29 test refs, 8 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
   - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
-  - [ ] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/`
+  - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
   - [ ] Step 3 — §3 compare evidence: regenerate report + catalog entry; reconcile owned members; one pywin32 member per call; catalog-absent sites = blockers
   - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy sites; full unit suite green
   - [ ] Step 5 — §5 integration tests: mirrored path, assert only owned methods; live run on Windows
@@ -29,7 +29,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
 - [ ] irp_variable_api_report (IRPVariable · RPVariable · rhapsody_cli/models/elements/variables/model_variables.py · 8 legacy sites)
   - Note: usage 30 src / 20 test refs, 10 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
   - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
-  - [ ] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/`
+  - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
   - [ ] Step 3 — §3 compare evidence: regenerate report + catalog entry; reconcile owned members; one pywin32 member per call; catalog-absent sites = blockers
   - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy sites; full unit suite green
   - [ ] Step 5 — §5 integration tests: mirrored path, assert only owned methods; live run on Windows
@@ -39,7 +39,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
 - [ ] irp_argument_remediation - IRPArgument
   - Baseline: argumentDirection is a COM property but is exposed by Java-style get_argument_direction()/set_argument_direction() methods; verify_sync.py otherwise passes.
   - [ ] Section 1 member checklist and populated getter fixture matrix row published.
-  - [ ] Section 2 canonical wrapper, tests, and exports verified.
+  - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
   - [ ] Section 3 Java getter/setter and COM property type/shapes reconciled.
   - [ ] Section 4 fake-COM tests first; full unit suite green; irp_argument.py at 100% statements/branches.
   - [ ] Section 5 create a real operation argument, set a JavaDoc-valid direction, and assert the live property value.
@@ -49,7 +49,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
 - [ ] irp_attribute_remediation - IRPAttribute
   - Baseline: 6 COM properties are exposed through Java-style getter/setter methods; verify_sync.py otherwise passes.
   - [ ] Section 1 member checklist and six populated getter fixture matrix rows published.
-  - [ ] Section 2 canonical wrapper, tests, and exports verified.
+  - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
   - [ ] Section 3 six property names/types and JavaDoc-valid values reconciled.
   - [ ] Section 4 fake-COM property read/write tests first using properties=; full unit suite green; irp_attribute.py at 100% statements/branches.
   - [ ] Section 5 create a real attribute attached to a class, set a documented value, and assert each getter returns it.
@@ -59,7 +59,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
 - [ ] irp_argument_remediation - IRPArgument
   - Baseline: argumentDirection is a COM property but is exposed by Java-style get_argument_direction()/set_argument_direction() methods; verify_sync.py otherwise passes.
   - [ ] Section 1 member checklist and populated getter fixture matrix row published.
-  - [ ] Section 2 canonical wrapper, tests, and exports verified.
+  - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
   - [ ] Section 3 Java getter/setter and COM property type/shapes reconciled.
   - [ ] Section 4 fake-COM tests first; full unit suite green; irp_argument.py at 100% statements/branches.
   - [ ] Section 5 create a real operation argument, set a JavaDoc-valid direction, and assert the live property value.
@@ -69,7 +69,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
 - [ ] irp_attribute_remediation - IRPAttribute
   - Baseline: 6 COM properties are exposed through Java-style getter/setter methods; verify_sync.py otherwise passes.
   - [ ] Section 1 member checklist and six populated getter fixture matrix rows published.
-  - [ ] Section 2 canonical wrapper, tests, and exports verified.
+  - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
   - [ ] Section 3 six property names/types and JavaDoc-valid values reconciled.
   - [ ] Section 4 fake-COM property read/write tests first using properties=; full unit suite green; irp_attribute.py at 100% statements/branches.
   - [ ] Section 5 create a real attribute attached to a class, set a documented value, and assert each getter returns it.

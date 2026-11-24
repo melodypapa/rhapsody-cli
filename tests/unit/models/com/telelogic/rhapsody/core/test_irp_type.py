@@ -1,4 +1,4 @@
-"""Tests for rhapsody_cli.models.elements.common.model_other_model.IRPType."""
+"""Tests for rhapsody_cli.models.com.telelogic.rhapsody.core.irp_other_model.IRPType."""
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
@@ -31,13 +31,13 @@ class TestRPType:
 
     def test_delete_enumeration_literal_delegates(self) -> None:
         # Pattern F
-        from rhapsody_cli.models.elements.common import RPEnumerationLiteral
+        from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPEnumerationLiteral
 
         fake = make_fake_element("Type")
         lit = make_fake_element("EnumerationLiteral", properties={"name": "RED"})
         fake.deleteEnumerationLiteral.return_value = None
         t = IRPType(fake)
-        t.delete_enumeration_literal(RPEnumerationLiteral(lit))
+        t.delete_enumeration_literal(IRPEnumerationLiteral(lit))
         fake.deleteEnumerationLiteral.assert_called_once_with(lit)
 
     def test_get_declaration_returns_string(self) -> None:

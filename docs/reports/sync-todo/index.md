@@ -6,6 +6,17 @@ the rules and steps of [`.agents/skills/rhapsody-sync/SKILL.md`](../../.agents/s
 (§1–§8). Runs tick a step the moment it passes; a row is archived only when all eight steps pass
 and the run's commit exists.
 
+## Bulk Java-package move (2026-11-24)
+
+All 113 legacy `RP*` wrapper classes in `models/elements/<domain>/` and `models/support/` were
+moved to the canonical Java package path `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` as
+`irp_<x>.py` modules, renamed to their Java interface names (`RPState` → `IRPState`), with unit and
+integration tests mirrored under `tests/{unit,integration}/models/com/telelogic/rhapsody/core/`,
+all imports rewritten, canonical lazy exports rebuilt, and no compatibility shim left behind.
+§2 (package move) is therefore ticked on the migrated rows below. §3–§8 remain open where no
+committed API report / catalog entry exists (the Windows regeneration blocker); 2157 unit tests
+pass, ruff and black are clean, and all 479 integration tests collect.
+
 ## Layout (2026-11-24)
 
 Group files are organized **by category**, where the category is the legacy module subpackage in

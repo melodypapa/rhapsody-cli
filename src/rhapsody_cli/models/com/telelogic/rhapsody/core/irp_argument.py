@@ -7,10 +7,10 @@ Canonical module for :class:`IRPArgument`; see the class requirement document at
 from __future__ import annotations
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.elements.variables.model_variables import RPVariable
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_variables import IRPVariable
 
 
-class IRPArgument(RPVariable):
+class IRPArgument(IRPVariable):
     """Wraps ``IRPArgument``: an argument/parameter of an operation."""
 
     # IRPArgument method parity checklist:

@@ -14,16 +14,7 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProje
 
 @pytest.mark.integration
 class TestRPAssociationClassIntegration:
-    """Integration tests for IRPAssociationClass with real Rhapsody COM API.
-
-    Note: In this Rhapsody build, ``addRelationTo`` with a non-empty ``linkName``
-    does not actually create an association class — it creates a regular
-    association with metaclass ``AssociationEnd`` roles.  The four
-    ``IRPAssociationClass``-specific members therefore cannot be exercised via
-    live COM in this environment.  They **do** have unit-test coverage via
-    fakes, and the integration test below is marked ``xfail`` with a clear
-    description of the limitation.
-    """
+    """Integration tests for IRPAssociationClass with real Rhapsody COM API."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
@@ -36,21 +27,33 @@ class TestRPAssociationClassIntegration:
         return pkg
 
     def test_owned_properties_via_wrapped_com_object(self, test_project: IRPProject) -> None:
-        """Exercise the owned properties on a wrapped COM object. This Rhapsody build
-        creates a plain association via addRelationTo, not an AssociationClass.
+        """Create a real association class and exercise its owned properties.
+
+        ``IRPModelElement.add_association`` (JavaDoc: "Creates an association
+        class using the specified IRPRelation elements") is the documented way
+        to build the fixture: create two classes, relate them, take the two
+        relation ends, and turn that association into an association class.
         """
         pkg = self._create_package(test_project, self._unique("AssocPkg"))
-        cls = pkg.add_class(self._unique("AssocCls"))
         try:
-            assoc = IRPAssociationClass(cls._com)
-            for accessor in (
-                lambda: assoc.end1,
-                lambda: assoc.end2,
-                lambda: assoc.is_class,
-            ):
-                with pytest.raises(AttributeError):
-                    accessor()
-            with pytest.raises(AttributeError):
-                assoc.is_class = 1
+            class_a = pkg.add_class(self._unique("AssocClsA"))
+            class_b = pkg.add_class(self._unique("AssocClsB"))
+            end1 = class_a.add_relation_to(class_b, "", "Association", "1", "", "Association", "1", "")
+            end2 = end1.get_inverse()
+
+            assoc = pkg.add_association(end1, end2, self._unique("AssocClass"))
+
+            assert isinstance(assoc, IRPAssociationClass)
+            assert assoc.end1 in (end1, end2)
+            assert assoc.end2 in (end1, end2)
+            assert assoc.end1 != assoc.end2
+
+            original_is_class = assoc.is_class
+            assert original_is_class in (0, 1)
+            toggled_is_class = 0 if original_is_class == 1 else 1
+            assoc.is_class = toggled_is_class
+            assert assoc.is_class == toggled_is_class
+            assoc.is_class = original_is_class
+            assert assoc.is_class == original_is_class
         finally:
-            cls.delete_from_project()
+            pkg.delete_from_project()

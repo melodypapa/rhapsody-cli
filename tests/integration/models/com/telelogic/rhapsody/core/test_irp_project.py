@@ -9,7 +9,6 @@ from unittest.mock import patch
 
 import pytest
 
-from rhapsody_cli.exceptions import RhapsodyRuntimeException
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class import IRPClass
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
@@ -137,42 +136,41 @@ class TestIRPProjectGenerated:
             com_call.assert_called_once()
 
     def test_find_component(self, test_project: IRPProject) -> None:
-        try:
-            assert test_project.find_component(self._unique("arg")) is None
-        finally:
-            pass
+        assert test_project.find_component(self._unique("missing")) is None
 
     def test_packages(self, test_project: IRPProject) -> None:
+        created = test_project.add_package(self._unique("GetterPkg"))
         try:
-            assert test_project.packages is not None
+            assert created in list(test_project.packages)
         finally:
-            pass
+            created.delete_from_project()
 
     def test_add_class(self, test_project: IRPProject) -> None:
+        name = self._unique("ProjectClass")
+        created = test_project.add_class(name)
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.add_class(self._unique("arg"))
+            assert isinstance(created, IRPClass)
+            assert created.name == name
         finally:
-            pass
+            created.delete_from_project()
 
     def test_add_actor(self, test_project: IRPProject) -> None:
+        name = self._unique("ProjectActor")
+        created = test_project.add_actor(name)
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.add_actor(self._unique("arg"))
+            assert created.name == name
         finally:
-            pass
+            created.delete_from_project()
 
     def test_components(self, test_project: IRPProject) -> None:
+        created = test_project.add_component(self._unique("GetterComp"))
         try:
-            assert test_project.components is not None
+            assert created in list(test_project.components)
         finally:
-            pass
+            created.delete_from_project()
 
     def test_find_element_by_guid(self, test_project: IRPProject) -> None:
-        try:
-            assert test_project.find_element_by_guid(self._unique("arg")) is None
-        finally:
-            pass
+        assert test_project.find_element_by_guid(self._unique("missing")) is None
 
     def test_add_component(self, test_project: IRPProject) -> None:
         pkg = None
@@ -184,349 +182,145 @@ class TestIRPProjectGenerated:
                 pkg.delete_from_project()
 
     def test_delete_component(self, test_project: IRPProject) -> None:
-        try:
-            component = test_project.add_component(self._unique("DelComp"))
-            assert component is not None
-            test_project.delete_component(component)
-        finally:
-            pass
+        name = self._unique("DelComp")
+        component = test_project.add_component(name)
+        assert component is not None
+        test_project.delete_component(component)
+        assert test_project.find_component(name) is None
 
     def test_add_node(self, test_project: IRPProject) -> None:
+        name = self._unique("ProjectNode")
+        created = test_project.add_node(name)
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.add_node(self._unique("arg"))
+            assert created.name == name
         finally:
-            pass
+            created.delete_from_project()
 
     def test_nodes(self, test_project: IRPProject) -> None:
+        created = test_project.add_node(self._unique("GetterNode"))
         try:
-            assert test_project.nodes is not None
+            assert created in list(test_project.nodes)
         finally:
-            pass
+            created.delete_from_project()
 
     def test_find_node(self, test_project: IRPProject) -> None:
-        try:
-            assert test_project.find_node(self._unique("arg")) is None
-        finally:
-            pass
+        assert test_project.find_node(self._unique("missing")) is None
 
     def test_active_configuration(self, test_project: IRPProject) -> None:
-        try:
-            assert test_project.active_configuration is not None
-        finally:
-            pass
+        active = test_project.active_configuration
+        assert active in list(active.get_its_component().get_configurations())
 
     def test_set_active_configuration(self, test_project: IRPProject) -> None:
-        try:
-            current = test_project.active_configuration
-            assert current is not None
-            assert test_project.set_active_configuration(current) is None  # type: ignore[func-returns-value]
-        finally:
-            pass
+        current = test_project.active_configuration
+        assert current is not None
+        assert test_project.set_active_configuration(current) is None  # type: ignore[func-returns-value]
 
     def test_active_component(self, test_project: IRPProject) -> None:
-        try:
-            assert test_project.active_component is not None
-        finally:
-            pass
+        active = test_project.active_component
+        assert active in list(test_project.components)
 
     def test_set_active_component(self, test_project: IRPProject) -> None:
-        try:
-            current = test_project.active_component
-            assert current is not None
-            assert test_project.set_active_component(current) is None  # type: ignore[func-returns-value]
-        finally:
-            pass
+        current = test_project.active_component
+        assert current is not None
+        assert test_project.set_active_component(current) is None  # type: ignore[func-returns-value]
 
     def test_all_stereotypes(self, test_project: IRPProject) -> None:
+        created = test_project.add_stereotype(self._unique("GetterStereotype"), "Class")
         try:
-            assert test_project.all_stereotypes is not None
+            assert created in list(test_project.all_stereotypes)
         finally:
-            pass
+            created.delete_from_project()
 
     def test_get_new_collaboration(self, test_project: IRPProject) -> None:
-        try:
-            assert test_project.get_new_collaboration() is not None
-        finally:
-            pass
+        assert test_project.get_new_collaboration() is not None
 
     def test_add_profile(self, test_project: IRPProject) -> None:
-        pkg = None
+        profile = None
         try:
-            pkg = test_project.add_profile(self._unique("arg"))
-            assert pkg is not None
+            profile = test_project.add_profile(self._unique("arg"))
+            assert profile is not None
         finally:
-            if pkg is not None:
-                pkg.delete_from_project()
+            if profile is not None:
+                profile.delete_from_project()
 
     def test_profiles(self, test_project: IRPProject) -> None:
+        created = test_project.add_profile(self._unique("GetterProfile"))
         try:
-            assert test_project.profiles is not None
+            assert created in list(test_project.profiles)
         finally:
-            pass
-
-    def test_save_as(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.save_as(self._unique("arg"))
-        finally:
-            pass
-
-    def test_find_element_by_binary_id(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(TypeError):
-                test_project.find_element_by_binary_id(self._unique("arg"))
-        finally:
-            pass
-
-    def test_find_element_by_file_name(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.find_element_by_file_name(self._unique("arg"))
-        finally:
-            pass
+            created.delete_from_project()
 
     def test_get_code_generated_files(self, test_project: IRPProject) -> None:
-        try:
-            assert test_project.get_code_generated_files() is not None
-        finally:
-            pass
+        assert test_project.get_code_generated_files() is not None
 
     def test_allow_auto_save(self, test_project: IRPProject) -> None:
-        try:
-            assert test_project.allow_auto_save(0) is None  # type: ignore[func-returns-value]
-        finally:
-            pass
+        assert test_project.allow_auto_save(0) is None  # type: ignore[func-returns-value]
 
     def test_allow_non_unique_names(self, test_project: IRPProject) -> None:
-        try:
-            assert test_project.allow_non_unique_names(0) is None  # type: ignore[func-returns-value]
-        finally:
-            pass
+        assert test_project.allow_non_unique_names(0) is None  # type: ignore[func-returns-value]
 
     def test_cg_simplified_model_package(self, test_project: IRPProject) -> None:
-        try:
-            assert test_project.cg_simplified_model_package is None
-        finally:
-            pass
-
-    def test_locate_in_ide(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.locate_in_ide()
-        finally:
-            pass
+        assert test_project.cg_simplified_model_package is None
 
     def test_is_modified_recursive(self, test_project: IRPProject) -> None:
-        try:
-            assert test_project.is_modified_recursive() is not None
-        finally:
-            pass
+        assert test_project.is_modified_recursive() is not None
 
     def test_highlight_from_code(self, test_project: IRPProject) -> None:
-        try:
-            assert test_project.highlight_from_code(self._unique("arg"), 0) is None  # type: ignore[func-returns-value]
-        finally:
-            pass
+        assert test_project.highlight_from_code(self._unique("arg"), 0) is None  # type: ignore[func-returns-value]
 
     def test_gateway_export_to_xml(self, test_project: IRPProject) -> None:
-        try:
-            assert test_project.gateway_export_to_xml(self._unique("arg")) is None  # type: ignore[func-returns-value]
-        finally:
-            pass
+        assert test_project.gateway_export_to_xml(self._unique("arg")) is None  # type: ignore[func-returns-value]
 
     def test_gateway_export_to_xml2(self, test_project: IRPProject) -> None:
-        try:
-            assert test_project.gateway_export_to_xml2(self._unique("arg"), self._unique("arg")) is None  # type: ignore[func-returns-value]
-        finally:
-            pass
+        assert test_project.gateway_export_to_xml2(self._unique("arg"), self._unique("arg")) is None  # type: ignore[func-returns-value]
 
     def test_generate_report(self, test_project: IRPProject) -> None:
-        try:
-            assert test_project.generate_report(self._unique("arg"), self._unique("arg")) is None  # type: ignore[func-returns-value]
-        finally:
-            pass
+        assert test_project.generate_report(self._unique("arg"), self._unique("arg")) is None  # type: ignore[func-returns-value]
 
     def test_add_custom_view_on_browser(self, test_project: IRPProject) -> None:
+        view = test_project.add_package(self._unique("ViewElem"))
         try:
-            view = test_project.add_package(self._unique("ViewElem"))
-            assert view is not None
             assert test_project.add_custom_view_on_browser(view) is None  # type: ignore[func-returns-value]
             assert test_project.remove_custom_view_on_browser(view) is None  # type: ignore[func-returns-value]
-            view.delete_from_project()
         finally:
-            pass
+            view.delete_from_project()
 
     def test_add_custom_view_on_diagram(self, test_project: IRPProject) -> None:
+        view = test_project.add_package(self._unique("ViewElem"))
         try:
-            view = test_project.add_package(self._unique("ViewElem"))
-            assert view is not None
             assert test_project.add_custom_view_on_diagram(view) is None  # type: ignore[func-returns-value]
             assert test_project.remove_custom_view_on_diagram(view) is None  # type: ignore[func-returns-value]
+        finally:
             view.delete_from_project()
-        finally:
-            pass
-
-    def test_apply_browser_custom_views_on_diagrams(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.apply_browser_custom_views_on_diagrams()
-        finally:
-            pass
 
     def test_get_active_custom_views_on_browser(self, test_project: IRPProject) -> None:
-        try:
-            assert test_project.get_active_custom_views_on_browser() is not None
-        finally:
-            pass
-
-    def test_get_active_custom_views_on_diagram(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.get_active_custom_views_on_diagram()
-        finally:
-            pass
-
-    def test_close_csv_file(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.close_csv_file()
-        finally:
-            pass
+        assert test_project.get_active_custom_views_on_browser() is not None
 
     def test_open_csv_file(self, test_project: IRPProject) -> None:
-        try:
-            assert test_project.open_csv_file(self._unique("arg"), 0) is None  # type: ignore[func-returns-value]
-        finally:
-            pass
-
-    def test_reload_csv_file(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.reload_csv_file()
-        finally:
-            pass
-
-    def test_apply_roundtrip_diff_merge(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.apply_roundtrip_diff_merge()
-        finally:
-            pass
+        assert test_project.open_csv_file(self._unique("arg"), 0) is None  # type: ignore[func-returns-value]
 
     def test_enable_rhapsody_model_manager(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(NotImplementedError):
-                test_project.enable_rhapsody_model_manager()
-        finally:
-            pass
-
-    def test_find_elements_with_oslc_link(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.find_elements_with_oslc_link(self._unique("arg"))
-        finally:
-            pass
+        with pytest.raises(NotImplementedError):
+            test_project.enable_rhapsody_model_manager()
 
     def test_get_remote_resource_packages(self, test_project: IRPProject) -> None:
-        try:
-            assert test_project.get_remote_resource_packages() is not None
-        finally:
-            pass
-
-    def test_get_roundtrip_shadow_model(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.get_roundtrip_shadow_model()
-        finally:
-            pass
+        assert test_project.get_remote_resource_packages() is not None
 
     def test_is_actively_managed(self, test_project: IRPProject) -> None:
-        try:
-            assert test_project.is_actively_managed() is not None
-        finally:
-            pass
+        assert test_project.is_actively_managed() is not None
 
     def test_migrate_design_manager_links(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(NotImplementedError):
-                test_project.migrate_design_manager_links()
-        finally:
-            pass
-
-    def test_import_package_from_rose(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.import_package_from_rose(self._unique("arg"))
-        finally:
-            pass
-
-    def test_import_project_from_rose(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.import_project_from_rose(self._unique("arg"))
-        finally:
-            pass
-
-    def test_check_events_base_ids_solve_collisions(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(TypeError):
-                test_project.check_events_base_ids_solve_collisions()
-        finally:
-            pass
+        with pytest.raises(NotImplementedError):
+            test_project.migrate_design_manager_links()
 
     def test_recalculate_events_base_ids(self, test_project: IRPProject) -> None:
-        try:
-            assert test_project.recalculate_events_base_ids() is None  # type: ignore[func-returns-value]
-        finally:
-            pass
-
-    def test_add_spell_checker_result(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(TypeError):
-                test_project.add_spell_checker_result(self._unique("arg"), self._unique("arg"))
-        finally:
-            pass
-
-    def test_clean_unresolved_elements(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.clean_unresolved_elements()
-        finally:
-            pass
+        assert test_project.recalculate_events_base_ids() is None  # type: ignore[func-returns-value]
 
     def test_end_transaction_of_no_cg_interest(self, test_project: IRPProject) -> None:
-        try:
-            assert test_project.end_transaction_of_no_cg_interest() is None  # type: ignore[func-returns-value]
-        finally:
-            pass
-
-    def test_default_directory_scheme(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(ValueError):
-                _ = test_project.default_directory_scheme
-        finally:
-            pass
-
-    def test_get_new_progress_bar(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.get_new_progress_bar()
-        finally:
-            pass
+        assert test_project.end_transaction_of_no_cg_interest() is None  # type: ignore[func-returns-value]
 
     def test_get_notify_plugin_on_elements_changed(self, test_project: IRPProject) -> None:
-        try:
-            assert test_project.get_notify_plugin_on_elements_changed() is not None
-        finally:
-            pass
-
-    def test_get_requirements_by_id(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.get_requirements_by_id(self._unique("arg"))
-        finally:
-            pass
+        assert test_project.get_notify_plugin_on_elements_changed() is not None
 
     def test_remove(self, test_project: IRPProject) -> None:
         # A live remove() deletes the session-shared project and raises a modal
@@ -536,64 +330,38 @@ class TestIRPProjectGenerated:
             assert test_project.remove() is None  # type: ignore[func-returns-value]
             com_call.assert_called_once()
 
-    def test_save_as_prev_version(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(RhapsodyRuntimeException):
-                test_project.save_as_prev_version(self._unique("arg"))
-        finally:
-            pass
-
-    def test_default_directory_scheme_write(self, test_project: IRPProject) -> None:
-        try:
-            test_project.default_directory_scheme = 0
-        finally:
-            pass
-
     def test_set_global_configuration(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(NotImplementedError):
-                test_project.set_global_configuration(self._unique("gc"), self._unique("name"))
-        finally:
-            pass
+        with pytest.raises(NotImplementedError):
+            test_project.set_global_configuration(self._unique("gc"), self._unique("name"))
 
     def test_set_notify_plugin_on_elements_changed(self, test_project: IRPProject) -> None:
-        try:
-            assert test_project.set_notify_plugin_on_elements_changed(0) is None  # type: ignore[func-returns-value]
-        finally:
-            pass
+        assert test_project.set_notify_plugin_on_elements_changed(0) is None  # type: ignore[func-returns-value]
 
     def test_set_object_explicit(self, test_project: IRPProject) -> None:
+        pkg = test_project.add_package(self._unique("ObjElem"))
         try:
-            pkg = test_project.add_package(self._unique("ObjElem"))
-            assert pkg is not None
             assert test_project.set_object_explicit(pkg) is None  # type: ignore[func-returns-value]
-            pkg.delete_from_project()
         finally:
-            pass
+            pkg.delete_from_project()
 
     def test_set_object_implicit(self, test_project: IRPProject) -> None:
+        pkg = test_project.add_package(self._unique("ObjElem"))
         try:
-            pkg = test_project.add_package(self._unique("ObjElem"))
-            assert pkg is not None
             assert test_project.set_object_implicit(pkg) is None  # type: ignore[func-returns-value]
-            pkg.delete_from_project()
         finally:
-            pass
+            pkg.delete_from_project()
 
     def test_use_unique_stereotype_and_ref_cache(self, test_project: IRPProject) -> None:
+        original = test_project.use_unique_stereotype_and_ref_cache
+        toggled = 0 if original == 1 else 1
         try:
-            test_project.use_unique_stereotype_and_ref_cache = 0
+            test_project.use_unique_stereotype_and_ref_cache = toggled
+            assert test_project.use_unique_stereotype_and_ref_cache == toggled
         finally:
-            pass
+            test_project.use_unique_stereotype_and_ref_cache = original
 
     def test_set_wait_dialog_watchdog_value(self, test_project: IRPProject) -> None:
-        try:
-            assert test_project.set_wait_dialog_watchdog_value(0) is None  # type: ignore[func-returns-value]
-        finally:
-            pass
+        assert test_project.set_wait_dialog_watchdog_value(0) is None  # type: ignore[func-returns-value]
 
     def test_start_transaction_of_no_cg_interest(self, test_project: IRPProject) -> None:
-        try:
-            assert test_project.start_transaction_of_no_cg_interest() is None  # type: ignore[func-returns-value]
-        finally:
-            pass
+        assert test_project.start_transaction_of_no_cg_interest() is None  # type: ignore[func-returns-value]

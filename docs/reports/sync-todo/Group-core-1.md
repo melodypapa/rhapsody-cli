@@ -19,7 +19,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
 - [ ] irp_model_element_remediation - IRPModelElement
   - Baseline before this remediation: getErrorMessage call arity 0 to 1; 22 disallowed integration exception assertions; 32 COM properties used method shape; Java getStereotype/setStereotype mapped to the missing read/write COM property stereotype. The invalid `set_ti` and `set_main_diagram` cases were already replaced with real relationship roundtrips.
   - [ ] Section 1 member checklist and getter matrix published.
-  - [ ] Section 2 canonical wrapper, tests, exports, and inherited-member scope verified.
+  - [x] Section 2 canonical wrapper, tests, exports, and inherited-member scope verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
   - [ ] Section 3 arity, property shape, stereotype member, and every owned member reconciled against JavaDoc/catalog.
   - [x] Section 4 fake-COM tests first; full unit suite green; irp_model_element.py at 100% statements/branches. Evidence: focused unit file 154 passed; coverage 307 statements/136 branches, 100.00%; full unit suite 2124 passed; mypy found no issues in 274 files.
   - [ ] Section 5 populated getter matrix and live assertions complete; final live result or blockers recorded. After the user-approved stubs, the full focused integration file completed **103 passed, 0 failed, exit 0** using `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=src python -m pytest tests/integration/models/com/telelogic/rhapsody/core/test_irp_model_element.py -q -o addopts= --rhapsody-hidden-ui`; the two explicit NotImplementedError tests passed. The regular plugin-autoload run previously emitted fatal reporter-teardown traces after reporting 103 passed, while the disabled-autoload run exited cleanly. The getter follow-up matrix is:
@@ -38,7 +38,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
 - [ ] irp_collection_remediation - IRPCollection
   - Baseline: COM Count property is exposed as get_count; integration test asserts forbidden IndexError for a negative index.
   - [ ] Section 1 member checklist and getter matrix published.
-  - [ ] Section 2 canonical wrapper, tests, and exports verified.
+  - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
   - [ ] Section 3 COM property/method shape and collection index contract reconciled.
   - [ ] Section 4 fake-COM tests first; full unit suite green; irp_collection.py at 100% statements/branches.
   - [ ] Section 5 populated collection getter test asserts the created item/count; negative-index behavior stays unit-tested.
@@ -48,7 +48,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
 - [ ] irp_unit_remediation - IRPUnit
   - Baseline: 6 property-shape conversions; 4 integration tests assert RhapsodyRuntimeException.
   - [ ] Section 1 member checklist and getter matrix published.
-  - [ ] Section 2 canonical wrapper, tests, and exports verified.
+  - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
   - [ ] Section 3 all 6 properties and four failing cases reconciled against the report/catalog.
   - [ ] Section 4 fake-COM tests first; full unit suite green; irp_unit.py at 100% statements/branches.
   - [ ] Section 5 replace the four exception assertions with authentic live outcomes or evidence-backed blockers.

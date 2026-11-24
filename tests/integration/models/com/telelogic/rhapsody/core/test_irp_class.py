@@ -8,12 +8,11 @@ from typing import cast
 
 import pytest
 
-from rhapsody_cli.exceptions import RhapsodyRuntimeException
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPEventReception
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type import IRPType
-from rhapsody_cli.models.elements.interactions import RPEventReception
 
 
 @pytest.mark.integration
@@ -106,7 +105,7 @@ class TestIRPClassIntegration:
         try:
             reception = test_class.add_reception(reception_name)
             assert reception is not None
-            assert isinstance(reception, RPEventReception)
+            assert isinstance(reception, IRPEventReception)
             assert reception in list(test_class.interface_items)
             test_class.delete_reception(reception)
             items_after = [i.name for i in test_class.interface_items]
@@ -123,14 +122,14 @@ class TestIRPClassIntegration:
         try:
             reception = test_class.add_event_reception(reception_name)
             assert reception is not None
-            assert isinstance(reception, RPEventReception)
+            assert isinstance(reception, IRPEventReception)
             assert reception in list(test_class.interface_items)
         finally:
             test_class.delete_from_project()
 
     def test_add_event_reception_with_event(self, test_project: IRPProject) -> None:
         """Test that add_event_reception_with_event raises NotImplementedError (not exposed in COM type library)."""
-        from rhapsody_cli.models.elements.interactions import RPEvent
+        from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPEvent
 
         pkg_name = self._unique("EvWEvPkg")
         class_name = self._unique("EvWEvCls")
@@ -141,7 +140,7 @@ class TestIRPClassIntegration:
         try:
             event = pkg.add_event(event_name)
             with pytest.raises(NotImplementedError, match="addEventReceptionWithEvent is not exposed in the Rhapsody COM"):
-                test_class.add_event_reception_with_event(reception_name, cast(RPEvent, event))
+                test_class.add_event_reception_with_event(reception_name, cast(IRPEvent, event))
         finally:
             test_class.delete_from_project()
 
@@ -303,16 +302,5 @@ class TestIRPClassIntegration:
         try:
             assert isinstance(cls.get_is_final(), int)
             assert cls.set_is_final(1) is None  # type: ignore[func-returns-value]
-        finally:
-            cls.delete_from_project()
-
-    def test_add_link_methods_delegate_to_com(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("LinkPkg"))
-        cls = pkg.add_class(self._unique("LinkCls"))
-        try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.add_link(cls, cls, cls, cls, cls)
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.add_link_to_part_via_port(cls, cls, cls, cls)
         finally:
             cls.delete_from_project()

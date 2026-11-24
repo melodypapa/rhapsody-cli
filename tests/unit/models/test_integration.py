@@ -1,23 +1,21 @@
 """Cross-wrapper integration tests: factory methods return correct subclasses."""
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
+from rhapsody_cli.models.com.telelogic.rhapsody.core import (
+    IRPAssociationRole,
+    IRPClass,
+    IRPComponent,
+    IRPConfiguration,
+    IRPDependency,
+    IRPGeneralization,
+    IRPInstance,
+    IRPPackage,
+    IRPProfile,
+    IRPStereotype,
+)
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_misc import IRPComment, IRPConstraint, IRPEnumerationLiteral
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.elements.classifiers import RPStereotype
-from rhapsody_cli.models.elements.common.model_misc import RPComment, RPConstraint, RPEnumerationLiteral
-from rhapsody_cli.models.elements.containment import (
-    IRPPackage,
-    RPComponent,
-    RPConfiguration,
-    RPProfile,
-)
-from rhapsody_cli.models.elements.relations import (
-    RPAssociationRole,
-    RPDependency,
-    RPGeneralization,
-    RPInstance,
-)
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
@@ -26,7 +24,7 @@ def test_wrap_dispatches_profile_to_rpprofile() -> None:
 
     result = IRPModelElement.wrap(fake)
 
-    assert isinstance(result, RPProfile)
+    assert isinstance(result, IRPProfile)
     assert isinstance(result, IRPPackage)
 
 
@@ -35,7 +33,7 @@ def test_wrap_dispatches_component_to_rpcomponent() -> None:
 
     result = IRPModelElement.wrap(fake)
 
-    assert isinstance(result, RPComponent)
+    assert isinstance(result, IRPComponent)
 
 
 def test_wrap_dispatches_configuration_to_rpconfiguration() -> None:
@@ -43,18 +41,18 @@ def test_wrap_dispatches_configuration_to_rpconfiguration() -> None:
 
     result = IRPModelElement.wrap(fake)
 
-    assert isinstance(result, RPConfiguration)
+    assert isinstance(result, IRPConfiguration)
 
 
 def test_wrap_dispatches_module_to_rpmodule() -> None:
-    from rhapsody_cli.models.elements.containment import RPModule
+    from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPModule
 
     fake = make_fake_element("Module", properties={"name": "Module1"})
 
     result = IRPModelElement.wrap(fake)
 
-    assert isinstance(result, RPModule)
-    assert isinstance(result, RPInstance)
+    assert isinstance(result, IRPModule)
+    assert isinstance(result, IRPInstance)
 
 
 def test_wrap_dispatches_generalization_to_rpgeneralization() -> None:
@@ -62,7 +60,7 @@ def test_wrap_dispatches_generalization_to_rpgeneralization() -> None:
 
     result = IRPModelElement.wrap(fake)
 
-    assert isinstance(result, RPGeneralization)
+    assert isinstance(result, IRPGeneralization)
     assert isinstance(result, IRPModelElement)
 
 
@@ -71,19 +69,19 @@ def test_wrap_dispatches_dependency_to_rpdependency() -> None:
 
     result = IRPModelElement.wrap(fake)
 
-    assert isinstance(result, RPDependency)
+    assert isinstance(result, IRPDependency)
     assert isinstance(result, IRPModelElement)
 
 
 def test_wrap_dispatches_hyperlink_to_rphyperlink() -> None:
-    from rhapsody_cli.models.elements.relations import RPHyperLink
+    from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPHyperLink
 
     fake = make_fake_element("HyperLink")
 
     result = IRPModelElement.wrap(fake)
 
-    assert isinstance(result, RPHyperLink)
-    assert isinstance(result, RPDependency)
+    assert isinstance(result, IRPHyperLink)
+    assert isinstance(result, IRPDependency)
 
 
 def test_wrap_dispatches_association_role_to_rpassociation_role() -> None:
@@ -91,8 +89,8 @@ def test_wrap_dispatches_association_role_to_rpassociation_role() -> None:
 
     result = IRPModelElement.wrap(fake)
 
-    assert isinstance(result, RPAssociationRole)
-    assert isinstance(result, RPInstance)
+    assert isinstance(result, IRPAssociationRole)
+    assert isinstance(result, IRPInstance)
 
 
 def test_wrap_dispatches_comment_to_rpcomment() -> None:
@@ -100,7 +98,7 @@ def test_wrap_dispatches_comment_to_rpcomment() -> None:
 
     result = IRPModelElement.wrap(fake)
 
-    assert isinstance(result, RPComment)
+    assert isinstance(result, IRPComment)
     assert isinstance(result, IRPModelElement)
 
 
@@ -109,7 +107,7 @@ def test_wrap_dispatches_constraint_to_rpconstraint() -> None:
 
     result = IRPModelElement.wrap(fake)
 
-    assert isinstance(result, RPConstraint)
+    assert isinstance(result, IRPConstraint)
     assert isinstance(result, IRPModelElement)
 
 
@@ -118,7 +116,7 @@ def test_wrap_dispatches_enumeration_literal_to_rpenumeration_literal() -> None:
 
     result = IRPModelElement.wrap(fake)
 
-    assert isinstance(result, RPEnumerationLiteral)
+    assert isinstance(result, IRPEnumerationLiteral)
     assert isinstance(result, IRPModelElement)
 
 
@@ -127,7 +125,7 @@ def test_wrap_dispatches_stereotype_to_rpstereotype() -> None:
 
     result = IRPModelElement.wrap(fake)
 
-    assert isinstance(result, RPStereotype)
+    assert isinstance(result, IRPStereotype)
     assert isinstance(result, IRPClassifier)
 
 
@@ -143,13 +141,13 @@ def test_wrap_dispatches_association_class_to_rpassociation_class() -> None:
 
 
 def test_wrap_dispatches_tag_to_rptag() -> None:
-    from rhapsody_cli.models.elements.variables import RPTag
+    from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPTag
 
     fake = make_fake_element("Tag", properties={"name": "MyTag"})
 
     result = IRPModelElement.wrap(fake)
 
-    assert isinstance(result, RPTag)
+    assert isinstance(result, IRPTag)
 
 
 def test_collection_contains_mixed_element_types() -> None:
@@ -166,41 +164,37 @@ def test_collection_contains_mixed_element_types() -> None:
 
 def test_all_new_wrappers_exist() -> None:
     """Verify all new wrappers can be imported."""
-    from rhapsody_cli.models.elements.classifiers import (
+    from rhapsody_cli.models.com.telelogic.rhapsody.core import (
         IRPAssociationClass,
-        RPStereotype,
+        IRPAssociationRole,
+        IRPCollaboration,
+        IRPComponentInstance,
+        IRPDependency,
+        IRPGeneralization,
+        IRPHyperLink,
+        IRPModule,
+        IRPNode,
+        IRPStereotype,
+        IRPTag,
     )
-    from rhapsody_cli.models.elements.common.model_misc import (
-        RPComment,
-        RPConstraint,
-        RPEnumerationLiteral,
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_misc import (
+        IRPComment,
+        IRPConstraint,
+        IRPEnumerationLiteral,
     )
-    from rhapsody_cli.models.elements.containment import (
-        RPCollaboration,
-        RPComponentInstance,
-        RPModule,
-        RPNode,
-    )
-    from rhapsody_cli.models.elements.relations import (
-        RPAssociationRole,
-        RPDependency,
-        RPGeneralization,
-        RPHyperLink,
-    )
-    from rhapsody_cli.models.elements.variables import RPTag
 
     # All imports should succeed
     assert IRPAssociationClass is not None
-    assert RPStereotype is not None
-    assert RPModule is not None
-    assert RPNode is not None
-    assert RPCollaboration is not None
-    assert RPComponentInstance is not None
-    assert RPGeneralization is not None
-    assert RPDependency is not None
-    assert RPHyperLink is not None
-    assert RPAssociationRole is not None
-    assert RPComment is not None
-    assert RPConstraint is not None
-    assert RPEnumerationLiteral is not None
-    assert RPTag is not None
+    assert IRPStereotype is not None
+    assert IRPModule is not None
+    assert IRPNode is not None
+    assert IRPCollaboration is not None
+    assert IRPComponentInstance is not None
+    assert IRPGeneralization is not None
+    assert IRPDependency is not None
+    assert IRPHyperLink is not None
+    assert IRPAssociationRole is not None
+    assert IRPComment is not None
+    assert IRPConstraint is not None
+    assert IRPEnumerationLiteral is not None
+    assert IRPTag is not None

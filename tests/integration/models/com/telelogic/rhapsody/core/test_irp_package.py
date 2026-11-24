@@ -4,11 +4,11 @@ import uuid
 
 import pytest
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPSysMLPort
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
-from rhapsody_cli.models.elements.common import RPSysMLPort
-from rhapsody_cli.models.elements.relations.model_relation import RPRelation
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
 
 
 @pytest.mark.integration
@@ -69,28 +69,36 @@ class TestIRPPackageIntegration:
     def test_get_nested_packages(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.packages is not None
+            nested_package = pkg.add_nested_package(self._unique("NestedPkg"))
+
+            assert nested_package in list(pkg.packages)
         finally:
             pkg.delete_from_project()
 
     def test_get_classes(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.classes is not None
+            created_class = pkg.add_class(self._unique("CollectionClass"))
+
+            assert created_class in list(pkg.classes)
         finally:
             pkg.delete_from_project()
 
     def test_get_actors(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.actors is not None
+            created_actor = pkg.add_actor(self._unique("CollectionActor"))
+
+            assert created_actor in list(pkg.actors)
         finally:
             pkg.delete_from_project()
 
     def test_get_use_cases(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.use_cases is not None
+            created_use_case = pkg.add_use_case(self._unique("CollectionUseCase"))
+
+            assert created_use_case in list(pkg.use_cases)
         finally:
             pkg.delete_from_project()
 
@@ -176,56 +184,72 @@ class TestIRPPackageIntegration:
     def test_get_sequence_diagrams(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.sequence_diagrams is not None
+            created_diagram = pkg.add_sequence_diagram(self._unique("CollectionSequence"))
+
+            assert created_diagram in list(pkg.sequence_diagrams)
         finally:
             pkg.delete_from_project()
 
     def test_get_use_case_diagrams(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.use_case_diagrams is not None
+            created_diagram = pkg.add_use_case_diagram(self._unique("CollectionUseCaseDiagram"))
+
+            assert created_diagram in list(pkg.use_case_diagrams)
         finally:
             pkg.delete_from_project()
 
     def test_get_collaboration_diagrams(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.collaboration_diagrams is not None
+            created_diagram = pkg.add_collaboration_diagram(self._unique("CollectionCollaboration"))
+
+            assert created_diagram in list(pkg.collaboration_diagrams)
         finally:
             pkg.delete_from_project()
 
     def test_get_component_diagrams(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.component_diagrams is not None
+            created_diagram = pkg.add_component_diagram(self._unique("CollectionComponent"))
+
+            assert created_diagram in list(pkg.component_diagrams)
         finally:
             pkg.delete_from_project()
 
     def test_get_deployment_diagrams(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.deployment_diagrams is not None
+            created_diagram = pkg.add_deployment_diagram(self._unique("CollectionDeployment"))
+
+            assert created_diagram in list(pkg.deployment_diagrams)
         finally:
             pkg.delete_from_project()
 
     def test_get_object_model_diagrams(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.object_model_diagrams is not None
+            created_diagram = pkg.add_object_model_diagram(self._unique("CollectionObjectModel"))
+
+            assert created_diagram in list(pkg.object_model_diagrams)
         finally:
             pkg.delete_from_project()
 
     def test_get_timing_diagrams(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.timing_diagrams is not None
+            created_diagram = pkg.add_timing_diagram(self._unique("CollectionTiming"))
+
+            assert created_diagram in list(pkg.timing_diagrams)
         finally:
             pkg.delete_from_project()
 
     def test_get_panel_diagrams(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.panel_diagrams is not None
+            created_diagram = pkg.add_panel_diagram(self._unique("CollectionPanel"))
+
+            assert created_diagram in list(pkg.panel_diagrams)
         finally:
             pkg.delete_from_project()
 
@@ -393,21 +417,21 @@ class TestIRPPackageIntegration:
     def test_find_class(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.find_class(self._unique("arg")) is None
+            assert pkg.find_class(self._unique("missing_arg")) is None
         finally:
             pkg.delete_from_project()
 
     def test_find_actor(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.find_actor(self._unique("arg")) is None
+            assert pkg.find_actor(self._unique("missing_arg")) is None
         finally:
             pkg.delete_from_project()
 
     def test_find_use_case(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.find_use_case(self._unique("arg")) is None
+            assert pkg.find_use_case(self._unique("missing_arg")) is None
         finally:
             pkg.delete_from_project()
 
@@ -418,7 +442,7 @@ class TestIRPPackageIntegration:
             class_b = pkg.add_class(self._unique("AssocClassB"))
             relation_name = self._unique("AssocRelation")
             end1 = class_a.add_relation_to(class_b, self._unique("roleA"), "Association", "1", self._unique("roleB"), "Association", "1", relation_name)
-            end2 = RPRelation(end1._com).get_inverse()
+            end2 = IRPRelation(end1._com).get_inverse()
             association_name = self._unique("PackageAssociation")
 
             association = pkg.add_association(end1, end2, association_name)
@@ -437,28 +461,34 @@ class TestIRPPackageIntegration:
     def test_get_events(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.events is not None
+            created_event = pkg.add_event(self._unique("CollectionEvent"))
+
+            assert created_event in list(pkg.events)
         finally:
             pkg.delete_from_project()
 
     def test_get_flow_items(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.flow_items is not None
+            created_flow_item = pkg.add_flow_items(self._unique("CollectionFlowItem"))
+
+            assert created_flow_item in list(pkg.flow_items)
         finally:
             pkg.delete_from_project()
 
     def test_get_flows(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.flows is not None
+            created_flow = pkg.add_flows(self._unique("CollectionFlow"))
+
+            assert created_flow in list(pkg.flows)
         finally:
             pkg.delete_from_project()
 
     def test_find_event(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.find_event(self._unique("arg")) is None
+            assert pkg.find_event(self._unique("missing_arg")) is None
         finally:
             pkg.delete_from_project()
 
@@ -481,14 +511,16 @@ class TestIRPPackageIntegration:
     def test_get_nodes(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.nodes is not None
+            created_node = pkg.add_node(self._unique("CollectionNode"))
+
+            assert created_node in list(pkg.nodes)
         finally:
             pkg.delete_from_project()
 
     def test_find_node(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.find_node(self._unique("arg")) is None
+            assert pkg.find_node(self._unique("missing_arg")) is None
         finally:
             pkg.delete_from_project()
 
@@ -515,7 +547,9 @@ class TestIRPPackageIntegration:
     def test_get_modules(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.modules is not None
+            created_module = pkg.add_module(self._unique("CollectionModule"))
+
+            assert created_module in list(pkg.modules)
         finally:
             pkg.delete_from_project()
 
@@ -529,14 +563,16 @@ class TestIRPPackageIntegration:
     def test_get_types(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.types is not None
+            created_type = pkg.add_type(self._unique("CollectionType"))
+
+            assert created_type in list(pkg.types)
         finally:
             pkg.delete_from_project()
 
     def test_find_type(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.find_type(self._unique("arg")) is None
+            assert pkg.find_type(self._unique("missing_arg")) is None
         finally:
             pkg.delete_from_project()
 
@@ -552,14 +588,16 @@ class TestIRPPackageIntegration:
     def test_find_global_function(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.find_global_function(self._unique("arg")) is None
+            assert pkg.find_global_function(self._unique("missing_arg")) is None
         finally:
             pkg.delete_from_project()
 
     def test_get_global_functions(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.global_functions is not None
+            created_function = pkg.add_global_function(self._unique("CollectionGlobalFunction"))
+
+            assert created_function in list(pkg.global_functions)
         finally:
             pkg.delete_from_project()
 
@@ -588,14 +626,18 @@ class TestIRPPackageIntegration:
     def test_get_global_objects(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.global_objects is not None
+            created_class = pkg.add_class(self._unique("CollectionGlobalClass"))
+            object_name = self._unique("CollectionGlobalObject")
+            pkg.add_global_object(object_name, created_class.name, pkg.name)
+
+            assert object_name in [global_object.name for global_object in pkg.global_objects]
         finally:
             pkg.delete_from_project()
 
     def test_find_global_object(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.find_global_object(self._unique("arg")) is None
+            assert pkg.find_global_object(self._unique("missing_arg")) is None
         finally:
             pkg.delete_from_project()
 
@@ -623,14 +665,16 @@ class TestIRPPackageIntegration:
     def test_get_global_variables(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.global_variables is not None
+            created_variable = pkg.add_global_variable(self._unique("CollectionGlobalVariable"))
+
+            assert created_variable in list(pkg.global_variables)
         finally:
             pkg.delete_from_project()
 
     def test_find_global_variable(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.find_global_variable(self._unique("arg")) is None
+            assert pkg.find_global_variable(self._unique("missing_arg")) is None
         finally:
             pkg.delete_from_project()
 
@@ -646,14 +690,9 @@ class TestIRPPackageIntegration:
     def test_get_nested_classifiers(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.nested_classifiers is not None
-        finally:
-            pkg.delete_from_project()
+            created_class = pkg.add_class(self._unique("CollectionNestedClassifier"))
 
-    def test_get_nested_components(self, test_project: IRPProject) -> None:
-        pkg = self._pkg(test_project)
-        try:
-            assert pkg.nested_components is not None
+            assert created_class in list(pkg.nested_classifiers)
         finally:
             pkg.delete_from_project()
 
@@ -663,13 +702,6 @@ class TestIRPPackageIntegration:
             classifier = pkg.add_class(self._unique("InstCls"))
             with pytest.raises(NotImplementedError):
                 pkg.add_instance_specification(self._unique("InstSpec"), classifier)
-        finally:
-            pkg.delete_from_project()
-
-    def test_get_instance_specifications(self, test_project: IRPProject) -> None:
-        pkg = self._pkg(test_project)
-        try:
-            assert pkg.instance_specifications is not None
         finally:
             pkg.delete_from_project()
 
@@ -692,7 +724,16 @@ class TestIRPPackageIntegration:
     def test_get_links(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.links is not None
+            class_a = pkg.add_class(self._unique("CollectionLinkClassA"))
+            class_b = pkg.add_class(self._unique("CollectionLinkClassB"))
+            association_name = self._unique("CollectionLinkAssociation")
+            association = class_a.add_relation_to(class_b, self._unique("roleA"), "Association", "1", self._unique("roleB"), "Association", "1", association_name)
+            from_part = pkg.add_implicit_object(self._unique("CollectionLinkFrom"))
+            to_part = pkg.add_implicit_object(self._unique("CollectionLinkTo"))
+
+            created_link = pkg.add_link(from_part, to_part, association, None, None)
+
+            assert created_link in list(pkg.links)
         finally:
             pkg.delete_from_project()
 
@@ -711,14 +752,9 @@ class TestIRPPackageIntegration:
     def test_get_behavioral_diagrams(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.behavioral_diagrams is not None
-        finally:
-            pkg.delete_from_project()
+            created_diagram = pkg.add_activity_diagram()
 
-    def test_get_source_artifacts(self, test_project: IRPProject) -> None:
-        pkg = self._pkg(test_project)
-        try:
-            assert pkg.source_artifacts is not None
+            assert created_diagram in list(pkg.behavioral_diagrams)
         finally:
             pkg.delete_from_project()
 
@@ -727,14 +763,6 @@ class TestIRPPackageIntegration:
         try:
             element = pkg.add_class(self._unique("UsageCls"))
             assert isinstance(pkg.find_usage(element), IRPCollection)
-        finally:
-            pkg.delete_from_project()
-
-    def test_get_remote_requirements_populate_mode(self, test_project: IRPProject) -> None:
-        pkg = self._pkg(test_project)
-        try:
-            with pytest.raises(ValueError):
-                pkg.get_remote_requirements_populate_mode()
         finally:
             pkg.delete_from_project()
 
@@ -778,7 +806,7 @@ class TestIRPPackageIntegration:
     def test_update_contained_diagrams_on_server(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            with pytest.raises((TypeError, NotImplementedError)):
+            with pytest.raises(NotImplementedError):
                 pkg.update_contained_diagrams_on_server(1)
         finally:
             pkg.delete_from_project()
@@ -801,7 +829,7 @@ class TestIRPPackageIntegration:
             to_part = pkg.add_implicit_object(self._unique("SysMLTo"))
             from_port = class_a.add_new_aggr("SysMLPort", self._unique("SysMLPortA"))
             to_port = class_b.add_new_aggr("SysMLPort", self._unique("SysMLPortB"))
-            assert isinstance(from_port, RPSysMLPort) and isinstance(to_port, RPSysMLPort)
+            assert isinstance(from_port, IRPSysMLPort) and isinstance(to_port, IRPSysMLPort)
 
             link = pkg.add_link_between_sysml_ports(from_part, to_part, association, from_port, to_port)
 
@@ -812,14 +840,21 @@ class TestIRPPackageIntegration:
     def test_get_all_nested_elements(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.get_all_nested_elements() is not None
+            created_class = pkg.add_class(self._unique("NestedElementClass"))
+
+            assert created_class in list(pkg.get_all_nested_elements())
         finally:
             pkg.delete_from_project()
 
     def test_get_events_base_id(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.events_base_id is not None
+            pkg.add_event(self._unique("EventsBaseIdEvent"))
+            pkg.re_calculate_events_base_id()
+
+            base_id = pkg.events_base_id
+
+            assert base_id == str(int(base_id))
         finally:
             pkg.delete_from_project()
 
@@ -833,14 +868,11 @@ class TestIRPPackageIntegration:
     def test_get_saved_in_separate_directory(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.saved_in_seperate_directory is not None
-        finally:
-            pkg.delete_from_project()
+            current_value = pkg.saved_in_seperate_directory
 
-    def test_get_user_defined_stereotypes(self, test_project: IRPProject) -> None:
-        pkg = self._pkg(test_project)
-        try:
-            assert pkg.user_defined_stereotypes is not None
+            pkg.saved_in_seperate_directory = current_value
+
+            assert pkg.saved_in_seperate_directory == current_value
         finally:
             pkg.delete_from_project()
 

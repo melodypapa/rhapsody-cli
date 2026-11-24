@@ -8,10 +8,10 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPCl
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPLink
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interactions import IRPEvent, IRPEventReception
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type import IRPType
-    from rhapsody_cli.models.elements.graphics.model_graphics import RPLink
-    from rhapsody_cli.models.elements.interactions.model_interactions import RPEvent, RPEventReception
 
 
 class IRPClass(IRPClassifier):
@@ -110,7 +110,7 @@ class IRPClass(IRPClassifier):
         """
         return cast(IRPClass, self.wrap(self.call_com(lambda: self._com.addClass(name))))
 
-    def add_event_reception(self, name: str) -> RPEventReception:
+    def add_event_reception(self, name: str) -> IRPEventReception:
         """Adds an event reception to the current class.
 
         It is preferable to use :meth:`add_reception` instead.
@@ -124,11 +124,11 @@ class IRPClass(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPClass::addEventReception(java.lang.String name)
         """
-        from rhapsody_cli.models.elements.interactions.model_interactions import RPEventReception
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interactions import IRPEventReception
 
-        return cast(RPEventReception, self.wrap(self.call_com(lambda: self._com.addEventReception(name))))
+        return cast(IRPEventReception, self.wrap(self.call_com(lambda: self._com.addEventReception(name))))
 
-    def add_event_reception_with_event(self, name: str, event: RPEvent) -> RPEventReception:
+    def add_event_reception_with_event(self, name: str, event: IRPEvent) -> IRPEventReception:
         """Adds a new event reception, using the specified event.
 
         Note: ``addEventReceptionWithEvent`` is not exposed in the Rhapsody COM
@@ -164,7 +164,7 @@ class IRPClass(IRPClassifier):
         """
         raise NotImplementedError("updateContainedDiagramsOnServer is not exposed in the Rhapsody COM automation type library.")
 
-    def add_link(self, from_part: IRPModelElement, to_part: IRPModelElement, assoc: IRPModelElement, from_port: IRPModelElement, to_port: IRPModelElement) -> RPLink:
+    def add_link(self, from_part: IRPModelElement, to_part: IRPModelElement, assoc: IRPModelElement, from_port: IRPModelElement, to_port: IRPModelElement) -> IRPLink:
         """Creates a link between two parts belonging to a class.
 
         In addition to the two parts, you must supply either the association the
@@ -192,11 +192,11 @@ class IRPClass(IRPClassifier):
                 com.telelogic.rhapsody.core.IRPPort fromPort,
                 com.telelogic.rhapsody.core.IRPPort toPort)
         """
-        from rhapsody_cli.models.elements.graphics.model_graphics import RPLink
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPLink
 
-        return cast(RPLink, self.wrap(self.call_com(lambda: self._com.addLink(from_part._com, to_part._com, assoc._com, from_port._com, to_port._com))))
+        return cast(IRPLink, self.wrap(self.call_com(lambda: self._com.addLink(from_part._com, to_part._com, assoc._com, from_port._com, to_port._com))))
 
-    def add_link_to_part_via_port(self, to_part: IRPModelElement, part_port: IRPModelElement, class_port: IRPModelElement, assoc: IRPModelElement) -> RPLink:
+    def add_link_to_part_via_port(self, to_part: IRPModelElement, part_port: IRPModelElement, class_port: IRPModelElement, assoc: IRPModelElement) -> IRPLink:
         """Creates a delegation connector between a class and one of its parts.
 
         You must supply either the association the link should represent, or the
@@ -222,11 +222,11 @@ class IRPClass(IRPClassifier):
                 com.telelogic.rhapsody.core.IRPInstance classPort,
                 com.telelogic.rhapsody.core.IRPRelation assoc)
         """
-        from rhapsody_cli.models.elements.graphics.model_graphics import RPLink
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPLink
 
-        return cast(RPLink, self.wrap(self.call_com(lambda: self._com.addLinkToPartViaPort(to_part._com, part_port._com, class_port._com, assoc._com))))
+        return cast(IRPLink, self.wrap(self.call_com(lambda: self._com.addLinkToPartViaPort(to_part._com, part_port._com, class_port._com, assoc._com))))
 
-    def add_reception(self, name: str) -> RPEventReception:
+    def add_reception(self, name: str) -> IRPEventReception:
         """Adds a reception to the current class.
 
         Args:
@@ -238,9 +238,9 @@ class IRPClass(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPClass::addReception(java.lang.String name)
         """
-        from rhapsody_cli.models.elements.interactions.model_interactions import RPEventReception
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interactions import IRPEventReception
 
-        return cast(RPEventReception, self.wrap(self.call_com(lambda: self._com.addReception(name))))
+        return cast(IRPEventReception, self.wrap(self.call_com(lambda: self._com.addReception(name))))
 
     def add_triggered_operation(self, name: str) -> IRPOperation:
         """Adds a new triggered operation to the current class.
@@ -304,7 +304,7 @@ class IRPClass(IRPClassifier):
         """
         self.call_com(lambda: self._com.deleteDestructor())
 
-    def delete_event_reception(self, p_val: RPEventReception) -> None:
+    def delete_event_reception(self, p_val: IRPEventReception) -> None:
         """Deletes the specified event reception.
 
         It is preferable to use :meth:`delete_reception` instead.
@@ -317,7 +317,7 @@ class IRPClass(IRPClassifier):
         """
         self.call_com(lambda: self._com.deleteEventReception(p_val._com))
 
-    def delete_reception(self, p_val: RPEventReception) -> None:
+    def delete_reception(self, p_val: IRPEventReception) -> None:
         """Deletes the specified reception from the current class.
 
         Args:

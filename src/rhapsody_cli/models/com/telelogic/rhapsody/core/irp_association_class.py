@@ -9,7 +9,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.elements.relations.model_relation import RPRelation
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class import IRPClass
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
@@ -26,7 +26,7 @@ class IRPAssociationClass(IRPClass):
     # No deprecated IRPAssociationClass methods.
 
     @property
-    def end1(self) -> RPRelation:
+    def end1(self) -> IRPRelation:
         """Returns the first end of the association.
 
         Returns:
@@ -35,12 +35,12 @@ class IRPAssociationClass(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPAssociationClass::getEnd1()
         """
-        from rhapsody_cli.models.elements.relations.model_relation import RPRelation
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
 
-        return cast(RPRelation, self.wrap(self.get_com_property(self._com, "end1")))
+        return cast(IRPRelation, self.wrap(self.get_com_property(self._com, "end1")))
 
     @property
-    def end2(self) -> RPRelation:
+    def end2(self) -> IRPRelation:
         """Returns the second end of the association.
 
         Returns:
@@ -49,9 +49,9 @@ class IRPAssociationClass(IRPClass):
         Reference:
             com.telelogic.rhapsody.core.IRPAssociationClass::getEnd2()
         """
-        from rhapsody_cli.models.elements.relations.model_relation import RPRelation
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
 
-        return cast(RPRelation, self.wrap(self.get_com_property(self._com, "end2")))
+        return cast(IRPRelation, self.wrap(self.get_com_property(self._com, "end2")))
 
     @property
     def is_class(self) -> int:

@@ -4,15 +4,13 @@ from typing import cast
 
 import pytest
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPFlow, IRPFlowItem, IRPSysMLPort, IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_instance import IRPInstance
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port import IRPPort
-from rhapsody_cli.models.elements.activity import RPFlow, RPFlowItem
-from rhapsody_cli.models.elements.common import RPSysMLPort
-from rhapsody_cli.models.elements.relations.model_instance import RPInstance
-from rhapsody_cli.models.elements.relations.model_relation import RPRelation
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
@@ -276,8 +274,8 @@ def test_package_find_class_delegates_to_com() -> None:
 
 def test_package_add_association_delegates_to_com() -> None:
     fake = make_fake_element("Package")
-    end1 = RPRelation(make_fake_element("Relation", properties={"name": "end1"}))
-    end2 = RPRelation(make_fake_element("Relation", properties={"name": "end2"}))
+    end1 = IRPRelation(make_fake_element("Relation", properties={"name": "end1"}))
+    end2 = IRPRelation(make_fake_element("Relation", properties={"name": "end2"}))
     association = make_fake_element("Relation", properties={"name": "assoc1"})
     fake.addAssociation.return_value = association
     package = IRPPackage(fake)
@@ -352,7 +350,7 @@ def test_package_delete_flow_items_delegates_to_com() -> None:
     package = IRPPackage(fake)
     flow_item_fake = make_fake_element("FlowItem", properties={"name": "ToDelete"})
 
-    package.delete_flow_items(cast(RPFlowItem, IRPModelElement(flow_item_fake)))
+    package.delete_flow_items(cast(IRPFlowItem, IRPModelElement(flow_item_fake)))
 
     fake.deleteFlowItems.assert_called_once_with(flow_item_fake)
 
@@ -362,7 +360,7 @@ def test_package_delete_flows_delegates_to_com() -> None:
     package = IRPPackage(fake)
     flow_fake = make_fake_element("Flow", properties={"name": "ToDelete"})
 
-    package.delete_flows(cast(RPFlow, IRPModelElement(flow_fake)))
+    package.delete_flows(cast(IRPFlow, IRPModelElement(flow_fake)))
 
     fake.deleteFlows.assert_called_once_with(flow_fake)
 
@@ -471,11 +469,11 @@ def test_package_add_implicit_object_delegates_to_com() -> None:
 
 def test_package_add_link_between_sysml_ports_delegates_to_com() -> None:
     fake = make_fake_element("Package")
-    from_part = RPInstance(make_fake_element("Instance", properties={"name": "From"}))
-    to_part = RPInstance(make_fake_element("Instance", properties={"name": "To"}))
-    association = RPRelation(make_fake_element("Relation", properties={"name": "Association"}))
-    from_port = RPSysMLPort(make_fake_element("SysMLPort", properties={"name": "FromPort"}))
-    to_port = RPSysMLPort(make_fake_element("SysMLPort", properties={"name": "ToPort"}))
+    from_part = IRPInstance(make_fake_element("Instance", properties={"name": "From"}))
+    to_part = IRPInstance(make_fake_element("Instance", properties={"name": "To"}))
+    association = IRPRelation(make_fake_element("Relation", properties={"name": "Association"}))
+    from_port = IRPSysMLPort(make_fake_element("SysMLPort", properties={"name": "FromPort"}))
+    to_port = IRPSysMLPort(make_fake_element("SysMLPort", properties={"name": "ToPort"}))
     link_fake = make_fake_element("Link", properties={"name": "Link1"})
     fake.addLinkBetweenSYSMLPorts.return_value = link_fake
     package = IRPPackage(fake)
@@ -871,8 +869,8 @@ def test_generated_find_use_case() -> None:
 def test_generated_add_association() -> None:
     fake = make_fake_element("Package")
     fake.addAssociation.return_value = make_fake_element("Relation", properties={"name": "Association"})
-    end1 = RPRelation(make_fake_element("Relation", properties={"name": "End1"}))
-    end2 = RPRelation(make_fake_element("Relation", properties={"name": "End2"}))
+    end1 = IRPRelation(make_fake_element("Relation", properties={"name": "End1"}))
+    end2 = IRPRelation(make_fake_element("Relation", properties={"name": "End2"}))
 
     result = IRPPackage(fake).add_association(end1, end2, "Association")
 
@@ -1087,9 +1085,9 @@ def test_generated_get_instance_specifications() -> None:
 def test_generated_add_link() -> None:
     fake = make_fake_element("Package")
     fake.addLink.return_value = make_fake_element("Link", properties={"name": "Link1"})
-    from_part = RPInstance(make_fake_element("Instance", properties={"name": "From"}))
-    to_part = RPInstance(make_fake_element("Instance", properties={"name": "To"}))
-    association = RPRelation(make_fake_element("Relation", properties={"name": "Association"}))
+    from_part = IRPInstance(make_fake_element("Instance", properties={"name": "From"}))
+    to_part = IRPInstance(make_fake_element("Instance", properties={"name": "To"}))
+    association = IRPRelation(make_fake_element("Relation", properties={"name": "Association"}))
     from_port = IRPPort(make_fake_element("Port", properties={"name": "FromPort"}))
     to_port = IRPPort(make_fake_element("Port", properties={"name": "ToPort"}))
 
@@ -1198,11 +1196,11 @@ def test_generated_add_implicit_object() -> None:
 def test_generated_add_link_between_sysml_ports() -> None:
     fake = make_fake_element("Package")
     fake.addLinkBetweenSYSMLPorts.return_value = make_fake_element("Link", properties={"name": "Link1"})
-    from_part = RPInstance(make_fake_element("Instance", properties={"name": "From"}))
-    to_part = RPInstance(make_fake_element("Instance", properties={"name": "To"}))
-    association = RPRelation(make_fake_element("Relation", properties={"name": "Association"}))
-    from_port = RPSysMLPort(make_fake_element("SysMLPort", properties={"name": "FromPort"}))
-    to_port = RPSysMLPort(make_fake_element("SysMLPort", properties={"name": "ToPort"}))
+    from_part = IRPInstance(make_fake_element("Instance", properties={"name": "From"}))
+    to_part = IRPInstance(make_fake_element("Instance", properties={"name": "To"}))
+    association = IRPRelation(make_fake_element("Relation", properties={"name": "Association"}))
+    from_port = IRPSysMLPort(make_fake_element("SysMLPort", properties={"name": "FromPort"}))
+    to_port = IRPSysMLPort(make_fake_element("SysMLPort", properties={"name": "ToPort"}))
 
     result = IRPPackage(fake).add_link_between_sysml_ports(from_part, to_part, association, from_port, to_port)
 

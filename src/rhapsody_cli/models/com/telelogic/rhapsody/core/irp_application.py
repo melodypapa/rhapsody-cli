@@ -18,15 +18,15 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_unit import IRPUnit
 
 if TYPE_CHECKING:
     from rhapsody_cli.exceptions import RhapsodyRuntimeException  # noqa: F401
-    from rhapsody_cli.models.support import (
-        RPCodeGenSimplifiersRegistry,
-        RPDiagSynthAPI,
-        RPExternalCheckRegistry,
-        RPExternalIDERegistry,
-        RPExternalRoundtripInvoker,
-        RPowPaneMgr,
-        RPSearchManager,
-        RPSelection,
+    from rhapsody_cli.models.com.telelogic.rhapsody.core import (
+        IRPCodeGenSimplifiersRegistry,
+        IRPDiagSynthAPI,
+        IRPExternalCheckRegistry,
+        IRPExternalIDERegistry,
+        IRPExternalRoundtripInvoker,
+        IRPowPaneMgr,
+        IRPSearchManager,
+        IRPSelection,
     )
 
 
@@ -232,11 +232,11 @@ class IRPApplication(IRPModelElement):
         """
         return IRPCollection(self.call_com(lambda: self._com.createNewCollection()))
 
-    def get_search_manager(self) -> RPSearchManager:
+    def get_search_manager(self) -> IRPSearchManager:
         """Return the Rhapsody search manager.
 
         Returns:
-            RPSearchManager: The search manager for finding model elements.
+            IRPSearchManager: The search manager for finding model elements.
 
         Raises:
             RhapsodyRuntimeException: If the underlying COM call fails.
@@ -244,15 +244,15 @@ class IRPApplication(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPApplication::getSearchManager()
         """
-        from rhapsody_cli.models.support import RPSearchManager
+        from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPSearchManager
 
-        return RPSearchManager(self.call_com(lambda: self._com.getSearchManager()))
+        return IRPSearchManager(self.call_com(lambda: self._com.getSearchManager()))
 
-    def get_selection(self) -> RPSelection:
+    def get_selection(self) -> IRPSelection:
         """Return the current Rhapsody selection.
 
         Returns:
-            RPSelection: The current selection in the Rhapsody UI.
+            IRPSelection: The current selection in the Rhapsody UI.
 
         Raises:
             RhapsodyRuntimeException: If the underlying COM call fails.
@@ -260,15 +260,15 @@ class IRPApplication(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPApplication::getSelection()
         """
-        from rhapsody_cli.models.support import RPSelection
+        from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPSelection
 
-        return RPSelection(self.call_com(lambda: self._com.getSelection()))
+        return IRPSelection(self.call_com(lambda: self._com.getSelection()))
 
-    def get_code_gen_simplifiers_registry(self) -> RPCodeGenSimplifiersRegistry:
+    def get_code_gen_simplifiers_registry(self) -> IRPCodeGenSimplifiersRegistry:
         """Return the code-gen simplifiers registry.
 
         Returns:
-            RPCodeGenSimplifiersRegistry: The registry of code generation simplifiers.
+            IRPCodeGenSimplifiersRegistry: The registry of code generation simplifiers.
 
         Raises:
             RhapsodyRuntimeException: If the underlying COM call fails.
@@ -276,18 +276,18 @@ class IRPApplication(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPApplication::getCodeGenSimplifiersRegistry()
         """
-        from rhapsody_cli.models.support import RPCodeGenSimplifiersRegistry
+        from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPCodeGenSimplifiersRegistry
 
-        return RPCodeGenSimplifiersRegistry(self.call_com(lambda: self._com.getCodeGenSimplifiersRegistry()))
+        return IRPCodeGenSimplifiersRegistry(self.call_com(lambda: self._com.getCodeGenSimplifiersRegistry()))
 
-    def get_diag_synth_api(self, client_name: str) -> RPDiagSynthAPI:
+    def get_diag_synth_api(self, client_name: str) -> IRPDiagSynthAPI:
         """Return the diagram synthesis API for the given client.
 
         Args:
             client_name: The name of the client requesting the API.
 
         Returns:
-            RPDiagSynthAPI: The diagram synthesis API.
+            IRPDiagSynthAPI: The diagram synthesis API.
 
         Raises:
             RhapsodyRuntimeException: If the underlying COM call fails.
@@ -295,15 +295,15 @@ class IRPApplication(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPApplication::getDiagSynthAPI(java.lang.String clientName)
         """
-        from rhapsody_cli.models.support import RPDiagSynthAPI
+        from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPDiagSynthAPI
 
-        return RPDiagSynthAPI(self.call_com(lambda: self._com.getDiagSynthAPI(client_name)))
+        return IRPDiagSynthAPI(self.call_com(lambda: self._com.getDiagSynthAPI(client_name)))
 
-    def get_external_checker_registry(self) -> RPExternalCheckRegistry:
+    def get_external_checker_registry(self) -> IRPExternalCheckRegistry:
         """Return the external checker registry.
 
         Returns:
-            RPExternalCheckRegistry: The registry of external model checkers.
+            IRPExternalCheckRegistry: The registry of external model checkers.
 
         Raises:
             RhapsodyRuntimeException: If the underlying COM call fails.
@@ -311,18 +311,18 @@ class IRPApplication(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPApplication::getExternalCheckerRegistry()
         """
-        from rhapsody_cli.models.support import RPExternalCheckRegistry
+        from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPExternalCheckRegistry
 
-        return RPExternalCheckRegistry(self.call_com(lambda: self._com.getExternalCheckerRegistry()))
+        return IRPExternalCheckRegistry(self.call_com(lambda: self._com.getExternalCheckerRegistry()))
 
-    def get_external_ide_registry(self, client_id: str) -> RPExternalIDERegistry:
+    def get_external_ide_registry(self, client_id: str) -> IRPExternalIDERegistry:
         """Return the external IDE registry for the given client.
 
         Args:
             client_id: The ID of the client requesting the registry.
 
         Returns:
-            RPExternalIDERegistry: The external IDE registry.
+            IRPExternalIDERegistry: The external IDE registry.
 
         Raises:
             RhapsodyRuntimeException: If the underlying COM call fails.
@@ -330,15 +330,15 @@ class IRPApplication(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPApplication::getExternalIDERegistry(java.lang.String clientID)
         """
-        from rhapsody_cli.models.support import RPExternalIDERegistry
+        from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPExternalIDERegistry
 
-        return RPExternalIDERegistry(self.call_com(lambda: self._com.getExternalIDERegistry(client_id)))
+        return IRPExternalIDERegistry(self.call_com(lambda: self._com.getExternalIDERegistry(client_id)))
 
-    def get_external_roundtrip_invoker(self) -> RPExternalRoundtripInvoker:
+    def get_external_roundtrip_invoker(self) -> IRPExternalRoundtripInvoker:
         """Return the external roundtrip invoker.
 
         Returns:
-            RPExternalRoundtripInvoker: The external roundtrip invoker.
+            IRPExternalRoundtripInvoker: The external roundtrip invoker.
 
         Raises:
             RhapsodyRuntimeException: If the underlying COM call fails.
@@ -346,18 +346,18 @@ class IRPApplication(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPApplication::getExternalRoundtripInvoker()
         """
-        from rhapsody_cli.models.support import RPExternalRoundtripInvoker
+        from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPExternalRoundtripInvoker
 
-        return RPExternalRoundtripInvoker(self.call_com(lambda: self._com.getExternalRoundtripInvoker()))
+        return IRPExternalRoundtripInvoker(self.call_com(lambda: self._com.getExternalRoundtripInvoker()))
 
-    def get_ow_pane_mgr(self, client_id: str) -> RPowPaneMgr:
+    def get_ow_pane_mgr(self, client_id: str) -> IRPowPaneMgr:
         """Return the output window pane manager for the given client.
 
         Args:
             client_id: The ID of the client requesting the pane manager.
 
         Returns:
-            RPowPaneMgr: The output window pane manager.
+            IRPowPaneMgr: The output window pane manager.
 
         Raises:
             RhapsodyRuntimeException: If the underlying COM call fails.
@@ -365,9 +365,9 @@ class IRPApplication(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPApplication::getOWPaneMgr(java.lang.String clientID)
         """
-        from rhapsody_cli.models.support import RPowPaneMgr
+        from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPowPaneMgr
 
-        return RPowPaneMgr(self.call_com(lambda: self._com.getOWPaneMgr(client_id)))
+        return IRPowPaneMgr(self.call_com(lambda: self._com.getOWPaneMgr(client_id)))
 
     def generate(self) -> None:
         """Generate code for the entire project.

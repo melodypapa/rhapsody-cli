@@ -14,12 +14,12 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPacka
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
-    from rhapsody_cli.models.elements.classifiers.model_actor import RPActor
-    from rhapsody_cli.models.elements.containment.model_collaboration import RPCollaboration
-    from rhapsody_cli.models.elements.containment.model_component import RPComponent
-    from rhapsody_cli.models.elements.containment.model_configuration import RPConfiguration
-    from rhapsody_cli.models.elements.containment.model_node import RPNode
-    from rhapsody_cli.models.support.model_ide import RPProgressBar
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actor import IRPActor
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collaboration import IRPCollaboration
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_component import IRPComponent
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_configuration import IRPConfiguration
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_ide import IRPProgressBar
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_node import IRPNode
 
 
 class IRPProject(IRPPackage):
@@ -107,7 +107,7 @@ class IRPProject(IRPPackage):
     #   get_is_dirty (getIsDirty), set_dirty (setDirty),
     #   add_collaboration (addCollaboration), get_collaborations (getCollaborations),
     #   find_collaboration (findCollaboration), delete_collaboration (deleteCollaboration)
-    # The following [wrong-interface] methods were REMOVED from IRPProject (they exist on IRPComponent, not IRPProject - use RPComponent instead):
+    # The following [wrong-interface] methods were REMOVED from IRPProject (they exist on IRPComponent, not IRPProject - use IRPComponent instead):
     #   add_configuration (addConfiguration), get_configurations (getConfigurations),
     #   find_configuration (findConfiguration), delete_configuration (deleteConfiguration)
 
@@ -143,7 +143,7 @@ class IRPProject(IRPPackage):
         """
         self.call_com(lambda: self._com.becomeActiveProject())
 
-    def find_component(self, name: str) -> RPComponent:
+    def find_component(self, name: str) -> IRPComponent:
         """Finds a component in the project by name.
 
         Args:
@@ -155,9 +155,9 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::findComponent(java.lang.String name)
         """
-        from rhapsody_cli.models.elements.containment.model_component import RPComponent
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_component import IRPComponent
 
-        return cast(RPComponent, self.wrap(self.call_com(lambda: self._com.findComponent(name))))
+        return cast(IRPComponent, self.wrap(self.call_com(lambda: self._com.findComponent(name))))
 
     @property
     def packages(self) -> IRPCollection:
@@ -187,7 +187,7 @@ class IRPProject(IRPPackage):
 
         return cast(IRPClass, self.wrap(self.call_com(lambda: self._com.addClass(name))))
 
-    def add_actor(self, name: str) -> RPActor:
+    def add_actor(self, name: str) -> IRPActor:
         """Adds a new actor to the project's top level.
 
         Args:
@@ -199,9 +199,9 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addActor(java.lang.String name)
         """
-        from rhapsody_cli.models.elements.classifiers.model_actor import RPActor
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actor import IRPActor
 
-        return cast(RPActor, self.wrap(self.call_com(lambda: self._com.addActor(name))))
+        return cast(IRPActor, self.wrap(self.call_com(lambda: self._com.addActor(name))))
 
     @property
     def components(self) -> IRPCollection:
@@ -230,7 +230,7 @@ class IRPProject(IRPPackage):
         return self.wrap(self.call_com(lambda: self._com.findElementByGUID(guid)))
 
     # --- Component methods ---
-    def add_component(self, name: str) -> RPComponent:
+    def add_component(self, name: str) -> IRPComponent:
         """Adds a new component to the project.
 
         Args:
@@ -242,9 +242,9 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::addComponent(java.lang.String name)
         """
-        from rhapsody_cli.models.elements.containment.model_component import RPComponent
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_component import IRPComponent
 
-        return cast(RPComponent, self.wrap(self.call_com(lambda: self._com.addComponent(name))))
+        return cast(IRPComponent, self.wrap(self.call_com(lambda: self._com.addComponent(name))))
 
     def delete_component(self, component: IRPModelElement) -> None:
         """Deletes a component from the project.
@@ -258,7 +258,7 @@ class IRPProject(IRPPackage):
         self.call_com(lambda: self._com.deleteComponent(component._com))
 
     # --- Node methods ---
-    def add_node(self, name: str) -> RPNode:
+    def add_node(self, name: str) -> IRPNode:
         """Adds a new node to the project.
 
         Args:
@@ -270,9 +270,9 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::addNode(java.lang.String name)
         """
-        from rhapsody_cli.models.elements.containment.model_node import RPNode
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_node import IRPNode
 
-        return cast(RPNode, self.wrap(self.call_com(lambda: self._com.addNode(name))))
+        return cast(IRPNode, self.wrap(self.call_com(lambda: self._com.addNode(name))))
 
     @property
     def nodes(self) -> IRPCollection:
@@ -286,7 +286,7 @@ class IRPProject(IRPPackage):
         """
         return IRPCollection(self.get_com_property(self._com, "nodes"))
 
-    def find_node(self, name: str) -> RPNode:
+    def find_node(self, name: str) -> IRPNode:
         """Finds a node in the project by name.
 
         Args:
@@ -298,13 +298,13 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::findNode(java.lang.String name)
         """
-        from rhapsody_cli.models.elements.containment.model_node import RPNode
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_node import IRPNode
 
-        return cast(RPNode, self.wrap(self.call_com(lambda: self._com.findNode(name))))
+        return cast(IRPNode, self.wrap(self.call_com(lambda: self._com.findNode(name))))
 
     # --- Configuration methods ---
     @property
-    def active_configuration(self) -> RPConfiguration:
+    def active_configuration(self) -> IRPConfiguration:
         """Returns the active configuration of the project.
 
         Returns:
@@ -313,9 +313,9 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getActiveConfiguration()
         """
-        from rhapsody_cli.models.elements.containment.model_configuration import RPConfiguration
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_configuration import IRPConfiguration
 
-        return cast(RPConfiguration, self.wrap(self.get_com_property(self._com, "activeConfiguration")))
+        return cast(IRPConfiguration, self.wrap(self.get_com_property(self._com, "activeConfiguration")))
 
     def set_active_configuration(self, config: IRPModelElement) -> None:
         """Sets the active configuration of the project.
@@ -329,7 +329,7 @@ class IRPProject(IRPPackage):
         self.call_com(lambda: self._com.setActiveConfiguration(config._com))
 
     @property
-    def active_component(self) -> RPComponent:
+    def active_component(self) -> IRPComponent:
         """Returns the active component of the project.
 
         Returns:
@@ -338,9 +338,9 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getActiveComponent()
         """
-        from rhapsody_cli.models.elements.containment.model_component import RPComponent
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_component import IRPComponent
 
-        return cast(RPComponent, self.wrap(self.get_com_property(self._com, "activeComponent")))
+        return cast(IRPComponent, self.wrap(self.get_com_property(self._com, "activeComponent")))
 
     def set_active_component(self, component: IRPModelElement) -> None:
         """Sets the active component of the project.
@@ -366,7 +366,7 @@ class IRPProject(IRPPackage):
         """
         return IRPCollection(self.get_com_property(self._com, "allStereotypes"))
 
-    def get_new_collaboration(self) -> RPCollaboration:
+    def get_new_collaboration(self) -> IRPCollaboration:
         """Returns a new collaboration object.
 
         Returns:
@@ -375,9 +375,9 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getNewCollaboration()
         """
-        from rhapsody_cli.models.elements.containment.model_collaboration import RPCollaboration
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collaboration import IRPCollaboration
 
-        return cast(RPCollaboration, self.wrap(self.call_com(lambda: self._com.getNewCollaboration())))
+        return cast(IRPCollaboration, self.wrap(self.call_com(lambda: self._com.getNewCollaboration())))
 
     # --- Profile methods ---
     def add_profile(self, name: str) -> IRPModelElement:
@@ -842,7 +842,7 @@ class IRPProject(IRPPackage):
         """
         self.set_com_property(self._com, "defaultDirectoryScheme", scheme)
 
-    def get_new_progress_bar(self) -> RPProgressBar:
+    def get_new_progress_bar(self) -> IRPProgressBar:
         """Returns a new progress bar.
 
         Returns:
@@ -851,9 +851,9 @@ class IRPProject(IRPPackage):
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getNewProgressBar()
         """
-        from rhapsody_cli.models.support.model_ide import RPProgressBar
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_ide import IRPProgressBar
 
-        return cast(RPProgressBar, self.wrap(self.call_com(lambda: self._com.getNewProgressBar())))
+        return cast(IRPProgressBar, self.wrap(self.call_com(lambda: self._com.getNewProgressBar())))
 
     def get_notify_plugin_on_elements_changed(self) -> int:
         """Checks whether plugins are notified when elements change.

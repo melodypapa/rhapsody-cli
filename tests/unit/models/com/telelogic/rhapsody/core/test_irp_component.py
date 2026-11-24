@@ -1,0 +1,111 @@
+"""Tests for rhapsody_cli.models.com.telelogic.rhapsody.core.IRPComponent."""
+
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPComponent, IRPConfiguration, IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from tests.unit.models.fakes import make_fake_collection, make_fake_element
+
+
+def test_component_is_a_unit() -> None:
+    fake = make_fake_element("Component", properties={"name": "Comp1"})
+    component = IRPComponent(fake)
+
+    assert isinstance(component, IRPUnit)
+    assert component.name == "Comp1"
+
+
+def test_component_is_registered_for_meta_class_component() -> None:
+    fake = make_fake_element("Component", properties={"name": "Comp1"})
+
+    wrapped = IRPModelElement.wrap(fake)
+
+    assert isinstance(wrapped, IRPComponent)
+
+
+# Tests for methods from Task 12
+
+
+def test_component_add_configuration_delegates_and_wraps() -> None:
+    fake = make_fake_element("Component")
+    config = make_fake_element("Configuration", properties={"name": "Config1"})
+    fake.addConfiguration.return_value = config
+    comp = IRPComponent(fake)
+
+    result = comp.add_configuration("Config1")
+
+    fake.addConfiguration.assert_called_once_with("Config1")
+    assert result.name == "Config1"
+
+
+def test_component_add_file_delegates_and_wraps() -> None:
+    fake = make_fake_element("Component")
+    file_elem = make_fake_element("File", properties={"name": "File1"})
+    fake.addFile.return_value = file_elem
+    comp = IRPComponent(fake)
+
+    result = comp.add_file("File1")
+
+    fake.addFile.assert_called_once_with("File1")
+    assert result.name == "File1"
+
+
+def test_component_get_configurations_returns_collection() -> None:
+    fake = make_fake_element("Component")
+    config = make_fake_element("Configuration", properties={"name": "Config1"})
+    fake.getConfigurations.return_value = make_fake_collection([config])
+    comp = IRPComponent(fake)
+
+    result = comp.get_configurations()
+    assert isinstance(result, IRPCollection)
+
+
+def test_component_find_configuration_wraps_result() -> None:
+    fake = make_fake_element("Component")
+    config = make_fake_element("Configuration", properties={"name": "Config1"})
+    fake.findConfiguration.return_value = config
+    comp = IRPComponent(fake)
+
+    result = comp.find_configuration("Config1")
+
+    fake.findConfiguration.assert_called_once_with("Config1")
+    assert result is not None and result.name == "Config1"
+
+
+def test_component_find_configuration_returns_none_when_not_found() -> None:
+    fake = make_fake_element("Component")
+    fake.findConfiguration.return_value = None
+    comp = IRPComponent(fake)
+
+    result = comp.find_configuration("NonExistent")
+
+    fake.findConfiguration.assert_called_once_with("NonExistent")
+    assert result is None
+
+
+def test_component_delete_configuration_delegates() -> None:
+    fake = make_fake_element("Component")
+    comp = IRPComponent(fake)
+    config_fake = make_fake_element("Configuration", properties={"name": "ToDelete"})
+    config = IRPConfiguration(config_fake)
+
+    comp.delete_configuration(config)
+
+    fake.deleteConfiguration.assert_called_once_with(config_fake)
+
+
+def test_component_get_path_returns_str() -> None:
+    fake = make_fake_element("Component")
+    fake.getPath.return_value = "/some/path"
+    comp = IRPComponent(fake)
+
+    result = comp.get_path()
+    assert result == "/some/path"
+
+
+def test_component_set_path_delegates() -> None:
+    fake = make_fake_element("Component")
+    comp = IRPComponent(fake)
+
+    comp.set_path("/new/path")
+
+    fake.setPath.assert_called_once_with("/new/path")

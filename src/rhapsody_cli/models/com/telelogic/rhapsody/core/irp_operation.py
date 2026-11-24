@@ -12,9 +12,9 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import I
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlowchart
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument import IRPArgument
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
-    from rhapsody_cli.models.elements.activity.model_activity import RPFlowchart
 
 
 class IRPOperation(IRPInterfaceItem):
@@ -219,7 +219,7 @@ class IRPOperation(IRPInterfaceItem):
         self.call_com(lambda: self._com.deleteFlowchart())
 
     @property
-    def flowchart(self) -> RPFlowchart:
+    def flowchart(self) -> IRPFlowchart:
         """Returns the flowchart associated with the operation.
 
         Returns:
@@ -228,12 +228,12 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::getFlowchart()
         """
-        from rhapsody_cli.models.elements.activity.model_activity import RPFlowchart
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlowchart
 
-        return cast(RPFlowchart, self.wrap(self.get_com_property(self._com, "flowchart")))
+        return cast(IRPFlowchart, self.wrap(self.get_com_property(self._com, "flowchart")))
 
     @flowchart.setter
-    def flowchart(self, flowchart: RPFlowchart) -> None:
+    def flowchart(self, flowchart: IRPFlowchart) -> None:
         """Sets the flowchart associated with the operation.
 
         Args:

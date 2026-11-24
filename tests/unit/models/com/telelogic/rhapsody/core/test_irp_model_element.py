@@ -10,14 +10,10 @@ import pytest
 import rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element as model_element_module
 import rhapsody_cli.models.core as core_module
 from rhapsody_cli.exceptions import RhapsodyRuntimeException
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPDependency, IRPDiagram, IRPRelation, IRPStereotype, IRPTag, IRPTemplateInstantiation
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_association_class import IRPAssociationClass
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.elements.classifiers import RPStereotype
-from rhapsody_cli.models.elements.diagrams import RPDiagram
-from rhapsody_cli.models.elements.relations import RPDependency, RPRelation
-from rhapsody_cli.models.elements.templates import RPTemplateInstantiation
-from rhapsody_cli.models.elements.variables import RPTag
 from tests.unit.models.fakes import make_com_error, make_fake_collection, make_fake_element
 
 
@@ -387,7 +383,7 @@ def test_model_element_add_association_unwraps_args_and_wraps_result() -> None:
     fake = make_fake_element("Class", addAssociation=result_fake)
     element = IRPModelElement(fake)
 
-    result = element.add_association(cast(RPRelation, end1), cast(RPRelation, end2), "Assoc")
+    result = element.add_association(cast(IRPRelation, end1), cast(IRPRelation, end2), "Assoc")
 
     assert isinstance(result, IRPAssociationClass)
     assert result._com is result_fake
@@ -443,7 +439,7 @@ def test_model_element_add_link_to_element_unwraps_args_and_wraps_result() -> No
     fake = make_fake_element("Class", addLinkToElement=link_fake)
     element = IRPModelElement(fake)
 
-    result = element.add_link_to_element(to_element, cast(RPRelation, assoc), from_port, to_port)
+    result = element.add_link_to_element(to_element, cast(IRPRelation, assoc), from_port, to_port)
 
     assert isinstance(result, IRPModelElement)
     assert result.name == "Link"
@@ -458,7 +454,7 @@ def test_model_element_add_link_to_element_passes_none_ports_to_com() -> None:
     fake = make_fake_element("Class", addLinkToElement=link_fake)
     element = IRPModelElement(fake)
 
-    result = element.add_link_to_element(to_element, cast(RPRelation, assoc), None, None)
+    result = element.add_link_to_element(to_element, cast(IRPRelation, assoc), None, None)
 
     assert isinstance(result, IRPModelElement)
     fake.addLinkToElement.assert_called_once_with(to_element._com, assoc._com, None, None)
@@ -513,7 +509,7 @@ def test_model_element_add_specific_stereotype_unwraps_argument() -> None:
     fake = make_fake_element("Class")
     element = IRPModelElement(fake)
 
-    element.add_specific_stereotype(cast(RPStereotype, stereotype))
+    element.add_specific_stereotype(cast(IRPStereotype, stereotype))
 
     fake.addSpecificStereotype.assert_called_once_with(stereotype._com)
 
@@ -577,7 +573,7 @@ def test_model_element_delete_dependency_unwraps_argument() -> None:
     fake = make_fake_element("Class")
     element = IRPModelElement(fake)
 
-    element.delete_dependency(cast(RPDependency, dependency))
+    element.delete_dependency(cast(IRPDependency, dependency))
 
     fake.deleteDependency.assert_called_once_with(dependency._com)
 
@@ -686,7 +682,7 @@ def test_model_element_stereotype_property_wraps_and_unwraps_rps_stereotype() ->
     element = IRPModelElement(fake)
 
     stereotype = element.stereotype
-    assert isinstance(stereotype, RPStereotype)
+    assert isinstance(stereotype, IRPStereotype)
     assert stereotype._com is raw_stereotype
 
     element.stereotype = stereotype
@@ -1268,7 +1264,7 @@ def test_model_element_remove_stereotype_unwraps_argument() -> None:
     fake = make_fake_element("Class")
     element = IRPModelElement(fake)
 
-    element.remove_stereotype(cast(RPStereotype, stereotype))
+    element.remove_stereotype(cast(IRPStereotype, stereotype))
 
     fake.removeStereotype.assert_called_once_with(stereotype._com)
 
@@ -1359,7 +1355,7 @@ def test_model_element_set_main_diagram_unwraps_argument() -> None:
     fake = make_fake_element("Class")
     element = IRPModelElement(fake)
 
-    element.main_diagram = cast(RPDiagram, diagram)
+    element.main_diagram = cast(IRPDiagram, diagram)
 
     assert fake.mainDiagram == diagram._com
 
@@ -1410,7 +1406,7 @@ def test_model_element_set_tag_context_value_unwraps_args_and_wraps_result() -> 
     fake = make_fake_element("Class", setTagContextValue=result_fake)
     element = IRPModelElement(fake)
 
-    result = element.set_tag_context_value(cast(RPTag, tag), elements, multiplicities)
+    result = element.set_tag_context_value(cast(IRPTag, tag), elements, multiplicities)
 
     assert isinstance(result, IRPModelElement)
     assert result.name == "CtxTag"
@@ -1424,7 +1420,7 @@ def test_model_element_set_tag_element_value_unwraps_args_and_wraps_result() -> 
     fake = make_fake_element("Class", setTagElementValue=result_fake)
     element = IRPModelElement(fake)
 
-    result = element.set_tag_element_value(cast(RPTag, tag), val)
+    result = element.set_tag_element_value(cast(IRPTag, tag), val)
 
     assert isinstance(result, IRPModelElement)
     assert result.name == "ElemTag"
@@ -1437,7 +1433,7 @@ def test_model_element_set_tag_value_unwraps_tag_and_wraps_result() -> None:
     fake = make_fake_element("Class", setTagValue=result_fake)
     element = IRPModelElement(fake)
 
-    result = element.set_tag_value(cast(RPTag, tag), "a value")
+    result = element.set_tag_value(cast(IRPTag, tag), "a value")
 
     assert isinstance(result, IRPModelElement)
     assert result.name == "ValTag"
@@ -1449,7 +1445,7 @@ def test_model_element_set_ti_unwraps_argument() -> None:
     fake = make_fake_element("Class")
     element = IRPModelElement(fake)
 
-    element.ti = cast(RPTemplateInstantiation, ti)
+    element.ti = cast(IRPTemplateInstantiation, ti)
 
     assert fake.ti == ti._com
 

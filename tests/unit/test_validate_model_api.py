@@ -984,7 +984,7 @@ def test_collect_wrapper_arg_types_maps_optional_model_wrappers_to_com(tmp_path:
     source.write_text(
         "from typing import Optional\n"
         "class IRPThing:\n"
-        "    def add_link(self, assoc: Optional[RPRelation], port: Optional[IRPPort]):\n"
+        "    def add_link(self, assoc: Optional[IRPRelation], port: Optional[IRPPort]):\n"
         "        return self.call_com(lambda: self._com.AddLink(assoc._com, port._com))\n",
         encoding="utf-8",
     )

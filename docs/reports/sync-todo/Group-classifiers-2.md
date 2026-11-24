@@ -19,7 +19,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
 - [ ] irp_interface_item_remediation - IRPInterfaceItem
   - Baseline: arguments and signature are property-shaped; verify_sync.py passes.
   - [ ] Section 1 member checklist and getter matrix published.
-  - [ ] Section 2 canonical wrapper, tests, and exports verified.
+  - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
   - [ ] Section 3 both property members reconciled against JavaDoc/catalog.
   - [ ] Section 4 fake-COM tests first; full unit suite green; irp_interface_item.py at 100% statements/branches.
   - [ ] Section 5 create a real operation argument/signature and assert retrieved content/identity.

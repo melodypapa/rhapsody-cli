@@ -9,9 +9,9 @@ import pytest
 import rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class as irp_class_module
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interactions import IRPEvent, IRPEventReception
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
-from rhapsody_cli.models.elements.interactions.model_interactions import RPEvent, RPEventReception
 from tests.unit.models.fakes import make_fake_element
 
 
@@ -104,7 +104,7 @@ def test_class_add_event_reception_with_event_raises_without_com_dispatch() -> N
 
     with pytest.raises(NotImplementedError):
         wrapped_event = IRPModelElement.wrap(event)
-        klass.add_event_reception_with_event("onTick", cast(RPEvent, wrapped_event))
+        klass.add_event_reception_with_event("onTick", cast(IRPEvent, wrapped_event))
 
     fake.addEventReceptionWithEvent.assert_not_called()
 
@@ -224,7 +224,7 @@ def test_class_delete_event_reception_unwraps_arg() -> None:
     klass = IRPClass(fake)
 
     wrapped_reception = IRPModelElement.wrap(reception)
-    klass.delete_event_reception(cast(RPEventReception, wrapped_reception))
+    klass.delete_event_reception(cast(IRPEventReception, wrapped_reception))
 
     fake.deleteEventReception.assert_called_once_with(reception)
 
@@ -235,7 +235,7 @@ def test_class_delete_reception_unwraps_arg() -> None:
     klass = IRPClass(fake)
 
     wrapped_reception = IRPModelElement.wrap(reception)
-    klass.delete_reception(cast(RPEventReception, wrapped_reception))
+    klass.delete_reception(cast(IRPEventReception, wrapped_reception))
 
     fake.deleteReception.assert_called_once_with(reception)
 

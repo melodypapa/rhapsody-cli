@@ -160,7 +160,7 @@ def test_create_new_collection_wraps_result_as_irp_collection() -> None:
 
 
 def test_get_search_manager_wraps_support_wrapper() -> None:
-    from rhapsody_cli.models.support import RPSearchManager
+    from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPSearchManager
 
     fake = make_fake_element("Application")
     manager = MagicMock(name="SearchManager")
@@ -170,12 +170,12 @@ def test_get_search_manager_wraps_support_wrapper() -> None:
     result = app.get_search_manager()
 
     fake.getSearchManager.assert_called_once_with()
-    assert isinstance(result, RPSearchManager)
+    assert isinstance(result, IRPSearchManager)
     assert result._com is manager
 
 
 def test_get_selection_wraps_support_wrapper() -> None:
-    from rhapsody_cli.models.support import RPSelection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPSelection
 
     fake = make_fake_element("Application")
     selection = MagicMock(name="Selection")
@@ -185,12 +185,12 @@ def test_get_selection_wraps_support_wrapper() -> None:
     result = app.get_selection()
 
     fake.getSelection.assert_called_once_with()
-    assert isinstance(result, RPSelection)
+    assert isinstance(result, IRPSelection)
     assert result._com is selection
 
 
 def test_get_code_gen_simplifiers_registry_wraps_support_wrapper() -> None:
-    from rhapsody_cli.models.support import RPCodeGenSimplifiersRegistry
+    from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPCodeGenSimplifiersRegistry
 
     fake = make_fake_element("Application")
     registry = MagicMock(name="CodeGenSimplifiersRegistry")
@@ -200,12 +200,12 @@ def test_get_code_gen_simplifiers_registry_wraps_support_wrapper() -> None:
     result = app.get_code_gen_simplifiers_registry()
 
     fake.getCodeGenSimplifiersRegistry.assert_called_once_with()
-    assert isinstance(result, RPCodeGenSimplifiersRegistry)
+    assert isinstance(result, IRPCodeGenSimplifiersRegistry)
     assert result._com is registry
 
 
 def test_get_diag_synth_api_wraps_support_wrapper() -> None:
-    from rhapsody_cli.models.support import RPDiagSynthAPI
+    from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPDiagSynthAPI
 
     fake = make_fake_element("Application")
     api = MagicMock(name="DiagSynthAPI")
@@ -215,12 +215,12 @@ def test_get_diag_synth_api_wraps_support_wrapper() -> None:
     result = app.get_diag_synth_api("MyClient")
 
     fake.getDiagSynthAPI.assert_called_once_with("MyClient")
-    assert isinstance(result, RPDiagSynthAPI)
+    assert isinstance(result, IRPDiagSynthAPI)
     assert result._com is api
 
 
 def test_get_external_checker_registry_wraps_support_wrapper() -> None:
-    from rhapsody_cli.models.support import RPExternalCheckRegistry
+    from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPExternalCheckRegistry
 
     fake = make_fake_element("Application")
     registry = MagicMock(name="ExternalCheckRegistry")
@@ -230,12 +230,12 @@ def test_get_external_checker_registry_wraps_support_wrapper() -> None:
     result = app.get_external_checker_registry()
 
     fake.getExternalCheckerRegistry.assert_called_once_with()
-    assert isinstance(result, RPExternalCheckRegistry)
+    assert isinstance(result, IRPExternalCheckRegistry)
     assert result._com is registry
 
 
 def test_get_external_ide_registry_wraps_support_wrapper() -> None:
-    from rhapsody_cli.models.support import RPExternalIDERegistry
+    from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPExternalIDERegistry
 
     fake = make_fake_element("Application")
     registry = MagicMock(name="ExternalIDERegistry")
@@ -245,12 +245,12 @@ def test_get_external_ide_registry_wraps_support_wrapper() -> None:
     result = app.get_external_ide_registry("MyClientID")
 
     fake.getExternalIDERegistry.assert_called_once_with("MyClientID")
-    assert isinstance(result, RPExternalIDERegistry)
+    assert isinstance(result, IRPExternalIDERegistry)
     assert result._com is registry
 
 
 def test_get_external_roundtrip_invoker_wraps_support_wrapper() -> None:
-    from rhapsody_cli.models.support import RPExternalRoundtripInvoker
+    from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPExternalRoundtripInvoker
 
     fake = make_fake_element("Application")
     invoker = MagicMock(name="ExternalRoundtripInvoker")
@@ -260,12 +260,12 @@ def test_get_external_roundtrip_invoker_wraps_support_wrapper() -> None:
     result = app.get_external_roundtrip_invoker()
 
     fake.getExternalRoundtripInvoker.assert_called_once_with()
-    assert isinstance(result, RPExternalRoundtripInvoker)
+    assert isinstance(result, IRPExternalRoundtripInvoker)
     assert result._com is invoker
 
 
 def test_get_ow_pane_mgr_wraps_support_wrapper() -> None:
-    from rhapsody_cli.models.support import RPowPaneMgr
+    from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPowPaneMgr
 
     fake = make_fake_element("Application")
     pane_mgr = MagicMock(name="OWPaneMgr")
@@ -275,7 +275,7 @@ def test_get_ow_pane_mgr_wraps_support_wrapper() -> None:
     result = app.get_ow_pane_mgr("MyClientID")
 
     fake.getOWPaneMgr.assert_called_once_with("MyClientID")
-    assert isinstance(result, RPowPaneMgr)
+    assert isinstance(result, IRPowPaneMgr)
     assert result._com is pane_mgr
 
 

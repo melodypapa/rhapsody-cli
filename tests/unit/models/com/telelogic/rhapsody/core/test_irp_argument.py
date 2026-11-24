@@ -1,8 +1,8 @@
-"""Tests for rhapsody_cli.models.elements.variables.model_variables.IRPArgument."""
+"""Tests for rhapsody_cli.models.com.telelogic.rhapsody.core.irp_variables.IRPArgument."""
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument import IRPArgument
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.elements.variables.model_variables import RPVariable
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_variables import IRPVariable
 from tests.unit.models.fakes import make_fake_element
 
 
@@ -10,7 +10,7 @@ def test_argument_is_a_variable() -> None:
     fake = make_fake_element("Argument", properties={"name": "id"})
     argument = IRPArgument(fake)
 
-    assert isinstance(argument, RPVariable)
+    assert isinstance(argument, IRPVariable)
     assert argument.name == "id"
 
 

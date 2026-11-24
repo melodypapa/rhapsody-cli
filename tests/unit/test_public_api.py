@@ -21,12 +21,12 @@ def test_importing_package_registers_all_core_element_wrappers() -> None:
         ("Class", "IRPClass", "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class"),
         ("Attribute", "IRPAttribute", "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute"),
         ("Operation", "IRPOperation", "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation"),
-        ("Actor", "RPActor", "rhapsody_cli.models.elements.classifiers.model_actor"),
+        ("Actor", "IRPActor", "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actor"),
         ("UseCase", "IRPUseCase", "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_use_case"),
-        ("Instance", "RPInstance", "rhapsody_cli.models.elements.relations.model_instance"),
-        ("Statechart", "RPStatechart", "rhapsody_cli.models.elements.classifiers.model_statechart"),
-        ("Requirement", "RPRequirement", "rhapsody_cli.models.elements.requirements.model_requirements"),
-        ("ActivityDiagram", "RPDiagram", "rhapsody_cli.models.elements.diagrams.model_diagrams"),
+        ("Instance", "IRPInstance", "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_instance"),
+        ("Statechart", "IRPStatechart", "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statechart"),
+        ("Requirement", "IRPRequirement", "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_requirements"),
+        ("ActivityDiagram", "IRPDiagram", "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagrams"),
     ]:
         fake = make_fake_element(meta_class, properties={"name": "X"})
         wrapped = IRPModelElement.wrap(fake)

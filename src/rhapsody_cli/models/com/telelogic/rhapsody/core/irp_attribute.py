@@ -7,10 +7,10 @@ Canonical module for :class:`IRPAttribute`; see the class requirement document a
 from __future__ import annotations
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.elements.variables.model_variables import RPVariable
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_variables import IRPVariable
 
 
-class IRPAttribute(RPVariable):
+class IRPAttribute(IRPVariable):
     """Wraps ``IRPAttribute``: represents an attribute in a classifier."""
 
     # IRPAttribute method parity checklist:
