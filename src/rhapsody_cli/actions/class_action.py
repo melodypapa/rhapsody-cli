@@ -385,7 +385,7 @@ class ClassListAction(AbstractClassAction):
 
     def _collect_class_names(self, package: IRPModelElement) -> List[str]:
         """Collect names of classes in package."""
-        classes = package.get_classes()  # type: ignore[attr-defined]
+        classes = package.classes  # type: ignore[attr-defined]
         return [cast(IRPModelElement, cls).name for cls in classes]
 
     def _format_output(self, class_names: List[str], format_type: str) -> str:

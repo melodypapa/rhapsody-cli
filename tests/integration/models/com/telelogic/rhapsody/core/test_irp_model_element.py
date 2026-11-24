@@ -530,15 +530,17 @@ class TestRPModelElementStereotypesTagsIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_get_local_tags(self, test_project: IRPProject) -> None:
+    def test_get_local_tags_returns_tag_created_on_element(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("LocalTagsTestPkg"))
         try:
-            stereo = pkg.add_stereotype(self._unique("LocalTagTestStereo"), "Package")
-            assert stereo is not None
-            assert isinstance(stereo, IRPModelElement)
+            tag_name = self._unique("LocalTag")
+            tag = pkg.add_new_aggr("Tag", tag_name)
+            assert isinstance(tag, RPTag)
+            pkg.set_tag_value(tag, "local tag value")
+
             tags = pkg.local_tags
-            assert tags is not None
-            assert isinstance(tags, IRPCollection)
+
+            assert tag_name in [item.name for item in tags]
         finally:
             pkg.delete_from_project()
 
@@ -1171,25 +1173,26 @@ class TestRPModelElementRedefinesConstraintsIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_get_constraints(self, test_project: IRPProject) -> None:
+    def test_get_constraints_returns_constraint_created_on_element(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("ConstrPkg"))
         try:
             cls = pkg.add_class(self._unique("ConstrCls"))
+            constraint_name = self._unique("Constraint")
+            constraint = cls.add_new_aggr("Constraint", constraint_name)
+            assert constraint.name == constraint_name
+
             constraints = cls.constraints
-            assert constraints is not None
             assert isinstance(constraints, IRPCollection)
-            assert isinstance(constraints.count, int)
+            assert constraint_name in [item.name for item in constraints]
         finally:
             pkg.delete_from_project()
 
-    def test_get_constraints_by_him(self, test_project: IRPProject) -> None:
+    def test_get_constraints_by_him_is_not_implemented(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("ConstrHimPkg"))
         try:
             cls = pkg.add_class(self._unique("ConstrHimCls"))
-            constraints = cls.constraints_by_him
-            assert constraints is not None
-            assert isinstance(constraints, IRPCollection)
-            assert isinstance(constraints.count, int)
+            with pytest.raises(NotImplementedError, match="constraints_by_him"):
+                _ = cls.constraints_by_him
         finally:
             pkg.delete_from_project()
 
@@ -1217,15 +1220,12 @@ class TestRPModelElementOslcRemoteIntegration:
         with pytest.raises(NotImplementedError):
             test_project.delete_oslc_link("someType", "http://example.com")
 
-    def test_get_hyper_links_returns_empty_collection(self, test_project: IRPProject) -> None:
+    def test_get_hyper_links_is_not_implemented(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("HyperLinkPkg"))
         try:
             cls = pkg.add_class(self._unique("HyperLinkCls"))
-            hyper_links = cls.hyper_links
-            assert isinstance(hyper_links, IRPCollection)
-            assert isinstance(hyper_links.count, int)
-            assert hyper_links.count == 0
-            assert len(list(hyper_links)) == 0
+            with pytest.raises(NotImplementedError, match="hyper_links"):
+                _ = cls.hyper_links
         finally:
             pkg.delete_from_project()
 

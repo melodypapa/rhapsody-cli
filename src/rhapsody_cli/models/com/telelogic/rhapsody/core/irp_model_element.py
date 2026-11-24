@@ -658,13 +658,16 @@ class IRPModelElement(ComHelper):
     def constraints_by_him(self) -> IRPCollection:
         """Returns all of the element's constraints (for internal use only).
 
-        Returns:
-            An ``IRPCollection`` of constraints.
+        This getter is intentionally unavailable because the Java API documents
+        it as internal-only and no supported live retrieval setup is known.
+
+        Raises:
+            NotImplementedError: Always raised because the runtime behavior is unsupported.
 
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getConstraintsByHim()
         """
-        return IRPCollection(ComHelper.get_com_property(self._com, "constraintsByHim"))
+        raise NotImplementedError("constraints_by_him is unsupported because its Java API is internal-only")
 
     @property
     def controlled_files(self) -> IRPCollection:
@@ -854,13 +857,16 @@ class IRPModelElement(ComHelper):
     def hyper_links(self) -> IRPCollection:
         """Returns a collection of all the hyperlinks associated with the element.
 
-        Returns:
-            An ``IRPCollection`` of hyperlinks.
+        Runtime retrieval is intentionally unavailable because the documented
+        live setup APIs have not produced a retrievable hyperlink.
+
+        Raises:
+            NotImplementedError: Always raised because live retrieval is unsupported.
 
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getHyperLinks()
         """
-        return IRPCollection(ComHelper.get_com_property(self._com, "hyperLinks"))
+        raise NotImplementedError("hyper_links is unsupported because live retrieval could not be established")
 
     def get_icon_file_name(self) -> str:
         """Returns the full path of the graphic file used to represent elements of this type in the browser.

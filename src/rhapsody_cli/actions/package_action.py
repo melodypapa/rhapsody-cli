@@ -204,7 +204,7 @@ class PackageCreateAction(AbstractPackageAction):
                 existing_packages = cast(IRPProject, container).packages
                 container_desc = "project root"
             else:
-                existing_packages = container.get_nested_packages()  # type: ignore[attr-defined]
+                existing_packages = container.packages  # type: ignore[attr-defined]
                 parent_name = container.name
                 container_desc = f"package '{parent_name}'"
 
@@ -444,7 +444,7 @@ class PackageListAction(AbstractPackageAction):
 
     def _collect_nested_package_names(self, package: IRPModelElement) -> List[str]:
         """Collect names of nested packages."""
-        nested_packages = package.get_nested_packages()  # type: ignore[attr-defined]
+        nested_packages = package.packages  # type: ignore[attr-defined]
         return [cast(IRPModelElement, pkg).name for pkg in nested_packages]
 
     def _format_output(self, package_names: List[str], format_type: str) -> str:

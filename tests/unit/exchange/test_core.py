@@ -437,9 +437,9 @@ class TestCollectChildren:
         pkg = MagicMock()
         pkg.meta_class = "Package"
         pkg.get_nested_elements.return_value = [nested]
-        pkg.get_global_functions.return_value = [global_fn]
-        pkg.get_global_variables.return_value = [global_var]
-        pkg.get_global_objects.return_value = [global_obj]
+        pkg.global_functions = [global_fn]
+        pkg.global_variables = [global_var]
+        pkg.global_objects = [global_obj]
         helper = _make_helper()
 
         result = helper._collect_children(pkg)

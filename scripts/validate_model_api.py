@@ -441,7 +441,16 @@ def collect_wrapper_arg_types(interface_name: str, models_root: Path) -> Dict[st
                     ann = ast.unparse(arg.annotation)
                 else:  # Python 3.8: build a simple annotation string
                     ann = getattr(arg.annotation, "id", None) or getattr(getattr(arg.annotation, "value", None), "id", None) or "object"
-                base = ann.split(".")[-1].strip('"').lower()
+                base = ann.replace(" ", "")
+                if base.lower().startswith("optional[") and base.endswith("]"):
+                    base = base[len("Optional[") : -1]
+                elif base.lower().startswith("union[") and base.endswith("]"):
+                    union_types = [item for item in base[len("Union[") : -1].split(",") if item.lower() not in {"none", "nonetype"}]
+                    base = union_types[0] if len(union_types) == 1 else base
+                elif "|" in base:
+                    union_types = [item for item in base.split("|") if item.lower() not in {"none", "nonetype"}]
+                    base = union_types[0] if len(union_types) == 1 else base
+                base = base.split(".")[-1].strip('"').lower()
                 if base in ("str", "string"):
                     declared.append("str")
                 elif base in ("int", "long"):

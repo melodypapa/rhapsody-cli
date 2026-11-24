@@ -120,7 +120,7 @@ class TestPackageCLIIntegration:
             pkgs = self.project.packages
             parent = next((p for p in pkgs if p.name == parent_pkg_name), None)
             assert parent is not None, f"Parent package '{parent_pkg_name}' should exist"
-            child_names = [c.name for c in parent.get_nested_packages()]
+            child_names = [c.name for c in parent.packages]
             assert child_pkg_name in child_names, f"Child package '{child_pkg_name}' should exist under parent"
         finally:
             # Step 4: Clean up (delete child first, then parent)
@@ -159,7 +159,7 @@ class TestPackageCLIIntegration:
             pkgs = self.project.packages
             parent = next((p for p in pkgs if p.name == parent_pkg_name), None)
             assert parent is not None, f"Parent package '{parent_pkg_name}' should exist"
-            child_names = [c.name for c in parent.get_nested_packages()]
+            child_names = [c.name for c in parent.packages]
             assert child_pkg_name in child_names, f"Child package '{child_pkg_name}' should exist under parent"
 
             # Step 3: Try to create duplicate nested package
@@ -176,7 +176,7 @@ class TestPackageCLIIntegration:
                 assert "-2147" not in error_msg, f"Error message should not contain raw COM error codes, got: {error_msg}"
 
             # Step 3b: Verify there's still exactly one child (duplicate was rejected)
-            child_names_after = [c.name for c in parent.get_nested_packages()]
+            child_names_after = [c.name for c in parent.packages]
             matches = [n for n in child_names_after if n == child_pkg_name]
             assert len(matches) == 1, f"Should be exactly one child named '{child_pkg_name}', found {len(matches)}"
         finally:

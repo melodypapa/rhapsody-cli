@@ -302,17 +302,6 @@ class IRPProject(IRPPackage):
 
         return cast(RPNode, self.wrap(self.call_com(lambda: self._com.findNode(name))))
 
-    def delete_node(self, node: IRPModelElement) -> None:
-        """Deletes a node from the project.
-
-        Args:
-            node: The node to delete.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPProject::deleteNode(com.telelogic.rhapsody.core.IRPNode node)
-        """
-        self.call_com(lambda: self._com.deleteNode(node._com))
-
     # --- Configuration methods ---
     @property
     def active_configuration(self) -> RPConfiguration:

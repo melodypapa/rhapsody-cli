@@ -289,7 +289,7 @@ class TestPackageCreateAction:
         # Mock getNestedPackages() to return collection with existing package named "Temp"
         existing_pkg = MagicMock()
         existing_pkg.name = "Temp"
-        mock_parent.get_nested_packages.return_value = [existing_pkg]
+        mock_parent.packages = [existing_pkg]
 
         with patch.object(action, "_resolve_and_validate_package", return_value=mock_parent):
             args = MagicMock()
@@ -313,8 +313,8 @@ class TestPackageCreateAction:
         mock_package = MagicMock()
         mock_parent.add_nested_package.return_value = mock_package
 
-        # Mock getNestedPackages() to return empty collection (no duplicates)
-        mock_parent.get_nested_packages.return_value = []
+        # Model the package's read-only packages property as an empty collection.
+        mock_parent.packages = []
 
         with patch.object(action, "_resolve_and_validate_package", return_value=mock_parent):
             args = MagicMock()
@@ -471,7 +471,7 @@ class TestPackageListAction:
         pkg1.name = "TempSensors"
         pkg2 = MagicMock()
         pkg2.name = "PressureSensors"
-        mock_parent.get_nested_packages.return_value = [pkg1, pkg2]
+        mock_parent.packages = [pkg1, pkg2]
 
         with patch.object(action, "_resolve_and_validate_package", return_value=mock_parent):
             args = MagicMock()
@@ -491,7 +491,7 @@ class TestPackageListAction:
 
         action = PackageListAction()
         mock_parent = MagicMock()
-        mock_parent.get_nested_packages.return_value = []
+        mock_parent.packages = []
 
         with patch.object(action, "_resolve_and_validate_package", return_value=mock_parent):
             args = MagicMock()
@@ -514,7 +514,7 @@ class TestPackageListAction:
         pkg1.name = "TempSensors"
         pkg2 = MagicMock()
         pkg2.name = "PressureSensors"
-        mock_parent.get_nested_packages.return_value = [pkg1, pkg2]
+        mock_parent.packages = [pkg1, pkg2]
 
         with patch.object(action, "_resolve_and_validate_package", return_value=mock_parent):
             args = MagicMock()

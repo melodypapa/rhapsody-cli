@@ -3,7 +3,7 @@
 import re
 from pathlib import Path
 from typing import cast
-from unittest.mock import MagicMock, call
+from unittest.mock import MagicMock, call, patch
 
 import pytest
 
@@ -710,14 +710,15 @@ def test_model_element_get_constraints_returns_collection() -> None:
     assert isinstance(result, IRPCollection)
 
 
-def test_model_element_get_constraints_by_him_returns_collection() -> None:
-    coll = make_fake_collection([])
-    fake = make_fake_element("Class", properties={"constraintsByHim": coll})
+def test_model_element_get_constraints_by_him_raises_not_implemented_without_com_access() -> None:
+    fake = make_fake_element("Class", properties={"constraintsByHim": make_fake_collection([])})
     element = IRPModelElement(fake)
 
-    result = element.constraints_by_him
+    with patch.object(core_module.ComHelper, "get_com_property") as get_com_property:
+        with pytest.raises(NotImplementedError, match="constraints_by_him"):
+            _ = element.constraints_by_him
 
-    assert isinstance(result, IRPCollection)
+    get_com_property.assert_not_called()
 
 
 def test_model_element_get_controlled_files_returns_collection() -> None:
@@ -812,14 +813,15 @@ def test_model_element_get_full_path_name_in_returns_str() -> None:
     assert element.get_full_path_name_in() == "Class in Pkg"
 
 
-def test_model_element_get_hyper_links_returns_collection() -> None:
-    coll = make_fake_collection([])
-    fake = make_fake_element("Class", properties={"hyperLinks": coll})
+def test_model_element_get_hyper_links_raises_not_implemented_without_com_access() -> None:
+    fake = make_fake_element("Class", properties={"hyperLinks": make_fake_collection([])})
     element = IRPModelElement(fake)
 
-    result = element.hyper_links
+    with patch.object(core_module.ComHelper, "get_com_property") as get_com_property:
+        with pytest.raises(NotImplementedError, match="hyper_links"):
+            _ = element.hyper_links
 
-    assert isinstance(result, IRPCollection)
+    get_com_property.assert_not_called()
 
 
 def test_model_element_get_icon_file_name_returns_str() -> None:

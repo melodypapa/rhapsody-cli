@@ -74,7 +74,7 @@ class TestRPPackageIntegration:
         child_pkg = parent_pkg.add_nested_package(child_name)
         assert child_pkg is not None
         assert isinstance(child_pkg, IRPPackage)
-        assert child_pkg in list(parent_pkg.get_nested_packages())
+        assert child_pkg in list(parent_pkg.packages)
 
     def test_package_navigation(self, test_project: IRPProject) -> None:
         parent_name = self._unique("NavParent")
@@ -93,7 +93,7 @@ class TestRPPackageIntegration:
         new_class = pkg.add_class(class_name)
         assert new_class is not None
         assert isinstance(new_class, IRPClass)
-        classes = pkg.get_classes()
+        classes = pkg.classes
         class_names = [c.name for c in classes]
         assert class_name in class_names
 
@@ -207,13 +207,6 @@ class TestIRPProjectGenerated:
     def test_find_node(self, test_project: IRPProject) -> None:
         try:
             assert test_project.find_node(self._unique("arg")) is None
-        finally:
-            pass
-
-    def test_delete_node(self, test_project: IRPProject) -> None:
-        try:
-            with pytest.raises(AttributeError):
-                test_project.delete_node(None)  # type: ignore[arg-type]
         finally:
             pass
 
