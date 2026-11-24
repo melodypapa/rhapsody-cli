@@ -108,7 +108,7 @@ class TestRPOperationIntegration:
         try:
             op = test_class.add_operation(self._unique("typedOp"))
             op.returns = test_class
-            assert op.returns is not None
+            assert op.returns.name == test_class.name
         finally:
             test_class.delete_from_project()
 

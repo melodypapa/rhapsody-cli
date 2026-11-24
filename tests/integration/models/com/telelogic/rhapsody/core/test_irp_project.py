@@ -207,22 +207,50 @@ class TestIRPProjectGenerated:
         assert test_project.find_node(self._unique("missing")) is None
 
     def test_active_configuration(self, test_project: IRPProject) -> None:
-        active = test_project.active_configuration
-        assert active in list(active.get_its_component().get_configurations())
+        original = test_project.active_configuration
+        component = test_project.add_component(self._unique("CfgComp"))
+        configuration = component.add_configuration(self._unique("ActiveCfg"))
+        try:
+            test_project.set_active_configuration(configuration)
+            assert test_project.active_configuration.name == configuration.name
+        finally:
+            if original is not None:
+                test_project.set_active_configuration(original)
+            component.delete_from_project()
 
     def test_set_active_configuration(self, test_project: IRPProject) -> None:
-        current = test_project.active_configuration
-        assert current is not None
-        assert test_project.set_active_configuration(current) is None  # type: ignore[func-returns-value]
+        original = test_project.active_configuration
+        component = test_project.add_component(self._unique("SetCfgComp"))
+        configuration = component.add_configuration(self._unique("SetActiveCfg"))
+        try:
+            assert test_project.set_active_configuration(configuration) is None  # type: ignore[func-returns-value]
+            assert test_project.active_configuration.name == configuration.name
+        finally:
+            if original is not None:
+                test_project.set_active_configuration(original)
+            component.delete_from_project()
 
     def test_active_component(self, test_project: IRPProject) -> None:
-        active = test_project.active_component
-        assert active in list(test_project.components)
+        original = test_project.active_component
+        component = test_project.add_component(self._unique("ActiveComp"))
+        try:
+            test_project.set_active_component(component)
+            assert test_project.active_component.name == component.name
+        finally:
+            if original is not None:
+                test_project.set_active_component(original)
+            component.delete_from_project()
 
     def test_set_active_component(self, test_project: IRPProject) -> None:
-        current = test_project.active_component
-        assert current is not None
-        assert test_project.set_active_component(current) is None  # type: ignore[func-returns-value]
+        original = test_project.active_component
+        component = test_project.add_component(self._unique("SetActiveComp"))
+        try:
+            assert test_project.set_active_component(component) is None  # type: ignore[func-returns-value]
+            assert test_project.active_component.name == component.name
+        finally:
+            if original is not None:
+                test_project.set_active_component(original)
+            component.delete_from_project()
 
     def test_all_stereotypes(self, test_project: IRPProject) -> None:
         created = test_project.add_stereotype(self._unique("GetterStereotype"), "Class")
@@ -232,7 +260,11 @@ class TestIRPProjectGenerated:
             created.delete_from_project()
 
     def test_get_new_collaboration(self, test_project: IRPProject) -> None:
-        assert test_project.get_new_collaboration() is not None
+        collaboration = test_project.get_new_collaboration()
+        try:
+            assert collaboration.meta_class == "Collaboration"
+        finally:
+            collaboration.delete_from_project()
 
     def test_add_profile(self, test_project: IRPProject) -> None:
         profile = None
@@ -250,9 +282,6 @@ class TestIRPProjectGenerated:
         finally:
             created.delete_from_project()
 
-    def test_get_code_generated_files(self, test_project: IRPProject) -> None:
-        assert test_project.get_code_generated_files() is not None
-
     def test_allow_auto_save(self, test_project: IRPProject) -> None:
         assert test_project.allow_auto_save(0) is None  # type: ignore[func-returns-value]
 
@@ -261,9 +290,6 @@ class TestIRPProjectGenerated:
 
     def test_cg_simplified_model_package(self, test_project: IRPProject) -> None:
         assert test_project.cg_simplified_model_package is None
-
-    def test_is_modified_recursive(self, test_project: IRPProject) -> None:
-        assert test_project.is_modified_recursive() is not None
 
     def test_highlight_from_code(self, test_project: IRPProject) -> None:
         assert test_project.highlight_from_code(self._unique("arg"), 0) is None  # type: ignore[func-returns-value]
@@ -293,21 +319,12 @@ class TestIRPProjectGenerated:
         finally:
             view.delete_from_project()
 
-    def test_get_active_custom_views_on_browser(self, test_project: IRPProject) -> None:
-        assert test_project.get_active_custom_views_on_browser() is not None
-
     def test_open_csv_file(self, test_project: IRPProject) -> None:
         assert test_project.open_csv_file(self._unique("arg"), 0) is None  # type: ignore[func-returns-value]
 
     def test_enable_rhapsody_model_manager(self, test_project: IRPProject) -> None:
         with pytest.raises(NotImplementedError):
             test_project.enable_rhapsody_model_manager()
-
-    def test_get_remote_resource_packages(self, test_project: IRPProject) -> None:
-        assert test_project.get_remote_resource_packages() is not None
-
-    def test_is_actively_managed(self, test_project: IRPProject) -> None:
-        assert test_project.is_actively_managed() is not None
 
     def test_migrate_design_manager_links(self, test_project: IRPProject) -> None:
         with pytest.raises(NotImplementedError):
@@ -320,7 +337,12 @@ class TestIRPProjectGenerated:
         assert test_project.end_transaction_of_no_cg_interest() is None  # type: ignore[func-returns-value]
 
     def test_get_notify_plugin_on_elements_changed(self, test_project: IRPProject) -> None:
-        assert test_project.get_notify_plugin_on_elements_changed() is not None
+        original = test_project.get_notify_plugin_on_elements_changed()
+        try:
+            test_project.set_notify_plugin_on_elements_changed(1 - original)
+            assert test_project.get_notify_plugin_on_elements_changed() == 1 - original
+        finally:
+            test_project.set_notify_plugin_on_elements_changed(original)
 
     def test_remove(self, test_project: IRPProject) -> None:
         # A live remove() deletes the session-shared project and raises a modal

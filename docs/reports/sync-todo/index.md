@@ -148,3 +148,34 @@ row's Notes.
   too; §2 must confirm whether their canonical home is the core package or their current
   `models/support/` location before any move.
 - **Termination (pending):** IRPApplication Step 8 and the 15 remediation rows remain open. After they archive, remove the deprecated `_get_method_or_property` / `_set_method_or_property` definitions from `ComHelper` in `src/rhapsody_cli/models/core.py`, drop legacy notes from `AGENTS.md`, `docs/CODE_GUIDELINES.md`, and the sync skill, and confirm `grep -rn "_method_or_property" src/ --include='*.py'` finds no definitions or call sites.
+
+## P0 integration-test blockers (2026-11-24)
+
+The following integration tests were removed rather than converted into exception assertions or skips
+(SKILL §5: a genuine blocker keeps the row open). Each item needs a Windows + Rhapsody run or a
+wrapper-signature fix before its getter/member row can close.
+
+| Interface | Member(s) | Blocker |
+| --- | --- | --- |
+| IRPProject | `save_as`, `save_as_prev_version` | Writes/switches the session-shared project file; `saveAsPrevVersion` wrapper arity 1 vs COM 2. |
+| IRPProject | `find_element_by_binary_id` | COM expects `byte[]`; wrapper declares `str`. |
+| IRPProject | `find_element_by_file_name`, `get_requirements_by_id` | Wrapper arity 1 vs COM 2. |
+| IRPProject | `locate_in_ide`, `apply_roundtrip_diff_merge` | Wrapper arity 0 vs COM 3. |
+| IRPProject | `apply_browser_custom_views_on_diagrams`, `get_active_custom_views_on_diagram`, `close_csv_file`, `reload_csv_file`, `get_roundtrip_shadow_model`, `clean_unresolved_elements` | Wrapper arity 0 vs COM 1. |
+| IRPProject | `find_elements_with_oslc_link` | Wrapper arity 1 vs COM 2. |
+| IRPProject | `import_package_from_rose`, `import_project_from_rose` | External `.rpy` fixture plus wrapper arity mismatch. |
+| IRPProject | `check_events_base_ids_solve_collisions` | JavaDoc returns void; wrapper wraps it in `int()`. |
+| IRPProject | `add_spell_checker_result` | Wrapper arity 2 vs COM 1. |
+| IRPProject | `get_new_progress_bar` | Wrapper arity 0 vs COM 2. |
+| IRPProject | `default_directory_scheme` | JavaDoc/COM is `String`; wrapper reads/writes `int`. |
+| IRPPackage | `get_remote_requirements_populate_mode` | Requires a Design Manager/remote requirements server. |
+| IRPPackage | `get_instance_specifications`, `get_source_artifacts`, `get_user_defined_stereotypes`, `get_nested_components` | No live create/relate API; `add_instance_specification` is a pywin32-absent stub and packages have no `add_component`. |
+| IRPClass | `add_link`, `add_link_to_part_via_port` | Needs a real `IRPInstance` part and structure-diagram endpoints; class-as-part fixtures only produced exceptions. |
+| IRPUnit | `copy_to_another_project`, `move_to_another_project_leave_a_reference`, `reference_to_another_project`, `set_unit_path` | Requires a second saved project/unit file and mutates the shared project. |
+| IRPUseCase | `find_entry_point`, `find_extension_point` | JavaDoc/pywin32 take `IRPGeneralization` and return `String`; wrapper takes `str` and wraps an element. |
+| IRPUseCase | `entry_points` | No documented add API in the COM surface; only an empty-state result is observable. |
+| IRPOperation | `flowchart` setter | JavaDoc lists `setFlowchart`, but live COM exposes it read-only; the wrapper setter is retained pending Windows confirmation. |
+| IRPProject | `get_code_generated_files` | Requires a real code-generation run; no safe fixture in the shared project. |
+| IRPProject | `get_active_custom_views_on_browser` | No API creates a browser-level custom view; the empty collection is the only observable state. |
+| IRPProject | `get_remote_resource_packages`, `is_actively_managed` | Require a remote resource/management server. |
+| IRPProject | `is_modified_recursive` | Needs a controlled modify/save transition on the session-shared project. |

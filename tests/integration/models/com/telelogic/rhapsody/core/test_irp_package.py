@@ -861,7 +861,8 @@ class TestIRPPackageIntegration:
     def test_get_namespace(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.get_namespace() is not None
+            namespace = pkg.get_namespace()
+            assert namespace.endswith(pkg.name)
         finally:
             pkg.delete_from_project()
 

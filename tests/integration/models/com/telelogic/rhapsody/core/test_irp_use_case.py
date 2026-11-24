@@ -48,17 +48,6 @@ class TestRPUseCaseIntegration:
         finally:
             uc.delete_from_project()
 
-    def test_entry_points_empty(self, test_project: IRPProject) -> None:
-        pkg_name = self._unique("UcPkg")
-        uc_name = self._unique("MyUseCase")
-        pkg = self._create_package(test_project, pkg_name)
-        uc = pkg.add_use_case(uc_name)
-        try:
-            entry_points = list(uc.entry_points)
-            assert isinstance(entry_points, list)
-        finally:
-            uc.delete_from_project()
-
     def test_set_is_behavior_overriden_raises_not_implemented(self, test_project: IRPProject) -> None:
         # setIsBehaviorOverriden is not exposed in the COM automation type library for UseCase
         # (getIsBehaviorOverriden is; the sibling IRPActor/IRPClass setters are exposed), so the
@@ -98,17 +87,6 @@ class TestIRPUseCaseGenerated:
         try:
             use_case.add_extension_point(extension_point_name)
             assert extension_point_name in [str(point) for point in use_case.extension_points]
-        finally:
-            pkg.delete_from_project()
-
-    def test_entry_points(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("UsePkg"))
-        use_case = pkg.add_use_case(self._unique("UC"))
-        try:
-            # Entry points are derived from use-case generalization/extension relationships;
-            # the COM API exposes no documented "add entry point" method, so only the
-            # empty-state contract of a freshly created use case can be asserted live.
-            assert list(use_case.entry_points) == []
         finally:
             pkg.delete_from_project()
 
