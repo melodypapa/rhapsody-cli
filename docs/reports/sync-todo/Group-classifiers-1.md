@@ -108,11 +108,11 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded. Evidence: report regenerated (0 actionable), verify_sync exit 0, skill harness 49 passed, full unit 2164, ruff/black clean, integration collection 472. Blocker: Windows live integration closeout per the machine-split decision.
 - [ ] irp_use_case_remediation - IRPUseCase
   - Baseline: 4 property-shape conversions; 3 integration tests assert TypeError; two JavaDoc-only methods already have unavailable stubs.
-  - [ ] Section 1 member checklist and getter matrix published.
-  - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Section 3 reconcile find_extension_point and both other failing signatures against JavaDoc/catalog.
-  - [ ] Section 4 fake-COM tests first; full unit suite green; irp_use_case.py at 100% statements/branches.
-  - [ ] Section 5 create entry/extension points and assert getter identity/content; replace all three exception assertions.
-  - [ ] Section 6 irp_use_case.md checked/updated.
-  - [ ] Section 7 irp_use_case.rst checked/updated for every public member.
-  - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded.
+  - [x] Section 1 member checklist and getter matrix published. Evidence: 15-member checklist rendered in the 2026-11-24 sync report; getter matrix rows for `extension_points`, `entry_points`, `describing_diagrams`, `is_behavior_overriden` with real created use cases/generalizations, identity assertions, mirrored test path, and package cleanup.
+  - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2164 passed, ruff/black clean.
+  - [x] Section 3 reconcile find_extension_point and both other failing signatures against JavaDoc/catalog. Evidence: JavaDoc shows `findEntryPoint/findExtensionPoint(IRPGeneralization gen) -> String` and pywin32 declares a `com` parameter; wrapper now unwraps `gen._com` and returns `str`; report regenerated — 0 actionable, 2 `UNAVAILABLE_DOCUMENTED`; no `TypeError` assertion remains.
+  - [x] Section 4 fake-COM tests first; full unit suite green; irp_use_case.py at 100% statements/branches. Evidence: focused unit 22 passed, 39 statements / 0 branches, 100.00%; both find-method unit cases assert the COM object argument and string result; full unit 2164 passed.
+  - [ ] Section 5 create entry/extension points and assert getter identity/content; replace all three exception assertions. Evidence: mirrored integration file now builds a real `IRPGeneralization` from two classes for both find cases and asserts the documented `str` outcome; entry/extension point cases use unique authentic names. Blocker: no Rhapsody on macOS — 472 integration tests collect only; live assertions unverified.
+  - [x] Section 6 irp_use_case.md checked/updated. Evidence: `SWR_ELEM_00012` now records the corrected `IRPGeneralization`/`String` contract for both find methods; Last Changed 2026-11-24.
+  - [x] Section 7 irp_use_case.rst checked/updated for every public member. Evidence: anchor + `automethod` entries for all 15 public members; `verify_sync.py IRPUseCase` exits 0.
+  - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded. Evidence: report regenerated (0 actionable), verify_sync exit 0, skill harness 49 passed, full unit 2164, ruff/black clean, integration collection 472. Blocker: Windows live integration closeout per the machine-split decision.

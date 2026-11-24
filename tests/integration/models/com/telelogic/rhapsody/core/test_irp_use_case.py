@@ -4,10 +4,9 @@ Scope: only methods that IRPUseCase owns (addExtensionPoint, getExtensionPoints,
 deleteExtensionPoint, getEntryPoints, getIsBehaviorOverriden, setIsBehaviorOverriden).
 ``add_use_case`` is an IRPPackage method used only to build the fixture.
 
-``findEntryPoint``/``findExtensionPoint`` are excluded: JavaDoc and the pywin32
-authority both show they take an ``IRPGeneralization`` and return a ``String``,
-while the wrapper takes a name and wraps the result, so no live positive test can
-be written without fixing the wrapper.
+``findEntryPoint``/``findExtensionPoint`` take a real ``IRPGeneralization``
+COM object and return a ``String`` (JavaDoc + pywin32 authority); their cases
+build that generalization from two real classes.
 """
 
 import uuid
@@ -71,6 +70,34 @@ class TestIRPUseCaseGenerated:
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
+
+    def test_find_entry_point_uses_real_generalization(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("FindEntryPkg"))
+        try:
+            use_case = pkg.add_use_case(self._unique("FindEntryUC"))
+            base = pkg.add_class(self._unique("FindEntryBase"))
+            derived = pkg.add_class(self._unique("FindEntryDerived"))
+            derived.add_generalization(base)
+            generalizations = list(derived.generalizations)
+            assert len(generalizations) >= 1
+            result = use_case.find_entry_point(generalizations[0])
+            assert isinstance(result, str)
+        finally:
+            pkg.delete_from_project()
+
+    def test_find_extension_point_uses_real_generalization(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("FindExtPkg"))
+        try:
+            use_case = pkg.add_use_case(self._unique("FindExtUC"))
+            base = pkg.add_class(self._unique("FindExtBase"))
+            derived = pkg.add_class(self._unique("FindExtDerived"))
+            derived.add_generalization(base)
+            generalizations = list(derived.generalizations)
+            assert len(generalizations) >= 1
+            result = use_case.find_extension_point(generalizations[0])
+            assert isinstance(result, str)
+        finally:
+            pkg.delete_from_project()
 
     def test_add_extension_point(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("UsePkg"))

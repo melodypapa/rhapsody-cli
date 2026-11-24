@@ -23,7 +23,11 @@ absent from the registered type library for this build: `set_is_behavior_overrid
 Every catalog-backed COM call targets exactly one pywin32 member: `extensionPoints`,
 `entryPoints`, `describingDiagrams` and `isBehaviorOverriden` are properties exposed
 as Python `@property` accessors read via `get_com_property`; the remaining members
-are method-shaped and use `call_com`.
+are method-shaped and use `call_com`. `find_entry_point(gen)` and
+`find_extension_point(gen)` take the JavaDoc/pywin32 `IRPGeneralization` COM object
+(parameter name `gen`, type `com`) and return a `String`; the wrapper unwraps `gen`
+with `._com` and returns the string, matching the catalog signature rather than a
+name-string lookup.
 `is_behavior_overriden` returns an int, unlike IRPClass's `is_behavior_overriden`
 property exposed through get/set COM members. The module uses
 `from __future__ import annotations` with unquoted
