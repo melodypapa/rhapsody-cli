@@ -13,13 +13,13 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCo
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlow, IRPFlowchart, IRPFlowItem
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute import IRPAttribute
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_generalization import IRPGeneralization
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import IRPInterfaceItem
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
-    from rhapsody_cli.models.elements.activity.model_activity import RPFlow, RPFlowchart, RPFlowItem
-    from rhapsody_cli.models.elements.classifiers.model_statechart import RPStatechart
-    from rhapsody_cli.models.elements.relations.model_generalization import RPGeneralization
-    from rhapsody_cli.models.elements.relations.model_relation import RPRelation
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statechart import IRPStatechart
 
 
 class IRPClassifier(IRPUnit):
@@ -146,7 +146,7 @@ class IRPClassifier(IRPUnit):
         """
         self.call_com(lambda: self._com.addGeneralization(base_classifier._com))
 
-    def add_statechart(self) -> RPStatechart:
+    def add_statechart(self) -> IRPStatechart:
         """Adds a statechart behavior to this classifier.
 
         Returns:
@@ -155,11 +155,11 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::addStatechart()
         """
-        from rhapsody_cli.models.elements.classifiers.model_statechart import RPStatechart
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statechart import IRPStatechart
 
-        return cast(RPStatechart, self.wrap(self.call_com(lambda: self._com.addStatechart())))
+        return cast(IRPStatechart, self.wrap(self.call_com(lambda: self._com.addStatechart())))
 
-    def add_activity_diagram(self) -> RPFlowchart:
+    def add_activity_diagram(self) -> IRPFlowchart:
         """Creates a new activity diagram.
 
         Returns:
@@ -168,11 +168,11 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::addActivityDiagram()
         """
-        from rhapsody_cli.models.elements.activity.model_activity import RPFlowchart
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlowchart
 
-        return cast(RPFlowchart, self.wrap(self.call_com(lambda: self._com.addActivityDiagram())))
+        return cast(IRPFlowchart, self.wrap(self.call_com(lambda: self._com.addActivityDiagram())))
 
-    def add_flow_items(self, name: str) -> RPFlowItem:
+    def add_flow_items(self, name: str) -> IRPFlowItem:
         """Adds a new item flow to the classifier.
 
         Args:
@@ -184,11 +184,11 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::addFlowItems(java.lang.String name)
         """
-        from rhapsody_cli.models.elements.activity.model_activity import RPFlowItem
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlowItem
 
-        return cast(RPFlowItem, self.wrap(self.call_com(lambda: self._com.addFlowItems(name))))
+        return cast(IRPFlowItem, self.wrap(self.call_com(lambda: self._com.addFlowItems(name))))
 
-    def add_flows(self, name: str) -> RPFlow:
+    def add_flows(self, name: str) -> IRPFlow:
         """Adds a new flow to the classifier.
 
         Args:
@@ -200,13 +200,13 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::addFlows(java.lang.String name)
         """
-        from rhapsody_cli.models.elements.activity.model_activity import RPFlow
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlow
 
-        return cast(RPFlow, self.wrap(self.call_com(lambda: self._com.addFlows(name))))
+        return cast(IRPFlow, self.wrap(self.call_com(lambda: self._com.addFlows(name))))
 
     def add_relation(
         self, other_class_name: str, other_class_package_name: str, role_name1: str, link_type1: str, multiplicity1: str, role_name2: str, link_type2: str, multiplicity2: str, link_name: str
-    ) -> RPRelation:
+    ) -> IRPRelation:
         """Adds a new association to the classifier.
 
         Args:
@@ -250,10 +250,10 @@ class IRPClassifier(IRPUnit):
                 java.lang.String multiplicity2,
                 java.lang.String linkName)
         """
-        from rhapsody_cli.models.elements.relations.model_relation import RPRelation
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
 
         return cast(
-            RPRelation,
+            IRPRelation,
             self.wrap(
                 self.call_com(
                     lambda: self._com.addRelation(
@@ -273,7 +273,7 @@ class IRPClassifier(IRPUnit):
 
     def add_relation_to(
         self, other_classifier: IRPClassifier, role_name1: str, link_type1: str, multiplicity1: str, role_name2: str, link_type2: str, multiplicity2: str, link_name: str
-    ) -> RPRelation:
+    ) -> IRPRelation:
         """Adds a new association to the classifier.
 
         Args:
@@ -314,10 +314,10 @@ class IRPClassifier(IRPUnit):
                 java.lang.String multiplicity2,
                 java.lang.String linkName)
         """
-        from rhapsody_cli.models.elements.relations.model_relation import RPRelation
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
 
         return cast(
-            RPRelation,
+            IRPRelation,
             self.wrap(
                 self.call_com(
                     lambda: self._com.addRelationTo(
@@ -334,7 +334,7 @@ class IRPClassifier(IRPUnit):
             ),
         )
 
-    def add_unidirectional_relation(self, other_class_name: str, other_class_package_name: str, role_name: str, link_type: str, multiplicity: str, link_name: str) -> RPRelation:
+    def add_unidirectional_relation(self, other_class_name: str, other_class_package_name: str, role_name: str, link_type: str, multiplicity: str, link_name: str) -> IRPRelation:
         """Adds a new directed association to the classifier.
 
         Args:
@@ -363,10 +363,10 @@ class IRPClassifier(IRPUnit):
                 java.lang.String multiplicity,
                 java.lang.String linkName)
         """
-        from rhapsody_cli.models.elements.relations.model_relation import RPRelation
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
 
         return cast(
-            RPRelation,
+            IRPRelation,
             self.wrap(
                 self.call_com(
                     lambda: self._com.addUnidirectionalRelation(
@@ -381,7 +381,7 @@ class IRPClassifier(IRPUnit):
             ),
         )
 
-    def add_unidirectional_relation_to(self, other_classifier: IRPClassifier, role_name: str, link_type: str, multiplicity: str, link_name: str) -> RPRelation:
+    def add_unidirectional_relation_to(self, other_classifier: IRPClassifier, role_name: str, link_type: str, multiplicity: str, link_name: str) -> IRPRelation:
         """Adds a new directed association to the classifier.
 
         Args:
@@ -407,10 +407,10 @@ class IRPClassifier(IRPUnit):
                 java.lang.String multiplicity,
                 java.lang.String linkName)
         """
-        from rhapsody_cli.models.elements.relations.model_relation import RPRelation
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
 
         return cast(
-            RPRelation,
+            IRPRelation,
             self.wrap(
                 self.call_com(
                     lambda: self._com.addUnidirectionalRelationTo(
@@ -435,7 +435,7 @@ class IRPClassifier(IRPUnit):
         """
         self.call_com(lambda: self._com.deleteAttribute(attribute._com))
 
-    def delete_flow_items(self, p_item: RPFlowItem) -> None:
+    def delete_flow_items(self, p_item: IRPFlowItem) -> None:
         """Deletes the specified item flow.
 
         Args:
@@ -446,7 +446,7 @@ class IRPClassifier(IRPUnit):
         """
         self.call_com(lambda: self._com.deleteFlowItems(p_item._com))
 
-    def delete_flows(self, p_flow: RPFlow) -> None:
+    def delete_flows(self, p_flow: IRPFlow) -> None:
         """Deletes the specified flow.
 
         Args:
@@ -480,7 +480,7 @@ class IRPClassifier(IRPUnit):
         """
         self.call_com(lambda: self._com.deleteOperation(operation._com))
 
-    def delete_relation(self, relation: RPRelation) -> None:
+    def delete_relation(self, relation: IRPRelation) -> None:
         """Deletes the specified relation.
 
         Args:
@@ -535,7 +535,7 @@ class IRPClassifier(IRPUnit):
         """
         return cast(IRPClassifier, self.wrap(self.call_com(lambda: self._com.findDerivedClassifier(new_val))))
 
-    def find_generalization(self, new_val: str) -> RPGeneralization:
+    def find_generalization(self, new_val: str) -> IRPGeneralization:
         """Returns the generalization relationship between this classifier and the named classifier.
 
         Args:
@@ -550,9 +550,9 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::findGeneralization(java.lang.String newVal)
         """
-        from rhapsody_cli.models.elements.relations.model_generalization import RPGeneralization
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_generalization import IRPGeneralization
 
-        return cast(RPGeneralization, self.wrap(self.call_com(lambda: self._com.findGeneralization(new_val))))
+        return cast(IRPGeneralization, self.wrap(self.call_com(lambda: self._com.findGeneralization(new_val))))
 
     def find_interface_item(self, signature: str) -> IRPInterfaceItem:
         """Gets the operation or event reception that matches the signature provided.
@@ -610,7 +610,7 @@ class IRPClassifier(IRPUnit):
         """
         return self.wrap(self.call_com(lambda: self._com.findNestedClassifierRecursive(new_val)))
 
-    def find_relation(self, new_val: str) -> RPRelation:
+    def find_relation(self, new_val: str) -> IRPRelation:
         """Returns the association whose name was specified as a parameter.
 
         Args:
@@ -622,9 +622,9 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::findRelation(java.lang.String newVal)
         """
-        from rhapsody_cli.models.elements.relations.model_relation import RPRelation
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
 
-        return cast(RPRelation, self.wrap(self.call_com(lambda: self._com.findRelation(new_val))))
+        return cast(IRPRelation, self.wrap(self.call_com(lambda: self._com.findRelation(new_val))))
 
     def find_trigger(self, name: str) -> IRPInterfaceItem:
         """Returns the trigger with the specified name in the classifier's statechart.
@@ -643,7 +643,7 @@ class IRPClassifier(IRPUnit):
         return cast(IRPInterfaceItem, self.wrap(self.call_com(lambda: self._com.findTrigger(name))))
 
     @property
-    def activity_diagram(self) -> RPFlowchart:
+    def activity_diagram(self) -> IRPFlowchart:
         """Returns the activity diagram defined for the classifier.
 
         Note: the Java API recommends using :attr:`behavioral_diagrams`
@@ -656,9 +656,9 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getActivityDiagram()
         """
-        from rhapsody_cli.models.elements.activity.model_activity import RPFlowchart
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlowchart
 
-        return cast(RPFlowchart, self.wrap(self.get_com_property(self._com, "activityDiagram")))
+        return cast(IRPFlowchart, self.wrap(self.get_com_property(self._com, "activityDiagram")))
 
     def get_attributes_including_bases(self) -> IRPCollection:
         """Returns all the classifier's attributes, including inherited ones.
@@ -879,7 +879,7 @@ class IRPClassifier(IRPUnit):
         return IRPCollection(self.get_com_property(self._com, "sourceArtifacts"))
 
     @property
-    def statechart(self) -> RPStatechart:
+    def statechart(self) -> IRPStatechart:
         """Returns the statechart defined for the classifier.
 
         Note: the Java API recommends using :attr:`behavioral_diagrams`
@@ -892,6 +892,6 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getStatechart()
         """
-        from rhapsody_cli.models.elements.classifiers.model_statechart import RPStatechart
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statechart import IRPStatechart
 
-        return cast(RPStatechart, self.wrap(self.get_com_property(self._com, "statechart")))
+        return cast(IRPStatechart, self.wrap(self.get_com_property(self._com, "statechart")))

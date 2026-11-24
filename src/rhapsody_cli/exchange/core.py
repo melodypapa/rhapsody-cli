@@ -238,7 +238,7 @@ class RhapsodyModelHelper:
         """Collect all children of a container.
 
         For Package containers, merges get_nested_elements() with package-level
-        globals (get_global_functions, get_global_variables, get_global_objects)
+        globals (global_functions, global_variables, global_objects)
         since getNestedElements() excludes them.
 
         For other containers, returns list(get_nested_elements()).
@@ -248,12 +248,12 @@ class RhapsodyModelHelper:
         except Exception:
             children = []
         if container.meta_class == "Package":
-            for getter_name in ("get_global_functions", "get_global_variables", "get_global_objects"):
-                getter = getattr(container, getter_name, None)
-                if getter is None:
+            for collection_name in ("global_functions", "global_variables", "global_objects"):
+                collection = getattr(container, collection_name, None)
+                if collection is None:
                     continue
                 try:
-                    children.extend(getter())
+                    children.extend(collection)
                 except Exception:
                     continue
         return children

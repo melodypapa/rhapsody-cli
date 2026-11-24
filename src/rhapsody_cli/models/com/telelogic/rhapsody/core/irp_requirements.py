@@ -1,0 +1,174 @@
+"""Requirement-family wrappers: mirrors IRPAnnotation and IRPRequirement
+from com.telelogic.rhapsody.core.
+"""
+
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+
+
+class IRPAnnotation(IRPUnit):
+    """Wraps ``IRPAnnotation``: the base interface for free-text annotation
+    elements (such as requirements and notes) that can be anchored to other
+    model elements.
+    """
+
+    # IRPAnnotation method parity checklist:
+    # [x] add_anchor  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_anchored_by_me  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_body  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_specification  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_specification_rtf  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] is_specification_rtf  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] remove_anchor  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] set_body  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] set_specification  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] set_specification_rtf  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [inherited] irp_unit / irp_model_element methods (covered by rp_unit / rp_model_element checklists)
+    # No deprecated IRPAnnotation methods.
+
+    def add_anchor(self, target: IRPModelElement) -> None:
+        """Adds an anchor from the annotation to the specified model element.
+
+        Args:
+            target: The model element to anchor this annotation to.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPAnnotation::addAnchor(com.telelogic.rhapsody.core.IRPModelElement target)
+        """
+        self.call_com(lambda: self._com.addAnchor(target._com))
+
+    def get_anchored_by_me(self) -> IRPCollection:
+        """Gets the list of model elements that are anchored to the annotation.
+
+        Returns:
+            An ``IRPCollection`` of the anchored model elements.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPAnnotation::getAnchoredByMe()
+        """
+        return IRPCollection(self._get_method_or_property(self._com, "getAnchoredByMe", "anchoredByMe"))
+
+    def get_body(self) -> str:
+        """Gets the text of the specification for the annotation.
+
+        Returns:
+            The annotation's body text.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPAnnotation::getBody()
+        """
+        return str(self._get_method_or_property(self._com, "getBody", "body"))
+
+    def get_specification(self) -> str:
+        """Gets the text of the specification for the annotation.
+
+        Returns:
+            The annotation's specification text.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPAnnotation::getSpecification()
+        """
+        return str(self._get_method_or_property(self._com, "getSpecification", "specification"))
+
+    def get_specification_rtf(self) -> str:
+        """Returns the specification of the annotation in RTF format.
+
+        Returns:
+            The RTF-formatted specification string.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPAnnotation::getSpecificationRTF()
+        """
+        return str(self._get_method_or_property(self._com, "getSpecificationRTF", "specificationRTF"))
+
+    def is_specification_rtf(self) -> bool:
+        """Checks whether the specification is in RTF format.
+
+        Returns:
+            ``True`` if the specification is RTF-formatted, ``False`` otherwise.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPAnnotation::isSpecificationRTF()
+        """
+        return bool(self._get_method_or_property(self._com, "isSpecificationRTF", "specificationRTF"))
+
+    def remove_anchor(self, target: IRPModelElement) -> None:
+        """Removes the anchor to the specified model element.
+
+        Args:
+            target: The model element to remove the anchor from.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPAnnotation::removeAnchor(com.telelogic.rhapsody.core.IRPModelElement target)
+        """
+        self.call_com(lambda: self._com.removeAnchor(target._com))
+
+    def set_body(self, body: str) -> None:
+        """Adds a specification to the annotation.
+
+        Args:
+            body: The body text to set for the annotation.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPAnnotation::setBody(java.lang.String body)
+        """
+        self._set_method_or_property(self._com, "setBody", "body", body)
+
+    def set_specification(self, specification: str) -> None:
+        """Adds a specification to the annotation.
+
+        Args:
+            specification: The specification text to set for the annotation.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPAnnotation::setSpecification(java.lang.String specification)
+        """
+        self._set_method_or_property(self._com, "setSpecification", "specification", specification)
+
+    def set_specification_rtf(self, specification_rtf: str) -> None:
+        """Specifies the RTF string to use for the specification of the annotation.
+
+        Args:
+            specification_rtf: The RTF-formatted specification string.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPAnnotation::setSpecificationRTF(java.lang.String specificationRTF)
+        """
+        self._set_method_or_property(self._com, "setSpecificationRTF", "specificationRTF", specification_rtf)
+
+
+class IRPRequirement(IRPAnnotation):
+    """Wraps ``IRPRequirement``: represents a requirement in the model."""
+
+    # IRPRequirement method parity checklist:
+    # [x] get_requirement_id  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] set_requirement_id  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [inherited] irp_annotation / irp_unit / irp_model_element methods (covered by rp_annotation / rp_unit / rp_model_element checklists)
+    # No deprecated IRPRequirement methods.
+
+    def get_requirement_id(self) -> str:
+        """Returns the ID that was set for the requirement.
+
+        Returns:
+            The requirement ID string.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPRequirement::getRequirementID()
+        """
+        return str(self._get_method_or_property(self._com, "getRequirementID", "requirementID"))
+
+    def set_requirement_id(self, requirement_id: str) -> None:
+        """Sets the ID for the requirement.
+
+        Args:
+            requirement_id: The new requirement ID to set.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPRequirement::setRequirementID(java.lang.String requirementID)
+        """
+        self._set_method_or_property(self._com, "setRequirementID", "requirementID", requirement_id)
+
+
+IRPModelElement.register_wrapper("Annotation", IRPAnnotation)
+IRPModelElement.register_wrapper("Requirement", IRPRequirement)

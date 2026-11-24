@@ -4,11 +4,13 @@ from typing import cast
 
 import pytest
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPFlow, IRPFlowItem, IRPSysMLPort, IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_instance import IRPInstance
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
-from rhapsody_cli.models.elements.activity import RPFlow, RPFlowItem
-from rhapsody_cli.models.elements.common import RPSysMLPort
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port import IRPPort
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
@@ -68,6 +70,70 @@ def test_package_add_global_function_delegates_to_com() -> None:
     assert result.name == "doThing"
 
 
+@pytest.mark.parametrize(
+    ("property_name", "com_name", "legacy_getter"),
+    [
+        ("actors", "actors", "get_actors"),
+        ("behavioral_diagrams", "behavioralDiagrams", "get_behavioral_diagrams"),
+        ("classes", "classes", "get_classes"),
+        ("collaboration_diagrams", "collaborationDiagrams", "get_collaboration_diagrams"),
+        ("component_diagrams", "componentDiagrams", "get_component_diagrams"),
+        ("deployment_diagrams", "deploymentDiagrams", "get_deployment_diagrams"),
+        ("events", "events", "get_events"),
+        ("flow_items", "flowItems", "get_flow_items"),
+        ("flows", "flows", "get_flows"),
+        ("global_functions", "globalFunctions", "get_global_functions"),
+        ("global_objects", "globalObjects", "get_global_objects"),
+        ("global_variables", "globalVariables", "get_global_variables"),
+        ("instance_specifications", "instanceSpecifications", "get_instance_specifications"),
+        ("links", "links", "get_links"),
+        ("modules", "modules", "get_modules"),
+        ("nested_classifiers", "nestedClassifiers", "get_nested_classifiers"),
+        ("nested_components", "nestedComponents", "get_nested_components"),
+        ("nodes", "nodes", "get_nodes"),
+        ("packages", "packages", "get_nested_packages"),
+        ("object_model_diagrams", "objectModelDiagrams", "get_object_model_diagrams"),
+        ("panel_diagrams", "panelDiagrams", "get_panel_diagrams"),
+        ("sequence_diagrams", "sequenceDiagrams", "get_sequence_diagrams"),
+        ("source_artifacts", "sourceArtifacts", "get_source_artifacts"),
+        ("timing_diagrams", "timingDiagrams", "get_timing_diagrams"),
+        ("types", "types", "get_types"),
+        ("use_case_diagrams", "useCaseDiagrams", "get_use_case_diagrams"),
+        ("use_cases", "useCases", "get_use_cases"),
+        ("user_defined_stereotypes", "userDefinedStereotypes", "get_user_defined_stereotypes"),
+    ],
+)
+def test_package_collection_properties_follow_pywin32_shape(property_name: str, com_name: str, legacy_getter: str) -> None:
+    raw_collection = make_fake_collection([])
+    package = IRPPackage(make_fake_element("Package", properties={com_name: raw_collection}))
+
+    result = getattr(package, property_name)
+
+    assert isinstance(getattr(type(package), property_name), property)
+    assert isinstance(result, IRPCollection)
+    assert result._com is raw_collection
+    assert not hasattr(package, legacy_getter)
+
+
+def test_package_events_base_id_is_a_property() -> None:
+    package = IRPPackage(make_fake_element("Package", properties={"eventsBaseId": "100"}))
+
+    assert package.events_base_id == "100"
+    assert not hasattr(package, "get_events_base_id")
+
+
+def test_package_saved_in_seperate_directory_is_read_write_property() -> None:
+    fake = make_fake_element("Package", properties={"savedInSeperateDirectory": 0})
+    package = IRPPackage(fake)
+
+    assert package.saved_in_seperate_directory == 0
+    package.saved_in_seperate_directory = 1
+
+    assert fake.savedInSeperateDirectory == 1
+    assert not hasattr(package, "get_saved_in_separate_directory")
+    assert not hasattr(package, "set_saved_in_separate_directory")
+
+
 def test_package_is_registered_for_meta_class_package() -> None:
     fake = make_fake_element("Package", properties={"name": "MyPkg"})
 
@@ -79,13 +145,12 @@ def test_package_is_registered_for_meta_class_package() -> None:
 def test_package_get_nested_packages_returns_collection() -> None:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
-    fake = make_fake_element("Package")
     nested1 = make_fake_element("Package", properties={"name": "Nested1"})
     nested2 = make_fake_element("Package", properties={"name": "Nested2"})
-    fake.packages = make_fake_collection([nested1, nested2])
+    fake = make_fake_element("Package", properties={"packages": make_fake_collection([nested1, nested2])})
     package = IRPPackage(fake)
 
-    result = package.get_nested_packages()
+    result = package.packages
     assert isinstance(result, IRPCollection)
     assert len(result) == 2
     assert result[0].name == "Nested1"
@@ -95,13 +160,12 @@ def test_package_get_nested_packages_returns_collection() -> None:
 def test_package_get_classes_returns_collection() -> None:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
-    fake = make_fake_element("Package")
     class1 = make_fake_element("Class", properties={"name": "Class1"})
     class2 = make_fake_element("Class", properties={"name": "Class2"})
-    fake.classes = make_fake_collection([class1, class2])
+    fake = make_fake_element("Package", properties={"classes": make_fake_collection([class1, class2])})
     package = IRPPackage(fake)
 
-    result = package.get_classes()
+    result = package.classes
     assert isinstance(result, IRPCollection)
     assert len(result) == 2
 
@@ -109,12 +173,11 @@ def test_package_get_classes_returns_collection() -> None:
 def test_package_get_actors_returns_collection() -> None:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
-    fake = make_fake_element("Package")
     actor1 = make_fake_element("Actor", properties={"name": "Actor1"})
-    fake.actors = make_fake_collection([actor1])
+    fake = make_fake_element("Package", properties={"actors": make_fake_collection([actor1])})
     package = IRPPackage(fake)
 
-    result = package.get_actors()
+    result = package.actors
     assert isinstance(result, IRPCollection)
     assert len(result) == 1
 
@@ -122,12 +185,11 @@ def test_package_get_actors_returns_collection() -> None:
 def test_package_get_use_cases_returns_collection() -> None:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
-    fake = make_fake_element("Package")
     uc1 = make_fake_element("UseCase", properties={"name": "UC1"})
-    fake.useCases = make_fake_collection([uc1])
+    fake = make_fake_element("Package", properties={"useCases": make_fake_collection([uc1])})
     package = IRPPackage(fake)
 
-    result = package.get_use_cases()
+    result = package.use_cases
     assert isinstance(result, IRPCollection)
 
 
@@ -150,9 +212,9 @@ def test_package_add_activity_diagram_delegates_to_com() -> None:
     fake.addActivityDiagram.return_value = diagram
     package = IRPPackage(fake)
 
-    result = package.add_activity_diagram("Activity1")
+    result = package.add_activity_diagram()
 
-    fake.addActivityDiagram.assert_called_once_with("Activity1")
+    fake.addActivityDiagram.assert_called_once_with()
     assert result.name == "Activity1"
 
 
@@ -171,12 +233,11 @@ def test_package_add_sequence_diagram_delegates_to_com() -> None:
 def test_package_get_sequence_diagrams_returns_collection() -> None:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
-    fake = make_fake_element("Package")
     diagram = make_fake_element("SequenceDiagram", properties={"name": "Seq1"})
-    fake.sequenceDiagrams = make_fake_collection([diagram])
+    fake = make_fake_element("Package", properties={"sequenceDiagrams": make_fake_collection([diagram])})
     package = IRPPackage(fake)
 
-    result = package.get_sequence_diagrams()
+    result = package.sequence_diagrams
     assert isinstance(result, IRPCollection)
 
 
@@ -193,11 +254,10 @@ def test_package_delete_class_delegates_to_com() -> None:
 def test_package_delete_package_delegates_to_com() -> None:
     fake = make_fake_element("Package")
     package = IRPPackage(fake)
-    nested_fake = make_fake_element("Package", properties={"name": "Nested"})
 
-    package.delete_package(IRPUnit(nested_fake))
+    package.delete_package()
 
-    fake.deletePackage.assert_called_once_with(nested_fake)
+    fake.deletePackage.assert_called_once_with()
 
 
 def test_package_find_class_delegates_to_com() -> None:
@@ -214,25 +274,37 @@ def test_package_find_class_delegates_to_com() -> None:
 
 def test_package_add_association_delegates_to_com() -> None:
     fake = make_fake_element("Package")
-    assoc = make_fake_element("Relation", properties={"name": "assoc1"})
-    fake.addAssociation.return_value = assoc
+    end1 = IRPRelation(make_fake_element("Relation", properties={"name": "end1"}))
+    end2 = IRPRelation(make_fake_element("Relation", properties={"name": "end2"}))
+    association = make_fake_element("Relation", properties={"name": "assoc1"})
+    fake.addAssociation.return_value = association
     package = IRPPackage(fake)
 
-    result = package.add_association("assoc1")
+    result = package.add_association(end1, end2, "assoc1")
 
-    fake.addAssociation.assert_called_once_with("assoc1")
+    fake.addAssociation.assert_called_once_with(end1._com, end2._com, "assoc1")
     assert result.name == "assoc1"
+
+
+def test_package_add_global_object_passes_all_catalog_arguments() -> None:
+    fake = make_fake_element("Package")
+    fake.addGlobalObject.return_value = make_fake_element("Object", properties={"name": "Instance"})
+    package = IRPPackage(fake)
+
+    result = package.add_global_object("Instance", "Widget", "Model")
+
+    fake.addGlobalObject.assert_called_once_with("Instance", "Widget", "Model")
+    assert result.name == "Instance"
 
 
 def test_package_get_events_returns_collection() -> None:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
-    fake = make_fake_element("Package")
     event = make_fake_element("Event", properties={"name": "Event1"})
-    fake.events = make_fake_collection([event])
+    fake = make_fake_element("Package", properties={"events": make_fake_collection([event])})
     package = IRPPackage(fake)
 
-    result = package.get_events()
+    result = package.events
 
     assert isinstance(result, IRPCollection)
 
@@ -240,12 +312,11 @@ def test_package_get_events_returns_collection() -> None:
 def test_package_get_nodes_returns_collection() -> None:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
-    fake = make_fake_element("Package")
     node = make_fake_element("Node", properties={"name": "Node1"})
-    fake.nodes = make_fake_collection([node])
+    fake = make_fake_element("Package", properties={"nodes": make_fake_collection([node])})
     package = IRPPackage(fake)
 
-    result = package.get_nodes()
+    result = package.nodes
 
     assert isinstance(result, IRPCollection)
 
@@ -279,7 +350,7 @@ def test_package_delete_flow_items_delegates_to_com() -> None:
     package = IRPPackage(fake)
     flow_item_fake = make_fake_element("FlowItem", properties={"name": "ToDelete"})
 
-    package.delete_flow_items(cast(RPFlowItem, IRPModelElement(flow_item_fake)))
+    package.delete_flow_items(cast(IRPFlowItem, IRPModelElement(flow_item_fake)))
 
     fake.deleteFlowItems.assert_called_once_with(flow_item_fake)
 
@@ -289,7 +360,7 @@ def test_package_delete_flows_delegates_to_com() -> None:
     package = IRPPackage(fake)
     flow_fake = make_fake_element("Flow", properties={"name": "ToDelete"})
 
-    package.delete_flows(cast(RPFlow, IRPModelElement(flow_fake)))
+    package.delete_flows(cast(IRPFlow, IRPModelElement(flow_fake)))
 
     fake.deleteFlows.assert_called_once_with(flow_fake)
 
@@ -297,24 +368,22 @@ def test_package_delete_flows_delegates_to_com() -> None:
 def test_package_get_flow_items_returns_collection() -> None:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
-    fake = make_fake_element("Package")
     flow_item = make_fake_element("FlowItem", properties={"name": "FlowItem1"})
-    fake.flowItems = make_fake_collection([flow_item])
+    fake = make_fake_element("Package", properties={"flowItems": make_fake_collection([flow_item])})
     package = IRPPackage(fake)
 
-    result = package.get_flow_items()
+    result = package.flow_items
     assert isinstance(result, IRPCollection)
 
 
 def test_package_get_flows_returns_collection() -> None:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
-    fake = make_fake_element("Package")
     flow = make_fake_element("Flow", properties={"name": "Flow1"})
-    fake.flows = make_fake_collection([flow])
+    fake = make_fake_element("Package", properties={"flows": make_fake_collection([flow])})
     package = IRPPackage(fake)
 
-    result = package.get_flows()
+    result = package.flows
     assert isinstance(result, IRPCollection)
 
 
@@ -357,11 +426,11 @@ def test_package_populate_remote_requirements_delegates_to_com() -> None:
     fake.populateRemoteRequirements.assert_called_once_with()
 
 
-def test_package_recalculate_events_base_id_delegates_to_com() -> None:
+def test_package_re_calculate_events_base_id_delegates_to_com() -> None:
     fake = make_fake_element("Package")
     package = IRPPackage(fake)
 
-    package.recalculate_events_base_id()
+    package.re_calculate_events_base_id()
 
     fake.reCalculateEventsBaseId.assert_called_once_with()
 
@@ -370,9 +439,9 @@ def test_package_set_remote_requirements_populate_mode_delegates_to_com() -> Non
     fake = make_fake_element("Package")
     package = IRPPackage(fake)
 
-    package.set_remote_requirements_populate_mode(2)
+    package.set_remote_requirements_populate_mode("Linked")
 
-    fake.setRemoteRequirementsPopulateMode.assert_called_once_with(2)
+    fake.setRemoteRequirementsPopulateMode.assert_called_once_with("Linked")
 
 
 def test_package_update_contained_diagrams_on_server_raises_not_implemented() -> None:
@@ -400,18 +469,18 @@ def test_package_add_implicit_object_delegates_to_com() -> None:
 
 def test_package_add_link_between_sysml_ports_delegates_to_com() -> None:
     fake = make_fake_element("Package")
-    port1_fake = make_fake_element("SysMLPort", properties={"name": "Port1"})
-    port2_fake = make_fake_element("SysMLPort", properties={"name": "Port2"})
+    from_part = IRPInstance(make_fake_element("Instance", properties={"name": "From"}))
+    to_part = IRPInstance(make_fake_element("Instance", properties={"name": "To"}))
+    association = IRPRelation(make_fake_element("Relation", properties={"name": "Association"}))
+    from_port = IRPSysMLPort(make_fake_element("SysMLPort", properties={"name": "FromPort"}))
+    to_port = IRPSysMLPort(make_fake_element("SysMLPort", properties={"name": "ToPort"}))
     link_fake = make_fake_element("Link", properties={"name": "Link1"})
     fake.addLinkBetweenSYSMLPorts.return_value = link_fake
     package = IRPPackage(fake)
 
-    result = package.add_link_between_sysml_ports(
-        cast(RPSysMLPort, IRPModelElement(port1_fake)),
-        cast(RPSysMLPort, IRPModelElement(port2_fake)),
-    )
+    result = package.add_link_between_sysml_ports(from_part, to_part, association, from_port, to_port)
 
-    fake.addLinkBetweenSYSMLPorts.assert_called_once_with(port1_fake, port2_fake)
+    fake.addLinkBetweenSYSMLPorts.assert_called_once_with(from_part._com, to_part._com, association._com, from_port._com, to_port._com)
     assert result.name == "Link1"
 
 
@@ -429,13 +498,10 @@ def test_package_get_all_nested_elements_returns_collection() -> None:
     assert isinstance(result, IRPCollection)
 
 
-def test_package_get_events_base_id_returns_string() -> None:
-    fake = make_fake_element("Package")
-    fake.eventsBaseId = "EventsBase_123"
-    package = IRPPackage(fake)
+def test_package_events_base_id_returns_string() -> None:
+    package = IRPPackage(make_fake_element("Package", properties={"eventsBaseId": "EventsBase_123"}))
 
-    result = package.get_events_base_id()
-    assert result == "EventsBase_123"
+    assert package.events_base_id == "EventsBase_123"
 
 
 def test_package_get_namespace_returns_string() -> None:
@@ -447,32 +513,28 @@ def test_package_get_namespace_returns_string() -> None:
     assert result == "com.example.mypackage"
 
 
-def test_package_get_saved_in_separate_directory_returns_int() -> None:
-    fake = make_fake_element("Package")
-    fake.savedInSeperateDirectory = 1
-    package = IRPPackage(fake)
+def test_package_saved_in_seperate_directory_returns_int() -> None:
+    package = IRPPackage(make_fake_element("Package", properties={"savedInSeperateDirectory": 1}))
 
-    result = package.get_saved_in_separate_directory()
-    assert result == 1
+    assert package.saved_in_seperate_directory == 1
 
 
-def test_package_get_user_defined_stereotypes_returns_collection() -> None:
+def test_package_user_defined_stereotypes_returns_collection() -> None:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
-    fake = make_fake_element("Package")
     stereotype = make_fake_element("Stereotype", properties={"name": "MyStereotype"})
-    fake.userDefinedStereotypes = make_fake_collection([stereotype])
+    fake = make_fake_element("Package", properties={"userDefinedStereotypes": make_fake_collection([stereotype])})
     package = IRPPackage(fake)
 
-    result = package.get_user_defined_stereotypes()
+    result = package.user_defined_stereotypes
     assert isinstance(result, IRPCollection)
 
 
-def test_package_set_saved_in_separate_directory_delegates_to_com() -> None:
-    fake = make_fake_element("Package")
+def test_package_saved_in_seperate_directory_setter_delegates_to_com() -> None:
+    fake = make_fake_element("Package", properties={"savedInSeperateDirectory": 0})
     package = IRPPackage(fake)
 
-    package.set_saved_in_separate_directory(1)
+    package.saved_in_seperate_directory = 1
 
     assert fake.savedInSeperateDirectory == 1
 
@@ -541,25 +603,25 @@ def test_generated_add_flows() -> None:
 
 def test_generated_get_nested_packages() -> None:
     fake = make_fake_element("Package", properties={"packages": make_fake_collection([])})
-    result = IRPPackage(fake).get_nested_packages()
+    result = IRPPackage(fake).packages
     assert result is not None
 
 
 def test_generated_get_classes() -> None:
     fake = make_fake_element("Package", properties={"classes": make_fake_collection([])})
-    result = IRPPackage(fake).get_classes()
+    result = IRPPackage(fake).classes
     assert result is not None
 
 
 def test_generated_get_actors() -> None:
     fake = make_fake_element("Package", properties={"actors": make_fake_collection([])})
-    result = IRPPackage(fake).get_actors()
+    result = IRPPackage(fake).actors
     assert result is not None
 
 
 def test_generated_get_use_cases() -> None:
     fake = make_fake_element("Package", properties={"useCases": make_fake_collection([])})
-    result = IRPPackage(fake).get_use_cases()
+    result = IRPPackage(fake).use_cases
     assert result is not None
 
 
@@ -572,8 +634,9 @@ def test_generated_add_use_case() -> None:
 
 def test_generated_add_activity_diagram() -> None:
     fake = make_fake_element("Package")
-    fake.addActivityDiagram.return_value = make_fake_element("Class", properties={"name": "x"})
-    result = IRPPackage(fake).add_activity_diagram("x")
+    fake.addActivityDiagram.return_value = make_fake_element("ActivityDiagram", properties={"name": "Activity1"})
+    result = IRPPackage(fake).add_activity_diagram()
+    fake.addActivityDiagram.assert_called_once_with()
     assert result is not None
 
 
@@ -619,10 +682,11 @@ def test_generated_add_object_model_diagram() -> None:
     assert result is not None
 
 
-def test_generated_add_statechart_diagram() -> None:
+def test_generated_add_statechart() -> None:
     fake = make_fake_element("Package")
-    fake.addStatechart.return_value = make_fake_element("Class", properties={"name": "x"})
-    result = IRPPackage(fake).add_statechart_diagram("x")
+    fake.addStatechart.return_value = make_fake_element("Statechart", properties={"name": "Statechart1"})
+    result = IRPPackage(fake).add_statechart()
+    fake.addStatechart.assert_called_once_with()
     assert result is not None
 
 
@@ -642,98 +706,106 @@ def test_generated_add_panel_diagram() -> None:
 
 def test_generated_get_sequence_diagrams() -> None:
     fake = make_fake_element("Package", properties={"sequenceDiagrams": make_fake_collection([])})
-    result = IRPPackage(fake).get_sequence_diagrams()
+    result = IRPPackage(fake).sequence_diagrams
     assert result is not None
 
 
 def test_generated_get_use_case_diagrams() -> None:
     fake = make_fake_element("Package", properties={"useCaseDiagrams": make_fake_collection([])})
-    result = IRPPackage(fake).get_use_case_diagrams()
+    result = IRPPackage(fake).use_case_diagrams
     assert result is not None
 
 
 def test_generated_get_collaboration_diagrams() -> None:
     fake = make_fake_element("Package", properties={"collaborationDiagrams": make_fake_collection([])})
-    result = IRPPackage(fake).get_collaboration_diagrams()
+    result = IRPPackage(fake).collaboration_diagrams
     assert result is not None
 
 
 def test_generated_get_component_diagrams() -> None:
     fake = make_fake_element("Package", properties={"componentDiagrams": make_fake_collection([])})
-    result = IRPPackage(fake).get_component_diagrams()
+    result = IRPPackage(fake).component_diagrams
     assert result is not None
 
 
 def test_generated_get_deployment_diagrams() -> None:
     fake = make_fake_element("Package", properties={"deploymentDiagrams": make_fake_collection([])})
-    result = IRPPackage(fake).get_deployment_diagrams()
+    result = IRPPackage(fake).deployment_diagrams
     assert result is not None
 
 
 def test_generated_get_object_model_diagrams() -> None:
     fake = make_fake_element("Package", properties={"objectModelDiagrams": make_fake_collection([])})
-    result = IRPPackage(fake).get_object_model_diagrams()
+    result = IRPPackage(fake).object_model_diagrams
     assert result is not None
 
 
 def test_generated_get_timing_diagrams() -> None:
     fake = make_fake_element("Package", properties={"timingDiagrams": make_fake_collection([])})
-    result = IRPPackage(fake).get_timing_diagrams()
+    result = IRPPackage(fake).timing_diagrams
     assert result is not None
 
 
 def test_generated_get_panel_diagrams() -> None:
     fake = make_fake_element("Package", properties={"panelDiagrams": make_fake_collection([])})
-    result = IRPPackage(fake).get_panel_diagrams()
+    result = IRPPackage(fake).panel_diagrams
     assert result is not None
 
 
 def test_generated_delete_sequence_diagram() -> None:
     fake = make_fake_element("Package")
     fake.deleteSequenceDiagram.return_value = None
-    IRPPackage(fake).delete_sequence_diagram(make_fake_element("Class", properties={"name": "x"}))
+    IRPPackage(fake).delete_sequence_diagram("SequenceDiagram1")
+    fake.deleteSequenceDiagram.assert_called_once_with("SequenceDiagram1")
 
 
 def test_generated_delete_use_case_diagram() -> None:
     fake = make_fake_element("Package")
     fake.deleteUseCaseDiagram.return_value = None
-    IRPPackage(fake).delete_use_case_diagram(make_fake_element("Class", properties={"name": "x"}))
+    IRPPackage(fake).delete_use_case_diagram("UseCaseDiagram1")
+    fake.deleteUseCaseDiagram.assert_called_once_with("UseCaseDiagram1")
 
 
 def test_generated_delete_collaboration_diagram() -> None:
     fake = make_fake_element("Package")
     fake.deleteCollaborationDiagram.return_value = None
-    IRPPackage(fake).delete_collaboration_diagram(make_fake_element("Class", properties={"name": "x"}))
+    IRPPackage(fake).delete_collaboration_diagram("CollaborationDiagram1")
+    fake.deleteCollaborationDiagram.assert_called_once_with("CollaborationDiagram1")
 
 
 def test_generated_delete_component_diagram() -> None:
     fake = make_fake_element("Package")
     fake.deleteComponentDiagram.return_value = None
-    IRPPackage(fake).delete_component_diagram(make_fake_element("Class", properties={"name": "x"}))
+    IRPPackage(fake).delete_component_diagram("ComponentDiagram1")
+    fake.deleteComponentDiagram.assert_called_once_with("ComponentDiagram1")
 
 
 def test_generated_delete_deployment_diagram() -> None:
     fake = make_fake_element("Package")
     fake.deleteDeploymentDiagram.return_value = None
-    IRPPackage(fake).delete_deployment_diagram(make_fake_element("Class", properties={"name": "x"}))
+    IRPPackage(fake).delete_deployment_diagram("DeploymentDiagram1")
+    fake.deleteDeploymentDiagram.assert_called_once_with("DeploymentDiagram1")
 
 
 def test_generated_delete_object_model_diagram() -> None:
     fake = make_fake_element("Package")
     fake.deleteObjectModelDiagram.return_value = None
-    IRPPackage(fake).delete_object_model_diagram(make_fake_element("Class", properties={"name": "x"}))
+    IRPPackage(fake).delete_object_model_diagram("ObjectModelDiagram1")
+    fake.deleteObjectModelDiagram.assert_called_once_with("ObjectModelDiagram1")
 
 
 def test_generated_delete_timing_diagram() -> None:
     fake = make_fake_element("Package")
     fake.deleteTimingDiagram.return_value = None
-    IRPPackage(fake).delete_timing_diagram(make_fake_element("Class", properties={"name": "x"}))
+    IRPPackage(fake).delete_timing_diagram("TimingDiagram1")
+    fake.deleteTimingDiagram.assert_called_once_with("TimingDiagram1")
 
 
 def test_generated_delete_panel_diagram() -> None:
     fake = make_fake_element("Package")
     fake.deletePanelDiagram.return_value = None
-    IRPPackage(fake).delete_panel_diagram(make_fake_element("Class", properties={"name": "x"}))
+    IRPPackage(fake).delete_panel_diagram("PanelDiagram1")
+    fake.deletePanelDiagram.assert_called_once_with("PanelDiagram1")
 
 
 def test_generated_delete_class() -> None:
@@ -769,7 +841,8 @@ def test_generated_delete_flows() -> None:
 def test_generated_delete_package() -> None:
     fake = make_fake_element("Package")
     fake.deletePackage.return_value = None
-    IRPPackage(fake).delete_package(make_fake_element("Class", properties={"name": "x"}))
+    IRPPackage(fake).delete_package()
+    fake.deletePackage.assert_called_once_with()
 
 
 def test_generated_find_class() -> None:
@@ -795,8 +868,13 @@ def test_generated_find_use_case() -> None:
 
 def test_generated_add_association() -> None:
     fake = make_fake_element("Package")
-    fake.addAssociation.return_value = make_fake_element("Class", properties={"name": "x"})
-    result = IRPPackage(fake).add_association("x")
+    fake.addAssociation.return_value = make_fake_element("Relation", properties={"name": "Association"})
+    end1 = IRPRelation(make_fake_element("Relation", properties={"name": "End1"}))
+    end2 = IRPRelation(make_fake_element("Relation", properties={"name": "End2"}))
+
+    result = IRPPackage(fake).add_association(end1, end2, "Association")
+
+    fake.addAssociation.assert_called_once_with(end1._com, end2._com, "Association")
     assert result is not None
 
 
@@ -809,19 +887,19 @@ def test_generated_add_event() -> None:
 
 def test_generated_get_events() -> None:
     fake = make_fake_element("Package", properties={"events": make_fake_collection([])})
-    result = IRPPackage(fake).get_events()
+    result = IRPPackage(fake).events
     assert result is not None
 
 
 def test_generated_get_flow_items() -> None:
     fake = make_fake_element("Package", properties={"flowItems": make_fake_collection([])})
-    result = IRPPackage(fake).get_flow_items()
+    result = IRPPackage(fake).flow_items
     assert result is not None
 
 
 def test_generated_get_flows() -> None:
     fake = make_fake_element("Package", properties={"flows": make_fake_collection([])})
-    result = IRPPackage(fake).get_flows()
+    result = IRPPackage(fake).flows
     assert result is not None
 
 
@@ -847,7 +925,7 @@ def test_generated_add_node() -> None:
 
 def test_generated_get_nodes() -> None:
     fake = make_fake_element("Package", properties={"nodes": make_fake_collection([])})
-    result = IRPPackage(fake).get_nodes()
+    result = IRPPackage(fake).nodes
     assert result is not None
 
 
@@ -861,7 +939,8 @@ def test_generated_find_node() -> None:
 def test_generated_delete_node() -> None:
     fake = make_fake_element("Package")
     fake.deleteNode.return_value = None
-    IRPPackage(fake).delete_node(make_fake_element("Class", properties={"name": "x"}))
+    IRPPackage(fake).delete_node("Node1")
+    fake.deleteNode.assert_called_once_with("Node1")
 
 
 def test_generated_add_module() -> None:
@@ -873,7 +952,7 @@ def test_generated_add_module() -> None:
 
 def test_generated_get_modules() -> None:
     fake = make_fake_element("Package", properties={"modules": make_fake_collection([])})
-    result = IRPPackage(fake).get_modules()
+    result = IRPPackage(fake).modules
     assert result is not None
 
 
@@ -886,7 +965,7 @@ def test_generated_add_type() -> None:
 
 def test_generated_get_types() -> None:
     fake = make_fake_element("Package", properties={"types": make_fake_collection([])})
-    result = IRPPackage(fake).get_types()
+    result = IRPPackage(fake).types
     assert result is not None
 
 
@@ -912,7 +991,7 @@ def test_generated_find_global_function() -> None:
 
 def test_generated_get_global_functions() -> None:
     fake = make_fake_element("Package", properties={"globalFunctions": make_fake_collection([])})
-    result = IRPPackage(fake).get_global_functions()
+    result = IRPPackage(fake).global_functions
     assert result is not None
 
 
@@ -924,14 +1003,15 @@ def test_generated_delete_global_function() -> None:
 
 def test_generated_add_global_object() -> None:
     fake = make_fake_element("Package")
-    fake.addGlobalObject.return_value = make_fake_element("Class", properties={"name": "x"})
-    result = IRPPackage(fake).add_global_object("x")
+    fake.addGlobalObject.return_value = make_fake_element("Object", properties={"name": "Instance"})
+    result = IRPPackage(fake).add_global_object("Instance", "Widget", "Model")
+    fake.addGlobalObject.assert_called_once_with("Instance", "Widget", "Model")
     assert result is not None
 
 
 def test_generated_get_global_objects() -> None:
     fake = make_fake_element("Package", properties={"globalObjects": make_fake_collection([])})
-    result = IRPPackage(fake).get_global_objects()
+    result = IRPPackage(fake).global_objects
     assert result is not None
 
 
@@ -957,7 +1037,7 @@ def test_generated_add_global_variable() -> None:
 
 def test_generated_get_global_variables() -> None:
     fake = make_fake_element("Package", properties={"globalVariables": make_fake_collection([])})
-    result = IRPPackage(fake).get_global_variables()
+    result = IRPPackage(fake).global_variables
     assert result is not None
 
 
@@ -976,13 +1056,13 @@ def test_generated_delete_global_variable() -> None:
 
 def test_generated_get_nested_classifiers() -> None:
     fake = make_fake_element("Package", properties={"nestedClassifiers": make_fake_collection([])})
-    result = IRPPackage(fake).get_nested_classifiers()
+    result = IRPPackage(fake).nested_classifiers
     assert result is not None
 
 
 def test_generated_get_nested_components() -> None:
     fake = make_fake_element("Package", properties={"nestedComponents": make_fake_collection([])})
-    result = IRPPackage(fake).get_nested_components()
+    result = IRPPackage(fake).nested_components
     assert result is not None
 
 
@@ -998,39 +1078,51 @@ def test_generated_add_instance_specification_raises_not_implemented() -> None:
 
 def test_generated_get_instance_specifications() -> None:
     fake = make_fake_element("Package", properties={"instanceSpecifications": make_fake_collection([])})
-    result = IRPPackage(fake).get_instance_specifications()
+    result = IRPPackage(fake).instance_specifications
     assert result is not None
 
 
 def test_generated_add_link() -> None:
     fake = make_fake_element("Package")
-    fake.addLink.return_value = make_fake_element("Class", properties={"name": "x"})
-    result = IRPPackage(fake).add_link("x")
-    assert result is not None
+    fake.addLink.return_value = make_fake_element("Link", properties={"name": "Link1"})
+    from_part = IRPInstance(make_fake_element("Instance", properties={"name": "From"}))
+    to_part = IRPInstance(make_fake_element("Instance", properties={"name": "To"}))
+    association = IRPRelation(make_fake_element("Relation", properties={"name": "Association"}))
+    from_port = IRPPort(make_fake_element("Port", properties={"name": "FromPort"}))
+    to_port = IRPPort(make_fake_element("Port", properties={"name": "ToPort"}))
+
+    result = IRPPackage(fake).add_link(from_part, to_part, association, from_port, to_port)
+
+    fake.addLink.assert_called_once_with(from_part._com, to_part._com, association._com, from_port._com, to_port._com)
+    assert result.name == "Link1"
 
 
 def test_generated_get_links() -> None:
     fake = make_fake_element("Package", properties={"links": make_fake_collection([])})
-    result = IRPPackage(fake).get_links()
+    result = IRPPackage(fake).links
     assert result is not None
 
 
 def test_generated_find_all_by_name() -> None:
     fake = make_fake_element("Package")
-    fake.findAllByName.return_value = make_fake_collection([])
-    result = IRPPackage(fake).find_all_by_name("x")
-    assert result is not None
+    found = make_fake_element("Class", properties={"name": "Widget"})
+    fake.findAllByName.return_value = found
+
+    result = IRPPackage(fake).find_all_by_name("Widget", "Class")
+
+    fake.findAllByName.assert_called_once_with("Widget", "Class")
+    assert result.name == "Widget"
 
 
 def test_generated_get_behavioral_diagrams() -> None:
     fake = make_fake_element("Package", properties={"behavioralDiagrams": make_fake_collection([])})
-    result = IRPPackage(fake).get_behavioral_diagrams()
+    result = IRPPackage(fake).behavioral_diagrams
     assert result is not None
 
 
 def test_generated_get_source_artifacts() -> None:
     fake = make_fake_element("Package", properties={"sourceArtifacts": make_fake_collection([])})
-    result = IRPPackage(fake).get_source_artifacts()
+    result = IRPPackage(fake).source_artifacts
     assert result is not None
 
 
@@ -1072,16 +1164,17 @@ def test_generated_populate_remote_requirements() -> None:
     IRPPackage(fake).populate_remote_requirements()
 
 
-def test_generated_recalculate_events_base_id() -> None:
+def test_generated_re_calculate_events_base_id() -> None:
     fake = make_fake_element("Package")
     fake.reCalculateEventsBaseId.return_value = None
-    IRPPackage(fake).recalculate_events_base_id()
+    IRPPackage(fake).re_calculate_events_base_id()
 
 
 def test_generated_set_remote_requirements_populate_mode() -> None:
     fake = make_fake_element("Package")
     fake.setRemoteRequirementsPopulateMode.return_value = None
-    IRPPackage(fake).set_remote_requirements_populate_mode(1)
+    IRPPackage(fake).set_remote_requirements_populate_mode("All")
+    fake.setRemoteRequirementsPopulateMode.assert_called_once_with("All")
 
 
 def test_generated_update_contained_diagrams_on_server_raises_not_implemented() -> None:
@@ -1102,9 +1195,17 @@ def test_generated_add_implicit_object() -> None:
 
 def test_generated_add_link_between_sysml_ports() -> None:
     fake = make_fake_element("Package")
-    fake.addLinkBetweenSYSMLPorts.return_value = make_fake_element("Class", properties={"name": "x"})
-    result = IRPPackage(fake).add_link_between_sysml_ports(make_fake_element("Class", properties={"name": "x"}), make_fake_element("Class", properties={"name": "x"}))
-    assert result is not None
+    fake.addLinkBetweenSYSMLPorts.return_value = make_fake_element("Link", properties={"name": "Link1"})
+    from_part = IRPInstance(make_fake_element("Instance", properties={"name": "From"}))
+    to_part = IRPInstance(make_fake_element("Instance", properties={"name": "To"}))
+    association = IRPRelation(make_fake_element("Relation", properties={"name": "Association"}))
+    from_port = IRPSysMLPort(make_fake_element("SysMLPort", properties={"name": "FromPort"}))
+    to_port = IRPSysMLPort(make_fake_element("SysMLPort", properties={"name": "ToPort"}))
+
+    result = IRPPackage(fake).add_link_between_sysml_ports(from_part, to_part, association, from_port, to_port)
+
+    fake.addLinkBetweenSYSMLPorts.assert_called_once_with(from_part._com, to_part._com, association._com, from_port._com, to_port._com)
+    assert result.name == "Link1"
 
 
 def test_generated_get_all_nested_elements() -> None:
@@ -1116,7 +1217,7 @@ def test_generated_get_all_nested_elements() -> None:
 
 def test_generated_get_events_base_id() -> None:
     fake = make_fake_element("Package", properties={"eventsBaseId": make_fake_collection([])})
-    result = IRPPackage(fake).get_events_base_id()
+    result = IRPPackage(fake).events_base_id
     assert result is not None
 
 
@@ -1129,19 +1230,19 @@ def test_generated_get_namespace() -> None:
 
 def test_generated_get_saved_in_separate_directory() -> None:
     fake = make_fake_element("Package", properties={"savedInSeperateDirectory": make_fake_collection([])})
-    result = IRPPackage(fake).get_saved_in_separate_directory()
+    result = IRPPackage(fake).saved_in_seperate_directory
     assert result is not None
 
 
 def test_generated_get_user_defined_stereotypes() -> None:
     fake = make_fake_element("Package", properties={"userDefinedStereotypes": make_fake_collection([])})
-    result = IRPPackage(fake).get_user_defined_stereotypes()
+    result = IRPPackage(fake).user_defined_stereotypes
     assert result is not None
 
 
 def test_generated_set_saved_in_separate_directory() -> None:
     fake = make_fake_element("Package")
-    IRPPackage(fake).set_saved_in_separate_directory(1)
+    IRPPackage(fake).saved_in_seperate_directory = 1
 
 
 def test_generated_update_contained_matrices_on_server_raises_not_implemented() -> None:

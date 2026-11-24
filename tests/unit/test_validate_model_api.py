@@ -1,3 +1,4 @@
+import ast
 import json
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -486,7 +487,7 @@ def test_build_deviation_rows_accepts_python_property_for_java_accessors() -> No
     ]
 
 
-def test_irp_model_element_com_property_families_are_classified_as_matches() -> None:
+def test_irp_model_element_com_property_families_include_only_approved_runtime_stubs() -> None:
     project_root = Path(__file__).resolve().parents[2]
     models_root = project_root / "src" / "rhapsody_cli" / "models"
     authority_path = project_root / "docs" / "reports" / "pywin32_authority.json"
@@ -504,7 +505,10 @@ def test_irp_model_element_com_property_families_are_classified_as_matches() -> 
         row for row in rows if "(property)" in row[2] and set(row[3].split("; ")) & {"PYTHON_METHOD_NAME_MISMATCH", "COM_MEMBER_NOT_EXPOSED", "ACCESSOR_ALIAS_MISMATCH", "METHOD_PROPERTY_MISMATCH"}
     ]
 
-    assert property_deviations == []
+    assert {row[0]: row[3] for row in property_deviations} == {
+        "constraints_by_him (property) (no static COM member)": "PYTHON_METHOD_NAME_MISMATCH; COM_MEMBER_NOT_EXPOSED; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH",
+        "hyper_links (property) (no static COM member)": "PYTHON_METHOD_NAME_MISMATCH; COM_MEMBER_NOT_EXPOSED; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH",
+    }
 
 
 def test_build_deviation_rows_reports_java_method_vs_pywin32_property() -> None:
@@ -974,6 +978,25 @@ def test_collect_wrapper_arg_types_maps_float_annotations(tmp_path: Path) -> Non
     )
 
     assert validator.collect_wrapper_arg_types("IRPThing", tmp_path) == {"SetScale": ["float"]}
+
+
+def test_collect_wrapper_arg_types_maps_optional_model_wrappers_to_com(tmp_path: Path) -> None:
+    source = tmp_path / "model_thing.py"
+    source.write_text(
+        "from typing import Optional\n"
+        "class IRPThing:\n"
+        "    def add_link(self, assoc: Optional[IRPRelation], port: Optional[IRPPort]):\n"
+        "        return self.call_com(lambda: self._com.AddLink(assoc._com, port._com))\n",
+        encoding="utf-8",
+    )
+
+    assert validator.collect_wrapper_arg_types("IRPThing", tmp_path) == {"AddLink": ["com", "com"]}
+
+
+def test_annotation_text_renders_optional_subscript_without_unparse() -> None:
+    annotation = ast.parse("Optional[IRPRelation]", mode="eval").body
+
+    assert validator._annotation_text(annotation) == "Optional[IRPRelation]"
 
 
 def test_collect_generated_signatures_counts_required_parameters(tmp_path: Path) -> None:

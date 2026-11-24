@@ -3,8 +3,8 @@
 ## Summary
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `IRPProject` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`)
-- Members: Python `73`, Java `72`, pywin32 `73`
-- Deviation items: `41` (actionable `33`, expected binding differences `5`, wrapper backlog `3`)
+- Members: Python `72`, Java `72`, pywin32 `72`
+- Deviation items: `39` (actionable `31`, expected binding differences `5`, wrapper backlog `3`)
 - Status legend: `MATCH` verified binding · `UNAVAILABLE_DOCUMENTED` pywin32 lacks the member (NotImplementedError stub) · `ALIAS_DOCUMENTED` documented alias · actionable rows are named by code in `Comparison details`
 
 ## Comparison details
@@ -14,7 +14,6 @@
 | add_actor() -> addActor | — | addActor (method) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
 | add_class() -> addClass | — | addClass (method) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
 | add_node() -> addNode | — | addNode (method) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
-| delete_node() -> deleteNode | — | deleteNode (method) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
 | find_node() -> findNode | — | findNode (method) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
 | nodes (property) -> nodes | — | nodes (property) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
 | packages (property) -> packages | — | packages (property) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
@@ -27,7 +26,6 @@
 | apply_roundtrip_diff_merge() -> applyRoundtripDiffMerge | — | applyRoundtripDiffMerge (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [0] arg(s) but pywin32 declares 3 parameter(s) (3 required; params: magicNumber, shadowModel, filesToUpdate; types: int, com, com). Pass the documented parameters. |
 | clean_unresolved_elements() -> cleanUnresolvedElements | — | cleanUnresolvedElements (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [0] arg(s) but pywin32 declares 1 parameter(s) (1 required; params: rootElement; types: com). Pass the documented parameters. |
 | close_csv_file() -> closeCSVFile | — | closeCSVFile (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [0] arg(s) but pywin32 declares 1 parameter(s) (1 required; params: fullCSVFileName; types: str). Pass the documented parameters. |
-| delete_node() -> deleteNode | — | deleteNode (method) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
 | find_element_by_binary_id() -> findElementByBinaryID | — | findElementByBinaryID (method) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['str'] but pywin32 declares ['object']. Match the documented COM parameter types. |
 | find_element_by_file_name() -> findElementByFileName | — | findElementByFileName (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 2 parameter(s) (2 required; params: theFolderName, theFileName; types: str, str). Pass the documented parameters. |
 | find_elements_with_oslc_link() -> findElementsWithOSLCLink | — | findElementsWithOSLCLink (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 2 parameter(s) (2 required; params: type, purl; types: str, str). Pass the documented parameters. |
@@ -136,9 +134,9 @@
 
 ## AI Fix Guidance
 
-### JAVA_DOC_MISSING (7 findings)
+### JAVA_DOC_MISSING (6 findings)
 - **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
-- **Affected call(s):** add_actor() -> addActor; add_class() -> addClass; add_node() -> addNode; delete_node() -> deleteNode; find_node() -> findNode; nodes (property) -> nodes; packages (property) -> packages
+- **Affected call(s):** add_actor() -> addActor; add_class() -> addClass; add_node() -> addNode; find_node() -> findNode; nodes (property) -> nodes; packages (property) -> packages
 - **Recommended change:** Confirm this COM member is a supported extension and document its status.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
@@ -166,10 +164,10 @@
 - **Recommended change:** Wrapper passes [1] arg(s) but pywin32 declares 2 parameter(s) (2 required; params: filename, prevVersion; types: str, str). Pass the documented parameters.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
-### SIGNATURE_TYPE_MISMATCH (5 findings)
+### SIGNATURE_TYPE_MISMATCH (4 findings)
 - **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
-- **Affected call(s):** delete_node() -> deleteNode; find_element_by_binary_id() -> findElementByBinaryID; set_active_component() -> setActiveComponent; set_active_configuration() -> setActiveConfiguration; set_wait_dialog_watchdog_value() -> setWaitDialogWatchdogValue
-- **Recommended change:** Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types.
+- **Affected call(s):** find_element_by_binary_id() -> findElementByBinaryID; set_active_component() -> setActiveComponent; set_active_configuration() -> setActiveConfiguration; set_wait_dialog_watchdog_value() -> setWaitDialogWatchdogValue
 - **Recommended change:** Wrapper passes types ['str'] but pywin32 declares ['object']. Match the documented COM parameter types.
+- **Recommended change:** Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types.
 - **Recommended change:** Wrapper passes types ['int'] but pywin32 declares ['str']. Match the documented COM parameter types.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.

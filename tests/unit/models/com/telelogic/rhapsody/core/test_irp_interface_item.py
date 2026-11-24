@@ -1,4 +1,4 @@
-"""Tests for rhapsody_cli.models.elements.classifiers.IRPInterfaceItem."""
+"""Tests for rhapsody_cli.models.com.telelogic.rhapsody.core.IRPInterfaceItem."""
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection

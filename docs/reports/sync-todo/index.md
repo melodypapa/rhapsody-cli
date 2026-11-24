@@ -3,42 +3,59 @@
 Execution ledger for the 16 committed interface reports under `docs/reports/<java.package.path>/`
 (`*_api_report.md`; the authority catalog remains at `docs/reports/pywin32_authority.json`) and their wrappers. One row = one report = one rhapsody-sync run; every row's steps enumerate
 the rules and steps of [`.agents/skills/rhapsody-sync/SKILL.md`](../../.agents/skills/rhapsody-sync/SKILL.md)
-(§1–§8). Runs tick a step the moment it passes; rows archive to `Group-finished.md` only when
-all eight steps pass and the run's commit exists.
+(§1–§8). Runs tick a step the moment it passes; a row is archived only when all eight steps pass
+and the run's commit exists.
 
-## Layout (2026-11-22)
+## Bulk Java-package move (2026-11-24)
 
-API reports are grouped by their declared Java package; the current core reports live in
-`docs/reports/com/telelogic/rhapsody/core/`. One open row (IRPApplication Step 8) lives in [Group-unfinished-1.md](Group-unfinished-1.md), and the
-10 highest-importance unsynced classes are queued in [Group-unfinished-2.md](Group-unfinished-2.md),
-the remaining 103 in [Groups 3–13](Group-unfinished-3.md) (10 per group, importance-ordered);
-completed rows
-archive to [Group-finished.md](Group-finished.md) (a batch file is deleted when its last row
-archives). Queue order: COM-helper/base rows first (their migration removes inherited
-fallbacks for subclasses), then leaves.
+All 113 legacy `RP*` wrapper classes in `models/elements/<domain>/` and `models/support/` were
+moved to the canonical Java package path `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` as
+`irp_<x>.py` modules, renamed to their Java interface names (`RPState` → `IRPState`), with unit and
+integration tests mirrored under `tests/{unit,integration}/models/com/telelogic/rhapsody/core/`,
+all imports rewritten, canonical lazy exports rebuilt, and no compatibility shim left behind.
+§2 (package move) is therefore ticked on the migrated rows below. §3–§8 remain open where no
+committed API report / catalog entry exists (the Windows regeneration blocker); 2157 unit tests
+pass, ruff and black are clean, and all 479 integration tests collect.
 
-| Batch file | Rows | Legacy sites | Interface span | Status |
-| --- | --- | --- | --- | --- |
-| [Group-unfinished-1.md](Group-unfinished-1.md) | 1 | 3 | IRPApplication closeout | ⬜ 1 open (Step 8 only) |
-| [Group-finished.md](Group-finished.md) | 15 | ~219 | IRPClass → IRPModelElement | ✅ 15 archived |
-| [Group-unfinished-2.md](Group-unfinished-2.md) | 10 | ~133 | IRPState → IRPCollaboration | ⬜ 10 open (new) |
-| [Group-unfinished-3.md](Group-unfinished-3.md) | 10 | ~104 | IRPSearchQuery → IRPFile | ⬜ 10 open |
-| [Group-unfinished-4.md](Group-unfinished-4.md) | 10 | ~36 | IRPVariable → IRPEventReception | ⬜ 10 open |
-| [Group-unfinished-5.md](Group-unfinished-5.md) | 10 | ~27 | IRPActor → IRPSendAction | ⬜ 10 open |
-| [Group-unfinished-6.md](Group-unfinished-6.md) | 10 | ~13 | IRPInternalOEMPlugin → IRPPin | ⬜ 10 open |
-| [Group-unfinished-7.md](Group-unfinished-7.md) | 10 | ~25 | IRPPlugInWindow → IRPInstanceSpecification | ⬜ 10 open |
-| [Group-unfinished-8.md](Group-unfinished-8.md) | 10 | ~14 | IRPInstanceSlot → IRPGraphicalProperty | ⬜ 10 open |
-| [Group-unfinished-9.md](Group-unfinished-9.md) | 10 | ~13 | IRPExternalIDERegistry → IRPTimingDiagram | ⬜ 10 open |
-| [Group-unfinished-10.md](Group-unfinished-10.md) | 10 | ~7 | IRPCodeGenSimplifiersRegistry → IRPDeploymentDiagram | ⬜ 10 open |
-| [Group-unfinished-11.md](Group-unfinished-11.md) | 10 | ~4 | IRPComponentDiagram → IRPExternalRoundtripInvoker | ⬜ 10 open |
-| [Group-unfinished-12.md](Group-unfinished-12.md) | 10 | ~0 | IRPASCIIFile → IRPStructureDiagram | ⬜ 10 open |
-| [Group-unfinished-13.md](Group-unfinished-13.md) | 3 | ~0 | IRPExtensionPoint → IRPIntegrator | ⬜ 3 open |
-| [Group-unfinished-14.md](Group-unfinished-14.md) | 15 | 0 | IRPModelElement → IRPAttribute (finished-class rule remediation) | ⬜ 15 open |
+## Layout (2026-11-24)
 
-Progress: **15/144 rows tracked as archived** (128 wrapper classes + 1 application layer + 15 current-rule remediation rows).
-There are 10 queued in Group-unfinished-2 and 103 in Groups 3–13. All 13 rows from
-Group-unfinished-1 reached 8/8 except
-IRPApplication, whose Step 8 stays open on integration layer-only coverage (44.68%). Commits
+Group files are organized **by category**, where the category is the legacy module subpackage in
+each row's path (`elements/<subpackage>/`, `models/support/`, `models/core.py`, `application.py`).
+Each group file holds **at most 10 classes**; a category larger than 10 is split into `-1`, `-2`, …
+files. Classes whose rows point at canonical post-sync paths (or carry only a remediation label)
+were mapped to their legacy category by class name. All 146 tracked rows are preserved.
+
+| Group file | Category | Classes | Status |
+| --- | --- | --- | --- |
+| [Group-activity-1.md](Group-activity-1.md) | `activity` | 10 | ⬜ 10 open |
+| [Group-activity-2.md](Group-activity-2.md) | `activity` | 2 | ⬜ 2 open |
+| [Group-application-1.md](Group-application-1.md) | `application` | 1 | ⬜ 1 open (Step 8 only) |
+| [Group-classifiers-1.md](Group-classifiers-1.md) | `classifiers` | 10 | ⬜ 10 open |
+| [Group-classifiers-2.md](Group-classifiers-2.md) | `classifiers` | 6 | ⬜ 1 open · ✅ 5 archived |
+| [Group-common-1.md](Group-common-1.md) | `common` | 7 | ⬜ 6 open · ✅ 1 archived |
+| [Group-containment-1.md](Group-containment-1.md) | `containment` | 10 | ⬜ 9 open · ✅ 1 archived |
+| [Group-containment-2.md](Group-containment-2.md) | `containment` | 1 | ✅ all archived |
+| [Group-core-1.md](Group-core-1.md) | `core` | 7 | ⬜ 3 open · ✅ 4 archived |
+| [Group-diagrams-1.md](Group-diagrams-1.md) | `diagrams` | 10 | ⬜ 10 open |
+| [Group-diagrams-2.md](Group-diagrams-2.md) | `diagrams` | 2 | ⬜ 2 open |
+| [Group-graphics-1.md](Group-graphics-1.md) | `graphics` | 10 | ⬜ 10 open |
+| [Group-graphics-2.md](Group-graphics-2.md) | `graphics` | 4 | ⬜ 4 open |
+| [Group-interactions-1.md](Group-interactions-1.md) | `interactions` | 10 | ⬜ 10 open |
+| [Group-interactions-2.md](Group-interactions-2.md) | `interactions` | 1 | ⬜ 1 open |
+| [Group-relations-1.md](Group-relations-1.md) | `relations` | 8 | ⬜ 7 open · ✅ 1 archived |
+| [Group-requirements-1.md](Group-requirements-1.md) | `requirements` | 2 | ⬜ 2 open |
+| [Group-statemachine-1.md](Group-statemachine-1.md) | `statemachine` | 2 | ⬜ 2 open |
+| [Group-support-1.md](Group-support-1.md) | `support` | 10 | ⬜ 10 open |
+| [Group-support-2.md](Group-support-2.md) | `support` | 10 | ⬜ 10 open |
+| [Group-support-3.md](Group-support-3.md) | `support` | 7 | ⬜ 7 open |
+| [Group-templates-1.md](Group-templates-1.md) | `templates` | 3 | ⬜ 3 open |
+| [Group-values-1.md](Group-values-1.md) | `values` | 5 | ⬜ 5 open |
+| [Group-variables-1.md](Group-variables-1.md) | `variables` | 8 | ⬜ 6 open · ✅ 2 archived |
+
+Progress: **15/146 rows tracked as archived** (128 wrapper classes + 1 application layer + 15 current-rule remediation rows + duplicate remediation rows preserved as in the source ledger).
+The open IRPApplication Step 8 row lives in [Group-application-1.md](Group-application-1.md); the
+15 current-rule remediation rows are spread across their category files; the queued unsynced
+classes are in the remaining files, ordered by importance within each category. Commits
 `6cbebc3` (sync), `1778607` (test-rule compliance), `5175b93` (COM hardening), `2a6334c`…`3479937`
 (Windows closeout: real-COM outcome enforcement, report regeneration) and the review-fix commit
 (this one) carry the batch.
@@ -62,14 +79,16 @@ decision).
 
 ## Resume rule
 
-Take the open IRPApplication Step 8 row in [Group-unfinished-1.md](Group-unfinished-1.md), then the 15 current-rule remediation rows in [Group-unfinished-14.md](Group-unfinished-14.md), then the queued rows in [Group-unfinished-2.md](Group-unfinished-2.md) through [Group-unfinished-13.md](Group-unfinished-13.md) (once their Windows-side Step 1/3 report regeneration unblocks them). Execute one rhapsody-sync run for that
+Take the open IRPApplication Step 8 row in [Group-application-1.md](Group-application-1.md), then
+the 15 current-rule remediation rows in their category files (`core`, `containment`, `classifiers`,
+`relations`, `common`, `variables`), then the queued rows in the category files (once their
+Windows-side Step 1/3 report regeneration unblocks them). Execute one rhapsody-sync run for that
 interface following SKILL.md §1–§8 exactly as enumerated in the row's steps; tick a step when
-its evidence lands (never batch-tick at the end); move the row to
-[Group-finished.md](Group-finished.md) only after its commit exists and no step is open. Do
-not re-derive scope or decisions already recorded in the row's Notes.
+its evidence lands (never batch-tick at the end); mark the row archived in place only after its
+commit exists and no step is open. Do not re-derive scope or decisions already recorded in the
+row's Notes.
 
 ## Standing decisions
-
 - **Binding rule (SKILL §3):** every wrapper member calls exactly one pywin32-exposed COM
   member from `pywin32_authority.json` — method-shaped via
   `call_com(lambda: self._com.Name(...))`, property-shaped via `get_com_property` /
@@ -119,13 +138,44 @@ not re-derive scope or decisions already recorded in the row's Notes.
   the CORE series like `irp_unit`). `traceability_matrix.md` implementation rows point at the
   real current paths; rows mapping `SWR_ELEM_00016..00020` / `SWR_CORE_00011` into the UTS/ITS
   inventory are still to be added when those suites are documented.
-- **Group-unfinished-2 (2026-11-22):** the 10 highest-importance / most-used unsynced model
-  classes are queued in one batch. None has a committed API report or a catalog entry yet, so
+- **Category-based groups (2026-11-24):** files are `Group-<category>-N.md`; a category
+  larger than 10 classes is split into `-1`, `-2`, … files. Category = legacy module subpackage. None has a committed API report or a catalog entry yet, so
   every row's Step 1/3 starts with regenerating the catalog and report on Windows with Rhapsody;
   JavaDoc HTML for all 10 exists under `docs/java_api/com/telelogic/rhapsody/core/` locally.
 - **Full queue coverage (2026-11-22):** every wrapper class in `src/rhapsody_cli/models/` and the
-  application layer now has a row in a Group file. Groups 3–13 hold the lower-importance
-  remainder in descending usage order. Support-layer wrappers (codegen, files, IDE) are queued
+  application layer now has a row in a Group file. Rows are distributed across category
+  files, in descending importance within each category. Support-layer wrappers (codegen, files, IDE) are queued
   too; §2 must confirm whether their canonical home is the core package or their current
   `models/support/` location before any move.
-- **Termination (pending):** IRPApplication Step 8 and the 13 Group 14 remediation rows remain open. After they archive, remove the deprecated `_get_method_or_property` / `_set_method_or_property` definitions from `ComHelper` in `src/rhapsody_cli/models/core.py`, drop legacy notes from `AGENTS.md`, `docs/CODE_GUIDELINES.md`, and the sync skill, and confirm `grep -rn "_method_or_property" src/ --include='*.py'` finds no definitions or call sites.
+- **Termination (pending):** IRPApplication Step 8 and the 15 remediation rows remain open. After they archive, remove the deprecated `_get_method_or_property` / `_set_method_or_property` definitions from `ComHelper` in `src/rhapsody_cli/models/core.py`, drop legacy notes from `AGENTS.md`, `docs/CODE_GUIDELINES.md`, and the sync skill, and confirm `grep -rn "_method_or_property" src/ --include='*.py'` finds no definitions or call sites.
+
+## P0 integration-test blockers (2026-11-24)
+
+The following integration tests were removed rather than converted into exception assertions or skips
+(SKILL §5: a genuine blocker keeps the row open). Each item needs a Windows + Rhapsody run or a
+wrapper-signature fix before its getter/member row can close.
+
+| Interface | Member(s) | Blocker |
+| --- | --- | --- |
+| IRPProject | `save_as`, `save_as_prev_version` | Writes/switches the session-shared project file; `saveAsPrevVersion` wrapper arity 1 vs COM 2. |
+| IRPProject | `find_element_by_binary_id` | COM expects `byte[]`; wrapper declares `str`. |
+| IRPProject | `find_element_by_file_name`, `get_requirements_by_id` | Wrapper arity 1 vs COM 2. |
+| IRPProject | `locate_in_ide`, `apply_roundtrip_diff_merge` | Wrapper arity 0 vs COM 3. |
+| IRPProject | `apply_browser_custom_views_on_diagrams`, `get_active_custom_views_on_diagram`, `close_csv_file`, `reload_csv_file`, `get_roundtrip_shadow_model`, `clean_unresolved_elements` | Wrapper arity 0 vs COM 1. |
+| IRPProject | `find_elements_with_oslc_link` | Wrapper arity 1 vs COM 2. |
+| IRPProject | `import_package_from_rose`, `import_project_from_rose` | External `.rpy` fixture plus wrapper arity mismatch. |
+| IRPProject | `check_events_base_ids_solve_collisions` | JavaDoc returns void; wrapper wraps it in `int()`. |
+| IRPProject | `add_spell_checker_result` | Wrapper arity 2 vs COM 1. |
+| IRPProject | `get_new_progress_bar` | Wrapper arity 0 vs COM 2. |
+| IRPProject | `default_directory_scheme` | JavaDoc/COM is `String`; wrapper reads/writes `int`. |
+| IRPPackage | `get_remote_requirements_populate_mode` | Requires a Design Manager/remote requirements server. |
+| IRPPackage | `get_instance_specifications`, `get_source_artifacts`, `get_user_defined_stereotypes`, `get_nested_components` | No live create/relate API; `add_instance_specification` is a pywin32-absent stub and packages have no `add_component`. |
+| IRPClass | `add_link`, `add_link_to_part_via_port` | Needs a real `IRPInstance` part and structure-diagram endpoints; class-as-part fixtures only produced exceptions. |
+| IRPUnit | `copy_to_another_project`, `move_to_another_project_leave_a_reference`, `reference_to_another_project`, `set_unit_path` | Requires a second saved project/unit file and mutates the shared project. |
+| IRPUseCase | `find_entry_point`, `find_extension_point` | JavaDoc/pywin32 take `IRPGeneralization` and return `String`; wrapper takes `str` and wraps an element. |
+| IRPUseCase | `entry_points` | No documented add API in the COM surface; only an empty-state result is observable. |
+| IRPOperation | `flowchart` setter | JavaDoc lists `setFlowchart`, but live COM exposes it read-only; the wrapper setter is retained pending Windows confirmation. |
+| IRPProject | `get_code_generated_files` | Requires a real code-generation run; no safe fixture in the shared project. |
+| IRPProject | `get_active_custom_views_on_browser` | No API creates a browser-level custom view; the empty collection is the only observable state. |
+| IRPProject | `get_remote_resource_packages`, `is_actively_managed` | Require a remote resource/management server. |
+| IRPProject | `is_modified_recursive` | Needs a controlled modify/save transition on the session-shared project. |

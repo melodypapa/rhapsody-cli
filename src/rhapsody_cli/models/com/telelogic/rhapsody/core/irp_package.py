@@ -13,26 +13,27 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCo
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass, IRPClassifier
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_use_case import IRPUseCase
-    from rhapsody_cli.models.elements.activity.model_activity import RPFlow, RPFlowItem
-    from rhapsody_cli.models.elements.classifiers.model_actor import RPActor
-    from rhapsody_cli.models.elements.common.model_other_model import RPSysMLPort
-    from rhapsody_cli.models.elements.diagrams import (
-        RPActivityDiagram,
-        RPCollaborationDiagram,
-        RPComponentDiagram,
-        RPDeploymentDiagram,
-        RPObjectModelDiagram,
-        RPSequenceDiagram,
-        RPStatechartDiagram,
-        RPTimingDiagram,
-        RPUseCaseDiagram,
+    from rhapsody_cli.models.com.telelogic.rhapsody.core import (
+        IRPClass,
+        IRPClassifier,
+        IRPCollaborationDiagram,
+        IRPComponentDiagram,
+        IRPDeploymentDiagram,
+        IRPObjectModelDiagram,
+        IRPPort,
+        IRPSequenceDiagram,
+        IRPTimingDiagram,
+        IRPUseCaseDiagram,
     )
-    from rhapsody_cli.models.elements.graphics.model_graphics import RPLink
-    from rhapsody_cli.models.elements.relations.model_instance import RPInstance
-    from rhapsody_cli.models.elements.relations.model_relation import RPRelation
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlow, IRPFlowchart, IRPFlowItem
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actor import IRPActor
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPLink
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_instance import IRPInstance
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_other_model import IRPSysMLPort
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statechart import IRPStatechart
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_use_case import IRPUseCase
 
 
 class IRPPackage(IRPUnit):
@@ -172,7 +173,7 @@ class IRPPackage(IRPUnit):
         """
         return cast(IRPPackage, self.wrap(self.call_com(lambda: self._com.addNestedPackage(name))))
 
-    def add_actor(self, name: str) -> RPActor:
+    def add_actor(self, name: str) -> IRPActor:
         """Adds a new actor to the package.
 
         Args:
@@ -184,9 +185,9 @@ class IRPPackage(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addActor(java.lang.String name)
         """
-        from rhapsody_cli.models.elements.classifiers.model_actor import RPActor
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actor import IRPActor
 
-        return cast(RPActor, self.wrap(self.call_com(lambda: self._com.addActor(name))))
+        return cast(IRPActor, self.wrap(self.call_com(lambda: self._com.addActor(name))))
 
     def add_global_function(self, name: str) -> IRPOperation:
         """Adds a new global function to the package.
@@ -204,7 +205,7 @@ class IRPPackage(IRPUnit):
 
         return cast(IRPOperation, self.wrap(self.call_com(lambda: self._com.addGlobalFunction(name))))
 
-    def add_flow_items(self, name: str) -> RPFlowItem:
+    def add_flow_items(self, name: str) -> IRPFlowItem:
         """Adds a new flow item to the package.
 
         Args:
@@ -216,11 +217,11 @@ class IRPPackage(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addFlowItems(java.lang.String name)
         """
-        from rhapsody_cli.models.elements.activity.model_activity import RPFlowItem
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlowItem
 
-        return cast(RPFlowItem, self.wrap(self.call_com(lambda: self._com.addFlowItems(name))))
+        return cast(IRPFlowItem, self.wrap(self.call_com(lambda: self._com.addFlowItems(name))))
 
-    def add_flows(self, name: str) -> RPFlow:
+    def add_flows(self, name: str) -> IRPFlow:
         """Adds a new flow to the package.
 
         Args:
@@ -232,11 +233,12 @@ class IRPPackage(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addFlows(java.lang.String name)
         """
-        from rhapsody_cli.models.elements.activity.model_activity import RPFlow
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlow
 
-        return cast(RPFlow, self.wrap(self.call_com(lambda: self._com.addFlows(name))))
+        return cast(IRPFlow, self.wrap(self.call_com(lambda: self._com.addFlows(name))))
 
-    def get_nested_packages(self) -> IRPCollection:
+    @property
+    def packages(self) -> IRPCollection:
         """Returns all nested packages in this package.
 
         Returns:
@@ -244,7 +246,8 @@ class IRPPackage(IRPUnit):
         """
         return IRPCollection(self.get_com_property(self._com, "packages"))
 
-    def get_classes(self) -> IRPCollection:
+    @property
+    def classes(self) -> IRPCollection:
         """Returns all classes contained in this package.
 
         Returns:
@@ -255,7 +258,8 @@ class IRPPackage(IRPUnit):
         """
         return IRPCollection(self.get_com_property(self._com, "classes"))
 
-    def get_actors(self) -> IRPCollection:
+    @property
+    def actors(self) -> IRPCollection:
         """Returns all actors contained in this package.
 
         Returns:
@@ -266,7 +270,8 @@ class IRPPackage(IRPUnit):
         """
         return IRPCollection(self.get_com_property(self._com, "actors"))
 
-    def get_use_cases(self) -> IRPCollection:
+    @property
+    def use_cases(self) -> IRPCollection:
         """Returns all use cases contained in this package.
 
         Returns:
@@ -294,23 +299,20 @@ class IRPPackage(IRPUnit):
         return cast(IRPUseCase, self.wrap(self.call_com(lambda: self._com.addUseCase(name))))
 
     # --- Diagram adders (Pattern E) ---
-    def add_activity_diagram(self, name: str) -> RPActivityDiagram:
+    def add_activity_diagram(self) -> IRPFlowchart:
         """Adds a new activity diagram to the package.
 
-        Args:
-            name: The name of the new activity diagram.
-
         Returns:
-            The wrapped ``IRPActivityDiagram`` created.
+            The wrapped flowchart created.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPPackage::addActivityDiagram(java.lang.String name)
+            com.telelogic.rhapsody.core.IRPPackage::addActivityDiagram()
         """
-        from rhapsody_cli.models.elements.diagrams import RPActivityDiagram
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlowchart
 
-        return cast(RPActivityDiagram, self.wrap(self.call_com(lambda: self._com.addActivityDiagram(name))))
+        return cast(IRPFlowchart, self.wrap(self.call_com(lambda: self._com.addActivityDiagram())))
 
-    def add_sequence_diagram(self, name: str) -> RPSequenceDiagram:
+    def add_sequence_diagram(self, name: str) -> IRPSequenceDiagram:
         """Adds a new sequence diagram to the package.
 
         Args:
@@ -322,11 +324,11 @@ class IRPPackage(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addSequenceDiagram(java.lang.String name)
         """
-        from rhapsody_cli.models.elements.diagrams import RPSequenceDiagram
+        from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPSequenceDiagram
 
-        return cast(RPSequenceDiagram, self.wrap(self.call_com(lambda: self._com.addSequenceDiagram(name))))
+        return cast(IRPSequenceDiagram, self.wrap(self.call_com(lambda: self._com.addSequenceDiagram(name))))
 
-    def add_use_case_diagram(self, name: str) -> RPUseCaseDiagram:
+    def add_use_case_diagram(self, name: str) -> IRPUseCaseDiagram:
         """Adds a new use case diagram to the package.
 
         Args:
@@ -338,11 +340,11 @@ class IRPPackage(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addUseCaseDiagram(java.lang.String name)
         """
-        from rhapsody_cli.models.elements.diagrams import RPUseCaseDiagram
+        from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUseCaseDiagram
 
-        return cast(RPUseCaseDiagram, self.wrap(self.call_com(lambda: self._com.addUseCaseDiagram(name))))
+        return cast(IRPUseCaseDiagram, self.wrap(self.call_com(lambda: self._com.addUseCaseDiagram(name))))
 
-    def add_collaboration_diagram(self, name: str) -> RPCollaborationDiagram:
+    def add_collaboration_diagram(self, name: str) -> IRPCollaborationDiagram:
         """Adds a new collaboration diagram to the package.
 
         Args:
@@ -354,11 +356,11 @@ class IRPPackage(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addCollaborationDiagram(java.lang.String name)
         """
-        from rhapsody_cli.models.elements.diagrams import RPCollaborationDiagram
+        from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPCollaborationDiagram
 
-        return cast(RPCollaborationDiagram, self.wrap(self.call_com(lambda: self._com.addCollaborationDiagram(name))))
+        return cast(IRPCollaborationDiagram, self.wrap(self.call_com(lambda: self._com.addCollaborationDiagram(name))))
 
-    def add_component_diagram(self, name: str) -> RPComponentDiagram:
+    def add_component_diagram(self, name: str) -> IRPComponentDiagram:
         """Adds a new component diagram to the package.
 
         Args:
@@ -370,11 +372,11 @@ class IRPPackage(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addComponentDiagram(java.lang.String name)
         """
-        from rhapsody_cli.models.elements.diagrams import RPComponentDiagram
+        from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPComponentDiagram
 
-        return cast(RPComponentDiagram, self.wrap(self.call_com(lambda: self._com.addComponentDiagram(name))))
+        return cast(IRPComponentDiagram, self.wrap(self.call_com(lambda: self._com.addComponentDiagram(name))))
 
-    def add_deployment_diagram(self, name: str) -> RPDeploymentDiagram:
+    def add_deployment_diagram(self, name: str) -> IRPDeploymentDiagram:
         """Adds a new deployment diagram to the package.
 
         Args:
@@ -386,11 +388,11 @@ class IRPPackage(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addDeploymentDiagram(java.lang.String name)
         """
-        from rhapsody_cli.models.elements.diagrams import RPDeploymentDiagram
+        from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPDeploymentDiagram
 
-        return cast(RPDeploymentDiagram, self.wrap(self.call_com(lambda: self._com.addDeploymentDiagram(name))))
+        return cast(IRPDeploymentDiagram, self.wrap(self.call_com(lambda: self._com.addDeploymentDiagram(name))))
 
-    def add_object_model_diagram(self, name: str) -> RPObjectModelDiagram:
+    def add_object_model_diagram(self, name: str) -> IRPObjectModelDiagram:
         """Adds a new object model diagram to the package.
 
         Args:
@@ -402,27 +404,24 @@ class IRPPackage(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addObjectModelDiagram(java.lang.String name)
         """
-        from rhapsody_cli.models.elements.diagrams import RPObjectModelDiagram
+        from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPObjectModelDiagram
 
-        return cast(RPObjectModelDiagram, self.wrap(self.call_com(lambda: self._com.addObjectModelDiagram(name))))
+        return cast(IRPObjectModelDiagram, self.wrap(self.call_com(lambda: self._com.addObjectModelDiagram(name))))
 
-    def add_statechart_diagram(self, name: str) -> RPStatechartDiagram:
-        """Adds a new statechart diagram to the package.
-
-        Args:
-            name: The name of the new statechart diagram.
+    def add_statechart(self) -> IRPStatechart:
+        """Adds a new statechart to the package.
 
         Returns:
-            The wrapped ``IRPStatechartDiagram`` created.
+            The wrapped statechart created.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPPackage::addStatechart(java.lang.String name)
+            com.telelogic.rhapsody.core.IRPPackage::addStatechart()
         """
-        from rhapsody_cli.models.elements.diagrams import RPStatechartDiagram
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statechart import IRPStatechart
 
-        return cast(RPStatechartDiagram, self.wrap(self.call_com(lambda: self._com.addStatechart(name))))
+        return cast(IRPStatechart, self.wrap(self.call_com(lambda: self._com.addStatechart())))
 
-    def add_timing_diagram(self, name: str) -> RPTimingDiagram:
+    def add_timing_diagram(self, name: str) -> IRPTimingDiagram:
         """Adds a new timing diagram to the package.
 
         Args:
@@ -434,9 +433,9 @@ class IRPPackage(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addTimingDiagram(java.lang.String name)
         """
-        from rhapsody_cli.models.elements.diagrams import RPTimingDiagram
+        from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPTimingDiagram
 
-        return cast(RPTimingDiagram, self.wrap(self.call_com(lambda: self._com.addTimingDiagram(name))))
+        return cast(IRPTimingDiagram, self.wrap(self.call_com(lambda: self._com.addTimingDiagram(name))))
 
     def add_panel_diagram(self, name: str) -> IRPModelElement:
         """Adds a new panel diagram to the package.
@@ -453,7 +452,8 @@ class IRPPackage(IRPUnit):
         return cast(IRPModelElement, self.wrap(self.call_com(lambda: self._com.addPanelDiagram(name))))
 
     # --- Diagram getters (Pattern C) ---
-    def get_sequence_diagrams(self) -> IRPCollection:
+    @property
+    def sequence_diagrams(self) -> IRPCollection:
         """Returns all sequence diagrams contained in this package.
 
         Returns:
@@ -464,7 +464,8 @@ class IRPPackage(IRPUnit):
         """
         return IRPCollection(self.get_com_property(self._com, "sequenceDiagrams"))
 
-    def get_use_case_diagrams(self) -> IRPCollection:
+    @property
+    def use_case_diagrams(self) -> IRPCollection:
         """Returns all use case diagrams contained in this package.
 
         Returns:
@@ -475,7 +476,8 @@ class IRPPackage(IRPUnit):
         """
         return IRPCollection(self.get_com_property(self._com, "useCaseDiagrams"))
 
-    def get_collaboration_diagrams(self) -> IRPCollection:
+    @property
+    def collaboration_diagrams(self) -> IRPCollection:
         """Returns all collaboration diagrams contained in this package.
 
         Returns:
@@ -486,7 +488,8 @@ class IRPPackage(IRPUnit):
         """
         return IRPCollection(self.get_com_property(self._com, "collaborationDiagrams"))
 
-    def get_component_diagrams(self) -> IRPCollection:
+    @property
+    def component_diagrams(self) -> IRPCollection:
         """Returns all component diagrams contained in this package.
 
         Returns:
@@ -497,7 +500,8 @@ class IRPPackage(IRPUnit):
         """
         return IRPCollection(self.get_com_property(self._com, "componentDiagrams"))
 
-    def get_deployment_diagrams(self) -> IRPCollection:
+    @property
+    def deployment_diagrams(self) -> IRPCollection:
         """Returns all deployment diagrams contained in this package.
 
         Returns:
@@ -508,7 +512,8 @@ class IRPPackage(IRPUnit):
         """
         return IRPCollection(self.get_com_property(self._com, "deploymentDiagrams"))
 
-    def get_object_model_diagrams(self) -> IRPCollection:
+    @property
+    def object_model_diagrams(self) -> IRPCollection:
         """Returns all object model diagrams contained in this package.
 
         Returns:
@@ -519,7 +524,8 @@ class IRPPackage(IRPUnit):
         """
         return IRPCollection(self.get_com_property(self._com, "objectModelDiagrams"))
 
-    def get_timing_diagrams(self) -> IRPCollection:
+    @property
+    def timing_diagrams(self) -> IRPCollection:
         """Returns all timing diagrams contained in this package.
 
         Returns:
@@ -530,7 +536,8 @@ class IRPPackage(IRPUnit):
         """
         return IRPCollection(self.get_com_property(self._com, "timingDiagrams"))
 
-    def get_panel_diagrams(self) -> IRPCollection:
+    @property
+    def panel_diagrams(self) -> IRPCollection:
         """Returns all panel diagrams contained in this package.
 
         Returns:
@@ -542,93 +549,93 @@ class IRPPackage(IRPUnit):
         return IRPCollection(self.get_com_property(self._com, "panelDiagrams"))
 
     # --- Diagram deleters (Pattern F) ---
-    def delete_sequence_diagram(self, diagram: IRPModelElement) -> None:
-        """Deletes a sequence diagram from the package.
+    def delete_sequence_diagram(self, name: str) -> None:
+        """Deletes the sequence diagram with the specified name.
 
         Args:
-            diagram: The sequence diagram to delete.
+            name: The name of the sequence diagram to delete.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPPackage::deleteSequenceDiagram(com.telelogic.rhapsody.core.IRPSequenceDiagram diagram)
+            com.telelogic.rhapsody.core.IRPPackage::deleteSequenceDiagram(java.lang.String name)
         """
-        self.call_com(lambda: self._com.deleteSequenceDiagram(diagram._com))
+        self.call_com(lambda: self._com.deleteSequenceDiagram(name))
 
-    def delete_use_case_diagram(self, diagram: IRPModelElement) -> None:
-        """Deletes a use case diagram from the package.
+    def delete_use_case_diagram(self, name: str) -> None:
+        """Deletes the use case diagram with the specified name.
 
         Args:
-            diagram: The use case diagram to delete.
+            name: The name of the use case diagram to delete.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPPackage::deleteUseCaseDiagram(com.telelogic.rhapsody.core.IRPUseCaseDiagram diagram)
+            com.telelogic.rhapsody.core.IRPPackage::deleteUseCaseDiagram(java.lang.String name)
         """
-        self.call_com(lambda: self._com.deleteUseCaseDiagram(diagram._com))
+        self.call_com(lambda: self._com.deleteUseCaseDiagram(name))
 
-    def delete_collaboration_diagram(self, diagram: IRPModelElement) -> None:
-        """Deletes a collaboration diagram from the package.
+    def delete_collaboration_diagram(self, name: str) -> None:
+        """Deletes the collaboration diagram with the specified name.
 
         Args:
-            diagram: The collaboration diagram to delete.
+            name: The name of the collaboration diagram to delete.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPPackage::deleteCollaborationDiagram(com.telelogic.rhapsody.core.IRPCollaborationDiagram diagram)
+            com.telelogic.rhapsody.core.IRPPackage::deleteCollaborationDiagram(java.lang.String name)
         """
-        self.call_com(lambda: self._com.deleteCollaborationDiagram(diagram._com))
+        self.call_com(lambda: self._com.deleteCollaborationDiagram(name))
 
-    def delete_component_diagram(self, diagram: IRPModelElement) -> None:
-        """Deletes a component diagram from the package.
+    def delete_component_diagram(self, name: str) -> None:
+        """Deletes the component diagram with the specified name.
 
         Args:
-            diagram: The component diagram to delete.
+            name: The name of the component diagram to delete.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPPackage::deleteComponentDiagram(com.telelogic.rhapsody.core.IRPComponentDiagram diagram)
+            com.telelogic.rhapsody.core.IRPPackage::deleteComponentDiagram(java.lang.String name)
         """
-        self.call_com(lambda: self._com.deleteComponentDiagram(diagram._com))
+        self.call_com(lambda: self._com.deleteComponentDiagram(name))
 
-    def delete_deployment_diagram(self, diagram: IRPModelElement) -> None:
-        """Deletes a deployment diagram from the package.
+    def delete_deployment_diagram(self, name: str) -> None:
+        """Deletes the deployment diagram with the specified name.
 
         Args:
-            diagram: The deployment diagram to delete.
+            name: The name of the deployment diagram to delete.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPPackage::deleteDeploymentDiagram(com.telelogic.rhapsody.core.IRPDeploymentDiagram diagram)
+            com.telelogic.rhapsody.core.IRPPackage::deleteDeploymentDiagram(java.lang.String name)
         """
-        self.call_com(lambda: self._com.deleteDeploymentDiagram(diagram._com))
+        self.call_com(lambda: self._com.deleteDeploymentDiagram(name))
 
-    def delete_object_model_diagram(self, diagram: IRPModelElement) -> None:
-        """Deletes an object model diagram from the package.
+    def delete_object_model_diagram(self, name: str) -> None:
+        """Deletes the object model diagram with the specified name.
 
         Args:
-            diagram: The object model diagram to delete.
+            name: The name of the object model diagram to delete.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPPackage::deleteObjectModelDiagram(com.telelogic.rhapsody.core.IRPObjectModelDiagram diagram)
+            com.telelogic.rhapsody.core.IRPPackage::deleteObjectModelDiagram(java.lang.String name)
         """
-        self.call_com(lambda: self._com.deleteObjectModelDiagram(diagram._com))
+        self.call_com(lambda: self._com.deleteObjectModelDiagram(name))
 
-    def delete_timing_diagram(self, diagram: IRPModelElement) -> None:
-        """Deletes a timing diagram from the package.
+    def delete_timing_diagram(self, name: str) -> None:
+        """Deletes the timing diagram with the specified name.
 
         Args:
-            diagram: The timing diagram to delete.
+            name: The name of the timing diagram to delete.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPPackage::deleteTimingDiagram(com.telelogic.rhapsody.core.IRPTimingDiagram diagram)
+            com.telelogic.rhapsody.core.IRPPackage::deleteTimingDiagram(java.lang.String name)
         """
-        self.call_com(lambda: self._com.deleteTimingDiagram(diagram._com))
+        self.call_com(lambda: self._com.deleteTimingDiagram(name))
 
-    def delete_panel_diagram(self, diagram: IRPModelElement) -> None:
-        """Deletes a panel diagram from the package.
+    def delete_panel_diagram(self, name: str) -> None:
+        """Deletes the panel diagram with the specified name.
 
         Args:
-            diagram: The panel diagram to delete.
+            name: The name of the panel diagram to delete.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPPackage::deletePanelDiagram(com.telelogic.rhapsody.core.IRPPanelDiagram diagram)
+            com.telelogic.rhapsody.core.IRPPackage::deletePanelDiagram(java.lang.String name)
         """
-        self.call_com(lambda: self._com.deletePanelDiagram(diagram._com))
+        self.call_com(lambda: self._com.deletePanelDiagram(name))
 
     # --- Classifier deleters (Pattern F) ---
     def delete_class(self, cls: IRPModelElement) -> None:
@@ -664,7 +671,7 @@ class IRPPackage(IRPUnit):
         """
         self.call_com(lambda: self._com.deleteUseCase(use_case._com))
 
-    def delete_flow_items(self, flow_item: RPFlowItem) -> None:
+    def delete_flow_items(self, flow_item: IRPFlowItem) -> None:
         """Deletes a flow item from the package.
 
         Args:
@@ -675,7 +682,7 @@ class IRPPackage(IRPUnit):
         """
         self.call_com(lambda: self._com.deleteFlowItems(flow_item._com))
 
-    def delete_flows(self, flow: RPFlow) -> None:
+    def delete_flows(self, flow: IRPFlow) -> None:
         """Deletes a flow from the package.
 
         Args:
@@ -686,16 +693,13 @@ class IRPPackage(IRPUnit):
         """
         self.call_com(lambda: self._com.deleteFlows(flow._com))
 
-    def delete_package(self, package: IRPModelElement) -> None:
-        """Deletes a nested package from this package.
-
-        Args:
-            package: The package to delete.
+    def delete_package(self) -> None:
+        """Deletes this package.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPPackage::deletePackage(com.telelogic.rhapsody.core.IRPPackage package)
+            com.telelogic.rhapsody.core.IRPPackage::deletePackage()
         """
-        self.call_com(lambda: self._com.deletePackage(package._com))
+        self.call_com(lambda: self._com.deletePackage())
 
     # --- Finders (Pattern B) ---
     def find_class(self, name: str) -> IRPClass:
@@ -714,7 +718,7 @@ class IRPPackage(IRPUnit):
 
         return cast(IRPClass, self.wrap(self.call_com(lambda: self._com.findClass(name))))
 
-    def find_actor(self, name: str) -> RPActor:
+    def find_actor(self, name: str) -> IRPActor:
         """Finds an actor in the package by name.
 
         Args:
@@ -726,9 +730,9 @@ class IRPPackage(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::findActor(java.lang.String name)
         """
-        from rhapsody_cli.models.elements.classifiers.model_actor import RPActor
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actor import IRPActor
 
-        return cast(RPActor, self.wrap(self.call_com(lambda: self._com.findActor(name))))
+        return cast(IRPActor, self.wrap(self.call_com(lambda: self._com.findActor(name))))
 
     def find_use_case(self, name: str) -> IRPUseCase:
         """Finds a use case in the package by name.
@@ -747,21 +751,26 @@ class IRPPackage(IRPUnit):
         return cast(IRPUseCase, self.wrap(self.call_com(lambda: self._com.findUseCase(name))))
 
     # --- Association methods ---
-    def add_association(self, name: str) -> RPRelation:  # type: ignore[override]
-        """Adds a new association to the package.
+    def add_association(self, end1: IRPModelElement, end2: IRPModelElement, name: str) -> IRPRelation:  # type: ignore[override]
+        """Adds an association using the COM-only package extension.
 
         Args:
-            name: The name of the new association.
+            end1: The first relation end.
+            end2: The second relation end.
+            name: The name of the association.
 
         Returns:
-            The wrapped ``IRPRelation`` created.
+            The wrapped relation created by Rhapsody.
+
+        Note:
+            This COM extension is absent from the IRPPackage JavaDoc.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPPackage::addAssociation(java.lang.String name)
+            pywin32 IRPPackage.addAssociation(end1, end2, name)
         """
-        from rhapsody_cli.models.elements.relations.model_relation import RPRelation
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
 
-        return cast(RPRelation, self.wrap(self.call_com(lambda: self._com.addAssociation(name))))
+        return cast(IRPRelation, self.wrap(self.call_com(lambda: self._com.addAssociation(end1._com, end2._com, name))))
 
     # --- Event methods ---
     def add_event(self, name: str) -> IRPModelElement:
@@ -778,7 +787,8 @@ class IRPPackage(IRPUnit):
         """
         return cast(IRPModelElement, self.wrap(self.call_com(lambda: self._com.addEvent(name))))
 
-    def get_events(self) -> IRPCollection:
+    @property
+    def events(self) -> IRPCollection:
         """Returns all events contained in this package.
 
         Returns:
@@ -789,7 +799,8 @@ class IRPPackage(IRPUnit):
         """
         return IRPCollection(self.get_com_property(self._com, "events"))
 
-    def get_flow_items(self) -> IRPCollection:
+    @property
+    def flow_items(self) -> IRPCollection:
         """Returns all flow items contained in this package.
 
         Returns:
@@ -800,7 +811,8 @@ class IRPPackage(IRPUnit):
         """
         return IRPCollection(self.get_com_property(self._com, "flowItems"))
 
-    def get_flows(self) -> IRPCollection:
+    @property
+    def flows(self) -> IRPCollection:
         """Returns all flows contained in this package.
 
         Returns:
@@ -851,7 +863,8 @@ class IRPPackage(IRPUnit):
         """
         return cast(IRPModelElement, self.wrap(self.call_com(lambda: self._com.addNode(name))))
 
-    def get_nodes(self) -> IRPCollection:
+    @property
+    def nodes(self) -> IRPCollection:
         """Returns all nodes contained in this package.
 
         Returns:
@@ -876,16 +889,16 @@ class IRPPackage(IRPUnit):
         """
         return self.wrap(self.call_com(lambda: self._com.findNode(name)))
 
-    def delete_node(self, node: IRPModelElement) -> None:
-        """Deletes a node from the package.
+    def delete_node(self, name: str) -> None:
+        """Deletes the node with the specified name.
 
         Args:
-            node: The node to delete.
+            name: The name of the node to delete.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPPackage::deleteNode(com.telelogic.rhapsody.core.IRPNode node)
+            com.telelogic.rhapsody.core.IRPPackage::deleteNode(java.lang.String name)
         """
-        self.call_com(lambda: self._com.deleteNode(node._com))
+        self.call_com(lambda: self._com.deleteNode(name))
 
     # --- Module methods ---
     def add_module(self, name: str) -> IRPModelElement:
@@ -902,7 +915,8 @@ class IRPPackage(IRPUnit):
         """
         return cast(IRPModelElement, self.wrap(self.call_com(lambda: self._com.addModule(name))))
 
-    def get_modules(self) -> IRPCollection:
+    @property
+    def modules(self) -> IRPCollection:
         """Returns all modules contained in this package.
 
         Returns:
@@ -928,7 +942,8 @@ class IRPPackage(IRPUnit):
         """
         return cast(IRPModelElement, self.wrap(self.call_com(lambda: self._com.addType(name))))
 
-    def get_types(self) -> IRPCollection:
+    @property
+    def types(self) -> IRPCollection:
         """Returns all types contained in this package.
 
         Returns:
@@ -981,7 +996,8 @@ class IRPPackage(IRPUnit):
 
         return cast(IRPOperation, self.wrap(self.call_com(lambda: self._com.findGlobalFunction(name))))
 
-    def get_global_functions(self) -> IRPCollection:
+    @property
+    def global_functions(self) -> IRPCollection:
         """Returns all global functions contained in this package.
 
         Returns:
@@ -1004,21 +1020,26 @@ class IRPPackage(IRPUnit):
         self.call_com(lambda: self._com.deleteGlobalFunction(func._com))
 
     # --- Global object methods ---
-    def add_global_object(self, name: str) -> IRPModelElement:
-        """Adds a new global object to the package.
+    def add_global_object(self, name: str, other_class_name: str, other_class_package_name: str) -> IRPRelation:
+        """Adds an instance of an existing class to the package.
 
         Args:
-            name: The name of the new global object.
+            name: The name of the new object.
+            other_class_name: The name of the class to instantiate.
+            other_class_package_name: The name of the package containing that class.
 
         Returns:
-            The wrapped global object element created.
+            The wrapped object relation created.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPPackage::addGlobalObject(java.lang.String name)
+            com.telelogic.rhapsody.core.IRPPackage::addGlobalObject(java.lang.String name, java.lang.String otherClassName, java.lang.String otherClassPackageName)
         """
-        return cast(IRPModelElement, self.wrap(self.call_com(lambda: self._com.addGlobalObject(name))))
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
 
-    def get_global_objects(self) -> IRPCollection:
+        return cast(IRPRelation, self.wrap(self.call_com(lambda: self._com.addGlobalObject(name, other_class_name, other_class_package_name))))
+
+    @property
+    def global_objects(self) -> IRPCollection:
         """Returns all global objects contained in this package.
 
         Returns:
@@ -1069,7 +1090,8 @@ class IRPPackage(IRPUnit):
         """
         return cast(IRPModelElement, self.wrap(self.call_com(lambda: self._com.addGlobalVariable(name))))
 
-    def get_global_variables(self) -> IRPCollection:
+    @property
+    def global_variables(self) -> IRPCollection:
         """Returns all global variables contained in this package.
 
         Returns:
@@ -1106,7 +1128,8 @@ class IRPPackage(IRPUnit):
         self.call_com(lambda: self._com.deleteGlobalVariable(var._com))
 
     # --- Nested classifier methods ---
-    def get_nested_classifiers(self) -> IRPCollection:
+    @property
+    def nested_classifiers(self) -> IRPCollection:
         """Returns all nested classifiers in this package.
 
         Returns:
@@ -1117,7 +1140,8 @@ class IRPPackage(IRPUnit):
         """
         return IRPCollection(self.get_com_property(self._com, "nestedClassifiers"))
 
-    def get_nested_components(self) -> IRPCollection:
+    @property
+    def nested_components(self) -> IRPCollection:
         """Returns all nested components in this package.
 
         Returns:
@@ -1144,7 +1168,8 @@ class IRPPackage(IRPUnit):
         """
         raise NotImplementedError("addInstanceSpecification is not exposed in the Rhapsody COM automation type library.")
 
-    def get_instance_specifications(self) -> IRPCollection:
+    @property
+    def instance_specifications(self) -> IRPCollection:
         """Returns all instance specifications contained in this package.
 
         Returns:
@@ -1156,21 +1181,36 @@ class IRPPackage(IRPUnit):
         return IRPCollection(self.get_com_property(self._com, "instanceSpecifications"))
 
     # --- Link methods ---
-    def add_link(self, name: str) -> IRPModelElement:
-        """Adds a new link to the package.
+    def add_link(self, from_part: IRPInstance, to_part: IRPInstance, assoc: IRPRelation | None, from_port: IRPPort | None, to_port: IRPPort | None) -> IRPLink:
+        """Creates a link between two objects in the package.
 
         Args:
-            name: The name of the new link.
+            from_part: The source object.
+            to_part: The target object.
+            assoc: The association represented by the link, or ``None`` when ports are specified.
+            from_port: The source port, or ``None`` when an association is specified.
+            to_port: The target port, or ``None`` when an association is specified.
 
         Returns:
-            The wrapped link element created.
+            The wrapped link created.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPPackage::addLink(java.lang.String name)
+            com.telelogic.rhapsody.core.IRPPackage::addLink(
+                com.telelogic.rhapsody.core.IRPInstance fromPart,
+                com.telelogic.rhapsody.core.IRPInstance toPart,
+                com.telelogic.rhapsody.core.IRPRelation assoc,
+                com.telelogic.rhapsody.core.IRPPort fromPort,
+                com.telelogic.rhapsody.core.IRPPort toPort)
         """
-        return cast(IRPModelElement, self.wrap(self.call_com(lambda: self._com.addLink(name))))
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPLink
 
-    def get_links(self) -> IRPCollection:
+        assoc_com = assoc._com if assoc is not None else None
+        from_port_com = from_port._com if from_port is not None else None
+        to_port_com = to_port._com if to_port is not None else None
+        return cast(IRPLink, self.wrap(self.call_com(lambda: self._com.addLink(from_part._com, to_part._com, assoc_com, from_port_com, to_port_com))))
+
+    @property
+    def links(self) -> IRPCollection:
         """Returns all links contained in this package.
 
         Returns:
@@ -1182,22 +1222,24 @@ class IRPPackage(IRPUnit):
         return IRPCollection(self.get_com_property(self._com, "links"))
 
     # --- Find all by name ---
-    def find_all_by_name(self, name: str) -> IRPCollection:
-        """Finds all elements with the given name in this package.
+    def find_all_by_name(self, name: str, meta_class: str) -> IRPModelElement:
+        """Finds the first element with the given name and metaclass in this package.
 
         Args:
-            name: The name to search for.
+            name: The name of the element to find.
+            meta_class: The metaclass of the element to find.
 
         Returns:
-            An ``IRPCollection`` of matching elements.
+            The first matching model element.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPPackage::findAllByName(java.lang.String name)
+            com.telelogic.rhapsody.core.IRPPackage::findAllByName(java.lang.String name, java.lang.String metaClass)
         """
-        return IRPCollection(self.call_com(lambda: self._com.findAllByName(name)))
+        return cast(IRPModelElement, self.wrap(self.call_com(lambda: self._com.findAllByName(name, meta_class))))
 
     # --- Behavioral diagrams ---
-    def get_behavioral_diagrams(self) -> IRPCollection:
+    @property
+    def behavioral_diagrams(self) -> IRPCollection:
         """Returns all behavioral diagrams contained in this package.
 
         Returns:
@@ -1209,7 +1251,8 @@ class IRPPackage(IRPUnit):
         return IRPCollection(self.get_com_property(self._com, "behavioralDiagrams"))
 
     # --- Source artifacts ---
-    def get_source_artifacts(self) -> IRPCollection:
+    @property
+    def source_artifacts(self) -> IRPCollection:
         """Returns all source artifacts contained in this package.
 
         Returns:
@@ -1277,7 +1320,7 @@ class IRPPackage(IRPUnit):
         """
         self.call_com(lambda: self._com.populateRemoteRequirements())
 
-    def recalculate_events_base_id(self) -> None:
+    def re_calculate_events_base_id(self) -> None:
         """Recalculates the events base ID for this package.
 
         Reference:
@@ -1285,14 +1328,14 @@ class IRPPackage(IRPUnit):
         """
         self.call_com(lambda: self._com.reCalculateEventsBaseId())
 
-    def set_remote_requirements_populate_mode(self, mode: int) -> None:
-        """Sets the remote requirements populate mode for this package.
+    def set_remote_requirements_populate_mode(self, mode: str) -> None:
+        """Sets which remote requirements should be loaded when opening the model.
 
         Args:
-            mode: The populate mode to set.
+            mode: One of ``"All"``, ``"Linked"``, or ``"None"``.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPPackage::setRemoteRequirementsPopulateMode(int mode)
+            com.telelogic.rhapsody.core.IRPPackage::setRemoteRequirementsPopulateMode(java.lang.String populateMode)
         """
         self.call_com(lambda: self._com.setRemoteRequirementsPopulateMode(mode))
 
@@ -1311,7 +1354,7 @@ class IRPPackage(IRPUnit):
         raise NotImplementedError("updateContainedDiagramsOnServer is not exposed in the Rhapsody COM automation type library.")
 
     # --- SysML Methods (Task 4) ---
-    def add_implicit_object(self, name: str) -> RPInstance:
+    def add_implicit_object(self, name: str) -> IRPInstance:
         """Adds a new implicit object to the package.
 
         Args:
@@ -1323,27 +1366,37 @@ class IRPPackage(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addImplicitObject(java.lang.String name)
         """
-        from rhapsody_cli.models.elements.relations.model_instance import RPInstance
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_instance import IRPInstance
 
-        return cast(RPInstance, self.wrap(self.call_com(lambda: self._com.addImplicitObject(name))))
+        return cast(IRPInstance, self.wrap(self.call_com(lambda: self._com.addImplicitObject(name))))
 
-    def add_link_between_sysml_ports(self, port1: RPSysMLPort, port2: RPSysMLPort) -> RPLink:
-        """Adds a link between two SysML ports.
+    def add_link_between_sysml_ports(self, from_part: IRPInstance, to_part: IRPInstance, assoc: IRPRelation | None, from_port: IRPSysMLPort | None, to_port: IRPSysMLPort | None) -> IRPLink:
+        """Creates a link between two objects using SysML flow ports or an association.
 
         Args:
-            port1: The first SysML port.
-            port2: The second SysML port.
+            from_part: The source object.
+            to_part: The target object.
+            assoc: The association represented by the link, or ``None`` when ports are specified.
+            from_port: The source flow port, or ``None`` when an association is specified.
+            to_port: The target flow port, or ``None`` when an association is specified.
 
         Returns:
-            The wrapped ``IRPLink`` created.
+            The wrapped link created.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addLinkBetweenSYSMLPorts(
-                com.telelogic.rhapsody.core.IRPSysMLPort port1, com.telelogic.rhapsody.core.IRPSysMLPort port2)
+                com.telelogic.rhapsody.core.IRPInstance fromPart,
+                com.telelogic.rhapsody.core.IRPInstance toPart,
+                com.telelogic.rhapsody.core.IRPRelation assoc,
+                com.telelogic.rhapsody.core.IRPSysMLPort fromPort,
+                com.telelogic.rhapsody.core.IRPSysMLPort toPort)
         """
-        from rhapsody_cli.models.elements.graphics.model_graphics import RPLink
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPLink
 
-        return cast(RPLink, self.wrap(self.call_com(lambda: self._com.addLinkBetweenSYSMLPorts(port1._com, port2._com))))
+        assoc_com = assoc._com if assoc is not None else None
+        from_port_com = from_port._com if from_port is not None else None
+        to_port_com = to_port._com if to_port is not None else None
+        return cast(IRPLink, self.wrap(self.call_com(lambda: self._com.addLinkBetweenSYSMLPorts(from_part._com, to_part._com, assoc_com, from_port_com, to_port_com))))
 
     # --- Misc Methods (Task 5) ---
     def get_all_nested_elements(self) -> IRPCollection:
@@ -1357,7 +1410,8 @@ class IRPPackage(IRPUnit):
         """
         return IRPCollection(self.call_com(lambda: self._com.getAllNestedElements()))
 
-    def get_events_base_id(self) -> str:
+    @property
+    def events_base_id(self) -> str:
         """Returns the events base ID for this package.
 
         Returns:
@@ -1379,7 +1433,8 @@ class IRPPackage(IRPUnit):
         """
         return str(self.call_com(lambda: self._com.getNamespace()))
 
-    def get_saved_in_separate_directory(self) -> int:
+    @property
+    def saved_in_seperate_directory(self) -> int:
         """Returns whether the package is saved in a separate directory.
 
         Returns:
@@ -1390,18 +1445,8 @@ class IRPPackage(IRPUnit):
         """
         return int(self.get_com_property(self._com, "savedInSeperateDirectory"))
 
-    def get_user_defined_stereotypes(self) -> IRPCollection:
-        """Returns all user-defined stereotypes in this package.
-
-        Returns:
-            An ``IRPCollection`` of stereotype elements.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPPackage::getUserDefinedStereotypes()
-        """
-        return IRPCollection(self.get_com_property(self._com, "userDefinedStereotypes"))
-
-    def set_saved_in_separate_directory(self, value: int) -> None:
+    @saved_in_seperate_directory.setter
+    def saved_in_seperate_directory(self, value: int) -> None:
         """Sets whether the package is saved in a separate directory.
 
         Args:
@@ -1411,6 +1456,18 @@ class IRPPackage(IRPUnit):
             com.telelogic.rhapsody.core.IRPPackage::setSavedInSeperateDirectory(int value)
         """
         self.set_com_property(self._com, "savedInSeperateDirectory", value)
+
+    @property
+    def user_defined_stereotypes(self) -> IRPCollection:
+        """Returns all user-defined stereotypes in this package.
+
+        Returns:
+            An ``IRPCollection`` of stereotype elements.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPPackage::getUserDefinedStereotypes()
+        """
+        return IRPCollection(self.get_com_property(self._com, "userDefinedStereotypes"))
 
     def update_contained_matrices_on_server(self, enforce_update: int) -> int:
         """Update the contained matrices on the server.

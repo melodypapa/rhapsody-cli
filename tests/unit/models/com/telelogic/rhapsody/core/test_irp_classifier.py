@@ -2,14 +2,12 @@
 
 from typing import cast
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPFlow, IRPFlowItem, IRPRelation, IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute import IRPAttribute
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port import IRPPort
-from rhapsody_cli.models.elements.activity import RPFlow, RPFlowItem
-from rhapsody_cli.models.elements.relations import RPRelation
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
@@ -190,7 +188,7 @@ def test_classifier_delete_flow_items_delegates_to_com() -> None:
     item_fake = make_fake_element("FlowItem", properties={"name": "flowItem"})
     classifier = IRPClassifier(fake)
 
-    classifier.delete_flow_items(cast(RPFlowItem, IRPModelElement(item_fake)))
+    classifier.delete_flow_items(cast(IRPFlowItem, IRPModelElement(item_fake)))
 
     fake.deleteFlowItems.assert_called_once_with(item_fake)
 
@@ -200,7 +198,7 @@ def test_classifier_delete_flows_delegates_to_com() -> None:
     flow_fake = make_fake_element("Flow", properties={"name": "flow"})
     classifier = IRPClassifier(fake)
 
-    classifier.delete_flows(cast(RPFlow, IRPModelElement(flow_fake)))
+    classifier.delete_flows(cast(IRPFlow, IRPModelElement(flow_fake)))
 
     fake.deleteFlows.assert_called_once_with(flow_fake)
 
@@ -230,7 +228,7 @@ def test_classifier_delete_relation_delegates_to_com() -> None:
     rel_fake = make_fake_element("Relation", properties={"name": "assoc"})
     classifier = IRPClassifier(fake)
 
-    classifier.delete_relation(cast(RPRelation, IRPModelElement(rel_fake)))
+    classifier.delete_relation(cast(IRPRelation, IRPModelElement(rel_fake)))
 
     fake.deleteRelation.assert_called_once_with(rel_fake)
 

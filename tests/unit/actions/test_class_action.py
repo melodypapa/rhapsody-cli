@@ -582,7 +582,7 @@ class TestClassListAction:
         cls1.name = "TemperatureSensor"
         cls2 = MagicMock()
         cls2.name = "PressureSensor"
-        mock_package.get_classes.return_value = [cls1, cls2]
+        mock_package.classes = [cls1, cls2]
 
         with patch.object(action, "_resolve_and_validate_package", return_value=mock_package):
             args = MagicMock()
@@ -603,7 +603,7 @@ class TestClassListAction:
         action = ClassListAction()
         mock_package = MagicMock()
         mock_package.meta_class = "Package"
-        mock_package.get_classes.return_value = []
+        mock_package.classes = []
 
         with patch.object(action, "_resolve_and_validate_package", return_value=mock_package):
             args = MagicMock()
@@ -628,7 +628,7 @@ class TestClassListAction:
         cls1.name = "TemperatureSensor"
         cls2 = MagicMock()
         cls2.name = "PressureSensor"
-        mock_package.get_classes.return_value = [cls1, cls2]
+        mock_package.classes = [cls1, cls2]
 
         with patch.object(action, "_resolve_and_validate_package", return_value=mock_package):
             args = MagicMock()

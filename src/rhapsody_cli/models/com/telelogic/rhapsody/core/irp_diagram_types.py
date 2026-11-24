@@ -1,0 +1,304 @@
+"""Diagram Types model-element wrappers (auto-generated stubs)."""
+
+from typing import TYPE_CHECKING, cast
+
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagrams import IRPDiagram
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlowchart
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collaboration import IRPCollaboration
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphElement, IRPGraphNode
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statechart import IRPStatechart
+
+
+class IRPCollaborationDiagram(IRPDiagram):
+    """Wraps ``IRPCollaborationDiagram``: represents collaboration diagrams in a Rhapsody model."""
+
+    # IRPCollaborationDiagram method parity checklist:
+    # [ ] get_logical_collaboration      [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [inherited] irp_diagram methods (covered by rp_diagram checklist)
+    # [inherited] irp_model_element methods (covered by rp_model_element checklist)
+    # [inherited] irp_unit methods (covered by rp_unit checklist)
+    # No deprecated IRPCollaborationDiagram methods.
+
+    def get_logical_collaboration(self) -> "IRPCollaboration":
+        """Returns the collaboration object underlying the collaboration diagram.
+
+        Returns:
+            The IRPCollaboration object underlying the collaboration diagram.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPCollaborationDiagram::getLogicalCollaboration()
+        """
+        result = self.call_com(lambda: self._com.getLogicalCollaboration())
+        return cast("IRPCollaboration", self.wrap(result))
+
+
+class IRPComponentDiagram(IRPDiagram):
+    """Wraps ``IRPComponentDiagram``: represents component diagrams in Rhapsody models."""
+
+    # IRPComponentDiagram method parity checklist:
+    # [inherited] irp_diagram methods (covered by rp_diagram checklist)
+    # [inherited] irp_model_element methods (covered by rp_model_element checklist)
+    # [inherited] irp_unit methods (covered by rp_unit checklist)
+    # No deprecated IRPComponentDiagram methods.
+
+    pass
+
+
+class IRPDeploymentDiagram(IRPDiagram):
+    """Wraps ``IRPDeploymentDiagram``: represents deployment diagrams in Rhapsody models."""
+
+    # IRPDeploymentDiagram method parity checklist:
+    # [inherited] irp_diagram methods (covered by rp_diagram checklist)
+    # [inherited] irp_model_element methods (covered by rp_model_element checklist)
+    # [inherited] irp_unit methods (covered by rp_unit checklist)
+    # No deprecated IRPDeploymentDiagram methods.
+
+    pass
+
+
+class IRPObjectModelDiagram(IRPDiagram):
+    """Wraps ``IRPObjectModelDiagram``: represents object model diagrams in Rhapsody models."""
+
+    # IRPObjectModelDiagram method parity checklist:
+    # [inherited] irp_diagram methods (covered by rp_diagram checklist)
+    # [inherited] irp_model_element methods (covered by rp_model_element checklist)
+    # [inherited] irp_unit methods (covered by rp_unit checklist)
+    # No deprecated IRPObjectModelDiagram methods.
+
+    pass
+
+
+class IRPPanelDiagram(IRPDiagram):
+    """Wraps ``IRPPanelDiagram``: represents panel diagrams in Rhapsody models."""
+
+    # IRPPanelDiagram method parity checklist:
+    # [inherited] irp_diagram methods (covered by rp_diagram checklist)
+    # [inherited] irp_model_element methods (covered by rp_model_element checklist)
+    # [inherited] irp_unit methods (covered by rp_unit checklist)
+    # No deprecated IRPPanelDiagram methods.
+
+    pass
+
+
+class IRPSequenceDiagram(IRPDiagram):
+    """Wraps ``IRPSequenceDiagram``: represents sequence diagrams in a Rhapsody model."""
+
+    # IRPSequenceDiagram method parity checklist:
+    # [ ] get_logical_collaboration      [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] get_related_use_cases           [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [inherited] irp_diagram methods (covered by rp_diagram checklist)
+    # [inherited] irp_model_element methods (covered by rp_model_element checklist)
+    # [inherited] irp_unit methods (covered by rp_unit checklist)
+    # No deprecated IRPSequenceDiagram methods.
+
+    def get_logical_collaboration(self) -> "IRPCollaboration":
+        """Returns the collaboration object underlying the sequence diagram.
+
+        Returns:
+            The IRPCollaboration object underlying the sequence diagram.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPSequenceDiagram::getLogicalCollaboration()
+        """
+        result = self.call_com(lambda: self._com.getLogicalCollaboration())
+        return cast("IRPCollaboration", self.wrap(result))
+
+    def get_related_use_cases(self) -> "IRPCollection":
+        """Returns use cases related to this sequence diagram.
+
+        For internal use only.
+
+        Returns:
+            A collection of use cases related to the sequence diagram.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPSequenceDiagram::getRelatedUseCases()
+        """
+        return IRPCollection(self.call_com(lambda: self._com.getRelatedUseCases()))
+
+
+class IRPStatechartDiagram(IRPDiagram):
+    """Wraps ``IRPStatechartDiagram``: represents statecharts in a Rhapsody model."""
+
+    # IRPStatechartDiagram method parity checklist:
+    # [ ] add_and_line                   [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] create_graphics               [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] get_statechart                [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [inherited] irp_diagram methods (covered by rp_diagram checklist)
+    # [inherited] irp_model_element methods (covered by rp_model_element checklist)
+    # [inherited] irp_unit methods (covered by rp_unit checklist)
+    # No deprecated IRPStatechartDiagram methods.
+
+    def add_and_line(self, source_state: "IRPGraphNode", x_start_position: int, y_start_position: int, x_end_position: int, y_end_position: int) -> "IRPCollection":
+        """Adds an And Line to the specified state.
+
+        Args:
+            source_state: The graphical element representing the state to which
+                the And Line should be added.
+            x_start_position: The x position at which the And Line should begin.
+            y_start_position: The y position at which the And Line should begin.
+            x_end_position: The x position at which the And Line should end.
+            y_end_position: The y position at which the And Line should end.
+
+        Returns:
+            A collection of the new orthogonal states created.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPStatechartDiagram::addAndLine(
+                com.telelogic.rhapsody.core.IRPGraphNode sourceState,
+                int xStartPosition, int yStartPosition,
+                int xEndPosition, int yEndPosition)
+        """
+        return IRPCollection(self.call_com(lambda: self._com.addAndLine(source_state._com, x_start_position, y_start_position, y_end_position, y_end_position)))
+
+    def create_graphics(self) -> None:
+        """Creates the graphical representation of the elements in the statechart.
+
+        When you create a statechart with the API, the graphical representation
+        is not created by default. This means that the first time you open the
+        statechart in Rhapsody, you will be asked if the graphics should be
+        created. You can create the graphical representation directly by calling
+        createGraphics().
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPStatechartDiagram::createGraphics()
+        """
+        self.call_com(lambda: self._com.createGraphics())
+
+    def get_statechart(self) -> "IRPStatechart":
+        """Returns the statechart object underlying the statechart diagram.
+
+        Returns:
+            The IRPStatechart object underlying the statechart.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPStatechartDiagram::getStatechart()
+        """
+        result = self.call_com(lambda: self._com.getStatechart())
+        return cast("IRPStatechart", self.wrap(result))
+
+
+class IRPStructureDiagram(IRPDiagram):
+    """Wraps ``IRPStructureDiagram``: represents structure diagrams in a Rhapsody model."""
+
+    # IRPStructureDiagram method parity checklist:
+    # [inherited] irp_diagram methods (covered by rp_diagram checklist)
+    # [inherited] irp_model_element methods (covered by rp_model_element checklist)
+    # [inherited] irp_unit methods (covered by rp_unit checklist)
+    # No deprecated IRPStructureDiagram methods.
+
+    pass
+
+
+class IRPUseCaseDiagram(IRPDiagram):
+    """Wraps ``IRPUseCaseDiagram``: represents use case diagrams in a Rhapsody model."""
+
+    # IRPUseCaseDiagram method parity checklist:
+    # [inherited] irp_diagram methods (covered by rp_diagram checklist)
+    # [inherited] irp_model_element methods (covered by rp_model_element checklist)
+    # [inherited] irp_unit methods (covered by rp_unit checklist)
+    # No deprecated IRPUseCaseDiagram methods.
+
+    pass
+
+
+class IRPTimingDiagram(IRPSequenceDiagram):
+    """Wraps ``IRPTimingDiagram``."""
+
+    # IRPTimingDiagram method parity checklist:
+    # [ ] get_is_elaborated              [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] set_is_elaborated              [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [inherited] irp_diagram methods (covered by rp_diagram checklist)
+    # [inherited] irp_model_element methods (covered by rp_model_element checklist)
+    # [inherited] irp_sequence_diagram methods (covered by rp_sequence_diagram checklist)
+    # [inherited] irp_unit methods (covered by rp_unit checklist)
+    # No deprecated IRPTimingDiagram methods.
+
+    def get_is_elaborated(self) -> int:
+        """Checks whether the timing diagram is an elaborated timing diagram.
+
+        Returns:
+            Indication of whether the diagram is an elaborated timing diagram.
+            1 means that the diagram is an elaborated timing diagram, 0 means
+            that the diagram is a compact timing diagram.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPTimingDiagram::getIsElaborated()
+        """
+        return int(self.call_com(lambda: self._com.getIsElaborated()))
+
+    def set_is_elaborated(self, is_elaborated: int) -> None:
+        """Specifies whether the diagram should be an elaborated or compact timing diagram.
+
+        Args:
+            is_elaborated: Use 1 to indicate that the diagram should be an
+                elaborated timing diagram, 0 to indicate that the diagram should
+                be a compact timing diagram. Note that the type of the timing
+                diagram should not be changed after you have already added
+                elements to the diagram.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPTimingDiagram::setIsElaborated(int isElaborated)
+        """
+        self.call_com(lambda: self._com.setIsElaborated(is_elaborated))
+
+
+class IRPActivityDiagram(IRPStatechartDiagram):
+    """Wraps ``IRPActivityDiagram``: represents activity diagrams in Rhapsody models."""
+
+    # IRPActivityDiagram method parity checklist:
+    # [ ] decompose_swimlane            [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] get_flowchart                 [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [inherited] irp_diagram methods (covered by rp_diagram checklist)
+    # [inherited] irp_model_element methods (covered by rp_model_element checklist)
+    # [inherited] irp_statechart_diagram methods (covered by rp_statechart_diagram checklist)
+    # [inherited] irp_unit methods (covered by rp_unit checklist)
+    # No deprecated IRPActivityDiagram methods.
+
+    def decompose_swimlane(self, graph_swimlane: "IRPGraphElement") -> "IRPCollection":
+        """Decomposes the specified swimlane into two swimlanes.
+
+        Args:
+            graph_swimlane: The graphic element representing the swimlane to
+                decompose.
+
+        Returns:
+            The graphic elements representing the two new swimlanes.
+
+        Raises:
+            RhapsodyRuntimeException: If the decomposition fails.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPActivityDiagram::decomposeSwimlane(com.telelogic.rhapsody.core.IRPGraphElement graphSwimlane)
+        """
+        return IRPCollection(self.call_com(lambda: self._com.decomposeSwimlane(graph_swimlane._com)))
+
+    def get_flowchart(self) -> "IRPFlowchart":
+        """Returns the flowchart object underlying the activity diagram.
+
+        Returns:
+            The IRPFlowchart object underlying the activity diagram.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPActivityDiagram::getFlowchart()
+        """
+        result = self.call_com(lambda: self._com.getFlowchart())
+        return cast("IRPFlowchart", self.wrap(result))
+
+
+# Registration — ActivityDiagram intentionally not re-registered here
+# (existing "ActivityDiagram" -> IRPDiagram mapping preserved in model_diagrams.py)
+IRPModelElement.register_wrapper("CollaborationDiagram", IRPCollaborationDiagram)
+IRPModelElement.register_wrapper("ComponentDiagram", IRPComponentDiagram)
+IRPModelElement.register_wrapper("DeploymentDiagram", IRPDeploymentDiagram)
+IRPModelElement.register_wrapper("ObjectModelDiagram", IRPObjectModelDiagram)
+IRPModelElement.register_wrapper("PanelDiagram", IRPPanelDiagram)
+IRPModelElement.register_wrapper("SequenceDiagram", IRPSequenceDiagram)
+IRPModelElement.register_wrapper("StatechartDiagram", IRPStatechartDiagram)
+IRPModelElement.register_wrapper("StructureDiagram", IRPStructureDiagram)
+IRPModelElement.register_wrapper("UseCaseDiagram", IRPUseCaseDiagram)
+IRPModelElement.register_wrapper("TimingDiagram", IRPTimingDiagram)

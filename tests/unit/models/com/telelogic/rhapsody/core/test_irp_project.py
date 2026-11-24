@@ -755,10 +755,13 @@ def test_generated_find_node() -> None:
     assert result is not None
 
 
-def test_generated_delete_node() -> None:
+def test_project_delete_node_passes_name_to_com() -> None:
     fake = make_fake_element("Project")
     fake.deleteNode.return_value = None
-    IRPProject(fake).delete_node(make_fake_element("Class", properties={"name": "x"}))
+
+    IRPProject(fake).delete_node("Node1")
+
+    fake.deleteNode.assert_called_once_with("Node1")
 
 
 def test_generated_active_configuration() -> None:

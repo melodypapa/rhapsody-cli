@@ -1,9 +1,13 @@
 """Integration tests for IRPUseCase with live Rhapsody COM API.
 
-Scope: only methods that IRPUseCase owns (IRPUseCase::addExtensionPoint,
-getExtensionPoints, findExtensionPoint, deleteExtensionPoint, getEntryPoints,
-getIsBehaviorOverriden, setIsBehaviorOverriden). ``add_use_case`` is an
-IRPPackage method used only to build the fixture.
+Scope: only methods that IRPUseCase owns (addExtensionPoint, getExtensionPoints,
+deleteExtensionPoint, getEntryPoints, getIsBehaviorOverriden, setIsBehaviorOverriden).
+``add_use_case`` is an IRPPackage method used only to build the fixture.
+
+``findEntryPoint``/``findExtensionPoint`` are excluded: JavaDoc and the pywin32
+authority both show they take an ``IRPGeneralization`` and return a ``String``,
+while the wrapper takes a name and wraps the result, so no live positive test can
+be written without fixing the wrapper.
 """
 
 import uuid
@@ -44,33 +48,9 @@ class TestRPUseCaseIntegration:
         finally:
             uc.delete_from_project()
 
-    def test_find_extension_point(self, test_project: IRPProject) -> None:
-        pkg_name = self._unique("UcPkg")
-        uc_name = self._unique("MyUseCase")
-        ep_name = self._unique("MyExtensionPoint")
-        pkg = self._create_package(test_project, pkg_name)
-        uc = pkg.add_use_case(uc_name)
-        try:
-            uc.add_extension_point(ep_name)
-            with pytest.raises(TypeError):
-                uc.find_extension_point(ep_name)
-        finally:
-            uc.delete_from_project()
-
-    def test_entry_points_empty(self, test_project: IRPProject) -> None:
-        pkg_name = self._unique("UcPkg")
-        uc_name = self._unique("MyUseCase")
-        pkg = self._create_package(test_project, pkg_name)
-        uc = pkg.add_use_case(uc_name)
-        try:
-            entry_points = list(uc.entry_points)
-            assert isinstance(entry_points, list)
-        finally:
-            uc.delete_from_project()
-
     def test_set_is_behavior_overriden_raises_not_implemented(self, test_project: IRPProject) -> None:
         # setIsBehaviorOverriden is not exposed in the COM automation type library for UseCase
-        # (getIsBehaviorOverriden is; the sibling RPActor/IRPClass setters are exposed), so the
+        # (getIsBehaviorOverriden is; the sibling IRPActor/IRPClass setters are exposed), so the
         # wrapper raises NotImplementedError.
         pkg_name = self._unique("UcPkg")
         uc_name = self._unique("MyUseCase")
@@ -103,16 +83,10 @@ class TestIRPUseCaseGenerated:
     def test_extension_points(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("UsePkg"))
         use_case = pkg.add_use_case(self._unique("UC"))
+        extension_point_name = self._unique("ExtensionPoint")
         try:
-            assert use_case.extension_points is not None
-        finally:
-            pkg.delete_from_project()
-
-    def test_entry_points(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("UsePkg"))
-        use_case = pkg.add_use_case(self._unique("UC"))
-        try:
-            assert use_case.entry_points is not None
+            use_case.add_extension_point(extension_point_name)
+            assert extension_point_name in [str(point) for point in use_case.extension_points]
         finally:
             pkg.delete_from_project()
 
@@ -120,7 +94,9 @@ class TestIRPUseCaseGenerated:
         pkg = test_project.add_package(self._unique("UsePkg"))
         use_case = pkg.add_use_case(self._unique("UC"))
         try:
-            assert use_case.describing_diagrams is not None
+            diagram = pkg.add_use_case_diagram(self._unique("UseCaseDiagram"))
+            use_case.add_describing_diagram(diagram)
+            assert diagram in list(use_case.describing_diagrams)
         finally:
             pkg.delete_from_project()
 
@@ -170,37 +146,11 @@ class TestIRPUseCaseGenerated:
         finally:
             pkg.delete_from_project()
 
-    def test_find_entry_point(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("UsePkg"))
-        use_case = pkg.add_use_case(self._unique("UC"))
-        try:
-            with pytest.raises(TypeError):
-                use_case.find_entry_point("x")
-        finally:
-            pkg.delete_from_project()
-
-    def test_find_extension_point(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("UsePkg"))
-        use_case = pkg.add_use_case(self._unique("UC"))
-        try:
-            with pytest.raises(TypeError):
-                use_case.find_extension_point("x")
-        finally:
-            pkg.delete_from_project()
-
     def test_get_describing_diagram(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("UsePkg"))
         use_case = pkg.add_use_case(self._unique("UC"))
         try:
             assert use_case.get_describing_diagram("x") is None
-        finally:
-            pkg.delete_from_project()
-
-    def test_is_behavior_overriden(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("UsePkg"))
-        use_case = pkg.add_use_case(self._unique("UC"))
-        try:
-            assert use_case.is_behavior_overriden is not None
         finally:
             pkg.delete_from_project()
 

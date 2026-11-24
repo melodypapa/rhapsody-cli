@@ -1,0 +1,104 @@
+"""Tests for rhapsody_cli.models.com.telelogic.rhapsody.core.IRPAnnotation."""
+
+from typing import cast
+
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_requirements import IRPAnnotation
+from tests.unit.models.fakes import make_fake_collection, make_fake_element
+
+
+def test_annotation_is_a_unit() -> None:
+    fake = make_fake_element("Annotation", properties={"name": "Note1"})
+    annotation = IRPAnnotation(fake)
+
+    assert isinstance(annotation, IRPUnit)
+    assert annotation.name == "Note1"
+
+
+def test_annotation_add_anchor_delegates_to_com() -> None:
+    fake = make_fake_element("Annotation")
+    target = make_fake_element("Class", properties={"name": "Widget"})
+    annotation = IRPAnnotation(fake)
+
+    annotation.add_anchor(cast(IRPModelElement, IRPModelElement.wrap(target)))
+
+    fake.addAnchor.assert_called_once_with(target)
+
+
+def test_annotation_get_anchored_by_me_returns_collection() -> None:
+    inner = make_fake_element("Class", properties={"name": "Widget"})
+    fake = make_fake_element("Annotation")
+    fake.getAnchoredByMe.return_value = make_fake_collection([inner])
+    annotation = IRPAnnotation(fake)
+
+    result = annotation.get_anchored_by_me()
+
+    assert isinstance(result, IRPCollection)
+    assert len(result) == 1
+
+
+def test_annotation_get_body_delegates_to_com() -> None:
+    fake = make_fake_element("Annotation", getBody="Some note text")
+    annotation = IRPAnnotation(fake)
+
+    assert annotation.get_body() == "Some note text"
+
+
+def test_annotation_get_specification_delegates_to_com() -> None:
+    fake = make_fake_element("Annotation", getSpecification="Some spec text")
+    annotation = IRPAnnotation(fake)
+
+    assert annotation.get_specification() == "Some spec text"
+
+
+def test_annotation_get_specification_rtf_delegates_to_com() -> None:
+    fake = make_fake_element("Annotation", getSpecificationRTF="{\\rtf1}")
+    annotation = IRPAnnotation(fake)
+
+    assert annotation.get_specification_rtf() == "{\\rtf1}"
+
+
+def test_annotation_is_specification_rtf_delegates_to_com() -> None:
+    fake = make_fake_element("Annotation", isSpecificationRTF=1)
+    annotation = IRPAnnotation(fake)
+
+    assert annotation.is_specification_rtf() is True
+
+
+def test_annotation_remove_anchor_delegates_to_com() -> None:
+    fake = make_fake_element("Annotation")
+    target = make_fake_element("Class", properties={"name": "Widget"})
+    annotation = IRPAnnotation(fake)
+
+    annotation.remove_anchor(cast(IRPModelElement, IRPModelElement.wrap(target)))
+
+    fake.removeAnchor.assert_called_once_with(target)
+
+
+def test_annotation_set_body_delegates_to_com() -> None:
+    fake = make_fake_element("Annotation")
+    annotation = IRPAnnotation(fake)
+
+    annotation.set_body("New note text")
+
+    fake.setBody.assert_called_once_with("New note text")
+
+
+def test_annotation_set_specification_delegates_to_com() -> None:
+    fake = make_fake_element("Annotation")
+    annotation = IRPAnnotation(fake)
+
+    annotation.set_specification("New spec text")
+
+    fake.setSpecification.assert_called_once_with("New spec text")
+
+
+def test_annotation_set_specification_rtf_delegates_to_com() -> None:
+    fake = make_fake_element("Annotation")
+    annotation = IRPAnnotation(fake)
+
+    annotation.set_specification_rtf("{\\rtf1 new}")
+
+    fake.setSpecificationRTF.assert_called_once_with("{\\rtf1 new}")

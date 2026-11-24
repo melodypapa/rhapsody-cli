@@ -647,3 +647,184 @@ class IRPType:
 """
 
     assert tools.verify_wrapper_bindings(tmp_path, "IRPType", wrapper) == []
+
+
+def _write_test_file(tmp_path: Path, body: str) -> Path:
+    test_file = tmp_path / "test_model_thing.py"
+    test_file.write_text(body, encoding="utf-8")
+    return test_file
+
+
+def test_skip_marker_check_flags_pytest_mark_skip_in_unit_test(tmp_path: Path) -> None:
+    """Section 4: unit tests must all run, so any skip marker is rejected."""
+    tools = _load_sync_tools()
+    test_file = _write_test_file(
+        tmp_path,
+        "import pytest\n\n\n" '@pytest.mark.skip(reason="live precondition unavailable")\n' "def test_thing() -> None:\n" "    assert True\n",
+    )
+
+    issues = tools.verify_no_skip_or_xfail(test_file)
+
+    assert len(issues) == 1
+    assert "pytest.mark.skip" in issues[0]
+
+
+def test_skip_marker_check_allows_reasoned_skip_for_integration(tmp_path: Path) -> None:
+    """Section 4: an approved integration skip needs a non-empty reason."""
+    tools = _load_sync_tools()
+    test_file = _write_test_file(
+        tmp_path,
+        "import pytest\n\n\n" '@pytest.mark.skip(reason="live precondition unavailable")\n' "def test_thing() -> None:\n" "    assert True\n",
+    )
+
+    assert tools.verify_no_skip_or_xfail(test_file, allow_reasoned_skip=True) == []
+
+
+def test_skip_marker_check_flags_reasoned_skip_without_reason(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    test_file = _write_test_file(
+        tmp_path,
+        "import pytest\n\n\n" "@pytest.mark.skip\n" "def test_thing() -> None:\n" "    assert True\n",
+    )
+
+    issues = tools.verify_no_skip_or_xfail(test_file, allow_reasoned_skip=True)
+
+    assert len(issues) == 1
+    assert "pytest.mark.skip" in issues[0]
+
+
+def test_skip_marker_check_flags_pytest_mark_xfail(tmp_path: Path) -> None:
+    """Section 4/5: xfail is never permitted for a model-class test."""
+    tools = _load_sync_tools()
+    test_file = _write_test_file(
+        tmp_path,
+        "import pytest\n\n\n" "@pytest.mark.xfail\n" "def test_thing() -> None:\n" "    assert True\n",
+    )
+
+    issues = tools.verify_no_skip_or_xfail(test_file)
+
+    assert len(issues) == 1
+    assert "pytest.mark.xfail" in issues[0]
+
+
+def test_skip_marker_check_flags_pytest_skip_call(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    test_file = _write_test_file(tmp_path, "import pytest\n\n\ndef test_thing() -> None:\n    pytest.skip('later')\n")
+
+    issues = tools.verify_no_skip_or_xfail(test_file)
+
+    assert len(issues) == 1
+    assert "pytest.skip" in issues[0]
+
+
+def test_empty_finally_check_flags_pass_only_cleanup_shell(tmp_path: Path) -> None:
+    """Section 5: a `finally: pass` shell is not real cleanup."""
+    tools = _load_sync_tools()
+    test_file = _write_test_file(
+        tmp_path,
+        "def test_thing() -> None:\n    try:\n        assert True\n    finally:\n        pass\n",
+    )
+
+    issues = tools.verify_no_empty_finally(test_file)
+
+    assert len(issues) == 1
+    assert "finally" in issues[0]
+
+
+def test_empty_finally_check_accepts_real_cleanup(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    test_file = _write_test_file(
+        tmp_path,
+        "def test_thing(element) -> None:\n    try:\n        assert element is not None\n    finally:\n        element.delete_from_project()\n",
+    )
+
+    assert tools.verify_no_empty_finally(test_file) == []
+
+
+def test_skip_and_empty_finally_checks_accept_normal_test_file(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    test_file = _write_test_file(
+        tmp_path,
+        "import pytest\n\n\n" "def test_thing() -> None:\n" "    with pytest.raises(NotImplementedError):\n" "        raise NotImplementedError\n",
+    )
+
+    assert tools.verify_no_skip_or_xfail(test_file) == []
+    assert tools.verify_no_empty_finally(test_file) == []
+
+
+def test_verifier_flags_skip_marker_and_empty_finally_in_mirrored_integration_test(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = _write_fixture_project(tmp_path / "repo", _VALID_RST_API_REFERENCE)
+    report = _write_report(root)
+    integration_test = root / "tests" / "integration" / "models" / Path(*_REPORT_PACKAGE_PARTS) / "test_model_thing.py"
+    integration_test.write_text(
+        "import pytest\n\nRPThing\n\n\n" "@pytest.mark.xfail\n" "def test_thing() -> None:\n" "    try:\n" "        assert True\n" "    finally:\n" "        pass\n",
+        encoding="utf-8",
+    )
+
+    issues = tools.verify_sync_artifacts(root, "IRPThing", report)
+
+    assert any("pytest.mark.xfail" in issue for issue in issues)
+    assert any("finally" in issue for issue in issues)
+
+
+def test_verifier_applies_skip_checks_to_unit_test_files(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = _write_fixture_project(tmp_path / "repo", _VALID_RST_API_REFERENCE)
+    report = _write_report(root)
+    unit_test = root / "tests" / "unit" / "models" / Path(*_REPORT_PACKAGE_PARTS) / "test_model_thing.py"
+    unit_test.write_text(
+        "import pytest\n\nRPThing\n\n\n" "@pytest.mark.skip\n" "def test_thing() -> None:\n" "    try:\n" "        assert True\n" "    finally:\n" "        pass\n",
+        encoding="utf-8",
+    )
+
+    issues = tools.verify_sync_artifacts(root, "IRPThing", report)
+
+    assert any("pytest.mark.skip" in issue for issue in issues)
+    assert not any("finally" in issue for issue in issues)
+
+
+def test_getter_assertion_check_flags_non_none_only(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    test_file = _write_test_file(
+        tmp_path,
+        "def test_packages(project) -> None:\n    assert project.packages is not None\n",
+    )
+
+    issues = tools.verify_getter_assertions(test_file, {"packages"})
+
+    assert len(issues) == 1
+    assert "test_packages" in issues[0]
+
+
+def test_getter_assertion_check_flags_count_only(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    test_file = _write_test_file(
+        tmp_path,
+        "def test_components(project) -> None:\n    assert len(project.components) > 0\n",
+    )
+
+    issues = tools.verify_getter_assertions(test_file, {"components"})
+
+    assert len(issues) == 1
+    assert "test_components" in issues[0]
+
+
+def test_getter_assertion_check_accepts_membership_assertion(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    test_file = _write_test_file(
+        tmp_path,
+        "def test_packages(project) -> None:\n    created = project.add_package('p')\n    assert created in list(project.packages)\n",
+    )
+
+    assert tools.verify_getter_assertions(test_file, {"packages"}) == []
+
+
+def test_getter_assertion_check_ignores_non_getter_tests(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    test_file = _write_test_file(
+        tmp_path,
+        "def test_add_package(project) -> None:\n    assert project.add_package('p') is not None\n",
+    )
+
+    assert tools.verify_getter_assertions(test_file, {"packages"}) == []

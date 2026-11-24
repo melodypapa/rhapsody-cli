@@ -13,8 +13,8 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCo
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.elements.diagrams import RPDiagram
-    from rhapsody_cli.models.elements.interactions.model_interactions import RPEvent, RPEventReception
+    from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPDiagram
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interactions import IRPEvent, IRPEventReception
 
 
 class IRPUseCase(IRPClassifier):
@@ -98,7 +98,7 @@ class IRPUseCase(IRPClassifier):
         """
         return IRPCollection(self.get_com_property(self._com, "describingDiagrams"))
 
-    def add_describing_diagram(self, diagram: RPDiagram) -> None:
+    def add_describing_diagram(self, diagram: IRPDiagram) -> None:
         """Adds a diagram to describe this use case.
 
         Args:
@@ -109,7 +109,7 @@ class IRPUseCase(IRPClassifier):
         """
         self.call_com(lambda: self._com.addDescribingDiagram(diagram._com))
 
-    def add_event_reception_with_event(self, name: str, event: RPEvent) -> RPEventReception:
+    def add_event_reception_with_event(self, name: str, event: IRPEvent) -> IRPEventReception:
         """Add an event reception with the specified event.
 
         Args:
@@ -124,7 +124,7 @@ class IRPUseCase(IRPClassifier):
         """
         raise NotImplementedError("addEventReceptionWithEvent is not exposed in the Rhapsody COM automation type library.")
 
-    def delete_describing_diagram(self, diagram: RPDiagram) -> None:
+    def delete_describing_diagram(self, diagram: IRPDiagram) -> None:
         """Deletes a describing diagram from the use case.
 
         Args:
@@ -185,7 +185,7 @@ class IRPUseCase(IRPClassifier):
         """
         return self.wrap(self.call_com(lambda: self._com.findExtensionPoint(name)))
 
-    def get_describing_diagram(self, name: str) -> RPDiagram:
+    def get_describing_diagram(self, name: str) -> IRPDiagram:
         """Returns a specific describing diagram by name.
 
         Args:
@@ -197,9 +197,9 @@ class IRPUseCase(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPUseCase::getDescribingDiagram(java.lang.String name)
         """
-        from rhapsody_cli.models.elements.diagrams.model_diagrams import RPDiagram
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagrams import IRPDiagram
 
-        return cast(RPDiagram, self.wrap(self.call_com(lambda: self._com.getDescribingDiagram(name))))
+        return cast(IRPDiagram, self.wrap(self.call_com(lambda: self._com.getDescribingDiagram(name))))
 
     @property
     def is_behavior_overriden(self) -> int:
@@ -224,7 +224,7 @@ class IRPUseCase(IRPClassifier):
                 ``setIsBehaviorOverriden`` method is not exposed in the COM
                 automation type library for use cases (the getter
                 ``getIsBehaviorOverriden`` is exposed and works; the sibling
-                ``RPActor``/``IRPClass`` versions of this setter *are* exposed).
+                ``IRPActor``/``IRPClass`` versions of this setter *are* exposed).
                 Marked unimplemented rather than failing with a raw COM
                 ``AttributeError`` at runtime.
 

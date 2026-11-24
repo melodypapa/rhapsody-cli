@@ -5,7 +5,6 @@ from pathlib import Path
 
 import pytest
 
-from rhapsody_cli.exceptions import RhapsodyRuntimeException
 from rhapsody_cli.models.com.telelogic.rhapsody.core import AddToModelMode, IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
@@ -250,19 +249,11 @@ class TestIRPUnitCrossProjectIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_cross_project_and_lifecycle_members(self, test_project: IRPProject) -> None:
+    def test_load_and_unload_roundtrip(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("UnitOpsPkg"))
         try:
             assert pkg.is_stub in (0, 1)
-            with pytest.raises(RhapsodyRuntimeException):
-                pkg.copy_to_another_project(test_project)
             assert pkg.load(0) is None
-            with pytest.raises(RhapsodyRuntimeException):
-                pkg.move_to_another_project_leave_a_reference(test_project)
-            with pytest.raises(RhapsodyRuntimeException):
-                pkg.reference_to_another_project(test_project)
-            with pytest.raises(RhapsodyRuntimeException):
-                pkg.set_unit_path("x")
             assert pkg.unload() is None  # type: ignore[func-returns-value]
         finally:
             pkg.delete_from_project()

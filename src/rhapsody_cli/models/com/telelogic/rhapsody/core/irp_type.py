@@ -13,7 +13,7 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCo
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.elements.common.model_misc import RPEnumerationLiteral
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_misc import IRPEnumerationLiteral
 
 
 class IRPType(IRPClassifier):
@@ -53,7 +53,7 @@ class IRPType(IRPClassifier):
     # [inherited] irp_unit methods (covered by rp_unit checklist)
     # No deprecated IRPType methods.
 
-    def add_enumeration_literal(self, name: str) -> RPEnumerationLiteral:
+    def add_enumeration_literal(self, name: str) -> IRPEnumerationLiteral:
         """Adds an enumeration literal with the specified name to this type.
 
         Args:
@@ -68,11 +68,11 @@ class IRPType(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPType::addEnumerationLiteral(java.lang.String name)
         """
-        from rhapsody_cli.models.elements.common.model_misc import RPEnumerationLiteral
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_misc import IRPEnumerationLiteral
 
-        return cast(RPEnumerationLiteral, self.wrap(self.call_com(lambda: self._com.addEnumerationLiteral(name))))
+        return cast(IRPEnumerationLiteral, self.wrap(self.call_com(lambda: self._com.addEnumerationLiteral(name))))
 
-    def delete_enumeration_literal(self, literal: RPEnumerationLiteral) -> None:
+    def delete_enumeration_literal(self, literal: IRPEnumerationLiteral) -> None:
         """Deletes the specified enumeration literal from this type.
 
         Args:

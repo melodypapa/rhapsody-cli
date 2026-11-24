@@ -1,0 +1,83 @@
+"""Tests for rhapsody_cli.elements.diagram.IRPDiagram."""
+
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagrams import IRPDiagram
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from tests.unit.models.fakes import make_fake_collection, make_fake_element
+
+
+def test_diagram_is_a_unit() -> None:
+    fake = make_fake_element("ActivityDiagram", properties={"name": "MainFlow"})
+    diagram = IRPDiagram(fake)
+
+    assert isinstance(diagram, IRPUnit)
+    assert diagram.name == "MainFlow"
+
+
+def test_diagram_close_diagram_delegates_to_com() -> None:
+    fake = make_fake_element("ActivityDiagram")
+    diagram = IRPDiagram(fake)
+
+    diagram.close_diagram()
+
+    fake.closeDiagram.assert_called_once_with()
+
+
+def test_diagram_add_text_box_delegates_to_com_and_wraps_result() -> None:
+    fake = make_fake_element("ActivityDiagram")
+    text_box = make_fake_element("GraphElement", properties={"name": "Note1"})
+    fake.addTextBox.return_value = text_box
+    diagram = IRPDiagram(fake)
+
+    result = diagram.add_text_box("hello", 0, 0, 50, 20)
+
+    fake.addTextBox.assert_called_once_with("hello", 0, 0, 50, 20)
+    assert result.name == "Note1"
+
+
+def test_diagram_get_custom_views_returns_collection() -> None:
+    fake = make_fake_element("ActivityDiagram")
+    view = make_fake_element("Package", properties={"name": "CustomView1"})
+    fake.getCustomViews.return_value = make_fake_collection([view])
+    diagram = IRPDiagram(fake)
+
+    views = diagram.get_custom_views()
+
+    assert len(views) == 1
+    assert views[0].name == "CustomView1"
+
+
+def test_diagram_get_corresponding_graphic_elements_returns_collection() -> None:
+    fake = make_fake_element("ActivityDiagram")
+    graphic = make_fake_element("GraphElement", properties={"name": "Shape1"})
+    fake.getCorrespondingGraphicElements.return_value = make_fake_collection([graphic])
+    diagram = IRPDiagram(fake)
+    model_element = make_fake_element("Class", properties={"name": "Widget"})
+
+    elements = diagram.get_corresponding_graphic_elements(IRPModelElement(model_element))
+
+    fake.getCorrespondingGraphicElements.assert_called_once_with(model_element)
+    assert len(elements) == 1
+    assert elements[0].name == "Shape1"
+
+
+def test_diagram_is_registered_for_meta_class_activity_diagram() -> None:
+    fake = make_fake_element("ActivityDiagram", properties={"name": "MainFlow"})
+
+    wrapped = IRPModelElement.wrap(fake)
+
+    assert isinstance(wrapped, IRPDiagram)
+
+
+def test_diagram_get_pictures_with_image_map_delegates_to_com_with_two_args() -> None:
+    fake = make_fake_element("ObjectModelDiagram")
+    file_names = make_fake_collection([])
+    fake.getPicturesWithImageMap.return_value = file_names
+    diagram = IRPDiagram(fake)
+    diagram_map = IRPCollection(make_fake_collection([]))
+
+    result = diagram.get_pictures_with_image_map("output.emf", diagram_map)
+
+    fake.getPicturesWithImageMap.assert_called_once_with("output.emf", diagram_map._com)
+    assert isinstance(result, IRPCollection)

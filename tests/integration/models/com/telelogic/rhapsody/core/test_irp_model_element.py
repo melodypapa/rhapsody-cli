@@ -10,15 +10,14 @@ from unittest.mock import patch
 import pytest
 
 from rhapsody_cli import RhapsodyApplication
-from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPAssociationClass, IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPAssociationClass, IRPTag, IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_stereotype import IRPStereotype
 from rhapsody_cli.models.core import ComHelper
-from rhapsody_cli.models.elements.classifiers.model_stereotype import RPStereotype
-from rhapsody_cli.models.elements.relations.model_relation import RPRelation
-from rhapsody_cli.models.elements.variables import RPTag
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -423,7 +422,7 @@ class TestRPModelElementDependenciesIntegration:
             # The automation wrapper reports the concrete metaclass as
             # AssociationEnd, so wrap the dispatch explicitly to access the
             # documented IRPRelation inverse operation.
-            end2 = RPRelation(end1._com).get_inverse()
+            end2 = IRPRelation(end1._com).get_inverse()
             assert end1.meta_class == "AssociationEnd"
             assert end2.meta_class == "AssociationEnd"
             association_name = self._unique("AssocCls")
@@ -474,7 +473,7 @@ class TestRPModelElementStereotypesTagsIntegration:
         pkg = self._create_package(test_project, self._unique("SingleStereoPkg"))
         try:
             stereo = pkg.add_stereotype(self._unique("SingleStereo"), "Package")
-            assert isinstance(stereo, RPStereotype)
+            assert isinstance(stereo, IRPStereotype)
 
             pkg.stereotype = stereo
             applied_stereotype = pkg.stereotype
@@ -519,7 +518,7 @@ class TestRPModelElementStereotypesTagsIntegration:
         try:
             tag_name = self._unique("AllTagsTestTag")
             tag = pkg.add_new_aggr("Tag", tag_name)
-            assert isinstance(tag, RPTag)
+            assert isinstance(tag, IRPTag)
             pkg.set_tag_value(tag, "retrievable tag value")
 
             tags = pkg.all_tags
@@ -530,15 +529,17 @@ class TestRPModelElementStereotypesTagsIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_get_local_tags(self, test_project: IRPProject) -> None:
+    def test_get_local_tags_returns_tag_created_on_element(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("LocalTagsTestPkg"))
         try:
-            stereo = pkg.add_stereotype(self._unique("LocalTagTestStereo"), "Package")
-            assert stereo is not None
-            assert isinstance(stereo, IRPModelElement)
+            tag_name = self._unique("LocalTag")
+            tag = pkg.add_new_aggr("Tag", tag_name)
+            assert isinstance(tag, IRPTag)
+            pkg.set_tag_value(tag, "local tag value")
+
             tags = pkg.local_tags
-            assert tags is not None
-            assert isinstance(tags, IRPCollection)
+
+            assert tag_name in [item.name for item in tags]
         finally:
             pkg.delete_from_project()
 
@@ -564,7 +565,7 @@ class TestRPModelElementStereotypesTagsIntegration:
             cls = pkg.add_class(self._unique("TagValueCls"))
             tag_name = self._unique("TagValueTag")
             tag = cls.add_new_aggr("Tag", tag_name)
-            assert isinstance(tag, RPTag)
+            assert isinstance(tag, IRPTag)
 
             cls.set_tag_value(tag, "retrievable tag value")
 
@@ -584,7 +585,7 @@ class TestRPModelElementStereotypesTagsIntegration:
             target = pkg.add_class(self._unique("TagElementTarget"))
             tag_name = self._unique("TagElementTag")
             tag = cls.add_new_aggr("Tag", tag_name)
-            assert isinstance(tag, RPTag)
+            assert isinstance(tag, IRPTag)
 
             cls.set_tag_element_value(tag, target)
 
@@ -601,7 +602,7 @@ class TestRPModelElementStereotypesTagsIntegration:
             target = pkg.add_class(self._unique("TagContextTarget"))
             tag_name = self._unique("TagContextTag")
             tag = cls.add_new_aggr("Tag", tag_name)
-            assert isinstance(tag, RPTag)
+            assert isinstance(tag, IRPTag)
 
             elements = rhapsody_app.create_new_collection()
             elements.add_item(target)
@@ -1171,25 +1172,26 @@ class TestRPModelElementRedefinesConstraintsIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_get_constraints(self, test_project: IRPProject) -> None:
+    def test_get_constraints_returns_constraint_created_on_element(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("ConstrPkg"))
         try:
             cls = pkg.add_class(self._unique("ConstrCls"))
+            constraint_name = self._unique("Constraint")
+            constraint = cls.add_new_aggr("Constraint", constraint_name)
+            assert constraint.name == constraint_name
+
             constraints = cls.constraints
-            assert constraints is not None
             assert isinstance(constraints, IRPCollection)
-            assert isinstance(constraints.count, int)
+            assert constraint_name in [item.name for item in constraints]
         finally:
             pkg.delete_from_project()
 
-    def test_get_constraints_by_him(self, test_project: IRPProject) -> None:
+    def test_get_constraints_by_him_is_not_implemented(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("ConstrHimPkg"))
         try:
             cls = pkg.add_class(self._unique("ConstrHimCls"))
-            constraints = cls.constraints_by_him
-            assert constraints is not None
-            assert isinstance(constraints, IRPCollection)
-            assert isinstance(constraints.count, int)
+            with pytest.raises(NotImplementedError, match="constraints_by_him"):
+                _ = cls.constraints_by_him
         finally:
             pkg.delete_from_project()
 
@@ -1217,15 +1219,12 @@ class TestRPModelElementOslcRemoteIntegration:
         with pytest.raises(NotImplementedError):
             test_project.delete_oslc_link("someType", "http://example.com")
 
-    def test_get_hyper_links_returns_empty_collection(self, test_project: IRPProject) -> None:
+    def test_get_hyper_links_is_not_implemented(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("HyperLinkPkg"))
         try:
             cls = pkg.add_class(self._unique("HyperLinkCls"))
-            hyper_links = cls.hyper_links
-            assert isinstance(hyper_links, IRPCollection)
-            assert isinstance(hyper_links.count, int)
-            assert hyper_links.count == 0
-            assert len(list(hyper_links)) == 0
+            with pytest.raises(NotImplementedError, match="hyper_links"):
+                _ = cls.hyper_links
         finally:
             pkg.delete_from_project()
 

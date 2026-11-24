@@ -19,17 +19,17 @@ from typing import Iterator
 
 import pytest
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core import (
+    IRPCodeGenSimplifiersRegistry,
+    IRPExternalCheckRegistry,
+    IRPExternalRoundtripInvoker,
+    IRPSearchManager,
+    IRPSelection,
+)
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_application import IRPApplication
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
-from rhapsody_cli.models.support import (
-    RPCodeGenSimplifiersRegistry,
-    RPExternalCheckRegistry,
-    RPExternalRoundtripInvoker,
-    RPSearchManager,
-    RPSelection,
-)
 from tests.integration.conftest import TEST_PROJECT_DIR, TEST_PROJECT_NAME
 
 
@@ -167,11 +167,11 @@ class TestIRPApplicationIntegration:
         assert collection.count == 0
 
     def test_support_accessors_return_live_objects(self, rhapsody_app: IRPApplication) -> None:
-        assert isinstance(rhapsody_app.get_search_manager(), RPSearchManager)
-        assert isinstance(rhapsody_app.get_selection(), RPSelection)
-        assert isinstance(rhapsody_app.get_code_gen_simplifiers_registry(), RPCodeGenSimplifiersRegistry)
-        assert isinstance(rhapsody_app.get_external_checker_registry(), RPExternalCheckRegistry)
-        assert isinstance(rhapsody_app.get_external_roundtrip_invoker(), RPExternalRoundtripInvoker)
+        assert isinstance(rhapsody_app.get_search_manager(), IRPSearchManager)
+        assert isinstance(rhapsody_app.get_selection(), IRPSelection)
+        assert isinstance(rhapsody_app.get_code_gen_simplifiers_registry(), IRPCodeGenSimplifiersRegistry)
+        assert isinstance(rhapsody_app.get_external_checker_registry(), IRPExternalCheckRegistry)
+        assert isinstance(rhapsody_app.get_external_roundtrip_invoker(), IRPExternalRoundtripInvoker)
 
     def test_generate_elements_runs_on_real_collection(self, rhapsody_app: IRPApplication, test_project: IRPProject) -> None:
         project = rhapsody_app.open_project(str(TEST_PROJECT_DIR / "TestProject.rpyx"))
@@ -303,8 +303,7 @@ class TestIRPApplicationIntegration:
         assert result is not None
 
     def test_log_root(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
-        result = rhapsody_app.log_root
-        assert isinstance(result, str)
+        assert Path(rhapsody_app.log_root).is_dir()
 
     def test_make(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
         assert rhapsody_app.make() is None  # type: ignore[func-returns-value]
@@ -343,12 +342,10 @@ class TestIRPApplicationIntegration:
         assert rhapsody_app.set_update_recent_file_list(0) is None  # type: ignore[func-returns-value]
 
     def test_user_data_root(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
-        result = rhapsody_app.user_data_root
-        assert isinstance(result, str)
+        assert Path(rhapsody_app.user_data_root).is_dir()
 
     def test_user_omroot(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
-        result = rhapsody_app.user_omroot
-        assert isinstance(result, str)
+        assert Path(rhapsody_app.user_omroot).is_dir()
 
     def test_write_to_output_window(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
         assert rhapsody_app.write_to_output_window("0", "0") is None  # type: ignore[func-returns-value]

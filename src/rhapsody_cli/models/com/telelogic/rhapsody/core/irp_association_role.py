@@ -1,0 +1,57 @@
+"""Wraps ``com.telelogic.rhapsody.core.IRPAssociationRole``."""
+
+from typing import TYPE_CHECKING, cast
+
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_instance import IRPInstance
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+
+if TYPE_CHECKING:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
+
+
+class IRPAssociationRole(IRPInstance):
+    """Wraps ``IRPAssociationRole``: an association role that extends ``IRPInstance``."""
+
+    # IRPAssociationRole method parity checklist:
+    # [ ] get_classifier_roles  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] get_formal_relations  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] get_role_type  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [inherited] irp_instance / irp_relation / irp_unit / irp_model_element methods (covered by rp_instance / rp_relation / rp_unit / rp_model_element checklists)
+    # No deprecated IRPAssociationRole methods.
+
+    def get_classifier_roles(self) -> IRPCollection:
+        """Returns the classifier roles associated with this association role.
+
+        Returns:
+            An ``IRPCollection`` of classifier roles.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPAssociationRole::getClassifierRoles()
+        """
+        return IRPCollection(self._get_method_or_property(self._com, "getClassifierRoles", "classifierRoles"))
+
+    def get_formal_relations(self) -> IRPCollection:
+        """Returns the formal relations for this association role.
+
+        Returns:
+            An ``IRPCollection`` of relations.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPAssociationRole::getFormalRelations()
+        """
+        return IRPCollection(self._get_method_or_property(self._com, "getFormalRelations", "formalRelations"))
+
+    def get_role_type(self) -> "IRPClassifier":
+        """Returns the role type (classifier) for this association role.
+
+        Returns:
+            The wrapped classifier representing the role type.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPAssociationRole::getRoleType()
+        """
+        return cast("IRPClassifier", self.wrap(self._get_method_or_property(self._com, "getRoleType", "roleType")))
+
+
+IRPModelElement.register_wrapper("AssociationRole", IRPAssociationRole)

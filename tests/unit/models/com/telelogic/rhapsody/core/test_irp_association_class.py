@@ -1,4 +1,4 @@
-"""Tests for rhapsody_cli.models.elements.classifiers.IRPAssociationClass."""
+"""Tests for rhapsody_cli.models.com.telelogic.rhapsody.core.IRPAssociationClass."""
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_association_class import IRPAssociationClass

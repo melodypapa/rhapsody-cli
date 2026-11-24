@@ -397,6 +397,29 @@ def collect_wrapper_call_arities(interface_name: str, models_root: Path) -> Dict
     return result
 
 
+def _annotation_text(node: ast.expr) -> str:
+    """Render an annotation without ``ast.unparse`` (unavailable on Python 3.8)."""
+    if isinstance(node, ast.Name):
+        return node.id
+    if isinstance(node, ast.Attribute):
+        return f"{_annotation_text(node.value)}.{node.attr}"
+    if isinstance(node, ast.Subscript):
+        slice_node = node.slice
+        index_type = getattr(ast, "Index", None)
+        if index_type is not None and isinstance(slice_node, index_type):
+            slice_node = slice_node.value
+        if isinstance(slice_node, ast.Tuple):
+            inner = ", ".join(_annotation_text(item) for item in slice_node.elts)
+        else:
+            inner = _annotation_text(slice_node)
+        return f"{_annotation_text(node.value)}[{inner}]"
+    if isinstance(node, ast.BinOp) and isinstance(node.op, ast.BitOr):
+        return f"{_annotation_text(node.left)} | {_annotation_text(node.right)}"
+    if isinstance(node, ast.Constant):
+        return repr(node.value)
+    return "object"
+
+
 def collect_wrapper_arg_types(interface_name: str, models_root: Path) -> Dict[str, List[str]]:
     """Return {COM member: [declared wrapper param types]} for call_com methods.
 
@@ -439,9 +462,18 @@ def collect_wrapper_arg_types(interface_name: str, models_root: Path) -> Dict[st
                     ann = "object"
                 elif hasattr(ast, "unparse"):
                     ann = ast.unparse(arg.annotation)
-                else:  # Python 3.8: build a simple annotation string
-                    ann = getattr(arg.annotation, "id", None) or getattr(getattr(arg.annotation, "value", None), "id", None) or "object"
-                base = ann.split(".")[-1].strip('"').lower()
+                else:  # Python 3.8: render names/subscripts without ast.unparse
+                    ann = _annotation_text(arg.annotation)
+                base = ann.replace(" ", "")
+                if base.lower().startswith("optional[") and base.endswith("]"):
+                    base = base[len("Optional[") : -1]
+                elif base.lower().startswith("union[") and base.endswith("]"):
+                    union_types = [item for item in base[len("Union[") : -1].split(",") if item.lower() not in {"none", "nonetype"}]
+                    base = union_types[0] if len(union_types) == 1 else base
+                elif "|" in base:
+                    union_types = [item for item in base.split("|") if item.lower() not in {"none", "nonetype"}]
+                    base = union_types[0] if len(union_types) == 1 else base
+                base = base.split(".")[-1].strip('"').lower()
                 if base in ("str", "string"):
                     declared.append("str")
                 elif base in ("int", "long"):

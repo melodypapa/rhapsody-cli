@@ -4,13 +4,15 @@
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `IRPModelElement` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_model_element.py`)
 - Members: Python `103`, Java `119`, pywin32 `104`
-- Deviation items: `5` (actionable `0`, expected binding differences `2`, wrapper backlog `3`)
+- Deviation items: `7` (actionable `2`, expected binding differences `2`, wrapper backlog `3`)
 - Status legend: `MATCH` verified binding · `UNAVAILABLE_DOCUMENTED` pywin32 lacks the member (NotImplementedError stub) · `ALIAS_DOCUMENTED` documented alias · actionable rows are named by code in `Comparison details`
 
 ## Comparison details
 
 | Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |
 | --- | --- | --- | --- | --- |
+| constraints_by_him (property) (no static COM member) | getConstraintsByHim (method) | constraintsByHim (property) | PYTHON_METHOD_NAME_MISMATCH; COM_MEMBER_NOT_EXPOSED | Use the constraintsByHim property or a getter/setter fallback instead of calling getConstraintsByHim directly. |
+| hyper_links (property) (no static COM member) | getHyperLinks (method) | hyperLinks (property) | PYTHON_METHOD_NAME_MISMATCH; COM_MEMBER_NOT_EXPOSED | Use the hyperLinks property or a getter/setter fallback instead of calling getHyperLinks directly. |
 
 ## Expected Binding Differences
 
@@ -28,7 +30,7 @@
 | — | unlockOnDesignManager (method) | unlockOnDesignManager (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 
 <details>
-<summary>Correct items (97) — bindings verified against pywin32</summary>
+<summary>Correct items (95) — bindings verified against pywin32</summary>
 
 
 ## Correct Items
@@ -54,7 +56,6 @@
 | change_to() -> changeTo | changeTo (method) | changeTo (method) | MATCH | — |
 | clone() -> clone | clone (method) | clone (method) | MATCH | — |
 | constraints (property) -> constraints | getConstraints (method) | constraints (property) | MATCH | — |
-| constraints_by_him (property) -> constraintsByHim | getConstraintsByHim (method) | constraintsByHim (property) | MATCH | — |
 | controlled_files (property) -> controlledFiles | getControlledFiles (method) | controlledFiles (property) | MATCH | — |
 | create_oslc_link() (no static COM member) | createOSLCLink (method) | createOSLCLink (method) | MATCH | — |
 | delete_dependency() -> deleteDependency | deleteDependency (method) | deleteDependency (method) | MATCH | — |
@@ -98,7 +99,6 @@
 | has_nested_elements() -> hasNestedElements | hasNestedElements (method) | hasNestedElements (method) | MATCH | — |
 | has_panel_widget() -> hasPanelWidget | hasPanelWidget (method) | hasPanelWidget (method) | MATCH | — |
 | high_light_element() -> highLightElement | highLightElement (method) | highLightElement (method) | MATCH | — |
-| hyper_links (property) -> hyperLinks | getHyperLinks (method) | hyperLinks (property) | MATCH | — |
 | interface_name (property) -> interfaceName | getInterfaceName (method) | interfaceName (property) | MATCH | — |
 | is_a_template() -> isATemplate | isATemplate (method) | isATemplate (method) | MATCH | — |
 | is_description_rtf() -> isDescriptionRTF | isDescriptionRTF (method) | isDescriptionRTF (method) | MATCH | — |
@@ -136,4 +136,10 @@
 </details>
 
 ## AI Fix Guidance
-No deviations require changes.
+
+### PYTHON_METHOD_NAME_MISMATCH; COM_MEMBER_NOT_EXPOSED (2 findings)
+- **Target:** `IRPModelElement` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_model_element.py`
+- **Affected call(s):** constraints_by_him (property) (no static COM member); hyper_links (property) (no static COM member)
+- **Recommended change:** Use the constraintsByHim property or a getter/setter fallback instead of calling getConstraintsByHim directly.
+- **Recommended change:** Use the hyperLinks property or a getter/setter fallback instead of calling getHyperLinks directly.
+- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.

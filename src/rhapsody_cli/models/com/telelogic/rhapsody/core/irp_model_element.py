@@ -12,16 +12,16 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCo
 from rhapsody_cli.models.core import ComHelper
 
 if TYPE_CHECKING:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPTag
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_association_class import IRPAssociationClass
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_dependency import IRPDependency
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagrams import IRPDiagram
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPLink
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_stereotype import IRPStereotype
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_templates import IRPTemplateInstantiation
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_unit import IRPUnit
-    from rhapsody_cli.models.elements.classifiers.model_stereotype import RPStereotype
-    from rhapsody_cli.models.elements.diagrams.model_diagrams import RPDiagram
-    from rhapsody_cli.models.elements.graphics.model_graphics import RPLink
-    from rhapsody_cli.models.elements.relations.model_dependency import RPDependency
-    from rhapsody_cli.models.elements.relations.model_relation import RPRelation
-    from rhapsody_cli.models.elements.templates.model_templates import RPTemplateInstantiation
-    from rhapsody_cli.models.elements.variables import RPTag
 
 
 class IRPModelElement(ComHelper):
@@ -221,7 +221,7 @@ class IRPModelElement(ComHelper):
         """
         ComHelper.set_com_property(self._com, "GUID", guid)
 
-    def add_association(self, end1: RPRelation, end2: RPRelation, name: str) -> IRPAssociationClass:
+    def add_association(self, end1: IRPRelation, end2: IRPRelation, name: str) -> IRPAssociationClass:
         """Creates an association class using the specified IRPRelation elements.
 
         Can only be called on elements that can contain association classes -
@@ -243,7 +243,7 @@ class IRPModelElement(ComHelper):
         association_class_com = self.call_com(lambda: self._com.addAssociation(end1._com, end2._com, name))
         return IRPAssociationClass(association_class_com)
 
-    def add_dependency(self, depends_on_name: str, depends_on_type: str) -> RPDependency:
+    def add_dependency(self, depends_on_name: str, depends_on_type: str) -> IRPDependency:
         """Adds a dependency from the model element to the model element specified by the parameters.
 
         The method searches the model recursively until it finds an element
@@ -264,11 +264,11 @@ class IRPModelElement(ComHelper):
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::addDependency(java.lang.String dependsOnName, java.lang.String dependsOnType)
         """
-        from rhapsody_cli.models.elements.relations.model_dependency import RPDependency
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_dependency import IRPDependency
 
-        return cast(RPDependency, ComHelper.wrap(ComHelper.call_com(lambda: self._com.addDependency(depends_on_name, depends_on_type))))
+        return cast(IRPDependency, ComHelper.wrap(ComHelper.call_com(lambda: self._com.addDependency(depends_on_name, depends_on_type))))
 
-    def add_dependency_between(self, dependent: IRPModelElement, depends_on: IRPModelElement) -> RPDependency:
+    def add_dependency_between(self, dependent: IRPModelElement, depends_on: IRPModelElement) -> IRPDependency:
         """Creates a dependency between the two specified elements.
 
         In most cases :meth:`add_dependency_to` should be used. This method is
@@ -288,11 +288,11 @@ class IRPModelElement(ComHelper):
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::addDependencyBetween(com.telelogic.rhapsody.core.IRPModelElement dependent, com.telelogic.rhapsody.core.IRPModelElement dependsOn)
         """
-        from rhapsody_cli.models.elements.relations.model_dependency import RPDependency
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_dependency import IRPDependency
 
-        return cast(RPDependency, ComHelper.wrap(ComHelper.call_com(lambda: self._com.addDependencyBetween(dependent._com, depends_on._com))))
+        return cast(IRPDependency, ComHelper.wrap(ComHelper.call_com(lambda: self._com.addDependencyBetween(dependent._com, depends_on._com))))
 
-    def add_dependency_to(self, element: IRPModelElement) -> RPDependency:
+    def add_dependency_to(self, element: IRPModelElement) -> IRPDependency:
         """Adds a dependency upon another model element.
 
         Args:
@@ -304,11 +304,11 @@ class IRPModelElement(ComHelper):
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::addDependencyTo(com.telelogic.rhapsody.core.IRPModelElement element)
         """
-        from rhapsody_cli.models.elements.relations.model_dependency import RPDependency
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_dependency import IRPDependency
 
-        return cast(RPDependency, ComHelper.wrap(ComHelper.call_com(lambda: self._com.addDependencyTo(element._com))))
+        return cast(IRPDependency, ComHelper.wrap(ComHelper.call_com(lambda: self._com.addDependencyTo(element._com))))
 
-    def add_link_to_element(self, to_element: IRPModelElement, assoc: RPRelation, from_port: IRPModelElement | None, to_port: IRPModelElement | None) -> RPLink:
+    def add_link_to_element(self, to_element: IRPModelElement, assoc: IRPRelation, from_port: IRPModelElement | None, to_port: IRPModelElement | None) -> IRPLink:
         """Creates a link between this model element and the model element specified as an argument.
 
         In addition to the other element to connect, you must specify either
@@ -332,11 +332,11 @@ class IRPModelElement(ComHelper):
                 com.telelogic.rhapsody.core.IRPModelElement fromPort,
                 com.telelogic.rhapsody.core.IRPModelElement toPort)
         """
-        from rhapsody_cli.models.elements.graphics.model_graphics import RPLink
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPLink
 
         from_port_com = from_port._com if from_port is not None else None
         to_port_com = to_port._com if to_port is not None else None
-        return cast(RPLink, ComHelper.wrap(ComHelper.call_com(lambda: self._com.addLinkToElement(to_element._com, assoc._com, from_port_com, to_port_com))))
+        return cast(IRPLink, ComHelper.wrap(ComHelper.call_com(lambda: self._com.addLinkToElement(to_element._com, assoc._com, from_port_com, to_port_com))))
 
     def add_new_aggr(self, meta_type: str, name: str) -> IRPModelElement:
         """Adds a new model element to the current element, for example, adding a class to a package.
@@ -380,7 +380,7 @@ class IRPModelElement(ComHelper):
         """
         ComHelper.call_com(lambda: self._com.addRedefines(new_redefine._com))
 
-    def add_remote_dependency_to(self, element: IRPModelElement, link_type: str) -> RPDependency:
+    def add_remote_dependency_to(self, element: IRPModelElement, link_type: str) -> IRPDependency:
         """For Design Manager projects, creates a dependency from a model element to a remote element.
 
         Args:
@@ -393,11 +393,11 @@ class IRPModelElement(ComHelper):
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::addRemoteDependencyTo(com.telelogic.rhapsody.core.IRPModelElement element, java.lang.String linkType)
         """
-        from rhapsody_cli.models.elements.relations.model_dependency import RPDependency
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_dependency import IRPDependency
 
-        return cast(RPDependency, ComHelper.wrap(ComHelper.call_com(lambda: self._com.addRemoteDependencyTo(element._com, link_type))))
+        return cast(IRPDependency, ComHelper.wrap(ComHelper.call_com(lambda: self._com.addRemoteDependencyTo(element._com, link_type))))
 
-    def add_specific_stereotype(self, stereotype: RPStereotype) -> None:
+    def add_specific_stereotype(self, stereotype: IRPStereotype) -> None:
         """Applies the specified stereotype to the model element.
 
         Args:
@@ -408,7 +408,7 @@ class IRPModelElement(ComHelper):
         """
         ComHelper.call_com(lambda: self._com.addSpecificStereotype(stereotype._com))
 
-    def add_stereotype(self, name: str, meta_type: str) -> RPStereotype:
+    def add_stereotype(self, name: str, meta_type: str) -> IRPStereotype:
         """Applies the specified stereotype to the model element.
 
         If the project already contains a stereotype with the given name
@@ -426,9 +426,9 @@ class IRPModelElement(ComHelper):
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::addStereotype(java.lang.String name, java.lang.String metaType)
         """
-        from rhapsody_cli.models.elements.classifiers.model_stereotype import RPStereotype
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_stereotype import IRPStereotype
 
-        return cast(RPStereotype, ComHelper.wrap(ComHelper.call_com(lambda: self._com.addStereotype(name, meta_type))))
+        return cast(IRPStereotype, ComHelper.wrap(ComHelper.call_com(lambda: self._com.addStereotype(name, meta_type))))
 
     def become_template_instantiation_of(self, new_val: IRPModelElement) -> None:
         """Makes the current model element a template instantiation of the specified template.
@@ -490,7 +490,7 @@ class IRPModelElement(ComHelper):
         """
         raise NotImplementedError("Rhapsody2.Application.1 does not expose createOSLCLink; method is defined for Java API parity only.")
 
-    def delete_dependency(self, dependency: RPDependency) -> None:
+    def delete_dependency(self, dependency: IRPDependency) -> None:
         """Deletes the specified dependency from the model.
 
         Args:
@@ -658,13 +658,16 @@ class IRPModelElement(ComHelper):
     def constraints_by_him(self) -> IRPCollection:
         """Returns all of the element's constraints (for internal use only).
 
-        Returns:
-            An ``IRPCollection`` of constraints.
+        This getter is intentionally unavailable because the Java API documents
+        it as internal-only and no supported live retrieval setup is known.
+
+        Raises:
+            NotImplementedError: Always raised because the runtime behavior is unsupported.
 
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getConstraintsByHim()
         """
-        return IRPCollection(ComHelper.get_com_property(self._com, "constraintsByHim"))
+        raise NotImplementedError("constraints_by_him is unsupported because its Java API is internal-only")
 
     @property
     def controlled_files(self) -> IRPCollection:
@@ -854,13 +857,16 @@ class IRPModelElement(ComHelper):
     def hyper_links(self) -> IRPCollection:
         """Returns a collection of all the hyperlinks associated with the element.
 
-        Returns:
-            An ``IRPCollection`` of hyperlinks.
+        Runtime retrieval is intentionally unavailable because the documented
+        live setup APIs have not produced a retrievable hyperlink.
+
+        Raises:
+            NotImplementedError: Always raised because live retrieval is unsupported.
 
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getHyperLinks()
         """
-        return IRPCollection(ComHelper.get_com_property(self._com, "hyperLinks"))
+        raise NotImplementedError("hyper_links is unsupported because live retrieval could not be established")
 
     def get_icon_file_name(self) -> str:
         """Returns the full path of the graphic file used to represent elements of this type in the browser.
@@ -965,7 +971,7 @@ class IRPModelElement(ComHelper):
         return IRPCollection(ComHelper.get_com_property(self._com, "localTags"))
 
     @property
-    def main_diagram(self) -> RPDiagram:
+    def main_diagram(self) -> IRPDiagram:
         """Returns the "main" diagram for the element.
 
         This operation is valid only for packages, classes, actors, use
@@ -977,12 +983,12 @@ class IRPModelElement(ComHelper):
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getMainDiagram()
         """
-        from rhapsody_cli.models.elements.diagrams.model_diagrams import RPDiagram
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagrams import IRPDiagram
 
-        return cast(RPDiagram, ComHelper.wrap(ComHelper.get_com_property(self._com, "mainDiagram")))
+        return cast(IRPDiagram, ComHelper.wrap(ComHelper.get_com_property(self._com, "mainDiagram")))
 
     @main_diagram.setter
-    def main_diagram(self, main_diagram: RPDiagram) -> None:
+    def main_diagram(self, main_diagram: IRPDiagram) -> None:
         """Specifies the main diagram for packages, classes, actors, use cases, objects, and interfaces.
 
         Args:
@@ -1036,7 +1042,7 @@ class IRPModelElement(ComHelper):
         """
         return IRPCollection(ComHelper.call_com(lambda: self._com.getNestedElementsRecursive()))
 
-    def get_new_term_stereotype(self) -> RPStereotype:
+    def get_new_term_stereotype(self) -> IRPStereotype:
         """If a "new term" stereotype has been applied to the element, returns the stereotype.
 
         Returns:
@@ -1045,9 +1051,9 @@ class IRPModelElement(ComHelper):
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getNewTermStereotype()
         """
-        from rhapsody_cli.models.elements.classifiers.model_stereotype import RPStereotype
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_stereotype import IRPStereotype
 
-        return cast(RPStereotype, ComHelper.wrap(ComHelper.call_com(lambda: self._com.getNewTermStereotype())))
+        return cast(IRPStereotype, ComHelper.wrap(ComHelper.call_com(lambda: self._com.getNewTermStereotype())))
 
     @property
     def of_template(self) -> IRPModelElement:
@@ -1360,7 +1366,7 @@ class IRPModelElement(ComHelper):
         return cast(IRPUnit, ComHelper.wrap(ComHelper.call_com(lambda: self._com.getSaveUnit())))
 
     @property
-    def stereotype(self) -> RPStereotype | None:
+    def stereotype(self) -> IRPStereotype | None:
         """Returns or sets the deprecated single stereotype on this element.
 
         The Java API deprecated this member in favor of :attr:`stereotypes` and
@@ -1369,15 +1375,15 @@ class IRPModelElement(ComHelper):
         Returns:
             The applied single stereotype, or ``None`` if no stereotype is set.
         """
-        from rhapsody_cli.models.elements.classifiers.model_stereotype import RPStereotype
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_stereotype import IRPStereotype
 
         raw_stereotype = ComHelper.get_com_property(self._com, "stereotype")
         if raw_stereotype is None:
             return None
-        return cast(RPStereotype, ComHelper.wrap(raw_stereotype))
+        return cast(IRPStereotype, ComHelper.wrap(raw_stereotype))
 
     @stereotype.setter
-    def stereotype(self, stereotype: RPStereotype) -> None:
+    def stereotype(self, stereotype: IRPStereotype) -> None:
         ComHelper.set_com_property(self._com, "stereotype", stereotype._com)
 
     @property
@@ -1392,7 +1398,7 @@ class IRPModelElement(ComHelper):
         """
         return IRPCollection(ComHelper.get_com_property(self._com, "stereotypes"))
 
-    def get_tag(self, name: str) -> RPTag:
+    def get_tag(self, name: str) -> IRPTag:
         """Returns the tag specified.
 
         This method can be used for both local tags and global tags.
@@ -1406,9 +1412,9 @@ class IRPModelElement(ComHelper):
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getTag(java.lang.String name)
         """
-        from rhapsody_cli.models.elements.variables import RPTag
+        from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPTag
 
-        return cast(RPTag, ComHelper.wrap(ComHelper.call_com(lambda: self._com.getTag(name))))
+        return cast(IRPTag, ComHelper.wrap(ComHelper.call_com(lambda: self._com.getTag(name))))
 
     @property
     def template_parameters(self) -> IRPCollection:
@@ -1423,7 +1429,7 @@ class IRPModelElement(ComHelper):
         return IRPCollection(ComHelper.get_com_property(self._com, "templateParameters"))
 
     @property
-    def ti(self) -> RPTemplateInstantiation:
+    def ti(self) -> IRPTemplateInstantiation:
         """For template instantiations, returns an object containing the template instantiation parameters.
 
         Returns:
@@ -1432,12 +1438,12 @@ class IRPModelElement(ComHelper):
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getTi()
         """
-        from rhapsody_cli.models.elements.templates.model_templates import RPTemplateInstantiation
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_templates import IRPTemplateInstantiation
 
-        return cast(RPTemplateInstantiation, ComHelper.wrap(ComHelper.get_com_property(self._com, "ti")))
+        return cast(IRPTemplateInstantiation, ComHelper.wrap(ComHelper.get_com_property(self._com, "ti")))
 
     @ti.setter
-    def ti(self, ti: RPTemplateInstantiation) -> None:
+    def ti(self, ti: IRPTemplateInstantiation) -> None:
         """Sets the template instantiation for the model element.
 
         Args:
@@ -1617,7 +1623,7 @@ class IRPModelElement(ComHelper):
         """
         ComHelper.call_com(lambda: self._com.removeRedefines(removed_redefine._com))
 
-    def remove_stereotype(self, stereotype: RPStereotype) -> None:
+    def remove_stereotype(self, stereotype: IRPStereotype) -> None:
         """Removes the specified stereotype from the element.
 
         Args:
@@ -1698,7 +1704,7 @@ class IRPModelElement(ComHelper):
         """
         ComHelper.call_com(lambda: self._com.setPropertyValue(property_key, property_value))
 
-    def set_tag_context_value(self, tag: RPTag, elements: IRPCollection, multiplicities: IRPCollection) -> RPTag:
+    def set_tag_context_value(self, tag: IRPTag, elements: IRPCollection, multiplicities: IRPCollection) -> IRPTag:
         """Applies the specified tag and sets its value to a specific instance of another model element.
 
         ``elements`` is a collection of model elements representing the full
@@ -1722,11 +1728,11 @@ class IRPModelElement(ComHelper):
                 com.telelogic.rhapsody.core.IRPCollection elements,
                 com.telelogic.rhapsody.core.IRPCollection multiplicities)
         """
-        from rhapsody_cli.models.elements.variables import RPTag
+        from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPTag
 
-        return cast(RPTag, ComHelper.wrap(ComHelper.call_com(lambda: self._com.setTagContextValue(tag._com, elements._com, multiplicities._com))))
+        return cast(IRPTag, ComHelper.wrap(ComHelper.call_com(lambda: self._com.setTagContextValue(tag._com, elements._com, multiplicities._com))))
 
-    def set_tag_element_value(self, tag: RPTag, val: IRPModelElement) -> RPTag:
+    def set_tag_element_value(self, tag: IRPTag, val: IRPModelElement) -> IRPTag:
         """Applies a tag whose type is a model element to the current element with the value specified.
 
         If the tag has already been applied, this method can be used to modify
@@ -1742,11 +1748,11 @@ class IRPModelElement(ComHelper):
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::setTagElementValue(com.telelogic.rhapsody.core.IRPTag tag, com.telelogic.rhapsody.core.IRPModelElement val)
         """
-        from rhapsody_cli.models.elements.variables import RPTag
+        from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPTag
 
-        return cast(RPTag, ComHelper.wrap(ComHelper.call_com(lambda: self._com.setTagElementValue(tag._com, val._com))))
+        return cast(IRPTag, ComHelper.wrap(ComHelper.call_com(lambda: self._com.setTagElementValue(tag._com, val._com))))
 
-    def set_tag_value(self, tag: RPTag, val: str) -> RPTag:
+    def set_tag_value(self, tag: IRPTag, val: str) -> IRPTag:
         """Applies the specified tag to the model element with the value specified.
 
         If the tag has already been applied, this method can be used to modify
@@ -1762,9 +1768,9 @@ class IRPModelElement(ComHelper):
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::setTagValue(com.telelogic.rhapsody.core.IRPTag tag, java.lang.String val)
         """
-        from rhapsody_cli.models.elements.variables import RPTag
+        from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPTag
 
-        return cast(RPTag, ComHelper.wrap(ComHelper.call_com(lambda: self._com.setTagValue(tag._com, val))))
+        return cast(IRPTag, ComHelper.wrap(ComHelper.call_com(lambda: self._com.setTagValue(tag._com, val))))
 
     def synchronize_template_instantiation(self) -> None:
         """Updates the instantiation to match changes made to its template.
