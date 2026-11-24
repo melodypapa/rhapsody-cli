@@ -98,14 +98,14 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded. Evidence: report regenerated (0 actionable), verify_sync exit 0, skill harness 49 passed, full unit 2164, ruff/black clean, integration collection 472. Blocker: Windows live integration closeout per the machine-split decision.
 - [ ] irp_class_remediation - IRPClass
   - Baseline: property shape already conforms; 2 integration tests assert RhapsodyRuntimeException.
-  - [ ] Section 1 member checklist and getter matrix published.
-  - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Section 3 resolve both failing members against JavaDoc and pywin32 signatures.
-  - [ ] Section 4 full unit suite green; irp_class.py at 100% statements/branches.
-  - [ ] Section 5 assert positive live outcomes for both members with authentic setup, or leave verified blockers open.
-  - [ ] Section 6 irp_class.md checked/updated.
-  - [ ] Section 7 irp_class.rst checked/updated for every public member.
-  - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded.
+  - [x] Section 1 member checklist and getter matrix published. Evidence: 26 Python members rendered in the 2026-11-24 sync report; getter matrix rows for `attributes`, `operations`, `nested_classifiers`, `interface_items`, `ports`, `relations`, all collection/identity getters with real created children and package cleanup.
+  - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2164 passed, ruff/black clean.
+  - [x] Section 3 resolve both failing members against JavaDoc and pywin32 signatures. Evidence: report regenerated — 0 actionable, 2 `UNAVAILABLE_DOCUMENTED` (`add_event_reception_with_event`, `update_contained_diagrams_on_server`), both JavaDoc-present / pywin32-absent stubs asserted at both layers; no `RhapsodyRuntimeException` assertion remains in the mirrored integration file.
+  - [x] Section 4 full unit suite green; irp_class.py at 100% statements/branches. Evidence: focused unit 34 passed, 77 statements / 0 branches, 100.00%; full unit 2164 passed.
+  - [ ] Section 5 assert positive live outcomes for both members with authentic setup, or leave verified blockers open. Evidence: all integration cases use authentic created classes/packages and assert real outcomes; no exception assertions remain. Blocker: no Rhapsody on macOS — 472 integration tests collect only; live assertions unverified. Open data item: `pywin32_authority.json` still lists OSLC members in `documented_unavailable` although the catalog exposes them (validator warns, entry ignored).
+  - [x] Section 6 irp_class.md checked/updated. Evidence: per-class requirement entry documents the owned members and the two documented-unavailable stubs; Last Changed 2026-11-24.
+  - [x] Section 7 irp_class.rst checked/updated for every public member. Evidence: anchor + API reference covering all 26 public members; `verify_sync.py IRPClass` exits 0.
+  - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded. Evidence: report regenerated (0 actionable), verify_sync exit 0, skill harness 49 passed, full unit 2164, ruff/black clean, integration collection 472. Blocker: Windows live integration closeout per the machine-split decision.
 - [ ] irp_use_case_remediation - IRPUseCase
   - Baseline: 4 property-shape conversions; 3 integration tests assert TypeError; two JavaDoc-only methods already have unavailable stubs.
   - [ ] Section 1 member checklist and getter matrix published.
