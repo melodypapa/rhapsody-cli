@@ -33,9 +33,9 @@ class TestRPOperationIntegration:
         try:
             op = test_class.add_operation(op_name)
             assert op.is_static is False
-            op.is_static = 1
+            op.is_static = True
             assert op.is_static is True
-            op.is_static = 0
+            op.is_static = False
             assert op.is_static is False
         finally:
             test_class.delete_from_project()
@@ -49,9 +49,9 @@ class TestRPOperationIntegration:
         try:
             op = test_class.add_operation(op_name)
             assert op.is_virtual is False
-            op.is_virtual = 1
+            op.is_virtual = True
             assert op.is_virtual is True
-            op.is_virtual = 0
+            op.is_virtual = False
             assert op.is_virtual is False
         finally:
             test_class.delete_from_project()
@@ -65,9 +65,9 @@ class TestRPOperationIntegration:
         try:
             op = test_class.add_operation(op_name)
             assert op.is_abstract is False
-            op.is_abstract = 1
+            op.is_abstract = True
             assert op.is_abstract is True
-            op.is_abstract = 0
+            op.is_abstract = False
             assert op.is_abstract is False
         finally:
             test_class.delete_from_project()

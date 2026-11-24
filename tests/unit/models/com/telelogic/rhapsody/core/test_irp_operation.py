@@ -45,7 +45,7 @@ def test_operation_is_abstract_setter_writes_com_property() -> None:
     fake = make_fake_element("Operation")
     operation = IRPOperation(fake)
 
-    operation.is_abstract = 1
+    operation.is_abstract = True
 
     assert fake.isAbstract == 1
 
@@ -61,7 +61,7 @@ def test_operation_is_static_setter_writes_com_property() -> None:
     fake = make_fake_element("Operation")
     operation = IRPOperation(fake)
 
-    operation.is_static = 1
+    operation.is_static = True
 
     assert fake.isStatic == 1
 
@@ -77,7 +77,7 @@ def test_operation_is_virtual_setter_writes_com_property() -> None:
     fake = make_fake_element("Operation")
     operation = IRPOperation(fake)
 
-    operation.is_virtual = 1
+    operation.is_virtual = True
 
     assert fake.isVirtual == 1
 
