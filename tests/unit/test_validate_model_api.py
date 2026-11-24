@@ -1,3 +1,4 @@
+import ast
 import json
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -990,6 +991,12 @@ def test_collect_wrapper_arg_types_maps_optional_model_wrappers_to_com(tmp_path:
     )
 
     assert validator.collect_wrapper_arg_types("IRPThing", tmp_path) == {"AddLink": ["com", "com"]}
+
+
+def test_annotation_text_renders_optional_subscript_without_unparse() -> None:
+    annotation = ast.parse("Optional[IRPRelation]", mode="eval").body
+
+    assert validator._annotation_text(annotation) == "Optional[IRPRelation]"
 
 
 def test_collect_generated_signatures_counts_required_parameters(tmp_path: Path) -> None:
