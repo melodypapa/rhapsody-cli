@@ -35,12 +35,12 @@ class TestRPProjectIntegration:
         assert new_pkg is not None
         assert isinstance(new_pkg, IRPPackage)
         assert isinstance(new_pkg, IRPPackage)
-        pkgs = test_project.get_packages()
+        pkgs = test_project.packages
         names = [p.name for p in pkgs]
         assert name in names
 
-    def test_project_get_packages_returns_collection(self, test_project: IRPProject) -> None:
-        pkgs = test_project.get_packages()
+    def test_project_packages_returns_collection(self, test_project: IRPProject) -> None:
+        pkgs = test_project.packages
         assert pkgs is not None
 
     def test_create_component_in_project(self, test_project: IRPProject) -> None:
@@ -142,9 +142,9 @@ class TestIRPProjectGenerated:
         finally:
             pass
 
-    def test_get_packages(self, test_project: IRPProject) -> None:
+    def test_packages(self, test_project: IRPProject) -> None:
         try:
-            assert test_project.get_packages() is not None
+            assert test_project.packages is not None
         finally:
             pass
 
@@ -162,9 +162,9 @@ class TestIRPProjectGenerated:
         finally:
             pass
 
-    def test_get_components(self, test_project: IRPProject) -> None:
+    def test_components(self, test_project: IRPProject) -> None:
         try:
-            assert test_project.get_components() is not None
+            assert test_project.components is not None
         finally:
             pass
 
@@ -198,9 +198,9 @@ class TestIRPProjectGenerated:
         finally:
             pass
 
-    def test_get_nodes(self, test_project: IRPProject) -> None:
+    def test_nodes(self, test_project: IRPProject) -> None:
         try:
-            assert test_project.get_nodes() is not None
+            assert test_project.nodes is not None
         finally:
             pass
 
@@ -217,37 +217,37 @@ class TestIRPProjectGenerated:
         finally:
             pass
 
-    def test_get_active_configuration(self, test_project: IRPProject) -> None:
+    def test_active_configuration(self, test_project: IRPProject) -> None:
         try:
-            assert test_project.get_active_configuration() is not None
+            assert test_project.active_configuration is not None
         finally:
             pass
 
     def test_set_active_configuration(self, test_project: IRPProject) -> None:
         try:
-            current = test_project.get_active_configuration()
+            current = test_project.active_configuration
             assert current is not None
             assert test_project.set_active_configuration(current) is None  # type: ignore[func-returns-value]
         finally:
             pass
 
-    def test_get_active_component(self, test_project: IRPProject) -> None:
+    def test_active_component(self, test_project: IRPProject) -> None:
         try:
-            assert test_project.get_active_component() is not None
+            assert test_project.active_component is not None
         finally:
             pass
 
     def test_set_active_component(self, test_project: IRPProject) -> None:
         try:
-            current = test_project.get_active_component()
+            current = test_project.active_component
             assert current is not None
             assert test_project.set_active_component(current) is None  # type: ignore[func-returns-value]
         finally:
             pass
 
-    def test_get_all_stereotypes(self, test_project: IRPProject) -> None:
+    def test_all_stereotypes(self, test_project: IRPProject) -> None:
         try:
-            assert test_project.get_all_stereotypes() is not None
+            assert test_project.all_stereotypes is not None
         finally:
             pass
 
@@ -266,9 +266,9 @@ class TestIRPProjectGenerated:
             if pkg is not None:
                 pkg.delete_from_project()
 
-    def test_get_profiles(self, test_project: IRPProject) -> None:
+    def test_profiles(self, test_project: IRPProject) -> None:
         try:
-            assert test_project.get_profiles() is not None
+            assert test_project.profiles is not None
         finally:
             pass
 
@@ -311,9 +311,9 @@ class TestIRPProjectGenerated:
         finally:
             pass
 
-    def test_get_cg_simplified_model_package(self, test_project: IRPProject) -> None:
+    def test_cg_simplified_model_package(self, test_project: IRPProject) -> None:
         try:
-            assert test_project.get_cg_simplified_model_package() is None
+            assert test_project.cg_simplified_model_package is None
         finally:
             pass
 
@@ -508,10 +508,10 @@ class TestIRPProjectGenerated:
         finally:
             pass
 
-    def test_get_default_directory_scheme(self, test_project: IRPProject) -> None:
+    def test_default_directory_scheme(self, test_project: IRPProject) -> None:
         try:
             with pytest.raises(ValueError):
-                test_project.get_default_directory_scheme()
+                _ = test_project.default_directory_scheme
         finally:
             pass
 
@@ -550,9 +550,9 @@ class TestIRPProjectGenerated:
         finally:
             pass
 
-    def test_set_default_directory_scheme(self, test_project: IRPProject) -> None:
+    def test_default_directory_scheme_write(self, test_project: IRPProject) -> None:
         try:
-            assert test_project.set_default_directory_scheme(0) is None  # type: ignore[func-returns-value]
+            test_project.default_directory_scheme = 0
         finally:
             pass
 
@@ -587,9 +587,9 @@ class TestIRPProjectGenerated:
         finally:
             pass
 
-    def test_set_use_unique_stereotype_and_ref_cache(self, test_project: IRPProject) -> None:
+    def test_use_unique_stereotype_and_ref_cache(self, test_project: IRPProject) -> None:
         try:
-            assert test_project.set_use_unique_stereotype_and_ref_cache(0) is None  # type: ignore[func-returns-value]
+            test_project.use_unique_stereotype_and_ref_cache = 0
         finally:
             pass
 

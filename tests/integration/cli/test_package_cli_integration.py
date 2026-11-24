@@ -45,7 +45,7 @@ class TestPackageCLIIntegration:
             create_cmd.execute()
 
             # Step 2: Verify package exists via model API
-            pkg_names = [p.name for p in self.project.get_packages()]
+            pkg_names = [p.name for p in self.project.packages]
             assert pkg_name in pkg_names, f"Package '{pkg_name}' should exist after creation"
         finally:
             # Step 3: Delete the package
@@ -70,7 +70,7 @@ class TestPackageCLIIntegration:
             create_cmd.execute()
 
             # Step 1b: Verify package exists via model API
-            pkg_names = [p.name for p in self.project.get_packages()]
+            pkg_names = [p.name for p in self.project.packages]
             assert pkg_name in pkg_names, f"Package '{pkg_name}' should exist after creation"
 
             # Step 2: Try to create the same package again
@@ -89,7 +89,7 @@ class TestPackageCLIIntegration:
                 assert "Exception occurred" not in error_msg, f"Error message should not contain raw COM exception text, got: {error_msg}"
 
             # Step 2b: Verify there's still exactly one package (duplicate was rejected)
-            pkg_names_after = [p.name for p in self.project.get_packages()]
+            pkg_names_after = [p.name for p in self.project.packages]
             matches = [n for n in pkg_names_after if n == pkg_name]
             assert len(matches) == 1, f"Should be exactly one package named '{pkg_name}', found {len(matches)}"
         finally:
@@ -117,7 +117,7 @@ class TestPackageCLIIntegration:
             create_child_cmd.execute()
 
             # Step 3: Verify nested package exists via model API
-            pkgs = self.project.get_packages()
+            pkgs = self.project.packages
             parent = next((p for p in pkgs if p.name == parent_pkg_name), None)
             assert parent is not None, f"Parent package '{parent_pkg_name}' should exist"
             child_names = [c.name for c in parent.get_nested_packages()]
@@ -156,7 +156,7 @@ class TestPackageCLIIntegration:
             create_child_cmd.execute()
 
             # Step 2b: Verify child exists via model API
-            pkgs = self.project.get_packages()
+            pkgs = self.project.packages
             parent = next((p for p in pkgs if p.name == parent_pkg_name), None)
             assert parent is not None, f"Parent package '{parent_pkg_name}' should exist"
             child_names = [c.name for c in parent.get_nested_packages()]

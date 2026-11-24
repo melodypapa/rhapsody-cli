@@ -14,12 +14,12 @@ class IRPArgument(RPVariable):
     """Wraps ``IRPArgument``: an argument/parameter of an operation."""
 
     # IRPArgument method parity checklist:
-    # [x] get_argument_direction  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_argument_direction  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] argument_direction  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [inherited] irp_variable / irp_unit / irp_model_element methods (covered by rp_variable / rp_unit / rp_model_element checklists)
     # No deprecated IRPArgument methods.
 
-    def get_argument_direction(self) -> str:
+    @property
+    def argument_direction(self) -> str:
         """Returns the direction of the argument (e.g. ``"in"``, ``"out"``, ``"inout"``).
 
         Returns:
@@ -30,7 +30,8 @@ class IRPArgument(RPVariable):
         """
         return str(self.get_com_property(self._com, "argumentDirection"))
 
-    def set_argument_direction(self, argument_direction: str) -> None:
+    @argument_direction.setter
+    def argument_direction(self, argument_direction: str) -> None:
         """Sets the direction of the argument.
 
         Args:

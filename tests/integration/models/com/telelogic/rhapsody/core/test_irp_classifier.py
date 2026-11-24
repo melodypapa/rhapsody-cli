@@ -40,7 +40,7 @@ class TestRPClassifierIntegration:
             assert found is not None
             assert found == attribute
             classifier.delete_attribute(attribute)
-            attrs_after = [a.name for a in classifier.get_attributes()]
+            attrs_after = [a.name for a in classifier.attributes]
             assert attr_name not in attrs_after
         finally:
             classifier.delete_from_project()
@@ -70,7 +70,7 @@ class TestRPClassifierIntegration:
         try:
             port = classifier.add_port(port_name)
             assert port is not None
-            ports = list(classifier.get_ports())
+            ports = list(classifier.ports)
             assert port in ports
         finally:
             classifier.delete_from_project()
@@ -81,7 +81,7 @@ class TestRPClassifierIntegration:
         pkg = self._create_package(test_project, pkg_name)
         classifier: IRPClassifier = pkg.add_class(class_name)
         try:
-            artifacts = list(classifier.get_source_artifacts())
+            artifacts = list(classifier.source_artifacts)
             assert artifacts == []
         finally:
             classifier.delete_from_project()
@@ -92,7 +92,7 @@ class TestRPClassifierIntegration:
         pkg = self._create_package(test_project, pkg_name)
         classifier: IRPClassifier = pkg.add_class(class_name)
         try:
-            diagrams = list(classifier.get_sequence_diagrams())
+            diagrams = list(classifier.sequence_diagrams)
             assert diagrams == []
         finally:
             classifier.delete_from_project()
@@ -103,7 +103,7 @@ class TestRPClassifierIntegration:
         pkg = self._create_package(test_project, pkg_name)
         classifier: IRPClassifier = pkg.add_class(class_name)
         try:
-            links = list(classifier.get_links())
+            links = list(classifier.links)
             assert links == []
         finally:
             classifier.delete_from_project()
@@ -117,10 +117,10 @@ class TestRPClassifierIntegration:
         try:
             op = classifier.add_operation(op_name)
             assert op is not None
-            ops = list(classifier.get_operations())
+            ops = list(classifier.operations)
             assert op in ops
             classifier.delete_operation(op)
-            ops_after = list(classifier.get_operations())
+            ops_after = list(classifier.operations)
             assert op not in ops_after
         finally:
             classifier.delete_from_project()
@@ -133,7 +133,7 @@ class TestRPClassifierIntegration:
         classifier: IRPClassifier = pkg.add_class(class_name)
         try:
             op = classifier.add_operation(op_name)
-            items = list(classifier.get_interface_items())
+            items = list(classifier.interface_items)
             assert op in items
             inherited = list(classifier.get_interface_items_including_bases())
             assert len(inherited) >= len(items)
@@ -154,10 +154,10 @@ class TestRPClassifierIntegration:
             assert relation is not None
             found = class_a.find_relation(relation.name)
             assert found is not None
-            relations = list(class_a.get_relations())
+            relations = list(class_a.relations)
             assert relation in relations
             class_a.delete_relation(relation)
-            relations_after = list(class_a.get_relations())
+            relations_after = list(class_a.relations)
             assert relation not in relations_after
         finally:
             class_a.delete_from_project()
@@ -174,7 +174,7 @@ class TestRPClassifierIntegration:
         try:
             relation = class_a.add_relation(class_b_name, pkg_name, role, "Association", "1", role, "Association", "1", "")
             assert relation is not None
-            relations = list(class_a.get_relations())
+            relations = list(class_a.relations)
             assert relation in relations
         finally:
             class_a.delete_from_project()
@@ -191,7 +191,7 @@ class TestRPClassifierIntegration:
         try:
             relation = class_a.add_unidirectional_relation_to(class_b, role, "Association", "1", "")
             assert relation is not None
-            relations = list(class_a.get_relations())
+            relations = list(class_a.relations)
             assert relation in relations
         finally:
             class_a.delete_from_project()
@@ -208,7 +208,7 @@ class TestRPClassifierIntegration:
         try:
             relation = class_a.add_unidirectional_relation(class_b_name, pkg_name, role, "Association", "1", "")
             assert relation is not None
-            relations = list(class_a.get_relations())
+            relations = list(class_a.relations)
             assert relation in relations
         finally:
             class_a.delete_from_project()
@@ -223,9 +223,9 @@ class TestRPClassifierIntegration:
         derived = pkg.add_class(derived_name)
         try:
             derived.add_generalization(base)
-            base_classifiers = list(derived.get_base_classifiers())
+            base_classifiers = list(derived.base_classifiers)
             assert base in base_classifiers
-            derived_classifiers = list(base.get_derived_classifiers())
+            derived_classifiers = list(base.derived_classifiers)
             assert derived in derived_classifiers
             found_base = derived.find_base_classifier(base_name)
             assert found_base == base
@@ -234,10 +234,10 @@ class TestRPClassifierIntegration:
             found_generalization = derived.find_generalization(base_name)
             assert found_generalization is not None
             assert len(list(derived.get_attributes_including_bases())) >= 0
-            generalizations = list(derived.get_generalizations())
+            generalizations = list(derived.generalizations)
             assert len(generalizations) >= 1
             derived.delete_generalization(base)
-            base_classifiers_after = list(derived.get_base_classifiers())
+            base_classifiers_after = list(derived.base_classifiers)
             assert base not in base_classifiers_after
         finally:
             derived.delete_from_project()
@@ -256,7 +256,7 @@ class TestRPClassifierIntegration:
         try:
             derived.add_generalization(base)
             rel = base.add_unidirectional_relation_to(other, role, "Association", "1", "")
-            derived_rels = list(derived.get_relations())
+            derived_rels = list(derived.relations)
             assert rel not in derived_rels
             derived_rels_incl = list(derived.get_relations_including_bases())
             assert rel in derived_rels_incl
@@ -273,9 +273,9 @@ class TestRPClassifierIntegration:
         try:
             activity_diagram = classifier.add_activity_diagram()
             assert activity_diagram is not None
-            fetched = classifier.get_activity_diagram()
+            fetched = classifier.activity_diagram
             assert fetched is not None
-            behavioral = list(classifier.get_behavioral_diagrams())
+            behavioral = list(classifier.behavioral_diagrams)
             assert len(behavioral) >= 1
         finally:
             classifier.delete_from_project()
@@ -288,7 +288,7 @@ class TestRPClassifierIntegration:
         try:
             sc = classifier.add_statechart()
             assert sc is not None
-            fetched = classifier.get_statechart()
+            fetched = classifier.statechart
             assert fetched is not None
             assert fetched == sc
         finally:
@@ -303,10 +303,10 @@ class TestRPClassifierIntegration:
         try:
             flow_item = classifier.add_flow_items(flow_item_name)
             assert flow_item is not None
-            items = list(classifier.get_flow_items())
+            items = list(classifier.flow_items)
             assert flow_item in items
             classifier.delete_flow_items(flow_item)
-            items_after = list(classifier.get_flow_items())
+            items_after = list(classifier.flow_items)
             assert flow_item not in items_after
         finally:
             classifier.delete_from_project()
@@ -320,10 +320,10 @@ class TestRPClassifierIntegration:
         try:
             flow = classifier.add_flows(flow_name)
             assert flow is not None
-            flows = list(classifier.get_flows())
+            flows = list(classifier.flows)
             assert flow in flows
             classifier.delete_flows(flow)
-            flows_after = list(classifier.get_flows())
+            flows_after = list(classifier.flows)
             assert flow not in flows_after
         finally:
             classifier.delete_from_project()
@@ -338,7 +338,7 @@ class TestRPClassifierIntegration:
         try:
             inner = cast(IRPClass, outer).add_class(inner_name)
             assert inner is not None
-            nested = list(outer.get_nested_classifiers())
+            nested = list(outer.nested_classifiers)
             assert inner in nested
             found = outer.find_nested_classifier(inner_name)
             assert found == inner

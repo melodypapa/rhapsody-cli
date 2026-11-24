@@ -35,13 +35,13 @@ Wraps ``IRPUseCase``: represents a use case in the model.
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_use_case.IRPUseCase.get_describing_diagram
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_use_case.IRPUseCase.get_describing_diagrams
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_use_case.IRPUseCase.describing_diagrams
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_use_case.IRPUseCase.get_entry_points
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_use_case.IRPUseCase.entry_points
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_use_case.IRPUseCase.get_extension_points
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_use_case.IRPUseCase.extension_points
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_use_case.IRPUseCase.get_is_behavior_overriden
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_use_case.IRPUseCase.is_behavior_overriden
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_use_case.IRPUseCase.set_is_behavior_overriden
 

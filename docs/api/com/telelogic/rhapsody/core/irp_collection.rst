@@ -23,7 +23,7 @@ Wraps ``IRPCollection``: an iterable/indexable container of elements.
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection.IRPCollection.empty
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection.IRPCollection.get_count
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection.IRPCollection.count
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection.IRPCollection.get_item
 

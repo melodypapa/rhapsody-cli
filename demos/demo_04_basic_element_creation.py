@@ -207,7 +207,7 @@ def demo_add_operations(cls: Any) -> None:
         print(f"\nVerifying operations in {cls.get_name()}:")
         all_operations = cls.get_operations()
         for i, op in enumerate(all_operations, 1):
-            params = op.get_arguments()
+            params = op.arguments
             param_list = ", ".join([f"{p.get_name()}: {p.get_declaration()}" for p in params])
             return_decl = op.get_return_type_declaration()
             print(f"  {i}. {op.get_name()}({param_list}): {return_decl}")

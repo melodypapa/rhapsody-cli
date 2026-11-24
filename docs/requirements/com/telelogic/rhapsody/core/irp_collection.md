@@ -6,7 +6,7 @@
 **Priority:** High
 **Description:**
 The `IRPCollection` interface is Rhapsody's generic element collection. The Python
-`IRPCollection` shall expose 1-based indexed access (`get_count`, `get_item`, iteration, and
+`IRPCollection` shall expose 1-based indexed access (`count`, `get_item`, iteration, and
 `__getitem__`) and the mutators (`add_item`, `set_size`, `remove`, `set_string`,
 `set_integer`, `set_model_element`, `empty`). Every COM call shall target exactly one
 pywin32-exposed member from `docs/reports/pywin32_authority.json` with no runtime name
@@ -19,4 +19,4 @@ invoked as methods via `call_com`. Elements returned by `get_item` are wrapped t
 unverified — do not migrate blind); `to_list` is a Python-side helper with no COM member.
 **Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_collection.py:IRPCollection
 (canonical package)
-**Last Changed:** 2026-11-21
+**Last Changed:** 2026-11-24

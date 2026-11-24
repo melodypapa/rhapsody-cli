@@ -21,42 +21,33 @@ class IRPOperation(IRPInterfaceItem):
     """Wraps ``IRPOperation``: represents an operation or method in a classifier."""
 
     # IRPOperation method parity checklist:
+    # [x] body  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] create_auto_flow_chart  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [ ] delete_argument  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] delete_flowchart  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] get_body  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [ ] get_flowchart  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] flowchart  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] get_implementation_signature  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_initializer  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] get_is_abstract  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [ ] get_is_cg_derived  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_is_const  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_is_ctor  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_is_dtor  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_is_final  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_is_inline  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] get_is_static  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [ ] get_is_trigger  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] get_is_virtual  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_return_type_declaration  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_returns  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] get_visibility  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] set_body  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] set_flowchart  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] set_initializer  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] set_is_abstract  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [ ] set_is_const  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] set_is_final  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] set_is_static  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] set_is_virtual  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [ ] initializer  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] is_abstract  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [ ] is_cg_derived  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] is_const  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] is_ctor  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] is_dtor  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] is_final  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] is_inline  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] is_static  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [ ] is_trigger  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] is_virtual  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] returns  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] set_return_type_declaration  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] set_returns  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] set_visibility  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] update_contained_diagrams_on_server  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [ ] visibility  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [inherited] irp_interface_item / irp_classifier / irp_unit / irp_model_element methods (covered by rp_interface_item / rp_classifier / rp_unit / rp_model_element checklists)
     # No deprecated IRPOperation methods.
 
-    def get_body(self) -> str:
+    @property
+    def body(self) -> str:
         """Returns the body/implementation of the operation.
 
         Returns:
@@ -67,7 +58,20 @@ class IRPOperation(IRPInterfaceItem):
         """
         return str(self.get_com_property(self._com, "body"))
 
-    def get_is_abstract(self) -> bool:
+    @body.setter
+    def body(self, body: str) -> None:
+        """Sets the body/implementation of the operation.
+
+        Args:
+            body: The body code to set.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPOperation::setBody(java.lang.String body)
+        """
+        self.set_com_property(self._com, "body", body)
+
+    @property
+    def is_abstract(self) -> bool:
         """Checks whether this operation is abstract.
 
         Returns:
@@ -78,7 +82,8 @@ class IRPOperation(IRPInterfaceItem):
         """
         return bool(self.get_com_property(self._com, "isAbstract"))
 
-    def set_is_abstract(self, is_abstract: int) -> None:
+    @is_abstract.setter
+    def is_abstract(self, is_abstract: int) -> None:
         """Sets whether this operation is abstract.
 
         Args:
@@ -89,7 +94,8 @@ class IRPOperation(IRPInterfaceItem):
         """
         self.set_com_property(self._com, "isAbstract", is_abstract)
 
-    def get_is_static(self) -> bool:
+    @property
+    def is_static(self) -> bool:
         """Checks whether this operation is static.
 
         Returns:
@@ -100,7 +106,8 @@ class IRPOperation(IRPInterfaceItem):
         """
         return bool(self.get_com_property(self._com, "isStatic"))
 
-    def set_is_static(self, is_static: int) -> None:
+    @is_static.setter
+    def is_static(self, is_static: int) -> None:
         """Sets whether this operation is static.
 
         Args:
@@ -111,7 +118,8 @@ class IRPOperation(IRPInterfaceItem):
         """
         self.set_com_property(self._com, "isStatic", is_static)
 
-    def get_is_virtual(self) -> bool:
+    @property
+    def is_virtual(self) -> bool:
         """Checks whether this operation is virtual (for C++ or C# classes).
 
         Returns:
@@ -122,7 +130,8 @@ class IRPOperation(IRPInterfaceItem):
         """
         return bool(self.get_com_property(self._com, "isVirtual"))
 
-    def set_is_virtual(self, is_virtual: int) -> None:
+    @is_virtual.setter
+    def is_virtual(self, is_virtual: int) -> None:
         """Sets whether this operation is virtual (for C++ or C# classes).
 
         Args:
@@ -133,7 +142,8 @@ class IRPOperation(IRPInterfaceItem):
         """
         self.set_com_property(self._com, "isVirtual", is_virtual)
 
-    def get_returns(self) -> IRPClassifier:
+    @property
+    def returns(self) -> IRPClassifier:
         """Returns the type specification for the operation's return value.
 
         Returns:
@@ -145,6 +155,18 @@ class IRPOperation(IRPInterfaceItem):
         from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 
         return cast(IRPClassifier, self.wrap(self.get_com_property(self._com, "returns")))
+
+    @returns.setter
+    def returns(self, returns: IRPClassifier) -> None:
+        """Sets the return type of the operation to an existing classifier.
+
+        Args:
+            returns: The wrapped ``IRPClassifier`` to use as the return type.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPOperation::setReturns(com.telelogic.rhapsody.core.IRPClassifier returns)
+        """
+        self.set_com_property(self._com, "returns", returns._com)
 
     def get_return_type_declaration(self) -> str:
         """Returns the on-the-fly return type declaration for the operation.
@@ -164,17 +186,6 @@ class IRPOperation(IRPInterfaceItem):
             com.telelogic.rhapsody.core.IRPOperation::createAutoFlowChart()
         """
         self.call_com(lambda: self._com.createAutoFlowChart())
-
-    def set_returns(self, returns: IRPClassifier) -> None:
-        """Sets the return type of the operation to an existing classifier.
-
-        Args:
-            returns: The wrapped ``IRPClassifier`` to use as the return type.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPOperation::setReturns(com.telelogic.rhapsody.core.IRPClassifier returns)
-        """
-        self.set_com_property(self._com, "returns", returns._com)
 
     def set_return_type_declaration(self, new_val: str) -> None:
         """Specifies an on-the-fly return type declaration for the operation.
@@ -207,7 +218,8 @@ class IRPOperation(IRPInterfaceItem):
         """
         self.call_com(lambda: self._com.deleteFlowchart())
 
-    def get_flowchart(self) -> RPFlowchart:
+    @property
+    def flowchart(self) -> RPFlowchart:
         """Returns the flowchart associated with the operation.
 
         Returns:
@@ -220,6 +232,18 @@ class IRPOperation(IRPInterfaceItem):
 
         return cast(RPFlowchart, self.wrap(self.get_com_property(self._com, "flowchart")))
 
+    @flowchart.setter
+    def flowchart(self, flowchart: RPFlowchart) -> None:
+        """Sets the flowchart associated with the operation.
+
+        Args:
+            flowchart: The wrapped activity diagram to set as the flowchart.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPOperation::setFlowchart(com.telelogic.rhapsody.core.IRPActivityDiagram flowchart)
+        """
+        self.set_com_property(self._com, "flowchart", flowchart._com)
+
     def get_implementation_signature(self) -> str:
         """Returns the implementation signature of the operation.
 
@@ -231,7 +255,8 @@ class IRPOperation(IRPInterfaceItem):
         """
         return str(self.call_com(lambda: self._com.getImplementationSignature()))
 
-    def get_initializer(self) -> str:
+    @property
+    def initializer(self) -> str:
         """Returns the initializer for the operation.
 
         Returns:
@@ -242,117 +267,8 @@ class IRPOperation(IRPInterfaceItem):
         """
         return str(self.get_com_property(self._com, "initializer"))
 
-    def get_is_cg_derived(self) -> int:
-        """Checks whether the operation's code is derived from code generation.
-
-        Returns:
-            ``1`` if the operation is code-generated derived, ``0`` otherwise.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPOperation::getIsCgDerived()
-        """
-        return int(self.get_com_property(self._com, "isCgDerived"))
-
-    def get_is_const(self) -> int:
-        """Checks whether the operation is const (C++).
-
-        Returns:
-            ``1`` if the operation is const, ``0`` otherwise.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPOperation::getIsConst()
-        """
-        return int(self.get_com_property(self._com, "isConst"))
-
-    def get_is_ctor(self) -> int:
-        """Checks whether the operation is a constructor.
-
-        Returns:
-            ``1`` if the operation is a constructor, ``0`` otherwise.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPOperation::getIsCtor()
-        """
-        return int(self.get_com_property(self._com, "isCtor"))
-
-    def get_is_dtor(self) -> int:
-        """Checks whether the operation is a destructor.
-
-        Returns:
-            ``1`` if the operation is a destructor, ``0`` otherwise.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPOperation::getIsDtor()
-        """
-        return int(self.get_com_property(self._com, "isDtor"))
-
-    def get_is_final(self) -> int:
-        """Checks whether the operation is final.
-
-        Returns:
-            ``1`` if the operation is final, ``0`` otherwise.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPOperation::getIsFinal()
-        """
-        return int(self.get_com_property(self._com, "isFinal"))
-
-    def get_is_inline(self) -> int:
-        """Checks whether the operation is inline.
-
-        Returns:
-            ``1`` if the operation is inline, ``0`` otherwise.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPOperation::getIsInline()
-        """
-        return int(self.get_com_property(self._com, "isInline"))
-
-    def get_is_trigger(self) -> int:
-        """Checks whether the operation is used as a trigger.
-
-        Returns:
-            ``1`` if the operation is a trigger, ``0`` otherwise.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPOperation::getIsTrigger()
-        """
-        return int(self.get_com_property(self._com, "isTrigger"))
-
-    def get_visibility(self) -> str:
-        """Returns the visibility of the operation.
-
-        Returns:
-            The visibility string (e.g. ``"public"``, ``"private"``).
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPOperation::getVisibility()
-        """
-        return str(self.get_com_property(self._com, "visibility"))
-
-    def set_body(self, body: str) -> None:
-        """Sets the body/implementation of the operation.
-
-        Args:
-            body: The body code to set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPOperation::setBody(java.lang.String body)
-        """
-        self.set_com_property(self._com, "body", body)
-
-    def set_flowchart(self, flowchart: RPFlowchart) -> None:
-        """Sets the flowchart associated with the operation.
-
-        Args:
-            flowchart: The wrapped activity diagram to set as the flowchart.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPOperation::setFlowchart(com.telelogic.rhapsody.core.IRPActivityDiagram flowchart)
-        """
-        self.set_com_property(self._com, "flowchart", flowchart._com)
-
-    def set_initializer(self, initializer: str) -> None:
+    @initializer.setter
+    def initializer(self, initializer: str) -> None:
         """Sets the initializer for the operation.
 
         Args:
@@ -363,7 +279,32 @@ class IRPOperation(IRPInterfaceItem):
         """
         self.set_com_property(self._com, "initializer", initializer)
 
-    def set_is_const(self, is_const: int) -> None:
+    @property
+    def is_cg_derived(self) -> int:
+        """Checks whether the operation's code is derived from code generation.
+
+        Returns:
+            ``1`` if the operation is code-generated derived, ``0`` otherwise.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPOperation::getIsCgDerived()
+        """
+        return int(self.get_com_property(self._com, "isCgDerived"))
+
+    @property
+    def is_const(self) -> int:
+        """Checks whether the operation is const (C++).
+
+        Returns:
+            ``1`` if the operation is const, ``0`` otherwise.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPOperation::getIsConst()
+        """
+        return int(self.get_com_property(self._com, "isConst"))
+
+    @is_const.setter
+    def is_const(self, is_const: int) -> None:
         """Sets whether the operation is const (C++).
 
         Args:
@@ -374,7 +315,44 @@ class IRPOperation(IRPInterfaceItem):
         """
         self.set_com_property(self._com, "isConst", is_const)
 
-    def set_is_final(self, is_final: int) -> None:
+    @property
+    def is_ctor(self) -> int:
+        """Checks whether the operation is a constructor.
+
+        Returns:
+            ``1`` if the operation is a constructor, ``0`` otherwise.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPOperation::getIsCtor()
+        """
+        return int(self.get_com_property(self._com, "isCtor"))
+
+    @property
+    def is_dtor(self) -> int:
+        """Checks whether the operation is a destructor.
+
+        Returns:
+            ``1`` if the operation is a destructor, ``0`` otherwise.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPOperation::getIsDtor()
+        """
+        return int(self.get_com_property(self._com, "isDtor"))
+
+    @property
+    def is_final(self) -> int:
+        """Checks whether the operation is final.
+
+        Returns:
+            ``1`` if the operation is final, ``0`` otherwise.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPOperation::getIsFinal()
+        """
+        return int(self.get_com_property(self._com, "isFinal"))
+
+    @is_final.setter
+    def is_final(self, is_final: int) -> None:
         """Sets whether the operation is final.
 
         Args:
@@ -385,7 +363,44 @@ class IRPOperation(IRPInterfaceItem):
         """
         self.set_com_property(self._com, "isFinal", is_final)
 
-    def set_visibility(self, visibility: str) -> None:
+    @property
+    def is_inline(self) -> int:
+        """Checks whether the operation is inline.
+
+        Returns:
+            ``1`` if the operation is inline, ``0`` otherwise.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPOperation::getIsInline()
+        """
+        return int(self.get_com_property(self._com, "isInline"))
+
+    @property
+    def is_trigger(self) -> int:
+        """Checks whether the operation is used as a trigger.
+
+        Returns:
+            ``1`` if the operation is a trigger, ``0`` otherwise.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPOperation::getIsTrigger()
+        """
+        return int(self.get_com_property(self._com, "isTrigger"))
+
+    @property
+    def visibility(self) -> str:
+        """Returns the visibility of the operation.
+
+        Returns:
+            The visibility string (e.g. ``"public"``, ``"private"``).
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPOperation::getVisibility()
+        """
+        return str(self.get_com_property(self._com, "visibility"))
+
+    @visibility.setter
+    def visibility(self, visibility: str) -> None:
         """Sets the visibility of the operation.
 
         Args:

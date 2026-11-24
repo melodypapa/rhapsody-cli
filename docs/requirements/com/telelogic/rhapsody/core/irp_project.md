@@ -10,8 +10,8 @@ Python `IRPProject` shall extend `IRPPackage` and expose Java-mirrored creation 
 lookup methods (`add_class`, `add_actor`, `add_node`, `find_node`, `delete_node`),
 gateway/report operations (`gateway_export_to_xml`, `gateway_export_to_xml2`,
 `generate_report`), configuration (`set_global_configuration`,
-`set_use_unique_stereotype_and_ref_cache`, `get_active_configuration`,
-`get_default_directory_scheme`/`set_default_directory_scheme`,
+`use_unique_stereotype_and_ref_cache`, `active_configuration`,
+`default_directory_scheme`, `set_active_component`/`set_active_configuration`,
 `get_notify_plugin_on_elements_changed`/`set_notify_plugin_on_elements_changed`,
 `set_wait_dialog_watchdog_value`), CDM/diagram helpers (`get_new_collaboration`,
 `get_code_generated_files`, `get_active_custom_views_on_browser`,
@@ -23,13 +23,18 @@ The wrapper registers itself for meta class `"Project"`.
 Catalog-backed members call exactly one pywin32 member from
 `docs/reports/pywin32_authority.json`: property-shaped members use
 `get_com_property`/`set_com_property` and method-shaped members use `call_com`.
-`set_global_configuration` and `set_use_unique_stereotype_and_ref_cache` are
-catalog blockers whose legacy dual-binding sites are left unchanged. Several
-members (`add_actor`, `add_class`, `add_node`, `delete_node`, `find_node`,
-`get_nodes`, `get_packages`) are COM extensions absent from the JavaDoc and are
-documented as such. The module uses `from __future__ import annotations` with
-unquoted type references and local imports for names used only in `cast()`.
+`active_component`, `active_configuration`, `all_stereotypes`,
+`cg_simplified_model_package`, `components`, `default_directory_scheme`, `nodes`,
+`packages`, `profiles`, and `use_unique_stereotype_and_ref_cache` are exposed as
+Python `@property` accessors. `active_component`/`active_configuration` keep
+method-shaped `set_active_component`/`set_active_configuration` setters because
+pywin32 exposes those as methods. `set_global_configuration` is a catalog blocker
+whose legacy dual-binding site is left unchanged. Several members (`add_actor`,
+`add_class`, `add_node`, `delete_node`, `find_node`, `nodes`, `packages`) are COM
+extensions absent from the JavaDoc and are documented as such. The module uses
+`from __future__ import annotations` with unquoted type references and local
+imports for names used only in `cast()`.
 **Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py:IRPProject
 (class renamed from `RPProject`; §2 canonical package move completed; 22 legacy
 call sites migrated; 2 catalog-absent sites left unchanged)
-**Last Changed:** 2026-11-22
+**Last Changed:** 2026-11-24

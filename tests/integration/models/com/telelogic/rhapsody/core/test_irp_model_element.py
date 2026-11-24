@@ -108,13 +108,13 @@ class TestRPCollectionAddItemIntegration:
             collection = rhapsody_app.create_new_collection()
             assert isinstance(collection, IRPCollection)
 
-            before = collection.get_count()
+            before = collection.count
             assert isinstance(before, int)
             assert before == 0
 
             collection.add_item(cls1)
             collection.add_item(cls2)
-            after = collection.get_count()
+            after = collection.count
             assert isinstance(after, int)
             assert after == before + 2
 
@@ -134,7 +134,7 @@ class TestRPCollectionAddItemIntegration:
 
             collection.add_item(cls)
             collection.add_item(cls)
-            assert collection.get_count() == 2
+            assert collection.count == 2
 
             names = [item.name for item in collection]
             assert names.count(cls.name) == 2
@@ -183,10 +183,10 @@ class TestRPCollectionMutationMethodsIntegration:
         try:
             collection = rhapsody_app.create_new_collection()
             assert isinstance(collection, IRPCollection)
-            assert collection.get_count() == 0
+            assert collection.count == 0
 
             collection.set_size(3)
-            count = collection.get_count()
+            count = collection.count
             assert isinstance(count, int)
             assert count == 3
         finally:
@@ -202,11 +202,11 @@ class TestRPCollectionMutationMethodsIntegration:
             assert isinstance(collection, IRPCollection)
             collection.add_item(cls1)
             collection.add_item(cls2)
-            before = collection.get_count()
+            before = collection.count
             assert before == 2
 
             collection.remove(1)
-            after = collection.get_count()
+            after = collection.count
             assert isinstance(after, int)
             assert after == before - 1
 
@@ -227,7 +227,7 @@ class TestRPCollectionMutationMethodsIntegration:
             assert isinstance(collection, IRPCollection)
             collection.add_item(cls1)
             collection.add_item(cls2)
-            assert collection.get_count() == 2
+            assert collection.count == 2
 
             collection.set_model_element(1, cls3)
             replaced = collection.get_item(1)
@@ -246,10 +246,10 @@ class TestRPCollectionMutationMethodsIntegration:
             assert isinstance(collection, IRPCollection)
             collection.add_item(cls1)
             collection.add_item(cls2)
-            assert collection.get_count() == 2
+            assert collection.count == 2
 
             collection.empty()
-            count = collection.get_count()
+            count = collection.count
             assert isinstance(count, int)
             assert count == 0
             assert len(list(collection)) == 0
@@ -310,8 +310,8 @@ class TestRPModelElementDependenciesIntegration:
 
             deps = source.dependencies
             assert isinstance(deps, IRPCollection)
-            assert isinstance(deps.get_count(), int)
-            assert deps.get_count() >= 0
+            assert isinstance(deps.count, int)
+            assert deps.count >= 0
             assert len(list(deps)) >= 1
 
             source.delete_dependency(dependency)
@@ -349,8 +349,8 @@ class TestRPModelElementDependenciesIntegration:
             assert dependency.meta_class == "Dependency"
             deps = pkg.get_owned_dependencies()
             assert isinstance(deps, IRPCollection)
-            assert isinstance(deps.get_count(), int)
-            assert deps.get_count() >= 0
+            assert isinstance(deps.count, int)
+            assert deps.count >= 0
             assert len(list(deps)) >= 1
             pkg.delete_dependency(dependency)
         finally:
@@ -365,8 +365,8 @@ class TestRPModelElementDependenciesIntegration:
             dependency = source.add_dependency_to(target)
             owned = source.get_owned_dependencies()
             assert isinstance(owned, IRPCollection)
-            assert isinstance(owned.get_count(), int)
-            assert owned.get_count() >= 0
+            assert isinstance(owned.count, int)
+            assert owned.count >= 0
             assert len(list(owned)) >= 1
             source.delete_dependency(dependency)
         finally:
@@ -383,7 +383,7 @@ class TestRPModelElementDependenciesIntegration:
         try:
             remote_dependencies = cls.get_remote_dependencies()
             assert isinstance(remote_dependencies, IRPCollection)
-            assert isinstance(remote_dependencies.get_count(), int)
+            assert isinstance(remote_dependencies.count, int)
             assert len(list(remote_dependencies)) == 0
         finally:
             pkg.delete_from_project()
@@ -395,7 +395,7 @@ class TestRPModelElementDependenciesIntegration:
             assoc_classes = pkg.association_classes
             assert isinstance(assoc_classes, IRPCollection)
             # smoke test: no associations created, but confirm the COM call returns a valid IRPCollection
-            assert isinstance(assoc_classes.get_count(), int)
+            assert isinstance(assoc_classes.count, int)
         finally:
             pkg.delete_from_project()
 
@@ -408,8 +408,8 @@ class TestRPModelElementDependenciesIntegration:
             dependency = source.add_dependency_to(target)
             references = target.references
             assert isinstance(references, IRPCollection)
-            assert isinstance(references.get_count(), int)
-            assert references.get_count() >= 0
+            assert isinstance(references.count, int)
+            assert references.count >= 0
             source.delete_dependency(dependency)
         finally:
             pkg.delete_from_project()
@@ -920,7 +920,7 @@ class TestRPModelElementNavigationIntegration:
             pkg.add_class(self._unique("Child2"))
             elements = pkg.get_nested_elements_recursive()
             assert isinstance(elements, IRPCollection)
-            assert isinstance(elements.get_count(), int)
+            assert isinstance(elements.count, int)
             assert len(list(elements)) >= 3
         finally:
             pkg.delete_from_project()
@@ -1081,7 +1081,7 @@ class TestRPModelElementCloningTemplatesIntegration:
             params = cls.template_parameters
             assert params is not None
             assert isinstance(params, IRPCollection)
-            assert isinstance(params.get_count(), int)
+            assert isinstance(params.count, int)
         finally:
             pkg.delete_from_project()
 
@@ -1178,7 +1178,7 @@ class TestRPModelElementRedefinesConstraintsIntegration:
             constraints = cls.constraints
             assert constraints is not None
             assert isinstance(constraints, IRPCollection)
-            assert isinstance(constraints.get_count(), int)
+            assert isinstance(constraints.count, int)
         finally:
             pkg.delete_from_project()
 
@@ -1189,7 +1189,7 @@ class TestRPModelElementRedefinesConstraintsIntegration:
             constraints = cls.constraints_by_him
             assert constraints is not None
             assert isinstance(constraints, IRPCollection)
-            assert isinstance(constraints.get_count(), int)
+            assert isinstance(constraints.count, int)
         finally:
             pkg.delete_from_project()
 
@@ -1223,8 +1223,8 @@ class TestRPModelElementOslcRemoteIntegration:
             cls = pkg.add_class(self._unique("HyperLinkCls"))
             hyper_links = cls.hyper_links
             assert isinstance(hyper_links, IRPCollection)
-            assert isinstance(hyper_links.get_count(), int)
-            assert hyper_links.get_count() == 0
+            assert isinstance(hyper_links.count, int)
+            assert hyper_links.count == 0
             assert len(list(hyper_links)) == 0
         finally:
             pkg.delete_from_project()
@@ -1470,8 +1470,8 @@ class TestRPModelElementDiagnosticsUiIntegration:
             cls = pkg.add_class(self._unique("AnnCls"))
             annotations = cls.annotations
             assert isinstance(annotations, IRPCollection)
-            assert isinstance(annotations.get_count(), int)
-            assert annotations.get_count() == 0
+            assert isinstance(annotations.count, int)
+            assert annotations.count == 0
             assert len(list(annotations)) == 0
         finally:
             pkg.delete_from_project()
@@ -1482,8 +1482,8 @@ class TestRPModelElementDiagnosticsUiIntegration:
             cls = pkg.add_class(self._unique("CtrlCls"))
             files = cls.controlled_files
             assert isinstance(files, IRPCollection)
-            assert isinstance(files.get_count(), int)
-            assert files.get_count() == 0
+            assert isinstance(files.count, int)
+            assert files.count == 0
             assert len(list(files)) == 0
         finally:
             pkg.delete_from_project()

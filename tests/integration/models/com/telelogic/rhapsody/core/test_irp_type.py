@@ -51,7 +51,7 @@ class TestIRPTypeIntegration:
     def test_get_declaration(self, test_project: IRPProject) -> None:
         type_element, _cls, pkg = self._create_type(test_project)
         try:
-            assert isinstance(type_element.get_declaration(), str)
+            assert isinstance(type_element.declaration, str)
         finally:
             pkg.delete_from_project()
 
@@ -59,7 +59,7 @@ class TestIRPTypeIntegration:
         pkg = test_project.add_package(self._unique("TypePkg"))
         ti = IRPType(pkg.add_type(self._unique("Type"))._com)
         try:
-            assert isinstance(ti.get_enumeration_literals(), IRPCollection)
+            assert isinstance(ti.enumeration_literals, IRPCollection)
         finally:
             pkg.delete_from_project()
 
@@ -67,7 +67,7 @@ class TestIRPTypeIntegration:
         pkg = test_project.add_package(self._unique("TypePkg"))
         ti = IRPType(pkg.add_type(self._unique("Type"))._com)
         try:
-            assert ti.get_is_predefined() in (0, 1)
+            assert ti.is_predefined in (0, 1)
         finally:
             pkg.delete_from_project()
 
@@ -75,7 +75,7 @@ class TestIRPTypeIntegration:
         pkg = test_project.add_package(self._unique("TypePkg"))
         ti = IRPType(pkg.add_type(self._unique("Type"))._com)
         try:
-            assert ti.get_is_typedef() in (0, 1)
+            assert ti.is_typedef in (0, 1)
         finally:
             pkg.delete_from_project()
 
@@ -83,7 +83,7 @@ class TestIRPTypeIntegration:
         pkg = test_project.add_package(self._unique("TypePkg"))
         ti = IRPType(pkg.add_type(self._unique("Type"))._com)
         try:
-            assert ti.get_is_typedef_constant() in (0, 1)
+            assert ti.is_typedef_constant in (0, 1)
         finally:
             pkg.delete_from_project()
 
@@ -91,7 +91,7 @@ class TestIRPTypeIntegration:
         pkg = test_project.add_package(self._unique("TypePkg"))
         ti = IRPType(pkg.add_type(self._unique("Type"))._com)
         try:
-            assert ti.get_is_typedef_ordered() in (0, 1)
+            assert ti.is_typedef_ordered in (0, 1)
         finally:
             pkg.delete_from_project()
 
@@ -99,14 +99,14 @@ class TestIRPTypeIntegration:
         pkg = test_project.add_package(self._unique("TypePkg"))
         ti = IRPType(pkg.add_type(self._unique("Type"))._com)
         try:
-            assert ti.get_is_typedef_reference() in (0, 1)
+            assert ti.is_typedef_reference in (0, 1)
         finally:
             pkg.delete_from_project()
 
     def test_get_kind(self, test_project: IRPProject) -> None:
         type_element, _cls, pkg = self._create_type(test_project)
         try:
-            assert isinstance(type_element.get_kind(), str)
+            assert isinstance(type_element.kind, str)
         finally:
             pkg.delete_from_project()
 
@@ -114,14 +114,14 @@ class TestIRPTypeIntegration:
         pkg = test_project.add_package(self._unique("TypePkg"))
         ti = IRPType(pkg.add_type(self._unique("Type"))._com)
         try:
-            assert ti.get_typedef_base_type() is None
+            assert ti.typedef_base_type is None
         finally:
             pkg.delete_from_project()
 
     def test_get_typedef_multiplicity(self, test_project: IRPProject) -> None:
         type_element, _cls, pkg = self._create_type(test_project)
         try:
-            assert isinstance(type_element.get_typedef_multiplicity(), str)
+            assert isinstance(type_element.typedef_multiplicity, str)
         finally:
             pkg.delete_from_project()
 
@@ -240,35 +240,35 @@ class TestIRPTypeIntegration:
     def test_set_declaration(self, test_project: IRPProject) -> None:
         type_element, _cls, pkg = self._create_type(test_project)
         try:
-            assert type_element.set_declaration("int x") is None  # type: ignore[func-returns-value]
+            type_element.declaration = "int x"
         finally:
             pkg.delete_from_project()
 
     def test_set_is_typedef_constant(self, test_project: IRPProject) -> None:
         type_element, _cls, pkg = self._create_type(test_project)
         try:
-            assert type_element.set_is_typedef_constant(0) is None  # type: ignore[func-returns-value]
+            type_element.is_typedef_constant = 0
         finally:
             pkg.delete_from_project()
 
     def test_set_is_typedef_ordered(self, test_project: IRPProject) -> None:
         type_element, _cls, pkg = self._create_type(test_project)
         try:
-            assert type_element.set_is_typedef_ordered(0) is None  # type: ignore[func-returns-value]
+            type_element.is_typedef_ordered = 0
         finally:
             pkg.delete_from_project()
 
     def test_set_is_typedef_reference(self, test_project: IRPProject) -> None:
         type_element, _cls, pkg = self._create_type(test_project)
         try:
-            assert type_element.set_is_typedef_reference(0) is None  # type: ignore[func-returns-value]
+            type_element.is_typedef_reference = 0
         finally:
             pkg.delete_from_project()
 
     def test_set_kind(self, test_project: IRPProject) -> None:
         type_element, _cls, pkg = self._create_type(test_project)
         try:
-            assert type_element.set_kind("x") is None  # type: ignore[func-returns-value]
+            type_element.kind = "x"
         finally:
             pkg.delete_from_project()
 
@@ -280,7 +280,7 @@ class TestIRPTypeIntegration:
             # The typedefBaseType property is readable but COM in this build
             # rejects writes; assert the binding shape via a mocked setter.
             with patch.object(IRPModelElement, "set_com_property") as setter:
-                ti.set_typedef_base_type(base)
+                ti.typedef_base_type = base
                 setter.assert_called_once_with(ti._com, "typedefBaseType", base._com)
         finally:
             pkg.delete_from_project()
@@ -288,6 +288,6 @@ class TestIRPTypeIntegration:
     def test_set_typedef_multiplicity(self, test_project: IRPProject) -> None:
         type_element, _cls, pkg = self._create_type(test_project)
         try:
-            assert type_element.set_typedef_multiplicity("0..1") is None  # type: ignore[func-returns-value]
+            type_element.typedef_multiplicity = "0..1"
         finally:
             pkg.delete_from_project()

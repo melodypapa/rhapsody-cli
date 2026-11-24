@@ -19,27 +19,11 @@ Wraps ``IRPType``.
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.add_enumeration_literal
 
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.declaration
+
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.delete_enumeration_literal
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.get_declaration
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.get_enumeration_literals
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.get_is_predefined
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.get_is_typedef
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.get_is_typedef_constant
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.get_is_typedef_ordered
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.get_is_typedef_reference
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.get_kind
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.get_typedef_base_type
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.get_typedef_multiplicity
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.enumeration_literals
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.is_array
 
@@ -63,6 +47,8 @@ Wraps ``IRPType``.
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.is_pointer_to_pointer
 
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.is_predefined
+
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.is_reference
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.is_reference_to_pointer
@@ -71,18 +57,18 @@ Wraps ``IRPType``.
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.is_template
 
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.is_typedef
+
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.is_typedef_constant
+
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.is_typedef_ordered
+
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.is_typedef_reference
+
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.is_union
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.set_declaration
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.kind
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.set_is_typedef_constant
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.typedef_base_type
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.set_is_typedef_ordered
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.set_is_typedef_reference
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.set_kind
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.set_typedef_base_type
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.set_typedef_multiplicity
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type.IRPType.typedef_multiplicity

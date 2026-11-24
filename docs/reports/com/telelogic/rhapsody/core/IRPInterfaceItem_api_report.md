@@ -34,11 +34,11 @@
 | --- | --- | --- | --- | --- |
 | add_argument() -> addArgument | addArgument (method) | addArgument (method) | MATCH | — |
 | add_argument_before_position() -> addArgumentBeforePosition | addArgumentBeforePosition (method) | addArgumentBeforePosition (method) | MATCH | — |
-| get_arguments() -> arguments | getArguments (method) | arguments (property) | MATCH | — |
-| get_signature() -> signature | getSignature (method) | signature (property) | MATCH | — |
+| arguments (property) -> arguments | getArguments (method) | arguments (property) | MATCH | — |
 | get_signature_no_arg_names() -> getSignatureNoArgNames | getSignatureNoArgNames (method) | getSignatureNoArgNames (method) | MATCH | — |
 | get_signature_no_arg_types() -> getSignatureNoArgTypes | getSignatureNoArgTypes (method) | getSignatureNoArgTypes (method) | MATCH | — |
 | match_on_signature() -> matchOnSignature | matchOnSignature (method) | matchOnSignature (method) | MATCH | — |
+| signature (property) -> signature | getSignature (method) | signature (property) | MATCH | — |
 
 </details>
 

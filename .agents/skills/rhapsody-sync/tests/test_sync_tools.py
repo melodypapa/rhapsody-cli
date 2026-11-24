@@ -434,10 +434,73 @@ def test_binding_check_accepts_valid_bindings(tmp_path: Path) -> None:
 class IRPType:
     def get_thing(self):
         return self.call_com(lambda: self._com.Thing())
+
+    @property
+    def flag(self):
+        return self.get_com_property(self._com, "flag")
+
+    @flag.setter
+    def flag(self, value):
+        self.set_com_property(self._com, "flag", value)
+"""
+    assert tools.verify_wrapper_bindings(tmp_path, "IRPType", wrapper) == []
+
+
+def test_binding_check_flags_property_member_exposed_as_plain_method(tmp_path: Path) -> None:
+    """SKILL §3: a property-shaped COM member must be surfaced as @property."""
+    tools = _load_sync_tools()
+    (tmp_path / "docs" / "reports").mkdir(parents=True)
+    (tmp_path / "docs" / "reports" / "pywin32_authority.json").write_text('{"catalog": {"IRPType": {"flag": "property"}}}', encoding="utf-8")
+    wrapper = """
+class IRPType:
     def get_flag(self):
         return self.get_com_property(self._com, "flag")
 """
-    assert tools.verify_wrapper_bindings(tmp_path, "IRPType", wrapper) == []
+    issues = tools.verify_wrapper_bindings(tmp_path, "IRPType", wrapper)
+    assert any("flag" in issue and "@property" in issue for issue in issues)
+
+
+def test_binding_check_flags_method_member_exposed_as_property(tmp_path: Path) -> None:
+    """SKILL §3: a method-shaped COM member must not be surfaced as @property."""
+    tools = _load_sync_tools()
+    (tmp_path / "docs" / "reports").mkdir(parents=True)
+    (tmp_path / "docs" / "reports" / "pywin32_authority.json").write_text('{"catalog": {"IRPType": {"Thing": "method"}}}', encoding="utf-8")
+    wrapper = """
+class IRPType:
+    @property
+    def thing(self):
+        return self.call_com(lambda: self._com.Thing())
+"""
+    issues = tools.verify_wrapper_bindings(tmp_path, "IRPType", wrapper)
+    assert any("Thing" in issue and "@property" in issue for issue in issues)
+
+
+def test_binding_check_flags_legacy_dual_binding_helper(tmp_path: Path) -> None:
+    """SKILL §4: synced wrappers must not keep _get_method_or_property probes."""
+    tools = _load_sync_tools()
+    (tmp_path / "docs" / "reports").mkdir(parents=True)
+    (tmp_path / "docs" / "reports" / "pywin32_authority.json").write_text('{"catalog": {"IRPType": {"Thing": "method"}}}', encoding="utf-8")
+    wrapper = """
+class IRPType:
+    def get_thing(self):
+        return self._get_method_or_property("Thing")
+"""
+    issues = tools.verify_wrapper_bindings(tmp_path, "IRPType", wrapper)
+    assert any("_get_method_or_property" in issue for issue in issues)
+
+
+def test_binding_check_flags_direct_com_access(tmp_path: Path) -> None:
+    """SKILL §3: COM members are reached only through call_com or the property helpers."""
+    tools = _load_sync_tools()
+    (tmp_path / "docs" / "reports").mkdir(parents=True)
+    (tmp_path / "docs" / "reports" / "pywin32_authority.json").write_text('{"catalog": {"IRPType": {"Thing": "method"}}}', encoding="utf-8")
+    wrapper = """
+class IRPType:
+    def get_thing(self):
+        return self._com.Thing()
+"""
+    issues = tools.verify_wrapper_bindings(tmp_path, "IRPType", wrapper)
+    assert any("self._com.Thing" in issue for issue in issues)
 
 
 def test_integration_check_allows_only_not_implemented_error() -> None:

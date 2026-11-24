@@ -23,24 +23,18 @@ Wraps ``IRPPort``: represents a port on a classifier in the model.
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.get_contract
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.get_is_behavioral
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.is_behavioral
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.get_is_reversed
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.is_reversed
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.get_port_contract
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.port_contract
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.get_provided_interfaces
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.provided_interfaces
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.get_required_interfaces
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.required_interfaces
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.remove_provided_interface
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.remove_required_interface
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.set_contract
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.set_is_behavioral
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.set_is_reversed
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port.IRPPort.set_port_contract

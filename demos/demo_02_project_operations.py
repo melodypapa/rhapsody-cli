@@ -55,12 +55,12 @@ def demo_get_active_project(app: RhapsodyApplication) -> Any:
             print(f"[OK] Active project found: {project.get_name()}")
             print("\nProject Details:")
             print(f"  - Name: {project.get_name()}")
-            print(f"  - Filename: {project.get_filename()}")
+            print(f"  - Filename: {project.filename}")
             print(f"  - GUID: {project.get_guid()}")
 
             # Get some basic statistics
             try:
-                packages = project.get_packages()
+                packages = project.packages
                 classes = project.get_nested_elements_by_meta_class("Class", 1)
                 print(f"  - Packages: {len(packages)}")
                 print(f"  - Classes (total): {len(classes)}")
@@ -106,7 +106,7 @@ def demo_list_all_projects(app: RhapsodyApplication) -> None:
             for i, project in enumerate(projects, 1):
                 print(f"\nProject {i}:")
                 print(f"  - Name: {project.get_name()}")
-                print(f"  - Filename: {project.get_filename()}")
+                print(f"  - Filename: {project.filename}")
                 status = "Active" if active_guid and project.get_guid() == active_guid else "Inactive"
                 print(f"  - Status: {status}")
         else:
@@ -144,7 +144,7 @@ def demo_open_existing_project(app: RhapsodyApplication, project_path: str) -> A
 
         print("\nProject Details:")
         print(f"  - Name: {project.get_name()}")
-        print(f"  - Filename: {project.get_filename()}")
+        print(f"  - Filename: {project.filename}")
 
         return project
 
@@ -189,7 +189,7 @@ def demo_create_new_project(app: RhapsodyApplication) -> Any:
 
         print("\nProject Details:")
         print(f"  - Name: {project.get_name()}")
-        print(f"  - Filename: {project.get_filename()}")
+        print(f"  - Filename: {project.filename}")
 
         # Save the new project
         print("\nSaving new project...")
@@ -198,7 +198,7 @@ def demo_create_new_project(app: RhapsodyApplication) -> Any:
 
         # Capture the filename - getFilename() may return relative path or just name
         # so construct the full absolute path using scratch_dir
-        relative_filename = project.get_filename()
+        relative_filename = project.filename
 
         # Build the full path to the project file
         # Rhapsody creates .rpyx files, so if no extension, add it

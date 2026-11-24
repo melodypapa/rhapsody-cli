@@ -35,8 +35,8 @@
 | Python model wrapper | Java API | pywin32 | Status | Recommended change |
 | --- | --- | --- | --- | --- |
 | add_item() -> addItem | addItem (method) | addItem (method) | MATCH | — |
+| count (property) -> Count | getCount (method) | Count (property) | MATCH | — |
 | empty() -> empty | empty (method) | empty (method) | MATCH | — |
-| get_count() -> Count | getCount (method) | Count (property) | MATCH | — |
 | get_item() -> Item | getItem (method) | Item (method) | MATCH | — |
 | remove() -> remove | remove (method) | remove (method) | MATCH | — |
 | set_integer() -> setInteger | setInteger (method) | setInteger (method) | MATCH | — |

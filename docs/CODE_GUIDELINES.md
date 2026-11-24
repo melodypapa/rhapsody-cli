@@ -215,7 +215,7 @@ def parse_config(path: Path) -> Dict[str, Union[str, int, bool]]:
 
 # CORRECT: List with element type
 def get_all_packages(project: IRPProject) -> List[IRPPackage]:
-    return project.get_packages()
+    return project.packages
 
 # CORRECT: Union for multiple known types
 def format_value(value: Union[str, int, float]) -> str:

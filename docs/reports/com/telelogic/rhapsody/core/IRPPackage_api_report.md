@@ -4,18 +4,46 @@
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `IRPPackage` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`)
 - Members: Python `101`, Java `100`, pywin32 `94`
-- Deviation items: `29` (actionable `23`, expected binding differences `6`, wrapper backlog `0`)
+- Deviation items: `57` (actionable `51`, expected binding differences `6`, wrapper backlog `0`)
 - Status legend: `MATCH` verified binding · `UNAVAILABLE_DOCUMENTED` pywin32 lacks the member (NotImplementedError stub) · `ALIAS_DOCUMENTED` documented alias · actionable rows are named by code in `Comparison details`
 
 ## Comparison details
 
 | Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |
 | --- | --- | --- | --- | --- |
+| get_actors() -> actors | getActors (method) | actors (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
 | add_association() -> addAssociation | — | addAssociation (method) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
 | add_statechart_diagram() -> addStatechart | addStatechart (method) | addStatechart (method) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| get_nested_packages() -> packages | getPackages (method) | packages (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
+| get_behavioral_diagrams() -> behavioralDiagrams | getBehavioralDiagrams (method) | behavioralDiagrams (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_classes() -> classes | getClasses (method) | classes (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_collaboration_diagrams() -> collaborationDiagrams | getCollaborationDiagrams (method) | collaborationDiagrams (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_component_diagrams() -> componentDiagrams | getComponentDiagrams (method) | componentDiagrams (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_deployment_diagrams() -> deploymentDiagrams | getDeploymentDiagrams (method) | deploymentDiagrams (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_events() -> events | getEvents (method) | events (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_events_base_id() -> eventsBaseId | getEventsBaseId (method) | eventsBaseId (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_flow_items() -> flowItems | getFlowItems (method) | flowItems (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_flows() -> flows | getFlows (method) | flows (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_global_functions() -> globalFunctions | getGlobalFunctions (method) | globalFunctions (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_global_objects() -> globalObjects | getGlobalObjects (method) | globalObjects (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_global_variables() -> globalVariables | getGlobalVariables (method) | globalVariables (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_instance_specifications() -> instanceSpecifications | getInstanceSpecifications (method) | instanceSpecifications (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_links() -> links | getLinks (method) | links (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_modules() -> modules | getModules (method) | modules (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_nested_classifiers() -> nestedClassifiers | getNestedClassifiers (method) | nestedClassifiers (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_nested_components() -> nestedComponents | getNestedComponents (method) | nestedComponents (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_nodes() -> nodes | getNodes (method) | nodes (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_object_model_diagrams() -> objectModelDiagrams | getObjectModelDiagrams (method) | objectModelDiagrams (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_nested_packages() -> packages | getPackages (method) | packages (property) | PYTHON_METHOD_NAME_MISMATCH; METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_panel_diagrams() -> panelDiagrams | getPanelDiagrams (method) | panelDiagrams (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
 | recalculate_events_base_id() -> reCalculateEventsBaseId | reCalculateEventsBaseId (method) | reCalculateEventsBaseId (method) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| get_saved_in_separate_directory() -> savedInSeperateDirectory; set_saved_in_separate_directory() -> savedInSeperateDirectory | getSavedInSeperateDirectory (method); setSavedInSeperateDirectory (method) | savedInSeperateDirectory (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
+| get_saved_in_separate_directory() -> savedInSeperateDirectory; set_saved_in_separate_directory() -> savedInSeperateDirectory | getSavedInSeperateDirectory (method); setSavedInSeperateDirectory (method) | savedInSeperateDirectory (property) | PYTHON_METHOD_NAME_MISMATCH; METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_sequence_diagrams() -> sequenceDiagrams | getSequenceDiagrams (method) | sequenceDiagrams (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_source_artifacts() -> sourceArtifacts | getSourceArtifacts (method) | sourceArtifacts (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_timing_diagrams() -> timingDiagrams | getTimingDiagrams (method) | timingDiagrams (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_types() -> types | getTypes (method) | types (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_use_case_diagrams() -> useCaseDiagrams | getUseCaseDiagrams (method) | useCaseDiagrams (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_use_cases() -> useCases | getUseCases (method) | useCases (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
+| get_user_defined_stereotypes() -> userDefinedStereotypes | getUserDefinedStereotypes (method) | userDefinedStereotypes (property) | METHOD_PROPERTY_MISMATCH | Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members. |
 | add_activity_diagram() -> addActivityDiagram | — | addActivityDiagram (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 0 parameter(s) (0 required; params: —; types: —). Pass the documented parameters. |
 | add_association() -> addAssociation | — | addAssociation (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 3 parameter(s) (3 required; params: end1, end2, name; types: com, com, str). Pass the documented parameters. |
 | add_global_object() -> addGlobalObject | — | addGlobalObject (method) | SIGNATURE_ARITY_MISMATCH | Wrapper passes [1] arg(s) but pywin32 declares 3 parameter(s) (3 required; params: name, otherClassName, otherClassPackageName; types: str, str, str). Pass the documented parameters. |
@@ -53,7 +81,7 @@
 | — | — | — | — | — |
 
 <details>
-<summary>Correct items (88) — bindings verified against pywin32</summary>
+<summary>Correct items (60) — bindings verified against pywin32</summary>
 
 
 ## Correct Items
@@ -116,42 +144,20 @@
 | find_type() -> findType | findType (method) | findType (method) | MATCH | — |
 | find_usage() -> findUsage | findUsage (method) | findUsage (method) | MATCH | — |
 | find_use_case() -> findUseCase | findUseCase (method) | findUseCase (method) | MATCH | — |
-| get_actors() -> actors | getActors (method) | actors (property) | MATCH | — |
 | get_all_nested_elements() -> getAllNestedElements | getAllNestedElements (method) | getAllNestedElements (method) | MATCH | — |
-| get_behavioral_diagrams() -> behavioralDiagrams | getBehavioralDiagrams (method) | behavioralDiagrams (property) | MATCH | — |
-| get_classes() -> classes | getClasses (method) | classes (property) | MATCH | — |
-| get_collaboration_diagrams() -> collaborationDiagrams | getCollaborationDiagrams (method) | collaborationDiagrams (property) | MATCH | — |
-| get_component_diagrams() -> componentDiagrams | getComponentDiagrams (method) | componentDiagrams (property) | MATCH | — |
-| get_deployment_diagrams() -> deploymentDiagrams | getDeploymentDiagrams (method) | deploymentDiagrams (property) | MATCH | — |
-| get_events() -> events | getEvents (method) | events (property) | MATCH | — |
-| get_events_base_id() -> eventsBaseId | getEventsBaseId (method) | eventsBaseId (property) | MATCH | — |
-| get_flow_items() -> flowItems | getFlowItems (method) | flowItems (property) | MATCH | — |
-| get_flows() -> flows | getFlows (method) | flows (property) | MATCH | — |
-| get_global_functions() -> globalFunctions | getGlobalFunctions (method) | globalFunctions (property) | MATCH | — |
-| get_global_objects() -> globalObjects | getGlobalObjects (method) | globalObjects (property) | MATCH | — |
-| get_global_variables() -> globalVariables | getGlobalVariables (method) | globalVariables (property) | MATCH | — |
-| get_instance_specifications() -> instanceSpecifications | getInstanceSpecifications (method) | instanceSpecifications (property) | MATCH | — |
-| get_links() -> links | getLinks (method) | links (property) | MATCH | — |
-| get_modules() -> modules | getModules (method) | modules (property) | MATCH | — |
 | get_namespace() -> getNamespace | getNamespace (method) | getNamespace (method) | MATCH | — |
-| get_nested_classifiers() -> nestedClassifiers | getNestedClassifiers (method) | nestedClassifiers (property) | MATCH | — |
-| get_nested_components() -> nestedComponents | getNestedComponents (method) | nestedComponents (property) | MATCH | — |
-| get_nodes() -> nodes | getNodes (method) | nodes (property) | MATCH | — |
-| get_object_model_diagrams() -> objectModelDiagrams | getObjectModelDiagrams (method) | objectModelDiagrams (property) | MATCH | — |
-| get_panel_diagrams() -> panelDiagrams | getPanelDiagrams (method) | panelDiagrams (property) | MATCH | — |
 | get_remote_requirements_populate_mode() -> getRemoteRequirementsPopulateMode; set_remote_requirements_populate_mode() -> setRemoteRequirementsPopulateMode | getRemoteRequirementsPopulateMode (method); setRemoteRequirementsPopulateMode (method) | getRemoteRequirementsPopulateMode (method); setRemoteRequirementsPopulateMode (method) | MATCH | — |
-| get_sequence_diagrams() -> sequenceDiagrams | getSequenceDiagrams (method) | sequenceDiagrams (property) | MATCH | — |
-| get_source_artifacts() -> sourceArtifacts | getSourceArtifacts (method) | sourceArtifacts (property) | MATCH | — |
-| get_timing_diagrams() -> timingDiagrams | getTimingDiagrams (method) | timingDiagrams (property) | MATCH | — |
-| get_types() -> types | getTypes (method) | types (property) | MATCH | — |
-| get_use_case_diagrams() -> useCaseDiagrams | getUseCaseDiagrams (method) | useCaseDiagrams (property) | MATCH | — |
-| get_use_cases() -> useCases | getUseCases (method) | useCases (property) | MATCH | — |
-| get_user_defined_stereotypes() -> userDefinedStereotypes | getUserDefinedStereotypes (method) | userDefinedStereotypes (property) | MATCH | — |
 | populate_remote_requirements() -> populateRemoteRequirements | populateRemoteRequirements (method) | populateRemoteRequirements (method) | MATCH | — |
 
 </details>
 
 ## AI Fix Guidance
+
+### METHOD_PROPERTY_MISMATCH (28 findings)
+- **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
+- **Affected call(s):** get_actors() -> actors; get_behavioral_diagrams() -> behavioralDiagrams; get_classes() -> classes; get_collaboration_diagrams() -> collaborationDiagrams; get_component_diagrams() -> componentDiagrams; get_deployment_diagrams() -> deploymentDiagrams; get_events() -> events; get_events_base_id() -> eventsBaseId; get_flow_items() -> flowItems; get_flows() -> flows; get_global_functions() -> globalFunctions; get_global_objects() -> globalObjects; get_global_variables() -> globalVariables; get_instance_specifications() -> instanceSpecifications; get_links() -> links; get_modules() -> modules; get_nested_classifiers() -> nestedClassifiers; get_nested_components() -> nestedComponents; get_nodes() -> nodes; get_object_model_diagrams() -> objectModelDiagrams; get_panel_diagrams() -> panelDiagrams; get_sequence_diagrams() -> sequenceDiagrams; get_source_artifacts() -> sourceArtifacts; get_timing_diagrams() -> timingDiagrams; get_types() -> types; get_use_case_diagrams() -> useCaseDiagrams; get_use_cases() -> useCases; get_user_defined_stereotypes() -> userDefinedStereotypes
+- **Recommended change:** Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members.
+- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### JAVA_DOC_MISSING (1 finding)
 - **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
@@ -159,11 +165,17 @@
 - **Recommended change:** Confirm this COM member is a supported extension and document its status.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
-### PYTHON_METHOD_NAME_MISMATCH (4 findings)
+### PYTHON_METHOD_NAME_MISMATCH (2 findings)
 - **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
-- **Affected call(s):** add_statechart_diagram() -> addStatechart; get_nested_packages() -> packages; recalculate_events_base_id() -> reCalculateEventsBaseId; get_saved_in_separate_directory() -> savedInSeperateDirectory; set_saved_in_separate_directory() -> savedInSeperateDirectory
-- **Java signature(s):** `IRPPackage.setSavedInSeperateDirectory(int)`
+- **Affected call(s):** add_statechart_diagram() -> addStatechart; recalculate_events_base_id() -> reCalculateEventsBaseId
 - **Recommended change:** Rename the Python method to the snake_case Java API name or document the alias.
+- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
+
+### PYTHON_METHOD_NAME_MISMATCH; METHOD_PROPERTY_MISMATCH (2 findings)
+- **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
+- **Affected call(s):** get_nested_packages() -> packages; get_saved_in_separate_directory() -> savedInSeperateDirectory; set_saved_in_separate_directory() -> savedInSeperateDirectory
+- **Java signature(s):** `IRPPackage.setSavedInSeperateDirectory(int)`
+- **Recommended change:** Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
 ### SIGNATURE_ARITY_MISMATCH (8 findings)

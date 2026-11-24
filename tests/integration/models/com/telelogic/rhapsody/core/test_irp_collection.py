@@ -21,11 +21,11 @@ class TestIRPCollectionIntegration:
         collection = rhapsody_app.create_new_collection()
 
         assert isinstance(collection, IRPCollection)
-        assert collection.get_count() == 0
+        assert collection.count == 0
 
     def test_collection_mutators_and_accessors(self, rhapsody_app: RhapsodyApplication, test_project: IRPProject) -> None:
         collection = rhapsody_app.create_new_collection()
-        assert collection.get_count() == 0
+        assert collection.count == 0
         collection.set_size(3)
         assert len(collection) == 3
         collection.set_string(1, "value")
@@ -38,7 +38,7 @@ class TestIRPCollectionIntegration:
         collection.remove(1)
         collection.add_item(test_project)
         collection.empty()
-        assert collection.get_count() == 0
+        assert collection.count == 0
 
     def test_add_graphical_item_raises_not_implemented(self, rhapsody_app: RhapsodyApplication, test_project: IRPProject) -> None:
         collection = rhapsody_app.create_new_collection()

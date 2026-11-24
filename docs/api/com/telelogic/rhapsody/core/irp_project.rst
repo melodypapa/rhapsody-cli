@@ -17,6 +17,10 @@ API reference
 
 Wraps ``IRPProject``: represents the top-level project container.
 
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.active_component
+
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.active_configuration
+
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.add_actor
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.add_class
@@ -35,6 +39,8 @@ Wraps ``IRPProject``: represents the top-level project container.
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.add_spell_checker_result
 
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.all_stereotypes
+
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.allow_auto_save
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.allow_non_unique_names
@@ -45,6 +51,8 @@ Wraps ``IRPProject``: represents the top-level project container.
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.become_active_project
 
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.cg_simplified_model_package
+
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.check_events_base_ids_solve_collisions
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.clean_unresolved_elements
@@ -52,6 +60,10 @@ Wraps ``IRPProject``: represents the top-level project container.
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.close
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.close_csv_file
+
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.components
+
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.default_directory_scheme
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.delete_component
 
@@ -79,35 +91,17 @@ Wraps ``IRPProject``: represents the top-level project container.
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.generate_report
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.get_active_component
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.get_active_configuration
-
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.get_active_custom_views_on_browser
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.get_active_custom_views_on_diagram
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.get_all_stereotypes
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.get_cg_simplified_model_package
-
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.get_code_generated_files
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.get_components
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.get_default_directory_scheme
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.get_new_collaboration
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.get_new_progress_bar
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.get_nodes
-
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.get_notify_plugin_on_elements_changed
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.get_packages
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.get_profiles
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.get_remote_resource_packages
 
@@ -129,7 +123,13 @@ Wraps ``IRPProject``: represents the top-level project container.
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.migrate_design_manager_links
 
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.nodes
+
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.open_csv_file
+
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.packages
+
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.profiles
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.recalculate_events_base_ids
 
@@ -149,8 +149,6 @@ Wraps ``IRPProject``: represents the top-level project container.
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.set_active_configuration
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.set_default_directory_scheme
-
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.set_global_configuration
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.set_notify_plugin_on_elements_changed
@@ -159,8 +157,8 @@ Wraps ``IRPProject``: represents the top-level project container.
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.set_object_implicit
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.set_use_unique_stereotype_and_ref_cache
-
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.set_wait_dialog_watchdog_value
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.start_transaction_of_no_cg_interest
+
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.use_unique_stereotype_and_ref_cache

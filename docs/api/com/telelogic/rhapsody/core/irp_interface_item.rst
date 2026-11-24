@@ -21,12 +21,12 @@ Wraps ``IRPInterfaceItem``: the base interface for operation-like
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item.IRPInterfaceItem.add_argument_before_position
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item.IRPInterfaceItem.get_arguments
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item.IRPInterfaceItem.get_signature
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item.IRPInterfaceItem.arguments
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item.IRPInterfaceItem.get_signature_no_arg_names
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item.IRPInterfaceItem.get_signature_no_arg_types
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item.IRPInterfaceItem.match_on_signature
+
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item.IRPInterfaceItem.signature

@@ -21,11 +21,11 @@ def test_unit_save_delegates_to_com() -> None:
     fake.save.assert_called_once_with(0)
 
 
-def test_unit_get_filename_uses_pywin32_filename_property() -> None:
+def test_unit_filename_uses_pywin32_filename_property() -> None:
     fake = make_fake_element("Package", properties={"filename": "Model/Foo.sbs"})
     unit = IRPUnit(fake)
 
-    assert unit.get_filename() == "Model/Foo.sbs"
+    assert unit.filename == "Model/Foo.sbs"
     fake.getFilename.assert_not_called()
 
 
@@ -33,7 +33,7 @@ def test_unit_set_filename_uses_pywin32_filename_property() -> None:
     fake = make_fake_element("Package")
     unit = IRPUnit(fake)
 
-    unit.set_filename("Model/Bar.sbs")
+    unit.filename = "Model/Bar.sbs"
 
     assert fake.filename == "Model/Bar.sbs"
     fake.setFilename.assert_not_called()
@@ -91,11 +91,11 @@ def test_unit_get_add_to_model_mode_returns_int() -> None:
     assert unit.get_add_to_model_mode() == 2
 
 
-def test_unit_get_cm_header_uses_pywin32_cmheader_property() -> None:
+def test_unit_cm_header_uses_pywin32_cmheader_property() -> None:
     fake = make_fake_element("Package", properties={"CMHeader": "// CM header"})
     unit = IRPUnit(fake)
 
-    assert unit.get_cm_header() == "// CM header"
+    assert unit.cm_header == "// CM header"
     fake.getCMHeader.assert_not_called()
 
 
@@ -103,7 +103,7 @@ def test_unit_set_cm_header_uses_pywin32_cmheader_property() -> None:
     fake = make_fake_element("Package")
     unit = IRPUnit(fake)
 
-    unit.set_cm_header("// CM header")
+    unit.cm_header = "// CM header"
 
     assert fake.CMHeader == "// CM header"
     fake.setCMHeader.assert_not_called()
@@ -116,27 +116,27 @@ def test_unit_get_cm_state_returns_int() -> None:
     assert unit.get_cm_state() == 1
 
 
-def test_unit_get_current_directory_uses_pywin32_property() -> None:
+def test_unit_current_directory_uses_pywin32_property() -> None:
     fake = make_fake_element("Package", properties={"currentDirectory": "C:\\proj"})
     unit = IRPUnit(fake)
 
-    assert unit.get_current_directory() == "C:\\proj"
+    assert unit.current_directory == "C:\\proj"
     fake.getCurrentDirectory.assert_not_called()
 
 
-def test_unit_get_include_in_next_load_uses_pywin32_property() -> None:
+def test_unit_include_in_next_load_uses_pywin32_property() -> None:
     fake = make_fake_element("Package", properties={"includeInNextLoad": 1})
     unit = IRPUnit(fake)
 
-    assert unit.get_include_in_next_load() == 1
+    assert unit.include_in_next_load == 1
     fake.getIncludeInNextLoad.assert_not_called()
 
 
-def test_unit_get_is_stub_uses_pywin32_property() -> None:
+def test_unit_is_stub_uses_pywin32_property() -> None:
     fake = make_fake_element("Package", properties={"isStub": 0})
     unit = IRPUnit(fake)
 
-    assert unit.get_is_stub() == 0
+    assert unit.is_stub == 0
     fake.getIsStub.assert_not_called()
 
 
@@ -171,12 +171,12 @@ def test_unit_get_nested_save_units_count_returns_int() -> None:
     assert unit.get_nested_save_units_count() == 3
 
 
-def test_unit_get_structure_diagrams_uses_pywin32_property() -> None:
+def test_unit_structure_diagrams_uses_pywin32_property() -> None:
     coll = make_fake_collection([])
     fake = make_fake_element("Package", properties={"structureDiagrams": coll})
     unit = IRPUnit(fake)
 
-    result = unit.get_structure_diagrams()
+    result = unit.structure_diagrams
 
     assert isinstance(result, IRPCollection)
     fake.getStructureDiagrams.assert_not_called()
@@ -250,7 +250,7 @@ def test_unit_set_include_in_next_load_uses_pywin32_property() -> None:
     fake = make_fake_element("Package")
     unit = IRPUnit(fake)
 
-    unit.set_include_in_next_load(1)
+    unit.include_in_next_load = 1
 
     assert fake.includeInNextLoad == 1
     fake.setIncludeInNextLoad.assert_not_called()

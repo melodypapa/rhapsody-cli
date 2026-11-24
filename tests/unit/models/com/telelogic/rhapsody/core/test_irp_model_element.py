@@ -177,7 +177,7 @@ def test_model_element_repr_includes_name() -> None:
     assert repr(IRPModelElement(fake)) == "IRPModelElement(name='MyClass')"
 
 
-def test_collection_len_delegates_to_get_count() -> None:
+def test_collection_len_delegates_to_count() -> None:
     fake = make_fake_collection([make_fake_element("Class")])
     collection = IRPCollection(fake)
 
@@ -243,14 +243,14 @@ def test_collection_add_item_delegates_to_com() -> None:
     fake.addItem.assert_called_once_with(new_element)
 
 
-def test_collection_get_count_delegates_to_com() -> None:
+def test_collection_count_delegates_to_com() -> None:
     fake = make_fake_collection([make_fake_element("Class"), make_fake_element("Class")])
     collection = IRPCollection(fake)
 
-    assert collection.get_count() == 2
+    assert collection.count == 2
 
 
-def test_collection_get_count_falls_back_to_count_property_when_method_missing() -> None:
+def test_collection_count_reads_the_count_property() -> None:
     """Some Rhapsody COM Prog IDs (e.g. Rhapsody2.Application.1) expose the
     collection size/item accessors via 'Count'/'Item' properties instead of
     getCount()/getItem() methods."""
@@ -258,7 +258,7 @@ def test_collection_get_count_falls_back_to_count_property_when_method_missing()
     fake.Count = 3
     collection = IRPCollection(fake)
 
-    assert collection.get_count() == 3
+    assert collection.count == 3
 
 
 def test_collection_get_item_falls_back_to_item_property_when_method_missing() -> None:
@@ -895,7 +895,7 @@ def test_model_element_get_nested_elements_returns_collection() -> None:
     result = element.get_nested_elements()
 
     assert isinstance(result, IRPCollection)
-    assert result.get_count() == 1
+    assert result.count == 1
 
 
 def test_model_element_get_nested_elements_by_meta_class_returns_collection() -> None:

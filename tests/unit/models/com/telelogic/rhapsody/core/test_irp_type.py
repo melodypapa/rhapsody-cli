@@ -44,7 +44,7 @@ class TestRPType:
         # Pattern A
         fake = make_fake_element("Type", properties={"declaration": "int x"})
         t = IRPType(fake)
-        assert t.get_declaration() == "int x"
+        assert t.declaration == "int x"
 
     def test_get_enumeration_literals_returns_collection(self) -> None:
         # Pattern C
@@ -52,7 +52,7 @@ class TestRPType:
         fake = make_fake_element("Type", properties={"enumerationLiterals": make_fake_collection([lit])})
         fake.getEnumerationLiterals.return_value = make_fake_collection([])  # old member: wrong
         t = IRPType(fake)
-        result = t.get_enumeration_literals()
+        result = t.enumeration_literals
         assert isinstance(result, IRPCollection)
         assert len(result) == 1  # property-backed collection has RED
 
@@ -61,41 +61,41 @@ class TestRPType:
         fake = make_fake_element("Type", properties={"isPredefined": 1})
         fake.getIsPredefined.return_value = 0  # old Java member would return the wrong value
         t = IRPType(fake)
-        assert t.get_is_predefined() == 1
+        assert t.is_predefined == 1
 
     def test_get_is_typedef_returns_int(self) -> None:
         # Pattern G
         fake = make_fake_element("Type", properties={"isTypedef": 1})
         fake.getIsTypedef.return_value = 0  # old Java member would return the wrong value
         t = IRPType(fake)
-        assert t.get_is_typedef() == 1
+        assert t.is_typedef == 1
 
     def test_get_is_typedef_constant_returns_int(self) -> None:
         # Pattern G
         fake = make_fake_element("Type", properties={"isTypedefConstant": 1})
         fake.getIsTypedefConstant.return_value = 0  # old Java member would return the wrong value
         t = IRPType(fake)
-        assert t.get_is_typedef_constant() == 1
+        assert t.is_typedef_constant == 1
 
     def test_get_is_typedef_ordered_returns_int(self) -> None:
         # Pattern G
         fake = make_fake_element("Type", properties={"isTypedefOrdered": 1})
         fake.getIsTypedefOrdered.return_value = 0  # old Java member would return the wrong value
         t = IRPType(fake)
-        assert t.get_is_typedef_ordered() == 1
+        assert t.is_typedef_ordered == 1
 
     def test_get_is_typedef_reference_returns_int(self) -> None:
         # Pattern G
         fake = make_fake_element("Type", properties={"isTypedefReference": 1})
         fake.getIsTypedefReference.return_value = 0  # old Java member would return the wrong value
         t = IRPType(fake)
-        assert t.get_is_typedef_reference() == 1
+        assert t.is_typedef_reference == 1
 
     def test_get_kind_returns_string(self) -> None:
         # Pattern A
         fake = make_fake_element("Type", properties={"kind": "Enumeration"})
         t = IRPType(fake)
-        assert t.get_kind() == "Enumeration"
+        assert t.kind == "Enumeration"
 
     def test_get_typedef_base_type_wraps_result(self) -> None:
         # Pattern B
@@ -103,14 +103,14 @@ class TestRPType:
         base = make_fake_element("Class", properties={"name": "Base"})
         fake.typedefBaseType = base
         t = IRPType(fake)
-        wrapped = t.get_typedef_base_type()
+        wrapped = t.typedef_base_type
         assert wrapped.name == "Base"
 
     def test_get_typedef_multiplicity_returns_string(self) -> None:
         # Pattern A
         fake = make_fake_element("Type", properties={"typedefMultiplicity": "0..1"})
         t = IRPType(fake)
-        assert t.get_typedef_multiplicity() == "0..1"
+        assert t.typedef_multiplicity == "0..1"
 
     def test_is_array_returns_int(self) -> None:
         # Pattern G — representative for all 16 is_* checks
@@ -212,35 +212,35 @@ class TestRPType:
         # Pattern D — representative for set_* str-arg setters
         fake = make_fake_element("Type")
         t = IRPType(fake)
-        t.set_kind("Enumeration")
+        t.kind = "Enumeration"
         assert fake.kind == "Enumeration"
 
     def test_set_declaration_delegates(self) -> None:
         # Pattern D — str arg
         fake = make_fake_element("Type")
         t = IRPType(fake)
-        t.set_declaration("int x")
+        t.declaration = "int x"
         assert fake.declaration == "int x"
 
     def test_set_is_typedef_constant_delegates(self) -> None:
         # Pattern D — int-arg setter
         fake = make_fake_element("Type")
         t = IRPType(fake)
-        t.set_is_typedef_constant(1)
+        t.is_typedef_constant = 1
         assert fake.isTypedefConstant == 1
 
     def test_set_is_typedef_ordered_delegates(self) -> None:
         # Pattern D — int-arg setter
         fake = make_fake_element("Type")
         t = IRPType(fake)
-        t.set_is_typedef_ordered(1)
+        t.is_typedef_ordered = 1
         assert fake.isTypedefOrdered == 1
 
     def test_set_is_typedef_reference_delegates(self) -> None:
         # Pattern D — int-arg setter
         fake = make_fake_element("Type")
         t = IRPType(fake)
-        t.set_is_typedef_reference(1)
+        t.is_typedef_reference = 1
         assert fake.isTypedefReference == 1
 
     def test_set_typedef_base_type_delegates(self) -> None:
@@ -250,12 +250,12 @@ class TestRPType:
         fake = make_fake_element("Type")
         base = make_fake_element("Class", properties={"name": "Base"})
         t = IRPType(fake)
-        t.set_typedef_base_type(IRPClassifier(base))
+        t.typedef_base_type = IRPClassifier(base)
         assert fake.typedefBaseType is base
 
     def test_set_typedef_multiplicity_delegates(self) -> None:
         # Pattern D — str-arg setter
         fake = make_fake_element("Type")
         t = IRPType(fake)
-        t.set_typedef_multiplicity("0..1")
+        t.typedef_multiplicity = "0..1"
         assert fake.typedefMultiplicity == "0..1"

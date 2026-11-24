@@ -21,17 +21,9 @@ class IRPType(IRPClassifier):
 
     # IRPType method parity checklist:
     # [x] add_enumeration_literal        [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] declaration                   [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] delete_enumeration_literal     [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_declaration               [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_enumeration_literals       [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_is_predefined              [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_is_typedef                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_is_typedef_constant         [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_is_typedef_ordered          [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_is_typedef_reference        [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_kind                      [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_typedef_base_type           [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_typedef_multiplicity       [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] enumeration_literals           [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] is_array                      [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] is_enum                       [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] is_equal_to                    [x] impl  [x] docstring  [x] unit test  [ ] integration test
@@ -43,18 +35,19 @@ class IRPType(IRPClassifier):
     # [x] is_kind_union                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] is_pointer                    [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] is_pointer_to_pointer           [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] is_predefined                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] is_reference                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] is_reference_to_pointer         [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] is_struct                     [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] is_template                   [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] is_typedef                    [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] is_typedef_constant           [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] is_typedef_ordered            [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] is_typedef_reference          [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] is_union                      [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_declaration               [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_is_typedef_constant         [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_is_typedef_ordered          [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_is_typedef_reference        [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_kind                      [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_typedef_base_type           [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_typedef_multiplicity       [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] kind                          [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] typedef_base_type             [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] typedef_multiplicity          [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [inherited] irp_classifier methods (covered by rp_classifier checklist)
     # [inherited] irp_model_element methods (covered by rp_model_element checklist)
     # [inherited] irp_unit methods (covered by rp_unit checklist)
@@ -93,7 +86,8 @@ class IRPType(IRPClassifier):
         """
         self.call_com(lambda: self._com.deleteEnumerationLiteral(literal._com))
 
-    def get_declaration(self) -> str:
+    @property
+    def declaration(self) -> str:
         """Returns the declaration of the type.
 
         Returns:
@@ -107,7 +101,23 @@ class IRPType(IRPClassifier):
         """
         return str(self.get_com_property(self._com, "declaration"))
 
-    def get_enumeration_literals(self) -> IRPCollection:
+    @declaration.setter
+    def declaration(self, declaration: str) -> None:
+        """Sets the declaration of the type.
+
+        Args:
+            declaration: The declaration to set for the type.
+
+        Raises:
+            RhapsodyRuntimeException: If an error occurs during the operation.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPType::setDeclaration(java.lang.String declaration)
+        """
+        self.set_com_property(self._com, "declaration", declaration)
+
+    @property
+    def enumeration_literals(self) -> IRPCollection:
         """Returns the enumeration literals of the type.
 
         Returns:
@@ -121,7 +131,8 @@ class IRPType(IRPClassifier):
         """
         return IRPCollection(self.get_com_property(self._com, "enumerationLiterals"))
 
-    def get_is_predefined(self) -> int:
+    @property
+    def is_predefined(self) -> int:
         """Returns whether the type is predefined.
 
         Returns:
@@ -135,7 +146,8 @@ class IRPType(IRPClassifier):
         """
         return int(self.get_com_property(self._com, "isPredefined"))
 
-    def get_is_typedef(self) -> int:
+    @property
+    def is_typedef(self) -> int:
         """Returns whether the type is a typedef.
 
         Returns:
@@ -149,7 +161,8 @@ class IRPType(IRPClassifier):
         """
         return int(self.get_com_property(self._com, "isTypedef"))
 
-    def get_is_typedef_constant(self) -> int:
+    @property
+    def is_typedef_constant(self) -> int:
         """Returns whether the typedef is a constant.
 
         Returns:
@@ -163,7 +176,24 @@ class IRPType(IRPClassifier):
         """
         return int(self.get_com_property(self._com, "isTypedefConstant"))
 
-    def get_is_typedef_ordered(self) -> int:
+    @is_typedef_constant.setter
+    def is_typedef_constant(self, is_typedef_constant: int) -> None:
+        """Sets whether the typedef is a constant.
+
+        Args:
+            is_typedef_constant: Use 1 to specify that the typedef is a constant,
+                0 otherwise.
+
+        Raises:
+            RhapsodyRuntimeException: If an error occurs during the operation.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPType::setIsTypedefConstant(int isTypedefConstant)
+        """
+        self.set_com_property(self._com, "isTypedefConstant", is_typedef_constant)
+
+    @property
+    def is_typedef_ordered(self) -> int:
         """Returns whether the typedef is ordered.
 
         Returns:
@@ -177,7 +207,24 @@ class IRPType(IRPClassifier):
         """
         return int(self.get_com_property(self._com, "isTypedefOrdered"))
 
-    def get_is_typedef_reference(self) -> int:
+    @is_typedef_ordered.setter
+    def is_typedef_ordered(self, is_typedef_ordered: int) -> None:
+        """Sets whether the typedef is ordered.
+
+        Args:
+            is_typedef_ordered: Use 1 to specify that the typedef is ordered,
+                0 otherwise.
+
+        Raises:
+            RhapsodyRuntimeException: If an error occurs during the operation.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPType::setIsTypedefOrdered(int isTypedefOrdered)
+        """
+        self.set_com_property(self._com, "isTypedefOrdered", is_typedef_ordered)
+
+    @property
+    def is_typedef_reference(self) -> int:
         """Returns whether the typedef is a reference.
 
         Returns:
@@ -191,7 +238,24 @@ class IRPType(IRPClassifier):
         """
         return int(self.get_com_property(self._com, "isTypedefReference"))
 
-    def get_kind(self) -> str:
+    @is_typedef_reference.setter
+    def is_typedef_reference(self, is_typedef_reference: int) -> None:
+        """Sets whether the typedef is a reference.
+
+        Args:
+            is_typedef_reference: Use 1 to specify that the typedef is a reference,
+                0 otherwise.
+
+        Raises:
+            RhapsodyRuntimeException: If an error occurs during the operation.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPType::setIsTypedefReference(int isTypedefReference)
+        """
+        self.set_com_property(self._com, "isTypedefReference", is_typedef_reference)
+
+    @property
+    def kind(self) -> str:
         """Returns the kind of the type.
 
         Returns:
@@ -205,7 +269,23 @@ class IRPType(IRPClassifier):
         """
         return str(self.get_com_property(self._com, "kind"))
 
-    def get_typedef_base_type(self) -> IRPClassifier:
+    @kind.setter
+    def kind(self, kind: str) -> None:
+        """Sets the kind of the type.
+
+        Args:
+            kind: The kind to set for the type.
+
+        Raises:
+            RhapsodyRuntimeException: If an error occurs during the operation.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPType::setKind(java.lang.String kind)
+        """
+        self.set_com_property(self._com, "kind", kind)
+
+    @property
+    def typedef_base_type(self) -> IRPClassifier:
         """Returns the base type of the typedef.
 
         Returns:
@@ -219,7 +299,23 @@ class IRPType(IRPClassifier):
         """
         return cast(IRPClassifier, self.wrap(self.get_com_property(self._com, "typedefBaseType")))
 
-    def get_typedef_multiplicity(self) -> str:
+    @typedef_base_type.setter
+    def typedef_base_type(self, typedef_base_type: IRPClassifier) -> None:
+        """Sets the base type of the typedef.
+
+        Args:
+            typedef_base_type: The base type to set for the typedef.
+
+        Raises:
+            RhapsodyRuntimeException: If an error occurs during the operation.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPType::setTypedefBaseType(com.telelogic.rhapsody.core.IRPClassifier typedefBaseType)
+        """
+        self.set_com_property(self._com, "typedefBaseType", typedef_base_type._com)
+
+    @property
+    def typedef_multiplicity(self) -> str:
         """Returns the multiplicity of the typedef.
 
         Returns:
@@ -232,6 +328,21 @@ class IRPType(IRPClassifier):
             com.telelogic.rhapsody.core.IRPType::getTypedefMultiplicity()
         """
         return str(self.get_com_property(self._com, "typedefMultiplicity"))
+
+    @typedef_multiplicity.setter
+    def typedef_multiplicity(self, typedef_multiplicity: str) -> None:
+        """Sets the multiplicity of the typedef.
+
+        Args:
+            typedef_multiplicity: The multiplicity to set for the typedef.
+
+        Raises:
+            RhapsodyRuntimeException: If an error occurs during the operation.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPType::setTypedefMultiplicity(java.lang.String typedefMultiplicity)
+        """
+        self.set_com_property(self._com, "typedefMultiplicity", typedef_multiplicity)
 
     def is_array(self) -> int:
         """Checks whether the type is an array.
@@ -456,107 +567,6 @@ class IRPType(IRPClassifier):
             com.telelogic.rhapsody.core.IRPType::isUnion()
         """
         return int(self.call_com(lambda: self._com.isUnion()))
-
-    def set_declaration(self, declaration: str) -> None:
-        """Sets the declaration of the type.
-
-        Args:
-            declaration: The declaration to set for the type.
-
-        Raises:
-            RhapsodyRuntimeException: If an error occurs during the operation.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPType::setDeclaration(java.lang.String declaration)
-        """
-        self.set_com_property(self._com, "declaration", declaration)
-
-    def set_is_typedef_constant(self, is_typedef_constant: int) -> None:
-        """Sets whether the typedef is a constant.
-
-        Args:
-            is_typedef_constant: Use 1 to specify that the typedef is a constant,
-                0 otherwise.
-
-        Raises:
-            RhapsodyRuntimeException: If an error occurs during the operation.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPType::setIsTypedefConstant(int isTypedefConstant)
-        """
-        self.set_com_property(self._com, "isTypedefConstant", is_typedef_constant)
-
-    def set_is_typedef_ordered(self, is_typedef_ordered: int) -> None:
-        """Sets whether the typedef is ordered.
-
-        Args:
-            is_typedef_ordered: Use 1 to specify that the typedef is ordered,
-                0 otherwise.
-
-        Raises:
-            RhapsodyRuntimeException: If an error occurs during the operation.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPType::setIsTypedefOrdered(int isTypedefOrdered)
-        """
-        self.set_com_property(self._com, "isTypedefOrdered", is_typedef_ordered)
-
-    def set_is_typedef_reference(self, is_typedef_reference: int) -> None:
-        """Sets whether the typedef is a reference.
-
-        Args:
-            is_typedef_reference: Use 1 to specify that the typedef is a reference,
-                0 otherwise.
-
-        Raises:
-            RhapsodyRuntimeException: If an error occurs during the operation.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPType::setIsTypedefReference(int isTypedefReference)
-        """
-        self.set_com_property(self._com, "isTypedefReference", is_typedef_reference)
-
-    def set_kind(self, kind: str) -> None:
-        """Sets the kind of the type.
-
-        Args:
-            kind: The kind to set for the type.
-
-        Raises:
-            RhapsodyRuntimeException: If an error occurs during the operation.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPType::setKind(java.lang.String kind)
-        """
-        self.set_com_property(self._com, "kind", kind)
-
-    def set_typedef_base_type(self, typedef_base_type: IRPClassifier) -> None:
-        """Sets the base type of the typedef.
-
-        Args:
-            typedef_base_type: The base type to set for the typedef.
-
-        Raises:
-            RhapsodyRuntimeException: If an error occurs during the operation.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPType::setTypedefBaseType(com.telelogic.rhapsody.core.IRPClassifier typedefBaseType)
-        """
-        self.set_com_property(self._com, "typedefBaseType", typedef_base_type._com)
-
-    def set_typedef_multiplicity(self, typedef_multiplicity: str) -> None:
-        """Sets the multiplicity of the typedef.
-
-        Args:
-            typedef_multiplicity: The multiplicity to set for the typedef.
-
-        Raises:
-            RhapsodyRuntimeException: If an error occurs during the operation.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPType::setTypedefMultiplicity(java.lang.String typedefMultiplicity)
-        """
-        self.set_com_property(self._com, "typedefMultiplicity", typedef_multiplicity)
 
 
 IRPModelElement.register_wrapper("Type", IRPType)

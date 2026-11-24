@@ -23,6 +23,7 @@ UTS_XCH_00084: _export_event emits base_event and super_event
 UTS_XCH_00085: _export_event_reception emits event reference
 """
 
+from types import SimpleNamespace
 from typing import TYPE_CHECKING, Dict, List, Optional, cast
 from unittest.mock import MagicMock
 
@@ -144,21 +145,20 @@ class TestExportOperation:
     """UTS_XCH_00069: _export_operation."""
 
     def test_emits_return_type_is_static_and_arguments(self) -> None:
-        return_classifier = MagicMock()
-        return_classifier.name = "int"
+        return_classifier = SimpleNamespace(name="int")
         arg = MagicMock()
         arg.meta_class = "Argument"
         arg.name = "x"
         arg.get_type.return_value = return_classifier
-        arg.get_argument_direction.return_value = "in"
+        arg.argument_direction = "in"
         arg.stereotypes = []
         arg.all_tags = []
         op = MagicMock()
         op.meta_class = "Operation"
         op.name = "reset"
-        op.get_returns.return_value = return_classifier
-        op.get_is_static.return_value = True
-        op.get_arguments.return_value = [arg]
+        op.returns = return_classifier
+        op.is_static = True
+        op.arguments = [arg]
         op.stereotypes = []
         op.all_tags = []
         exporter = _make_exporter()
@@ -185,7 +185,7 @@ class TestExportArgument:
         arg.meta_class = "Argument"
         arg.name = "name"
         arg.get_type.return_value = classifier
-        arg.get_argument_direction.return_value = "in"
+        arg.argument_direction = "in"
         arg.stereotypes = []
         arg.all_tags = []
         exporter = _make_exporter()
@@ -209,9 +209,9 @@ class TestExportAttribute:
         attr.meta_class = "Attribute"
         attr.name = "count"
         attr.get_type.return_value = classifier
-        attr.get_visibility.return_value = "public"
-        attr.get_multiplicity.return_value = "1"
-        attr.get_is_static.return_value = False
+        attr.visibility = "public"
+        attr.multiplicity = "1"
+        attr.is_static = False
         attr.stereotypes = []
         attr.all_tags = []
         exporter = _make_exporter()
@@ -237,8 +237,8 @@ class TestExportType:
         type_element = MagicMock()
         type_element.meta_class = "Type"
         type_element.name = "Color"
-        type_element.get_kind.return_value = "Enumeration"
-        type_element.get_enumeration_literals.return_value = [literal]
+        type_element.kind = "Enumeration"
+        type_element.enumeration_literals = [literal]
         type_element.get_nested_elements.return_value = []
         type_element.stereotypes = []
         type_element.all_tags = []
@@ -257,15 +257,15 @@ class TestExportType:
         child.meta_class = "Attribute"
         child.name = "x"
         child.get_type.return_value = None
-        child.get_visibility.return_value = None
-        child.get_multiplicity.return_value = None
-        child.get_is_static.return_value = None
+        child.visibility = None
+        child.multiplicity = None
+        child.is_static = None
         child.stereotypes = []
         child.all_tags = []
         type_element = MagicMock()
         type_element.meta_class = "Type"
         type_element.name = "Point"
-        type_element.get_kind.return_value = "Structure"
+        type_element.kind = "Structure"
         type_element.get_nested_elements.return_value = [child]
         type_element.stereotypes = []
         type_element.all_tags = []
@@ -523,11 +523,11 @@ class TestExportPort:
         port = MagicMock()
         port.meta_class = "Port"
         port.name = "p1"
-        port.get_is_behavioral.return_value = True
-        port.get_is_reversed.return_value = False
-        port.get_contract.return_value = contract
-        port.get_provided_interfaces.return_value = []
-        port.get_required_interfaces.return_value = []
+        port.is_behavioral = True
+        port.is_reversed = False
+        port.port_contract = contract
+        port.provided_interfaces = []
+        port.required_interfaces = []
         port.stereotypes = []
         port.all_tags = []
         exporter = _make_exporter()
@@ -548,11 +548,11 @@ class TestExportPort:
         port = MagicMock()
         port.meta_class = "Port"
         port.name = "p1"
-        port.get_is_behavioral.return_value = None
-        port.get_is_reversed.return_value = None
-        port.get_contract.return_value = None
-        port.get_provided_interfaces.return_value = [iface1]
-        port.get_required_interfaces.return_value = [iface2]
+        port.is_behavioral = None
+        port.is_reversed = None
+        port.port_contract = None
+        port.provided_interfaces = [iface1]
+        port.required_interfaces = [iface2]
         port.stereotypes = []
         port.all_tags = []
         exporter = _make_exporter()

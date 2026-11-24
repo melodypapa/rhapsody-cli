@@ -60,7 +60,7 @@ for demo in demos/demo_0*.py; do python "$demo"; done
 
 ### 3. demo_03_element_navigation.py
 **Demonstrates**: Element navigation and querying on the seeded model
-- Navigating package structure with `get_packages()`, `get_classes()`
+- Navigating package structure with `packages`, `get_classes()`
 - Querying elements with `get_nested_elements_by_meta_class()`
 - Finding specific elements with `find_nested_element_recursive()`
 - Displaying element properties (name, type, GUID, full path)

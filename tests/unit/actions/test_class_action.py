@@ -448,13 +448,13 @@ class TestClassViewAction:
         op1.name = "readValue"
         op2 = MagicMock()
         op2.name = "setThreshold"
-        mock_class.get_operations.return_value = [op1, op2]
+        mock_class.operations = [op1, op2]
 
         attr1 = MagicMock()
         attr1.name = "threshold"
         attr2 = MagicMock()
         attr2.name = "unit"
-        mock_class.get_attributes.return_value = [attr1, attr2]
+        mock_class.attributes = [attr1, attr2]
 
         return mock_class
 

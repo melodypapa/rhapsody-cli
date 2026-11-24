@@ -19,14 +19,14 @@ class IRPAssociationClass(IRPClass):
     """Wraps ``IRPAssociationClass``: an association class that extends ``IRPClass``."""
 
     # IRPAssociationClass method parity checklist:
-    # [x] get_end1  [x] impl  [x] docstring  [ ] unit test  [x] integration test
-    # [x] get_end2  [x] impl  [x] docstring  [ ] unit test  [x] integration test
-    # [x] get_is_class  [x] impl  [x] docstring  [ ] unit test  [x] integration test
-    # [x] set_is_class  [x] impl  [x] docstring  [ ] unit test  [x] integration test
+    # [x] end1  [x] impl  [x] docstring  [ ] unit test  [x] integration test
+    # [x] end2  [x] impl  [x] docstring  [ ] unit test  [x] integration test
+    # [x] is_class  [x] impl  [x] docstring  [ ] unit test  [x] integration test
     # [inherited] irp_class / irp_classifier / irp_unit / irp_model_element methods (covered by rp_class / rp_classifier / rp_unit / rp_model_element checklists)
     # No deprecated IRPAssociationClass methods.
 
-    def get_end1(self) -> RPRelation:
+    @property
+    def end1(self) -> RPRelation:
         """Returns the first end of the association.
 
         Returns:
@@ -39,7 +39,8 @@ class IRPAssociationClass(IRPClass):
 
         return cast(RPRelation, self.wrap(self.get_com_property(self._com, "end1")))
 
-    def get_end2(self) -> RPRelation:
+    @property
+    def end2(self) -> RPRelation:
         """Returns the second end of the association.
 
         Returns:
@@ -52,7 +53,8 @@ class IRPAssociationClass(IRPClass):
 
         return cast(RPRelation, self.wrap(self.get_com_property(self._com, "end2")))
 
-    def get_is_class(self) -> int:
+    @property
+    def is_class(self) -> int:
         """Checks whether this association class is also a class.
 
         Returns:
@@ -63,7 +65,8 @@ class IRPAssociationClass(IRPClass):
         """
         return int(self.get_com_property(self._com, "isClass"))
 
-    def set_is_class(self, is_class: int) -> None:
+    @is_class.setter
+    def is_class(self, is_class: int) -> None:
         """Sets whether this association class is also a class.
 
         Args:

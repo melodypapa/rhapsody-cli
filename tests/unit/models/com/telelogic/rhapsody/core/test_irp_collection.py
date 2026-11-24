@@ -9,10 +9,10 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IR
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
-def test_get_count_reads_the_count_property() -> None:
+def test_count_reads_the_count_property() -> None:
     collection = IRPCollection(make_fake_collection([1, 2, 3]))
 
-    assert collection.get_count() == 3
+    assert collection.count == 3
     assert len(collection) == 3
 
 

@@ -17,10 +17,8 @@ API reference
 
 Wraps ``IRPAssociationClass``: an association class that extends ``IRPClass``.
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_association_class.IRPAssociationClass.get_end1
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_association_class.IRPAssociationClass.end1
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_association_class.IRPAssociationClass.get_end2
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_association_class.IRPAssociationClass.end2
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_association_class.IRPAssociationClass.get_is_class
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_association_class.IRPAssociationClass.set_is_class
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_association_class.IRPAssociationClass.is_class

@@ -18,7 +18,7 @@ JAVA_PACKAGE = "com.telelogic.rhapsody.core"
 _HELPER_NAMES = {"_get_method_or_property", "_set_method_or_property", "get_com_property", "set_com_property"}
 _REFERENCE_MEMBER_PATTERN = re.compile(r"::([A-Za-z_$][A-Za-z0-9_$]*)\s*\(")
 Rows = List[Tuple[str, str, str, str, str]]
-_AUTHORITY_INFO_STATUSES = {"ACCESSOR_ALIAS_MISMATCH", "METHOD_PROPERTY_MISMATCH", "PYTHON_ONLY_MEMBER", "JAVA_ONLY_MEMBER"}
+_AUTHORITY_INFO_STATUSES = {"ACCESSOR_ALIAS_MISMATCH", "PYTHON_ONLY_MEMBER", "JAVA_ONLY_MEMBER"}
 _AUTHORITY_BACKLOG_STATUSES = {"MISSING_PYTHON_WRAPPER", "PYWIN32_ONLY_MEMBER"}
 _UNAVAILABLE_RESOLVED_STATUSES = {"PYWIN32_MEMBER_MISSING", "JAVA_ONLY_MEMBER", "MISSING_PYTHON_WRAPPER", "PYWIN32_ONLY_MEMBER"}
 _DOCUMENTED_ALIAS_RECOMMENDATION = "Documented decision: keep the current binding; no change."
@@ -564,10 +564,10 @@ def _classify_deviation(
         recommendation = f"Use the {', '.join(property_names)} property or a getter/setter fallback instead of calling {missing_call_text} directly."
     elif "COM_MEMBER_NOT_EXPOSED" in statuses:
         recommendation = "Change the COM call to a member exposed by the registered pywin32 interface."
+    elif "METHOD_PROPERTY_MISMATCH" in statuses:
+        recommendation = "Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members."
     elif "PYTHON_METHOD_NAME_MISMATCH" in statuses:
         recommendation = "Rename the Python method to the snake_case Java API name or document the alias."
-    elif "METHOD_PROPERTY_MISMATCH" in statuses:
-        recommendation = "Use a property-aware getter/setter fallback or document the binding mismatch."
     else:
         recommendation = "Review the related API spellings and document the intended mapping."
 
@@ -691,7 +691,7 @@ def apply_pywin32_authority(rows: Rows, interface_name: str, authority: Authorit
                     continue
             remaining.append(status)
 
-        actionable = [status for status in remaining if status not in _AUTHORITY_BACKLOG_STATUSES]
+        actionable = [status for status in remaining if status not in _AUTHORITY_BACKLOG_STATUSES and not (alias_documented and status == "PYTHON_METHOD_NAME_MISMATCH")]
 
         if alias_documented and not actionable:
             resolved = ["ALIAS_DOCUMENTED" if status == "PYTHON_METHOD_NAME_MISMATCH" else status for status in statuses]
@@ -701,7 +701,8 @@ def apply_pywin32_authority(rows: Rows, interface_name: str, authority: Authorit
             informational.append((row[0], row[1], row[2], "UNAVAILABLE_DOCUMENTED", _DOCUMENTED_UNAVAILABLE_RECOMMENDATION))
             continue
         if actionable:
-            deviations.append((row[0], row[1], row[2], "; ".join(remaining), row[4]))
+            rendered = ["ALIAS_DOCUMENTED", *remaining] if alias_documented else remaining
+            deviations.append((row[0], row[1], row[2], "; ".join(rendered), row[4]))
         elif remaining:
             backlog.append(row)
         elif any(status in _AUTHORITY_INFO_STATUSES for status in statuses):
@@ -764,7 +765,7 @@ def build_deviation_rows(python_members: Dict[str, Set[str]], java_members: Set[
     return rows
 
 
-_CORRECT_BINDING_STATUSES = {"ALIAS_DOCUMENTED", "ACCESSOR_ALIAS_MISMATCH", "METHOD_PROPERTY_MISMATCH"}
+_CORRECT_BINDING_STATUSES = {"ALIAS_DOCUMENTED", "ACCESSOR_ALIAS_MISMATCH"}
 
 
 def _python_com_names(cell: str) -> Set[str]:

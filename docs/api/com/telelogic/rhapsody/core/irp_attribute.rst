@@ -17,26 +17,14 @@ API reference
 
 Wraps ``IRPAttribute``: represents an attribute in a classifier.
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute.IRPAttribute.get_is_constant
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute.IRPAttribute.is_constant
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute.IRPAttribute.get_is_ordered
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute.IRPAttribute.is_ordered
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute.IRPAttribute.get_is_reference
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute.IRPAttribute.is_reference
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute.IRPAttribute.get_is_static
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute.IRPAttribute.is_static
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute.IRPAttribute.get_multiplicity
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute.IRPAttribute.multiplicity
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute.IRPAttribute.get_visibility
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute.IRPAttribute.set_is_constant
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute.IRPAttribute.set_is_ordered
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute.IRPAttribute.set_is_reference
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute.IRPAttribute.set_is_static
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute.IRPAttribute.set_multiplicity
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute.IRPAttribute.set_visibility
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute.IRPAttribute.visibility

@@ -18,7 +18,7 @@ class IRPCollection:
     """Wraps ``IRPCollection``: an iterable/indexable container of elements."""
 
     # IRPCollection method parity checklist:
-    # [x] get_count  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] count  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_item  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] add_item  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] add_graphical_item  [x] impl  [x] docstring  [x] unit test  [x] integration test
@@ -34,7 +34,8 @@ class IRPCollection:
     def __init__(self, com_obj: Any) -> None:
         self._com = com_obj
 
-    def get_count(self) -> int:
+    @property
+    def count(self) -> int:
         """Returns the number of elements in the collection.
 
         Returns:
@@ -193,7 +194,7 @@ class IRPCollection:
         ComHelper.call_com(lambda: self._com.setInteger(index, value))
 
     def __len__(self) -> int:
-        return self.get_count()
+        return self.count
 
     def __getitem__(self, index: Any) -> Any:
         if isinstance(index, slice):

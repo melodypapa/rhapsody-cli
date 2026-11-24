@@ -30,34 +30,31 @@ class IRPUnit(IRPModelElement):
     """Wraps ``IRPUnit``: model elements that can be saved as separate files."""
 
     # IRPUnit method parity checklist:
+    # [x] cm_header                             [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] copy_to_another_project                [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] current_directory                     [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] filename                              [x] impl  [x] docstring  [x] unit test  [x] integration test  (pre-existing)
     # [x] get_add_to_model_mode                   [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_cm_header                         [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_cm_state                          [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_current_directory                 [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_filename                         [x] impl  [x] docstring  [x] unit test  [x] integration test  (pre-existing)
-    # [x] get_include_in_next_load                [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_is_stub                           [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_language                         [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_last_modified_time                 [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_nested_save_units                  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_nested_save_units_count             [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_structure_diagrams                [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_unit_path                         [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] include_in_next_load                  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] is_read_only                          [x] impl  [x] docstring  [x] unit test  [x] integration test  (pre-existing)
     # [x] is_reference_unit                     [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] is_separate_save_unit                  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] is_stub                               [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] load                                [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] move_to_another_project_leave_a_reference [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] reference_to_another_project           [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] save                                [x] impl  [x] docstring  [x] unit test  [x] integration test  (pre-existing)
-    # [x] set_cm_header                         [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] set_filename                         [x] impl  [x] docstring  [x] unit test  [x] integration test  (pre-existing)
-    # [x] set_include_in_next_load                [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] set_language                         [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] set_read_only                         [x] impl  [x] docstring  [x] unit test  [x] integration test  (pre-existing)
     # [x] set_separate_save_unit                 [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] set_unit_path                         [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] structure_diagrams                     [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] unload                              [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [inherited] get_nested_elements - provided by rp_model_element
     # No deprecated IRPUnit methods.
@@ -92,7 +89,8 @@ class IRPUnit(IRPModelElement):
         """
         return int(self.call_com(lambda: self._com.getAddToModelMode()))
 
-    def get_cm_header(self) -> str:
+    @property
+    def cm_header(self) -> str:
         """Returns the header used by the Configuration Management tool for the unit.
 
         Returns:
@@ -102,6 +100,18 @@ class IRPUnit(IRPModelElement):
             com.telelogic.rhapsody.core.IRPUnit::getCMHeader()
         """
         return str(self.get_com_property(self._com, "CMHeader"))
+
+    @cm_header.setter
+    def cm_header(self, cm_header: str) -> None:
+        """Sets the Configuration Management tool header for the unit.
+
+        Args:
+            cm_header: The Configuration Management tool header to use for the unit.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPUnit::setCMHeader(java.lang.String cmHeader)
+        """
+        self.set_com_property(self._com, "CMHeader", cm_header)
 
     def get_cm_state(self) -> int:
         """Returns the configuration management state of the unit.
@@ -114,7 +124,8 @@ class IRPUnit(IRPModelElement):
         """
         return int(self.call_com(lambda: self._com.getCMState()))
 
-    def get_current_directory(self) -> str:
+    @property
+    def current_directory(self) -> str:
         """Gets the name of the directory that contains the file used to store the unit.
 
         The string returned consists of the full path except for the name of
@@ -128,7 +139,8 @@ class IRPUnit(IRPModelElement):
         """
         return str(self.get_com_property(self._com, "currentDirectory"))
 
-    def get_filename(self) -> str:
+    @property
+    def filename(self) -> str:
         """Gets the name of the file used to store the unit.
 
         The string returned consists only of the filename, not the entire path.
@@ -141,7 +153,24 @@ class IRPUnit(IRPModelElement):
         """
         return str(self.get_com_property(self._com, "filename"))
 
-    def get_include_in_next_load(self) -> int:
+    @filename.setter
+    def filename(self, filename: str) -> None:
+        """Specifies the name that should be used for the file representing the unit.
+
+        The string should only include the first part of the filename;
+        Rhapsody handles the file extension. Note that if you change the
+        filename, the old file remains on disk.
+
+        Args:
+            filename: The name that should be used for the file representing the unit.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPUnit::setFilename(java.lang.String filename)
+        """
+        self.set_com_property(self._com, "filename", filename)
+
+    @property
+    def include_in_next_load(self) -> int:
         """Checks whether the unit is going to be loaded the next time the model is loaded.
 
         Returns:
@@ -153,7 +182,21 @@ class IRPUnit(IRPModelElement):
         """
         return int(self.get_com_property(self._com, "includeInNextLoad"))
 
-    def get_is_stub(self) -> int:
+    @include_in_next_load.setter
+    def include_in_next_load(self, include_in_next_load: int) -> None:
+        """Toggles whether the unit is going to be loaded the next time the model is loaded.
+
+        Args:
+            include_in_next_load: ``1`` to load the unit the next time the model
+                is loaded, ``0`` to not load it.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPUnit::setIncludeInNextLoad(int)
+        """
+        self.set_com_property(self._com, "includeInNextLoad", include_in_next_load)
+
+    @property
+    def is_stub(self) -> int:
         """Checks whether the unit is currently unloaded.
 
         Returns:
@@ -208,7 +251,8 @@ class IRPUnit(IRPModelElement):
         """
         return int(self.call_com(lambda: self._com.getNestedSaveUnitsCount()))
 
-    def get_structure_diagrams(self) -> IRPCollection:
+    @property
+    def structure_diagrams(self) -> IRPCollection:
         """Returns a collection of any structure diagrams that are sub-elements of the unit.
 
         Used primarily for structure diagrams that belong to individual classes.
@@ -327,44 +371,6 @@ class IRPUnit(IRPModelElement):
             com.telelogic.rhapsody.core.IRPUnit::save(int)
         """
         self.call_com(lambda: self._com.save(with_subs))
-
-    def set_cm_header(self, cm_header: str) -> None:
-        """Sets the Configuration Management tool header for the unit.
-
-        Args:
-            cm_header: The Configuration Management tool header to use for the unit.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPUnit::setCMHeader(java.lang.String cmHeader)
-        """
-        self.set_com_property(self._com, "CMHeader", cm_header)
-
-    def set_filename(self, filename: str) -> None:
-        """Specifies the name that should be used for the file representing the unit.
-
-        The string should only include the first part of the filename;
-        Rhapsody handles the file extension. Note that if you change the
-        filename, the old file remains on disk.
-
-        Args:
-            filename: The name that should be used for the file representing the unit.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPUnit::setFilename(java.lang.String filename)
-        """
-        self.set_com_property(self._com, "filename", filename)
-
-    def set_include_in_next_load(self, include_in_next_load: int) -> None:
-        """Toggles whether the unit is going to be loaded the next time the model is loaded.
-
-        Args:
-            include_in_next_load: ``1`` to load the unit the next time the model
-                is loaded, ``0`` to not load it.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPUnit::setIncludeInNextLoad(int)
-        """
-        self.set_com_property(self._com, "includeInNextLoad", include_in_next_load)
 
     def set_language(self, new_language: str, recursive: int) -> None:
         """Specifies the programming language that should be used when code is generated for the unit.

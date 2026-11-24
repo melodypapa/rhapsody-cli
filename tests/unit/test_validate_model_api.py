@@ -81,13 +81,29 @@ ACTIVE_ROW = (
 )
 
 
-def test_promote_correct_com_bindings_moves_property_binding_to_matches() -> None:
-    informational: List[Tuple[str, str, str, str, str]] = [ACTIVE_ROW]
+def test_promote_correct_com_bindings_moves_alias_only_row_to_matches() -> None:
+    informational: List[Tuple[str, str, str, str, str]] = [
+        (
+            "description_html (property) -> descriptionHTML",
+            "getDescriptionHTML (method)",
+            "descriptionHTML (property)",
+            "ALIAS_DOCUMENTED; ACCESSOR_ALIAS_MISMATCH",
+            "Documented decision: keep the current binding; no change.",
+        )
+    ]
 
     remaining, promoted = promote_correct_com_bindings(informational)
 
     assert remaining == []
-    assert promoted == [("is_active() -> isActive", "getIsActive (method); setIsActive (method)", "isActive (property)", "MATCH", "—")]
+    assert promoted == [("description_html (property) -> descriptionHTML", "getDescriptionHTML (method)", "descriptionHTML (property)", "MATCH", "—")]
+
+
+def test_promote_correct_com_bindings_does_not_promote_property_shape_mismatch() -> None:
+    """A method-shaped Python member over a property-shaped COM member is a real deviation."""
+    remaining, promoted = promote_correct_com_bindings([ACTIVE_ROW])
+
+    assert promoted == []
+    assert remaining == [ACTIVE_ROW]
 
 
 def test_promote_correct_com_bindings_keeps_unsupported_and_unexposed_rows() -> None:
@@ -504,7 +520,7 @@ def test_build_deviation_rows_reports_java_method_vs_pywin32_property() -> None:
             "version (method)",
             "version (property)",
             "PYTHON_METHOD_NAME_MISMATCH; METHOD_PROPERTY_MISMATCH",
-            "Rename the Python method to the snake_case Java API name or document the alias.",
+            "Expose the member with the COM shape: use @property for property-shaped COM members (setter only when writable) and a plain method for method-shaped members.",
         )
     ]
 
@@ -623,7 +639,7 @@ def _authority(
     )
 
 
-def test_apply_pywin32_authority_demotes_expected_differences() -> None:
+def test_apply_pywin32_authority_keeps_property_shape_mismatch_as_deviation() -> None:
     rows = [
         (
             "get_activity_diagram() -> activityDiagram; get_activity_diagram() -> getActivityDiagram",
@@ -636,8 +652,16 @@ def test_apply_pywin32_authority_demotes_expected_differences() -> None:
 
     deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPClass", _authority())
 
-    assert deviations == []
-    assert informational == rows
+    assert deviations == [
+        (
+            "get_activity_diagram() -> activityDiagram; get_activity_diagram() -> getActivityDiagram",
+            "getActivityDiagram (method)",
+            "activityDiagram (property)",
+            "METHOD_PROPERTY_MISMATCH",
+            "Use a property-aware getter/setter fallback.",
+        )
+    ]
+    assert informational == []
     assert backlog == []
 
 
@@ -654,17 +678,17 @@ def test_apply_pywin32_authority_marks_documented_alias_in_row() -> None:
 
     deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPClass", _authority(aliases={"IRPClass": {"get_description_html": "description_html"}}))
 
-    assert deviations == []
-    assert backlog == []
-    assert informational == [
+    assert deviations == [
         (
             "get_description_html() -> descriptionHTML; get_description_html() -> getDescriptionHTML",
             "getDescriptionHTML (method)",
             "descriptionHTML (property)",
-            "ALIAS_DOCUMENTED; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH",
-            "Documented decision: keep the current binding; no change.",
+            "ALIAS_DOCUMENTED; METHOD_PROPERTY_MISMATCH",
+            "Rename the Python method.",
         )
     ]
+    assert backlog == []
+    assert informational == []
 
 
 def test_apply_pywin32_authority_marks_documented_unavailable_member() -> None:
@@ -796,7 +820,7 @@ def test_apply_pywin32_authority_keeps_actionable_deviation_alongside_documented
             "get_binary_id() -> binaryID; get_binary_id() -> getBinaryID",
             "getBinaryID (method)",
             "BinaryID (property)",
-            "COM_MEMBER_NOT_EXPOSED",
+            "COM_MEMBER_NOT_EXPOSED; METHOD_PROPERTY_MISMATCH",
             "Use the BinaryID property.",
         )
     ]
@@ -822,7 +846,7 @@ def test_apply_pywin32_authority_keeps_unexposed_member_as_deviation() -> None:
             "get_binary_id() -> binaryID; get_binary_id() -> getBinaryID",
             "getBinaryID (method)",
             "BinaryID (property)",
-            "COM_MEMBER_NOT_EXPOSED",
+            "COM_MEMBER_NOT_EXPOSED; METHOD_PROPERTY_MISMATCH",
             "Use the BinaryID property.",
         )
     ]
@@ -836,7 +860,7 @@ def test_main_authority_source_reports_backlog_without_typelib(tmp_path: Path, m
     monkeypatch.setattr(validator, "resolve_java_interface_docs", lambda interface_name, docs_root: ("com.telelogic.rhapsody.core", docs_root))
     monkeypatch.setattr(validator, "collect_java_signatures", lambda interface_name, docs_root, **kwargs: {"isAbstract": {"IRPClass.isAbstract()"}})
     monkeypatch.setattr(validator, "collect_java_members", lambda interface_name, docs_root, **kwargs: {"isAbstract"})
-    monkeypatch.setattr(validator, "collect_python_members", lambda interface_name, models_root, **kwargs: {"isAbstract": {"is_abstract() -> isAbstract"}})
+    monkeypatch.setattr(validator, "collect_python_members", lambda interface_name, models_root, **kwargs: {"isAbstract": {"is_abstract (property) -> isAbstract"}})
 
     assert validator.main(["IRPClass", "--source", "authority"]) == 0
 
@@ -844,6 +868,21 @@ def test_main_authority_source_reports_backlog_without_typelib(tmp_path: Path, m
     assert "## Expected Binding Differences" in report
     assert "## Wrapper Backlog" in report
     assert "No deviations require changes." in report
+
+
+def test_main_authority_source_fails_on_property_shape_mismatch(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """A plain Python method over a property-shaped COM member is actionable, never MATCH."""
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(validator, "load_authority", lambda: _authority(catalog={"IRPClass": {"isAbstract": "property"}}))
+    monkeypatch.setattr(validator, "resolve_java_interface_docs", lambda interface_name, docs_root: ("com.telelogic.rhapsody.core", docs_root))
+    monkeypatch.setattr(validator, "collect_java_signatures", lambda interface_name, docs_root, **kwargs: {"isAbstract": {"IRPClass.isAbstract()"}})
+    monkeypatch.setattr(validator, "collect_java_members", lambda interface_name, docs_root, **kwargs: {"isAbstract"})
+    monkeypatch.setattr(validator, "collect_python_members", lambda interface_name, models_root, **kwargs: {"isAbstract": {"is_abstract() -> isAbstract"}})
+
+    assert validator.main(["IRPClass", "--source", "authority"]) == 1
+
+    report = (tmp_path / Path(*validator.JAVA_PACKAGE.split(".")) / "IRPClass_api_report.md").read_text(encoding="utf-8")
+    assert "METHOD_PROPERTY_MISMATCH" in report.split("## Expected Binding Differences", 1)[0]
 
 
 def test_irpclass_report_has_no_actionable_deviations() -> None:

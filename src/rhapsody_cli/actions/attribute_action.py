@@ -213,9 +213,9 @@ class AttributeCreateAction(AbstractAttributeAction):
         if "defaultValue" in attrs:
             attribute.set_default_value(cast(str, attrs["defaultValue"]))  # type: ignore[attr-defined]
         if "multiplicity" in attrs:
-            attribute.set_multiplicity(cast(str, attrs["multiplicity"]))  # type: ignore[attr-defined]
+            attribute.multiplicity = cast(str, attrs["multiplicity"])  # type: ignore[attr-defined]
         if "visibility" in attrs:
-            attribute.set_visibility(cast(str, attrs["visibility"]))  # type: ignore[attr-defined]
+            attribute.visibility = cast(str, attrs["visibility"])  # type: ignore[attr-defined]
         if "declaration" in attrs:
             attribute.set_declaration(cast(str, attrs["declaration"]))  # type: ignore[attr-defined]
         if "description" in attrs:
@@ -229,7 +229,7 @@ class AttributeCreateAction(AbstractAttributeAction):
         SWR_ATTR_00012: IsStatic Flag Support
         """
         if "isStatic" in attrs:
-            attribute.set_is_static(1 if attrs["isStatic"] else 0)  # type: ignore[attr-defined]
+            attribute.is_static = bool(attrs["isStatic"])  # type: ignore[attr-defined]
 
     def _set_type(self, classifier: IRPModelElement, attribute: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Resolve and set the attribute type.
@@ -332,7 +332,7 @@ class AttributeListAction(AbstractAttributeAction):
 
     def _collect_attribute_names(self, classifier: IRPModelElement) -> List[str]:
         """Collect names of attributes on a classifier."""
-        attributes = classifier.get_attributes()  # type: ignore[attr-defined]
+        attributes = classifier.attributes  # type: ignore[attr-defined]
         return [cast(IRPModelElement, attr).name for attr in attributes]
 
     def _format_output(self, attr_names: List[str], format_type: str) -> str:
@@ -449,9 +449,9 @@ class AttributeViewAction(AbstractAttributeAction):
             "description": attribute.description,
             "type": type_name,
             "defaultValue": attribute.get_default_value(),  # type: ignore[attr-defined]
-            "multiplicity": attribute.get_multiplicity(),  # type: ignore[attr-defined]
-            "isStatic": int(attribute.get_is_static()),  # type: ignore[attr-defined]
-            "visibility": attribute.get_visibility(),  # type: ignore[attr-defined]
+            "multiplicity": attribute.multiplicity,  # type: ignore[attr-defined]
+            "isStatic": int(attribute.is_static),  # type: ignore[attr-defined]
+            "visibility": attribute.visibility,  # type: ignore[attr-defined]
             "declaration": attribute.get_declaration(),  # type: ignore[attr-defined]
             "metaClass": attribute.meta_class,
             "fullPath": attribute.get_full_path_name(),
@@ -585,15 +585,15 @@ class AttributeUpdateAction(AbstractAttributeAction):
         if "defaultValue" in attrs:
             attribute.set_default_value(cast(str, attrs["defaultValue"]))  # type: ignore[attr-defined]
         if "multiplicity" in attrs:
-            attribute.set_multiplicity(cast(str, attrs["multiplicity"]))  # type: ignore[attr-defined]
+            attribute.multiplicity = cast(str, attrs["multiplicity"])  # type: ignore[attr-defined]
         if "visibility" in attrs:
-            attribute.set_visibility(cast(str, attrs["visibility"]))  # type: ignore[attr-defined]
+            attribute.visibility = cast(str, attrs["visibility"])  # type: ignore[attr-defined]
         if "declaration" in attrs:
             attribute.set_declaration(cast(str, attrs["declaration"]))  # type: ignore[attr-defined]
         if "description" in attrs:
             attribute.description = cast(str, attrs["description"])
         if "isStatic" in attrs:
-            attribute.set_is_static(1 if attrs["isStatic"] else 0)  # type: ignore[attr-defined]
+            attribute.is_static = bool(attrs["isStatic"])  # type: ignore[attr-defined]
         if "type" in attrs:
             type_name = cast(str, attrs["type"])
             owner = classifier.owner

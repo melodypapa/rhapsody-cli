@@ -491,8 +491,8 @@ class ClassViewAction(AbstractClassAction):
 
         Normalizes IsAbstract (bool) to int for clean JSON round-trip.
         """
-        operations = cls.get_operations()  # type: ignore[attr-defined]
-        attributes = cls.get_attributes()  # type: ignore[attr-defined]
+        operations = cls.operations  # type: ignore[attr-defined]
+        attributes = cls.attributes  # type: ignore[attr-defined]
         return {
             "name": cls.name,
             "guid": cls.guid,

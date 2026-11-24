@@ -162,7 +162,7 @@ class TestProcessElementDispatch:
         importer._process_element(parent, {"name": "Color", "type": "Type", "kind": "Enumeration"})
 
         parent.add_new_aggr.assert_called_once_with("Type", "Color")
-        new_type.set_kind.assert_called_once_with("Enumeration")
+        assert new_type.kind == "Enumeration"
 
     def test_dispatches_object(self) -> None:
         importer = _make_importer()
@@ -220,7 +220,7 @@ class TestApplyOperationExtras:
 
         importer._apply_operation_extras(op, {"return_type": "int"})
 
-        op.set_returns.assert_called_once_with(classifier)
+        assert op.returns is classifier
 
     def test_warns_when_return_type_unresolvable(self) -> None:
         project = MagicMock()
@@ -231,7 +231,7 @@ class TestApplyOperationExtras:
 
         importer._apply_operation_extras(op, {"return_type": "Missing"})
 
-        op.set_returns.assert_not_called()
+        assert "returns" not in op.__dict__
 
     def test_sets_is_static(self) -> None:
         importer = _make_importer()
@@ -239,7 +239,7 @@ class TestApplyOperationExtras:
 
         importer._apply_operation_extras(op, {"is_static": True})
 
-        op.set_is_static.assert_called_once_with(True)
+        assert op.is_static is True
 
     def test_creates_arguments(self) -> None:
         importer = _make_importer()
@@ -275,7 +275,7 @@ class TestApplyArgumentExtras:
 
         importer._apply_argument_extras(arg, {"direction": "in"})
 
-        arg.set_argument_direction.assert_called_once_with("in")
+        assert arg.argument_direction == "in"
 
 
 class TestApplyAttributeExtras:
@@ -301,9 +301,9 @@ class TestApplyAttributeExtras:
         )
 
         attr.set_type.assert_called_once_with(classifier)
-        attr.set_visibility.assert_called_once_with("public")
-        attr.set_multiplicity.assert_called_once_with("1")
-        attr.set_is_static.assert_called_once_with(True)
+        assert attr.visibility == "public"
+        assert attr.multiplicity == "1"
+        assert attr.is_static is True
 
 
 class TestApplyTypeExtras:
@@ -501,9 +501,9 @@ class TestApplyPortExtras:
             },
         )
 
-        port.set_is_behavioral.assert_called_once_with(True)
-        port.set_is_reversed.assert_called_once_with(False)
-        port.set_contract.assert_called_once_with(contract)
+        assert port.is_behavioral is True
+        assert port.is_reversed is False
+        assert port.port_contract is contract
 
     def test_adds_provided_and_required_interfaces(self) -> None:
         iface1 = MagicMock()

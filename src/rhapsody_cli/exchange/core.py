@@ -232,7 +232,7 @@ class RhapsodyModelHelper:
 
     def _set_type_kind(self, type_element: IRPModelElement, kind: str) -> None:
         """Set a Type's kind (Enumeration, Structure, Language, Typedef, Union)."""
-        type_element.set_kind(kind)  # type: ignore[attr-defined]
+        type_element.kind = kind  # type: ignore[attr-defined]
 
     def _collect_children(self, container: IRPModelElement) -> List[IRPModelElement]:
         """Collect all children of a container.

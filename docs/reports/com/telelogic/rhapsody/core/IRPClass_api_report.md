@@ -51,11 +51,11 @@
 | delete_superclass() -> deleteSuperclass | deleteSuperclass (method) | deleteSuperclass (method) | MATCH | — |
 | delete_type() -> deleteType | deleteType (method) | deleteType (method) | MATCH | — |
 | get_is_final() -> getIsFinal; set_is_final() -> setIsFinal | getIsFinal (method); setIsFinal (method) | getIsFinal (method); setIsFinal (method) | MATCH | — |
-| is_abstract() -> isAbstract | getIsAbstract (method); setIsAbstract (method) | isAbstract (property) | MATCH | — |
-| is_active() -> isActive | getIsActive (method); setIsActive (method) | isActive (property) | MATCH | — |
-| is_behavior_overriden() -> isBehaviorOverriden | getIsBehaviorOverriden (method); setIsBehaviorOverriden (method) | isBehaviorOverriden (property) | MATCH | — |
-| is_composite() -> isComposite | getIsComposite (method) | isComposite (property) | MATCH | — |
-| is_reactive() -> isReactive | getIsReactive (method) | isReactive (property) | MATCH | — |
+| is_abstract (property) -> isAbstract | getIsAbstract (method); setIsAbstract (method) | isAbstract (property) | MATCH | — |
+| is_active (property) -> isActive | getIsActive (method); setIsActive (method) | isActive (property) | MATCH | — |
+| is_behavior_overriden (property) -> isBehaviorOverriden | getIsBehaviorOverriden (method); setIsBehaviorOverriden (method) | isBehaviorOverriden (property) | MATCH | — |
+| is_composite (property) -> isComposite | getIsComposite (method) | isComposite (property) | MATCH | — |
+| is_reactive (property) -> isReactive | getIsReactive (method) | isReactive (property) | MATCH | — |
 
 </details>
 
