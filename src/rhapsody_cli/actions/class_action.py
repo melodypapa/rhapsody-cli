@@ -48,7 +48,7 @@ class AbstractClassAction(SessionAwareAction, ElementManagementAction):
             return None
         for element in nested:
             wrapped = cast(IRPModelElement, element)
-            if wrapped.get_name() == name:
+            if wrapped.name == name:
                 return wrapped
             found = self._find_nested_by_name(wrapped, name)
             if found is not None:
@@ -73,7 +73,7 @@ class AbstractClassAction(SessionAwareAction, ElementManagementAction):
         root = self._get_active_root()
         container = self._resolve_container_or_element(root, path, resolve_element=False, operation=f"resolve package path '{path}'")
 
-        meta_class = container.get_meta_class()
+        meta_class = container.meta_class
         if meta_class not in self._PACKAGE_META_CLASSES:
             raise CliExecutionError(f"Path '{path}' does not resolve to a Package or Project (found {meta_class})")
 
@@ -96,7 +96,7 @@ class AbstractClassAction(SessionAwareAction, ElementManagementAction):
         root = self._get_active_root()
         element = self._resolve_container_or_element(root, path, resolve_element=True, operation=f"resolve class path '{path}'")
 
-        meta_class = element.get_meta_class()
+        meta_class = element.meta_class
         if meta_class != "Class":
             raise CliExecutionError(f"Path '{path}' does not resolve to a Class (found {meta_class})")
 
@@ -125,7 +125,7 @@ class AbstractClassAction(SessionAwareAction, ElementManagementAction):
         if element is None:
             raise CliExecutionError(f"No element found with GUID '{guid}'")
 
-        meta_class = element.get_meta_class()
+        meta_class = element.meta_class
         if meta_class != "Class":
             raise CliExecutionError(f"GUID '{guid}' does not resolve to a Class (found {meta_class})")
 
@@ -253,7 +253,7 @@ class ClassCreateAction(AbstractClassAction):
     def _set_basic_attributes(self, cls: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Set basic attributes."""
         if "description" in attrs:
-            cls.set_description(cast(str, attrs["description"]))
+            cls.description = cast(str, attrs["description"])
 
     def _set_boolean_flags(self, cls: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Set boolean flags isAbstract, isFinal, isActive.
@@ -386,7 +386,7 @@ class ClassListAction(AbstractClassAction):
     def _collect_class_names(self, package: IRPModelElement) -> List[str]:
         """Collect names of classes in package."""
         classes = package.get_classes()  # type: ignore[attr-defined]
-        return [cast(IRPModelElement, cls).get_name() for cls in classes]
+        return [cast(IRPModelElement, cls).name for cls in classes]
 
     def _format_output(self, class_names: List[str], format_type: str) -> str:
         """Format output based on format parameter."""
@@ -494,18 +494,18 @@ class ClassViewAction(AbstractClassAction):
         operations = cls.get_operations()  # type: ignore[attr-defined]
         attributes = cls.get_attributes()  # type: ignore[attr-defined]
         return {
-            "name": cls.get_name(),
-            "guid": cls.get_guid(),
-            "description": cls.get_description(),
+            "name": cls.name,
+            "guid": cls.guid,
+            "description": cls.description,
             "isAbstract": int(cls.is_abstract),  # type: ignore[attr-defined]
             "isActive": int(cls.is_active),  # type: ignore[attr-defined]
             "isFinal": int(cls.get_is_final()),  # type: ignore[attr-defined]
             "isComposite": int(cls.is_composite),  # type: ignore[attr-defined]
             "isReactive": int(cls.is_reactive),  # type: ignore[attr-defined]
-            "metaClass": cls.get_meta_class(),
+            "metaClass": cls.meta_class,
             "fullPath": cls.get_full_path_name(),
-            "operations": [cast(IRPModelElement, op).get_name() for op in operations],
-            "attributes": [cast(IRPModelElement, attr).get_name() for attr in attributes],
+            "operations": [cast(IRPModelElement, op).name for op in operations],
+            "attributes": [cast(IRPModelElement, attr).name for attr in attributes],
         }
 
     def _format_output(self, data: Dict[str, object], format_type: str) -> str:
@@ -586,7 +586,7 @@ class ClassLinkAction(AbstractClassAction):
             source = self._resolve_and_validate_class(args.path)
 
         target_name = args.add if args.add else args.remove
-        owner = source.get_owner()
+        owner = source.owner
         try:
             target = owner.find_nested_classifier_recursive(target_name)  # type: ignore[attr-defined]
         except AttributeError:
@@ -702,9 +702,9 @@ class ClassUpdateAction(AbstractClassAction):
                 self.logger.warning("Skipping unknown attribute: %s", key)
                 continue
             if key == "name":
-                cls.set_name(cast(str, value))
+                cls.name = cast(str, value)
             elif key == "description":
-                cls.set_description(cast(str, value))
+                cls.description = cast(str, value)
             elif key == "isAbstract":
                 cls.is_abstract = bool(value)  # type: ignore[attr-defined]
             elif key == "isFinal":
@@ -736,4 +736,4 @@ class ClassUpdateAction(AbstractClassAction):
             cls = self._resolve_and_validate_class(args.path)
         data = self._load_json_data(args)
         self._set_attributes(cls, data)
-        self.logger.info("Successfully updated class: %s", cls.get_name())
+        self.logger.info("Successfully updated class: %s", cls.name)

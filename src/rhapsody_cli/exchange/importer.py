@@ -137,7 +137,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
                 logger.warning(
                     "Cannot resolve return_type '%s' for operation '%s'",
                     return_type,
-                    operation.get_name(),
+                    operation.name,
                 )
         if "is_static" in spec:
             operation.set_is_static(cast(bool, spec["is_static"]))  # type: ignore[attr-defined]
@@ -156,7 +156,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
                 logger.warning(
                     "Cannot resolve data_type '%s' for argument '%s'",
                     data_type,
-                    arg.get_name(),
+                    arg.name,
                 )
         if "direction" in spec:
             arg.set_argument_direction(cast(str, spec["direction"]))  # type: ignore[attr-defined]
@@ -175,7 +175,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
                 logger.warning(
                     "Cannot resolve data_type '%s' for attribute '%s'",
                     data_type,
-                    attr.get_name(),
+                    attr.name,
                 )
         if "visibility" in spec:
             attr.set_visibility(cast(str, spec["visibility"]))  # type: ignore[attr-defined]
@@ -203,7 +203,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
                 logger.warning(
                     "Cannot resolve classifier '%s' for object '%s'",
                     classifier_name,
-                    obj.get_name(),
+                    obj.name,
                 )
 
     def _apply_dependency_extras(self, dependency: IRPModelElement, spec: Dict[str, object], parent: IRPModelElement) -> None:
@@ -218,7 +218,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
                 logger.warning(
                     "Cannot resolve depends_on '%s' for dependency '%s'",
                     depends_on,
-                    dependency.get_name(),
+                    dependency.name,
                 )
 
     def _apply_generalization_extras(self, generalization: IRPModelElement, spec: Dict[str, object], parent: IRPModelElement) -> None:
@@ -233,7 +233,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
                 logger.warning(
                     "Cannot resolve base_class '%s' for generalization '%s'",
                     base_class,
-                    generalization.get_name(),
+                    generalization.name,
                 )
         if "visibility" in spec:
             generalization.set_visibility(cast(str, spec["visibility"]))  # type: ignore[attr-defined]
@@ -249,7 +249,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
                 logger.warning(
                     "Cannot resolve from '%s' for relation '%s'; using parent",
                     from_name,
-                    relation.get_name(),
+                    relation.name,
                 )
                 source = parent
         else:
@@ -264,7 +264,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
                 logger.warning(
                     "Cannot resolve to '%s' for relation '%s'",
                     to_name,
-                    relation.get_name(),
+                    relation.name,
                 )
         if "relation_type" in spec:
             relation.set_relation_type(cast(str, spec["relation_type"]))  # type: ignore[attr-defined]
@@ -292,7 +292,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
                 logger.warning(
                     "Cannot resolve contract '%s' for port '%s'",
                     contract_name,
-                    port.get_name(),
+                    port.name,
                 )
         for iface_name in cast(List[str], spec.get("provided_interfaces", [])):
             iface = self.resolve_classifier(iface_name)
@@ -302,7 +302,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
                 logger.warning(
                     "Cannot resolve provided_interface '%s' for port '%s'",
                     iface_name,
-                    port.get_name(),
+                    port.name,
                 )
         for iface_name in cast(List[str], spec.get("required_interfaces", [])):
             iface = self.resolve_classifier(iface_name)
@@ -312,7 +312,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
                 logger.warning(
                     "Cannot resolve required_interface '%s' for port '%s'",
                     iface_name,
-                    port.get_name(),
+                    port.name,
                 )
 
     def _apply_event_extras(self, event: IRPModelElement, spec: Dict[str, object]) -> None:
@@ -326,7 +326,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
                 logger.warning(
                     "Cannot resolve base_event '%s' for event '%s'",
                     base_event_name,
-                    event.get_name(),
+                    event.name,
                 )
         if "super_event" in spec:
             super_event_name = cast(str, spec["super_event"])
@@ -337,7 +337,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
                 logger.warning(
                     "Cannot resolve super_event '%s' for event '%s'",
                     super_event_name,
-                    event.get_name(),
+                    event.name,
                 )
 
     def _apply_event_reception_extras(self, reception: IRPModelElement, spec: Dict[str, object]) -> None:
@@ -351,5 +351,5 @@ class RhapsodyImporter(RhapsodyModelHelper):
                 logger.warning(
                     "Cannot resolve event '%s' for reception '%s'",
                     event_name,
-                    reception.get_name(),
+                    reception.name,
                 )

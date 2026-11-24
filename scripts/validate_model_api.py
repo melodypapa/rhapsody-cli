@@ -176,6 +176,10 @@ def _get_referenced_member_name(method: ast.FunctionDef) -> Optional[str]:
     return match.group(1) if match else None
 
 
+def _is_python_property_accessor(method: ast.FunctionDef) -> bool:
+    return any(isinstance(decorator, ast.Name) and decorator.id == "property" or isinstance(decorator, ast.Attribute) and decorator.attr in {"getter", "setter"} for decorator in method.decorator_list)
+
+
 def _wrapper_class_candidates(interface_name: str) -> List[str]:
     """Return accepted wrapper class names, preferring the exact Java interface name."""
     return [interface_name, "RP" + interface_name[3:]]
@@ -239,14 +243,16 @@ def collect_python_members(interface_name: str, models_root: Path, include_bases
             seen_methods.add(method.name)
             if method.name.startswith("_"):
                 continue
+            property_accessor = _is_python_property_accessor(method)
+            wrapper_label = f"{method.name} (property)" if property_accessor else f"{method.name}()"
             com_members = _get_method_com_members(method)
             if com_members:
                 for member_name in com_members:
-                    members.setdefault(member_name, set()).add(f"{method.name}() -> {member_name}")
+                    members.setdefault(member_name, set()).add(f"{wrapper_label} -> {member_name}")
             else:
                 referenced_member = _get_referenced_member_name(method)
                 member_key = referenced_member or f"python-only:{method.name}"
-                members.setdefault(member_key, set()).add(f"{method.name}() (no static COM member)")
+                members.setdefault(member_key, set()).add(f"{wrapper_label} (no static COM member)")
 
         if include_bases:
             for base in class_node.bases:
@@ -488,6 +494,19 @@ def _canonical_member_name(member_name: str) -> str:
     return member_name[:1].lower() + member_name[1:]
 
 
+def _python_wrapper_name(label: str) -> str:
+    if " (property)" in label:
+        return label.split(" (property)", maxsplit=1)[0]
+    return label.split("()", maxsplit=1)[0]
+
+
+def _java_accessors_match_properties(java_member_names: Set[str], property_names: Set[str]) -> bool:
+    if not java_member_names or not property_names:
+        return False
+    property_keys = {_canonical_member_name(name) for name in property_names}
+    return all(len(name) > 3 and name.startswith(("get", "set")) and name[3].isupper() and _canonical_member_name(name) in property_keys for name in java_member_names)
+
+
 def _classify_deviation(
     python_member_names: Set[str],
     python_labels: Set[str],
@@ -496,6 +515,8 @@ def _classify_deviation(
 ) -> Tuple[str, str]:
     python_com_names = {name for name in python_member_names if not name.startswith("python-only:")}
     pywin32_names = set(pywin32_members)
+    python_property_names = {_python_wrapper_name(label) for label in python_labels if " (property) -> " in label}
+    pywin32_property_names = {name for name, kind in pywin32_members.items() if "property" in kind}
     statuses: List[str] = []
 
     if not python_labels:
@@ -510,18 +531,21 @@ def _classify_deviation(
     elif not pywin32_names:
         statuses.append("PYWIN32_MEMBER_MISSING")
 
-    wrapper_names = {label.split("()", maxsplit=1)[0] for label in python_labels}
-    expected_wrapper_names = {_camel_to_snake(name) for name in java_member_names}
+    wrapper_names = {_python_wrapper_name(label) for label in python_labels}
+    expected_wrapper_names = {_camel_to_snake(name) for name in pywin32_property_names} if python_property_names and pywin32_property_names else {_camel_to_snake(name) for name in java_member_names}
+    property_accessor_family = bool(pywin32_property_names) and expected_wrapper_names.issubset(python_property_names) and _java_accessors_match_properties(java_member_names, pywin32_property_names)
     if python_labels and java_member_names and not expected_wrapper_names.issubset(wrapper_names):
         statuses.append("PYTHON_METHOD_NAME_MISMATCH")
     if python_com_names and pywin32_names and not python_com_names.intersection(pywin32_names):
         statuses.append("COM_MEMBER_NOT_EXPOSED")
-    if java_member_names and pywin32_names and java_member_names != pywin32_names:
+    if java_member_names and pywin32_names and java_member_names != pywin32_names and not property_accessor_family:
         statuses.append("ACCESSOR_ALIAS_MISMATCH")
-    if java_member_names and pywin32_members and any(kind != "method" for kind in pywin32_members.values()):
+    python_has_property = bool(python_property_names)
+    pywin32_has_property = bool(pywin32_property_names)
+    if python_labels and python_has_property != pywin32_has_property:
         statuses.append("METHOD_PROPERTY_MISMATCH")
 
-    property_names = sorted(name for name, kind in pywin32_members.items() if "property" in kind)
+    property_names = sorted(pywin32_property_names)
     if "MISSING_PYTHON_WRAPPER" in statuses:
         recommendation = "Implement the Python wrapper or mark this API member intentionally unsupported."
     elif "JAVA_ONLY_MEMBER" in statuses:

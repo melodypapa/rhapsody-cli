@@ -23,16 +23,16 @@ def test_get_item_wraps_model_elements() -> None:
     wrapped = collection.get_item(1)
 
     assert isinstance(wrapped, IRPModelElement)
-    assert wrapped.get_name() == "C1"
+    assert wrapped.name == "C1"
 
 
 def test_iteration_and_indexing_are_one_based() -> None:
     items = [make_fake_element("Class", properties={"name": name}) for name in ("A", "B", "C")]
     collection = IRPCollection(make_fake_collection(items))
 
-    assert [cast(IRPModelElement, element).get_name() for element in collection] == ["A", "B", "C"]
-    assert cast(IRPModelElement, collection[0]).get_name() == "A"
-    assert [cast(IRPModelElement, element).get_name() for element in collection[1:]] == ["B", "C"]
+    assert [cast(IRPModelElement, element).name for element in collection] == ["A", "B", "C"]
+    assert cast(IRPModelElement, collection[0]).name == "A"
+    assert [cast(IRPModelElement, element).name for element in collection[1:]] == ["B", "C"]
 
 
 def test_mutators_delegate_to_single_com_members() -> None:

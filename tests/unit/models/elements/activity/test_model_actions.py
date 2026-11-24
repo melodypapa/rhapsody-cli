@@ -26,7 +26,7 @@ class TestRPAcceptEventAction:
         fake = make_fake_element("AcceptEventAction", properties={"name": "AEA1"})
         aea = RPAcceptEventAction(fake)
         assert isinstance(aea, IRPModelElement)
-        assert aea.get_name() == "AEA1"
+        assert aea.name == "AEA1"
 
     def test_get_event_wraps_result(self) -> None:
         fake = make_fake_element("AcceptEventAction")
@@ -34,7 +34,7 @@ class TestRPAcceptEventAction:
         fake.getEvent.return_value = event
         aea = RPAcceptEventAction(fake)
         result = aea.get_event()
-        assert result.get_name() == "MyEvent"
+        assert result.name == "MyEvent"
 
     def test_set_event_delegates(self) -> None:
         fake = make_fake_element("AcceptEventAction")
@@ -54,7 +54,7 @@ class TestRPAcceptTimeEvent:
         fake = make_fake_element("AcceptTimeEvent", properties={"name": "ATE1"})
         ate = RPAcceptTimeEvent(fake)
         assert isinstance(ate, IRPModelElement)
-        assert ate.get_name() == "ATE1"
+        assert ate.name == "ATE1"
 
     def test_get_duration_time_returns_string(self) -> None:
         fake = make_fake_element("AcceptTimeEvent", getDurationTime="5s")
@@ -78,7 +78,7 @@ class TestRPAction:
         fake = make_fake_element("Action", properties={"name": "Act1"})
         act = RPAction(fake)
         assert isinstance(act, IRPModelElement)
-        assert act.get_name() == "Act1"
+        assert act.name == "Act1"
 
     def test_get_body_returns_string(self) -> None:
         fake = make_fake_element("Action", getBody="doSomething()")
@@ -102,7 +102,7 @@ class TestRPActionBlock:
         fake = make_fake_element("ActionBlock", properties={"name": "AB1"})
         ab = RPActionBlock(fake)
         assert isinstance(ab, IRPModelElement)
-        assert ab.get_name() == "AB1"
+        assert ab.name == "AB1"
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("ActionBlock", properties={"name": "AB1"})
@@ -115,7 +115,7 @@ class TestRPCallOperation:
         fake = make_fake_element("CallOperation", properties={"name": "CO1"})
         co = RPCallOperation(fake)
         assert isinstance(co, IRPModelElement)
-        assert co.get_name() == "CO1"
+        assert co.name == "CO1"
 
     def test_get_operation_wraps_result(self) -> None:
         fake = make_fake_element("CallOperation")
@@ -123,7 +123,7 @@ class TestRPCallOperation:
         fake.getOperation.return_value = op
         co = RPCallOperation(fake)
         result = co.get_operation()
-        assert result.get_name() == "myOp"
+        assert result.name == "myOp"
 
     def test_get_target_wraps_result(self) -> None:
         fake = make_fake_element("CallOperation")
@@ -131,7 +131,7 @@ class TestRPCallOperation:
         fake.getTarget.return_value = target
         co = RPCallOperation(fake)
         result = co.get_target()
-        assert result.get_name() == "myTarget"
+        assert result.name == "myTarget"
 
     def test_set_operation_delegates(self) -> None:
         fake = make_fake_element("CallOperation")
@@ -158,7 +158,7 @@ class TestRPContextSpecification:
         fake = make_fake_element("ContextSpecification", properties={"name": "CS1"})
         cs = RPContextSpecification(fake)
         assert isinstance(cs, IRPModelElement)
-        assert cs.get_name() == "CS1"
+        assert cs.name == "CS1"
 
     def test_get_multiplicities_returns_collection(self) -> None:
         fake = make_fake_element("ContextSpecification")
@@ -201,7 +201,7 @@ class TestRPSendAction:
         fake = make_fake_element("SendAction", properties={"name": "SA1"})
         sa = RPSendAction(fake)
         assert isinstance(sa, RPAction)
-        assert sa.get_name() == "SA1"
+        assert sa.name == "SA1"
 
     def test_add_argument_value_delegates(self) -> None:
         fake = make_fake_element("SendAction")
@@ -223,7 +223,7 @@ class TestRPSendAction:
         fake.getEvent.return_value = event
         sa = RPSendAction(fake)
         result = sa.get_event()
-        assert result.get_name() == "MyEvent"
+        assert result.name == "MyEvent"
 
     def test_get_invoked_operation_wraps_result(self) -> None:
         fake = make_fake_element("SendAction")
@@ -231,7 +231,7 @@ class TestRPSendAction:
         fake.getInvokedOperation.return_value = op
         sa = RPSendAction(fake)
         result = sa.get_invoked_operation()
-        assert result.get_name() == "myOp"
+        assert result.name == "myOp"
 
     def test_get_target_wraps_result(self) -> None:
         fake = make_fake_element("SendAction")
@@ -239,7 +239,7 @@ class TestRPSendAction:
         fake.getTarget.return_value = target
         sa = RPSendAction(fake)
         result = sa.get_target()
-        assert cast(IRPModelElement, result).get_name() == "MyClass"
+        assert cast(IRPModelElement, result).name == "MyClass"
 
     def test_set_event_delegates(self) -> None:
         fake = make_fake_element("SendAction")

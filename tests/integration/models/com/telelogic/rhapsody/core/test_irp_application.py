@@ -13,6 +13,7 @@ shared session; its live proof is the session teardown in ``tests/conftest.py``.
 from __future__ import annotations
 
 import re
+import uuid
 from pathlib import Path
 from typing import Iterator
 
@@ -32,60 +33,76 @@ from rhapsody_cli.models.support import (
 from tests.integration.conftest import TEST_PROJECT_DIR, TEST_PROJECT_NAME
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="module", autouse=True)
+def _hide_application_ui_by_default(rhapsody_app: IRPApplication | None) -> Iterator[None]:
+    """Keep this integration module hidden without changing shared fixtures."""
+    if rhapsody_app is None:
+        yield
+        return
+
+    original_hidden_ui = rhapsody_app.is_hidden_ui
+    rhapsody_app.set_hidden_ui(True)
+    try:
+        yield
+    finally:
+        rhapsody_app.set_hidden_ui(original_hidden_ui)
+
+
+@pytest.fixture(scope="function")
 def live_fixtures(rhapsody_app: IRPApplication, test_project: IRPProject) -> Iterator[dict[str, object]]:
-    """Real Rhapsody objects used as authentic arguments by the live cases."""
-    project = rhapsody_app.open_project(str(TEST_PROJECT_DIR / "TestProject.rpyx"))
-    # Codegen calls need a real component/configuration and Makefile.
-    rhapsody_app.generate_main_and_make_files()
-    package = project.add_package("LiveFixturePkg")
-    class_obj = package.add_class("LiveFixtureCls")
-    collection = project.get_packages()
-    progress = rhapsody_app.create_progress_bar("LiveFixtureProgress")
-    yield {
-        "project": project,
-        "package": package,
-        "class": class_obj,
-        "collection": collection,
-        "progress": progress,
-    }
+    """Create and clean up live objects for the individual integration case."""
+    package = test_project.add_package(f"LiveFixturePkg_{uuid.uuid4().hex}")
+    class_obj = package.add_class(f"LiveFixtureCls_{uuid.uuid4().hex}")
+    collection = test_project.get_packages()
+    try:
+        yield {
+            "project": test_project,
+            "package": package,
+            "class": class_obj,
+            "collection": collection,
+        }
+    finally:
+        package.delete_from_project()
 
 
 @pytest.mark.integration
 class TestIRPApplicationIntegration:
     """Live coverage for IRPApplication's own COM-bound surface."""
 
-    def test_active_project_returns_none_when_no_project_is_open(self, rhapsody_app: IRPApplication) -> None:
-        assert rhapsody_app.active_project() is None
+    def test_active_project_returns_current_test_project(self, rhapsody_app: IRPApplication, test_project: IRPProject) -> None:
+        active = rhapsody_app.active_project()
+        assert active is not None
+        assert active.name == TEST_PROJECT_NAME
+
+    def test_application_ui_is_hidden_by_default(self, rhapsody_app: IRPApplication) -> None:
+        assert rhapsody_app.is_hidden_ui is True
 
     def test_open_project_returns_the_real_project(self, rhapsody_app: IRPApplication, test_project: IRPProject) -> None:
         opened = rhapsody_app.open_project(str(TEST_PROJECT_DIR / "TestProject.rpyx"))
 
-        assert opened.get_name() == TEST_PROJECT_NAME
-
-    def test_active_project_is_the_test_project(self, rhapsody_app: IRPApplication, test_project: IRPProject) -> None:
-        active = rhapsody_app.active_project()
-        assert active is not None
-        assert active.get_name() == TEST_PROJECT_NAME
+        assert opened.name == TEST_PROJECT_NAME
 
     def test_create_new_project_returns_the_created_project(self, rhapsody_app: IRPApplication, tmp_path: Path, test_project: IRPProject) -> None:
         project_dir = tmp_path / "NewProj"
         project_dir.mkdir()
 
+        # Save shared-project changes before switching to avoid Rhapsody's modal save prompt.
+        rhapsody_app.save_all()
         created = rhapsody_app.create_new_project(str(project_dir), "CreatedProject")
 
         assert created is not None
-        assert created.get_name() == "CreatedProject"
+        assert created.name == "CreatedProject"
         active = rhapsody_app.active_project()
         assert active is not None
-        assert active.get_name() == "CreatedProject"
+        assert active.name == "CreatedProject"
         created.delete_from_project()
-        rhapsody_app.open_project(str(TEST_PROJECT_DIR / "TestProject.rpyx"))
+        reopened = rhapsody_app.open_project(str(TEST_PROJECT_DIR / "TestProject.rpyx"))
+        assert reopened.name == TEST_PROJECT_NAME
 
     def test_projects_collection_contains_the_test_project(self, rhapsody_app: IRPApplication, test_project: IRPProject) -> None:
         projects = rhapsody_app.projects
 
-        names = [projects.get_item(index).get_name() for index in range(1, projects.get_count() + 1)]
+        names = [projects.get_item(index).name for index in range(1, projects.get_count() + 1)]
         assert TEST_PROJECT_NAME in names
 
     def test_hidden_ui_roundtrip_uses_real_state(self, rhapsody_app: IRPApplication) -> None:
@@ -98,7 +115,11 @@ class TestIRPApplicationIntegration:
         rhapsody_app.set_hidden_ui(original)
 
     def test_bring_window_to_top_returns_none(self, rhapsody_app: IRPApplication) -> None:
-        assert rhapsody_app.bring_window_to_top() is None  # type: ignore[func-returns-value]
+        original_hidden_ui = rhapsody_app.is_hidden_ui
+        try:
+            assert rhapsody_app.bring_window_to_top() is None  # type: ignore[func-returns-value]
+        finally:
+            rhapsody_app.set_hidden_ui(original_hidden_ui)
 
     def test_save_all_returns_none(self, rhapsody_app: IRPApplication) -> None:
         assert rhapsody_app.save_all() is None  # type: ignore[func-returns-value]
@@ -215,7 +236,13 @@ class TestIRPApplicationIntegration:
         assert rhapsody_app.apply_new_terms_profile("0") is None  # type: ignore[func-returns-value]
 
     def test_build_entire_project(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
-        assert rhapsody_app.build_entire_project() is None  # type: ignore[func-returns-value]
+        # The app is session-shared; show_gui is launch-only, so hide this COM call locally.
+        original_hidden_ui = rhapsody_app.is_hidden_ui
+        rhapsody_app.set_hidden_ui(True)
+        try:
+            assert rhapsody_app.build_entire_project() is None  # type: ignore[func-returns-value]
+        finally:
+            rhapsody_app.set_hidden_ui(original_hidden_ui)
 
     def test_clear_output_window(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
         assert rhapsody_app.clear_output_window("0") is None  # type: ignore[func-returns-value]

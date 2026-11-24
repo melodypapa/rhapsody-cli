@@ -11,7 +11,7 @@ def test_component_instance_is_an_instance() -> None:
     comp_inst = RPComponentInstance(fake)
 
     assert isinstance(comp_inst, RPInstance)
-    assert comp_inst.get_name() == "CompInst1"
+    assert comp_inst.name == "CompInst1"
 
 
 def test_component_instance_is_registered_for_meta_class_component_instance() -> None:
@@ -32,7 +32,7 @@ def test_component_instance_get_component_type_wraps_result() -> None:
     inst = RPComponentInstance(fake)
 
     result = inst.get_component_type()
-    assert result.get_name() == "Comp1"
+    assert result.name == "Comp1"
 
 
 def test_component_instance_get_node_wraps_result() -> None:
@@ -42,7 +42,7 @@ def test_component_instance_get_node_wraps_result() -> None:
     inst = RPComponentInstance(fake)
 
     result = inst.get_node()
-    assert result.get_name() == "Node1"
+    assert result.name == "Node1"
 
 
 def test_component_instance_set_component_type_delegates() -> None:

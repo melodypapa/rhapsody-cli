@@ -11,7 +11,7 @@ def test_argument_is_a_variable() -> None:
     argument = IRPArgument(fake)
 
     assert isinstance(argument, RPVariable)
-    assert argument.get_name() == "id"
+    assert argument.name == "id"
 
 
 def test_argument_get_argument_direction_delegates_to_com() -> None:

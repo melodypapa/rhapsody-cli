@@ -30,7 +30,7 @@ class TestRPTemplateInstantiationParameter:
         fake = make_fake_element("TemplateInstantiationParameter", properties={"name": "p1"})
         param = RPTemplateInstantiationParameter(fake)
         assert isinstance(param, IRPModelElement)
-        assert param.get_name() == "p1"
+        assert param.name == "p1"
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("TemplateInstantiationParameter", properties={"name": "p1"})
@@ -48,7 +48,7 @@ class TestRPTemplateInstantiationParameter:
         fake.getType.return_value = clf
         param = RPTemplateInstantiationParameter(fake)
         wrapped = param.get_type()
-        assert wrapped.get_name() == "C1"
+        assert wrapped.name == "C1"
 
     def test_set_arg_value_delegates(self) -> None:
         fake = make_fake_element("TemplateInstantiationParameter")
@@ -83,7 +83,7 @@ class TestRPTemplateParameter:
         fake.getRepresentative.return_value = rep
         tp = RPTemplateParameter(fake)
         wrapped = tp.get_representative()
-        assert wrapped is not None and wrapped.get_name() == "C1"
+        assert wrapped is not None and wrapped.name == "C1"
 
     def test_set_parameter_kind_delegates(self) -> None:
         fake = make_fake_element("TemplateParameter")

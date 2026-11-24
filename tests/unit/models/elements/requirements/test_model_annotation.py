@@ -14,7 +14,7 @@ def test_annotation_is_a_unit() -> None:
     annotation = RPAnnotation(fake)
 
     assert isinstance(annotation, IRPUnit)
-    assert annotation.get_name() == "Note1"
+    assert annotation.name == "Note1"
 
 
 def test_annotation_add_anchor_delegates_to_com() -> None:

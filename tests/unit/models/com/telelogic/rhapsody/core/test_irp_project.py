@@ -15,7 +15,7 @@ def test_project_is_a_package() -> None:
     project = IRPProject(fake)
 
     assert isinstance(project, IRPPackage)
-    assert project.get_name() == "MyProject"
+    assert project.name == "MyProject"
 
 
 def test_project_add_package_delegates_to_com() -> None:
@@ -27,7 +27,7 @@ def test_project_add_package_delegates_to_com() -> None:
     result = project.add_package("NewPkg")
 
     fake.addPackage.assert_called_once_with("NewPkg")
-    assert result.get_name() == "NewPkg"
+    assert result.name == "NewPkg"
 
 
 def test_project_close_delegates_to_com() -> None:
@@ -57,7 +57,7 @@ def test_project_find_component_wraps_result() -> None:
     result = project.find_component("Comp1")
 
     fake.findComponent.assert_called_once_with("Comp1")
-    assert result.get_name() == "Comp1"
+    assert result.name == "Comp1"
 
 
 def test_project_get_packages_returns_collection() -> None:
@@ -71,7 +71,7 @@ def test_project_get_packages_returns_collection() -> None:
 
     assert isinstance(packages, IRPCollection)
     assert len(packages) == 1
-    assert packages[0].get_name() == "P1"
+    assert packages[0].name == "P1"
 
 
 def test_project_is_registered_for_meta_class_project() -> None:
@@ -92,7 +92,7 @@ def test_project_add_class_returns_wrapped_element() -> None:
     result = project.add_class("Class1")
 
     fake.addClass.assert_called_once_with("Class1")
-    assert result.get_name() == "Class1"
+    assert result.name == "Class1"
 
 
 def test_project_add_actor_returns_wrapped_element() -> None:
@@ -104,7 +104,7 @@ def test_project_add_actor_returns_wrapped_element() -> None:
     result = project.add_actor("Actor1")
 
     fake.addActor.assert_called_once_with("Actor1")
-    assert result.get_name() == "Actor1"
+    assert result.name == "Actor1"
 
 
 def test_project_get_components_returns_collection() -> None:
@@ -129,7 +129,7 @@ def test_project_find_element_by_guid_returns_wrapped_element() -> None:
     result = project.find_element_by_guid("12345")
 
     fake.findElementByGUID.assert_called_once_with("12345")
-    assert result is not None and result.get_name() == "MyClass"
+    assert result is not None and result.name == "MyClass"
 
 
 # --- New tests for IRPProject ---
@@ -142,7 +142,7 @@ def test_project_add_component_delegates_to_com() -> None:
     result = project.add_component("Comp1")
 
     fake.addComponent.assert_called_once_with("Comp1")
-    assert result.get_name() == "Comp1"
+    assert result.name == "Comp1"
 
 
 def test_project_delete_component_delegates_to_com() -> None:
@@ -166,7 +166,7 @@ def test_project_add_node_delegates_to_com() -> None:
     result = project.add_node("Node1")
 
     fake.addNode.assert_called_once_with("Node1")
-    assert result.get_name() == "Node1"
+    assert result.name == "Node1"
 
 
 def test_project_get_nodes_returns_collection() -> None:
@@ -191,7 +191,7 @@ def test_project_find_node_delegates_to_com() -> None:
     result = project.find_node("Node1")
 
     fake.findNode.assert_called_once_with("Node1")
-    assert result.get_name() == "Node1"
+    assert result.name == "Node1"
 
 
 def test_project_get_all_stereotypes_returns_collection() -> None:
@@ -225,7 +225,7 @@ def test_project_find_element_by_binary_id_delegates_to_com() -> None:
     result = project.find_element_by_binary_id("abc123")
 
     fake.findElementByBinaryID.assert_called_once_with("abc123")
-    assert result is not None and result.get_name() == "MyClass"
+    assert result is not None and result.name == "MyClass"
 
 
 # --- Task 6: Gateway/Report methods ---
@@ -302,7 +302,7 @@ def test_project_get_active_custom_views_on_browser_returns_collection() -> None
 
     assert isinstance(result, IRPCollection)
     assert len(result) == 1
-    assert result[0].get_name() == "V1"
+    assert result[0].name == "V1"
 
 
 def test_project_get_active_custom_views_on_diagram_returns_collection() -> None:
@@ -317,7 +317,7 @@ def test_project_get_active_custom_views_on_diagram_returns_collection() -> None
 
     assert isinstance(result, IRPCollection)
     assert len(result) == 1
-    assert result[0].get_name() == "V1"
+    assert result[0].name == "V1"
 
 
 def test_project_remove_custom_view_on_browser_delegates_to_com() -> None:
@@ -405,7 +405,7 @@ def test_project_find_elements_with_oslc_link_returns_collection() -> None:
     fake.findElementsWithOSLCLink.assert_called_once_with("http://example.com/link")
     assert isinstance(result, IRPCollection)
     assert len(result) == 1
-    assert result[0].get_name() == "C1"
+    assert result[0].name == "C1"
 
 
 def test_project_get_remote_resource_packages_returns_collection() -> None:
@@ -420,7 +420,7 @@ def test_project_get_remote_resource_packages_returns_collection() -> None:
 
     assert isinstance(result, IRPCollection)
     assert len(result) == 1
-    assert result[0].get_name() == "RemotePkg"
+    assert result[0].name == "RemotePkg"
 
 
 def test_project_get_roundtrip_shadow_model_returns_wrapped_element() -> None:
@@ -431,7 +431,7 @@ def test_project_get_roundtrip_shadow_model_returns_wrapped_element() -> None:
 
     result = project.get_roundtrip_shadow_model()
     result_elem = cast(IRPModelElement, result)
-    assert result_elem.get_name() == "ShadowModel"
+    assert result_elem.name == "ShadowModel"
 
 
 def test_project_is_actively_managed_returns_int() -> None:
@@ -464,7 +464,7 @@ def test_project_import_package_from_rose_returns_wrapped_element() -> None:
     result = project.import_package_from_rose("C:/rose.mdl")
 
     fake.importPackageFromRose.assert_called_once_with("C:/rose.mdl")
-    assert result.get_name() == "RosePkg"
+    assert result.name == "RosePkg"
 
 
 def test_project_import_project_from_rose_delegates_to_com() -> None:
@@ -539,7 +539,7 @@ def test_project_get_new_progress_bar_returns_wrapped_element() -> None:
     project = IRPProject(fake)
 
     result = project.get_new_progress_bar()
-    assert result.get_name() == "PB1"
+    assert result.name == "PB1"
 
 
 def test_project_get_notify_plugin_on_elements_changed_returns_int() -> None:
@@ -563,7 +563,7 @@ def test_project_get_requirements_by_id_returns_collection() -> None:
     fake.getRequirementsByID.assert_called_once_with("REQ-001")
     assert isinstance(result, IRPCollection)
     assert len(result) == 1
-    assert result[0].get_name() == "Req1"
+    assert result[0].name == "Req1"
 
 
 def test_project_remove_delegates_to_com() -> None:

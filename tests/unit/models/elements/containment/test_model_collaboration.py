@@ -12,7 +12,7 @@ def test_collaboration_is_a_unit() -> None:
     collab = RPCollaboration(fake)
 
     assert isinstance(collab, IRPUnit)
-    assert collab.get_name() == "Collab1"
+    assert collab.name == "Collab1"
 
 
 def test_collaboration_is_registered_for_meta_class_collaboration() -> None:
@@ -35,7 +35,7 @@ def test_collaboration_add_classifier_role_delegates_and_wraps() -> None:
     result = collab.add_classifier_role("cr1")
 
     fake.addClassifierRole.assert_called_once_with("cr1")
-    assert result.get_name() == "cr1"
+    assert result.name == "cr1"
 
 
 def test_collaboration_add_message_delegates_and_wraps() -> None:
@@ -47,7 +47,7 @@ def test_collaboration_add_message_delegates_and_wraps() -> None:
     result = collab.add_message("msg1")
 
     fake.addMessage.assert_called_once_with("msg1")
-    assert result.get_name() == "msg1"
+    assert result.name == "msg1"
 
 
 def test_collaboration_get_messages_returns_collection() -> None:

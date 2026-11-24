@@ -16,7 +16,7 @@ def test_actor_is_a_classifier() -> None:
     actor = RPActor(fake)
 
     assert isinstance(actor, IRPClassifier)
-    assert actor.get_name() == "Driver"
+    assert actor.name == "Driver"
 
 
 def test_actor_add_event_reception_with_event_wraps_result() -> None:

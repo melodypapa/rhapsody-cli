@@ -16,7 +16,7 @@ def test_port_is_an_instance() -> None:
     port = IRPPort(fake)
 
     assert isinstance(port, RPInstance)
-    assert port.get_name() == "clientPort"
+    assert port.name == "clientPort"
 
 
 def test_port_is_registered_for_meta_class_port() -> None:
@@ -68,7 +68,7 @@ def test_port_get_port_contract_wraps_result() -> None:
     result = port.get_port_contract()
 
     assert isinstance(result, IRPClass)
-    assert result.get_name() == "IEngine"
+    assert result.name == "IEngine"
 
 
 def test_port_set_port_contract_delegates_to_com() -> None:
@@ -92,7 +92,7 @@ def test_port_get_provided_interfaces_returns_collection() -> None:
 
     assert isinstance(result, IRPCollection)
     assert len(result) == 1
-    assert result[0].get_name() == "IProvided"
+    assert result[0].name == "IProvided"
 
 
 def test_port_add_provided_interface_delegates_to_com() -> None:
@@ -127,7 +127,7 @@ def test_port_get_required_interfaces_returns_collection() -> None:
 
     assert isinstance(result, IRPCollection)
     assert len(result) == 1
-    assert result[0].get_name() == "IRequired"
+    assert result[0].name == "IRequired"
 
 
 def test_port_add_required_interface_delegates_to_com() -> None:
@@ -182,4 +182,4 @@ def test_classifier_get_ports_returns_actual_rpport_instances() -> None:
 
     assert len(result) == 1
     assert isinstance(result[0], IRPPort)
-    assert result[0].get_name() == "clientPort"
+    assert result[0].name == "clientPort"

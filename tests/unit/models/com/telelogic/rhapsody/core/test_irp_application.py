@@ -30,7 +30,7 @@ def test_open_project_wraps_result_as_irp_project() -> None:
 
     fake_app.openProject.assert_called_once_with("C:/models/MyProject.rpy")
     assert isinstance(project, IRPProject)
-    assert project.get_name() == "MyProject"
+    assert project.name == "MyProject"
 
 
 def test_create_new_project_calls_com_and_returns_active_project() -> None:
@@ -43,7 +43,7 @@ def test_create_new_project_calls_com_and_returns_active_project() -> None:
 
     fake_app.createNewProject.assert_called_once_with("C:/models", "NewProject")
     assert isinstance(project, IRPProject)
-    assert project.get_name() == "NewProject"
+    assert project.name == "NewProject"
 
 
 def test_create_new_project_propagates_missing_active_project() -> None:
@@ -63,7 +63,7 @@ def test_active_project_wraps_result_as_irp_project() -> None:
     project = app.active_project()
 
     assert isinstance(project, IRPProject)
-    assert project.get_name() == "ActiveOne"
+    assert project.name == "ActiveOne"
 
 
 def test_active_project_returns_none_when_no_project_is_open() -> None:

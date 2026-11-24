@@ -22,7 +22,7 @@ class TestAbstractAttributeAction:
         """Test successful classifier resolution."""
         action = AbstractAttributeAction()
         mock_classifier = MagicMock()
-        mock_classifier.get_meta_class.return_value = "Class"
+        mock_classifier.meta_class = "Class"
 
         with patch.object(ElementManagementAction, "_get_active_root", return_value=MagicMock()):
             with patch(
@@ -58,7 +58,7 @@ class TestAbstractAttributeAction:
         """Test successful attribute lookup by GUID."""
         action = AbstractAttributeAction()
         mock_attr = MagicMock()
-        mock_attr.get_meta_class.return_value = "Attribute"
+        mock_attr.meta_class = "Attribute"
 
         mock_project = MagicMock()
         mock_project.find_element_by_guid.return_value = mock_attr
@@ -84,7 +84,7 @@ class TestAbstractAttributeAction:
         """Test GUID lookup fails for non-attribute element."""
         action = AbstractAttributeAction()
         mock_class = MagicMock()
-        mock_class.get_meta_class.return_value = "Class"
+        mock_class.meta_class = "Class"
 
         mock_project = MagicMock()
         mock_project.find_element_by_guid.return_value = mock_class
@@ -130,7 +130,7 @@ class TestAttributeCreateAction:
             action.execute(args)
 
             mock_classifier.add_attribute.assert_called_once_with("threshold")
-            mock_attr.set_description.assert_called_once_with("Temperature threshold")
+            assert mock_attr.description == "Temperature threshold"
 
     def test_create_bulk_attributes_from_file(self, tmp_path: Any) -> None:
         """UTS_ATTR_00002: Test creating multiple attributes from JSON file."""
@@ -174,7 +174,7 @@ class TestAttributeCreateAction:
         mock_classifier.add_attribute.return_value = mock_attr
         mock_owner = MagicMock()
         mock_type = MagicMock()
-        mock_classifier.get_owner.return_value = mock_owner
+        mock_classifier.owner = mock_owner
         mock_owner.find_nested_classifier_recursive.return_value = mock_type
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
@@ -185,7 +185,6 @@ class TestAttributeCreateAction:
 
             action.execute(args)
 
-            mock_classifier.get_owner.assert_called_once()
             mock_owner.find_nested_classifier_recursive.assert_called_once_with("Temperature")
             mock_attr.set_type.assert_called_once_with(mock_type)
 
@@ -255,9 +254,9 @@ class TestAttributeDeleteAction:
 
         action = AttributeDeleteAction()
         mock_attr = MagicMock()
-        mock_attr.get_meta_class.return_value = "Attribute"
+        mock_attr.meta_class = "Attribute"
         mock_owner = MagicMock()
-        mock_attr.get_owner.return_value = mock_owner
+        mock_attr.owner = mock_owner
 
         with patch.object(action, "_resolve_attribute_by_guid", return_value=mock_attr):
             args = MagicMock()
@@ -267,7 +266,6 @@ class TestAttributeDeleteAction:
 
             action.execute(args)
 
-            mock_attr.get_owner.assert_called_once()
             mock_owner.delete_attribute.assert_called_once_with(mock_attr)
 
     def test_delete_attribute_guid_wrong_type(self) -> None:
@@ -276,7 +274,7 @@ class TestAttributeDeleteAction:
 
         action = AttributeDeleteAction()
         mock_class = MagicMock()
-        mock_class.get_meta_class.return_value = "Class"
+        mock_class.meta_class = "Class"
 
         mock_project = MagicMock()
         mock_project.find_element_by_guid.return_value = mock_class
@@ -320,10 +318,10 @@ class TestAttributeViewAction:
     def _make_mock_attribute(self) -> MagicMock:
         """Helper: build a fully-populated mock attribute."""
         mock_attr = MagicMock()
-        mock_attr.get_meta_class.return_value = "Attribute"
-        mock_attr.get_name.return_value = "threshold"
-        mock_attr.get_guid.return_value = "12345678-1234-1234-1234-123456789abc"
-        mock_attr.get_description.return_value = "Temperature threshold"
+        mock_attr.meta_class = "Attribute"
+        mock_attr.name = "threshold"
+        mock_attr.guid = "12345678-1234-1234-1234-123456789abc"
+        mock_attr.description = "Temperature threshold"
         mock_attr.get_default_value.return_value = "25.0"
         mock_attr.get_multiplicity.return_value = "1"
         mock_attr.get_is_static.return_value = True
@@ -332,7 +330,7 @@ class TestAttributeViewAction:
         mock_attr.get_full_path_name.return_value = "Sensors/TemperatureSensor/threshold"
 
         mock_type = MagicMock()
-        mock_type.get_name.return_value = "Temperature"
+        mock_type.name = "Temperature"
         mock_attr.get_type.return_value = mock_type
 
         return mock_attr
@@ -453,9 +451,9 @@ class TestAttributeListAction:
         action = AttributeListAction()
         mock_classifier = MagicMock()
         attr1 = MagicMock()
-        attr1.get_name.return_value = "threshold"
+        attr1.name = "threshold"
         attr2 = MagicMock()
-        attr2.get_name.return_value = "sampleRate"
+        attr2.name = "sampleRate"
         mock_classifier.get_attributes.return_value = [attr1, attr2]
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
@@ -497,9 +495,9 @@ class TestAttributeListAction:
         action = AttributeListAction()
         mock_classifier = MagicMock()
         attr1 = MagicMock()
-        attr1.get_name.return_value = "threshold"
+        attr1.name = "threshold"
         attr2 = MagicMock()
-        attr2.get_name.return_value = "sampleRate"
+        attr2.name = "sampleRate"
         mock_classifier.get_attributes.return_value = [attr1, attr2]
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
@@ -549,7 +547,7 @@ class TestAttributeUpdateAction:
 
         action = AttributeUpdateAction()
         mock_attr = MagicMock()
-        mock_attr.get_meta_class.return_value = "Attribute"
+        mock_attr.meta_class = "Attribute"
 
         with patch.object(action, "_resolve_attribute_by_guid", return_value=mock_attr):
             args = MagicMock()

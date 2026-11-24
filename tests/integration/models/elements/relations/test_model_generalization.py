@@ -33,7 +33,7 @@ class TestRPGeneralizationIntegration:
             gen = child.find_generalization(parent_name)
             assert gen is not None
             assert isinstance(gen, RPGeneralization)
-            assert gen.get_meta_class() == "Generalization"
+            assert gen.meta_class == "Generalization"
             assert gen.get_base_class() == parent
         finally:
             child.delete_from_project()

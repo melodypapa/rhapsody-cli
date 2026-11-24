@@ -57,7 +57,7 @@ class ProjectListAction(RhapsodyContextAction):
                 self.logger.info("No open projects")
                 return
 
-            rows = [[proj.get_name(), proj.get_filename()] for proj in projects]
+            rows = [[proj.name, proj.get_filename()] for proj in projects]
 
             # NOTE: This is the command's result data (not a status/log
             # message), so it is written directly to stdout via print()

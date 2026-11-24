@@ -75,7 +75,7 @@ class TestIRPUnitPersistenceIntegration:
     def test_save_after_mutation_clears_modified(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("SavePkg"))
         try:
-            pkg.set_name(self._unique("SavePkgRenamed"))
+            pkg.name = self._unique("SavePkgRenamed")
             assert pkg.save() is None  # type: ignore[func-returns-value]
         finally:
             pkg.delete_from_project()
@@ -83,7 +83,7 @@ class TestIRPUnitPersistenceIntegration:
     def test_get_last_modified_time_after_save(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("ModTimePkg"))
         try:
-            pkg.set_name(self._unique("ModTimePkgRenamed"))
+            pkg.name = self._unique("ModTimePkgRenamed")
             pkg.save()
             modified_time = pkg.get_last_modified_time()
             assert isinstance(modified_time, str)

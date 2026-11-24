@@ -11,7 +11,7 @@ def test_association_class_is_a_class() -> None:
     ac = IRPAssociationClass(fake)
 
     assert isinstance(ac, IRPClass)
-    assert ac.get_name() == "MyAssoc"
+    assert ac.name == "MyAssoc"
 
 
 def test_association_class_is_registered_for_meta_class_association_class() -> None:
@@ -24,12 +24,12 @@ def test_association_class_is_registered_for_meta_class_association_class() -> N
 
 def test_get_end1_reads_property() -> None:
     fake = make_fake_element("AssociationClass", properties={"end1": make_fake_element("Relation", properties={"name": "e1"})})
-    assert IRPAssociationClass(fake).get_end1().get_name() == "e1"
+    assert IRPAssociationClass(fake).get_end1().name == "e1"
 
 
 def test_get_end2_reads_property() -> None:
     fake = make_fake_element("AssociationClass", properties={"end2": make_fake_element("Relation", properties={"name": "e2"})})
-    assert IRPAssociationClass(fake).get_end2().get_name() == "e2"
+    assert IRPAssociationClass(fake).get_end2().name == "e2"
 
 
 def test_get_is_class_reads_property() -> None:

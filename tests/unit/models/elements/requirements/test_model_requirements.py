@@ -10,7 +10,7 @@ def test_requirement_is_an_annotation() -> None:
     requirement = RPRequirement(fake)
 
     assert isinstance(requirement, RPAnnotation)
-    assert requirement.get_name() == "REQ-1"
+    assert requirement.name == "REQ-1"
 
 
 def test_requirement_get_requirement_id_delegates_to_com() -> None:

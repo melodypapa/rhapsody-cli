@@ -67,7 +67,7 @@ class AbstractPortAction(SessionAwareAction, ElementManagementAction):
         """
         ports = classifier.get_ports()  # type: ignore[attr-defined]
         for port in ports:
-            if cast(IRPModelElement, port).get_name() == name:
+            if cast(IRPModelElement, port).name == name:
                 return cast(IRPModelElement, port)
         raise CliExecutionError(f"Port '{name}' not found in classifier")
 
@@ -94,7 +94,7 @@ class AbstractPortAction(SessionAwareAction, ElementManagementAction):
         if element is None:
             raise CliExecutionError(f"No element found with GUID '{guid}'")
 
-        meta_class = element.get_meta_class()
+        meta_class = element.meta_class
         if meta_class != "Port":
             raise CliExecutionError(f"GUID '{guid}' does not resolve to a Port (found {meta_class})")
 
@@ -207,9 +207,9 @@ class PortCreateAction(AbstractPortAction):
     def _set_attributes(self, classifier: IRPModelElement, port: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Set validated attributes on port."""
         if "name" in attrs:
-            port.set_name(cast(str, attrs["name"]))
+            port.name = cast(str, attrs["name"])
         if "description" in attrs:
-            port.set_description(cast(str, attrs["description"]))
+            port.description = cast(str, attrs["description"])
         self._set_boolean_flags(port, attrs)
         self._set_port_contract(classifier, port, attrs)
 
@@ -230,7 +230,7 @@ class PortCreateAction(AbstractPortAction):
         """
         if "portContract" in attrs:
             contract_name = cast(str, attrs["portContract"])
-            owner = classifier.get_owner()
+            owner = classifier.owner
             target = owner.find_nested_classifier_recursive(contract_name)  # type: ignore[attr-defined]
             if target is None:
                 raise CliExecutionError(f"PortContract '{contract_name}' not found")
@@ -324,7 +324,7 @@ class PortListAction(AbstractPortAction):
     def _collect_port_names(self, classifier: IRPModelElement) -> List[str]:
         """Collect names of ports on a classifier."""
         ports = classifier.get_ports()  # type: ignore[attr-defined]
-        return [cast(IRPModelElement, port).get_name() for port in ports]
+        return [cast(IRPModelElement, port).name for port in ports]
 
     def _format_output(self, port_names: List[str], format_type: str) -> str:
         """Format output based on format parameter."""
@@ -427,15 +427,15 @@ class PortViewAction(AbstractPortAction):
         Normalizes boolean flags to int for clean JSON round-trip.
         """
         contract = port.get_port_contract()  # type: ignore[attr-defined]
-        contract_name = cast(IRPModelElement, contract).get_name() if contract is not None else ""
+        contract_name = cast(IRPModelElement, contract).name if contract is not None else ""
         return {
-            "name": port.get_name(),
-            "guid": port.get_guid(),
-            "description": port.get_description(),
+            "name": port.name,
+            "guid": port.guid,
+            "description": port.description,
             "isBehavioral": int(port.get_is_behavioral()),  # type: ignore[attr-defined]
             "isReversed": int(port.get_is_reversed()),  # type: ignore[attr-defined]
             "portContract": contract_name,
-            "metaClass": port.get_meta_class(),
+            "metaClass": port.meta_class,
             "fullPath": port.get_full_path_name(),
         }
 
@@ -513,7 +513,7 @@ class PortUpdateAction(AbstractPortAction):
 
         if has_guid:
             port = self._resolve_port_by_guid(args.guid)
-            classifier = port.get_owner()
+            classifier = port.owner
         else:
             classifier = self._resolve_classifier(args.path)
             port = self._resolve_port(classifier, args.name)
@@ -530,7 +530,7 @@ class PortUpdateAction(AbstractPortAction):
 
         self._set_attributes(classifier, port, data)
 
-        self.logger.info("Successfully updated port: %s", port.get_name())
+        self.logger.info("Successfully updated port: %s", port.name)
 
     def _load_json_data(self, attributes_input: str) -> Dict[str, object]:
         """Load JSON data from inline string or external file.
@@ -557,16 +557,16 @@ class PortUpdateAction(AbstractPortAction):
     def _set_attributes(self, classifier: IRPModelElement, port: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Set validated attributes on port (partial update)."""
         if "name" in attrs:
-            port.set_name(cast(str, attrs["name"]))
+            port.name = cast(str, attrs["name"])
         if "description" in attrs:
-            port.set_description(cast(str, attrs["description"]))
+            port.description = cast(str, attrs["description"])
         if "isBehavioral" in attrs:
             port.set_is_behavioral(int(cast(Union[str, int], attrs["isBehavioral"])))  # type: ignore[attr-defined]
         if "isReversed" in attrs:
             port.set_is_reversed(int(cast(Union[str, int], attrs["isReversed"])))  # type: ignore[attr-defined]
         if "portContract" in attrs:
             contract_name = cast(str, attrs["portContract"])
-            owner = classifier.get_owner()
+            owner = classifier.owner
             target = owner.find_nested_classifier_recursive(contract_name)  # type: ignore[attr-defined]
             if target is None:
                 raise CliExecutionError(f"PortContract '{contract_name}' not found")

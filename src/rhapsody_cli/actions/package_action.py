@@ -52,7 +52,7 @@ class AbstractPackageAction(SessionAwareAction, ElementManagementAction):
         root = self._get_active_root()
         container = self._resolve_container_or_element(root, path, resolve_element=False, operation=f"resolve package path '{path}'")
 
-        meta_class = container.get_meta_class()
+        meta_class = container.meta_class
         if meta_class != "Package":
             raise CliExecutionError(f"Path '{path}' does not resolve to a Package (found {meta_class})")
 
@@ -203,12 +203,12 @@ class PackageCreateAction(AbstractPackageAction):
                 container_desc = "project root"
             else:
                 existing_packages = container.get_nested_packages()  # type: ignore[attr-defined]
-                parent_name = container.get_name()
+                parent_name = container.name
                 container_desc = f"package '{parent_name}'"
 
             # Search for duplicate by name
             for pkg in existing_packages:
-                pkg_name = cast(IRPModelElement, pkg).get_name()
+                pkg_name = cast(IRPModelElement, pkg).name
                 if pkg_name == name:
                     raise CliExecutionError(f"Package '{name}' already exists in {container_desc}")
         except CliExecutionError:
@@ -259,13 +259,13 @@ class PackageCreateAction(AbstractPackageAction):
     def _set_basic_attributes(self, package: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Set basic attributes."""
         if "description" in attrs:
-            package.set_description(cast(str, attrs["description"]))
+            package.description = cast(str, attrs["description"])
         if "description_html" in attrs:
             package.set_description_html(cast(str, attrs["description_html"]))
         if "description_rtf" in attrs:
-            package.set_description_rtf(cast(str, attrs["description_rtf"]))
+            package.description_rtf = cast(str, attrs["description_rtf"])
         if "display_name" in attrs:
-            package.set_display_name(cast(str, attrs["display_name"]))
+            package.display_name = cast(str, attrs["display_name"])
         if "display_name_rtf" in attrs:
             package.set_display_name_rtf(cast(str, attrs["display_name_rtf"]))
 
@@ -367,10 +367,10 @@ class PackageViewAction(AbstractPackageAction):
     def _collect_package_data(self, package: IRPModelElement) -> Dict[str, str]:
         """Collect package details into a data dictionary."""
         return {
-            "name": package.get_name(),
-            "guid": package.get_guid(),
-            "description": package.get_description(),
-            "metaClass": package.get_meta_class(),
+            "name": package.name,
+            "guid": package.guid,
+            "description": package.description,
+            "metaClass": package.meta_class,
             "fullPath": package.get_full_path_name(),
         }
 
@@ -443,7 +443,7 @@ class PackageListAction(AbstractPackageAction):
     def _collect_nested_package_names(self, package: IRPModelElement) -> List[str]:
         """Collect names of nested packages."""
         nested_packages = package.get_nested_packages()  # type: ignore[attr-defined]
-        return [cast(IRPModelElement, pkg).get_name() for pkg in nested_packages]
+        return [cast(IRPModelElement, pkg).name for pkg in nested_packages]
 
     def _format_output(self, package_names: List[str], format_type: str) -> str:
         """Format output based on format parameter."""
@@ -511,7 +511,7 @@ class PackageUpdateAction(AbstractPackageAction):
         element = project.find_element_by_guid(guid)  # type: ignore[attr-defined]
         if element is None:
             raise CliExecutionError(f"GUID '{guid}' not found")
-        meta_class = element.get_meta_class()
+        meta_class = element.meta_class
         if meta_class != "Package":
             raise CliExecutionError(f"GUID '{guid}' does not resolve to a Package (found {meta_class})")
         return cast(IRPModelElement, element)
@@ -567,11 +567,11 @@ class PackageUpdateAction(AbstractPackageAction):
                 self.logger.warning("Skipping unknown attribute: %s", key)
                 continue
             if key == "name":
-                package.set_name(cast(str, value))
+                package.name = cast(str, value)
             elif key == "description":
-                package.set_description(cast(str, value))
+                package.description = cast(str, value)
             elif key == "display_name":
-                package.set_display_name(cast(str, value))
+                package.display_name = cast(str, value)
             elif key == "stereotypes":
                 for stereotype in cast(List[str], value):
                     package.add_stereotype(stereotype, "Package")
@@ -600,7 +600,7 @@ class PackageUpdateAction(AbstractPackageAction):
             package = self._resolve_and_validate_package(args.path)
         data = self._load_json_data(args)
         self._set_attributes(package, data)
-        self.logger.info("Successfully updated package: %s", package.get_name())
+        self.logger.info("Successfully updated package: %s", package.name)
 
 
 class PackageExportAction(AbstractPackageAction):

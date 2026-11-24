@@ -56,7 +56,7 @@ def _safe_cleanup_test_project(app: RhapsodyApplication, project_dir: Path) -> N
             try:
                 project.close()
             except Exception as exc:
-                print(f"Warning: could not close project {project.get_name()!r}: {exc}")
+                print(f"Warning: could not close project {project.name!r}: {exc}")
 
         # Wait a moment for file handles to be released (Windows file system latency)
         time.sleep(0.5)
@@ -83,7 +83,7 @@ def _safe_cleanup_test_project(app: RhapsodyApplication, project_dir: Path) -> N
 
 
 @pytest.fixture(scope="session")
-def rhapsody_app(rhapsody_instance: Optional[RhapsodyApplication]) -> Optional[RhapsodyApplication]:
+def rhapsody_app(rhapsody_instance: Optional[RhapsodyApplication], request: FixtureRequest) -> Optional[RhapsodyApplication]:
     """Session-scoped Rhapsody application fixture.
 
     Uses the shared ``rhapsody_instance`` owner (see ``tests/conftest.py``) rather
@@ -94,11 +94,12 @@ def rhapsody_app(rhapsody_instance: Optional[RhapsodyApplication]) -> Optional[R
     app = rhapsody_instance
     if app is None:
         return None
-    # Bring window to foreground to make GUI visible
-    try:
-        app.bring_window_to_top()
-    except Exception:
-        pass  # If bring_window_to_top fails, continue anyway
+    if not request.config.getoption("--rhapsody-hidden-ui", default=False):
+        # Bring window to foreground when a test needs visual rendering.
+        try:
+            app.bring_window_to_top()
+        except Exception:
+            pass  # If bring_window_to_top fails, continue anyway
     return app
 
 
@@ -109,8 +110,9 @@ def rhapsody_session(rhapsody_app: RhapsodyApplication) -> Generator[RhapsodyApp
     Creates a session file that persists across all integration tests,
     improving performance by avoiding repeated connect/disconnect cycles.
 
-    A new Rhapsody instance is launched with the GUI visible to ensure
-    proper rendering and display of model elements during testing.
+    A new Rhapsody instance is launched with the GUI visible by default to ensure
+    proper rendering and display of model elements. Non-visual runs can use the
+    ``--rhapsody-hidden-ui`` pytest option.
 
     The session file is stored in the user's home directory and has a
     long timeout (30 minutes) to accommodate slow test runs.
@@ -149,35 +151,40 @@ def _require_rhapsody(rhapsody_app: RhapsodyApplication) -> None:
 
 
 @pytest.fixture(scope="session")
-def test_project(rhapsody_app: RhapsodyApplication, request: FixtureRequest) -> Generator[IRPProject, None, None]:
-    """Session-scoped test project fixture — creates an isolated project in ``demos/test_project/``.
-
-    The project is created with auto-save enabled to ensure automatic persistence
-    during cleanup operations without explicit save calls.
-    """
-    # Clean up any existing test project using safe cleanup
+def _test_project_directory(rhapsody_app: RhapsodyApplication, request: FixtureRequest) -> Generator[Path, None, None]:
+    """Create and clean up the shared test-project files once per integration session."""
     if TEST_PROJECT_DIR.exists():
         _safe_cleanup_test_project(rhapsody_app, TEST_PROJECT_DIR)
 
     TEST_PROJECT_DIR.mkdir(parents=True, exist_ok=True)
-
-    # Create a new test project
     project = rhapsody_app.create_new_project(str(TEST_PROJECT_DIR), TEST_PROJECT_NAME)
     if project is None:
         raise RuntimeError("Rhapsody did not report an active project after project creation")
 
-    # Enable auto-save on the project at creation to ensure automatic persistence
     project.allow_auto_save(1)
+    yield TEST_PROJECT_DIR
 
-    yield project
-
-    # Enhanced cleanup after all tests
     keep = request.config.getoption("--keep-test-artifacts", default=False)
     if not keep and not os.getenv("RHAPSODY_KEEP_ARTIFACTS"):
         _safe_cleanup_test_project(rhapsody_app, TEST_PROJECT_DIR)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
+def test_project(rhapsody_app: RhapsodyApplication, _test_project_directory: Path) -> IRPProject:
+    """Return a fresh wrapper for the active shared test project for each test.
+
+    Other integration tests may switch or reopen projects. Reacquire the COM
+    wrapper at each function boundary instead of reusing a stale session object.
+    """
+    project = rhapsody_app.active_project()
+    if project is None or project.name != TEST_PROJECT_NAME:
+        project = rhapsody_app.open_project(str(_test_project_directory / f"{TEST_PROJECT_NAME}.rpyx"))
+
+    project.allow_auto_save(1)
+    return project
+
+
+@pytest.fixture(scope="function")
 def test_stereotypes(test_project: IRPProject) -> None:
     """Set up test stereotypes with tag definitions for integration tests.
 

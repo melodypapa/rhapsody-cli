@@ -36,7 +36,10 @@ Before any analysis or edit, publish the TODO list: use an available task-list t
 - [ ] §8 Run validation (unit suite, gate, validate_interface, verify_sync); summarize unresolved items.
 - [ ] Render this checklist as the final sync report.
 - [ ] Member: addExample() — [ ] JavaDoc [ ] COM [ ] wrapper [ ] disposition
+- [ ] Getter: getClasses() — [ ] JavaDoc [ ] COM [ ] wrapper [ ] create class [ ] relate class to package [ ] assert returned collection contains that class [ ] cleanup
 ```
+
+For every getter member, render the Getter fixture matrix row from §1 and keep it open until the setup, relation, positive retrieval assertion, test path, and cleanup are evidenced. A generic fixture-builder task or an empty-state assertion does not complete the getter row.
 
 This checklist is the run's live report. Tick a checkbox in the same response where its evidence lands — a command result, a test count, a documented disposition — and never batch-tick at the end. A box ends the run either ticked or open with the blocker and reason stated next to it. Only mark a task done after checking its evidence. Keep inherited-member notes separate from owned-member tasks.
 
@@ -83,6 +86,14 @@ Reconcile every member declared by the target interface against the validator in
 
 For each target-owned JavaDoc member, track: Java name/signature and description; inherited vs owned; COM method/property/alias/unavailable status; Python method and actual COM call; result type/wrapping; and a disposition. Use concise dispositions such as matched, inherited, binding mismatch, JavaDoc-only, COM-only, missing wrapper, intentionally unsupported, or unresolved. A missing static COM member is not by itself a removal decision. Compare JavaDoc presence, pywin32 presence, and whether the Python body forwards to that COM member. Section 4 defines the treatment: JavaDoc-only methods become documented `NotImplementedError` stubs; COM-forwarding methods absent from both contracts are removed; local Python lifecycle/orchestration APIs such as `RhapsodyApplication.connect()` are retained.
 
+For every getter or collection-valued property, add one row to the sync TODO's **Getter fixture matrix**. This is a required output field, not an optional note:
+
+| Java getter / Python member | Real parent and expected child/value | JavaDoc-verified setup and relationship | Expected returned identity/value | Integration test | Cleanup |
+| --- | --- | --- | --- | --- | --- |
+| `getClasses()` / `classes` | the test package and the class created for this case | create the class with the package's documented add method | returned collection contains that exact class | mirrored test path + test name | delete the test package |
+
+Complete a row for every target-owned getter, including getters owned by `IRPApplication`; its application-layer location is not an exclusion. For a model relationship or collection, name the concrete child and how it is attached; for an application/environment scalar, name the real source and expected value. A generic "fixture builder" entry does not complete these rows.
+
 **Verify the full COM signature, not just the member name.** When comparing evidence, check that the wrapper's COM call matches the pywin32 member's parameter count and types, not only that the member name exists. `pywin32_authority.json` stores a `signatures` section captured from the type library (parameter `count`, `required`, `names`, and `types`; `required` excludes trailing parameters that makepy gives Python defaults for). The validator emits `SIGNATURE_ARITY_MISMATCH` / `SIGNATURE_TYPE_MISMATCH` as actionable rows in `Comparison details` — counted in the Summary and failing the run — when a `call_com(lambda: self._com.Name(...))` passes a count outside the `required`..`count` band or a non-convertible parameter type (numeric/bool variants convert at the COM boundary). Treat these as actionable deviations that must be fixed before archiving — a correct member name with wrong arguments still fails at runtime. JavaDoc may document fewer parameters than the type library; pywin32/COM is authoritative for the call shape.
 
 Never add a direct COM call for a member absent from the binding. Keep exact camelCase COM identifiers and snake_case Python names. Follow `AGENTS.md` for `call_com`, property helpers, argument unwrapping, result wrapping, collection handling, annotations, and exception handling. In particular, do not add `Any`. Synced wrappers use `from __future__ import annotations` and write type references unquoted (e.g. `-> IRPClass`, not `-> "IRPClass"`); a name used only in `cast()` must be imported at runtime (a local import inside the method avoids circular imports).
@@ -121,6 +132,32 @@ Add or update integration coverage only for supported behavior owned by this wra
 **No exception catching in integration tests, with one exception.** An integration test must never assert that a call raises `AttributeError`, `RhapsodyRuntimeException`, `TypeError`, `ValueError`, or any other "documented COM failure". Such assertions bless a wrong binding: when the wrapper is later migrated to the real pywin32 member, the test fails because the outcome changed — and until then the green test hides a member that does not actually work. The **only** permitted exception assertion is `pytest.raises(NotImplementedError)` for a JavaDoc-defined member that pywin32 does not expose (section 4's JavaDoc-present / pywin32-absent stub), where the wrapper deliberately raises before any COM dispatch. For every other method, the integration test must exercise the real pywin32 member and assert a real result (value, shape, or a documented `None`); if a member cannot be exercised live, record a genuine blocker on the TODO and leave the row open — do not convert it into an exception assertion. Do not use `try`/`except` at all in test bodies, no broad `except` / helper that accepts a documented exception or a completed call, and no `except <Exception>: pass` cleanup guards that mask a stale-session cascade; fix the session instead. Record the complete list of permitted `NotImplementedError` assertions and the reason for each (JavaDoc-defined, pywin32-absent) in the sync report (section 8).
 
 **Design integration cases from JavaDoc with authentic data — never dummy inputs.** Before writing an integration test for a wrapper method, read its JavaDoc signature (`docs/java_api/<java.package.path>/<INTERFACE>.html`) to learn each parameter's real meaning, return contract, and preconditions, then build a test that supplies **authentic data**: create the required real Rhapsody objects first (a package, class, element, diagram, etc.) and pass their real identifiers/objects — e.g. for `find_element_by_binary_id(binary_id)`, actually create an element, read its real `BinaryID`, and assert the element is found; for `find_element_by_file_name(name)`, use a real file name from the live project. Do not pass fabricated strings such as `"arg"` / `"x"` / generated UUIDs as placeholders and do not give up with a mocked COM binding or an exception assertion when a real setup is possible — a mocked binding proves only the call shape, not that the method works against Rhapsody. A test that passes only because a fake or dummy value is used does not validate the method. If a genuine precondition cannot be satisfied live (e.g. an external file or license is unavailable), record it as a real blocker on the TODO and leave the row open rather than substituting mock data. Delete or clean up any objects the test creates so the session-shared project is left intact.
+
+### Getter tests must prove retrieval from live data
+
+**A getter integration task is complete only when its populated-state assertion passes or the member remains an open blocker.** Time pressure, an already-green smoke test, a generic fixture-builder, shared-project concerns, or a request to keep scope small do not turn an empty-state, type-only, count-only, or non-`None` assertion into getter coverage.
+
+For each JavaDoc getter or collection-valued property, build the positive fixture that its contract needs, invoke the getter on the object that owns the relationship, and assert that it returns the object or value created by the test. For a collection getter, assert the created child is present (prefer object identity or a stable model identifier); a non-`None` result, type check, or count by itself does not prove the getter retrieves the right member. Every getter's matrix row must point to this populated-state assertion and its test; an empty-state assertion cannot close the getter's integration task.
+
+```python
+import uuid
+
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
+
+
+def test_get_classes_returns_class_attached_to_package(test_project: IRPProject) -> None:
+    package = test_project.add_package(f"GetterPkg_{uuid.uuid4().hex}")
+    created_class = package.add_class(f"GetterClass_{uuid.uuid4().hex}")
+    try:
+        classes = list(package.classes)
+        assert created_class in classes
+    finally:
+        package.delete_from_project()
+```
+
+Apply the same setup → relation → retrieval → identity/value assertion to application-level getters. For example, `IRPApplication.get_list_of_selected_elements()` needs a real model element placed in an `IRPCollection`, passed to the documented `select_model_elements()` API, then verified in the returned collection. Restore the prior application selection through a documented API during cleanup; deleting the selected object alone does not prove that shared application state was restored. Read JavaDoc and the pywin32 catalog before choosing setup or cleanup calls; do not infer or invent APIs such as `select()`, `deselect()`, or `setSelected()` from a getter's name. Getters whose contract reads application, filesystem, or environment state use a real value from that source and assert against it instead of creating an unrelated model object.
+
+An empty-state test is an additional case: establish that the parent has no related child and assert the documented empty result. It does not replace the populated-state getter test. Do not defer a missing populated getter test to a follow-up ticket or exclude it as "out of scope" while claiming the interface synced. If the required relationship or state cannot be created through a verified live API, record the unmet precondition as an open blocker; do not substitute a dummy value, a fake COM object, a type/count-only check, or a non-`None` smoke assertion.
 
 The no-skip/no-xfail rule in section 4 applies here too, with the same explicitly-approved-skip exception: a missing fixture or a COM behaviour that is hard to exercise must be solved so the test passes, or covered by an approved skip that records the reason and the ledger entry. Never use `xfail`. Documented-unavailable Java-member stubs still require a live integration assertion that the method raises `NotImplementedError`; the test does not need the absent COM member because the stub must raise before dispatch. Collected-but-not-executed tests do not satisfy this section.
 
@@ -193,6 +230,7 @@ Verification rules (each row cites the section that fully specifies it — this 
 | Mirrored tests exercise the class | `verify_sync.py` requires `tests/{unit,integration}/models/.../test_<snake>.py` (mirroring the wrapper's package) to exist and exercise the wrapper class; run the focused unit test with coverage on the wrapper module and state the measured coverage in the report. | §2 |
 | Approved skips only; unit 100% | `grep -rnE "skip\|xfail" <test files>` must find no unapproved marker or any `xfail`; every `@pytest.mark.skip` must carry a reason and a matching open ledger entry with the user's approval. Measure coverage on the canonical wrapper module from the unit test file alone — 100% statements and branches. Integration tests have no coverage gate; combine figures do not satisfy the unit gate. An unresolved environment or COM limitation is a blocker that keeps the TODO open, not a marker that permits archiving. | §4, §5 |
 | Windows integration green | On Windows, run the migrated class's focused integration test with live Rhapsody and require green; collection-only is not a live test. If Rhapsody is unavailable there, report the blocker and leave the TODO open rather than claiming success. | §5 |
+| Getter fixture matrix complete | Every owned getter has a matrix row naming the real parent, related child/value, JavaDoc-verified setup, getter assertion by identity/value, test path, and cleanup. Populated live retrieval passes; an empty/type/count/non-`None` check alone is not evidence. | §1, §5 |
 | Non-Windows integration | Collection-only is acceptable; state it explicitly in the report. | — |
 
 Leave TODO items open when blocked, with the reason.
@@ -215,3 +253,9 @@ Violating the letter of these rules is violating their spirit. Each row is a rat
 | "Two interfaces in one run is more efficient" | One interface per run; complete and review it before starting another (§8). |
 | "pywin32 lacks the member, so drop the Java API too" | JavaDoc-present members become documented `NotImplementedError` stubs, never removals (§4). |
 | "The COM name is close enough to the catalog entry" | Bind exactly one catalog member with its recorded method/property shape — no probing, no fallback (§3). |
+| "The getter returned a non-`None` collection, so it is covered" | Create a real related object, attach/select it through a documented API, then assert the getter returns that object (§5). |
+| "An empty collection or type/count check is enough" | Empty state is an additional case; the Getter fixture matrix still needs a populated fixture and an identity/value assertion (§1, §5). |
+| "The selection method is probably `select()`" | Verify setup APIs in JavaDoc and the pywin32 catalog; never invent a setup call to make a getter test pass (§5). |
+| "A generic fixture-builder task covers the getters" | Complete one Getter fixture matrix row per getter with its real parent, related data, assertion, and cleanup (§1). |
+| "Application-level getters are outside the model-class audit" | Include every getter owned by the requested interface, including `IRPApplication`; use real app state or related model data according to its contract (§1, §5). |
+| "We'll add populated getter cases after the release" | The interface stays open until every supported getter has its populated live assertion or a documented blocker (§5, §8). |

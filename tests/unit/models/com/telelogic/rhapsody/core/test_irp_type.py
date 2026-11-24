@@ -11,7 +11,7 @@ class TestRPType:
         fake = make_fake_element("Type", properties={"name": "T1"})
         t = IRPType(fake)
         assert isinstance(t, IRPModelElement)
-        assert t.get_name() == "T1"
+        assert t.name == "T1"
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("Type", properties={"name": "T1"})
@@ -26,7 +26,7 @@ class TestRPType:
         fake.addEnumerationLiteral.return_value = lit
         t = IRPType(fake)
         wrapped = t.add_enumeration_literal("RED")
-        assert wrapped.get_name() == "RED"
+        assert wrapped.name == "RED"
         fake.addEnumerationLiteral.assert_called_once_with("RED")
 
     def test_delete_enumeration_literal_delegates(self) -> None:
@@ -104,7 +104,7 @@ class TestRPType:
         fake.typedefBaseType = base
         t = IRPType(fake)
         wrapped = t.get_typedef_base_type()
-        assert wrapped.get_name() == "Base"
+        assert wrapped.name == "Base"
 
     def test_get_typedef_multiplicity_returns_string(self) -> None:
         # Pattern A

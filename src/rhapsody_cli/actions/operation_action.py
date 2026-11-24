@@ -19,7 +19,7 @@ import argparse
 import json
 import logging
 from pathlib import Path
-from typing import Callable, Dict, List, cast
+from typing import Callable, Dict, List, Union, cast
 
 from rhapsody_cli.actions.abstract_action import ElementManagementAction, SessionAwareAction
 from rhapsody_cli.cli.formatters import OutputFormatter
@@ -93,7 +93,7 @@ class AbstractOperationAction(SessionAwareAction, ElementManagementAction):
         if element is None:
             raise CliExecutionError(f"No element found with GUID '{guid}'")
 
-        meta_class = element.get_meta_class()
+        meta_class = element.meta_class
         if meta_class != "Operation":
             raise CliExecutionError(f"GUID '{guid}' does not resolve to an Operation (found {meta_class})")
 
@@ -142,7 +142,7 @@ class OperationCreateAction(AbstractOperationAction):
             raise CliExecutionError("Either --input or attributes argument must be provided")
 
         data = self._load_json_data(input_data)
-        ops_data = data if isinstance(data, list) else [data]
+        ops_data: List[Dict[str, object]] = data if isinstance(data, list) else [data]
 
         classifier = self._resolve_classifier(args.path)
 
@@ -185,14 +185,15 @@ class OperationCreateAction(AbstractOperationAction):
         if errors:
             self.logger.info("Created %d/%d operations with %d error(s)", len(created), total, len(errors))
 
-    def _load_json_data(self, attributes_input: str) -> Dict[str, object]:
-        """Load JSON data from inline string or external file.
+    def _load_json_data(self, attributes_input: str) -> Union[Dict[str, object], List[Dict[str, object]]]:
+        """Load one operation object or a list of operation objects from JSON.
 
         SWR_OP_00007: External JSON File Support
         """
         if attributes_input.startswith("{") or attributes_input.startswith("["):
             try:
-                return cast(Dict[str, object], json.loads(attributes_input))
+                data: object = json.loads(attributes_input)
+                return self._normalize_operation_data(data)
             except json.JSONDecodeError as e:
                 raise CliExecutionError(f"Invalid JSON: {e}") from e
 
@@ -201,20 +202,35 @@ class OperationCreateAction(AbstractOperationAction):
 
         try:
             with open(attributes_input, encoding="utf-8") as f:
-                return cast(Dict[str, object], json.load(f))
+                file_data: object = json.load(f)
+            return self._normalize_operation_data(file_data)
         except json.JSONDecodeError as e:
             raise CliExecutionError(f"Invalid JSON in file: {e}") from e
         except OSError as e:
             raise CliExecutionError(f"Failed to read file: {e}") from e
 
+    @staticmethod
+    def _normalize_operation_data(data: object) -> Union[Dict[str, object], List[Dict[str, object]]]:
+        """Validate the JSON root and each item in a bulk operation payload."""
+        if isinstance(data, dict):
+            return cast(Dict[str, object], data)
+        if isinstance(data, list):
+            operations: List[Dict[str, object]] = []
+            for item in data:
+                if not isinstance(item, dict):
+                    raise CliExecutionError("Operation JSON must be an object or a list of objects")
+                operations.append(cast(Dict[str, object], item))
+            return operations
+        raise CliExecutionError("Operation JSON must be an object or a list of objects")
+
     def _set_attributes(self, classifier: IRPModelElement, operation: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Set validated attributes on operation."""
         if "name" in attrs:
-            operation.set_name(cast(str, attrs["name"]))
+            operation.name = cast(str, attrs["name"])
         if "body" in attrs:
             operation.set_body(cast(str, attrs["body"]))  # type: ignore[attr-defined]
         if "description" in attrs:
-            operation.set_description(cast(str, attrs["description"]))
+            operation.description = cast(str, attrs["description"])
         if "visibility" in attrs:
             operation.set_visibility(cast(str, attrs["visibility"]))  # type: ignore[attr-defined]
         if "arguments" in attrs:
@@ -241,7 +257,7 @@ class OperationCreateAction(AbstractOperationAction):
         """
         if "returns" in attrs:
             type_name = cast(str, attrs["returns"])
-            owner = classifier.get_owner()
+            owner = classifier.owner
             target = owner.find_nested_classifier_recursive(type_name)  # type: ignore[attr-defined]
             if target is None:
                 raise CliExecutionError(f"Returns type '{type_name}' not found")
@@ -280,7 +296,7 @@ class OperationDeleteAction(AbstractOperationAction):
 
         if has_guid:
             operation = self._resolve_operation_by_guid(args.guid)
-            classifier = operation.get_owner()
+            classifier = operation.owner
             label = f"GUID '{args.guid}'"
         else:
             classifier = self._resolve_classifier(args.path)
@@ -336,7 +352,7 @@ class OperationListAction(AbstractOperationAction):
     def _collect_operation_names(self, classifier: IRPModelElement) -> List[str]:
         """Collect names of operations on a classifier."""
         operations = classifier.get_operations()  # type: ignore[attr-defined]
-        return [cast(IRPModelElement, op).get_name() for op in operations]
+        return [cast(IRPModelElement, op).name for op in operations]
 
     def _format_output(self, op_names: List[str], format_type: str) -> str:
         """Format output based on format parameter."""
@@ -456,20 +472,20 @@ class OperationViewAction(AbstractOperationAction):
                 return default
 
         returns = safe(lambda: operation.get_returns(), None)  # type: ignore[attr-defined]
-        returns_name = cast(IRPModelElement, returns).get_name() if returns is not None else ""
+        returns_name = cast(IRPModelElement, returns).name if returns is not None else ""
         arguments = safe(lambda: operation.get_arguments(), [])  # type: ignore[attr-defined]
         return {
-            "name": operation.get_name(),
-            "guid": operation.get_guid(),
-            "description": safe(operation.get_description, ""),
+            "name": operation.name,
+            "guid": operation.guid,
+            "description": safe(lambda: operation.description, ""),
             "body": safe(lambda: operation.get_body(), ""),  # type: ignore[attr-defined]
             "isAbstract": int(safe(lambda: operation.get_is_abstract(), 0)),  # type: ignore[attr-defined,call-overload]
             "isStatic": int(safe(lambda: operation.get_is_static(), 0)),  # type: ignore[attr-defined,call-overload]
             "isVirtual": int(safe(lambda: operation.get_is_virtual(), 0)),  # type: ignore[attr-defined,call-overload]
             "returns": returns_name,
             "visibility": safe(lambda: operation.get_visibility(), ""),  # type: ignore[attr-defined]
-            "arguments": [cast(IRPModelElement, arg).get_name() for arg in arguments],  # type: ignore[attr-defined]
-            "metaClass": operation.get_meta_class(),
+            "arguments": [cast(IRPModelElement, arg).name for arg in arguments],  # type: ignore[attr-defined]
+            "metaClass": operation.meta_class,
             "fullPath": operation.get_full_path_name(),
         }
 
@@ -555,7 +571,7 @@ class OperationUpdateAction(AbstractOperationAction):
 
         if has_guid:
             operation = self._resolve_operation_by_guid(args.guid)
-            classifier = operation.get_owner()
+            classifier = operation.owner
         else:
             classifier = self._resolve_classifier(args.path)
             operation = self._resolve_operation(classifier, args.name)
@@ -572,7 +588,7 @@ class OperationUpdateAction(AbstractOperationAction):
 
         self._set_attributes(classifier, operation, data)
 
-        self.logger.info("Successfully updated operation: %s", operation.get_name())
+        self.logger.info("Successfully updated operation: %s", operation.name)
 
     def _load_json_data(self, attributes_input: str) -> Dict[str, object]:
         """Load JSON data from inline string or external file.
@@ -599,11 +615,11 @@ class OperationUpdateAction(AbstractOperationAction):
     def _set_attributes(self, classifier: IRPModelElement, operation: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Set validated attributes on operation (partial update)."""
         if "name" in attrs:
-            operation.set_name(cast(str, attrs["name"]))
+            operation.name = cast(str, attrs["name"])
         if "body" in attrs:
             operation.set_body(cast(str, attrs["body"]))  # type: ignore[attr-defined]
         if "description" in attrs:
-            operation.set_description(cast(str, attrs["description"]))
+            operation.description = cast(str, attrs["description"])
         if "visibility" in attrs:
             operation.set_visibility(cast(str, attrs["visibility"]))  # type: ignore[attr-defined]
         if "arguments" in attrs:
@@ -616,7 +632,7 @@ class OperationUpdateAction(AbstractOperationAction):
             operation.set_is_virtual(1 if attrs["isVirtual"] else 0)  # type: ignore[attr-defined]
         if "returns" in attrs:
             type_name = cast(str, attrs["returns"])
-            owner = classifier.get_owner()
+            owner = classifier.owner
             target = owner.find_nested_classifier_recursive(type_name)  # type: ignore[attr-defined]
             if target is None:
                 raise CliExecutionError(f"Returns type '{type_name}' not found")

@@ -65,10 +65,14 @@ class IRPCollection:
         return ComHelper._wrap_if_element(raw_item)
 
     def add_item(self, element: IRPModelElement) -> None:
-        """Adds an element to the collection.
+        """Adds the specified element to the collection.
+
+        String-valued collections (conditional-property tokens) are filled
+        through :meth:`set_size` and :meth:`set_string`; ``addItem`` accepts
+        only model elements.
 
         Args:
-            element: The model element to add to the collection.
+            element: The wrapped model element to add.
 
         Raises:
             RhapsodyRuntimeException: if the element cannot be added to

@@ -29,7 +29,7 @@ class TestRPFlow:
         fake = make_fake_element("Flow", properties={"name": "MyFlow"})
         flow = RPFlow(fake)
         assert isinstance(flow, IRPModelElement)
-        assert flow.get_name() == "MyFlow"
+        assert flow.name == "MyFlow"
 
     def test_add_conveyed_delegates(self) -> None:
         fake = make_fake_element("Flow")
@@ -59,7 +59,7 @@ class TestRPFlow:
         fake.getEnd1.return_value = end1
         flow = RPFlow(fake)
         result = flow.get_end1()
-        assert cast(IRPModelElement, result).get_name() == "End1State"
+        assert cast(IRPModelElement, result).name == "End1State"
 
     def test_get_end1_port_wraps_result(self) -> None:
         fake = make_fake_element("Flow")
@@ -67,7 +67,7 @@ class TestRPFlow:
         fake.getEnd1Port.return_value = port
         flow = RPFlow(fake)
         result = flow.get_end1_port()
-        assert result.get_name() == "Port1"
+        assert result.name == "Port1"
 
     def test_get_end1_sys_ml_port_wraps_result(self) -> None:
         fake = make_fake_element("Flow")
@@ -75,7 +75,7 @@ class TestRPFlow:
         fake.getEnd1SysMLPort.return_value = sysml_port
         flow = RPFlow(fake)
         result = flow.get_end1_sys_ml_port()
-        assert result.get_name() == "SysMLPort1"
+        assert result.name == "SysMLPort1"
 
     def test_get_end2_wraps_result(self) -> None:
         fake = make_fake_element("Flow")
@@ -83,7 +83,7 @@ class TestRPFlow:
         fake.getEnd2.return_value = end2
         flow = RPFlow(fake)
         result = flow.get_end2()
-        assert cast(IRPModelElement, result).get_name() == "End2State"
+        assert cast(IRPModelElement, result).name == "End2State"
 
     def test_get_end2_port_wraps_result(self) -> None:
         fake = make_fake_element("Flow")
@@ -91,7 +91,7 @@ class TestRPFlow:
         fake.getEnd2Port.return_value = port
         flow = RPFlow(fake)
         result = flow.get_end2_port()
-        assert result.get_name() == "Port2"
+        assert result.name == "Port2"
 
     def test_get_end2_sys_ml_port_wraps_result(self) -> None:
         fake = make_fake_element("Flow")
@@ -99,7 +99,7 @@ class TestRPFlow:
         fake.getEnd2SysMLPort.return_value = sysml_port
         flow = RPFlow(fake)
         result = flow.get_end2_sys_ml_port()
-        assert result.get_name() == "SysMLPort2"
+        assert result.name == "SysMLPort2"
 
     def test_remove_conveyed_delegates(self) -> None:
         fake = make_fake_element("Flow")
@@ -185,7 +185,7 @@ class TestRPFlowItem:
         fake = make_fake_element("FlowItem", properties={"name": "MyFlowItem"})
         flow_item = RPFlowItem(fake)
         assert isinstance(flow_item, IRPModelElement)
-        assert flow_item.get_name() == "MyFlowItem"
+        assert flow_item.name == "MyFlowItem"
 
     def test_add_represented_delegates(self) -> None:
         fake = make_fake_element("FlowItem")
@@ -224,7 +224,7 @@ class TestRPFlowchart:
         fake = make_fake_element("Flowchart", properties={"name": "MyActivity"})
         flowchart = RPFlowchart(fake)
         assert isinstance(flowchart, RPStatechart)
-        assert flowchart.get_name() == "MyActivity"
+        assert flowchart.name == "MyActivity"
 
     def test_add_accept_event_action_wraps_result(self) -> None:
         fake = make_fake_element("Flowchart")
@@ -233,7 +233,7 @@ class TestRPFlowchart:
         fake.addAcceptEventAction.return_value = aea
         flowchart = RPFlowchart(fake)
         result = flowchart.add_accept_event_action("AEA1", RPState(parent))
-        assert result.get_name() == "AEA1"
+        assert result.name == "AEA1"
         fake.addAcceptEventAction.assert_called_once_with("AEA1", parent)
 
     def test_add_accept_time_event_wraps_result(self) -> None:
@@ -243,7 +243,7 @@ class TestRPFlowchart:
         fake.addAcceptTimeEvent.return_value = ate
         flowchart = RPFlowchart(fake)
         result = flowchart.add_accept_time_event("ATE1", RPState(parent))
-        assert result.get_name() == "ATE1"
+        assert result.name == "ATE1"
         fake.addAcceptTimeEvent.assert_called_once_with("ATE1", parent)
 
     def test_add_activity_parameter_wraps_result(self) -> None:
@@ -252,7 +252,7 @@ class TestRPFlowchart:
         fake.addActivityParameter.return_value = pin
         flowchart = RPFlowchart(fake)
         result = flowchart.add_activity_parameter("Param1")
-        assert result.get_name() == "Param1"
+        assert result.name == "Param1"
         fake.addActivityParameter.assert_called_once_with("Param1")
 
     def test_add_call_behavior_wraps_result(self) -> None:
@@ -262,7 +262,7 @@ class TestRPFlowchart:
         fake.addCallBehavior.return_value = state
         flowchart = RPFlowchart(fake)
         result = flowchart.add_call_behavior(cast(IRPModelElement, IRPModelElement.wrap(referenced)))
-        assert result.get_name() == "CallBehaviorState"
+        assert result.name == "CallBehaviorState"
         fake.addCallBehavior.assert_called_once_with(referenced)
 
     def test_add_call_operation_wraps_result(self) -> None:
@@ -272,7 +272,7 @@ class TestRPFlowchart:
         fake.addCallOperation.return_value = co
         flowchart = RPFlowchart(fake)
         result = flowchart.add_call_operation("CO1", RPState(parent))
-        assert result.get_name() == "CO1"
+        assert result.name == "CO1"
         fake.addCallOperation.assert_called_once_with("CO1", parent)
 
     def test_add_object_node_wraps_result(self) -> None:
@@ -282,7 +282,7 @@ class TestRPFlowchart:
         fake.addObjectNode.return_value = node
         flowchart = RPFlowchart(fake)
         result = flowchart.add_object_node("ObjectNode1", RPState(parent))
-        assert result.get_name() == "ObjectNode1"
+        assert result.name == "ObjectNode1"
         fake.addObjectNode.assert_called_once_with("ObjectNode1", parent)
 
     def test_add_reference_activity_wraps_result(self) -> None:
@@ -292,7 +292,7 @@ class TestRPFlowchart:
         fake.addReferenceActivity.return_value = state
         flowchart = RPFlowchart(fake)
         result = flowchart.add_reference_activity(cast(IRPModelElement, IRPModelElement.wrap(referenced)))
-        assert result.get_name() == "RefActivityState"
+        assert result.name == "RefActivityState"
         fake.addReferenceActivity.assert_called_once_with(referenced)
 
     def test_add_swimlane_wraps_result(self) -> None:
@@ -301,7 +301,7 @@ class TestRPFlowchart:
         fake.addSwimlane.return_value = swimlane
         flowchart = RPFlowchart(fake)
         result = flowchart.add_swimlane("Lane1")
-        assert result.get_name() == "Lane1"
+        assert result.name == "Lane1"
         fake.addSwimlane.assert_called_once_with("Lane1")
 
     def test_get_flowchart_diagram_wraps_result(self) -> None:
@@ -310,7 +310,7 @@ class TestRPFlowchart:
         fake.getFlowchartDiagram.return_value = diagram
         flowchart = RPFlowchart(fake)
         result = flowchart.get_flowchart_diagram()
-        assert result.get_name() == "ActivityDiagram1"
+        assert result.name == "ActivityDiagram1"
 
     def test_get_is_analysis_only_returns_int(self) -> None:
         fake = make_fake_element("Flowchart", getIsAnalysisOnly=1)
@@ -323,7 +323,7 @@ class TestRPFlowchart:
         fake.getItsOwner.return_value = owner
         flowchart = RPFlowchart(fake)
         result = flowchart.get_its_owner()
-        assert result.get_name() == "myOperation"
+        assert result.name == "myOperation"
 
     def test_get_swimlanes_returns_collection(self) -> None:
         fake = make_fake_element("Flowchart")
@@ -361,7 +361,7 @@ class TestRPObjectNode:
         fake = make_fake_element("ObjectNode", properties={"name": "MyObjectNode"})
         node = RPObjectNode(fake)
         assert isinstance(node, RPState)
-        assert node.get_name() == "MyObjectNode"
+        assert node.name == "MyObjectNode"
 
     def test_add_in_state_delegates(self) -> None:
         fake = make_fake_element("ObjectNode")
@@ -391,7 +391,7 @@ class TestRPObjectNode:
         fake.getRepresents.return_value = represents
         node = RPObjectNode(fake)
         result = node.get_represents()
-        assert cast(IRPModelElement, result).get_name() == "MyClass"
+        assert cast(IRPModelElement, result).name == "MyClass"
 
     def test_remove_in_state_delegates(self) -> None:
         fake = make_fake_element("ObjectNode")
@@ -426,7 +426,7 @@ class TestRPSwimlane:
         fake = make_fake_element("Swimlane", properties={"name": "MySwimlane"})
         swimlane = RPSwimlane(fake)
         assert isinstance(swimlane, IRPModelElement)
-        assert swimlane.get_name() == "MySwimlane"
+        assert swimlane.name == "MySwimlane"
 
     def test_add_swimlane_wraps_result(self) -> None:
         fake = make_fake_element("Swimlane")
@@ -434,7 +434,7 @@ class TestRPSwimlane:
         fake.addSwimlane.return_value = nested
         swimlane = RPSwimlane(fake)
         result = swimlane.add_swimlane("NestedLane")
-        assert result.get_name() == "NestedLane"
+        assert result.name == "NestedLane"
         fake.addSwimlane.assert_called_once_with("NestedLane")
 
     def test_get_contents_returns_collection(self) -> None:
@@ -453,7 +453,7 @@ class TestRPSwimlane:
         fake.getRepresents.return_value = represents
         swimlane = RPSwimlane(fake)
         result = swimlane.get_represents()
-        assert cast(IRPModelElement, result).get_name() == "MyClass"
+        assert cast(IRPModelElement, result).name == "MyClass"
 
     def test_get_swimlanes_returns_collection(self) -> None:
         fake = make_fake_element("Swimlane")

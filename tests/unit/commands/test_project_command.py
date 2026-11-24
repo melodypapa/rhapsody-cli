@@ -63,7 +63,7 @@ class TestProjectListAction:
         args = argparse.Namespace(verbose=False)
 
         fake_project = MagicMock(name="FakeProject")
-        fake_project.get_name.return_value = "MyProject"
+        fake_project.name = "MyProject"
         fake_project.get_filename.return_value = "C:/models/MyProject.rpyx"
         fake_app = MagicMock(name="FakeApplication")
         fake_app.get_projects.return_value = [fake_project]

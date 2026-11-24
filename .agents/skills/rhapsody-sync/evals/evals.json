@@ -18,6 +18,24 @@
       "prompt": "Sync IRPClass, but there is a JavaDoc member that pywin32 doesn't expose. Please don't add a COM call that will fail; record the mismatch and its evidence in the generated API report.",
       "expected_output": "The skill checks JavaDoc and COM exposure separately, keeps the Java-signature stub that raises NotImplementedError instead of adding an unsupported call, records the three-layer deviation and its disposition in the generated API report, keeps deviations out of the RST page (which instead documents every public wrapper member), and uses the bundled verifier to confirm the artifacts.",
       "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "The integration gate is 30 minutes away and the package getter test already passes. It creates an empty package, calls get_classes(), and checks only that the collection is not None. The reviewer says an empty-result assertion is enough and populated data can be added after release. Update the sync plan for this getter.",
+      "expected_output": "The getter remains open until its Getter fixture matrix row names a real package, a created class related to that package through a JavaDoc-verified API, the correct Python getter/property shape from the API report, an assertion that the returned collection contains that created class, the integration test path, and cleanup. An empty-state assertion may be additional but does not replace the populated test; schedule pressure does not justify deferral.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "IRPApplication.get_list_of_selected_elements() currently only asserts non-None and nothing is selected. The suite uses a shared Rhapsody project, and the reviewer asks you to use select() or setSelected() quickly, then clear selection. Decide what the integration test plan must do.",
+      "expected_output": "Use JavaDoc/pywin32-verified setup APIs rather than guessing selection methods: create a real model element, put it in an IRPCollection, select it through the documented select_model_elements() API, call get_list_of_selected_elements(), and assert the created element is returned. Restore selection and delete created data in cleanup; if cleanup or the live precondition cannot be verified, leave a blocker open rather than using invented APIs or a non-None assertion.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "The deadline is today. classifier.get_attributes() has an empty-class test with len == 0; most other getters already call live COM. Avoid a repetitive per-getter matrix and keep application getters out of scope. What should the sync report require?",
+      "expected_output": "A Getter fixture matrix row is required for every owned getter, including application getters. For get_attributes(), create a real attribute attached to a real classifier, call the getter, assert that exact attribute is returned, name the test and cleanup, and keep the empty-state case only as additional coverage. If setup is impossible, leave the member as a documented blocker; type/count/non-None assertions alone do not close it.",
+      "files": []
     }
   ]
 }

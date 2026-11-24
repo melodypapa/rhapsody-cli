@@ -46,8 +46,8 @@ class TestExport:
 
     def test_returns_dict_with_required_keys(self) -> None:
         project = MagicMock()
-        project.get_meta_class.return_value = "Project"
-        project.get_name.return_value = "MyProject"
+        project.meta_class = "Project"
+        project.name = "MyProject"
         project.get_nested_elements.return_value = []
         exporter = _make_exporter()
 
@@ -59,12 +59,12 @@ class TestExport:
 
     def test_includes_project_name_from_container(self) -> None:
         project = MagicMock()
-        project.get_meta_class.return_value = "Project"
-        project.get_name.return_value = "TopLevel"
+        project.meta_class = "Project"
+        project.name = "TopLevel"
         pkg = MagicMock()
-        pkg.get_meta_class.return_value = "Package"
-        pkg.get_name.return_value = "Sub"
-        pkg.get_owner.return_value = project
+        pkg.meta_class = "Package"
+        pkg.name = "Sub"
+        pkg.owner = project
         pkg.get_nested_elements.return_value = []
         exporter = _make_exporter()
 
@@ -74,14 +74,14 @@ class TestExport:
 
     def test_includes_exported_children(self) -> None:
         cls = MagicMock()
-        cls.get_meta_class.return_value = "Class"
-        cls.get_name.return_value = "Widget"
+        cls.meta_class = "Class"
+        cls.name = "Widget"
         cls.get_nested_elements.return_value = []
-        cls.get_stereotypes.return_value = []
-        cls.get_all_tags.return_value = []
+        cls.stereotypes = []
+        cls.all_tags = []
         project = MagicMock()
-        project.get_meta_class.return_value = "Project"
-        project.get_name.return_value = "P"
+        project.meta_class = "Project"
+        project.name = "P"
         project.get_nested_elements.return_value = [cls]
         exporter = _make_exporter()
 
@@ -98,17 +98,17 @@ class TestExportPackage:
 
     def test_emits_name_type_and_children(self) -> None:
         child = MagicMock()
-        child.get_meta_class.return_value = "Class"
-        child.get_name.return_value = "Inner"
+        child.meta_class = "Class"
+        child.name = "Inner"
         child.get_nested_elements.return_value = []
-        child.get_stereotypes.return_value = []
-        child.get_all_tags.return_value = []
+        child.stereotypes = []
+        child.all_tags = []
         pkg = MagicMock()
-        pkg.get_meta_class.return_value = "Package"
-        pkg.get_name.return_value = "Outer"
+        pkg.meta_class = "Package"
+        pkg.name = "Outer"
         pkg.get_nested_elements.return_value = [child]
-        pkg.get_stereotypes.return_value = []
-        pkg.get_all_tags.return_value = []
+        pkg.stereotypes = []
+        pkg.all_tags = []
         exporter = _make_exporter()
 
         result = exporter._export_element(pkg)
@@ -126,11 +126,11 @@ class TestExportClass:
 
     def test_emits_name_type(self) -> None:
         cls = MagicMock()
-        cls.get_meta_class.return_value = "Class"
-        cls.get_name.return_value = "Widget"
+        cls.meta_class = "Class"
+        cls.name = "Widget"
         cls.get_nested_elements.return_value = []
-        cls.get_stereotypes.return_value = []
-        cls.get_all_tags.return_value = []
+        cls.stereotypes = []
+        cls.all_tags = []
         exporter = _make_exporter()
 
         result = exporter._export_element(cls)
@@ -145,22 +145,22 @@ class TestExportOperation:
 
     def test_emits_return_type_is_static_and_arguments(self) -> None:
         return_classifier = MagicMock()
-        return_classifier.get_name.return_value = "int"
+        return_classifier.name = "int"
         arg = MagicMock()
-        arg.get_meta_class.return_value = "Argument"
-        arg.get_name.return_value = "x"
+        arg.meta_class = "Argument"
+        arg.name = "x"
         arg.get_type.return_value = return_classifier
         arg.get_argument_direction.return_value = "in"
-        arg.get_stereotypes.return_value = []
-        arg.get_all_tags.return_value = []
+        arg.stereotypes = []
+        arg.all_tags = []
         op = MagicMock()
-        op.get_meta_class.return_value = "Operation"
-        op.get_name.return_value = "reset"
+        op.meta_class = "Operation"
+        op.name = "reset"
         op.get_returns.return_value = return_classifier
         op.get_is_static.return_value = True
         op.get_arguments.return_value = [arg]
-        op.get_stereotypes.return_value = []
-        op.get_all_tags.return_value = []
+        op.stereotypes = []
+        op.all_tags = []
         exporter = _make_exporter()
 
         result = exporter._export_element(op)
@@ -180,14 +180,14 @@ class TestExportArgument:
 
     def test_emits_data_type_and_direction(self) -> None:
         classifier = MagicMock()
-        classifier.get_name.return_value = "String"
+        classifier.name = "String"
         arg = MagicMock()
-        arg.get_meta_class.return_value = "Argument"
-        arg.get_name.return_value = "name"
+        arg.meta_class = "Argument"
+        arg.name = "name"
         arg.get_type.return_value = classifier
         arg.get_argument_direction.return_value = "in"
-        arg.get_stereotypes.return_value = []
-        arg.get_all_tags.return_value = []
+        arg.stereotypes = []
+        arg.all_tags = []
         exporter = _make_exporter()
 
         result = exporter._export_element(arg)
@@ -204,16 +204,16 @@ class TestExportAttribute:
 
     def test_emits_all_fields(self) -> None:
         classifier = MagicMock()
-        classifier.get_name.return_value = "int"
+        classifier.name = "int"
         attr = MagicMock()
-        attr.get_meta_class.return_value = "Attribute"
-        attr.get_name.return_value = "count"
+        attr.meta_class = "Attribute"
+        attr.name = "count"
         attr.get_type.return_value = classifier
         attr.get_visibility.return_value = "public"
         attr.get_multiplicity.return_value = "1"
         attr.get_is_static.return_value = False
-        attr.get_stereotypes.return_value = []
-        attr.get_all_tags.return_value = []
+        attr.stereotypes = []
+        attr.all_tags = []
         exporter = _make_exporter()
 
         result = exporter._export_element(attr)
@@ -230,18 +230,18 @@ class TestExportType:
 
     def test_emits_kind_and_enumeration_literals(self) -> None:
         literal = MagicMock()
-        literal.get_meta_class.return_value = "EnumerationLiteral"
-        literal.get_name.return_value = "RED"
-        literal.get_stereotypes.return_value = []
-        literal.get_all_tags.return_value = []
+        literal.meta_class = "EnumerationLiteral"
+        literal.name = "RED"
+        literal.stereotypes = []
+        literal.all_tags = []
         type_element = MagicMock()
-        type_element.get_meta_class.return_value = "Type"
-        type_element.get_name.return_value = "Color"
+        type_element.meta_class = "Type"
+        type_element.name = "Color"
         type_element.get_kind.return_value = "Enumeration"
         type_element.get_enumeration_literals.return_value = [literal]
         type_element.get_nested_elements.return_value = []
-        type_element.get_stereotypes.return_value = []
-        type_element.get_all_tags.return_value = []
+        type_element.stereotypes = []
+        type_element.all_tags = []
         exporter = _make_exporter()
 
         result = exporter._export_element(type_element)
@@ -254,21 +254,21 @@ class TestExportType:
 
     def test_emits_children_for_structure_kind(self) -> None:
         child = MagicMock()
-        child.get_meta_class.return_value = "Attribute"
-        child.get_name.return_value = "x"
+        child.meta_class = "Attribute"
+        child.name = "x"
         child.get_type.return_value = None
         child.get_visibility.return_value = None
         child.get_multiplicity.return_value = None
         child.get_is_static.return_value = None
-        child.get_stereotypes.return_value = []
-        child.get_all_tags.return_value = []
+        child.stereotypes = []
+        child.all_tags = []
         type_element = MagicMock()
-        type_element.get_meta_class.return_value = "Type"
-        type_element.get_name.return_value = "Point"
+        type_element.meta_class = "Type"
+        type_element.name = "Point"
         type_element.get_kind.return_value = "Structure"
         type_element.get_nested_elements.return_value = [child]
-        type_element.get_stereotypes.return_value = []
-        type_element.get_all_tags.return_value = []
+        type_element.stereotypes = []
+        type_element.all_tags = []
         exporter = _make_exporter()
 
         result = exporter._export_element(type_element)
@@ -285,13 +285,13 @@ class TestExportObject:
 
     def test_emits_classifier(self) -> None:
         classifier = MagicMock()
-        classifier.get_name.return_value = "MyClass"
+        classifier.name = "MyClass"
         obj = MagicMock()
-        obj.get_meta_class.return_value = "Object"
-        obj.get_name.return_value = "myObj"
+        obj.meta_class = "Object"
+        obj.name = "myObj"
         obj.get_classifier.return_value = classifier
-        obj.get_stereotypes.return_value = []
-        obj.get_all_tags.return_value = []
+        obj.stereotypes = []
+        obj.all_tags = []
         exporter = _make_exporter()
 
         result = exporter._export_element(obj)
@@ -305,10 +305,10 @@ class TestExportEnumerationLiteral:
 
     def test_emits_name_only(self) -> None:
         literal = MagicMock()
-        literal.get_meta_class.return_value = "EnumerationLiteral"
-        literal.get_name.return_value = "RED"
-        literal.get_stereotypes.return_value = []
-        literal.get_all_tags.return_value = []
+        literal.meta_class = "EnumerationLiteral"
+        literal.name = "RED"
+        literal.stereotypes = []
+        literal.all_tags = []
         exporter = _make_exporter()
 
         result = exporter._export_element(literal)
@@ -322,11 +322,11 @@ class TestExportStereotypesAndTags:
 
     def test_export_stereotypes_returns_names(self) -> None:
         st1 = MagicMock()
-        st1.get_name.return_value = "Interface"
+        st1.name = "Interface"
         st2 = MagicMock()
-        st2.get_name.return_value = "SwComponent"
+        st2.name = "SwComponent"
         element = MagicMock()
-        element.get_stereotypes.return_value = [st1, st2]
+        element.stereotypes = [st1, st2]
         exporter = _make_exporter()
 
         result = exporter._export_stereotypes(element)
@@ -335,13 +335,13 @@ class TestExportStereotypesAndTags:
 
     def test_export_tags_returns_name_value_dict(self) -> None:
         tag1 = MagicMock()
-        tag1.get_name.return_value = "status"
+        tag1.name = "status"
         tag1.get_value.return_value = "active"
         tag2 = MagicMock()
-        tag2.get_name.return_value = "count"
+        tag2.name = "count"
         tag2.get_value.return_value = "3"
         element = MagicMock()
-        element.get_all_tags.return_value = [tag1, tag2]
+        element.all_tags = [tag1, tag2]
         exporter = _make_exporter()
 
         result = exporter._export_tags(element)
@@ -350,16 +350,16 @@ class TestExportStereotypesAndTags:
 
     def test_export_element_attaches_stereotypes_and_tags(self) -> None:
         st = MagicMock()
-        st.get_name.return_value = "Interface"
+        st.name = "Interface"
         tag = MagicMock()
-        tag.get_name.return_value = "status"
+        tag.name = "status"
         tag.get_value.return_value = "active"
         cls = MagicMock()
-        cls.get_meta_class.return_value = "Class"
-        cls.get_name.return_value = "Widget"
+        cls.meta_class = "Class"
+        cls.name = "Widget"
         cls.get_nested_elements.return_value = []
-        cls.get_stereotypes.return_value = [st]
-        cls.get_all_tags.return_value = [tag]
+        cls.stereotypes = [st]
+        cls.all_tags = [tag]
         exporter = _make_exporter()
 
         result = exporter._export_element(cls)
@@ -374,8 +374,8 @@ class TestExportElementSkipUnsupported:
 
     def test_returns_none_for_unknown_metaclass(self) -> None:
         element = MagicMock()
-        element.get_meta_class.return_value = "SomeUnknownType"
-        element.get_name.return_value = "x"
+        element.meta_class = "SomeUnknownType"
+        element.name = "x"
         exporter = _make_exporter()
 
         result = exporter._export_element(element)
@@ -395,13 +395,13 @@ class TestExportDependency:
 
     def test_emits_depends_on(self) -> None:
         target = MagicMock()
-        target.get_name.return_value = "OtherClass"
+        target.name = "OtherClass"
         dep = MagicMock()
-        dep.get_meta_class.return_value = "Dependency"
-        dep.get_name.return_value = "dep1"
+        dep.meta_class = "Dependency"
+        dep.name = "dep1"
         dep.get_depends_on.return_value = target
-        dep.get_stereotypes.return_value = []
-        dep.get_all_tags.return_value = []
+        dep.stereotypes = []
+        dep.all_tags = []
         exporter = _make_exporter()
 
         result = exporter._export_element(dep)
@@ -412,11 +412,11 @@ class TestExportDependency:
 
     def test_omits_depends_on_when_unresolvable(self) -> None:
         dep = MagicMock()
-        dep.get_meta_class.return_value = "Dependency"
-        dep.get_name.return_value = "dep1"
+        dep.meta_class = "Dependency"
+        dep.name = "dep1"
         dep.get_depends_on.return_value = None
-        dep.get_stereotypes.return_value = []
-        dep.get_all_tags.return_value = []
+        dep.stereotypes = []
+        dep.all_tags = []
         exporter = _make_exporter()
 
         result = exporter._export_element(dep)
@@ -431,15 +431,15 @@ class TestExportGeneralization:
 
     def test_emits_all_fields(self) -> None:
         base = MagicMock()
-        base.get_name.return_value = "BaseClass"
+        base.name = "BaseClass"
         gen = MagicMock()
-        gen.get_meta_class.return_value = "Generalization"
-        gen.get_name.return_value = "gen1"
+        gen.meta_class = "Generalization"
+        gen.name = "gen1"
         gen.get_base_class.return_value = base
         gen.get_visibility.return_value = "public"
         gen.get_is_virtual.return_value = True
-        gen.get_stereotypes.return_value = []
-        gen.get_all_tags.return_value = []
+        gen.stereotypes = []
+        gen.all_tags = []
         exporter = _make_exporter()
 
         result = exporter._export_element(gen)
@@ -456,12 +456,12 @@ class TestExportRelation:
 
     def test_emits_all_fields(self) -> None:
         source = MagicMock()
-        source.get_name.return_value = "MyClass"
+        source.name = "MyClass"
         target = MagicMock()
-        target.get_name.return_value = "OtherClass"
+        target.name = "OtherClass"
         rel = MagicMock()
-        rel.get_meta_class.return_value = "Relation"
-        rel.get_name.return_value = "assoc1"
+        rel.meta_class = "Relation"
+        rel.name = "assoc1"
         rel.get_relation_type.return_value = "Association"
         rel.get_of_class.return_value = source
         rel.get_other_class.return_value = target
@@ -469,8 +469,8 @@ class TestExportRelation:
         rel.get_is_navigable.return_value = True
         rel.get_relation_role_name.return_value = "items"
         rel.get_visibility.return_value = "public"
-        rel.get_stereotypes.return_value = []
-        rel.get_all_tags.return_value = []
+        rel.stereotypes = []
+        rel.all_tags = []
         exporter = _make_exporter()
 
         result = exporter._export_element(rel)
@@ -487,12 +487,12 @@ class TestExportRelation:
 
     def test_omits_optional_fields_when_none(self) -> None:
         source = MagicMock()
-        source.get_name.return_value = "MyClass"
+        source.name = "MyClass"
         target = MagicMock()
-        target.get_name.return_value = "OtherClass"
+        target.name = "OtherClass"
         rel = MagicMock()
-        rel.get_meta_class.return_value = "Relation"
-        rel.get_name.return_value = "assoc1"
+        rel.meta_class = "Relation"
+        rel.name = "assoc1"
         rel.get_relation_type.return_value = "Aggregation"
         rel.get_of_class.return_value = source
         rel.get_other_class.return_value = target
@@ -500,8 +500,8 @@ class TestExportRelation:
         rel.get_is_navigable.return_value = None
         rel.get_relation_role_name.return_value = None
         rel.get_visibility.return_value = None
-        rel.get_stereotypes.return_value = []
-        rel.get_all_tags.return_value = []
+        rel.stereotypes = []
+        rel.all_tags = []
         exporter = _make_exporter()
 
         result = exporter._export_element(rel)
@@ -519,17 +519,17 @@ class TestExportPort:
 
     def test_emits_flags_and_contract(self) -> None:
         contract = MagicMock()
-        contract.get_name.return_value = "IFoo"
+        contract.name = "IFoo"
         port = MagicMock()
-        port.get_meta_class.return_value = "Port"
-        port.get_name.return_value = "p1"
+        port.meta_class = "Port"
+        port.name = "p1"
         port.get_is_behavioral.return_value = True
         port.get_is_reversed.return_value = False
         port.get_contract.return_value = contract
         port.get_provided_interfaces.return_value = []
         port.get_required_interfaces.return_value = []
-        port.get_stereotypes.return_value = []
-        port.get_all_tags.return_value = []
+        port.stereotypes = []
+        port.all_tags = []
         exporter = _make_exporter()
 
         result = exporter._export_element(port)
@@ -542,19 +542,19 @@ class TestExportPort:
 
     def test_emits_provided_and_required_interfaces(self) -> None:
         iface1 = MagicMock()
-        iface1.get_name.return_value = "IFoo"
+        iface1.name = "IFoo"
         iface2 = MagicMock()
-        iface2.get_name.return_value = "IBar"
+        iface2.name = "IBar"
         port = MagicMock()
-        port.get_meta_class.return_value = "Port"
-        port.get_name.return_value = "p1"
+        port.meta_class = "Port"
+        port.name = "p1"
         port.get_is_behavioral.return_value = None
         port.get_is_reversed.return_value = None
         port.get_contract.return_value = None
         port.get_provided_interfaces.return_value = [iface1]
         port.get_required_interfaces.return_value = [iface2]
-        port.get_stereotypes.return_value = []
-        port.get_all_tags.return_value = []
+        port.stereotypes = []
+        port.all_tags = []
         exporter = _make_exporter()
 
         result = exporter._export_element(port)
@@ -569,16 +569,16 @@ class TestExportEvent:
 
     def test_emits_base_and_super_event(self) -> None:
         base = MagicMock()
-        base.get_name.return_value = "BaseEvt"
+        base.name = "BaseEvt"
         sup = MagicMock()
-        sup.get_name.return_value = "SuperEvt"
+        sup.name = "SuperEvt"
         event = MagicMock()
-        event.get_meta_class.return_value = "Event"
-        event.get_name.return_value = "TickEvent"
+        event.meta_class = "Event"
+        event.name = "TickEvent"
         event.get_base_event.return_value = base
         event.get_super_event.return_value = sup
-        event.get_stereotypes.return_value = []
-        event.get_all_tags.return_value = []
+        event.stereotypes = []
+        event.all_tags = []
         exporter = _make_exporter()
 
         result = exporter._export_element(event)
@@ -590,12 +590,12 @@ class TestExportEvent:
 
     def test_omits_optional_fields_when_none(self) -> None:
         event = MagicMock()
-        event.get_meta_class.return_value = "Event"
-        event.get_name.return_value = "TickEvent"
+        event.meta_class = "Event"
+        event.name = "TickEvent"
         event.get_base_event.return_value = None
         event.get_super_event.return_value = None
-        event.get_stereotypes.return_value = []
-        event.get_all_tags.return_value = []
+        event.stereotypes = []
+        event.all_tags = []
         exporter = _make_exporter()
 
         result = exporter._export_element(event)
@@ -610,13 +610,13 @@ class TestExportEventReception:
 
     def test_emits_event(self) -> None:
         evt = MagicMock()
-        evt.get_name.return_value = "TickEvent"
+        evt.name = "TickEvent"
         reception = MagicMock()
-        reception.get_meta_class.return_value = "EventReception"
-        reception.get_name.return_value = "onTick"
+        reception.meta_class = "EventReception"
+        reception.name = "onTick"
         reception.get_event.return_value = evt
-        reception.get_stereotypes.return_value = []
-        reception.get_all_tags.return_value = []
+        reception.stereotypes = []
+        reception.all_tags = []
         exporter = _make_exporter()
 
         result = exporter._export_element(reception)
@@ -627,11 +627,11 @@ class TestExportEventReception:
 
     def test_omits_event_when_none(self) -> None:
         reception = MagicMock()
-        reception.get_meta_class.return_value = "EventReception"
-        reception.get_name.return_value = "onTick"
+        reception.meta_class = "EventReception"
+        reception.name = "onTick"
         reception.get_event.return_value = None
-        reception.get_stereotypes.return_value = []
-        reception.get_all_tags.return_value = []
+        reception.stereotypes = []
+        reception.all_tags = []
         exporter = _make_exporter()
 
         result = exporter._export_element(reception)

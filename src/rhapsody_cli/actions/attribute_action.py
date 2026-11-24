@@ -93,7 +93,7 @@ class AbstractAttributeAction(SessionAwareAction, ElementManagementAction):
         if element is None:
             raise CliExecutionError(f"No element found with GUID '{guid}'")
 
-        meta_class = element.get_meta_class()
+        meta_class = element.meta_class
         if meta_class != "Attribute":
             raise CliExecutionError(f"GUID '{guid}' does not resolve to an Attribute (found {meta_class})")
 
@@ -209,7 +209,7 @@ class AttributeCreateAction(AbstractAttributeAction):
     def _set_attributes(self, classifier: IRPModelElement, attribute: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Set validated attributes on attribute."""
         if "name" in attrs:
-            attribute.set_name(cast(str, attrs["name"]))
+            attribute.name = cast(str, attrs["name"])
         if "defaultValue" in attrs:
             attribute.set_default_value(cast(str, attrs["defaultValue"]))  # type: ignore[attr-defined]
         if "multiplicity" in attrs:
@@ -219,7 +219,7 @@ class AttributeCreateAction(AbstractAttributeAction):
         if "declaration" in attrs:
             attribute.set_declaration(cast(str, attrs["declaration"]))  # type: ignore[attr-defined]
         if "description" in attrs:
-            attribute.set_description(cast(str, attrs["description"]))
+            attribute.description = cast(str, attrs["description"])
         self._set_boolean_flags(attribute, attrs)
         self._set_type(classifier, attribute, attrs)
 
@@ -238,7 +238,7 @@ class AttributeCreateAction(AbstractAttributeAction):
         """
         if "type" in attrs:
             type_name = cast(str, attrs["type"])
-            owner = classifier.get_owner()
+            owner = classifier.owner
             target = owner.find_nested_classifier_recursive(type_name)  # type: ignore[attr-defined]
             if target is None:
                 raise CliExecutionError(f"Type '{type_name}' not found")
@@ -277,7 +277,7 @@ class AttributeDeleteAction(AbstractAttributeAction):
 
         if has_guid:
             attribute = self._resolve_attribute_by_guid(args.guid)
-            classifier = attribute.get_owner()
+            classifier = attribute.owner
             label = f"GUID '{args.guid}'"
         else:
             classifier = self._resolve_classifier(args.path)
@@ -333,7 +333,7 @@ class AttributeListAction(AbstractAttributeAction):
     def _collect_attribute_names(self, classifier: IRPModelElement) -> List[str]:
         """Collect names of attributes on a classifier."""
         attributes = classifier.get_attributes()  # type: ignore[attr-defined]
-        return [cast(IRPModelElement, attr).get_name() for attr in attributes]
+        return [cast(IRPModelElement, attr).name for attr in attributes]
 
     def _format_output(self, attr_names: List[str], format_type: str) -> str:
         """Format output based on format parameter."""
@@ -442,18 +442,18 @@ class AttributeViewAction(AbstractAttributeAction):
         Normalizes boolean flags to int for clean JSON round-trip.
         """
         attr_type = attribute.get_type()  # type: ignore[attr-defined]
-        type_name = cast(IRPModelElement, attr_type).get_name() if attr_type is not None else ""
+        type_name = cast(IRPModelElement, attr_type).name if attr_type is not None else ""
         return {
-            "name": attribute.get_name(),
-            "guid": attribute.get_guid(),
-            "description": attribute.get_description(),
+            "name": attribute.name,
+            "guid": attribute.guid,
+            "description": attribute.description,
             "type": type_name,
             "defaultValue": attribute.get_default_value(),  # type: ignore[attr-defined]
             "multiplicity": attribute.get_multiplicity(),  # type: ignore[attr-defined]
             "isStatic": int(attribute.get_is_static()),  # type: ignore[attr-defined]
             "visibility": attribute.get_visibility(),  # type: ignore[attr-defined]
             "declaration": attribute.get_declaration(),  # type: ignore[attr-defined]
-            "metaClass": attribute.get_meta_class(),
+            "metaClass": attribute.meta_class,
             "fullPath": attribute.get_full_path_name(),
         }
 
@@ -537,7 +537,7 @@ class AttributeUpdateAction(AbstractAttributeAction):
 
         if has_guid:
             attribute = self._resolve_attribute_by_guid(args.guid)
-            classifier = attribute.get_owner()
+            classifier = attribute.owner
         else:
             classifier = self._resolve_classifier(args.path)
             attribute = self._resolve_attribute(classifier, args.name)
@@ -554,7 +554,7 @@ class AttributeUpdateAction(AbstractAttributeAction):
 
         self._set_attributes(classifier, attribute, data)
 
-        self.logger.info("Successfully updated attribute: %s", attribute.get_name())
+        self.logger.info("Successfully updated attribute: %s", attribute.name)
 
     def _load_json_data(self, attributes_input: str) -> Dict[str, object]:
         """Load JSON data from inline string or external file.
@@ -581,7 +581,7 @@ class AttributeUpdateAction(AbstractAttributeAction):
     def _set_attributes(self, classifier: IRPModelElement, attribute: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Set validated attributes on attribute (partial update)."""
         if "name" in attrs:
-            attribute.set_name(cast(str, attrs["name"]))
+            attribute.name = cast(str, attrs["name"])
         if "defaultValue" in attrs:
             attribute.set_default_value(cast(str, attrs["defaultValue"]))  # type: ignore[attr-defined]
         if "multiplicity" in attrs:
@@ -591,12 +591,12 @@ class AttributeUpdateAction(AbstractAttributeAction):
         if "declaration" in attrs:
             attribute.set_declaration(cast(str, attrs["declaration"]))  # type: ignore[attr-defined]
         if "description" in attrs:
-            attribute.set_description(cast(str, attrs["description"]))
+            attribute.description = cast(str, attrs["description"])
         if "isStatic" in attrs:
             attribute.set_is_static(1 if attrs["isStatic"] else 0)  # type: ignore[attr-defined]
         if "type" in attrs:
             type_name = cast(str, attrs["type"])
-            owner = classifier.get_owner()
+            owner = classifier.owner
             target = owner.find_nested_classifier_recursive(type_name)  # type: ignore[attr-defined]
             if target is None:
                 raise CliExecutionError(f"Type '{type_name}' not found")

@@ -12,7 +12,7 @@ def test_component_is_a_unit() -> None:
     component = RPComponent(fake)
 
     assert isinstance(component, IRPUnit)
-    assert component.get_name() == "Comp1"
+    assert component.name == "Comp1"
 
 
 def test_component_is_registered_for_meta_class_component() -> None:
@@ -35,7 +35,7 @@ def test_component_add_configuration_delegates_and_wraps() -> None:
     result = comp.add_configuration("Config1")
 
     fake.addConfiguration.assert_called_once_with("Config1")
-    assert result.get_name() == "Config1"
+    assert result.name == "Config1"
 
 
 def test_component_add_file_delegates_and_wraps() -> None:
@@ -47,7 +47,7 @@ def test_component_add_file_delegates_and_wraps() -> None:
     result = comp.add_file("File1")
 
     fake.addFile.assert_called_once_with("File1")
-    assert result.get_name() == "File1"
+    assert result.name == "File1"
 
 
 def test_component_get_configurations_returns_collection() -> None:
@@ -69,7 +69,7 @@ def test_component_find_configuration_wraps_result() -> None:
     result = comp.find_configuration("Config1")
 
     fake.findConfiguration.assert_called_once_with("Config1")
-    assert result is not None and result.get_name() == "Config1"
+    assert result is not None and result.name == "Config1"
 
 
 def test_component_find_configuration_returns_none_when_not_found() -> None:

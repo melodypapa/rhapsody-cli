@@ -17,6 +17,78 @@ API reference
 
 Wraps ``IRPModelElement``: the base interface for all model elements.
 
+Properties
+~~~~~~~~~~
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.all_tags
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.annotations
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.association_classes
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.binary_id
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.constraints
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.constraints_by_him
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.controlled_files
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.dependencies
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.description
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.description_html
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.description_plain_text
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.description_rtf
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.display_name
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.guid
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.hyper_links
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.interface_name
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.is_external
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.is_show_display_name
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.is_unresolved
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.local_tags
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.main_diagram
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.meta_class
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.name
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.of_template
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.owner
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.project
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.references
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.requirement_traceability_handle
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.stereotype
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.stereotypes
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.template_parameters
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.ti
+
+.. autoattribute:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.user_defined_meta_class
+
+Methods
+~~~~~~~
+
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.add_association
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.add_dependency
@@ -61,33 +133,7 @@ Wraps ``IRPModelElement``: the base interface for all model elements.
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.find_nested_element_recursive
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_all_tags
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_annotations
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_association_classes
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_binary_id
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_constraints
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_constraints_by_him
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_controlled_files
-
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_decoration_style
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_dependencies
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_description
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_description_html
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_description_plain_text
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_description_rtf
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_display_name
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_display_name_rtf
 
@@ -97,29 +143,9 @@ Wraps ``IRPModelElement``: the base interface for all model elements.
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_full_path_name_in
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_guid
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_hyper_links
-
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_icon_file_name
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_interface_name
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_is_external
-
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_is_of_meta_class
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_is_show_display_name
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_is_unresolved
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_local_tags
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_main_diagram
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_meta_class
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_name
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_nested_elements
 
@@ -129,8 +155,6 @@ Wraps ``IRPModelElement``: the base interface for all model elements.
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_new_term_stereotype
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_of_template
-
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_overlay_icon_file_name
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_overridden_properties
@@ -138,10 +162,6 @@ Wraps ``IRPModelElement``: the base interface for all model elements.
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_overridden_properties_by_pattern
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_owned_dependencies
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_owner
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_project
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_property_value
 
@@ -153,29 +173,17 @@ Wraps ``IRPModelElement``: the base interface for all model elements.
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_redefines
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_references
-
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_remote_dependencies
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_remote_uri
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_requirement_traceability_handle
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_rmm_url
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_save_unit
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_stereotypes
-
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_tag
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_template_parameters
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_ti
-
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_tool_tip_html
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_user_defined_meta_class
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.has_nested_elements
 
@@ -205,40 +213,18 @@ Wraps ``IRPModelElement``: the base interface for all model elements.
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.set_decoration_style
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.set_description
-
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.set_description_and_hyperlinks
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.set_description_html
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.set_description_rtf
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.set_display_name
-
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.set_display_name_rtf
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.set_guid
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.set_is_show_display_name
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.set_main_diagram
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.set_name
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.set_of_template
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.set_owner
-
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.set_property_value
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.set_requirement_traceability_handle
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.set_tag_context_value
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.set_tag_element_value
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.set_tag_value
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.set_ti
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.synchronize_template_instantiation

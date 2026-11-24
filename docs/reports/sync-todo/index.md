@@ -14,8 +14,8 @@ API reports are grouped by their declared Java package; the current core reports
 the remaining 103 in [Groups 3–13](Group-unfinished-3.md) (10 per group, importance-ordered);
 completed rows
 archive to [Group-finished.md](Group-finished.md) (a batch file is deleted when its last row
-archives). Queue order: core.py base classes first (their migration removes the inherited
-dual-binding fallback for every subclass), then leaves.
+archives). Queue order: COM-helper/base rows first (their migration removes inherited
+fallbacks for subclasses), then leaves.
 
 | Batch file | Rows | Legacy sites | Interface span | Status |
 | --- | --- | --- | --- | --- |
@@ -33,9 +33,10 @@ dual-binding fallback for every subclass), then leaves.
 | [Group-unfinished-11.md](Group-unfinished-11.md) | 10 | ~4 | IRPComponentDiagram → IRPExternalRoundtripInvoker | ⬜ 10 open |
 | [Group-unfinished-12.md](Group-unfinished-12.md) | 10 | ~0 | IRPASCIIFile → IRPStructureDiagram | ⬜ 10 open |
 | [Group-unfinished-13.md](Group-unfinished-13.md) | 3 | ~0 | IRPExtensionPoint → IRPIntegrator | ⬜ 3 open |
+| [Group-unfinished-14.md](Group-unfinished-14.md) | 15 | 0 | IRPModelElement → IRPAttribute (finished-class rule remediation) | ⬜ 15 open |
 
-Progress: **15/129 rows tracked as archived** (128 wrapper classes + 1 application layer;
-10 queued in Group-unfinished-2, 103 in Groups 3–13). All 13 rows from
+Progress: **15/144 rows tracked as archived** (128 wrapper classes + 1 application layer + 15 current-rule remediation rows).
+There are 10 queued in Group-unfinished-2 and 103 in Groups 3–13. All 13 rows from
 Group-unfinished-1 reached 8/8 except
 IRPApplication, whose Step 8 stays open on integration layer-only coverage (44.68%). Commits
 `6cbebc3` (sync), `1778607` (test-rule compliance), `5175b93` (COM hardening), `2a6334c`…`3479937`
@@ -61,11 +62,7 @@ decision).
 
 ## Resume rule
 
-Take the first row still `[ ]` in queue order: the open IRPApplication Step 8 row in
-[Group-unfinished-1.md](Group-unfinished-1.md), then the queued rows in
-[Group-unfinished-2.md](Group-unfinished-2.md) through [Group-unfinished-13.md](Group-unfinished-13.md)
-(once their Windows-side Step 1/3 report regeneration unblocks them). Execute one rhapsody-sync
-run for that
+Take the open IRPApplication Step 8 row in [Group-unfinished-1.md](Group-unfinished-1.md), then the 15 current-rule remediation rows in [Group-unfinished-14.md](Group-unfinished-14.md), then the queued rows in [Group-unfinished-2.md](Group-unfinished-2.md) through [Group-unfinished-13.md](Group-unfinished-13.md) (once their Windows-side Step 1/3 report regeneration unblocks them). Execute one rhapsody-sync run for that
 interface following SKILL.md §1–§8 exactly as enumerated in the row's steps; tick a step when
 its evidence lands (never batch-tick at the end); move the row to
 [Group-finished.md](Group-finished.md) only after its commit exists and no step is open. Do
@@ -91,13 +88,6 @@ not re-derive scope or decisions already recorded in the row's Notes.
   mirrored `tests/{unit,integration}/models/com/telelogic/rhapsody/core/` paths, snake_case
   test module names, `__init__.py` at every level, no compatibility shim). The canonical
   `__init__.py` uses lazy `__getattr__` exports to keep package import acyclic.
-- **core.py base rows (revised user decision 2026-11-21):** the earlier deferral is lifted —
-  the only cycle risk was a module-level import of a moved class back into `models/core.py`.
-  With `from __future__ import annotations` already in `core.py`, annotations never evaluate at
-  runtime (quoted types are therefore unnecessary); a runtime `cast()` target imports locally
-  inside the method, the pattern already used at `core.py:314` for `IRPAssociationClass`. A
-  moved class imports its bases from `core.py` one-way, so each base row does the full §2 move
-  in its own run and `verify_sync.py` can go green.
 - **Python-only members are removed (SKILL §3/§4, added 2026-11-21):** a wrapper member with
   no static COM member (`PYTHON_ONLY_MEMBER` — facade helpers, unbacked conveniences) is
   deleted from the class during its sync: method, unit tests, integration references,
@@ -112,10 +102,7 @@ not re-derive scope or decisions already recorded in the row's Notes.
   (`swr_elem_requirements.md`, `elements.rst`). Each run moves its class's entries out of the
   monoliths into the per-class files (no duplicates); `elements.rst` lists per-class pages in
   its toctree. `verify_sync.py` checks the per-class paths strictly (no legacy fallback).
-- **core.py split (complete):** `models/core.py` now holds only `AbstractRPModelElement`; the
-  forwarder definitions are gone and every sync row has moved its class to the canonical core
-  package. `IRPModelElement.get_rmm_url` is a documented-unavailable `NotImplementedError` stub
-  (its `getRmmUrl` member is absent from the catalog), not a probe site.
+- **COM helper split (merged 2026-11-23):** `models/core.py` now defines the `ComHelper` mixin; `IRPModelElement` inherits it and the canonical wrappers inherit the direct COM helpers from that base. `IRPModelElement.get_rmm_url` remains a documented-unavailable `NotImplementedError` stub (its `getRmmUrl` member is absent from the catalog), not a probe site.
 - **Deviation semantics (2026-11-22, review fix):** deviations count **items**, not kinds, and
   Wrapper Backlog rows are deviations. API reports now report
   `- Deviation items: N (actionable a, expected binding differences b, wrapper backlog c)` in
@@ -141,8 +128,4 @@ not re-derive scope or decisions already recorded in the row's Notes.
   remainder in descending usage order. Support-layer wrappers (codegen, files, IDE) are queued
   too; §2 must confirm whether their canonical home is the core package or their current
   `models/support/` location before any move.
-- **Termination (pending):** only IRPApplication's Step 8 is open. After it archives, delete
-  `_get_method_or_property` / `_set_method_or_property` from `com_utils.py` / `core.py` (all
-  wrapper call sites are gone as of the 2026-11-22 review fix — only the definitions remain), drop the legacy notes from
-  `AGENTS.md`, `docs/CODE_GUIDELINES.md`, and the sync skill, and confirm
-  `grep -rn "_method_or_property" src/ --include='*.py'` finds only the deleted definitions.
+- **Termination (pending):** IRPApplication Step 8 and the 13 Group 14 remediation rows remain open. After they archive, remove the deprecated `_get_method_or_property` / `_set_method_or_property` definitions from `ComHelper` in `src/rhapsody_cli/models/core.py`, drop legacy notes from `AGENTS.md`, `docs/CODE_GUIDELINES.md`, and the sync skill, and confirm `grep -rn "_method_or_property" src/ --include='*.py'` finds no definitions or call sites.
