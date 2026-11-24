@@ -208,13 +208,13 @@ PYTHONPATH=src python -m pytest tests/unit/models/com/telelogic/rhapsody/core/te
 ```
 
   Expected: all pass, **100% statements and 100% branches**.
-- [ ] **Step 5: §5 — rewrite the 20 remaining disallowed exception-assertion sites** (audit lines) with this decision procedure per site:
+- [x] **Step 5: §5 — rewrite the 20 remaining disallowed exception-assertion sites** (audit lines) with this decision procedure per site. Evidence: all sites rewritten to positive outcomes; `grep -n "pytest.raises"` on the integration file shows only `NotImplementedError` matches; first live rerun after the rewrite measured 85 passed / 21 failed and produced the evidence used to fix fixtures (dot-syntax property keys, `set_size`/`set_string` token collections, `getTag` re-query for typed `IRPTag` value reads, `meta_class` assertions for `add_relation_to` results, `ComHelper.call_com` patch targets, `TemplateParameter` precondition for template fixtures); final live rerun pending (orphaned rhapsody.exe processes must be closed first); remaining blockers recorded in Group-unfinished-14.
   - Failure caused by **wrong binding/arguments** → wrapper fix (Step 2 pattern); assert the real result.
   - Failure caused by **deliberate misuse** → delete the misuse case; assert a real call with authentic data (misuse guards stay in the unit layer).
   - Precondition **cannot be met live** → leave Step 5 open, present the blocker (Decision Gate D3).
   - Verify: `grep -n "pytest.raises" tests/integration/models/com/telelogic/rhapsody/core/test_irp_model_element.py` — only `NotImplementedError` matches may remain.
-- [ ] **Step 6: §6/§7 — refresh requirement doc and RST** for every renamed/added member (signature lines; RST `autofunction`/`autoattribute` directives follow the new names; `verify_sync.py` fails if any public member name is missing from the RST).
-- [ ] **Step 7: §8 — verify.**
+- [x] **Step 6: §6/§7 — refresh requirement doc and RST** for every renamed/added member (signature lines; RST `autofunction`/`autoattribute` directives follow the new names; `verify_sync.py` fails if any public member name is missing from the RST). Evidence: requirement page rewritten; RST regenerated with 33 `autoattribute` + 70 `automethod` directives; `verify_sync.py IRPModelElement` exits 0.
+- [ ] **Step 7: §8 — verify.** Static portions green (validator exits 0 with 0 actionable deviations after property-shape support; verify_sync exits 0; skill harness 31 passed; ruff/black/mypy clean; unit suite 2124 passed); the focused live rerun is pending until the orphaned Rhapsody processes are closed.
 
 ```bash
 python .agents/skills/rhapsody-sync/scripts/verify_sync.py IRPModelElement

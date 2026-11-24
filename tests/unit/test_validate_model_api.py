@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -198,6 +199,26 @@ def test_collect_python_members_records_com_property_helper_names(tmp_path: Path
 
     assert "is_abstract() -> isAbstract" in members["isAbstract"]
     assert "set_is_active() -> isActive" in members["isActive"]
+
+
+def test_collect_python_members_marks_com_property_accessors(tmp_path: Path) -> None:
+    models_root = tmp_path / "models"
+    models_root.mkdir()
+    (models_root / "model_props.py").write_text(
+        """class IRPProps:
+    @property
+    def display_name(self):
+        return self.get_com_property(self._com, 'displayName')
+    @display_name.setter
+    def display_name(self, value):
+        self.set_com_property(self._com, 'displayName', value)
+""",
+        encoding="utf-8",
+    )
+
+    members = collect_python_members("IRPProps", models_root)
+
+    assert members["displayName"] == {"display_name (property) -> displayName"}
 
 
 def test_stub_setter_shares_row_with_getter(tmp_path: Path) -> None:
@@ -430,6 +451,42 @@ def test_build_deviation_rows_groups_python_java_getter_and_setter_aliases() -> 
             "Use the BuildNo property or a getter/setter fallback instead of calling getBuildNo and setBuildNo directly.",
         )
     ]
+
+
+def test_build_deviation_rows_accepts_python_property_for_java_accessors() -> None:
+    python_members = {"name": {"name (property) -> name"}}
+    java_members = {"getName", "setName"}
+    pywin32_members = {"name": "property"}
+
+    assert build_deviation_rows(python_members, java_members, pywin32_members) == []
+    assert build_matched_rows(python_members, java_members, pywin32_members) == [
+        (
+            "name (property) -> name",
+            "getName (method); setName (method)",
+            "name (property)",
+            "MATCH",
+            "—",
+        )
+    ]
+
+
+def test_irp_model_element_com_property_families_are_classified_as_matches() -> None:
+    project_root = Path(__file__).resolve().parents[2]
+    models_root = project_root / "src" / "rhapsody_cli" / "models"
+    java_docs_root = project_root / "docs" / "java_api" / "com" / "telelogic" / "rhapsody" / "core"
+    authority_path = project_root / "docs" / "reports" / "pywin32_authority.json"
+    authority = json.loads(authority_path.read_text(encoding="utf-8"))
+
+    python_members = collect_python_members("IRPModelElement", models_root)
+    java_members = collect_java_members("IRPModelElement", java_docs_root, include_superinterfaces=False)
+    pywin32_members = authority["catalog"]["IRPModelElement"]
+
+    rows = build_deviation_rows(python_members, java_members, pywin32_members)
+    property_deviations = [
+        row for row in rows if "(property)" in row[2] and set(row[3].split("; ")) & {"PYTHON_METHOD_NAME_MISMATCH", "COM_MEMBER_NOT_EXPOSED", "ACCESSOR_ALIAS_MISMATCH", "METHOD_PROPERTY_MISMATCH"}
+    ]
+
+    assert property_deviations == []
 
 
 def test_build_deviation_rows_reports_java_method_vs_pywin32_property() -> None:
@@ -871,7 +928,7 @@ def test_build_signature_rows_keeps_pywin32_cell_parseable() -> None:
 def test_collect_wrapper_arg_types_maps_float_annotations(tmp_path: Path) -> None:
     source = tmp_path / "model_thing.py"
     source.write_text(
-        "class IRPThing:\n" "    def set_scale(self, v: float):\n" "        return self.call_com(lambda: self._com.SetScale(v))\n",
+        "class IRPThing:\n    def set_scale(self, v: float):\n        return self.call_com(lambda: self._com.SetScale(v))\n",
         encoding="utf-8",
     )
 

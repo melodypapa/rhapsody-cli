@@ -9,12 +9,12 @@ from unittest.mock import patch
 import pytest
 
 from rhapsody_cli import RhapsodyApplication
-from rhapsody_cli.exceptions import RhapsodyRuntimeException
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
+from rhapsody_cli.models.core import ComHelper
 from rhapsody_cli.models.elements.classifiers.model_stereotype import RPStereotype
 from rhapsody_cli.models.elements.variables import RPTag
 
@@ -356,12 +356,18 @@ class TestRPModelElementDependenciesIntegration:
             pkg.delete_from_project()
 
     def test_add_remote_dependency_to_and_get_remote_dependencies(self, test_project: IRPProject) -> None:
+        # add_remote_dependency_to requires a Design Manager remote-requirements
+        # setup (JavaDoc: the target must be a remote requirement retrieved via
+        # getRemoteResourcePackages); no live fixture can create one, so only
+        # the empty-state collection is asserted here. The owned member call is
+        # an open ledger blocker.
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.add_remote_dependency_to(cls, "dependency")
-            assert isinstance(cls.get_remote_dependencies(), IRPCollection)
+            remote_dependencies = cls.get_remote_dependencies()
+            assert isinstance(remote_dependencies, IRPCollection)
+            assert isinstance(remote_dependencies.get_count(), int)
+            assert len(list(remote_dependencies)) == 0
         finally:
             pkg.delete_from_project()
 
@@ -392,11 +398,23 @@ class TestRPModelElementDependenciesIntegration:
             pkg.delete_from_project()
 
     def test_add_association(self, test_project: IRPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("DocPkg"))
-        cls = pkg.add_class(self._unique("DocCls"))
+        pkg = self._create_package(test_project, self._unique("AssocClsPkg"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.add_association(cls, cls, "name")  # type: ignore[arg-type]
+            source = pkg.add_class(self._unique("AssocSource"))
+            target = pkg.add_class(self._unique("AssocTarget"))
+            end1 = source.add_relation_to(target, "targets", "Association", "1", "sources", "Association", "1", "")
+            end2 = target.add_relation_to(source, "sources2", "Association", "1", "targets2", "Association", "1", "")
+            assert end1 is not None
+            assert end1.meta_class == "Relation"
+            assert end2 is not None
+            assert end2.meta_class == "Relation"
+            association_name = self._unique("AssocCls")
+
+            association_class = source.add_association(end1, end2, association_name)
+
+            assert association_class is not None
+            assert association_class.meta_class == "AssociationClass"
+            assert association_class.name == association_name
         finally:
             pkg.delete_from_project()
 
@@ -524,29 +542,60 @@ class TestRPModelElementStereotypesTagsIntegration:
             pkg.delete_from_project()
 
     def test_set_tag_value(self, test_project: IRPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("DocPkg"))
-        cls = pkg.add_class(self._unique("DocCls"))
+        pkg = self._create_package(test_project, self._unique("TagValuePkg"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.set_tag_value(cls, "value")  # type: ignore[arg-type]
+            cls = pkg.add_class(self._unique("TagValueCls"))
+            tag_name = self._unique("TagValueTag")
+            tag = cls.add_new_aggr("Tag", tag_name)
+            assert isinstance(tag, RPTag)
+
+            cls.set_tag_value(tag, "retrievable tag value")
+
+            # Re-query through getTag: its typelib result is a typed IRPTag
+            # dispatch, whose value property is readable (the addNewAggr
+            # result is only typed as IRPModelElement).
+            applied = cls.get_tag(tag_name)
+            assert applied is not None
+            assert applied.get_value() == "retrievable tag value"
         finally:
             pkg.delete_from_project()
 
     def test_set_tag_element_value(self, test_project: IRPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("DocPkg"))
-        cls = pkg.add_class(self._unique("DocCls"))
+        pkg = self._create_package(test_project, self._unique("TagElementPkg"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.set_tag_element_value(cls, cls)  # type: ignore[arg-type]
+            cls = pkg.add_class(self._unique("TagElementCls"))
+            target = pkg.add_class(self._unique("TagElementTarget"))
+            tag_name = self._unique("TagElementTag")
+            tag = cls.add_new_aggr("Tag", tag_name)
+            assert isinstance(tag, RPTag)
+
+            cls.set_tag_element_value(tag, target)
+
+            applied = cls.get_tag(tag_name)
+            assert applied is not None
+            assert applied.name == tag_name
         finally:
             pkg.delete_from_project()
 
-    def test_set_tag_context_value(self, test_project: IRPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("DocPkg"))
-        cls = pkg.add_class(self._unique("DocCls"))
+    def test_set_tag_context_value(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
+        pkg = self._create_package(test_project, self._unique("TagContextPkg"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.set_tag_context_value(cls, cls, cls)  # type: ignore[arg-type]
+            cls = pkg.add_class(self._unique("TagContextCls"))
+            target = pkg.add_class(self._unique("TagContextTarget"))
+            tag_name = self._unique("TagContextTag")
+            tag = cls.add_new_aggr("Tag", tag_name)
+            assert isinstance(tag, RPTag)
+
+            elements = rhapsody_app.create_new_collection()
+            elements.add_item(target)
+            multiplicities = rhapsody_app.create_new_collection()
+            multiplicities.set_size(1)
+            multiplicities.set_string(1, "1")
+
+            cls.set_tag_context_value(tag, elements, multiplicities)
+
+            applied = cls.get_tag(tag_name)
+            assert applied is not None
         finally:
             pkg.delete_from_project()
 
@@ -627,12 +676,22 @@ class TestRPModelElementDescriptionDisplayNameIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_set_description_and_hyperlinks(self, test_project: IRPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("DocPkg"))
-        cls = pkg.add_class(self._unique("DocCls"))
+    def test_set_description_and_hyperlinks(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
+        pkg = self._create_package(test_project, self._unique("DescHyperPkg"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.set_description_and_hyperlinks("rtf", cls)  # type: ignore[arg-type]
+            cls = pkg.add_class(self._unique("DescHyperCls"))
+            target = pkg.add_class(self._unique("DescHyperTarget"))
+            targets = rhapsody_app.create_new_collection()
+            targets.add_item(target)
+            rtf_text = r"{\rtf1 Linked description}"
+
+            cls.set_description_and_hyperlinks(rtf_text, targets)
+
+            assert cls.description_rtf == rtf_text
+            links = cls.hyper_links
+            assert isinstance(links, IRPCollection)
+            assert len(list(links)) == 1
+            assert links[0].name == target.name
         finally:
             pkg.delete_from_project()
 
@@ -686,44 +745,54 @@ class TestRPModelElementPropertiesIntegration:
         return pkg
 
     def test_add_property_and_get_property_value(self, test_project: IRPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("DocPkg"))
-        cls = pkg.add_class(self._unique("DocCls"))
+        pkg = self._create_package(test_project, self._unique("AddPropPkg"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.add_property("Custom::X", "String", "v")
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.get_property_value("Custom::X")
+            cls = pkg.add_class(self._unique("AddPropCls"))
+            property_key = f"CG.Class.{self._unique('NewProp')}"
+
+            cls.add_property(property_key, "String", "custom value")
+
+            assert cls.get_property_value(property_key) == "custom value"
         finally:
             pkg.delete_from_project()
 
     def test_set_property_value_and_read_back(self, test_project: IRPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("DocPkg"))
-        cls = pkg.add_class(self._unique("DocCls"))
+        pkg = self._create_package(test_project, self._unique("SetPropPkg"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.set_property_value("General::Graphics::ShowLabels", "1")
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.get_property_value("General::Graphics::ShowLabels")
+            cls = pkg.add_class(self._unique("SetPropCls"))
+            property_key = f"CG.Class.{self._unique('SettableProp')}"
+            cls.add_property(property_key, "String", "initial value")
+
+            cls.set_property_value(property_key, "OverriddenHeader.h")
+
+            assert cls.get_property_value(property_key) == "OverriddenHeader.h"
+            cls.remove_property(property_key)
+            assert cls.get_property_value(property_key) == ""
         finally:
             pkg.delete_from_project()
 
     def test_add_then_remove_property(self, test_project: IRPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("DocPkg"))
-        cls = pkg.add_class(self._unique("DocCls"))
+        pkg = self._create_package(test_project, self._unique("RemovePropPkg"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.add_property("Custom::X", "String", "v")
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.remove_property("Custom::X")
+            cls = pkg.add_class(self._unique("RemovePropCls"))
+            property_key = f"CG.Class.{self._unique('RemovableProp')}"
+            cls.add_property(property_key, "String", "temporary")
+
+            assert cls.remove_property(property_key) is None  # type: ignore[func-returns-value]
+
+            assert cls.get_property_value(property_key) == ""
         finally:
             pkg.delete_from_project()
 
     def test_get_property_value_explicit(self, test_project: IRPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("DocPkg"))
-        cls = pkg.add_class(self._unique("DocCls"))
+        pkg = self._create_package(test_project, self._unique("ExplicitPropPkg"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.get_property_value_explicit("Custom::X")
+            cls = pkg.add_class(self._unique("ExplicitPropCls"))
+            property_key = f"CG.Class.{self._unique('ExplicitProp')}"
+            cls.add_property(property_key, "String", "ExplicitHeader.h")
+
+            assert cls.get_property_value_explicit(property_key) == "ExplicitHeader.h"
+            cls.remove_property(property_key)
         finally:
             pkg.delete_from_project()
 
@@ -736,29 +805,52 @@ class TestRPModelElementPropertiesIntegration:
             pkg.delete_from_project()
 
     def test_get_overridden_properties_by_pattern(self, test_project: IRPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("DocPkg"))
-        cls = pkg.add_class(self._unique("DocCls"))
+        pkg = self._create_package(test_project, self._unique("OverridePatternPkg"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.get_overridden_properties_by_pattern("*", 0, 0)
+            cls = pkg.add_class(self._unique("OverridePatternCls"))
+            property_key = f"CG.Class.{self._unique('PatternProp')}"
+            cls.add_property(property_key, "String", "PatternHeader.h")
+
+            overridden = cls.get_overridden_properties_by_pattern("CG.Class.*", 1, 0)
+
+            assert isinstance(overridden, IRPCollection)
+            assert property_key in [item.name for item in overridden]
+            cls.remove_property(property_key)
         finally:
             pkg.delete_from_project()
 
-    def test_get_property_value_conditional(self, test_project: IRPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("DocPkg"))
-        cls = pkg.add_class(self._unique("DocCls"))
+    def test_get_property_value_conditional(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
+        pkg = self._create_package(test_project, self._unique("ConditionalPropPkg"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.get_property_value_conditional("k", cls, cls)  # type: ignore[arg-type]
+            cls = pkg.add_class(self._unique("ConditionalPropCls"))
+            tokens = rhapsody_app.create_new_collection()
+            tokens.set_size(1)
+            tokens.set_string(1, "Language")
+            token_values = rhapsody_app.create_new_collection()
+            token_values.set_size(1)
+            token_values.set_string(1, "C++")
+
+            value = cls.get_property_value_conditional("CG.Class.UseCMenus", tokens, token_values)
+
+            assert isinstance(value, str)
         finally:
             pkg.delete_from_project()
 
-    def test_get_property_value_conditional_explicit(self, test_project: IRPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("DocPkg"))
-        cls = pkg.add_class(self._unique("DocCls"))
+    def test_get_property_value_conditional_explicit(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
+        pkg = self._create_package(test_project, self._unique("CondExplicitPkg"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.get_property_value_conditional_explicit("k", cls, cls)  # type: ignore[arg-type]
+            cls = pkg.add_class(self._unique("CondExplicitCls"))
+            property_key = f"CG.Class.{self._unique('CondExplicitProp')}"
+            cls.add_property(property_key, "String", "ConditionalHeader.h")
+            tokens = rhapsody_app.create_new_collection()
+            tokens.set_size(1)
+            tokens.set_string(1, "Language")
+            token_values = rhapsody_app.create_new_collection()
+            token_values.set_size(1)
+            token_values.set_string(1, "C++")
+
+            assert cls.get_property_value_conditional_explicit(property_key, tokens, token_values) == "ConditionalHeader.h"
+            cls.remove_property(property_key)
         finally:
             pkg.delete_from_project()
 
@@ -954,17 +1046,26 @@ class TestRPModelElementCloningTemplatesIntegration:
             pkg.delete_from_project()
 
     def test_become_template_instantiation_of(self, test_project: IRPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("DocPkg"))
-        cls = pkg.add_class(self._unique("DocCls"))
+        pkg = self._create_package(test_project, self._unique("BecomesTIPkg"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.become_template_instantiation_of(cls)
+            template = pkg.add_class(self._unique("BecomesTITemplate"))
+            # A Rhapsody template class owns at least one template parameter;
+            # without it becomeTemplateInstantiationOf faults (E_FAIL).
+            template.add_new_aggr("TemplateParameter", "T")
+            assert template.is_a_template() == 1
+            instance = pkg.add_class(self._unique("BecomesTIInstance"))
+
+            assert instance.become_template_instantiation_of(template) is None  # type: ignore[func-returns-value]
+            assert instance.ti is not None
+            assert instance.ti.meta_class == "TemplateInstantiation"
         finally:
             pkg.delete_from_project()
 
     def test_set_of_template(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("TemplatePkg"))
         template = pkg.add_class(self._unique("TemplateClass"))
+        template.add_new_aggr("TemplateParameter", "T")
+        assert template.is_a_template() == 1
         instance = pkg.add_class(self._unique("TemplateInstance"))
         try:
             instance.of_template = template
@@ -989,6 +1090,7 @@ class TestRPModelElementCloningTemplatesIntegration:
     def test_get_ti(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("TemplatePkg"))
         template = pkg.add_class(self._unique("TemplateClass"))
+        template.add_new_aggr("TemplateParameter", "T")
         instance = pkg.add_class(self._unique("TemplateInstance"))
         try:
             instance.become_template_instantiation_of(template)
@@ -1002,6 +1104,7 @@ class TestRPModelElementCloningTemplatesIntegration:
     def test_set_ti(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("TemplatePkg"))
         template = pkg.add_class(self._unique("TemplateClass"))
+        template.add_new_aggr("TemplateParameter", "T")
         instance = pkg.add_class(self._unique("TemplateInstance"))
         try:
             instance.become_template_instantiation_of(template)
@@ -1013,11 +1116,14 @@ class TestRPModelElementCloningTemplatesIntegration:
             pkg.delete_from_project()
 
     def test_synchronize_template_instantiation(self, test_project: IRPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("DocPkg"))
-        cls = pkg.add_class(self._unique("DocCls"))
+        pkg = self._create_package(test_project, self._unique("SyncTIPkg"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.synchronize_template_instantiation()
+            template = pkg.add_class(self._unique("SyncTITemplate"))
+            template.add_new_aggr("TemplateParameter", "T")
+            instance = pkg.add_class(self._unique("SyncTIInstance"))
+            instance.become_template_instantiation_of(template)
+
+            assert instance.synchronize_template_instantiation() is None  # type: ignore[func-returns-value]
         finally:
             pkg.delete_from_project()
 
@@ -1038,12 +1144,18 @@ class TestRPModelElementRedefinesConstraintsIntegration:
         return pkg
 
     def test_add_redefines_and_get_redefines(self, test_project: IRPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("DocPkg"))
-        cls = pkg.add_class(self._unique("DocCls"))
+        pkg = self._create_package(test_project, self._unique("RedefinesPkg"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.add_redefines(cls)
-            assert isinstance(cls.get_redefines(), IRPCollection)
+            base = pkg.add_class(self._unique("RedefinesBase"))
+            derived = pkg.add_class(self._unique("RedefinesDerived"))
+
+            assert derived.add_redefines(base) is None  # type: ignore[func-returns-value]
+
+            redefines = derived.get_redefines()
+            assert isinstance(redefines, IRPCollection)
+            assert len(list(redefines)) == 1
+            assert redefines[0].name == base.name
+            derived.remove_redefines(base)
         finally:
             pkg.delete_from_project()
 
@@ -1424,7 +1536,7 @@ class TestRPModelElementDiagnosticsUiIntegration:
             cls = pkg.add_class(self._unique("HLCls"))
             # A live call opens a modal GUI window that blocks the automation
             # session; assert the COM binding shape instead.
-            with patch.object(IRPModelElement, "call_com") as com_call:
+            with patch.object(ComHelper, "call_com") as com_call:
                 assert cls.high_light_element() is None  # type: ignore[func-returns-value]
                 com_call.assert_called_once()
         finally:
@@ -1445,18 +1557,23 @@ class TestRPModelElementDiagnosticsUiIntegration:
             cls = pkg.add_class(self._unique("FeatCls"))
             # A live call opens a modal "Features" window that blocks later
             # project operations; assert the COM binding shape instead.
-            with patch.object(IRPModelElement, "call_com") as com_call:
+            with patch.object(ComHelper, "call_com") as com_call:
                 assert cls.open_features_dialog(0) is None  # type: ignore[func-returns-value]
                 com_call.assert_called_once()
         finally:
             pkg.delete_from_project()
 
     def test_add_link_to_element(self, test_project: IRPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("DocPkg"))
-        cls = pkg.add_class(self._unique("DocCls"))
+        pkg = self._create_package(test_project, self._unique("LinkElemPkg"))
         try:
-            with pytest.raises(AttributeError):
-                cls.add_link_to_element(cls, None, None, None)  # type: ignore[arg-type]
+            source = pkg.add_class(self._unique("LinkSource"))
+            target = pkg.add_class(self._unique("LinkTarget"))
+            association = source.add_relation_to(target, "targets", "Association", "1", "sources", "Association", "1", "")
+
+            link = source.add_link_to_element(target, association, None, None)
+
+            assert link is not None
+            assert link.meta_class == "Link"
         finally:
             pkg.delete_from_project()
 

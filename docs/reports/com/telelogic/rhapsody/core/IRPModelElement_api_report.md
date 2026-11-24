@@ -4,46 +4,13 @@
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `IRPModelElement` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_model_element.py`)
 - Members: Python `103`, Java `119`, pywin32 `104`
-- Deviation items: `38` (actionable `33`, expected binding differences `2`, wrapper backlog `3`)
+- Deviation items: `5` (actionable `0`, expected binding differences `2`, wrapper backlog `3`)
 - Status legend: `MATCH` verified binding · `UNAVAILABLE_DOCUMENTED` pywin32 lacks the member (NotImplementedError stub) · `ALIAS_DOCUMENTED` documented alias · actionable rows are named by code in `Comparison details`
 
 ## Comparison details
 
 | Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |
 | --- | --- | --- | --- | --- |
-| all_tags() -> allTags | getAllTags (method) | allTags (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| annotations() -> annotations | getAnnotations (method) | annotations (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| association_classes() -> associationClasses | getAssociationClasses (method) | associationClasses (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| binary_id() -> BinaryID | getBinaryID (method) | BinaryID (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| constraints() -> constraints | getConstraints (method) | constraints (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| constraints_by_him() -> constraintsByHim | getConstraintsByHim (method) | constraintsByHim (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| controlled_files() -> controlledFiles | getControlledFiles (method) | controlledFiles (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| dependencies() -> dependencies | getDependencies (method) | dependencies (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| description() -> description | getDescription (method); setDescription (method) | description (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| description_html() -> descriptionHTML; set_description_html() (no static COM member) | getDescriptionHTML (method); setDescriptionHTML (method) | descriptionHTML (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| description_plain_text() -> descriptionPlainText | getDescriptionPlainText (method) | descriptionPlainText (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| description_rtf() -> descriptionRTF | getDescriptionRTF (method); setDescriptionRTF (method) | descriptionRTF (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| display_name() -> displayName | getDisplayName (method); setDisplayName (method) | displayName (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| guid() -> GUID | getGUID (method); setGUID (method) | GUID (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| hyper_links() -> hyperLinks | getHyperLinks (method) | hyperLinks (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| interface_name() -> interfaceName | getInterfaceName (method) | interfaceName (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| is_external() -> isExternal | getIsExternal (method) | isExternal (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| is_show_display_name() -> isShowDisplayName | getIsShowDisplayName (method); setIsShowDisplayName (method) | isShowDisplayName (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| is_unresolved() -> isUnresolved | getIsUnresolved (method) | isUnresolved (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| local_tags() -> localTags | getLocalTags (method) | localTags (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| main_diagram() -> mainDiagram | getMainDiagram (method); setMainDiagram (method) | mainDiagram (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| meta_class() -> metaClass | getMetaClass (method) | metaClass (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| name() -> name | getName (method); setName (method) | name (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| of_template() -> ofTemplate | getOfTemplate (method); setOfTemplate (method) | ofTemplate (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| owner() -> owner | getOwner (method); setOwner (method) | owner (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| project() -> project | getProject (method) | project (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| references() -> references | getReferences (method) | references (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| requirement_traceability_handle() -> requirementTraceabilityHandle | getRequirementTraceabilityHandle (method); setRequirementTraceabilityHandle (method) | requirementTraceabilityHandle (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| stereotype() -> stereotype | getStereotype (method); setStereotype (method) | stereotype (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| stereotypes() -> stereotypes | getStereotypes (method) | stereotypes (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| template_parameters() -> templateParameters | getTemplateParameters (method) | templateParameters (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| ti() -> ti | getTi (method); setTi (method) | ti (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
-| user_defined_meta_class() -> userDefinedMetaClass | getUserDefinedMetaClass (method) | userDefinedMetaClass (property) | PYTHON_METHOD_NAME_MISMATCH | Rename the Python method to the snake_case Java API name or document the alias. |
 
 ## Expected Binding Differences
 
@@ -61,7 +28,7 @@
 | — | unlockOnDesignManager (method) | unlockOnDesignManager (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
 
 <details>
-<summary>Correct items (64) — bindings verified against pywin32</summary>
+<summary>Correct items (97) — bindings verified against pywin32</summary>
 
 
 ## Correct Items
@@ -79,13 +46,26 @@
 | add_remote_dependency_to() -> addRemoteDependencyTo | addRemoteDependencyTo (method) | addRemoteDependencyTo (method) | MATCH | — |
 | add_specific_stereotype() -> addSpecificStereotype | addSpecificStereotype (method) | addSpecificStereotype (method) | MATCH | — |
 | add_stereotype() -> addStereotype | addStereotype (method) | addStereotype (method) | MATCH | — |
+| all_tags (property) -> allTags | getAllTags (method) | allTags (property) | MATCH | — |
+| annotations (property) -> annotations | getAnnotations (method) | annotations (property) | MATCH | — |
+| association_classes (property) -> associationClasses | getAssociationClasses (method) | associationClasses (property) | MATCH | — |
 | become_template_instantiation_of() -> becomeTemplateInstantiationOf | becomeTemplateInstantiationOf (method) | becomeTemplateInstantiationOf (method) | MATCH | — |
+| binary_id (property) -> BinaryID | getBinaryID (method) | BinaryID (property) | MATCH | — |
 | change_to() -> changeTo | changeTo (method) | changeTo (method) | MATCH | — |
 | clone() -> clone | clone (method) | clone (method) | MATCH | — |
+| constraints (property) -> constraints | getConstraints (method) | constraints (property) | MATCH | — |
+| constraints_by_him (property) -> constraintsByHim | getConstraintsByHim (method) | constraintsByHim (property) | MATCH | — |
+| controlled_files (property) -> controlledFiles | getControlledFiles (method) | controlledFiles (property) | MATCH | — |
 | create_oslc_link() (no static COM member) | createOSLCLink (method) | createOSLCLink (method) | MATCH | — |
 | delete_dependency() -> deleteDependency | deleteDependency (method) | deleteDependency (method) | MATCH | — |
 | delete_from_project() -> deleteFromProject | deleteFromProject (method) | deleteFromProject (method) | MATCH | — |
 | delete_oslc_link() (no static COM member) | deleteOSLCLink (method) | deleteOSLCLink (method) | MATCH | — |
+| dependencies (property) -> dependencies | getDependencies (method) | dependencies (property) | MATCH | — |
+| description (property) -> description | getDescription (method); setDescription (method) | description (property) | MATCH | — |
+| description_html (property) -> descriptionHTML; set_description_html() (no static COM member) | getDescriptionHTML (method); setDescriptionHTML (method) | descriptionHTML (property) | MATCH | — |
+| description_plain_text (property) -> descriptionPlainText | getDescriptionPlainText (method) | descriptionPlainText (property) | MATCH | — |
+| description_rtf (property) -> descriptionRTF | getDescriptionRTF (method); setDescriptionRTF (method) | descriptionRTF (property) | MATCH | — |
+| display_name (property) -> displayName | getDisplayName (method); setDisplayName (method) | displayName (property) | MATCH | — |
 | error_message() -> errorMessage; get_error_message() -> getErrorMessage | errorMessage (method); getErrorMessage (method) | errorMessage (method); getErrorMessage (method) | MATCH | — |
 | find_elements_by_full_name() -> findElementsByFullName | findElementsByFullName (method) | findElementsByFullName (method) | MATCH | — |
 | find_nested_element() -> findNestedElement | findNestedElement (method) | findNestedElement (method) | MATCH | — |
@@ -114,31 +94,46 @@
 | get_save_unit() -> getSaveUnit | getSaveUnit (method) | getSaveUnit (method) | MATCH | — |
 | get_tag() -> getTag | getTag (method) | getTag (method) | MATCH | — |
 | get_tool_tip_html() -> getToolTipHTML | getToolTipHTML (method) | getToolTipHTML (method) | MATCH | — |
+| guid (property) -> GUID | getGUID (method); setGUID (method) | GUID (property) | MATCH | — |
 | has_nested_elements() -> hasNestedElements | hasNestedElements (method) | hasNestedElements (method) | MATCH | — |
 | has_panel_widget() -> hasPanelWidget | hasPanelWidget (method) | hasPanelWidget (method) | MATCH | — |
 | high_light_element() -> highLightElement | highLightElement (method) | highLightElement (method) | MATCH | — |
+| hyper_links (property) -> hyperLinks | getHyperLinks (method) | hyperLinks (property) | MATCH | — |
+| interface_name (property) -> interfaceName | getInterfaceName (method) | interfaceName (property) | MATCH | — |
 | is_a_template() -> isATemplate | isATemplate (method) | isATemplate (method) | MATCH | — |
 | is_description_rtf() -> isDescriptionRTF | isDescriptionRTF (method) | isDescriptionRTF (method) | MATCH | — |
 | is_display_name_rtf() -> isDisplayNameRTF | isDisplayNameRTF (method) | isDisplayNameRTF (method) | MATCH | — |
+| is_external (property) -> isExternal | getIsExternal (method) | isExternal (property) | MATCH | — |
 | is_modified() -> isModified | isModified (method) | isModified (method) | MATCH | — |
 | is_remote() -> isRemote | isRemote (method) | isRemote (method) | MATCH | — |
+| is_show_display_name (property) -> isShowDisplayName | getIsShowDisplayName (method); setIsShowDisplayName (method) | isShowDisplayName (property) | MATCH | — |
+| is_unresolved (property) -> isUnresolved | getIsUnresolved (method) | isUnresolved (property) | MATCH | — |
+| local_tags (property) -> localTags | getLocalTags (method) | localTags (property) | MATCH | — |
 | locate_in_browser() -> locateInBrowser | locateInBrowser (method) | locateInBrowser (method) | MATCH | — |
+| main_diagram (property) -> mainDiagram | getMainDiagram (method); setMainDiagram (method) | mainDiagram (property) | MATCH | — |
+| meta_class (property) -> metaClass | getMetaClass (method) | metaClass (property) | MATCH | — |
+| name (property) -> name | getName (method); setName (method) | name (property) | MATCH | — |
+| of_template (property) -> ofTemplate | getOfTemplate (method); setOfTemplate (method) | ofTemplate (property) | MATCH | — |
 | open_features_dialog() -> openFeaturesDialog | openFeaturesDialog (method) | openFeaturesDialog (method) | MATCH | — |
+| owner (property) -> owner | getOwner (method); setOwner (method) | owner (property) | MATCH | — |
+| project (property) -> project | getProject (method) | project (property) | MATCH | — |
+| references (property) -> references | getReferences (method) | references (property) | MATCH | — |
 | remove_property() -> removeProperty | removeProperty (method) | removeProperty (method) | MATCH | — |
 | remove_redefines() -> removeRedefines | removeRedefines (method) | removeRedefines (method) | MATCH | — |
 | remove_stereotype() -> removeStereotype | removeStereotype (method) | removeStereotype (method) | MATCH | — |
+| requirement_traceability_handle (property) -> requirementTraceabilityHandle | getRequirementTraceabilityHandle (method); setRequirementTraceabilityHandle (method) | requirementTraceabilityHandle (property) | MATCH | — |
 | set_description_and_hyperlinks() -> setDescriptionAndHyperlinks | setDescriptionAndHyperlinks (method) | setDescriptionAndHyperlinks (method) | MATCH | — |
 | set_tag_context_value() -> setTagContextValue | setTagContextValue (method) | setTagContextValue (method) | MATCH | — |
 | set_tag_element_value() -> setTagElementValue | setTagElementValue (method) | setTagElementValue (method) | MATCH | — |
 | set_tag_value() -> setTagValue | setTagValue (method) | setTagValue (method) | MATCH | — |
+| stereotype (property) -> stereotype | getStereotype (method); setStereotype (method) | stereotype (property) | MATCH | — |
+| stereotypes (property) -> stereotypes | getStereotypes (method) | stereotypes (property) | MATCH | — |
 | synchronize_template_instantiation() -> synchronizeTemplateInstantiation | synchronizeTemplateInstantiation (method) | synchronizeTemplateInstantiation (method) | MATCH | — |
+| template_parameters (property) -> templateParameters | getTemplateParameters (method) | templateParameters (property) | MATCH | — |
+| ti (property) -> ti | getTi (method); setTi (method) | ti (property) | MATCH | — |
+| user_defined_meta_class (property) -> userDefinedMetaClass | getUserDefinedMetaClass (method) | userDefinedMetaClass (property) | MATCH | — |
 
 </details>
 
 ## AI Fix Guidance
-
-### PYTHON_METHOD_NAME_MISMATCH (33 findings)
-- **Target:** `IRPModelElement` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_model_element.py`
-- **Affected call(s):** all_tags() -> allTags; annotations() -> annotations; association_classes() -> associationClasses; binary_id() -> BinaryID; constraints() -> constraints; constraints_by_him() -> constraintsByHim; controlled_files() -> controlledFiles; dependencies() -> dependencies; description() -> description; description_html() -> descriptionHTML; set_description_html() (no static COM member); description_plain_text() -> descriptionPlainText; description_rtf() -> descriptionRTF; display_name() -> displayName; guid() -> GUID; hyper_links() -> hyperLinks; interface_name() -> interfaceName; is_external() -> isExternal; is_show_display_name() -> isShowDisplayName; is_unresolved() -> isUnresolved; local_tags() -> localTags; main_diagram() -> mainDiagram; meta_class() -> metaClass; name() -> name; of_template() -> ofTemplate; owner() -> owner; project() -> project; references() -> references; requirement_traceability_handle() -> requirementTraceabilityHandle; stereotype() -> stereotype; stereotypes() -> stereotypes; template_parameters() -> templateParameters; ti() -> ti; user_defined_meta_class() -> userDefinedMetaClass
-- **Recommended change:** Rename the Python method to the snake_case Java API name or document the alias.
-- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
+No deviations require changes.

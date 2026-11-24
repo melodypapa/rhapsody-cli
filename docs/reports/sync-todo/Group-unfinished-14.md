@@ -22,11 +22,11 @@ This batch contains 15 remediation rows. IRPApplication remains in its existing 
   - [ ] Section 1 member checklist and getter matrix published.
   - [ ] Section 2 canonical wrapper, tests, exports, and inherited-member scope verified.
   - [ ] Section 3 arity, property shape, stereotype member, and every owned member reconciled against JavaDoc/catalog.
-  - [x] Section 4 fake-COM tests first; full unit suite green; irp_model_element.py at 100% statements/branches. Evidence: focused unit file 153 passed; coverage 306 statements/136 branches, 100.00%; full unit suite 2120 passed; mypy found no issues in 274 files.
-  - [ ] Section 5 populated getter tests and the 20 remaining disallowed exception sites resolved; live result or blockers recorded.
-  - [ ] Section 6 irp_model_element.md checked/updated.
-  - [ ] Section 7 irp_model_element.rst checked/updated for every public member.
-  - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded.
+  - [x] Section 4 fake-COM tests first; full unit suite green; irp_model_element.py at 100% statements/branches. Evidence: focused unit file 154 passed; coverage 308 statements/136 branches, 100.00%; full unit suite 2124 passed; mypy found no issues in 274 files.
+  - [ ] Section 5 populated getter tests and exception sites resolved; live result or blockers recorded. Evidence: all 20 disallowed exception-assertion sites rewritten to positive outcomes (grep shows only NotImplementedError matches); first live rerun after the rewrite: 85 passed, 21 failed; evidence-backed fixes applied (dot-syntax property keys, set_size/set_string token collections, getTag re-query for typed IRPTag value reads, meta_class assertions for add_relation_to results, ComHelper.call_com patch targets, TemplateParameter precondition for template fixtures). Live rerun still pending because two orphaned headless rhapsody.exe processes must be closed first. Open blockers: add_remote_dependency_to (JavaDoc requires Design Manager remote-requirements setup), GUID property put roundtrip (readback returns the null-GUID placeholder), template family pending rerun with the TemplateParameter fixture, setDescriptionAndHyperlinks E_INVALIDARG with a populated targets collection, addLinkToElement E_FAIL with null ports over an association.
+  - [x] Section 6 irp_model_element.md checked/updated. Evidence: requirement page rewritten for the property surface, get_error_message MIDL buffer, add_link_to_element None-ports contract, and documented-unavailable get_rmm_url.
+  - [x] Section 7 irp_model_element.rst checked/updated for every public member. Evidence: RST regenerated with 33 autoattribute and 70 automethod directives; verify_sync.py exits 0.
+  - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded. Evidence: validate_interface.py exits 0 (33 PYTHON_METHOD_NAME_MISMATCH rows cleared after validator property-shape support; report regenerated with 0 actionable deviations); verify_sync.py exits 0; skill harness 31 passed; ruff/black/mypy clean; full unit suite 2124 passed. Pending: final live counts after the rerun.
 
 - [ ] irp_package_remediation - IRPPackage
   - Baseline: 8 arity mismatches; 8 disallowed integration exception assertions; 30 property-shape conversions; add_association is a COM-only extension (D2 default: retain and document).

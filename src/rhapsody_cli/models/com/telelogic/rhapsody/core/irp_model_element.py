@@ -307,7 +307,7 @@ class IRPModelElement(ComHelper):
 
         return cast(RPDependency, ComHelper.wrap(ComHelper.call_com(lambda: self._com.addDependencyTo(element._com))))
 
-    def add_link_to_element(self, to_element: IRPModelElement, assoc: RPRelation, from_port: IRPModelElement, to_port: IRPModelElement) -> RPLink:
+    def add_link_to_element(self, to_element: IRPModelElement, assoc: RPRelation, from_port: IRPModelElement | None, to_port: IRPModelElement | None) -> RPLink:
         """Creates a link between this model element and the model element specified as an argument.
 
         In addition to the other element to connect, you must specify either
@@ -333,7 +333,9 @@ class IRPModelElement(ComHelper):
         """
         from rhapsody_cli.models.elements.graphics.model_graphics import RPLink
 
-        return cast(RPLink, ComHelper.wrap(ComHelper.call_com(lambda: self._com.addLinkToElement(to_element._com, assoc._com, from_port._com, to_port._com))))
+        from_port_com = from_port._com if from_port is not None else None
+        to_port_com = to_port._com if to_port is not None else None
+        return cast(RPLink, ComHelper.wrap(ComHelper.call_com(lambda: self._com.addLinkToElement(to_element._com, assoc._com, from_port_com, to_port_com))))
 
     def add_new_aggr(self, meta_type: str, name: str) -> IRPModelElement:
         """Adds a new model element to the current element, for example, adding a class to a package.

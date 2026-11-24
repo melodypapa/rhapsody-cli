@@ -448,6 +448,20 @@ def test_model_element_add_link_to_element_unwraps_args_and_wraps_result() -> No
     fake.addLinkToElement.assert_called_once_with(to_element._com, assoc._com, from_port._com, to_port._com)
 
 
+def test_model_element_add_link_to_element_passes_none_ports_to_com() -> None:
+    """JavaDoc: pass Null ports when the link represents an association."""
+    to_element = IRPModelElement(make_fake_element("Element"))
+    assoc = IRPModelElement(make_fake_element("Element"))
+    link_fake = make_fake_element("Link", properties={"name": "Link"})
+    fake = make_fake_element("Class", addLinkToElement=link_fake)
+    element = IRPModelElement(fake)
+
+    result = element.add_link_to_element(to_element, cast(RPRelation, assoc), None, None)
+
+    assert isinstance(result, IRPModelElement)
+    fake.addLinkToElement.assert_called_once_with(to_element._com, assoc._com, None, None)
+
+
 def test_model_element_add_new_aggr_wraps_result() -> None:
     new_fake = make_fake_element("Element", properties={"name": "NewElem"})
     fake = make_fake_element("Package", addNewAggr=new_fake)
