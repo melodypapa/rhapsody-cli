@@ -4,6 +4,8 @@ from typing import cast
 
 import pytest
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_configuration import IRPConfiguration
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagrams import IRPDiagram
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
@@ -233,27 +235,28 @@ def test_project_gateway_export_to_xml_delegates_to_com() -> None:
     fake = make_fake_element("Project")
     project = IRPProject(fake)
 
-    project.gateway_export_to_xml("C:/out.xml")
+    project.gateway_export_to_xml("C:/out.xml", "-verbose")
 
-    fake.GatewayExportToXML.assert_called_once_with("C:/out.xml")
+    fake.GatewayExportToXML.assert_called_once_with("C:/out.xml", "-verbose")
 
 
 def test_project_gateway_export_to_xml2_delegates_to_com() -> None:
     fake = make_fake_element("Project")
     project = IRPProject(fake)
+    other_fake = make_fake_element("Project")
 
-    project.gateway_export_to_xml2("C:/out.xml", "-verbose")
+    project.gateway_export_to_xml2("C:/out.xml", "-verbose", IRPProject(other_fake))
 
-    fake.GatewayExportToXML2.assert_called_once_with("C:/out.xml", "-verbose")
+    fake.GatewayExportToXML2.assert_called_once_with("C:/out.xml", "-verbose", other_fake)
 
 
 def test_project_generate_report_delegates_to_com() -> None:
     fake = make_fake_element("Project")
     project = IRPProject(fake)
 
-    project.generate_report("C:/tmpl.tpl", "C:/report.html")
+    project.generate_report("Package", "MyTemplate", "HTML", "C:/report.html", 1, 0)
 
-    fake.GenerateReport.assert_called_once_with("C:/tmpl.tpl", "C:/report.html")
+    fake.GenerateReport.assert_called_once_with("Package", "MyTemplate", "HTML", "C:/report.html", 1, 0)
 
 
 # --- Task 7: Custom Views methods ---
@@ -274,20 +277,21 @@ def test_project_add_custom_view_on_diagram_delegates_to_com() -> None:
 
     fake = make_fake_element("Project")
     project = IRPProject(fake)
+    diagram_fake = make_fake_element("Diagram", properties={"name": "D1"})
     view_fake = make_fake_element("CustomView", properties={"name": "V1"})
 
-    project.add_custom_view_on_diagram(IRPModelElement(view_fake))
+    project.add_custom_view_on_diagram(IRPDiagram(diagram_fake), IRPModelElement(view_fake))
 
-    fake.addCustomViewOnDiagram.assert_called_once_with(view_fake)
+    fake.addCustomViewOnDiagram.assert_called_once_with(diagram_fake, view_fake)
 
 
 def test_project_apply_browser_custom_views_on_diagrams_delegates_to_com() -> None:
     fake = make_fake_element("Project")
     project = IRPProject(fake)
 
-    project.apply_browser_custom_views_on_diagrams()
+    project.apply_browser_custom_views_on_diagrams(1)
 
-    fake.applyBrowserCustomViewsOnDiagrams.assert_called_once_with()
+    fake.applyBrowserCustomViewsOnDiagrams.assert_called_once_with(1)
 
 
 def test_project_get_active_custom_views_on_browser_returns_collection() -> None:
@@ -312,9 +316,11 @@ def test_project_get_active_custom_views_on_diagram_returns_collection() -> None
     view = make_fake_element("CustomView", properties={"name": "V1"})
     fake.getActiveCustomViewsOnDiagram.return_value = make_fake_collection([view])
     project = IRPProject(fake)
+    diagram_fake = make_fake_element("Diagram", properties={"name": "D1"})
 
-    result = project.get_active_custom_views_on_diagram()
+    result = project.get_active_custom_views_on_diagram(IRPDiagram(diagram_fake))
 
+    fake.getActiveCustomViewsOnDiagram.assert_called_once_with(diagram_fake)
     assert isinstance(result, IRPCollection)
     assert len(result) == 1
     assert result[0].name == "V1"
@@ -337,11 +343,12 @@ def test_project_remove_custom_view_on_diagram_delegates_to_com() -> None:
 
     fake = make_fake_element("Project")
     project = IRPProject(fake)
+    diagram_fake = make_fake_element("Diagram", properties={"name": "D1"})
     view_fake = make_fake_element("CustomView", properties={"name": "V1"})
 
-    project.remove_custom_view_on_diagram(IRPModelElement(view_fake))
+    project.remove_custom_view_on_diagram(IRPDiagram(diagram_fake), IRPModelElement(view_fake))
 
-    fake.removeCustomViewOnDiagram.assert_called_once_with(view_fake)
+    fake.removeCustomViewOnDiagram.assert_called_once_with(diagram_fake, view_fake)
 
 
 # --- Task 8: CSV methods ---
@@ -349,9 +356,9 @@ def test_project_close_csv_file_delegates_to_com() -> None:
     fake = make_fake_element("Project")
     project = IRPProject(fake)
 
-    project.close_csv_file()
+    project.close_csv_file("C:/data.csv")
 
-    fake.closeCSVFile.assert_called_once_with()
+    fake.closeCSVFile.assert_called_once_with("C:/data.csv")
 
 
 def test_project_open_csv_file_delegates_to_com() -> None:
@@ -367,19 +374,23 @@ def test_project_reload_csv_file_delegates_to_com() -> None:
     fake = make_fake_element("Project")
     project = IRPProject(fake)
 
-    project.reload_csv_file()
+    project.reload_csv_file("C:/data.csv")
 
-    fake.reloadCSVFile.assert_called_once_with()
+    fake.reloadCSVFile.assert_called_once_with("C:/data.csv")
 
 
 # --- Task 9: Remote/Roundtrip methods ---
 def test_project_apply_roundtrip_diff_merge_delegates_to_com() -> None:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+
     fake = make_fake_element("Project")
     project = IRPProject(fake)
+    shadow_fake = make_fake_element("Class", properties={"name": "Shadow"})
+    files_fake = make_fake_collection([])
 
-    project.apply_roundtrip_diff_merge()
+    project.apply_roundtrip_diff_merge(42, IRPModelElement(shadow_fake), IRPCollection(files_fake))
 
-    fake.applyRoundtripDiffMerge.assert_called_once_with()
+    fake.applyRoundtripDiffMerge.assert_called_once_with(42, shadow_fake, files_fake)
 
 
 def test_project_enable_rhapsody_model_manager_raises_not_implemented() -> None:
@@ -400,9 +411,9 @@ def test_project_find_elements_with_oslc_link_returns_collection() -> None:
     fake.findElementsWithOSLCLink.return_value = make_fake_collection([elem])
     project = IRPProject(fake)
 
-    result = project.find_elements_with_oslc_link("http://example.com/link")
+    result = project.find_elements_with_oslc_link("http://example.com/link", "http://example.com/purl")
 
-    fake.findElementsWithOSLCLink.assert_called_once_with("http://example.com/link")
+    fake.findElementsWithOSLCLink.assert_called_once_with("http://example.com/link", "http://example.com/purl")
     assert isinstance(result, IRPCollection)
     assert len(result) == 1
     assert result[0].name == "C1"
@@ -429,8 +440,9 @@ def test_project_get_roundtrip_shadow_model_returns_wrapped_element() -> None:
     fake.getRoundtripShadowModel.return_value = shadow
     project = IRPProject(fake)
 
-    result = project.get_roundtrip_shadow_model()
+    result = project.get_roundtrip_shadow_model(7)
     result_elem = cast(IRPModelElement, result)
+    fake.getRoundtripShadowModel.assert_called_once_with(7)
     assert result_elem.name == "ShadowModel"
 
 
@@ -461,9 +473,9 @@ def test_project_import_package_from_rose_returns_wrapped_element() -> None:
     fake.importPackageFromRose.return_value = pkg
     project = IRPProject(fake)
 
-    result = project.import_package_from_rose("C:/rose.mdl")
+    result = project.import_package_from_rose("Proj", "RosePkg", "C:/rose.log")
 
-    fake.importPackageFromRose.assert_called_once_with("C:/rose.mdl")
+    fake.importPackageFromRose.assert_called_once_with("Proj", "RosePkg", "C:/rose.log")
     assert result.name == "RosePkg"
 
 
@@ -471,9 +483,9 @@ def test_project_import_project_from_rose_delegates_to_com() -> None:
     fake = make_fake_element("Project")
     project = IRPProject(fake)
 
-    project.import_project_from_rose("C:/rose.mdl")
+    project.import_project_from_rose("Proj", "C:/rose.log")
 
-    fake.importProjectFromRose.assert_called_once_with("C:/rose.mdl")
+    fake.importProjectFromRose.assert_called_once_with("Proj", "C:/rose.log")
 
 
 # --- Task 11: Events methods ---
@@ -501,18 +513,19 @@ def test_project_add_spell_checker_result_delegates_to_com() -> None:
     fake = make_fake_element("Project")
     project = IRPProject(fake)
 
-    project.add_spell_checker_result("misspel", "misspelled")
+    project.add_spell_checker_result("misspel")
 
-    fake.addSpellCheckerResult.assert_called_once_with("misspel", "misspelled")
+    fake.addSpellCheckerResult.assert_called_once_with("misspel")
 
 
 def test_project_clean_unresolved_elements_delegates_to_com() -> None:
     fake = make_fake_element("Project")
     project = IRPProject(fake)
+    root_fake = make_fake_element("Package", properties={"name": "Root"})
 
-    project.clean_unresolved_elements()
+    project.clean_unresolved_elements(IRPModelElement(root_fake))
 
-    fake.cleanUnresolvedElements.assert_called_once_with()
+    fake.cleanUnresolvedElements.assert_called_once_with(root_fake)
 
 
 def test_project_end_transaction_of_no_cg_interest_delegates_to_com() -> None:
@@ -538,7 +551,8 @@ def test_project_get_new_progress_bar_returns_wrapped_element() -> None:
     fake.getNewProgressBar.return_value = bar
     project = IRPProject(fake)
 
-    result = project.get_new_progress_bar()
+    result = project.get_new_progress_bar(100, "Loading")
+    fake.getNewProgressBar.assert_called_once_with(100, "Loading")
     assert result.name == "PB1"
 
 
@@ -558,9 +572,9 @@ def test_project_get_requirements_by_id_returns_collection() -> None:
     fake.getRequirementsByID.return_value = make_fake_collection([req])
     project = IRPProject(fake)
 
-    result = project.get_requirements_by_id("REQ-001")
+    result = project.get_requirements_by_id("REQ-001", 1)
 
-    fake.getRequirementsByID.assert_called_once_with("REQ-001")
+    fake.getRequirementsByID.assert_called_once_with("REQ-001", 1)
     assert isinstance(result, IRPCollection)
     assert len(result) == 1
     assert result[0].name == "Req1"
@@ -579,9 +593,9 @@ def test_project_save_as_prev_version_delegates_to_com() -> None:
     fake = make_fake_element("Project")
     project = IRPProject(fake)
 
-    project.save_as_prev_version("C:/old.rpy")
+    project.save_as_prev_version("C:/old.rpy", "8.0")
 
-    fake.saveAsPrevVersion.assert_called_once_with("C:/old.rpy")
+    fake.saveAsPrevVersion.assert_called_once_with("C:/old.rpy", "8.0")
 
 
 def test_project_default_directory_scheme_writes_com_property() -> None:
@@ -830,7 +844,8 @@ def test_generated_find_element_by_binary_id() -> None:
 def test_generated_find_element_by_file_name() -> None:
     fake = make_fake_element("Project")
     fake.findElementByFileName.return_value = make_fake_element("Class", properties={"name": "x"})
-    result = IRPProject(fake).find_element_by_file_name("x")
+    result = IRPProject(fake).find_element_by_file_name("folder", "x")
+    fake.findElementByFileName.assert_called_once_with("folder", "x")
     assert result is not None
 
 
@@ -861,8 +876,10 @@ def test_generated_cg_simplified_model_package() -> None:
 
 def test_generated_locate_in_ide() -> None:
     fake = make_fake_element("Project")
+    config_fake = make_fake_element("Configuration")
     fake.locateInIDE.return_value = None
-    IRPProject(fake).locate_in_ide()
+    IRPProject(fake).locate_in_ide(IRPConfiguration(config_fake), "x.cpp", 7)
+    fake.locateInIDE.assert_called_once_with(config_fake, "x.cpp", 7)
 
 
 def test_generated_is_modified_recursive() -> None:
@@ -881,19 +898,20 @@ def test_generated_highlight_from_code() -> None:
 def test_generated_gateway_export_to_xml() -> None:
     fake = make_fake_element("Project")
     fake.GatewayExportToXML.return_value = None
-    IRPProject(fake).gateway_export_to_xml("x")
+    IRPProject(fake).gateway_export_to_xml("x", "-verbose")
 
 
 def test_generated_gateway_export_to_xml2() -> None:
     fake = make_fake_element("Project")
+    other_fake = make_fake_element("Project")
     fake.GatewayExportToXML2.return_value = None
-    IRPProject(fake).gateway_export_to_xml2("x", "x")
+    IRPProject(fake).gateway_export_to_xml2("x", "x", IRPProject(other_fake))
 
 
 def test_generated_generate_report() -> None:
     fake = make_fake_element("Project")
     fake.GenerateReport.return_value = None
-    IRPProject(fake).generate_report("x", "x")
+    IRPProject(fake).generate_report("x", "x", "x", "x", 1, 0)
 
 
 def test_generated_add_custom_view_on_browser() -> None:
@@ -904,14 +922,15 @@ def test_generated_add_custom_view_on_browser() -> None:
 
 def test_generated_add_custom_view_on_diagram() -> None:
     fake = make_fake_element("Project")
+    diagram_fake = make_fake_element("Diagram", properties={"name": "D1"})
     fake.addCustomViewOnDiagram.return_value = None
-    IRPProject(fake).add_custom_view_on_diagram(make_fake_element("Class", properties={"name": "x"}))
+    IRPProject(fake).add_custom_view_on_diagram(IRPDiagram(diagram_fake), make_fake_element("Class", properties={"name": "x"}))
 
 
 def test_generated_apply_browser_custom_views_on_diagrams() -> None:
     fake = make_fake_element("Project")
     fake.applyBrowserCustomViewsOnDiagrams.return_value = None
-    IRPProject(fake).apply_browser_custom_views_on_diagrams()
+    IRPProject(fake).apply_browser_custom_views_on_diagrams(1)
 
 
 def test_generated_get_active_custom_views_on_browser() -> None:
@@ -923,8 +942,9 @@ def test_generated_get_active_custom_views_on_browser() -> None:
 
 def test_generated_get_active_custom_views_on_diagram() -> None:
     fake = make_fake_element("Project")
+    diagram_fake = make_fake_element("Diagram", properties={"name": "D1"})
     fake.getActiveCustomViewsOnDiagram.return_value = make_fake_collection([])
-    result = IRPProject(fake).get_active_custom_views_on_diagram()
+    result = IRPProject(fake).get_active_custom_views_on_diagram(IRPDiagram(diagram_fake))
     assert result is not None
 
 
@@ -936,14 +956,15 @@ def test_generated_remove_custom_view_on_browser() -> None:
 
 def test_generated_remove_custom_view_on_diagram() -> None:
     fake = make_fake_element("Project")
+    diagram_fake = make_fake_element("Diagram", properties={"name": "D1"})
     fake.removeCustomViewOnDiagram.return_value = None
-    IRPProject(fake).remove_custom_view_on_diagram(make_fake_element("Class", properties={"name": "x"}))
+    IRPProject(fake).remove_custom_view_on_diagram(IRPDiagram(diagram_fake), make_fake_element("Class", properties={"name": "x"}))
 
 
 def test_generated_close_csv_file() -> None:
     fake = make_fake_element("Project")
     fake.closeCSVFile.return_value = None
-    IRPProject(fake).close_csv_file()
+    IRPProject(fake).close_csv_file("x")
 
 
 def test_generated_open_csv_file() -> None:
@@ -955,13 +976,15 @@ def test_generated_open_csv_file() -> None:
 def test_generated_reload_csv_file() -> None:
     fake = make_fake_element("Project")
     fake.reloadCSVFile.return_value = None
-    IRPProject(fake).reload_csv_file()
+    IRPProject(fake).reload_csv_file("x")
 
 
 def test_generated_apply_roundtrip_diff_merge() -> None:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+
     fake = make_fake_element("Project")
     fake.applyRoundtripDiffMerge.return_value = None
-    IRPProject(fake).apply_roundtrip_diff_merge()
+    IRPProject(fake).apply_roundtrip_diff_merge(1, make_fake_element("Class", properties={"name": "x"}), IRPCollection(make_fake_collection([])))
 
 
 def test_generated_enable_rhapsody_model_manager_raises_not_implemented() -> None:
@@ -976,7 +999,8 @@ def test_generated_enable_rhapsody_model_manager_raises_not_implemented() -> Non
 def test_generated_find_elements_with_oslc_link() -> None:
     fake = make_fake_element("Project")
     fake.findElementsWithOSLCLink.return_value = make_fake_collection([])
-    result = IRPProject(fake).find_elements_with_oslc_link("x")
+    result = IRPProject(fake).find_elements_with_oslc_link("x", "y")
+    fake.findElementsWithOSLCLink.assert_called_once_with("x", "y")
     assert result is not None
 
 
@@ -990,7 +1014,8 @@ def test_generated_get_remote_resource_packages() -> None:
 def test_generated_get_roundtrip_shadow_model() -> None:
     fake = make_fake_element("Project")
     fake.getRoundtripShadowModel.return_value = make_fake_element("Class", properties={"name": "x"})
-    result = IRPProject(fake).get_roundtrip_shadow_model()
+    result = IRPProject(fake).get_roundtrip_shadow_model(7)
+    fake.getRoundtripShadowModel.assert_called_once_with(7)
     assert result is not None
 
 
@@ -1013,14 +1038,14 @@ def test_generated_migrate_design_manager_links_raises_not_implemented() -> None
 def test_generated_import_package_from_rose() -> None:
     fake = make_fake_element("Project")
     fake.importPackageFromRose.return_value = make_fake_element("Class", properties={"name": "x"})
-    result = IRPProject(fake).import_package_from_rose("x")
+    result = IRPProject(fake).import_package_from_rose("proj", "pkg", "log")
     assert result is not None
 
 
 def test_generated_import_project_from_rose() -> None:
     fake = make_fake_element("Project")
     fake.importProjectFromRose.return_value = None
-    IRPProject(fake).import_project_from_rose("x")
+    IRPProject(fake).import_project_from_rose("proj", "log")
 
 
 def test_generated_check_events_base_ids_solve_collisions() -> None:
@@ -1039,13 +1064,13 @@ def test_generated_recalculate_events_base_ids() -> None:
 def test_generated_add_spell_checker_result() -> None:
     fake = make_fake_element("Project")
     fake.addSpellCheckerResult.return_value = None
-    IRPProject(fake).add_spell_checker_result("x", "x")
+    IRPProject(fake).add_spell_checker_result("x")
 
 
 def test_generated_clean_unresolved_elements() -> None:
     fake = make_fake_element("Project")
     fake.cleanUnresolvedElements.return_value = None
-    IRPProject(fake).clean_unresolved_elements()
+    IRPProject(fake).clean_unresolved_elements(make_fake_element("Class", properties={"name": "x"}))
 
 
 def test_generated_end_transaction_of_no_cg_interest() -> None:
@@ -1063,7 +1088,7 @@ def test_generated_default_directory_scheme() -> None:
 def test_generated_get_new_progress_bar() -> None:
     fake = make_fake_element("Project")
     fake.getNewProgressBar.return_value = make_fake_element("Class", properties={"name": "x"})
-    result = IRPProject(fake).get_new_progress_bar()
+    result = IRPProject(fake).get_new_progress_bar(1, "x")
     assert result is not None
 
 
@@ -1077,7 +1102,7 @@ def test_generated_get_notify_plugin_on_elements_changed() -> None:
 def test_generated_get_requirements_by_id() -> None:
     fake = make_fake_element("Project")
     fake.getRequirementsByID.return_value = make_fake_collection([])
-    result = IRPProject(fake).get_requirements_by_id("x")
+    result = IRPProject(fake).get_requirements_by_id("x", 1)
     assert result is not None
 
 
@@ -1090,7 +1115,7 @@ def test_generated_remove() -> None:
 def test_generated_save_as_prev_version() -> None:
     fake = make_fake_element("Project")
     fake.saveAsPrevVersion.return_value = None
-    IRPProject(fake).save_as_prev_version("x")
+    IRPProject(fake).save_as_prev_version("x", "8.0")
 
 
 def test_generated_default_directory_scheme_write() -> None:

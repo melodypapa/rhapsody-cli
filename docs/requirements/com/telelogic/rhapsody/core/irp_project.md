@@ -34,7 +34,25 @@ whose legacy dual-binding site is left unchanged. Several members (`add_actor`,
 extensions absent from the JavaDoc and are documented as such. The module uses
 `from __future__ import annotations` with unquoted type references and local
 imports for names used only in `cast()`.
+Every wrapper signature matches the pywin32 parameter list (arity and types) for
+the 21 members that previously took fewer arguments: `find_element_by_file_name`
+(`theFolderName`, `theFileName`), `locate_in_ide` (`config`, `filename`,
+`lineNumber`), `gateway_export_to_xml` (`filename`, `params`),
+`gateway_export_to_xml2` (`filename`, `params`, `proj`), `generate_report`
+(`modelscope`, `templatename`, `docType`, `filename`, `showDocument`,
+`silentMode`), `add_custom_view_on_diagram`/`remove_custom_view_on_diagram`
+(`diagram`, `customView`), `apply_browser_custom_views_on_diagrams` (`newVal`),
+`get_active_custom_views_on_diagram` (`diagram`), `close_csv_file`/
+`reload_csv_file` (`fullCSVFileName`), `apply_roundtrip_diff_merge`
+(`magicNumber`, `shadowModel`, `filesToUpdate`), `find_elements_with_oslc_link`
+(`type`, `purl`), `get_roundtrip_shadow_model` (`magicNumber`),
+`import_package_from_rose` (`projectName`, `packageName`, `logFileName`),
+`import_project_from_rose` (`projectName`, `logFileName`),
+`add_spell_checker_result` (`value`), `clean_unresolved_elements`
+(`rootElement`), `get_new_progress_bar` (`amount`, `name`),
+`get_requirements_by_id` (`requirementID`, `returnFirstFoundOnly`) and
+`save_as_prev_version` (`filename`, `prevVersion`).
 **Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py:IRPProject
 (class renamed from `RPProject`; §2 canonical package move completed; 22 legacy
 call sites migrated; 2 catalog-absent sites left unchanged)
-**Last Changed:** 2026-11-24
+**Last Changed:** 2026-11-25

@@ -18,6 +18,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collaboration import IRPCollaboration
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_component import IRPComponent
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_configuration import IRPConfiguration
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagrams import IRPDiagram
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_ide import IRPProgressBar
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_node import IRPNode
 
@@ -49,7 +50,7 @@ class IRPProject(IRPPackage):
     # [x] end_transaction_of_no_cg_interest  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] find_component  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] find_element_by_binary_id  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] find_element_by_file_name  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] find_element_by_file_name  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] find_element_by_guid  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] find_elements_with_oslc_link  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] active_component  [x] impl  [x] docstring  [x] unit test  [ ] integration test
@@ -76,7 +77,7 @@ class IRPProject(IRPPackage):
     # [x] import_project_from_rose  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] is_actively_managed  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [ ] is_modified_recursive  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] locate_in_ide  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] locate_in_ide  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] migrate_design_manager_links  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [deprecated] move_to_design_manager  - skipped (deprecated in Rhapsody Java API; see deprecated-list.html)
     # [deprecated] move_to_design_manager_after_login  - skipped (deprecated in Rhapsody Java API; see deprecated-list.html)
@@ -433,19 +434,21 @@ class IRPProject(IRPPackage):
         """
         return self.wrap(self.call_com(lambda: self._com.findElementByBinaryID(binary_id)))
 
-    def find_element_by_file_name(self, file_name: str) -> IRPModelElement | None:
-        """Finds an element in the project by file name.
+    def find_element_by_file_name(self, folder_name: str, file_name: str) -> IRPModelElement | None:
+        """Finds the top-level element stored in the specified Rhapsody unit file.
 
         Args:
-            file_name: The file name to search for.
+            folder_name: The folder that contains the unit file.
+            file_name: The name of the unit file.
 
         Returns:
-            The wrapped element if found.
+            The wrapped top-level element if found, otherwise ``None``.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::findElementByFileName(java.lang.String fileName)
+            com.telelogic.rhapsody.core.IRPProject::findElementByFileName(java.lang.String theFolderName, java.lang.String theFileName)
+            pywin32 IRPProject.findElementByFileName(theFolderName: str, theFileName: str) -> IRPModelElement
         """
-        return self.wrap(self.call_com(lambda: self._com.findElementByFileName(file_name)))
+        return self.wrap(self.call_com(lambda: self._com.findElementByFileName(folder_name, file_name)))
 
     # --- Code generation methods ---
     def get_code_generated_files(self) -> IRPCollection:
@@ -494,13 +497,19 @@ class IRPProject(IRPPackage):
         """
         return cast(IRPPackage, self.wrap(self.get_com_property(self._com, "cgSimplifiedModelPackage")))
 
-    def locate_in_ide(self) -> None:
-        """Locates this project in the Rhapsody IDE.
+    def locate_in_ide(self, configuration: IRPConfiguration, file_name: str, line_number: int) -> None:
+        """Asks the configured IDE to highlight a line in a source file.
+
+        Args:
+            configuration: The configuration whose IDE integration is used.
+            file_name: The path of the source file to open.
+            line_number: The line number to highlight.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::locateInIDE()
+            com.telelogic.rhapsody.core.IRPProject::locateInIDE(IRPConfiguration config, java.lang.String filename, int lineNumber)
+            pywin32 IRPProject.locateInIDE(config: IRPConfiguration, filename: str, lineNumber: int)
         """
-        self.call_com(lambda: self._com.locateInIDE())
+        self.call_com(lambda: self._com.locateInIDE(configuration._com, file_name, line_number))
 
     def is_modified_recursive(self) -> bool:
         """Checks whether the project or any of its contents have unsaved changes.
@@ -526,40 +535,50 @@ class IRPProject(IRPPackage):
         self.call_com(lambda: self._com.highlightFromCode(file_path, line_number))
 
     # --- Gateway/Report methods ---
-    def gateway_export_to_xml(self, file_path: str) -> None:
+    def gateway_export_to_xml(self, file_path: str, parameters: str) -> None:
         """Exports the project to an XML file using the Gateway tool.
 
         Args:
             file_path: The path of the XML file to create.
+            parameters: The Gateway parameters to pass.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::gatewayExportToXML(java.lang.String filePath)
+            com.telelogic.rhapsody.core.IRPProject::gatewayExportToXML(java.lang.String filename, java.lang.String params)
+            pywin32 IRPProject.GatewayExportToXML(filename: str, params: str)
         """
-        self.call_com(lambda: self._com.GatewayExportToXML(file_path))
+        self.call_com(lambda: self._com.GatewayExportToXML(file_path, parameters))
 
-    def gateway_export_to_xml2(self, file_path: str, options: str) -> None:
-        """Exports the project to an XML file using the Gateway tool with options.
+    def gateway_export_to_xml2(self, file_path: str, parameters: str, project: IRPProject) -> None:
+        """Exports a project to an XML file using the Gateway tool with parameters.
 
         Args:
             file_path: The path of the XML file to create.
-            options: The options string to pass to the Gateway tool.
+            parameters: The Gateway parameters to pass.
+            project: The project whose model is exported.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::gatewayExportToXML2(java.lang.String filePath, java.lang.String options)
+            com.telelogic.rhapsody.core.IRPProject::gatewayExportToXML2(java.lang.String filename, java.lang.String params, IRPProject proj)
+            pywin32 IRPProject.GatewayExportToXML2(filename: str, params: str, proj: IRPProject)
         """
-        self.call_com(lambda: self._com.GatewayExportToXML2(file_path, options))
+        self.call_com(lambda: self._com.GatewayExportToXML2(file_path, parameters, project._com))
 
-    def generate_report(self, template_path: str, output_path: str) -> None:
-        """Generates a report from the project using the specified template.
+    def generate_report(self, model_scope: str, template_name: str, doc_type: str, file_path: str, show_document: int, silent_mode: int) -> None:
+        """Generates a ReporterPLUS report for the project.
 
         Args:
-            template_path: The path of the report template file.
-            output_path: The path of the output report file to create.
+            model_scope: The name of the package for which the report is generated.
+            template_name: The path of the ReporterPLUS template.
+            doc_type: The output document type, for example ``"html"``.
+            file_path: The path of the report file to create.
+            show_document: ``1`` to open the report after generation, ``0`` otherwise.
+            silent_mode: ``1`` to suppress dialogs, ``0`` otherwise.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::generateReport(java.lang.String templatePath, java.lang.String outputPath)
+            com.telelogic.rhapsody.core.IRPProject::generateReport(java.lang.String modelscope, java.lang.String templatename,
+            java.lang.String docType, java.lang.String filename, int showDocument, int silentMode)
+            pywin32 IRPProject.GenerateReport(modelscope: str, templatename: str, docType: str, filename: str, showDocument: int, silentMode: int)
         """
-        self.call_com(lambda: self._com.GenerateReport(template_path, output_path))
+        self.call_com(lambda: self._com.GenerateReport(model_scope, template_name, doc_type, file_path, show_document, silent_mode))
 
     # --- Custom Views methods ---
     def add_custom_view_on_browser(self, view: IRPModelElement) -> None:
@@ -573,24 +592,30 @@ class IRPProject(IRPPackage):
         """
         self.call_com(lambda: self._com.addCustomViewOnBrowser(view._com))
 
-    def add_custom_view_on_diagram(self, view: IRPModelElement) -> None:
-        """Adds a custom view to be applied on diagrams.
+    def add_custom_view_on_diagram(self, diagram: IRPDiagram, view: IRPModelElement) -> None:
+        """Applies a custom view to a diagram.
 
         Args:
-            view: The wrapped custom view to add.
+            diagram: The diagram to which the custom view is applied.
+            view: The wrapped custom view package to apply.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::addCustomViewOnDiagram(com.telelogic.rhapsody.core.IRPCustomView view)
+            com.telelogic.rhapsody.core.IRPProject::addCustomViewOnDiagram(IRPDiagram diagram, IRPPackage customView)
+            pywin32 IRPProject.addCustomViewOnDiagram(diagram: IRPDiagram, customView: IRPPackage)
         """
-        self.call_com(lambda: self._com.addCustomViewOnDiagram(view._com))
+        self.call_com(lambda: self._com.addCustomViewOnDiagram(diagram._com, view._com))
 
-    def apply_browser_custom_views_on_diagrams(self) -> None:
-        """Applies the browser custom views on diagrams.
+    def apply_browser_custom_views_on_diagrams(self, enabled: int) -> None:
+        """Applies the browser custom views to all diagrams.
+
+        Args:
+            enabled: ``1`` to apply the custom views to all diagrams, ``0`` to remove them.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::applyBrowserCustomViewsOnDiagrams()
+            com.telelogic.rhapsody.core.IRPProject::applyBrowserCustomViewsOnDiagrams(int newVal)
+            pywin32 IRPProject.applyBrowserCustomViewsOnDiagrams(newVal: int)
         """
-        self.call_com(lambda: self._com.applyBrowserCustomViewsOnDiagrams())
+        self.call_com(lambda: self._com.applyBrowserCustomViewsOnDiagrams(enabled))
 
     def get_active_custom_views_on_browser(self) -> IRPCollection:
         """Returns the active custom views applied on the browser.
@@ -603,16 +628,20 @@ class IRPProject(IRPPackage):
         """
         return IRPCollection(self.call_com(lambda: self._com.getActiveCustomViewsOnBrowser()))
 
-    def get_active_custom_views_on_diagram(self) -> IRPCollection:
-        """Returns the active custom views applied on diagrams.
+    def get_active_custom_views_on_diagram(self, diagram: IRPDiagram) -> IRPCollection:
+        """Returns the custom views currently applied to a diagram.
+
+        Args:
+            diagram: The diagram whose custom views are returned.
 
         Returns:
             An ``IRPCollection`` of active diagram custom views.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::getActiveCustomViewsOnDiagram()
+            com.telelogic.rhapsody.core.IRPProject::getActiveCustomViewsOnDiagram(IRPDiagram diagram)
+            pywin32 IRPProject.getActiveCustomViewsOnDiagram(diagram: IRPDiagram) -> IRPCollection
         """
-        return IRPCollection(self.call_com(lambda: self._com.getActiveCustomViewsOnDiagram()))
+        return IRPCollection(self.call_com(lambda: self._com.getActiveCustomViewsOnDiagram(diagram._com)))
 
     def remove_custom_view_on_browser(self, view: IRPModelElement) -> None:
         """Removes a custom view from the browser.
@@ -625,25 +654,31 @@ class IRPProject(IRPPackage):
         """
         self.call_com(lambda: self._com.removeCustomViewOnBrowser(view._com))
 
-    def remove_custom_view_on_diagram(self, view: IRPModelElement) -> None:
-        """Removes a custom view from diagrams.
+    def remove_custom_view_on_diagram(self, diagram: IRPDiagram, view: IRPModelElement) -> None:
+        """Removes a custom view from a diagram.
 
         Args:
-            view: The wrapped custom view to remove.
+            diagram: The diagram from which the custom view is removed.
+            view: The wrapped custom view package to remove.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::removeCustomViewOnDiagram(com.telelogic.rhapsody.core.IRPCustomView view)
+            com.telelogic.rhapsody.core.IRPProject::removeCustomViewOnDiagram(IRPDiagram diagram, IRPPackage customView)
+            pywin32 IRPProject.removeCustomViewOnDiagram(diagram: IRPDiagram, customView: IRPPackage)
         """
-        self.call_com(lambda: self._com.removeCustomViewOnDiagram(view._com))
+        self.call_com(lambda: self._com.removeCustomViewOnDiagram(diagram._com, view._com))
 
     # --- CSV methods ---
-    def close_csv_file(self) -> None:
-        """Closes the CSV file currently open in the project.
+    def close_csv_file(self, file_path: str) -> None:
+        """Closes the Output window tab of the specified CSV file.
+
+        Args:
+            file_path: The path of the CSV file to close.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::closeCSVFile()
+            com.telelogic.rhapsody.core.IRPProject::closeCSVFile(java.lang.String fullCSVFileName)
+            pywin32 IRPProject.closeCSVFile(fullCSVFileName: str)
         """
-        self.call_com(lambda: self._com.closeCSVFile())
+        self.call_com(lambda: self._com.closeCSVFile(file_path))
 
     def open_csv_file(self, file_path: str, mode: int) -> None:
         """Opens a CSV file for requirements import.
@@ -657,22 +692,32 @@ class IRPProject(IRPPackage):
         """
         self.call_com(lambda: self._com.openCSVFile(file_path, mode))
 
-    def reload_csv_file(self) -> None:
-        """Reloads the CSV file currently open in the project.
+    def reload_csv_file(self, file_path: str) -> None:
+        """Reloads the specified CSV file in its Output window tab.
+
+        Args:
+            file_path: The path of the CSV file to reload.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::reloadCSVFile()
+            com.telelogic.rhapsody.core.IRPProject::reloadCSVFile(java.lang.String fullCSVFileName)
+            pywin32 IRPProject.reloadCSVFile(fullCSVFileName: str)
         """
-        self.call_com(lambda: self._com.reloadCSVFile())
+        self.call_com(lambda: self._com.reloadCSVFile(file_path))
 
     # --- Remote/Roundtrip methods ---
-    def apply_roundtrip_diff_merge(self) -> None:
+    def apply_roundtrip_diff_merge(self, magic_number: int, shadow_model: IRPModelElement, files_to_update: IRPCollection) -> None:
         """Applies the roundtrip diff merge for the project.
 
+        Args:
+            magic_number: The roundtrip magic number supplied by Rhapsody.
+            shadow_model: The roundtrip shadow model element.
+            files_to_update: The collection of files to update.
+
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::applyRoundtripDiffMerge()
+            com.telelogic.rhapsody.core.IRPProject::applyRoundtripDiffMerge(int magicNumber, IRPProject shadowModel, IRPCollection filesToUpdate)
+            pywin32 IRPProject.applyRoundtripDiffMerge(magicNumber: int, shadowModel: IRPProject, filesToUpdate: IRPCollection)
         """
-        self.call_com(lambda: self._com.applyRoundtripDiffMerge())
+        self.call_com(lambda: self._com.applyRoundtripDiffMerge(magic_number, shadow_model._com, files_to_update._com))
 
     def enable_rhapsody_model_manager(self) -> None:
         """Enable Rhapsody Model Manager for the project.
@@ -685,19 +730,21 @@ class IRPProject(IRPPackage):
         """
         raise NotImplementedError("enableRhapsodyModelManager is not exposed in the Rhapsody COM automation type library.")
 
-    def find_elements_with_oslc_link(self, link: str) -> IRPCollection:
-        """Returns the elements that have an OSLC link matching the specified link.
+    def find_elements_with_oslc_link(self, link_type: str, purl: str) -> IRPCollection:
+        """Returns the elements that have an OSLC link of a type to a target.
 
         Args:
-            link: The OSLC link to search for.
+            link_type: The OSLC link type to search for.
+            purl: The purl of the OSLC target element.
 
         Returns:
             An ``IRPCollection`` of elements with the matching OSLC link.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::findElementsWithOSLCLink(java.lang.String link)
+            com.telelogic.rhapsody.core.IRPProject::findElementsWithOSLCLink(java.lang.String type, java.lang.String purl)
+            pywin32 IRPProject.findElementsWithOSLCLink(type: str, purl: str) -> IRPCollection
         """
-        return IRPCollection(self.call_com(lambda: self._com.findElementsWithOSLCLink(link)))
+        return IRPCollection(self.call_com(lambda: self._com.findElementsWithOSLCLink(link_type, purl)))
 
     def get_remote_resource_packages(self) -> IRPCollection:
         """Returns the remote resource packages of the project.
@@ -710,16 +757,20 @@ class IRPProject(IRPPackage):
         """
         return IRPCollection(self.call_com(lambda: self._com.getRemoteResourcePackages()))
 
-    def get_roundtrip_shadow_model(self) -> object:
-        """Returns the roundtrip shadow model of the project.
+    def get_roundtrip_shadow_model(self, magic_number: int) -> IRPModelElement | None:
+        """Returns the roundtrip shadow model for a magic number.
+
+        Args:
+            magic_number: The roundtrip magic number supplied by Rhapsody.
 
         Returns:
-            The wrapped roundtrip shadow model.
+            The wrapped roundtrip shadow model if available.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::getRoundtripShadowModel()
+            com.telelogic.rhapsody.core.IRPProject::getRoundtripShadowModel(int magicNumber)
+            pywin32 IRPProject.getRoundtripShadowModel(magicNumber: int) -> IRPProject
         """
-        return self.wrap(self.call_com(lambda: self._com.getRoundtripShadowModel()))
+        return self.wrap(self.call_com(lambda: self._com.getRoundtripShadowModel(magic_number)))
 
     def is_actively_managed(self) -> int:
         """Checks whether the project is actively managed by Rhapsody Model Manager.
@@ -744,30 +795,35 @@ class IRPProject(IRPPackage):
         raise NotImplementedError("migrateDesignManagerLinks is not exposed in the Rhapsody COM automation type library.")
 
     # --- Rose Import methods ---
-    def import_package_from_rose(self, file_path: str) -> IRPPackage:
-        """Imports a package from a Rational Rose model file.
+    def import_package_from_rose(self, project_name: str, package_name: str, log_file_name: str) -> IRPPackage:
+        """Imports a package from a Rational Rose project.
 
         Args:
-            file_path: The path of the Rose model file to import from.
+            project_name: The Rose project to import the package from.
+            package_name: The name of the Rose package to import.
+            log_file_name: The path of the log file to write.
 
         Returns:
             The wrapped ``IRPPackage`` created from the import.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::importPackageFromRose(java.lang.String filePath)
+            com.telelogic.rhapsody.core.IRPProject::importPackageFromRose(java.lang.String projectName, java.lang.String packageName, java.lang.String logFileName)
+            pywin32 IRPProject.importPackageFromRose(projectName: str, packageName: str, logFileName: str)
         """
-        return cast(IRPPackage, self.wrap(self.call_com(lambda: self._com.importPackageFromRose(file_path))))
+        return cast(IRPPackage, self.wrap(self.call_com(lambda: self._com.importPackageFromRose(project_name, package_name, log_file_name))))
 
-    def import_project_from_rose(self, file_path: str) -> None:
-        """Imports a project from a Rational Rose model file.
+    def import_project_from_rose(self, project_name: str, log_file_name: str) -> None:
+        """Imports a Rational Rose project.
 
         Args:
-            file_path: The path of the Rose model file to import from.
+            project_name: The Rose project to import.
+            log_file_name: The path of the log file to write.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::importProjectFromRose(java.lang.String filePath)
+            com.telelogic.rhapsody.core.IRPProject::importProjectFromRose(java.lang.String projectName, java.lang.String logFileName)
+            pywin32 IRPProject.importProjectFromRose(projectName: str, logFileName: str)
         """
-        self.call_com(lambda: self._com.importProjectFromRose(file_path))
+        self.call_com(lambda: self._com.importProjectFromRose(project_name, log_file_name))
 
     # --- Events methods ---
     def check_events_base_ids_solve_collisions(self) -> int:
@@ -790,25 +846,29 @@ class IRPProject(IRPPackage):
         self.call_com(lambda: self._com.recalculateEventsBaseIds())
 
     # --- Misc methods ---
-    def add_spell_checker_result(self, word: str, suggestion: str) -> None:
-        """Adds a spell checker result with a suggestion.
+    def add_spell_checker_result(self, value: str) -> None:
+        """Adds a spell checker result.
 
         Args:
-            word: The misspelled word.
-            suggestion: The suggested correction.
+            value: The misspelled word reported by the spell checker.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::addSpellCheckerResult(java.lang.String word, java.lang.String suggestion)
+            com.telelogic.rhapsody.core.IRPProject::addSpellCheckerResult(java.lang.String value)
+            pywin32 IRPProject.addSpellCheckerResult(value: str)
         """
-        self.call_com(lambda: self._com.addSpellCheckerResult(word, suggestion))
+        self.call_com(lambda: self._com.addSpellCheckerResult(value))
 
-    def clean_unresolved_elements(self) -> None:
-        """Cleans unresolved elements from the project.
+    def clean_unresolved_elements(self, root_element: IRPModelElement) -> None:
+        """Removes unresolved elements below the specified element.
+
+        Args:
+            root_element: The element below which Rhapsody cleans unresolved elements.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::cleanUnresolvedElements()
+            com.telelogic.rhapsody.core.IRPProject::cleanUnresolvedElements(IRPModelElement rootElement)
+            pywin32 IRPProject.cleanUnresolvedElements(rootElement: IRPModelElement)
         """
-        self.call_com(lambda: self._com.cleanUnresolvedElements())
+        self.call_com(lambda: self._com.cleanUnresolvedElements(root_element._com))
 
     def end_transaction_of_no_cg_interest(self) -> None:
         """Ends a transaction of no code generation interest.
@@ -842,18 +902,23 @@ class IRPProject(IRPPackage):
         """
         self.set_com_property(self._com, "defaultDirectoryScheme", scheme)
 
-    def get_new_progress_bar(self) -> IRPProgressBar:
+    def get_new_progress_bar(self, amount: int, name: str) -> IRPProgressBar:
         """Returns a new progress bar.
+
+        Args:
+            amount: The maximum value of the progress bar.
+            name: The title of the progress bar.
 
         Returns:
             The wrapped ``IRPProgressBar`` created.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::getNewProgressBar()
+            com.telelogic.rhapsody.core.IRPProject::getNewProgressBar(int amount, java.lang.String name)
+            pywin32 IRPProject.getNewProgressBar(amount: int, name: str) -> IRPProgressBar
         """
         from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_ide import IRPProgressBar
 
-        return cast(IRPProgressBar, self.wrap(self.call_com(lambda: self._com.getNewProgressBar())))
+        return cast(IRPProgressBar, self.wrap(self.call_com(lambda: self._com.getNewProgressBar(amount, name))))
 
     def get_notify_plugin_on_elements_changed(self) -> int:
         """Checks whether plugins are notified when elements change.
@@ -866,19 +931,21 @@ class IRPProject(IRPPackage):
         """
         return int(self.call_com(lambda: self._com.getNotifyPluginOnElementsChanged()))
 
-    def get_requirements_by_id(self, id: str) -> IRPCollection:
+    def get_requirements_by_id(self, requirement_id: str, return_first_found_only: int) -> IRPCollection:
         """Returns the requirements matching the specified ID.
 
         Args:
-            id: The requirement ID to search for.
+            requirement_id: The requirement ID to search for.
+            return_first_found_only: ``1`` to stop at the first match, ``0`` to return all matches.
 
         Returns:
             An ``IRPCollection`` of matching requirements.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::getRequirementsByID(java.lang.String id)
+            com.telelogic.rhapsody.core.IRPProject::getRequirementsByID(java.lang.String requirementID, int returnFirstFoundOnly)
+            pywin32 IRPProject.getRequirementsByID(requirementID: str, returnFirstFoundOnly: int) -> IRPCollection
         """
-        return IRPCollection(self.call_com(lambda: self._com.getRequirementsByID(id)))
+        return IRPCollection(self.call_com(lambda: self._com.getRequirementsByID(requirement_id, return_first_found_only)))
 
     def remove(self) -> None:
         """Removes the project.
@@ -888,16 +955,18 @@ class IRPProject(IRPPackage):
         """
         self.call_com(lambda: self._com.remove())
 
-    def save_as_prev_version(self, file_path: str) -> None:
-        """Saves the project to a previous version file path.
+    def save_as_prev_version(self, file_name: str, previous_version: str) -> None:
+        """Saves the project using the format of a previous Rhapsody version.
 
         Args:
-            file_path: The path to save the project to.
+            file_name: The path to use for saving the project.
+            previous_version: The Rhapsody version whose file format is used.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::saveAsPrevVersion(java.lang.String filePath)
+            com.telelogic.rhapsody.core.IRPProject::saveAsPrevVersion(java.lang.String filename, java.lang.String prevVersion)
+            pywin32 IRPProject.saveAsPrevVersion(filename: str, prevVersion: str)
         """
-        self.call_com(lambda: self._com.saveAsPrevVersion(file_path))
+        self.call_com(lambda: self._com.saveAsPrevVersion(file_name, previous_version))
 
     def set_global_configuration(self, gc_uri: str, name: str) -> int:
         """Set the global configuration used for the project.

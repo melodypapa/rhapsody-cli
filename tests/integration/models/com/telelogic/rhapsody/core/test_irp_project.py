@@ -295,13 +295,13 @@ class TestIRPProjectGenerated:
         assert test_project.highlight_from_code(self._unique("arg"), 0) is None  # type: ignore[func-returns-value]
 
     def test_gateway_export_to_xml(self, test_project: IRPProject) -> None:
-        assert test_project.gateway_export_to_xml(self._unique("arg")) is None  # type: ignore[func-returns-value]
+        assert test_project.gateway_export_to_xml(self._unique("arg"), self._unique("arg")) is None  # type: ignore[func-returns-value]
 
     def test_gateway_export_to_xml2(self, test_project: IRPProject) -> None:
-        assert test_project.gateway_export_to_xml2(self._unique("arg"), self._unique("arg")) is None  # type: ignore[func-returns-value]
+        assert test_project.gateway_export_to_xml2(self._unique("arg"), self._unique("arg"), test_project) is None  # type: ignore[func-returns-value]
 
     def test_generate_report(self, test_project: IRPProject) -> None:
-        assert test_project.generate_report(self._unique("arg"), self._unique("arg")) is None  # type: ignore[func-returns-value]
+        assert test_project.generate_report(self._unique("arg"), self._unique("arg"), "html", self._unique("arg"), 0, 0) is None  # type: ignore[func-returns-value]
 
     def test_add_custom_view_on_browser(self, test_project: IRPProject) -> None:
         view = test_project.add_package(self._unique("ViewElem"))
@@ -312,12 +312,13 @@ class TestIRPProjectGenerated:
             view.delete_from_project()
 
     def test_add_custom_view_on_diagram(self, test_project: IRPProject) -> None:
-        view = test_project.add_package(self._unique("ViewElem"))
+        pkg = test_project.add_package(self._unique("ViewPkg"))
         try:
-            assert test_project.add_custom_view_on_diagram(view) is None  # type: ignore[func-returns-value]
-            assert test_project.remove_custom_view_on_diagram(view) is None  # type: ignore[func-returns-value]
+            diagram = pkg.add_object_model_diagram(self._unique("ViewDiagram"))
+            assert test_project.add_custom_view_on_diagram(diagram, pkg) is None  # type: ignore[func-returns-value]
+            assert test_project.remove_custom_view_on_diagram(diagram, pkg) is None  # type: ignore[func-returns-value]
         finally:
-            view.delete_from_project()
+            pkg.delete_from_project()
 
     def test_open_csv_file(self, test_project: IRPProject) -> None:
         assert test_project.open_csv_file(self._unique("arg"), 0) is None  # type: ignore[func-returns-value]
