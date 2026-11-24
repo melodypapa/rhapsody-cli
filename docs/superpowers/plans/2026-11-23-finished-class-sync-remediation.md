@@ -4,7 +4,7 @@
 
 **Goal:** Bring all 16 finished (synced) interfaces back into compliance with the *current* `.agents/skills/rhapsody-sync/SKILL.md` rules — 9 wrappers fail the current verifier, 12 carry property-shape drift, and getter integration tests must create and relate authentic model data before asserting retrieval — then lock the rules into CI so drift cannot recur.
 
-**Architecture:** Each interface gets its own rhapsody-sync remediation run following SKILL.md §1–§8 (one interface per run), recorded in `docs/reports/sync-todo/Group-unfinished-14.md`. Binding arity is fixed wrapper-first (TDD, fake-COM unit tests); integration tests build the real child/state required by each getter, relate it to the real parent, call the getter, and assert identity or expected content. Invalid exception assertions are replaced with positive behavior checks or documented blockers. Property-shaped members follow Decision Gate D1. A final CI task validates every catalog interface.
+**Architecture:** Each interface gets its own rhapsody-sync remediation run following SKILL.md §1–§8 (one interface per run), recorded in `docs/reports/sync-todo/index.md`. Binding arity is fixed wrapper-first (TDD, fake-COM unit tests); integration tests build the real child/state required by each getter, relate it to the real parent, call the getter, and assert identity or expected content. Invalid exception assertions are replaced with positive behavior checks or documented blockers. Property-shaped members follow Decision Gate D1. A final CI task validates every catalog interface.
 
 **Tech Stack:** Python 3.9+ (project targets 3.8–3.13), pytest + fakes (`tests/unit/models/fakes.py`), pywin32 COM on Windows + live IBM Rhapsody, ruff/black(line-length 200)/mypy strict, Sphinx RST docs, the skill-local validators `validate_interface.py` / `verify_sync.py`.
 
@@ -12,7 +12,7 @@
 
 - **D1 — Python member shape (Tasks 2–16). CONFIRMED by the user:** expose a pywin32 `property` as Python `@property`; expose a pywin32 `method` as a Python method. Do not retain both `get_xxx()` and property aliases. The corrected report/wrapper audit finds **142 COM-property members across 14 interfaces** currently exposed through methods. A pre-migration Python-AST caller snapshot for `IRPModelElement` found **617 getter calls across 30 members**, including **491 `get_name()` calls**, plus **52 setter-method call sites** (49 property-backed setters and 3 calls to the JavaDoc-unsupported `set_description_html()` stub); the already-converted `all_tags`/`binary_id` references were excluded. Convert every member and migrate its callers. Use `@<name>.setter` only when pywin32 exposes a writable property; retain a separate method-shaped COM setter as a Python method. This is an intentional, broad public API change and follows the current skill's COM-shape rule.
 - **D2 — `JAVA_DOC_MISSING` dispositions (Tasks 3, 4, 5).** Nine wrapper members call COM members that exist in pywin32 but not in the JavaDoc (`Classifier.add_port→addNewAggr`; `Package.add_association→addAssociation`; `Project.add_actor/add_class/add_node/delete_node/find_node/get_nodes/get_packages`). Default: keep them and document each as a supported COM extension in the regenerated report's Expected Binding Differences table. Confirm or override.
-- **D3 — blockers.** Individual integration sites that cannot be exercised live (modal dialogs, external toolchains, an uncreatable AssociationClass fixture) come back to the user per site for approved-skip-or-remove, recorded in the ledger (Group-unfinished-1 precedent).
+- **D3 — blockers.** Individual integration sites that cannot be exercised live (modal dialogs, external toolchains, an uncreatable AssociationClass fixture) come back to the user per site for approved-skip-or-remove, recorded in the ledger (the category group files precedent).
 
 ## Global Constraints (every task, verbatim from SKILL.md / AGENTS.md)
 
@@ -95,7 +95,7 @@ The initial count missed multi-accessor report rows such as `getName`/`setName` 
 
 ### Environment facts
 
-This machine is Windows with Rhapsody available (live integration runs possible — ledger records 69 live passes on 2026-11-23); all 16 RST pages are listed in `docs/api/elements.rst`; the skill harness self-tests pass (31 passed); ledger index is `docs/reports/sync-todo/index.md` (groups 1–13 + `Group-finished.md`).
+This machine is Windows with Rhapsody available (live integration runs possible — ledger records 69 live passes on 2026-11-23); all 16 RST pages are listed in `docs/api/elements.rst`; the skill harness self-tests pass (31 passed); ledger index is `docs/reports/sync-todo/index.md` (category group files).
 
 ### Getter integration-data findings
 
@@ -115,17 +115,17 @@ For every interface, §1/§3 must add an owned-getter inventory to the per-run c
 
 **Files:**
 
-- Create: `docs/reports/sync-todo/Group-unfinished-14.md`
+- Create: `docs/reports/sync-todo/index.md`
 - Modify: `docs/reports/sync-todo/index.md`
 
-- [x] **Step 1: Create `Group-unfinished-14.md`** with these 15 row identifiers, in execution order: `irp_model_element_remediation`, `irp_package_remediation`, `irp_project_remediation`, `irp_classifier_remediation`, `irp_collection_remediation`, `irp_association_class_remediation`, `irp_operation_remediation`, `irp_class_remediation`, `irp_use_case_remediation`, `irp_unit_remediation`, `irp_port_remediation`, `irp_interface_item_remediation`, `irp_type_remediation`, `irp_argument_remediation`, and `irp_attribute_remediation`. For each row, copy the actual deviation counts and member names from this plan's audit tables; include all eight §1–§8 checkboxes, the Getter fixture matrix rows, measured unit coverage, and the live integration pass/fail count. The IRPApplication work in Task 17 continues its existing open row in `Group-unfinished-1.md`; do not duplicate it. Use each class's exact module and mirrored test path from its task.
+- [x] **Step 1: Create the category group files (see `docs/reports/sync-todo/index.md`)** with these 15 row identifiers, in execution order: `irp_model_element_remediation`, `irp_package_remediation`, `irp_project_remediation`, `irp_classifier_remediation`, `irp_collection_remediation`, `irp_association_class_remediation`, `irp_operation_remediation`, `irp_class_remediation`, `irp_use_case_remediation`, `irp_unit_remediation`, `irp_port_remediation`, `irp_interface_item_remediation`, `irp_type_remediation`, `irp_argument_remediation`, and `irp_attribute_remediation`. For each row, copy the actual deviation counts and member names from this plan's audit tables; include all eight §1–§8 checkboxes, the Getter fixture matrix rows, measured unit coverage, and the live integration pass/fail count. The IRPApplication work in Task 17 continues its existing open row in the category group files (see `docs/reports/sync-todo/index.md`); do not duplicate it. Use each class's exact module and mirrored test path from its task.
 
-- [x] **Step 2: Add the batch to `index.md`** table: a row for `Group-unfinished-14.md` (15 rows, `IRPModelElement → IRPAttribute`, rule-drift remediation) and update the progress total from `15/129` to `15/144 rows tracked`. Keep IRPApplication in its existing Group 1 row.
+- [x] **Step 2: Add the batch to `index.md`** table: a row for the category group files (see `docs/reports/sync-todo/index.md`) (15 rows, `IRPModelElement → IRPAttribute`, rule-drift remediation) and update the progress total from `15/129` to `15/144 rows tracked`. Keep IRPApplication in its existing Group 1 row.
 
 - [x] **Step 3: Stage only the ledger paths for the eventual documentation commit** (do not use `git add -A`; this branch contains other task files):
 
 ```bash
-git add docs/reports/sync-todo/Group-unfinished-14.md docs/reports/sync-todo/index.md
+git add docs/reports/sync-todo/index.md docs/reports/sync-todo/index.md
 ```
 
 ---
@@ -139,7 +139,7 @@ git add docs/reports/sync-todo/Group-unfinished-14.md docs/reports/sync-todo/ind
 - Modify: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_model_element.py` (22 baseline exception sites; two invalid-type cases now use real roundtrips; 20 remaining sites + conversion call sites)
 - Modify: regenerated report, requirement doc, RST
 - Migrate callers: `grep -rnE 'get_(all_tags|annotations|association_classes|binary_id|constraints|constraints_by_him|controlled_files|dependencies|description|description_html|description_plain_text|description_rtf|display_name|guid|hyper_links|interface_name|is_external|is_show_display_name|is_unresolved|local_tags|main_diagram|meta_class|name|of_template|owner|project|references|requirement_traceability_handle|stereotypes|template_parameters|ti|user_defined_meta_class)\\(' src/rhapsody_cli tests/unit tests/integration`.
-- Ledger: `Group-unfinished-14.md` (IRPModelElement row)
+- Ledger: the category group files (see `docs/reports/sync-todo/index.md`) (IRPModelElement row)
 
 **Interfaces:**
 
@@ -208,13 +208,13 @@ PYTHONPATH=src python -m pytest tests/unit/models/com/telelogic/rhapsody/core/te
 ```
 
   Expected: all pass, **100% statements and 100% branches**.
-- [x] **Step 5: §5 — rewrite the 20 remaining disallowed exception-assertion sites** (audit lines) with this decision procedure per site. Evidence: all sites rewritten to positive outcomes; `grep -n "pytest.raises"` on the integration file shows only `NotImplementedError` matches; first live rerun after the rewrite measured 85 passed / 21 failed and produced the evidence used to fix fixtures (dot-syntax property keys, `set_size`/`set_string` token collections, `getTag` re-query for typed `IRPTag` value reads, `meta_class` assertions for `add_relation_to` results, `ComHelper.call_com` patch targets, `TemplateParameter` precondition for template fixtures); final live rerun pending (orphaned rhapsody.exe processes must be closed first); remaining blockers recorded in Group-unfinished-14.
+- [x] **Step 5: §5 — rewrite the 20 remaining disallowed exception-assertion sites** (audit lines) with this decision procedure per site. Evidence: all sites rewritten to positive outcomes; `grep -n "pytest.raises"` on the integration file shows only `NotImplementedError` matches; first live rerun after the rewrite measured 85 passed / 21 failed and produced the evidence used to fix fixtures (dot-syntax property keys, `set_size`/`set_string` token collections, `getTag` re-query for typed `IRPTag` value reads, `meta_class` assertions for `add_relation_to` results, `ComHelper.call_com` patch targets, `TemplateParameter` precondition for template fixtures); final live rerun pending (orphaned rhapsody.exe processes must be closed first); remaining blockers recorded in the category group files.
   - Failure caused by **wrong binding/arguments** → wrapper fix (Step 2 pattern); assert the real result.
   - Failure caused by **deliberate misuse** → delete the misuse case; assert a real call with authentic data (misuse guards stay in the unit layer).
   - Precondition **cannot be met live** → leave Step 5 open, present the blocker (Decision Gate D3).
   - Verify: `grep -n "pytest.raises" tests/integration/models/com/telelogic/rhapsody/core/test_irp_model_element.py` — only `NotImplementedError` matches may remain.
 - [x] **Step 6: §6/§7 — refresh requirement doc and RST** for every renamed/added member (signature lines; RST `autofunction`/`autoattribute` directives follow the new names; `verify_sync.py` fails if any public member name is missing from the RST). Evidence: requirement page rewritten; RST regenerated with 33 `autoattribute` + 70 `automethod` directives; `verify_sync.py IRPModelElement` exits 0.
-- [ ] **Step 7: §8 — verify.** Current evidence after the user's 2026-11-24 decision to disable `constraints_by_him` and `hyper_links`: focused unit file 154 passed at 100% statements/branches (307 statements/136 branches); full unit suite 2124 passed; focused live file 103 passed; `verify_sync.py` exits 0; skill harness 31 passed; ruff/black/mypy clean after final verification. The generated `validate_interface.py` report now has two actionable unbound-property findings because these user-approved stubs deliberately do not call the pywin32 properties; the regenerated report, requirement page, and Group-unfinished-14 ledger record this intentional deviation. Step 7 remains open because the strict validator gate is not green and other live blockers remain.
+- [ ] **Step 7: §8 — verify.** Current evidence after the user's 2026-11-24 decision to disable `constraints_by_him` and `hyper_links`: focused unit file 154 passed at 100% statements/branches (307 statements/136 branches); full unit suite 2124 passed; focused live file 103 passed; `verify_sync.py` exits 0; skill harness 31 passed; ruff/black/mypy clean after final verification. The generated `validate_interface.py` report now has two actionable unbound-property findings because these user-approved stubs deliberately do not call the pywin32 properties; the regenerated report, requirement page, and the category group files ledger record this intentional deviation. Step 7 remains open because the strict validator gate is not green and other live blockers remain.
 
 ```bash
 python .agents/skills/rhapsody-sync/scripts/verify_sync.py IRPModelElement
@@ -244,7 +244,7 @@ git commit -m "fix(sync): IRPModelElement arity, property shapes, stereotype mem
 - Modify: `tests/unit/models/com/telelogic/rhapsody/core/test_irp_package.py`
 - Modify: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py` (sites 107, 157, 382, 531, 622, 637, 667, 712 + conversion call sites)
 - Modify: regenerated report, requirement doc, RST; migrate callers
-- Ledger: `Group-unfinished-14.md` (IRPPackage row)
+- Ledger: the category group files (see `docs/reports/sync-todo/index.md`) (IRPPackage row)
 
 **Interfaces:**
 
@@ -275,7 +275,7 @@ python -c "import json; d=json.load(open('docs/reports/pywin32_authority.json',e
 - Modify: `tests/unit/models/com/telelogic/rhapsody/core/test_irp_project.py`
 - Modify: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py` (24 sites: audit table + conversions)
 - Modify: regenerated report, requirement doc, RST; migrate callers
-- Ledger: `Group-unfinished-14.md` (IRPProject row)
+- Ledger: the category group files (see `docs/reports/sync-todo/index.md`) (IRPProject row)
 
 **Interfaces:**
 
@@ -300,7 +300,7 @@ python -c "import json; d=json.load(open('docs/reports/pywin32_authority.json',e
 - Modify: `tests/unit/models/com/telelogic/rhapsody/core/test_irp_classifier.py`
 - Modify: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py` (conversion call sites)
 - Modify: regenerated report, requirement doc, RST; migrate callers (subclasses overriding/inheriting these accessors re-verify in their own tasks)
-- Ledger: `Group-unfinished-14.md` (IRPClassifier row)
+- Ledger: the category group files (see `docs/reports/sync-todo/index.md`) (IRPClassifier row)
 
 **Interfaces:**
 
@@ -323,7 +323,7 @@ python -c "import json; d=json.load(open('docs/reports/pywin32_authority.json',e
 - Modify: `tests/unit/models/com/telelogic/rhapsody/core/test_irp_collection.py`
 - Modify: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_collection.py` (site 36 + `get_count()` call sites)
 - Migrate callers: `get_count()` is used across wrappers and CLI — `grep -rn "get_count(" src/rhapsody_cli tests/`
-- Ledger: `Group-unfinished-14.md` (IRPCollection row)
+- Ledger: the category group files (see `docs/reports/sync-todo/index.md`) (IRPCollection row)
 
 - [ ] **Step 1: §1 — publish the checklist.**
 - [ ] **Step 2: §3 — convert `get_count()` → `@property count`** (keep `__len__`; migrate every `get_count()` call site in `src/`, `tests/`).
@@ -352,10 +352,10 @@ python -c "import json; d=json.load(open('docs/reports/pywin32_authority.json',e
 - Modify: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_association_class.py` (`get_end1`/`get_end2`/`get_is_class` → `end1`/`end2`/`is_class`)
 - Modify: `tests/unit/models/com/telelogic/rhapsody/core/test_irp_association_class.py`
 - Modify: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_association_class.py` (site 52 + docstring lines ~20-26)
-- Ledger: `Group-unfinished-14.md` (IRPAssociationClass row)
+- Ledger: the category group files (see `docs/reports/sync-todo/index.md`) (IRPAssociationClass row)
 
 - [ ] **Step 1: §1 — publish the checklist.**
-- [ ] **Step 2: §3 — 3 property conversions; resolve how this Rhapsody build creates a true AssociationClass.** Read `IRPAssociationClass` + `IRPClassifier.addRelationTo` JavaDoc and the catalog. The current test wraps a plain association (`IRPAssociationClass(cls._com)`) whose metaclass is not `AssociationClass`, then asserts `AttributeError` when the four owned methods are probed — exactly the "blessing a wrong binding" pattern §5 bans. Evidence order: (a) profile/metaclass-based creation, (b) `addRelationTo` with an explicit association-class argument, (c) model built via file import. If no live path exists, present D3: approved skip + ledger entry, or case removal per the Group-unfinished-1 precedent. The `AttributeError` assertion may not survive in any outcome.
+- [ ] **Step 2: §3 — 3 property conversions; resolve how this Rhapsody build creates a true AssociationClass.** Read `IRPAssociationClass` + `IRPClassifier.addRelationTo` JavaDoc and the catalog. The current test wraps a plain association (`IRPAssociationClass(cls._com)`) whose metaclass is not `AssociationClass`, then asserts `AttributeError` when the four owned methods are probed — exactly the "blessing a wrong binding" pattern §5 bans. Evidence order: (a) profile/metaclass-based creation, (b) `addRelationTo` with an explicit association-class argument, (c) model built via file import. If no live path exists, present D3: approved skip + ledger entry, or case removal per the the category group files precedent. The `AttributeError` assertion may not survive in any outcome.
 - [ ] **Step 3: §5 — rewrite `test_owned_methods_via_wrapped_com_object`** to create the authentic fixture and assert `end1`/`end2` return the real ends and `is_class` can be read/written through the property — or record the approved blocker. Delete the docstring sentence claiming the test "is marked ``xfail``".
 - [ ] **Step 4: §4 — unit tests for the conversions first; §8 — verify; commit (`fix(sync): IRPAssociationClass end properties + integration assertions`); tick the ledger row.**
 
@@ -368,7 +368,7 @@ python -c "import json; d=json.load(open('docs/reports/pywin32_authority.json',e
 - Modify: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_operation.py` (`get_body`, `get_flowchart`, `get_initializer`, `get_is_abstract`, `get_is_cg_derived`, `get_is_const`, `get_is_ctor`, `get_is_dtor`, `get_is_final`, `get_is_inline`, `get_is_static`, `get_is_trigger`, `get_is_virtual`, `get_returns`, `get_visibility` → properties)
 - Modify: `tests/unit/models/com/telelogic/rhapsody/core/test_irp_operation.py`
 - Modify: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_operation.py` (site 118 + conversions)
-- Ledger: `Group-unfinished-14.md` (IRPOperation row)
+- Ledger: the category group files (see `docs/reports/sync-todo/index.md`) (IRPOperation row)
 
 - [ ] **Step 1: §1 — publish the checklist.**
 - [ ] **Step 2: §3 — 15 property conversions; inspect site 118** (`pytest.raises(AttributeError)`): whether it masks a missing wrapper member (→ add it per §4) or probes a pywin32-absent Java member (→ `NotImplementedError` stub; the assertion becomes the one permitted `pytest.raises(NotImplementedError)`).
@@ -381,7 +381,7 @@ python -c "import json; d=json.load(open('docs/reports/pywin32_authority.json',e
 **Files:**
 
 - Modify: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_class.py:313,315`
-- Ledger: `Group-unfinished-14.md` (IRPClass row)
+- Ledger: the category group files (see `docs/reports/sync-todo/index.md`) (IRPClass row)
 
 - [ ] **Step 1: §1 — publish the checklist.**
 - [ ] **Step 2: §3/§5 — rewrite both `RhapsodyRuntimeException` sites** (Task 2 Step 5 procedure).
@@ -397,7 +397,7 @@ python -c "import json; d=json.load(open('docs/reports/pywin32_authority.json',e
 - Modify: `tests/unit/models/com/telelogic/rhapsody/core/test_irp_use_case.py`
 - Modify: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_use_case.py` (sites 55, 177, 186 + conversions)
 - Modify: regenerated report/requirement/RST if signatures change
-- Ledger: `Group-unfinished-14.md` (IRPUseCase row)
+- Ledger: the category group files (see `docs/reports/sync-todo/index.md`) (IRPUseCase row)
 
 - [ ] **Step 1: §1 — publish the checklist.**
 - [ ] **Step 2: §3 — reconcile the three `TypeError` sites.** Site 55 is `find_extension_point(ep_name)` called right after `add_extension_point(ep_name)` — check `IRPUseCase.findExtensionPoint` in the catalog; if the pywin32 signature differs from the wrapper's (element-vs-string argument), fix the wrapper first (TDD), then assert the real lookup result. Sites 177/186 get the same treatment.
@@ -412,10 +412,10 @@ python -c "import json; d=json.load(open('docs/reports/pywin32_authority.json',e
 - Modify: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_unit.py` (`get_cm_header`, `get_current_directory`, `get_filename`, `get_include_in_next_load`, `get_is_stub`, `get_structure_diagrams` → properties)
 - Modify: `tests/unit/models/com/telelogic/rhapsody/core/test_irp_unit.py`
 - Modify: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_unit.py` (sites 257, 260, 262, 264 + conversions)
-- Ledger: `Group-unfinished-14.md` (IRPUnit row)
+- Ledger: the category group files (see `docs/reports/sync-todo/index.md`) (IRPUnit row)
 
 - [ ] **Step 1: §1 — publish the checklist.**
-- [ ] **Step 2: §3 — 6 property conversions; §3/§5 — rewrite the four `RhapsodyRuntimeException` sites.** Cross-check the 2026-11-22 Group-finished note: two IRPUnit live tests were removed once for being unexecutable in this build — if these four are the same family, present D3 (approved removal + ledger entry) instead of rewriting.
+- [ ] **Step 2: §3 — 6 property conversions; §3/§5 — rewrite the four `RhapsodyRuntimeException` sites.** Cross-check the 2026-11-22 archived-rows note: two IRPUnit live tests were removed once for being unexecutable in this build — if these four are the same family, present D3 (approved removal + ledger entry) instead of rewriting.
 - [ ] **Step 3: §4 — unit tests first; §8 — verify; commit (`fix(sync): IRPUnit properties + integration assertions`); tick the ledger row.**
 
 ---
@@ -427,7 +427,7 @@ python -c "import json; d=json.load(open('docs/reports/pywin32_authority.json',e
 - Modify: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_port.py` (`get_is_behavioral`, `get_is_reversed`, `get_port_contract`, `get_provided_interfaces`, `get_required_interfaces` → properties)
 - Modify: `tests/unit/models/com/telelogic/rhapsody/core/test_irp_port.py`
 - Modify: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_port.py` (conversion call sites)
-- Ledger: `Group-unfinished-14.md` (IRPPort row)
+- Ledger: the category group files (see `docs/reports/sync-todo/index.md`) (IRPPort row)
 
 - [ ] **Step 1: §1 — publish the checklist.**
 - [ ] **Step 2: §3 — 5 property conversions (Task 2 Step 3 pattern); §4 — unit tests first; §5 — integration attribute access; §6/§7 — docs; §8 — verify; commit (`fix(sync): IRPPort interface properties`); tick the ledger row.**
@@ -441,7 +441,7 @@ python -c "import json; d=json.load(open('docs/reports/pywin32_authority.json',e
 - Modify: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_interface_item.py` (`get_arguments`/`get_signature` → properties)
 - Modify: `tests/unit/models/com/telelogic/rhapsody/core/test_irp_interface_item.py`
 - Modify: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_interface_item.py` (conversion call sites)
-- Ledger: `Group-unfinished-14.md` (IRPInterfaceItem row)
+- Ledger: the category group files (see `docs/reports/sync-todo/index.md`) (IRPInterfaceItem row)
 
 - [ ] **Step 1: §1 — publish the checklist.**
 - [ ] **Step 2: §3 — 2 conversions; §4 — unit tests first; §5 — integration attribute access; §8 — verify; commit (`fix(sync): IRPInterfaceItem argument/signature properties`); tick the ledger row.**
@@ -455,7 +455,7 @@ python -c "import json; d=json.load(open('docs/reports/pywin32_authority.json',e
 - Modify: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_type.py` (`get_declaration`, `get_enumeration_literals`, `get_is_predefined`, `get_is_typedef`, `get_is_typedef_constant`, `get_is_typedef_ordered`, `get_is_typedef_reference`, `get_kind`, `get_typedef_base_type`, `get_typedef_multiplicity` → properties)
 - Modify: `tests/unit/models/com/telelogic/rhapsody/core/test_irp_type.py`
 - Modify: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_type.py` (conversion call sites)
-- Ledger: `Group-unfinished-14.md` (IRPType row)
+- Ledger: the category group files (see `docs/reports/sync-todo/index.md`) (IRPType row)
 
 - [ ] **Step 1: §1 — publish the checklist.**
 - [ ] **Step 2: §3 — 10 property conversions; §4 — unit tests first; §5 — integration attribute access; §8 — verify; commit (`fix(sync): IRPType properties`); tick the ledger row.**
@@ -470,7 +470,7 @@ python -c "import json; d=json.load(open('docs/reports/pywin32_authority.json',e
 - Modify: `tests/unit/models/com/telelogic/rhapsody/core/test_irp_argument.py`
 - Modify: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_argument.py`
 - Modify: regenerated report, `docs/requirements/com/telelogic/rhapsody/core/irp_argument.md`, and `docs/api/com/telelogic/rhapsody/core/irp_argument.rst`
-- Ledger: `Group-unfinished-14.md` (`irp_argument_remediation`)
+- Ledger: the category group files (see `docs/reports/sync-todo/index.md`) (`irp_argument_remediation`)
 
 - [ ] **Step 1: §1 — publish the IRPArgument member checklist** and its getter fixture matrix row.
 - [ ] **Step 2: §3 — confirm `getArgumentDirection`/`setArgumentDirection` JavaDoc signatures and the single pywin32 `argumentDirection` property.**
@@ -489,7 +489,7 @@ python -c "import json; d=json.load(open('docs/reports/pywin32_authority.json',e
 - Modify: `tests/unit/models/com/telelogic/rhapsody/core/test_irp_attribute.py`
 - Modify: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_attribute.py`
 - Modify: regenerated report, `docs/requirements/com/telelogic/rhapsody/core/irp_attribute.md`, and `docs/api/com/telelogic/rhapsody/core/irp_attribute.rst`
-- Ledger: `Group-unfinished-14.md` (`irp_attribute_remediation`)
+- Ledger: the category group files (see `docs/reports/sync-todo/index.md`) (`irp_attribute_remediation`)
 
 - [ ] **Step 1: §1 — publish the IRPAttribute member checklist** with six Getter fixture matrix rows.
 - [ ] **Step 2: §3 — verify the six pywin32 property names/types and the JavaDoc values.** Use the live integration file's real attribute setup; use only documented values for multiplicity and visibility.
@@ -506,7 +506,7 @@ python -c "import json; d=json.load(open('docs/reports/pywin32_authority.json',e
 
 - Modify: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_application.py`
 - Modify: `tests/integration/conftest.py` only if a small, reusable function-scoped fixture is needed; do not change the shared `test_project` lifecycle without evidence
-- Ledger: `docs/reports/sync-todo/Group-unfinished-1.md` (existing IRPApplication row; preserve its earlier evidence and add the current getter-data findings)
+- Ledger: `docs/reports/sync-todo/index.md` (existing IRPApplication row; preserve its earlier evidence and add the current getter-data findings)
 
 **Interfaces:**
 
@@ -560,7 +560,7 @@ for f in docs/reports/com/telelogic/rhapsody/core/*_api_report.md; do python .ag
 
 ## Out of scope (separate planning efforts)
 
-- The **113 unsynced interfaces** queued in `Group-unfinished-2..13.md` — continue per the existing ledger's importance order. Note: their queued sync runs should apply the property-shape rule from the start, and inherit the renamed base-class accessors from Tasks 2–5.
+- The **113 unsynced interfaces** queued in the category group files (see `docs/reports/sync-todo/index.md`) — continue per the existing ledger's importance order. Note: their queued sync runs should apply the property-shape rule from the start, and inherit the renamed base-class accessors from Tasks 2–5.
 - **AGENTS.md modernization** — it still documents the pre-sync layout (`models/elements/` domains, `core.py` as base, `test_model_association_class.py` as the reference pattern) which the skill's canonical-package rules supersede. Propose a docs pass after this remediation; needs user sign-off.
 
 ## Self-Review

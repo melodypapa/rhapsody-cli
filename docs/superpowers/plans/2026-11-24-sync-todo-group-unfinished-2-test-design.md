@@ -1,8 +1,8 @@
-# Group-unfinished-2 Test Design Implementation Plan
+# Category Group Test Design Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Design and write the Step 4 (unit) and Step 5 (integration) tests for all 10 wrapper migrations in `docs/reports/sync-todo/Group-unfinished-2.md`, using the JavaDoc contract in `docs/java_api/com/telelogic/rhapsody/core/` and the rhapsody-sync skill rules.
+**Goal:** Design and write the Step 4 (unit) and Step 5 (integration) tests for all 10 wrapper migrations in `docs/reports/sync-todo/index.md`, using the JavaDoc contract in `docs/java_api/com/telelogic/rhapsody/core/` and the rhapsody-sync skill rules.
 
 **Architecture:** Phase 0 removes the hard COM-evidence blocker (all 10 interfaces are absent from `docs/reports/pywin32_authority.json` and have no `*_api_report.md`). Each interface then gets a data-driven fake-COM unit module and an authentic-data integration module, following the existing `IRPClass`/`IRPPackage` patterns. The plan is test-design scoped: wrapper code changes are only the minimal edits required to turn red tests green. Steps 6 (SWR), 7 (RST), and 8 (full verify) are out of scope here and remain open on the TODO rows.
 
@@ -197,12 +197,12 @@ Expected: no `BLOCKED:` lines. Exit 2 for any interface means stop — do not wr
 
 ```bash
 git add docs/reports/pywin32_authority.json docs/reports/com/telelogic/rhapsody/core/irp_*_api_report.md
-git commit -m "docs(sync): add pywin32 evidence for Group-unfinished-2 interfaces"
+git commit -m "docs(sync): add pywin32 evidence for the category group files interfaces"
 ```
 
 - [ ] **Step 5: Open the per-run checklists**
 
-For each now-unblocked row in `docs/reports/sync-todo/Group-unfinished-2.md`, publish §1's checklist with one subtask per owned JavaDoc member (`JavaDoc / COM / wrapper / disposition` boxes) before writing any test. The member inventories in Tasks 2–21 are that checklist content.
+For each now-unblocked row in `docs/reports/sync-todo/index.md`, publish §1's checklist with one subtask per owned JavaDoc member (`JavaDoc / COM / wrapper / disposition` boxes) before writing any test. The member inventories in Tasks 2–21 are that checklist content.
 
 ---
 
@@ -1316,10 +1316,10 @@ done
 
 - [ ] Run the full unit suite: `uv run pytest tests/unit -q -o addopts=` → all pass.
 - [ ] On non-Windows: collection-only for all 10 integration files. On Windows: full integration suite with authentic data, recording pass/fail counts and the complete `NotImplementedError` list.
-- [ ] Do NOT run `verify_sync.py` or edit SWR/RST docs in this plan — those are Steps 6–8 and stay open on `Group-unfinished-2.md`.
+- [ ] Do NOT run `verify_sync.py` or edit SWR/RST docs in this plan — those are Steps 6–8 and stay open on the category group files (see `docs/reports/sync-todo/index.md`).
 
 ## Self-review notes
 
-- **Spec coverage:** all 10 rows of `Group-unfinished-2.md` have a unit-test task and an integration-test task; Phase 0 addresses the catalog/report prerequisite stated in the file. Dependency order respected: IRPRelation (Task 6) before IRPInstance (Task 8).
+- **Spec coverage:** all 10 rows of the category group files (see `docs/reports/sync-todo/index.md`) have a unit-test task and an integration-test task; Phase 0 addresses the catalog/report prerequisite stated in the file. Dependency order respected: IRPRelation (Task 6) before IRPInstance (Task 8).
 - **Placeholder scan:** no TBD/TODO; every data row is concrete. The only values deferred by design are `STUBS` rows and the shape classification, both of which are produced by Phase 0's reports (external evidence that cannot exist offline) and governed by an explicit reconciliation procedure.
 - **Type consistency:** Python API names are used identically in the harness data lists, wrapper implementation steps, and integration tests. `IRPState`, `IRPComponent`, `IRPRelation`, `IRPInstance`, `IRPFlow`, `IRPStatechart`, `IRPDiagram`, `IRPMessage`, `IRPTableLayout`, `IRPCollaboration` are the canonical class names throughout.

@@ -351,6 +351,119 @@ def verify_integration_exception_catches(test_source: str) -> List[str]:
     return issues
 
 
+_FORBIDDEN_TEST_MARKERS = {"skip", "xfail"}
+
+
+def _forbidden_marker_name(node: ast.AST) -> Optional[str]:
+    """Return ``skip``/``xfail`` for a ``<module>.mark.<name>`` decorator."""
+    target = node.func if isinstance(node, ast.Call) else node
+    if not isinstance(target, ast.Attribute) or target.attr not in _FORBIDDEN_TEST_MARKERS:
+        return None
+    if isinstance(target.value, ast.Attribute) and target.value.attr == "mark":
+        return target.attr
+    return None
+
+
+def _has_nonempty_skip_reason(decorator: ast.AST) -> bool:
+    """Return whether a ``@pytest.mark.skip`` decorator carries ``reason="..."``."""
+    if not isinstance(decorator, ast.Call):
+        return False
+    for keyword in decorator.keywords:
+        if keyword.arg != "reason":
+            continue
+        return isinstance(keyword.value, ast.Constant) and isinstance(keyword.value.value, str) and bool(keyword.value.value.strip())
+    return False
+
+
+def verify_no_skip_or_xfail(path: Path, allow_reasoned_skip: bool = False) -> List[str]:
+    """Model-class tests must run: no xfail, runtime skip, or unexplained skip.
+
+    SKILL section 4 forbids ``pytest.xfail``, ``pytest.skip(...)``, and
+    ``pytest.xfail(...)`` outright, and forbids skip markers in unit tests.
+    An integration test may carry ``@pytest.mark.skip(reason="...")`` only with
+    explicit user approval and a ledger entry; the machine check enforces the
+    non-empty reason, while the approval and ledger check remain manual.
+    """
+    issues: List[str] = []
+    tree = ast.parse(path.read_text(encoding="utf-8"))
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            for decorator in node.decorator_list:
+                marker = _forbidden_marker_name(decorator)
+                if marker is None:
+                    continue
+                if marker == "skip" and allow_reasoned_skip and _has_nonempty_skip_reason(decorator):
+                    continue
+                issues.append(f"pytest.mark.{marker} at line {node.lineno} is forbidden in a model-class test (SKILL section 4); fix the fixture or record a blocker")
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) and node.func.attr in _FORBIDDEN_TEST_MARKERS:
+            receiver = node.func.value
+            if isinstance(receiver, ast.Name) and receiver.id == "pytest":
+                issues.append(f"pytest.{node.func.attr}() at line {node.lineno} is forbidden in a model-class test (SKILL section 4); fix the fixture or record a blocker")
+    return issues
+
+
+def verify_no_empty_finally(path: Path) -> List[str]:
+    """A ``finally`` block must perform real cleanup, not just ``pass``.
+
+    SKILL section 5 forbids a ``finally: pass`` shell: it looks like cleanup
+    while leaving the created objects in the session-shared project.
+    ``try``/``finally`` blocks with at least one real statement stay allowed.
+    """
+    issues: List[str] = []
+    tree = ast.parse(path.read_text(encoding="utf-8"))
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Try) or not node.finalbody:
+            continue
+        if all(isinstance(statement, ast.Pass) for statement in node.finalbody):
+            issues.append(f"finally block at line {node.lineno} contains only 'pass' (SKILL section 5); clean up the created objects or record a blocker")
+    return issues
+
+
+def _owned_property_names(wrapper_source: str) -> Set[str]:
+    tree = ast.parse(wrapper_source)
+    names: Set[str] = set()
+    for node in ast.walk(tree):
+        if _is_python_property_accessor(node):
+            names.add(node.name)
+    return names
+
+
+def _is_weak_getter_assertion(expression: ast.expr) -> bool:
+    """Return whether an assertion proves only non-None/type/count/truthiness."""
+    if isinstance(expression, ast.Constant):
+        return True
+    if isinstance(expression, ast.Compare):
+        if len(expression.ops) == 1 and isinstance(expression.ops[0], ast.IsNot):
+            comparator = expression.comparators[0]
+            return isinstance(comparator, ast.Constant) and comparator.value is None
+        operands = [expression.left, *expression.comparators]
+        return any(isinstance(operand, ast.Call) and isinstance(operand.func, ast.Name) and operand.func.id == "len" for operand in operands)
+    if isinstance(expression, ast.Call):
+        return isinstance(expression.func, ast.Name) and expression.func.id == "isinstance"
+    return isinstance(expression, (ast.Name, ast.Attribute))
+
+
+def verify_getter_assertions(path: Path, property_names: Set[str]) -> List[str]:
+    """Reject getter tests that assert only non-None/type/count/truthiness.
+
+    SKILL section 5 requires a getter integration test to create the real
+    related object, then assert identity or value; an empty collection or a
+    non-``None`` return is not evidence that retrieval works.
+    """
+    issues: List[str] = []
+    tree = ast.parse(path.read_text(encoding="utf-8"))
+    for node in ast.walk(tree):
+        if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) or not node.name.startswith("test_"):
+            continue
+        member = node.name[len("test_") :]
+        if member not in property_names:
+            continue
+        assertions = [statement for statement in ast.walk(node) if isinstance(statement, ast.Assert)]
+        if not assertions or all(_is_weak_getter_assertion(assertion.test) for assertion in assertions):
+            issues.append(f"getter test {node.name} at line {node.lineno} only asserts non-None/type/count; create the related object and assert identity/value (SKILL section 5)")
+    return issues
+
+
 def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) -> List[str]:
     """Check package placement, requirement entry, and RST coverage against a validator report."""
     issues: List[str] = []
@@ -415,6 +528,7 @@ def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) ->
 
     # Unit and integration tests mirror the wrapper's package and must exercise the class.
     model_segment = Path("models") / Path(*rel_parent.parts[1:]) if is_model_wrapper else Path()
+    owned_properties = _owned_property_names(absolute_wrapper.read_text(encoding="utf-8")) if absolute_wrapper.is_file() else set()
     for label, test_base in (("Unit", "unit"), ("Integration", "integration")):
         test_dir = root / "tests" / test_base / model_segment
         test_path = first_existing(test_dir, "test_{stem}.py")
@@ -422,8 +536,12 @@ def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) ->
             issues.append(f"{label} test file not found for {simple_name}: {test_dir / f'test_{class_stem}.py'}")
         elif wrapper_class not in test_path.read_text(encoding="utf-8"):
             issues.append(f"{label} test file does not exercise {wrapper_class}: {test_path}")
-        elif label == "Integration":
-            issues.extend(verify_integration_exception_catches(test_path.read_text(encoding="utf-8")))
+        else:
+            issues.extend(verify_no_skip_or_xfail(test_path, allow_reasoned_skip=label == "Integration"))
+            if label == "Integration":
+                issues.extend(verify_integration_exception_catches(test_path.read_text(encoding="utf-8")))
+                issues.extend(verify_no_empty_finally(test_path))
+                issues.extend(verify_getter_assertions(test_path, owned_properties))
     requirements_path = first_existing(root / "docs" / "requirements" / package_dir, "{stem}.md")
     if requirements_path is None:
         issues.append(f"Class requirement document not found: {root / 'docs' / 'requirements' / package_dir / f'{class_stem}.md'}")
