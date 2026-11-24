@@ -473,13 +473,15 @@ def test_build_deviation_rows_accepts_python_property_for_java_accessors() -> No
 def test_irp_model_element_com_property_families_are_classified_as_matches() -> None:
     project_root = Path(__file__).resolve().parents[2]
     models_root = project_root / "src" / "rhapsody_cli" / "models"
-    java_docs_root = project_root / "docs" / "java_api" / "com" / "telelogic" / "rhapsody" / "core"
     authority_path = project_root / "docs" / "reports" / "pywin32_authority.json"
     authority = json.loads(authority_path.read_text(encoding="utf-8"))
 
     python_members = collect_python_members("IRPModelElement", models_root)
-    java_members = collect_java_members("IRPModelElement", java_docs_root, include_superinterfaces=False)
     pywin32_members = authority["catalog"]["IRPModelElement"]
+    # The generated Javadocs are not included in CI checkouts. Derive a getter
+    # name for each catalog property to exercise all real wrapper/property
+    # families without making this unit test depend on that optional directory.
+    java_members = {f"get{name[0].upper()}{name[1:]}" for name, kind in pywin32_members.items() if kind == "property"}
 
     rows = build_deviation_rows(python_members, java_members, pywin32_members)
     property_deviations = [
