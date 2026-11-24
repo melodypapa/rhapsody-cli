@@ -4,6 +4,7 @@ These tests require a running Rhapsody instance with an open project.
 """
 
 import uuid
+from typing import Iterator, Optional
 from unittest.mock import patch
 
 import pytest
@@ -17,6 +18,21 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProje
 from rhapsody_cli.models.core import ComHelper
 from rhapsody_cli.models.elements.classifiers.model_stereotype import RPStereotype
 from rhapsody_cli.models.elements.variables import RPTag
+
+
+@pytest.fixture(scope="module", autouse=True)
+def _hide_application_ui_by_default(rhapsody_app: Optional[RhapsodyApplication]) -> Iterator[None]:
+    """Keep this integration module hidden without changing shared fixtures."""
+    if rhapsody_app is None:
+        yield
+        return
+
+    original_hidden_ui = rhapsody_app.is_hidden_ui
+    rhapsody_app.set_hidden_ui(True)
+    try:
+        yield
+    finally:
+        rhapsody_app.set_hidden_ui(original_hidden_ui)
 
 
 @pytest.mark.integration
