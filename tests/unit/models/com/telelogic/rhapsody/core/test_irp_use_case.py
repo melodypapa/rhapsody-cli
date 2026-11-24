@@ -13,7 +13,7 @@ def test_usecase_is_a_classifier() -> None:
     usecase = IRPUseCase(fake)
 
     assert isinstance(usecase, IRPClassifier)
-    assert usecase.get_name() == "Login"
+    assert usecase.name == "Login"
 
 
 def test_usecase_add_extension_point_delegates_to_com() -> None:
@@ -56,7 +56,7 @@ def test_usecase_get_describing_diagrams_returns_collection() -> None:
     diagrams = usecase.get_describing_diagrams()
 
     assert len(diagrams) == 1
-    assert diagrams[0].get_name() == "Flow"
+    assert diagrams[0].name == "Flow"
 
 
 def test_usecase_is_registered_for_meta_class_usecase() -> None:

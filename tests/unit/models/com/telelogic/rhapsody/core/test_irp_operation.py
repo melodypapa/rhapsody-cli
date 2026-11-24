@@ -17,7 +17,7 @@ def test_operation_is_an_interface_item() -> None:
     operation = IRPOperation(fake)
 
     assert isinstance(operation, IRPInterfaceItem)
-    assert operation.get_name() == "doIt"
+    assert operation.name == "doIt"
 
 
 def test_operation_get_body_delegates_to_com() -> None:
@@ -109,7 +109,7 @@ def test_operation_get_returns_wraps_result() -> None:
     operation = IRPOperation(fake)
 
     result = operation.get_returns()
-    assert result.get_name() == "int"
+    assert result.name == "int"
 
 
 def test_operation_get_return_type_declaration_delegates_to_com() -> None:
@@ -170,7 +170,7 @@ def test_delete_flowchart_delegates_to_com() -> None:
 
 def test_get_flowchart_wraps_property_result() -> None:
     fake = make_fake_element("Operation", properties={"flowchart": make_fake_element("ActivityDiagram", properties={"name": "Flow"})})
-    assert IRPOperation(fake).get_flowchart().get_name() == "Flow"
+    assert IRPOperation(fake).get_flowchart().name == "Flow"
 
 
 def test_get_implementation_signature_delegates_to_com() -> None:

@@ -1268,7 +1268,7 @@ class IRPApplication(IRPModelElement):
         """
         return str(self.call_com(lambda: self._com.errorMessage()))
 
-    def get_error_message(self, _midl__irp_application0000_: str) -> str:  # type: ignore[override]
+    def get_error_message(self, _midl__irp_application0000_: str) -> str:
         """Returns error message for last method called
 
         Args:

@@ -60,7 +60,7 @@ def test_unit_is_a_model_element() -> None:
     unit = IRPUnit(fake)
 
     assert isinstance(unit, IRPModelElement)
-    assert unit.get_name() == "MyPkg"
+    assert unit.name == "MyPkg"
 
 
 def test_add_to_model_mode_constants_match_java_api() -> None:
@@ -80,7 +80,7 @@ def test_unit_copy_to_another_project_unwraps_parent_and_wraps_result() -> None:
     result = unit.copy_to_another_project(parent)
 
     assert isinstance(result, IRPModelElement)
-    assert result.get_name() == "Copied"
+    assert result.name == "Copied"
     fake.copyToAnotherProject.assert_called_once_with(parent._com)
 
 
@@ -216,7 +216,7 @@ def test_unit_load_passes_flag_and_wraps_result() -> None:
     result = unit.load(1)
 
     assert isinstance(result, IRPModelElement)
-    assert result.get_name() == "Loaded"
+    assert result.name == "Loaded"
     fake.load.assert_called_once_with(1)
 
 
@@ -229,7 +229,7 @@ def test_unit_move_to_another_project_leave_a_reference_unwraps_parent_and_wraps
     result = unit.move_to_another_project_leave_a_reference(parent)
 
     assert isinstance(result, IRPModelElement)
-    assert result.get_name() == "Moved"
+    assert result.name == "Moved"
     fake.moveToAnotherProjectLeaveAReference.assert_called_once_with(parent._com)
 
 
@@ -242,7 +242,7 @@ def test_unit_reference_to_another_project_unwraps_parent_and_wraps_result() -> 
     result = unit.reference_to_another_project(parent)
 
     assert isinstance(result, IRPModelElement)
-    assert result.get_name() == "Ref"
+    assert result.name == "Ref"
     fake.referenceToAnotherProject.assert_called_once_with(parent._com)
 
 

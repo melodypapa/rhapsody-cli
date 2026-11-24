@@ -420,7 +420,7 @@ class TestRPSearchQuery:
         obj = RPSearchQuery(fake)
         result = obj.get_view(0)
         fake.getView.assert_called_once_with(0)
-        assert result is not None and result.get_name() == "y"
+        assert result is not None and result.name == "y"
 
     def test_get_view_count_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchQuery")
@@ -579,7 +579,7 @@ class TestRPSearchQuery:
         fake.getSearchScopeObject.return_value = inner
         obj = RPSearchQuery(fake)
         result = obj.get_search_scope_object()
-        assert result is not None and result.get_name() == "y"
+        assert result is not None and result.name == "y"
 
     def test_get_search_text_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchQuery")
@@ -702,7 +702,7 @@ class TestRPSearchResult:
         fake.getMatchedObject.return_value = inner
         obj = RPSearchResult(fake)
         result = obj.get_matched_object()
-        assert result is not None and result.get_name() == "y"
+        assert result is not None and result.name == "y"
 
     def test_get_name_delegates_to_com(self) -> None:
         fake = make_fake_element("SearchResult")

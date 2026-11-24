@@ -17,7 +17,7 @@ def test_package_is_a_unit() -> None:
     package = IRPPackage(fake)
 
     assert isinstance(package, IRPUnit)
-    assert package.get_name() == "MyPkg"
+    assert package.name == "MyPkg"
 
 
 def test_package_add_class_delegates_to_com_and_wraps_result() -> None:
@@ -29,7 +29,7 @@ def test_package_add_class_delegates_to_com_and_wraps_result() -> None:
     result = package.add_class("Widget")
 
     fake.addClass.assert_called_once_with("Widget")
-    assert result.get_name() == "Widget"
+    assert result.name == "Widget"
 
 
 def test_package_add_nested_package_delegates_to_com() -> None:
@@ -41,7 +41,7 @@ def test_package_add_nested_package_delegates_to_com() -> None:
     result = package.add_nested_package("Nested")
 
     fake.addNestedPackage.assert_called_once_with("Nested")
-    assert result.get_name() == "Nested"
+    assert result.name == "Nested"
 
 
 def test_package_add_actor_delegates_to_com() -> None:
@@ -53,7 +53,7 @@ def test_package_add_actor_delegates_to_com() -> None:
     result = package.add_actor("Driver")
 
     fake.addActor.assert_called_once_with("Driver")
-    assert result.get_name() == "Driver"
+    assert result.name == "Driver"
 
 
 def test_package_add_global_function_delegates_to_com() -> None:
@@ -65,7 +65,7 @@ def test_package_add_global_function_delegates_to_com() -> None:
     result = package.add_global_function("doThing")
 
     fake.addGlobalFunction.assert_called_once_with("doThing")
-    assert result.get_name() == "doThing"
+    assert result.name == "doThing"
 
 
 def test_package_is_registered_for_meta_class_package() -> None:
@@ -88,8 +88,8 @@ def test_package_get_nested_packages_returns_collection() -> None:
     result = package.get_nested_packages()
     assert isinstance(result, IRPCollection)
     assert len(result) == 2
-    assert result[0].get_name() == "Nested1"
-    assert result[1].get_name() == "Nested2"
+    assert result[0].name == "Nested1"
+    assert result[1].name == "Nested2"
 
 
 def test_package_get_classes_returns_collection() -> None:
@@ -140,7 +140,7 @@ def test_package_add_use_case_returns_wrapped_element() -> None:
     result = package.add_use_case("UC1")
 
     fake.addUseCase.assert_called_once_with("UC1")
-    assert result.get_name() == "UC1"
+    assert result.name == "UC1"
 
 
 # --- New diagram tests ---
@@ -153,7 +153,7 @@ def test_package_add_activity_diagram_delegates_to_com() -> None:
     result = package.add_activity_diagram("Activity1")
 
     fake.addActivityDiagram.assert_called_once_with("Activity1")
-    assert result.get_name() == "Activity1"
+    assert result.name == "Activity1"
 
 
 def test_package_add_sequence_diagram_delegates_to_com() -> None:
@@ -165,7 +165,7 @@ def test_package_add_sequence_diagram_delegates_to_com() -> None:
     result = package.add_sequence_diagram("Seq1")
 
     fake.addSequenceDiagram.assert_called_once_with("Seq1")
-    assert result.get_name() == "Seq1"
+    assert result.name == "Seq1"
 
 
 def test_package_get_sequence_diagrams_returns_collection() -> None:
@@ -209,7 +209,7 @@ def test_package_find_class_delegates_to_com() -> None:
     result = package.find_class("MyClass")
 
     fake.findClass.assert_called_once_with("MyClass")
-    assert result.get_name() == "MyClass"
+    assert result.name == "MyClass"
 
 
 def test_package_add_association_delegates_to_com() -> None:
@@ -221,7 +221,7 @@ def test_package_add_association_delegates_to_com() -> None:
     result = package.add_association("assoc1")
 
     fake.addAssociation.assert_called_once_with("assoc1")
-    assert result.get_name() == "assoc1"
+    assert result.name == "assoc1"
 
 
 def test_package_get_events_returns_collection() -> None:
@@ -259,7 +259,7 @@ def test_package_add_flow_items_delegates_to_com() -> None:
     result = package.add_flow_items("MyFlowItem")
 
     fake.addFlowItems.assert_called_once_with("MyFlowItem")
-    assert result.get_name() == "MyFlowItem"
+    assert result.name == "MyFlowItem"
 
 
 def test_package_add_flows_delegates_to_com() -> None:
@@ -271,7 +271,7 @@ def test_package_add_flows_delegates_to_com() -> None:
     result = package.add_flows("MyFlow")
 
     fake.addFlows.assert_called_once_with("MyFlow")
-    assert result.get_name() == "MyFlow"
+    assert result.name == "MyFlow"
 
 
 def test_package_delete_flow_items_delegates_to_com() -> None:
@@ -395,7 +395,7 @@ def test_package_add_implicit_object_delegates_to_com() -> None:
     result = package.add_implicit_object("ImplicitObj")
 
     fake.addImplicitObject.assert_called_once_with("ImplicitObj")
-    assert result.get_name() == "ImplicitObj"
+    assert result.name == "ImplicitObj"
 
 
 def test_package_add_link_between_sysml_ports_delegates_to_com() -> None:
@@ -412,7 +412,7 @@ def test_package_add_link_between_sysml_ports_delegates_to_com() -> None:
     )
 
     fake.addLinkBetweenSYSMLPorts.assert_called_once_with(port1_fake, port2_fake)
-    assert result.get_name() == "Link1"
+    assert result.name == "Link1"
 
 
 # --- Misc Methods (Task 5) Tests ---

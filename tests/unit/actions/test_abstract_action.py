@@ -172,11 +172,8 @@ class _FakeElement:
     """Minimal stand-in for a wrapped model element with a name and children."""
 
     def __init__(self, name: str, children: Optional[List["_FakeElement"]] = None) -> None:
-        self._name = name
+        self.name = name
         self._children = children or []
-
-    def get_name(self) -> str:
-        return self._name
 
     def get_nested_elements(self) -> List["_FakeElement"]:
         return self._children

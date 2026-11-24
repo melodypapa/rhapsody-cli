@@ -239,7 +239,7 @@ def verify_wrapper_bindings(root: Path, interface_name: str, wrapper_source: str
             issues.append(f"{interface_name} binding '{member}' is absent from the pywin32 catalog")
             continue
         if found[1] != shape:
-            issues.append(f"{interface_name} binding '{member}' is {shape}-shaped in the wrapper " f"but the pywin32 catalog declares '{found[0]}' as {found[1]}")
+            issues.append(f"{interface_name} binding '{member}' is {shape}-shaped in the wrapper but the pywin32 catalog declares '{found[0]}' as {found[1]}")
             continue
         if shape != "method":
             continue
@@ -250,7 +250,7 @@ def verify_wrapper_bindings(root: Path, interface_name: str, wrapper_source: str
         required_val = signature.get("required")
         required = int(required_val) if isinstance(required_val, int) else int(count_val)
         if arity > int(count_val) or arity < required:
-            issues.append(f"{interface_name} binding '{member}' has call arity {arity} but the pywin32 signature " f"declares {int(count_val)} parameter(s) ({required} required)")
+            issues.append(f"{interface_name} binding '{member}' has call arity {arity} but the pywin32 signature declares {int(count_val)} parameter(s) ({required} required)")
     return issues
 
 
@@ -269,7 +269,7 @@ def verify_integration_exception_catches(test_source: str) -> List[str]:
     allowed = {"NotImplementedError"}
     for node in ast.walk(tree):
         if isinstance(node, ast.Try) and node.handlers:
-            issues.append(f"try/except handler at line {node.lineno} catches exceptions in an integration test " f"(SKILL section 5); assert the real outcome or record a blocker")
+            issues.append(f"try/except handler at line {node.lineno} catches exceptions in an integration test (SKILL section 5); assert the real outcome or record a blocker")
         if not isinstance(node, ast.With):
             continue
         for item in node.items:
@@ -288,9 +288,7 @@ def verify_integration_exception_catches(test_source: str) -> List[str]:
                 names = set()
             bad = names - allowed
             if bad:
-                issues.append(
-                    f"integration test asserts disallowed exception(s) {sorted(bad)} at line {node.lineno} " f"(only NotImplementedError for JavaDoc-defined/pywin32-absent stubs is allowed)"
-                )
+                issues.append(f"integration test asserts disallowed exception(s) {sorted(bad)} at line {node.lineno} (only NotImplementedError for JavaDoc-defined/pywin32-absent stubs is allowed)")
     return issues
 
 

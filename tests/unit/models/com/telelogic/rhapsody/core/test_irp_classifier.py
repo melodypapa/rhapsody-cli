@@ -18,7 +18,7 @@ def test_classifier_is_a_unit() -> None:
     classifier = IRPClassifier(fake)
 
     assert isinstance(classifier, IRPUnit)
-    assert classifier.get_name() == "Widget"
+    assert classifier.name == "Widget"
 
 
 def test_classifier_add_attribute_wraps_result() -> None:
@@ -30,7 +30,7 @@ def test_classifier_add_attribute_wraps_result() -> None:
     result = classifier.add_attribute("count")
 
     fake.addAttribute.assert_called_once_with("count")
-    assert result.get_name() == "count"
+    assert result.name == "count"
 
 
 def test_classifier_add_operation_wraps_result() -> None:
@@ -42,7 +42,7 @@ def test_classifier_add_operation_wraps_result() -> None:
     result = classifier.add_operation("doIt")
 
     fake.addOperation.assert_called_once_with("doIt")
-    assert result.get_name() == "doIt"
+    assert result.name == "doIt"
 
 
 def test_classifier_get_attributes_returns_collection() -> None:
@@ -53,7 +53,7 @@ def test_classifier_get_attributes_returns_collection() -> None:
     attributes = classifier.get_attributes()
 
     assert len(attributes) == 1
-    assert attributes[0].get_name() == "count"
+    assert attributes[0].name == "count"
 
 
 def test_classifier_get_operations_returns_collection() -> None:
@@ -64,7 +64,7 @@ def test_classifier_get_operations_returns_collection() -> None:
     operations = classifier.get_operations()
 
     assert len(operations) == 1
-    assert operations[0].get_name() == "doIt"
+    assert operations[0].name == "doIt"
 
 
 def test_classifier_add_generalization_delegates_to_com() -> None:
@@ -86,7 +86,7 @@ def test_classifier_add_statechart_wraps_result() -> None:
     result = classifier.add_statechart()
 
     fake.addStatechart.assert_called_once_with()
-    assert result.get_name() == "Behavior"
+    assert result.name == "Behavior"
 
 
 def test_classifier_add_activity_diagram_wraps_result() -> None:
@@ -98,7 +98,7 @@ def test_classifier_add_activity_diagram_wraps_result() -> None:
     result = classifier.add_activity_diagram()
 
     fake.addActivityDiagram.assert_called_once_with()
-    assert result.get_name() == "Act"
+    assert result.name == "Act"
 
 
 def test_classifier_add_flow_items_wraps_result() -> None:
@@ -110,7 +110,7 @@ def test_classifier_add_flow_items_wraps_result() -> None:
     result = classifier.add_flow_items("flowItem")
 
     fake.addFlowItems.assert_called_once_with("flowItem")
-    assert result.get_name() == "flowItem"
+    assert result.name == "flowItem"
 
 
 def test_classifier_add_flows_wraps_result() -> None:
@@ -122,7 +122,7 @@ def test_classifier_add_flows_wraps_result() -> None:
     result = classifier.add_flows("flow")
 
     fake.addFlows.assert_called_once_with("flow")
-    assert result.get_name() == "flow"
+    assert result.name == "flow"
 
 
 def test_classifier_add_relation_wraps_result() -> None:
@@ -134,7 +134,7 @@ def test_classifier_add_relation_wraps_result() -> None:
     result = classifier.add_relation("Other", "Pkg", "r1", "Association", "1", "r2", "Association", "*", "Link")
 
     fake.addRelation.assert_called_once_with("Other", "Pkg", "r1", "Association", "1", "r2", "Association", "*", "Link")
-    assert result.get_name() == "assoc"
+    assert result.name == "assoc"
 
 
 def test_classifier_add_relation_to_unwraps_classifier_and_wraps_result() -> None:
@@ -147,7 +147,7 @@ def test_classifier_add_relation_to_unwraps_classifier_and_wraps_result() -> Non
     result = classifier.add_relation_to(IRPClassifier(other_fake), "r1", "Association", "1", "r2", "Association", "*", "Link")
 
     fake.addRelationTo.assert_called_once_with(other_fake, "r1", "Association", "1", "r2", "Association", "*", "Link")
-    assert result.get_name() == "assoc"
+    assert result.name == "assoc"
 
 
 def test_classifier_add_unidirectional_relation_wraps_result() -> None:
@@ -159,7 +159,7 @@ def test_classifier_add_unidirectional_relation_wraps_result() -> None:
     result = classifier.add_unidirectional_relation("Other", "Pkg", "r1", "Association", "1", "Link")
 
     fake.addUnidirectionalRelation.assert_called_once_with("Other", "Pkg", "r1", "Association", "1", "Link")
-    assert result.get_name() == "assoc"
+    assert result.name == "assoc"
 
 
 def test_classifier_add_unidirectional_relation_to_unwraps_classifier_and_wraps_result() -> None:
@@ -172,7 +172,7 @@ def test_classifier_add_unidirectional_relation_to_unwraps_classifier_and_wraps_
     result = classifier.add_unidirectional_relation_to(IRPClassifier(other_fake), "r1", "Association", "1", "Link")
 
     fake.addUnidirectionalRelationTo.assert_called_once_with(other_fake, "r1", "Association", "1", "Link")
-    assert result.get_name() == "assoc"
+    assert result.name == "assoc"
 
 
 def test_classifier_delete_attribute_delegates_to_com() -> None:
@@ -244,7 +244,7 @@ def test_classifier_find_attribute_wraps_result() -> None:
     result = classifier.find_attribute("count")
 
     fake.findAttribute.assert_called_once_with("count")
-    assert result.get_name() == "count"
+    assert result.name == "count"
 
 
 def test_classifier_find_base_classifier_wraps_result() -> None:
@@ -256,7 +256,7 @@ def test_classifier_find_base_classifier_wraps_result() -> None:
     result = classifier.find_base_classifier("Base")
 
     fake.findBaseClassifier.assert_called_once_with("Base")
-    assert result.get_name() == "Base"
+    assert result.name == "Base"
 
 
 def test_classifier_find_derived_classifier_wraps_result() -> None:
@@ -268,7 +268,7 @@ def test_classifier_find_derived_classifier_wraps_result() -> None:
     result = classifier.find_derived_classifier("Derived")
 
     fake.findDerivedClassifier.assert_called_once_with("Derived")
-    assert result.get_name() == "Derived"
+    assert result.name == "Derived"
 
 
 def test_classifier_find_generalization_wraps_result() -> None:
@@ -280,7 +280,7 @@ def test_classifier_find_generalization_wraps_result() -> None:
     result = classifier.find_generalization("Base")
 
     fake.findGeneralization.assert_called_once_with("Base")
-    assert result.get_name() == "gen"
+    assert result.name == "gen"
 
 
 def test_classifier_find_interface_item_wraps_result() -> None:
@@ -292,7 +292,7 @@ def test_classifier_find_interface_item_wraps_result() -> None:
     result = classifier.find_interface_item("doIt()")
 
     fake.findInterfaceItem.assert_called_once_with("doIt()")
-    assert result.get_name() == "doIt"
+    assert result.name == "doIt"
 
 
 def test_classifier_find_nested_classifier_wraps_result() -> None:
@@ -304,7 +304,7 @@ def test_classifier_find_nested_classifier_wraps_result() -> None:
     result = classifier.find_nested_classifier("Nested")
 
     fake.findNestedClassifier.assert_called_once_with("Nested")
-    assert result.get_name() == "Nested"
+    assert result.name == "Nested"
 
 
 def test_classifier_find_nested_classifier_recursive_wraps_result() -> None:
@@ -316,7 +316,7 @@ def test_classifier_find_nested_classifier_recursive_wraps_result() -> None:
     result = classifier.find_nested_classifier_recursive("Nested")
 
     fake.findNestedClassifierRecursive.assert_called_once_with("Nested")
-    assert result is not None and result.get_name() == "Nested"
+    assert result is not None and result.name == "Nested"
 
 
 def test_classifier_find_relation_wraps_result() -> None:
@@ -328,7 +328,7 @@ def test_classifier_find_relation_wraps_result() -> None:
     result = classifier.find_relation("assoc")
 
     fake.findRelation.assert_called_once_with("assoc")
-    assert result.get_name() == "assoc"
+    assert result.name == "assoc"
 
 
 def test_classifier_find_trigger_wraps_result() -> None:
@@ -340,7 +340,7 @@ def test_classifier_find_trigger_wraps_result() -> None:
     result = classifier.find_trigger("trig")
 
     fake.findTrigger.assert_called_once_with("trig")
-    assert result.get_name() == "trig"
+    assert result.name == "trig"
 
 
 def test_classifier_get_activity_diagram_wraps_result() -> None:
@@ -350,7 +350,7 @@ def test_classifier_get_activity_diagram_wraps_result() -> None:
     classifier = IRPClassifier(fake)
 
     result = classifier.get_activity_diagram()
-    assert result.get_name() == "Act"
+    assert result.name == "Act"
 
 
 def test_classifier_get_statechart_wraps_result() -> None:
@@ -360,7 +360,7 @@ def test_classifier_get_statechart_wraps_result() -> None:
     classifier = IRPClassifier(fake)
 
     result = classifier.get_statechart()
-    assert result.get_name() == "Behavior"
+    assert result.name == "Behavior"
 
 
 def test_classifier_get_attributes_including_bases_returns_collection() -> None:
@@ -371,7 +371,7 @@ def test_classifier_get_attributes_including_bases_returns_collection() -> None:
     result = classifier.get_attributes_including_bases()
 
     assert len(result) == 1
-    assert result[0].get_name() == "count"
+    assert result[0].name == "count"
 
 
 def test_classifier_get_base_classifiers_returns_collection() -> None:
@@ -382,7 +382,7 @@ def test_classifier_get_base_classifiers_returns_collection() -> None:
     result = classifier.get_base_classifiers()
 
     assert len(result) == 1
-    assert result[0].get_name() == "Base"
+    assert result[0].name == "Base"
 
 
 def test_classifier_get_behavioral_diagrams_returns_collection() -> None:
@@ -393,7 +393,7 @@ def test_classifier_get_behavioral_diagrams_returns_collection() -> None:
     result = classifier.get_behavioral_diagrams()
 
     assert len(result) == 1
-    assert result[0].get_name() == "Behavior"
+    assert result[0].name == "Behavior"
 
 
 def test_classifier_get_derived_classifiers_returns_collection() -> None:
@@ -404,7 +404,7 @@ def test_classifier_get_derived_classifiers_returns_collection() -> None:
     result = classifier.get_derived_classifiers()
 
     assert len(result) == 1
-    assert result[0].get_name() == "Derived"
+    assert result[0].name == "Derived"
 
 
 def test_classifier_get_flow_items_returns_collection() -> None:
@@ -415,7 +415,7 @@ def test_classifier_get_flow_items_returns_collection() -> None:
     result = classifier.get_flow_items()
 
     assert len(result) == 1
-    assert result[0].get_name() == "flowItem"
+    assert result[0].name == "flowItem"
 
 
 def test_classifier_get_flows_returns_collection() -> None:
@@ -426,7 +426,7 @@ def test_classifier_get_flows_returns_collection() -> None:
     result = classifier.get_flows()
 
     assert len(result) == 1
-    assert result[0].get_name() == "flow"
+    assert result[0].name == "flow"
 
 
 def test_classifier_get_generalizations_returns_collection() -> None:
@@ -437,7 +437,7 @@ def test_classifier_get_generalizations_returns_collection() -> None:
     result = classifier.get_generalizations()
 
     assert len(result) == 1
-    assert result[0].get_name() == "gen"
+    assert result[0].name == "gen"
 
 
 def test_classifier_get_interface_items_returns_collection() -> None:
@@ -448,7 +448,7 @@ def test_classifier_get_interface_items_returns_collection() -> None:
     result = classifier.get_interface_items()
 
     assert len(result) == 1
-    assert result[0].get_name() == "doIt"
+    assert result[0].name == "doIt"
 
 
 def test_classifier_get_interface_items_including_bases_returns_collection() -> None:
@@ -459,7 +459,7 @@ def test_classifier_get_interface_items_including_bases_returns_collection() -> 
     result = classifier.get_interface_items_including_bases()
 
     assert len(result) == 1
-    assert result[0].get_name() == "doIt"
+    assert result[0].name == "doIt"
 
 
 def test_classifier_get_links_returns_collection() -> None:
@@ -470,7 +470,7 @@ def test_classifier_get_links_returns_collection() -> None:
     result = classifier.get_links()
 
     assert len(result) == 1
-    assert result[0].get_name() == "link"
+    assert result[0].name == "link"
 
 
 def test_classifier_get_nested_classifiers_returns_collection() -> None:
@@ -481,7 +481,7 @@ def test_classifier_get_nested_classifiers_returns_collection() -> None:
     result = classifier.get_nested_classifiers()
 
     assert len(result) == 1
-    assert result[0].get_name() == "Nested"
+    assert result[0].name == "Nested"
 
 
 def test_classifier_get_ports_returns_collection() -> None:
@@ -492,7 +492,7 @@ def test_classifier_get_ports_returns_collection() -> None:
     result = classifier.get_ports()
 
     assert len(result) == 1
-    assert result[0].get_name() == "port"
+    assert result[0].name == "port"
 
 
 def test_classifier_add_port_delegates_to_add_new_aggr() -> None:
@@ -505,7 +505,7 @@ def test_classifier_add_port_delegates_to_add_new_aggr() -> None:
 
     fake.addNewAggr.assert_called_once_with("Port", "clientPort")
     assert isinstance(result, IRPPort)
-    assert result.get_name() == "clientPort"
+    assert result.name == "clientPort"
 
 
 def test_classifier_get_relations_returns_collection() -> None:
@@ -516,7 +516,7 @@ def test_classifier_get_relations_returns_collection() -> None:
     result = classifier.get_relations()
 
     assert len(result) == 1
-    assert result[0].get_name() == "assoc"
+    assert result[0].name == "assoc"
 
 
 def test_classifier_get_relations_including_bases_returns_collection() -> None:
@@ -527,7 +527,7 @@ def test_classifier_get_relations_including_bases_returns_collection() -> None:
     result = classifier.get_relations_including_bases()
 
     assert len(result) == 1
-    assert result[0].get_name() == "assoc"
+    assert result[0].name == "assoc"
 
 
 def test_classifier_get_sequence_diagrams_returns_collection() -> None:
@@ -538,7 +538,7 @@ def test_classifier_get_sequence_diagrams_returns_collection() -> None:
     result = classifier.get_sequence_diagrams()
 
     assert len(result) == 1
-    assert result[0].get_name() == "seq"
+    assert result[0].name == "seq"
 
 
 def test_classifier_get_source_artifacts_returns_collection() -> None:
@@ -549,4 +549,4 @@ def test_classifier_get_source_artifacts_returns_collection() -> None:
     result = classifier.get_source_artifacts()
 
     assert len(result) == 1
-    assert result[0].get_name() == "file"
+    assert result[0].name == "file"

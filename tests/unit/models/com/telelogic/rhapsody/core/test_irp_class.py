@@ -20,7 +20,7 @@ def test_class_is_a_classifier() -> None:
     klass = IRPClass(fake)
 
     assert isinstance(klass, IRPClassifier)
-    assert klass.get_name() == "Widget"
+    assert klass.name == "Widget"
 
 
 def test_class_add_superclass_delegates_to_com() -> None:
@@ -42,7 +42,7 @@ def test_class_add_constructor_wraps_result() -> None:
     result = klass.add_constructor("int x")
 
     fake.addConstructor.assert_called_once_with("int x")
-    assert result.get_name() == "Widget"
+    assert result.name == "Widget"
 
 
 def test_class_add_destructor_wraps_result() -> None:
@@ -54,7 +54,7 @@ def test_class_add_destructor_wraps_result() -> None:
     result = klass.add_destructor()
 
     fake.addDestructor.assert_called_once_with()
-    assert result.get_name() == "~Widget"
+    assert result.name == "~Widget"
 
 
 def test_class_is_abstract_property_reads_pywin32_property() -> None:
@@ -74,7 +74,7 @@ def test_class_add_class_nested_wraps_result() -> None:
     result = klass.add_class("Inner")
 
     fake.addClass.assert_called_once_with("Inner")
-    assert result.get_name() == "Inner"
+    assert result.name == "Inner"
 
 
 def test_class_is_registered_for_meta_class_class() -> None:
@@ -94,7 +94,7 @@ def test_class_add_event_reception_wraps_result() -> None:
     result = klass.add_event_reception("onEvent")
 
     fake.addEventReception.assert_called_once_with("onEvent")
-    assert result.get_name() == "onEvent"
+    assert result.name == "onEvent"
 
 
 def test_class_add_event_reception_with_event_raises_without_com_dispatch() -> None:
@@ -129,7 +129,7 @@ def test_class_add_link_unwraps_all_args_and_wraps_result() -> None:
     )
 
     fake.addLink.assert_called_once_with(from_part, to_part, assoc, from_port, to_port)
-    assert result.get_name() == "link1"
+    assert result.name == "link1"
 
 
 def test_class_add_link_to_part_via_port_unwraps_and_wraps() -> None:
@@ -150,7 +150,7 @@ def test_class_add_link_to_part_via_port_unwraps_and_wraps() -> None:
     )
 
     fake.addLinkToPartViaPort.assert_called_once_with(to_part, part_port, class_port, assoc)
-    assert result.get_name() == "link1"
+    assert result.name == "link1"
 
 
 def test_class_add_reception_wraps_result() -> None:
@@ -162,7 +162,7 @@ def test_class_add_reception_wraps_result() -> None:
     result = klass.add_reception("onSignal")
 
     fake.addReception.assert_called_once_with("onSignal")
-    assert result.get_name() == "onSignal"
+    assert result.name == "onSignal"
 
 
 def test_class_add_triggered_operation_wraps_result() -> None:
@@ -174,7 +174,7 @@ def test_class_add_triggered_operation_wraps_result() -> None:
     result = klass.add_triggered_operation("handle")
 
     fake.addTriggeredOperation.assert_called_once_with("handle")
-    assert result.get_name() == "handle"
+    assert result.name == "handle"
 
 
 def test_class_add_type_wraps_result() -> None:
@@ -186,7 +186,7 @@ def test_class_add_type_wraps_result() -> None:
     result = klass.add_type("Color")
 
     fake.addType.assert_called_once_with("Color")
-    assert result.get_name() == "Color"
+    assert result.name == "Color"
 
 
 def test_class_delete_class_delegates_to_com() -> None:

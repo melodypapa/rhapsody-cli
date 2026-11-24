@@ -29,7 +29,7 @@ class TestAbstractPackageAction:
         """UTS_PKG_00019: Test successful package resolution."""
         action = AbstractPackageAction()
         mock_package = MagicMock()
-        mock_package.get_meta_class.return_value = "Package"
+        mock_package.meta_class = "Package"
 
         with patch.object(ElementManagementAction, "_get_active_root", return_value=MagicMock()):
             with patch(
@@ -43,7 +43,7 @@ class TestAbstractPackageAction:
         """UTS_PKG_00020: Test validation fails for non-package element."""
         action = AbstractPackageAction()
         mock_class = MagicMock()
-        mock_class.get_meta_class.return_value = "Class"
+        mock_class.meta_class = "Class"
 
         with patch.object(ElementManagementAction, "_get_active_root", return_value=MagicMock()):
             with patch(
@@ -100,12 +100,12 @@ class TestPackageCreateAction:
             action.execute(args)
 
             mock_parent.add_nested_package.assert_called_once_with("TempSensors")
-            mock_package.set_description.assert_called_once_with("Temperature sensors")
+            assert mock_package.description == "Temperature sensors"
 
     def test_create_bulk_packages_from_file(self, tmp_path: Any) -> None:
         """UTS_PKG_00002: Test creating multiple packages from JSON file."""
         json_file = tmp_path / "packages.json"
-        json_file.write_text('[{"name":"TempSensors","description":"Temperature"},' '{"name":"PressureSensors","description":"Pressure"}]')
+        json_file.write_text('[{"name":"TempSensors","description":"Temperature"},{"name":"PressureSensors","description":"Pressure"}]')
 
         action = PackageCreateAction()
         mock_parent = MagicMock()
@@ -262,7 +262,7 @@ class TestPackageCreateAction:
 
         # Mock getPackages() to return collection with existing package named "TopLevel"
         existing_pkg = MagicMock()
-        existing_pkg.get_name.return_value = "TopLevel"
+        existing_pkg.name = "TopLevel"
         mock_root.get_packages.return_value = [existing_pkg]
 
         with patch.object(action, "_get_active_root", return_value=mock_root):
@@ -284,11 +284,11 @@ class TestPackageCreateAction:
         """UTS_PKG_00033: Duplicate package name rejected in parent package."""
         action = PackageCreateAction()
         mock_parent = MagicMock()
-        mock_parent.get_name.return_value = "Sensors"
+        mock_parent.name = "Sensors"
 
         # Mock getNestedPackages() to return collection with existing package named "Temp"
         existing_pkg = MagicMock()
-        existing_pkg.get_name.return_value = "Temp"
+        existing_pkg.name = "Temp"
         mock_parent.get_nested_packages.return_value = [existing_pkg]
 
         with patch.object(action, "_resolve_and_validate_package", return_value=mock_parent):
@@ -382,10 +382,10 @@ class TestPackageViewAction:
 
         action = PackageViewAction()
         mock_package = MagicMock()
-        mock_package.get_name.return_value = "TempSensors"
-        mock_package.get_guid.return_value = "{12345}"
-        mock_package.get_description.return_value = "Temperature sensors"
-        mock_package.get_meta_class.return_value = "Package"
+        mock_package.name = "TempSensors"
+        mock_package.guid = "{12345}"
+        mock_package.description = "Temperature sensors"
+        mock_package.meta_class = "Package"
         mock_package.get_full_path_name.return_value = "Sensors/TempSensors"
 
         with patch.object(action, "_resolve_and_validate_package", return_value=mock_package):
@@ -406,10 +406,10 @@ class TestPackageViewAction:
 
         action = PackageViewAction()
         mock_package = MagicMock()
-        mock_package.get_name.return_value = "TempSensors"
-        mock_package.get_guid.return_value = "{12345}"
-        mock_package.get_description.return_value = "Temperature sensors"
-        mock_package.get_meta_class.return_value = "Package"
+        mock_package.name = "TempSensors"
+        mock_package.guid = "{12345}"
+        mock_package.description = "Temperature sensors"
+        mock_package.meta_class = "Package"
         mock_package.get_full_path_name.return_value = "Sensors/TempSensors"
 
         with patch.object(action, "_resolve_and_validate_package", return_value=mock_package):
@@ -431,10 +431,10 @@ class TestPackageViewAction:
 
         action = PackageViewAction()
         mock_package = MagicMock()
-        mock_package.get_name.return_value = "TempSensors"
-        mock_package.get_guid.return_value = "{12345}"
-        mock_package.get_description.return_value = "Temperature sensors"
-        mock_package.get_meta_class.return_value = "Package"
+        mock_package.name = "TempSensors"
+        mock_package.guid = "{12345}"
+        mock_package.description = "Temperature sensors"
+        mock_package.meta_class = "Package"
         mock_package.get_full_path_name.return_value = "Sensors/TempSensors"
 
         with patch.object(action, "_resolve_and_validate_package", return_value=mock_package):
@@ -468,9 +468,9 @@ class TestPackageListAction:
         action = PackageListAction()
         mock_parent = MagicMock()
         pkg1 = MagicMock()
-        pkg1.get_name.return_value = "TempSensors"
+        pkg1.name = "TempSensors"
         pkg2 = MagicMock()
-        pkg2.get_name.return_value = "PressureSensors"
+        pkg2.name = "PressureSensors"
         mock_parent.get_nested_packages.return_value = [pkg1, pkg2]
 
         with patch.object(action, "_resolve_and_validate_package", return_value=mock_parent):
@@ -511,9 +511,9 @@ class TestPackageListAction:
         action = PackageListAction()
         mock_parent = MagicMock()
         pkg1 = MagicMock()
-        pkg1.get_name.return_value = "TempSensors"
+        pkg1.name = "TempSensors"
         pkg2 = MagicMock()
-        pkg2.get_name.return_value = "PressureSensors"
+        pkg2.name = "PressureSensors"
         mock_parent.get_nested_packages.return_value = [pkg1, pkg2]
 
         with patch.object(action, "_resolve_and_validate_package", return_value=mock_parent):
@@ -557,7 +557,7 @@ class TestPackageUpdateAction:
 
             action.execute(args)
 
-            mock_package.set_description.assert_called_once_with("Updated description")
+            assert mock_package.description == "Updated description"
 
     def test_update_package_with_guid(self) -> None:
         """UTS_PKG_00036: Test updating package via --guid with type validation."""
@@ -566,7 +566,7 @@ class TestPackageUpdateAction:
         action = PackageUpdateAction()
         mock_root = MagicMock()
         mock_package = MagicMock()
-        mock_package.get_meta_class.return_value = "Package"
+        mock_package.meta_class = "Package"
         mock_root.find_element_by_guid.return_value = mock_package
 
         with patch.object(action, "_get_active_root", return_value=mock_root):
@@ -579,7 +579,7 @@ class TestPackageUpdateAction:
             action.execute(args)
 
             mock_root.find_element_by_guid.assert_called_once_with("{ABC-123}")
-            mock_package.set_description.assert_called_once_with("Updated")
+            assert mock_package.description == "Updated"
 
     def test_update_package_guid_wrong_type(self) -> None:
         """UTS_PKG_00037: Test --guid resolving to non-Package raises error."""
@@ -588,7 +588,7 @@ class TestPackageUpdateAction:
         action = PackageUpdateAction()
         mock_root = MagicMock()
         mock_element = MagicMock()
-        mock_element.get_meta_class.return_value = "Class"
+        mock_element.meta_class = "Class"
         mock_root.find_element_by_guid.return_value = mock_element
 
         with patch.object(action, "_get_active_root", return_value=mock_root):
@@ -643,7 +643,7 @@ class TestPackageUpdateAction:
 
                 mock_warning.assert_called_once()
                 assert "unknown_field" in str(mock_warning.call_args)
-                mock_package.set_description.assert_called_once_with("real desc")
+                assert mock_package.description == "real desc"
 
     def test_update_package_from_file(self, tmp_path: Any) -> None:
         """UTS_PKG_00040: Test loading JSON from --input file."""
@@ -664,7 +664,7 @@ class TestPackageUpdateAction:
 
             action.execute(args)
 
-            mock_package.set_description.assert_called_once_with("From file")
+            assert mock_package.description == "From file"
 
     def test_update_package_requires_path_or_guid(self) -> None:
         """UTS_PKG_00041: Test that neither --path nor --guid raises error."""

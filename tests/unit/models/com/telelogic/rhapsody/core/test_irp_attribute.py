@@ -11,7 +11,7 @@ def test_attribute_is_a_variable() -> None:
     attribute = IRPAttribute(fake)
 
     assert isinstance(attribute, RPVariable)
-    assert attribute.get_name() == "count"
+    assert attribute.name == "count"
 
 
 def test_attribute_get_multiplicity_delegates_to_com() -> None:

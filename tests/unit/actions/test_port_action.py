@@ -23,7 +23,7 @@ class TestAbstractPortAction:
 
         action = AbstractPortAction()
         mock_classifier = MagicMock()
-        mock_classifier.get_meta_class.return_value = "Class"
+        mock_classifier.meta_class = "Class"
 
         with patch.object(ElementManagementAction, "_get_active_root", return_value=MagicMock()):
             with patch(
@@ -42,9 +42,9 @@ class TestAbstractPortAction:
 
         # Create mock ports
         port1 = MagicMock()
-        port1.get_name.return_value = "inputPort"
+        port1.name = "inputPort"
         port2 = MagicMock()
-        port2.get_name.return_value = "outputPort"
+        port2.name = "outputPort"
         mock_classifier.get_ports.return_value = [port1, port2]
 
         result = action._resolve_port(mock_classifier, "outputPort")
@@ -59,7 +59,7 @@ class TestAbstractPortAction:
 
         # Create mock ports without matching name
         port1 = MagicMock()
-        port1.get_name.return_value = "inputPort"
+        port1.name = "inputPort"
         mock_classifier.get_ports.return_value = [port1]
 
         with pytest.raises(CliExecutionError) as exc_info:
@@ -73,7 +73,7 @@ class TestAbstractPortAction:
 
         action = AbstractPortAction()
         mock_port = MagicMock()
-        mock_port.get_meta_class.return_value = "Port"
+        mock_port.meta_class = "Port"
 
         mock_project = MagicMock()
         mock_project.find_element_by_guid.return_value = mock_port
@@ -103,7 +103,7 @@ class TestAbstractPortAction:
 
         action = AbstractPortAction()
         mock_class = MagicMock()
-        mock_class.get_meta_class.return_value = "Class"
+        mock_class.meta_class = "Class"
 
         mock_project = MagicMock()
         mock_project.find_element_by_guid.return_value = mock_class
@@ -149,7 +149,7 @@ class TestPortCreateAction:
             action.execute(args)
 
             mock_classifier.add_port.assert_called_once_with("clientPort")
-            mock_port.set_description.assert_called_once_with("Client interface")
+            assert mock_port.description == "Client interface"
 
     def test_create_bulk_ports_from_file(self, tmp_path: Any) -> None:
         """UTS_PORT_00002: Test creating multiple ports from JSON file."""
@@ -194,7 +194,7 @@ class TestPortCreateAction:
         mock_classifier.add_port.return_value = mock_port
         mock_owner = MagicMock()
         mock_contract = MagicMock()
-        mock_classifier.get_owner.return_value = mock_owner
+        mock_classifier.owner = mock_owner
         mock_owner.find_nested_classifier_recursive.return_value = mock_contract
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
@@ -205,7 +205,6 @@ class TestPortCreateAction:
 
             action.execute(args)
 
-            mock_classifier.get_owner.assert_called_once()
             mock_owner.find_nested_classifier_recursive.assert_called_once_with("IClient")
             mock_port.set_port_contract.assert_called_once_with(mock_contract)
 
@@ -259,7 +258,7 @@ class TestPortDeleteAction:
         mock_port = MagicMock()
 
         # Setup getPorts to return the mock port
-        mock_port.get_name.return_value = "clientPort"
+        mock_port.name = "clientPort"
         mock_classifier.get_ports.return_value = [mock_port]
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
@@ -278,7 +277,7 @@ class TestPortDeleteAction:
 
         action = PortDeleteAction()
         mock_port = MagicMock()
-        mock_port.get_meta_class.return_value = "Port"
+        mock_port.meta_class = "Port"
 
         with patch.object(action, "_resolve_port_by_guid", return_value=mock_port):
             args = MagicMock()
@@ -296,7 +295,7 @@ class TestPortDeleteAction:
 
         action = PortDeleteAction()
         mock_class = MagicMock()
-        mock_class.get_meta_class.return_value = "Class"
+        mock_class.meta_class = "Class"
 
         mock_project = MagicMock()
         mock_project.find_element_by_guid.return_value = mock_class
@@ -340,16 +339,16 @@ class TestPortViewAction:
     def _make_mock_port(self) -> MagicMock:
         """Helper: build a fully-populated mock port with 8 fields."""
         mock_port = MagicMock()
-        mock_port.get_meta_class.return_value = "Port"
-        mock_port.get_name.return_value = "clientPort"
-        mock_port.get_guid.return_value = "12345678-1234-1234-1234-123456789abc"
-        mock_port.get_description.return_value = "Client interface port"
+        mock_port.meta_class = "Port"
+        mock_port.name = "clientPort"
+        mock_port.guid = "12345678-1234-1234-1234-123456789abc"
+        mock_port.description = "Client interface port"
         mock_port.get_is_behavioral.return_value = 1
         mock_port.get_is_reversed.return_value = 0
         mock_port.get_full_path_name.return_value = "Sensors/TemperatureSensor/clientPort"
 
         mock_contract = MagicMock()
-        mock_contract.get_name.return_value = "IClient"
+        mock_contract.name = "IClient"
         mock_port.get_port_contract.return_value = mock_contract
 
         return mock_port
@@ -362,7 +361,7 @@ class TestPortViewAction:
         mock_port = self._make_mock_port()
         mock_classifier = MagicMock()
 
-        mock_port.get_name.return_value = "clientPort"
+        mock_port.name = "clientPort"
         mock_classifier.get_ports.return_value = [mock_port]
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
@@ -474,9 +473,9 @@ class TestPortListAction:
         action = PortListAction()
         mock_classifier = MagicMock()
         port1 = MagicMock()
-        port1.get_name.return_value = "inputPort"
+        port1.name = "inputPort"
         port2 = MagicMock()
-        port2.get_name.return_value = "outputPort"
+        port2.name = "outputPort"
         mock_classifier.get_ports.return_value = [port1, port2]
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
@@ -518,9 +517,9 @@ class TestPortListAction:
         action = PortListAction()
         mock_classifier = MagicMock()
         port1 = MagicMock()
-        port1.get_name.return_value = "inputPort"
+        port1.name = "inputPort"
         port2 = MagicMock()
-        port2.get_name.return_value = "outputPort"
+        port2.name = "outputPort"
         mock_classifier.get_ports.return_value = [port1, port2]
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
@@ -550,7 +549,7 @@ class TestPortUpdateAction:
         action = PortUpdateAction()
         mock_classifier = MagicMock()
         mock_port = MagicMock()
-        mock_port.get_name.return_value = "clientPort"
+        mock_port.name = "clientPort"
         mock_classifier.get_ports.return_value = [mock_port]
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
@@ -571,7 +570,7 @@ class TestPortUpdateAction:
 
         action = PortUpdateAction()
         mock_port = MagicMock()
-        mock_port.get_meta_class.return_value = "Port"
+        mock_port.meta_class = "Port"
 
         with patch.object(action, "_resolve_port_by_guid", return_value=mock_port):
             args = MagicMock()
@@ -592,7 +591,7 @@ class TestPortUpdateAction:
         action = PortUpdateAction()
         mock_classifier = MagicMock()
         mock_port = MagicMock()
-        mock_port.get_name.return_value = "clientPort"
+        mock_port.name = "clientPort"
         mock_classifier.get_ports.return_value = [mock_port]
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
@@ -616,7 +615,7 @@ class TestPortUpdateAction:
         action = PortUpdateAction()
         mock_classifier = MagicMock()
         mock_port = MagicMock()
-        mock_port.get_name.return_value = "clientPort"
+        mock_port.name = "clientPort"
         mock_classifier.get_ports.return_value = [mock_port]
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):

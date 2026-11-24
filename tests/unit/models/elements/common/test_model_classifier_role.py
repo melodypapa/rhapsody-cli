@@ -13,7 +13,7 @@ class TestRPClassifierRole:
         fake = make_fake_element("ClassifierRole", properties={"name": "Lifeline1"})
         role = RPClassifierRole(fake)
         assert isinstance(role, IRPModelElement)
-        assert role.get_name() == "Lifeline1"
+        assert role.name == "Lifeline1"
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("ClassifierRole", properties={"name": "L1"})
@@ -27,7 +27,7 @@ class TestRPClassifierRole:
         fake.getFormalClassifier.return_value = clf
         role = RPClassifierRole(fake)
         wrapped = role.get_formal_classifier()
-        assert wrapped.get_name() == "Foo"
+        assert wrapped.name == "Foo"
 
     def test_get_formal_instance_wraps_result(self) -> None:
         # Pattern B
@@ -36,7 +36,7 @@ class TestRPClassifierRole:
         fake.getFormalInstance.return_value = inst
         role = RPClassifierRole(fake)
         wrapped = role.get_formal_instance()
-        assert wrapped.get_name() == "Inst1"
+        assert wrapped.name == "Inst1"
 
     def test_get_referenced_sequence_diagram_wraps_result(self) -> None:
         # Pattern B
@@ -45,7 +45,7 @@ class TestRPClassifierRole:
         fake.getReferencedSequenceDiagram.return_value = sd
         role = RPClassifierRole(fake)
         wrapped = role.get_referenced_sequence_diagram()
-        assert wrapped.get_name() == "SD1"
+        assert wrapped.name == "SD1"
 
     def test_get_referencing_classifier_roles_recursively_returns_collection(self) -> None:
         # Pattern C — no-arg getter returning IRPCollection

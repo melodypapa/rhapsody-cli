@@ -11,7 +11,7 @@ def test_interface_item_is_a_classifier() -> None:
     item = IRPInterfaceItem(fake)
 
     assert isinstance(item, IRPClassifier)
-    assert item.get_name() == "doIt"
+    assert item.name == "doIt"
 
 
 def test_interface_item_add_argument_wraps_result() -> None:
@@ -23,7 +23,7 @@ def test_interface_item_add_argument_wraps_result() -> None:
     result = item.add_argument("x")
 
     fake.addArgument.assert_called_once_with("x")
-    assert result.get_name() == "x"
+    assert result.name == "x"
 
 
 def test_interface_item_add_argument_before_position_wraps_result() -> None:
@@ -35,7 +35,7 @@ def test_interface_item_add_argument_before_position_wraps_result() -> None:
     result = item.add_argument_before_position("y", 1)
 
     fake.addArgumentBeforePosition.assert_called_once_with("y", 1)
-    assert result.get_name() == "y"
+    assert result.name == "y"
 
 
 def test_interface_item_get_arguments_returns_collection() -> None:

@@ -13,7 +13,7 @@ def test_configuration_is_a_unit() -> None:
     config = RPConfiguration(fake)
 
     assert isinstance(config, IRPUnit)
-    assert config.get_name() == "Config1"
+    assert config.name == "Config1"
 
 
 def test_configuration_is_registered_for_meta_class_configuration() -> None:
@@ -84,7 +84,7 @@ def test_configuration_get_its_component_wraps_result() -> None:
     config = RPConfiguration(fake)
 
     result = config.get_its_component()
-    assert result.get_name() == "Comp1"
+    assert result.name == "Comp1"
 
 
 def test_configuration_set_its_component_delegates() -> None:

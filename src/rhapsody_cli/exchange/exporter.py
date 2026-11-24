@@ -54,7 +54,7 @@ class RhapsodyExporter(RhapsodyModelHelper):
             return None
         wrapped = self._wrap_if_needed(element)
         try:
-            meta_class = wrapped.get_meta_class()
+            meta_class = wrapped.meta_class
         except Exception:
             return None
         dispatch = {
@@ -88,7 +88,7 @@ class RhapsodyExporter(RhapsodyModelHelper):
         return self._export_container(cls, "Class")
 
     def _export_type(self, type_element: IRPModelElement) -> Dict[str, object]:
-        spec: Dict[str, object] = {"name": type_element.get_name(), "type": "Type"}
+        spec: Dict[str, object] = {"name": type_element.name, "type": "Type"}
         kind = self._safe_get(type_element, "get_kind")
         if kind:
             spec["kind"] = kind
@@ -104,7 +104,7 @@ class RhapsodyExporter(RhapsodyModelHelper):
         return spec
 
     def _export_operation(self, op: IRPModelElement) -> Dict[str, object]:
-        spec: Dict[str, object] = {"name": op.get_name(), "type": "Operation"}
+        spec: Dict[str, object] = {"name": op.name, "type": "Operation"}
         return_classifier = cast(Optional[IRPModelElement], self._safe_get(op, "get_returns"))
         return_name = self.get_classifier_name(return_classifier) if return_classifier is not None else None
         if return_name:
@@ -118,7 +118,7 @@ class RhapsodyExporter(RhapsodyModelHelper):
         return spec
 
     def _export_argument(self, arg: IRPModelElement) -> Dict[str, object]:
-        spec: Dict[str, object] = {"name": arg.get_name(), "type": "Argument"}
+        spec: Dict[str, object] = {"name": arg.name, "type": "Argument"}
         type_classifier = cast(Optional[IRPModelElement], self._safe_get(arg, "get_type"))
         type_name = self.get_classifier_name(type_classifier) if type_classifier is not None else None
         if type_name:
@@ -129,7 +129,7 @@ class RhapsodyExporter(RhapsodyModelHelper):
         return spec
 
     def _export_attribute(self, attr: IRPModelElement) -> Dict[str, object]:
-        spec: Dict[str, object] = {"name": attr.get_name(), "type": "Attribute"}
+        spec: Dict[str, object] = {"name": attr.name, "type": "Attribute"}
         type_classifier = cast(Optional[IRPModelElement], self._safe_get(attr, "get_type"))
         type_name = self.get_classifier_name(type_classifier) if type_classifier is not None else None
         if type_name:
@@ -146,7 +146,7 @@ class RhapsodyExporter(RhapsodyModelHelper):
         return spec
 
     def _export_object(self, obj: IRPModelElement) -> Dict[str, object]:
-        spec: Dict[str, object] = {"name": obj.get_name(), "type": "Object"}
+        spec: Dict[str, object] = {"name": obj.name, "type": "Object"}
         classifier = cast(Optional[IRPModelElement], self._safe_get(obj, "get_classifier"))
         classifier_name = self.get_classifier_name(classifier) if classifier is not None else None
         if classifier_name:
@@ -154,10 +154,10 @@ class RhapsodyExporter(RhapsodyModelHelper):
         return spec
 
     def _export_enumeration_literal(self, literal: IRPModelElement) -> Dict[str, object]:
-        return {"name": literal.get_name(), "type": "EnumerationLiteral"}
+        return {"name": literal.name, "type": "EnumerationLiteral"}
 
     def _export_dependency(self, dep: IRPModelElement) -> Dict[str, object]:
-        spec: Dict[str, object] = {"name": dep.get_name(), "type": "Dependency"}
+        spec: Dict[str, object] = {"name": dep.name, "type": "Dependency"}
         target = self._safe_get(dep, "get_depends_on")
         target_name = self._classifier_name(target)
         if target_name:
@@ -165,7 +165,7 @@ class RhapsodyExporter(RhapsodyModelHelper):
         return spec
 
     def _export_generalization(self, gen: IRPModelElement) -> Dict[str, object]:
-        spec: Dict[str, object] = {"name": gen.get_name(), "type": "Generalization"}
+        spec: Dict[str, object] = {"name": gen.name, "type": "Generalization"}
         base = self._safe_get(gen, "get_base_class")
         base_name = self._classifier_name(base)
         if base_name:
@@ -179,7 +179,7 @@ class RhapsodyExporter(RhapsodyModelHelper):
         return spec
 
     def _export_relation(self, rel: IRPModelElement) -> Dict[str, object]:
-        spec: Dict[str, object] = {"name": rel.get_name(), "type": "Relation"}
+        spec: Dict[str, object] = {"name": rel.name, "type": "Relation"}
         relation_type = self._safe_get(rel, "get_relation_type")
         if relation_type:
             spec["relation_type"] = relation_type
@@ -206,7 +206,7 @@ class RhapsodyExporter(RhapsodyModelHelper):
         return spec
 
     def _export_port(self, port: IRPModelElement) -> Dict[str, object]:
-        spec: Dict[str, object] = {"name": port.get_name(), "type": "Port"}
+        spec: Dict[str, object] = {"name": port.name, "type": "Port"}
         is_behavioral = self._safe_get(port, "get_is_behavioral")
         if is_behavioral is not None:
             spec["is_behavioral"] = bool(is_behavioral)
@@ -226,7 +226,7 @@ class RhapsodyExporter(RhapsodyModelHelper):
         return spec
 
     def _export_event(self, event: IRPModelElement) -> Dict[str, object]:
-        spec: Dict[str, object] = {"name": event.get_name(), "type": "Event"}
+        spec: Dict[str, object] = {"name": event.name, "type": "Event"}
         base = self._safe_get(event, "get_base_event")
         base_name = self._classifier_name(base)
         if base_name:
@@ -238,7 +238,7 @@ class RhapsodyExporter(RhapsodyModelHelper):
         return spec
 
     def _export_event_reception(self, reception: IRPModelElement) -> Dict[str, object]:
-        spec: Dict[str, object] = {"name": reception.get_name(), "type": "EventReception"}
+        spec: Dict[str, object] = {"name": reception.name, "type": "EventReception"}
         event = self._safe_get(reception, "get_event")
         event_name = self._classifier_name(event)
         if event_name:
@@ -248,10 +248,10 @@ class RhapsodyExporter(RhapsodyModelHelper):
     def _export_stereotypes(self, element: IRPModelElement) -> List[str]:
         result: List[str] = []
         try:
-            collection = element.get_stereotypes()
+            collection = element.stereotypes
             for st in collection:
                 try:
-                    result.append(st.get_name())
+                    result.append(st.name)
                 except Exception:
                     continue
         except Exception:
@@ -261,10 +261,10 @@ class RhapsodyExporter(RhapsodyModelHelper):
     def _export_tags(self, element: IRPModelElement) -> Dict[str, str]:
         result: Dict[str, str] = {}
         try:
-            collection = element.get_all_tags()
+            collection = element.all_tags
             for tag in collection:
                 try:
-                    name = tag.get_name()
+                    name = tag.name
                     value = tag.get_value()
                     if name and value is not None:
                         result[name] = str(value)
@@ -284,7 +284,7 @@ class RhapsodyExporter(RhapsodyModelHelper):
         return cast(IRPModelElement, IRPModelElement.wrap(element))
 
     def _export_container(self, container: IRPModelElement, type_name: str) -> Dict[str, object]:
-        spec: Dict[str, object] = {"name": container.get_name(), "type": type_name}
+        spec: Dict[str, object] = {"name": container.name, "type": type_name}
         children = self._collect_children(container)
         child_specs = self._export_children(children)
         if child_specs:
@@ -349,6 +349,6 @@ class RhapsodyExporter(RhapsodyModelHelper):
             return None
         try:
             wrapped = self._wrap_if_needed(classifier)
-            return wrapped.get_name()
+            return wrapped.name
         except Exception:
             return None

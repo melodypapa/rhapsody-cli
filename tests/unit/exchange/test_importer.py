@@ -132,7 +132,7 @@ class TestProcessElementDispatch:
     def test_dispatches_operation_on_class(self) -> None:
         importer = _make_importer()
         parent = MagicMock()
-        parent.get_meta_class.return_value = "Class"
+        parent.meta_class = "Class"
         parent.get_nested_elements.return_value = []
         new_op = MagicMock()
         parent.add_new_aggr.return_value = new_op
@@ -180,8 +180,8 @@ class TestProcessElementDispatch:
         parent = MagicMock()
         parent.get_nested_elements.return_value = []
         new_pkg = MagicMock()
-        new_pkg.get_meta_class.return_value = "Package"
-        new_pkg.get_stereotypes.return_value = []
+        new_pkg.meta_class = "Package"
+        new_pkg.stereotypes = []
         parent.add_new_aggr.return_value = new_pkg
 
         spec: Dict[str, object] = {
@@ -211,12 +211,12 @@ class TestApplyOperationExtras:
 
     def test_sets_return_type_when_classifier_resolvable(self) -> None:
         classifier = MagicMock()
-        classifier.get_name.return_value = "int"
+        classifier.name = "int"
         project = MagicMock()
         project.get_nested_elements.return_value = [classifier]
         importer = _make_importer(project=project)
         op = MagicMock()
-        op.get_name.return_value = "reset"
+        op.name = "reset"
 
         importer._apply_operation_extras(op, {"return_type": "int"})
 
@@ -227,7 +227,7 @@ class TestApplyOperationExtras:
         project.get_nested_elements.return_value = []
         importer = _make_importer(project=project)
         op = MagicMock()
-        op.get_name.return_value = "reset"
+        op.name = "reset"
 
         importer._apply_operation_extras(op, {"return_type": "Missing"})
 
@@ -258,12 +258,12 @@ class TestApplyArgumentExtras:
 
     def test_sets_data_type(self) -> None:
         classifier = MagicMock()
-        classifier.get_name.return_value = "int"
+        classifier.name = "int"
         project = MagicMock()
         project.get_nested_elements.return_value = [classifier]
         importer = _make_importer(project=project)
         arg = MagicMock()
-        arg.get_name.return_value = "x"
+        arg.name = "x"
 
         importer._apply_argument_extras(arg, {"data_type": "int"})
 
@@ -283,12 +283,12 @@ class TestApplyAttributeExtras:
 
     def test_sets_all_fields(self) -> None:
         classifier = MagicMock()
-        classifier.get_name.return_value = "int"
+        classifier.name = "int"
         project = MagicMock()
         project.get_nested_elements.return_value = [classifier]
         importer = _make_importer(project=project)
         attr = MagicMock()
-        attr.get_name.return_value = "count"
+        attr.name = "count"
 
         importer._apply_attribute_extras(
             attr,
@@ -331,12 +331,12 @@ class TestApplyObjectExtras:
 
     def test_sets_classifier(self) -> None:
         classifier = MagicMock()
-        classifier.get_name.return_value = "MyClass"
+        classifier.name = "MyClass"
         project = MagicMock()
         project.get_nested_elements.return_value = [classifier]
         importer = _make_importer(project=project)
         obj = MagicMock()
-        obj.get_name.return_value = "myObj"
+        obj.name = "myObj"
 
         importer._apply_object_extras(obj, {"classifier": "MyClass"})
 
@@ -348,14 +348,14 @@ class TestApplyDependencyExtras:
 
     def test_sets_dependent_and_depends_on(self) -> None:
         target = MagicMock()
-        target.get_name.return_value = "OtherClass"
+        target.name = "OtherClass"
         project = MagicMock()
         project.get_nested_elements.return_value = [target]
         importer = _make_importer(project=project)
         dependency = MagicMock()
-        dependency.get_name.return_value = "dep1"
+        dependency.name = "dep1"
         parent = MagicMock()
-        parent.get_name.return_value = "MyClass"
+        parent.name = "MyClass"
 
         importer._apply_dependency_extras(dependency, {"depends_on": "OtherClass"}, parent)
 
@@ -367,9 +367,9 @@ class TestApplyDependencyExtras:
         project.get_nested_elements.return_value = []
         importer = _make_importer(project=project)
         dependency = MagicMock()
-        dependency.get_name.return_value = "dep1"
+        dependency.name = "dep1"
         parent = MagicMock()
-        parent.get_name.return_value = "MyClass"
+        parent.name = "MyClass"
 
         importer._apply_dependency_extras(dependency, {"depends_on": "Missing"}, parent)
 
@@ -383,14 +383,14 @@ class TestApplyGeneralizationExtras:
 
     def test_sets_derived_class_and_base_class(self) -> None:
         base = MagicMock()
-        base.get_name.return_value = "BaseClass"
+        base.name = "BaseClass"
         project = MagicMock()
         project.get_nested_elements.return_value = [base]
         importer = _make_importer(project=project)
         generalization = MagicMock()
-        generalization.get_name.return_value = "gen1"
+        generalization.name = "gen1"
         parent = MagicMock()
-        parent.get_name.return_value = "MyClass"
+        parent.name = "MyClass"
 
         importer._apply_generalization_extras(
             generalization,
@@ -409,14 +409,14 @@ class TestApplyRelationExtras:
 
     def test_sets_source_target_and_properties(self) -> None:
         target = MagicMock()
-        target.get_name.return_value = "OtherClass"
+        target.name = "OtherClass"
         project = MagicMock()
         project.get_nested_elements.return_value = [target]
         importer = _make_importer(project=project)
         relation = MagicMock()
-        relation.get_name.return_value = "assoc1"
+        relation.name = "assoc1"
         parent = MagicMock()
-        parent.get_name.return_value = "MyClass"
+        parent.name = "MyClass"
 
         importer._apply_relation_extras(
             relation,
@@ -441,16 +441,16 @@ class TestApplyRelationExtras:
 
     def test_uses_from_override_when_provided(self) -> None:
         source = MagicMock()
-        source.get_name.return_value = "ExplicitSource"
+        source.name = "ExplicitSource"
         target = MagicMock()
-        target.get_name.return_value = "Target"
+        target.name = "Target"
         project = MagicMock()
         project.get_nested_elements.return_value = [source, target]
         importer = _make_importer(project=project)
         relation = MagicMock()
-        relation.get_name.return_value = "assoc1"
+        relation.name = "assoc1"
         parent = MagicMock()
-        parent.get_name.return_value = "MyClass"
+        parent.name = "MyClass"
 
         importer._apply_relation_extras(
             relation,
@@ -462,14 +462,14 @@ class TestApplyRelationExtras:
 
     def test_falls_back_to_parent_when_from_unresolvable(self) -> None:
         target = MagicMock()
-        target.get_name.return_value = "Target"
+        target.name = "Target"
         project = MagicMock()
         project.get_nested_elements.return_value = [target]
         importer = _make_importer(project=project)
         relation = MagicMock()
-        relation.get_name.return_value = "assoc1"
+        relation.name = "assoc1"
         parent = MagicMock()
-        parent.get_name.return_value = "MyClass"
+        parent.name = "MyClass"
 
         importer._apply_relation_extras(
             relation,
@@ -485,12 +485,12 @@ class TestApplyPortExtras:
 
     def test_sets_flags_and_contract(self) -> None:
         contract = MagicMock()
-        contract.get_name.return_value = "IFoo"
+        contract.name = "IFoo"
         project = MagicMock()
         project.get_nested_elements.return_value = [contract]
         importer = _make_importer(project=project)
         port = MagicMock()
-        port.get_name.return_value = "p1"
+        port.name = "p1"
 
         importer._apply_port_extras(
             port,
@@ -507,14 +507,14 @@ class TestApplyPortExtras:
 
     def test_adds_provided_and_required_interfaces(self) -> None:
         iface1 = MagicMock()
-        iface1.get_name.return_value = "IFoo"
+        iface1.name = "IFoo"
         iface2 = MagicMock()
-        iface2.get_name.return_value = "IBar"
+        iface2.name = "IBar"
         project = MagicMock()
         project.get_nested_elements.return_value = [iface1, iface2]
         importer = _make_importer(project=project)
         port = MagicMock()
-        port.get_name.return_value = "p1"
+        port.name = "p1"
 
         importer._apply_port_extras(
             port,
@@ -530,14 +530,14 @@ class TestApplyEventExtras:
 
     def test_sets_base_and_super_event(self) -> None:
         base = MagicMock()
-        base.get_name.return_value = "BaseEvent"
+        base.name = "BaseEvent"
         sup = MagicMock()
-        sup.get_name.return_value = "SuperEvent"
+        sup.name = "SuperEvent"
         project = MagicMock()
         project.get_nested_elements.return_value = [base, sup]
         importer = _make_importer(project=project)
         event = MagicMock()
-        event.get_name.return_value = "TickEvent"
+        event.name = "TickEvent"
 
         importer._apply_event_extras(
             event,
@@ -553,12 +553,12 @@ class TestApplyEventReceptionExtras:
 
     def test_sets_event_reference(self) -> None:
         evt = MagicMock()
-        evt.get_name.return_value = "TickEvent"
+        evt.name = "TickEvent"
         project = MagicMock()
         project.get_nested_elements.return_value = [evt]
         importer = _make_importer(project=project)
         reception = MagicMock()
-        reception.get_name.return_value = "onTick"
+        reception.name = "onTick"
 
         importer._apply_event_reception_extras(reception, {"event": "TickEvent"})
 
@@ -573,28 +573,28 @@ class TestProcessElementNewTypes:
         parent = MagicMock()
         parent.get_nested_elements.return_value = []
         new_dep = MagicMock()
-        new_dep.get_name.return_value = "dep1"
+        new_dep.name = "dep1"
         parent.add_new_aggr.return_value = new_dep
 
         result = importer._process_element(parent, {"name": "dep1", "type": "Dependency"})
 
         parent.add_new_aggr.assert_called_once_with("Dependency", "dep1")
         assert result is not None
-        assert result.get_name() == "dep1"
+        assert result.name == "dep1"
 
     def test_dispatches_generalization(self) -> None:
         importer = _make_importer()
         parent = MagicMock()
         parent.get_nested_elements.return_value = []
         new_gen = MagicMock()
-        new_gen.get_name.return_value = "gen1"
+        new_gen.name = "gen1"
         parent.add_new_aggr.return_value = new_gen
 
         result = importer._process_element(parent, {"name": "gen1", "type": "Generalization"})
 
         parent.add_new_aggr.assert_called_once_with("Generalization", "gen1")
         assert result is not None
-        assert result.get_name() == "gen1"
+        assert result.name == "gen1"
 
     def test_dispatches_relation(self) -> None:
         importer = _make_importer()

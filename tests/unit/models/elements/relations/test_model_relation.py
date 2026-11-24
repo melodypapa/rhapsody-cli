@@ -15,7 +15,7 @@ def test_relation_is_a_unit() -> None:
     relation = RPRelation(fake)
 
     assert isinstance(relation, IRPUnit)
-    assert relation.get_name() == "assoc1"
+    assert relation.name == "assoc1"
 
 
 def test_relation_add_qualifier_delegates_to_com() -> None:
@@ -35,7 +35,7 @@ def test_relation_get_association_class_wraps_result() -> None:
     relation = RPRelation(fake)
 
     result = relation.get_association_class()
-    assert result.get_name() == "LinkClass"
+    assert result.name == "LinkClass"
 
 
 def test_relation_get_inverse_wraps_result() -> None:
@@ -45,7 +45,7 @@ def test_relation_get_inverse_wraps_result() -> None:
     relation = RPRelation(fake)
 
     result = relation.get_inverse()
-    assert result.get_name() == "inverseAssoc"
+    assert result.name == "inverseAssoc"
 
 
 def test_relation_get_is_navigable_delegates_to_com() -> None:
@@ -76,7 +76,7 @@ def test_relation_get_object_as_object_type_wraps_result() -> None:
     relation = RPRelation(fake)
 
     result = relation.get_object_as_object_type()
-    assert result.get_name() == "Widget"
+    assert result.name == "Widget"
 
 
 def test_relation_get_of_class_wraps_result() -> None:
@@ -86,7 +86,7 @@ def test_relation_get_of_class_wraps_result() -> None:
     relation = RPRelation(fake)
 
     result = relation.get_of_class()
-    assert result.get_name() == "Widget"
+    assert result.name == "Widget"
 
 
 def test_relation_get_other_class_wraps_result() -> None:
@@ -96,7 +96,7 @@ def test_relation_get_other_class_wraps_result() -> None:
     relation = RPRelation(fake)
 
     result = relation.get_other_class()
-    assert result.get_name() == "Other"
+    assert result.name == "Other"
 
 
 def test_relation_get_qualifier_delegates_to_com() -> None:
@@ -125,7 +125,7 @@ def test_relation_get_qualifier_type_wraps_result() -> None:
     relation = RPRelation(fake)
 
     result = relation.get_qualifier_type()
-    assert result.get_name() == "KeyType"
+    assert result.name == "KeyType"
 
 
 def test_relation_get_relation_label_delegates_to_com() -> None:

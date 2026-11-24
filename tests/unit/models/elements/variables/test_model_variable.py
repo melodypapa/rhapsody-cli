@@ -15,7 +15,7 @@ def test_variable_is_a_unit() -> None:
     variable = RPVariable(fake)
 
     assert isinstance(variable, IRPUnit)
-    assert variable.get_name() == "count"
+    assert variable.name == "count"
 
 
 def test_variable_add_element_default_value_wraps_result() -> None:
@@ -28,7 +28,7 @@ def test_variable_add_element_default_value_wraps_result() -> None:
     result = variable.add_element_default_value(cast(IRPModelElement, IRPModelElement.wrap(element)))
 
     fake.addElementDefaultValue.assert_called_once_with(element)
-    assert result.get_name() == "Extra"
+    assert result.name == "Extra"
 
 
 def test_variable_add_string_default_value_wraps_result() -> None:
@@ -40,7 +40,7 @@ def test_variable_add_string_default_value_wraps_result() -> None:
     result = variable.add_string_default_value("42")
 
     fake.addStringDefaultValue.assert_called_once_with("42")
-    assert result.get_name() == "42"
+    assert result.name == "42"
 
 
 def test_variable_get_declaration_delegates_to_com() -> None:
@@ -64,7 +64,7 @@ def test_variable_get_type_wraps_result() -> None:
     variable = RPVariable(fake)
 
     result = variable.get_type()
-    assert result.get_name() == "int"
+    assert result.name == "int"
 
 
 def test_variable_get_value_specifications_returns_collection() -> None:
@@ -249,7 +249,7 @@ def test_tag_get_base_wraps_result() -> None:
     tag = RPTag(fake)
 
     result = tag.get_base()
-    assert result.get_name() == "BaseClass"
+    assert result.name == "BaseClass"
 
 
 def test_tag_get_from_profile_returns_profile() -> None:
@@ -262,7 +262,7 @@ def test_tag_get_from_profile_returns_profile() -> None:
 
     result = tag.get_from_profile()
     assert isinstance(result, RPProfile)
-    assert result.get_name() == "MyProfile"
+    assert result.name == "MyProfile"
 
 
 def test_tag_get_multiplicity_returns_str() -> None:

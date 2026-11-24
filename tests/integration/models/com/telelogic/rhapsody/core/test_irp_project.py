@@ -36,7 +36,7 @@ class TestRPProjectIntegration:
         assert isinstance(new_pkg, IRPPackage)
         assert isinstance(new_pkg, IRPPackage)
         pkgs = test_project.get_packages()
-        names = [p.get_name() for p in pkgs]
+        names = [p.name for p in pkgs]
         assert name in names
 
     def test_project_get_packages_returns_collection(self, test_project: IRPProject) -> None:
@@ -81,7 +81,7 @@ class TestRPPackageIntegration:
         child_name = self._unique("NavChild")
         parent_pkg = self._create_package(test_project, parent_name)
         child_pkg = parent_pkg.add_nested_package(child_name)
-        owner = child_pkg.get_owner()
+        owner = child_pkg.owner
         assert owner is not None
         assert owner == parent_pkg
         assert isinstance(owner, IRPPackage)
@@ -94,7 +94,7 @@ class TestRPPackageIntegration:
         assert new_class is not None
         assert isinstance(new_class, IRPClass)
         classes = pkg.get_classes()
-        class_names = [c.get_name() for c in classes]
+        class_names = [c.name for c in classes]
         assert class_name in class_names
 
     def test_create_module_in_package(self, test_project: IRPProject) -> None:

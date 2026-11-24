@@ -10,7 +10,7 @@ class PathResolverError(Exception):
 class _Navigable(Protocol):
     """Structural type for anything PathResolver can navigate: needs a name and children."""
 
-    def get_name(self) -> str: ...  # pragma: no cover - structural protocol
+    name: str
 
     def get_nested_elements(self) -> object: ...  # pragma: no cover - structural protocol
 
@@ -100,18 +100,18 @@ class PathResolver:
 
     @staticmethod
     def _navigate(root: _Navigable, segments: List[str], original_path: str) -> _Navigable:
-        """Walk `segments` from `root`, matching each against child get_name()."""
+        """Walk `segments` from `root`, matching each against the child's name."""
         current = root
         visited: List[str] = []
         for segment in segments:
             found = None
             for child in current.get_nested_elements():  # type: ignore[attr-defined]
-                if child.get_name() == segment:
+                if child.name == segment:
                     found = child
                     break
             if found is None:
                 stopped_at = "/".join(visited) if visited else "<root>"
-                raise PathResolverError(f"Could not navigate to '{original_path}' — stopped at " f"'{stopped_at}' (not found: '{segment}')")
+                raise PathResolverError(f"Could not navigate to '{original_path}' — stopped at '{stopped_at}' (not found: '{segment}')")
             current = found
             visited.append(segment)
         return current

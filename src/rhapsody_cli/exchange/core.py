@@ -68,7 +68,7 @@ class RhapsodyModelHelper:
         existing = self.find_child_by_name(parent, "Operation", name)
         if existing is not None:
             return existing
-        if parent.get_meta_class() == "Package":
+        if parent.meta_class == "Package":
             return parent.add_global_function(name)  # type: ignore[attr-defined, no-any-return]
         return parent.add_new_aggr("Operation", name)
 
@@ -163,13 +163,13 @@ class RhapsodyModelHelper:
         """
         if not stereotypes:
             return
-        meta_type = element.get_meta_class()
+        meta_type = element.meta_class
         already_applied = set()
         try:
-            existing = element.get_stereotypes()
+            existing = element.stereotypes
             for st in existing:
                 try:
-                    already_applied.add(st.get_name())
+                    already_applied.add(st.name)
                 except Exception:
                     continue
         except Exception:
@@ -204,7 +204,7 @@ class RhapsodyModelHelper:
         if classifier is None:
             return None
         try:
-            return classifier.get_name()
+            return classifier.name
         except Exception:
             return None
 
@@ -220,7 +220,7 @@ class RhapsodyModelHelper:
             return None
         for child in children:
             try:
-                if child.get_meta_class() == meta_class and child.get_name() == name:
+                if child.meta_class == meta_class and child.name == name:
                     return child  # type: ignore[no-any-return]
             except Exception:
                 continue
@@ -247,7 +247,7 @@ class RhapsodyModelHelper:
             children = list(container.get_nested_elements())
         except Exception:
             children = []
-        if container.get_meta_class() == "Package":
+        if container.meta_class == "Package":
             for getter_name in ("get_global_functions", "get_global_variables", "get_global_objects"):
                 getter = getattr(container, getter_name, None)
                 if getter is None:
@@ -269,12 +269,12 @@ class RhapsodyModelHelper:
             if depth > max_depth:
                 break
             try:
-                meta = current.get_meta_class()
+                meta = current.meta_class
             except Exception:
                 break
             if meta == "Project":
                 try:
-                    return current.get_name()
+                    return current.name
                 except Exception:
                     return ""
             try:
@@ -285,7 +285,7 @@ class RhapsodyModelHelper:
                 break  # cycle guard
             visited.add(key)
             try:
-                current = current.get_owner()
+                current = current.owner
             except Exception:
                 break
         return ""
@@ -298,7 +298,7 @@ class RhapsodyModelHelper:
             return None
         for child in children:
             try:
-                if child.get_name() == name:
+                if child.name == name:
                     return child  # type: ignore[no-any-return]
             except Exception:
                 continue

@@ -27,14 +27,16 @@ if TYPE_CHECKING:
 class IRPModelElement(ComHelper):
     """Wraps ``IRPModelElement``: the base interface for all model elements.
 
-    Method names use snake_case (``get_name``, ``set_name``,
-    ``get_meta_class``, ``get_guid``, ...). Internal COM calls preserve
-    the camelCase API (``self._com.methodName(...)``). Bindings are
-    pywin32-authoritative: every member calls exactly one pywin32-exposed
-    COM member recorded in ``docs/reports/pywin32_authority.json`` —
-    method-shaped members via ``call_com`` and property-shaped members via
-    :meth:`get_com_property` / :meth:`set_com_property` — with no runtime
-    name probing or Java-name fallback.
+    Python member names use snake_case. Catalog properties are Python
+    attributes (for example, ``name`` and ``meta_class``); method-shaped COM
+    members remain methods (for example, ``find_nested_element``). Internal
+    COM calls preserve the camelCase API (``self._com.methodName(...)``).
+    Bindings are pywin32-authoritative: every member calls exactly one
+    pywin32-exposed COM member recorded in
+    ``docs/reports/pywin32_authority.json`` — method-shaped members via
+    ``call_com`` and property-shaped members via :meth:`get_com_property` /
+    :meth:`set_com_property` — with no runtime name probing or Java-name
+    fallback.
     """
 
     # IRPModelElement method parity checklist:
@@ -159,7 +161,8 @@ class IRPModelElement(ComHelper):
     def __init__(self, com_obj: Any) -> None:
         self._com = com_obj
 
-    def get_name(self) -> str:
+    @property
+    def name(self) -> str:
         """Returns the name of the element.
 
         Returns:
@@ -170,7 +173,8 @@ class IRPModelElement(ComHelper):
         """
         return str(ComHelper.get_com_property(self._com, "name"))
 
-    def set_name(self, name: str) -> None:
+    @name.setter
+    def name(self, name: str) -> None:
         """Sets the specified string as the name of the element.
 
         Args:
@@ -181,7 +185,8 @@ class IRPModelElement(ComHelper):
         """
         ComHelper.set_com_property(self._com, "name", name)
 
-    def get_meta_class(self) -> str:
+    @property
+    def meta_class(self) -> str:
         """Gets the name of the metaclass on which the model element is based.
 
         Returns:
@@ -192,7 +197,8 @@ class IRPModelElement(ComHelper):
         """
         return str(ComHelper.get_com_property(self._com, "metaClass"))
 
-    def get_guid(self) -> str:
+    @property
+    def guid(self) -> str:
         """Returns the GUID of the model element.
 
         Returns:
@@ -202,6 +208,18 @@ class IRPModelElement(ComHelper):
             com.telelogic.rhapsody.core.IRPModelElement::getGUID()
         """
         return str(ComHelper.get_com_property(self._com, "GUID"))
+
+    @guid.setter
+    def guid(self, guid: str) -> None:
+        """Sets a new GUID for the model element.
+
+        Args:
+            guid: The new GUID to set.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPModelElement::setGUID(java.lang.String gUID)
+        """
+        ComHelper.set_com_property(self._com, "GUID", guid)
 
     def add_association(self, end1: RPRelation, end2: RPRelation, name: str) -> IRPAssociationClass:
         """Creates an association class using the specified IRPRelation elements.
@@ -569,7 +587,8 @@ class IRPModelElement(ComHelper):
         """
         return ComHelper.wrap(ComHelper.call_com(lambda: self._com.findNestedElementRecursive(name, meta_class)))
 
-    def get_all_tags(self) -> IRPCollection:
+    @property
+    def all_tags(self) -> IRPCollection:
         """Returns a collection of all the element's tags.
 
         Returns:
@@ -580,7 +599,8 @@ class IRPModelElement(ComHelper):
         """
         return IRPCollection(ComHelper.get_com_property(self._com, "allTags"))
 
-    def get_annotations(self) -> IRPCollection:
+    @property
+    def annotations(self) -> IRPCollection:
         """Returns all of the element's annotations.
 
         Annotations include comments, constraints, and requirements.
@@ -593,7 +613,8 @@ class IRPModelElement(ComHelper):
         """
         return IRPCollection(ComHelper.get_com_property(self._com, "annotations"))
 
-    def get_association_classes(self) -> IRPCollection:
+    @property
+    def association_classes(self) -> IRPCollection:
         """Returns a collection of all the association classes directly beneath this model element.
 
         Returns:
@@ -604,10 +625,11 @@ class IRPModelElement(ComHelper):
         """
         return IRPCollection(ComHelper.get_com_property(self._com, "associationClasses"))
 
-    def get_binary_id(self) -> bytes:
+    @property
+    def binary_id(self) -> bytes:
         """Returns the GUID of the model element as an array of bytes.
 
-        As opposed to :meth:`get_guid`, which returns the GUID as a string.
+        As opposed to :attr:`guid`, which returns the GUID as a string.
 
         Returns:
             The element's GUID as bytes.
@@ -617,7 +639,8 @@ class IRPModelElement(ComHelper):
         """
         return bytes(ComHelper.get_com_property(self._com, "BinaryID"))
 
-    def get_constraints(self) -> IRPCollection:
+    @property
+    def constraints(self) -> IRPCollection:
         """Returns all of the element's constraints.
 
         Returns:
@@ -628,7 +651,8 @@ class IRPModelElement(ComHelper):
         """
         return IRPCollection(ComHelper.get_com_property(self._com, "constraints"))
 
-    def get_constraints_by_him(self) -> IRPCollection:
+    @property
+    def constraints_by_him(self) -> IRPCollection:
         """Returns all of the element's constraints (for internal use only).
 
         Returns:
@@ -639,7 +663,8 @@ class IRPModelElement(ComHelper):
         """
         return IRPCollection(ComHelper.get_com_property(self._com, "constraintsByHim"))
 
-    def get_controlled_files(self) -> IRPCollection:
+    @property
+    def controlled_files(self) -> IRPCollection:
         """Returns a collection of all the element's controlled files.
 
         Returns:
@@ -661,7 +686,8 @@ class IRPModelElement(ComHelper):
         """
         return str(ComHelper.call_com(lambda: self._com.getDecorationStyle()))
 
-    def get_dependencies(self) -> IRPCollection:
+    @property
+    def dependencies(self) -> IRPCollection:
         """Returns all of the element's dependencies.
 
         Returns:
@@ -672,7 +698,8 @@ class IRPModelElement(ComHelper):
         """
         return IRPCollection(ComHelper.get_com_property(self._com, "dependencies"))
 
-    def get_description(self) -> str:
+    @property
+    def description(self) -> str:
         """Returns the description defined for the element.
 
         Returns:
@@ -683,7 +710,20 @@ class IRPModelElement(ComHelper):
         """
         return str(ComHelper.get_com_property(self._com, "description"))
 
-    def get_description_html(self) -> str:
+    @description.setter
+    def description(self, description: str) -> None:
+        """Sets the specified string as the description of the element.
+
+        Args:
+            description: The description text to set.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPModelElement::setDescription(java.lang.String description)
+        """
+        ComHelper.set_com_property(self._com, "description", description)
+
+    @property
+    def description_html(self) -> str:
         """Returns HTML representation of the element description.
 
         Returns:
@@ -694,7 +734,8 @@ class IRPModelElement(ComHelper):
         """
         return str(ComHelper.get_com_property(self._com, "descriptionHTML"))
 
-    def get_description_plain_text(self) -> str:
+    @property
+    def description_plain_text(self) -> str:
         """Returns the description defined for the element in plain text format.
 
         Returns:
@@ -705,7 +746,8 @@ class IRPModelElement(ComHelper):
         """
         return str(ComHelper.get_com_property(self._com, "descriptionPlainText"))
 
-    def get_description_rtf(self) -> str:
+    @property
+    def description_rtf(self) -> str:
         """Returns the description defined for the element in RTF format.
 
         Returns:
@@ -716,7 +758,20 @@ class IRPModelElement(ComHelper):
         """
         return str(ComHelper.get_com_property(self._com, "descriptionRTF"))
 
-    def get_display_name(self) -> str:
+    @description_rtf.setter
+    def description_rtf(self, description_rtf: str) -> None:
+        """Specifies the RTF string to use for the description of the model element.
+
+        Args:
+            description_rtf: The RTF description to set.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPModelElement::setDescriptionRTF(java.lang.String descriptionRTF)
+        """
+        ComHelper.set_com_property(self._com, "descriptionRTF", description_rtf)
+
+    @property
+    def display_name(self) -> str:
         """Returns the label of the model element.
 
         Returns:
@@ -726,6 +781,18 @@ class IRPModelElement(ComHelper):
             com.telelogic.rhapsody.core.IRPModelElement::getDisplayName()
         """
         return str(ComHelper.get_com_property(self._com, "displayName"))
+
+    @display_name.setter
+    def display_name(self, display_name: str) -> None:
+        """Specifies the text to use for the label of the model element.
+
+        Args:
+            display_name: The label text to set.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPModelElement::setDisplayName(java.lang.String displayName)
+        """
+        ComHelper.set_com_property(self._com, "displayName", display_name)
 
     def get_display_name_rtf(self) -> str:
         """Returns the label of the model element as an RTF string.
@@ -738,11 +805,15 @@ class IRPModelElement(ComHelper):
         """
         return str(ComHelper.call_com(lambda: self._com.getDisplayNameRTF()))
 
-    def get_error_message(self) -> str:
+    def get_error_message(self, _midl__irp_model_element0002_: str) -> str:
         """Returns the error message for the last method called.
 
         If the last method completed successfully, an empty string is returned,
-        so this must be called immediately after the method it concerns.
+        so this must be called immediately after the method it concerns. The
+        string argument is a pywin32 MIDL output buffer required by the COM signature.
+
+        Args:
+            _midl__irp_model_element0002_: The string buffer required by pywin32.
 
         Returns:
             The error message as a string.
@@ -750,7 +821,7 @@ class IRPModelElement(ComHelper):
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::getErrorMessage()
         """
-        return str(ComHelper.call_com(lambda: self._com.getErrorMessage()))
+        return str(ComHelper.call_com(lambda: self._com.getErrorMessage(_midl__irp_model_element0002_)))
 
     def get_full_path_name(self) -> str:
         """Returns the full path name of the model element.
@@ -776,7 +847,8 @@ class IRPModelElement(ComHelper):
         """
         return str(ComHelper.call_com(lambda: self._com.getFullPathNameIn()))
 
-    def get_hyper_links(self) -> IRPCollection:
+    @property
+    def hyper_links(self) -> IRPCollection:
         """Returns a collection of all the hyperlinks associated with the element.
 
         Returns:
@@ -798,7 +870,8 @@ class IRPModelElement(ComHelper):
         """
         return str(ComHelper.call_com(lambda: self._com.getIconFileName()))
 
-    def get_interface_name(self) -> str:
+    @property
+    def interface_name(self) -> str:
         """Returns the name of the API interface corresponding to the current element.
 
         For example, ``"IRPClass"`` for a class element, ``"IRPOperation"``
@@ -812,7 +885,8 @@ class IRPModelElement(ComHelper):
         """
         return str(ComHelper.get_com_property(self._com, "interfaceName"))
 
-    def get_is_external(self) -> int:
+    @property
+    def is_external(self) -> int:
         """Checks whether the element is an "external" element.
 
         Corresponds to the value of the property ``UseAsExternal``.
@@ -839,7 +913,8 @@ class IRPModelElement(ComHelper):
         """
         return int(ComHelper.call_com(lambda: self._com.isOfMetaClass(meta_class)))
 
-    def get_is_show_display_name(self) -> int:
+    @property
+    def is_show_display_name(self) -> int:
         """Checks whether the model element is configured to display its label instead of its name in diagrams.
 
         Returns:
@@ -850,7 +925,20 @@ class IRPModelElement(ComHelper):
         """
         return int(ComHelper.get_com_property(self._com, "isShowDisplayName"))
 
-    def get_is_unresolved(self) -> int:
+    @is_show_display_name.setter
+    def is_show_display_name(self, is_show_display_name: int) -> None:
+        """Specifies whether the element label is shown in diagrams.
+
+        Args:
+            is_show_display_name: ``1`` to show the label, ``0`` to show the name.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPModelElement::setIsShowDisplayName(int isShowDisplayName)
+        """
+        ComHelper.set_com_property(self._com, "isShowDisplayName", is_show_display_name)
+
+    @property
+    def is_unresolved(self) -> int:
         """Checks if the element is an element that can't be resolved by Rhapsody.
 
         Returns:
@@ -861,7 +949,8 @@ class IRPModelElement(ComHelper):
         """
         return int(ComHelper.get_com_property(self._com, "isUnresolved"))
 
-    def get_local_tags(self) -> IRPCollection:
+    @property
+    def local_tags(self) -> IRPCollection:
         """Returns a collection of the tags that were created locally for this model element.
 
         Returns:
@@ -872,7 +961,8 @@ class IRPModelElement(ComHelper):
         """
         return IRPCollection(ComHelper.get_com_property(self._com, "localTags"))
 
-    def get_main_diagram(self) -> RPDiagram:
+    @property
+    def main_diagram(self) -> RPDiagram:
         """Returns the "main" diagram for the element.
 
         This operation is valid only for packages, classes, actors, use
@@ -887,6 +977,18 @@ class IRPModelElement(ComHelper):
         from rhapsody_cli.models.elements.diagrams.model_diagrams import RPDiagram
 
         return cast(RPDiagram, ComHelper.wrap(ComHelper.get_com_property(self._com, "mainDiagram")))
+
+    @main_diagram.setter
+    def main_diagram(self, main_diagram: RPDiagram) -> None:
+        """Specifies the main diagram for packages, classes, actors, use cases, objects, and interfaces.
+
+        Args:
+            main_diagram: The wrapped diagram to set as the main diagram.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPModelElement::setMainDiagram(com.telelogic.rhapsody.core.IRPDiagram mainDiagram)
+        """
+        ComHelper.set_com_property(self._com, "mainDiagram", main_diagram._com)
 
     def get_nested_elements(self) -> IRPCollection:
         """Gets a collection of all the model elements that are directly under the current element.
@@ -944,7 +1046,8 @@ class IRPModelElement(ComHelper):
 
         return cast(RPStereotype, ComHelper.wrap(ComHelper.call_com(lambda: self._com.getNewTermStereotype())))
 
-    def get_of_template(self) -> IRPModelElement:
+    @property
+    def of_template(self) -> IRPModelElement:
         """If the element is an instantiation of a template, returns the template that it instantiates.
 
         Returns:
@@ -954,6 +1057,18 @@ class IRPModelElement(ComHelper):
             com.telelogic.rhapsody.core.IRPModelElement::getOfTemplate()
         """
         return cast(IRPModelElement, ComHelper.wrap(ComHelper.get_com_property(self._com, "ofTemplate")))
+
+    @of_template.setter
+    def of_template(self, of_template: IRPModelElement) -> None:
+        """Makes the current model element a template instantiation of the specified template.
+
+        Args:
+            of_template: The wrapped template to instantiate.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPModelElement::setOfTemplate(com.telelogic.rhapsody.core.IRPModelElement ofTemplate)
+        """
+        ComHelper.set_com_property(self._com, "ofTemplate", of_template._com)
 
     def get_overlay_icon_file_name(self) -> str:
         """Returns the full path of the graphic file used as an overlay on this specific model element.
@@ -1020,7 +1135,8 @@ class IRPModelElement(ComHelper):
         """
         return IRPCollection(ComHelper.call_com(lambda: self._com.getOwnedDependencies()))
 
-    def get_owner(self) -> IRPModelElement:
+    @property
+    def owner(self) -> IRPModelElement:
         """Returns the model element that owns this model element.
 
         Returns:
@@ -1031,7 +1147,20 @@ class IRPModelElement(ComHelper):
         """
         return cast(IRPModelElement, ComHelper.wrap(ComHelper.get_com_property(self._com, "owner")))
 
-    def get_project(self) -> IRPProject:
+    @owner.setter
+    def owner(self, owner: IRPModelElement) -> None:
+        """Specifies the model element that should own this element.
+
+        Args:
+            owner: The wrapped owner element.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPModelElement::setOwner(com.telelogic.rhapsody.core.IRPModelElement owner)
+        """
+        ComHelper.set_com_property(self._com, "owner", owner._com)
+
+    @property
+    def project(self) -> IRPProject:
         """Returns the project that the current element belongs to.
 
         Returns:
@@ -1142,7 +1271,8 @@ class IRPModelElement(ComHelper):
         """
         return IRPCollection(ComHelper.call_com(lambda: self._com.getRedefines()))
 
-    def get_references(self) -> IRPCollection:
+    @property
+    def references(self) -> IRPCollection:
         """Returns a collection of all the model elements that point to this model element.
 
         Returns:
@@ -1178,7 +1308,8 @@ class IRPModelElement(ComHelper):
         """
         return str(ComHelper.call_com(lambda: self._com.getRemoteURI()))
 
-    def get_requirement_traceability_handle(self) -> int:
+    @property
+    def requirement_traceability_handle(self) -> int:
         """Returns the ID used by DOORS to refer to this requirement.
 
         Returns:
@@ -1188,6 +1319,18 @@ class IRPModelElement(ComHelper):
             com.telelogic.rhapsody.core.IRPModelElement::getRequirementTraceabilityHandle()
         """
         return int(ComHelper.get_com_property(self._com, "requirementTraceabilityHandle"))
+
+    @requirement_traceability_handle.setter
+    def requirement_traceability_handle(self, requirement_traceability_handle: int) -> None:
+        """Sets a new DOORS traceability handle for the requirement.
+
+        Args:
+            requirement_traceability_handle: The new DOORS traceability handle.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPModelElement::setRequirementTraceabilityHandle(int requirementTraceabilityHandle)
+        """
+        ComHelper.set_com_property(self._com, "requirementTraceabilityHandle", requirement_traceability_handle)
 
     def get_rmm_url(self) -> str:
         """Return the Rhapsody Model Manager URL for the model element.
@@ -1213,7 +1356,29 @@ class IRPModelElement(ComHelper):
 
         return cast(IRPUnit, ComHelper.wrap(ComHelper.call_com(lambda: self._com.getSaveUnit())))
 
-    def get_stereotypes(self) -> IRPCollection:
+    @property
+    def stereotype(self) -> RPStereotype | None:
+        """Returns or sets the deprecated single stereotype on this element.
+
+        The Java API deprecated this member in favor of :attr:`stereotypes` and
+        :meth:`add_specific_stereotype`.
+
+        Returns:
+            The applied single stereotype, or ``None`` if no stereotype is set.
+        """
+        from rhapsody_cli.models.elements.classifiers.model_stereotype import RPStereotype
+
+        raw_stereotype = ComHelper.get_com_property(self._com, "stereotype")
+        if raw_stereotype is None:
+            return None
+        return cast(RPStereotype, ComHelper.wrap(raw_stereotype))
+
+    @stereotype.setter
+    def stereotype(self, stereotype: RPStereotype) -> None:
+        ComHelper.set_com_property(self._com, "stereotype", stereotype._com)
+
+    @property
+    def stereotypes(self) -> IRPCollection:
         """Returns a collection of the stereotypes that have been applied to the element.
 
         Returns:
@@ -1242,7 +1407,8 @@ class IRPModelElement(ComHelper):
 
         return cast(RPTag, ComHelper.wrap(ComHelper.call_com(lambda: self._com.getTag(name))))
 
-    def get_template_parameters(self) -> IRPCollection:
+    @property
+    def template_parameters(self) -> IRPCollection:
         """For model elements that are templates, returns the template parameters.
 
         Returns:
@@ -1253,7 +1419,8 @@ class IRPModelElement(ComHelper):
         """
         return IRPCollection(ComHelper.get_com_property(self._com, "templateParameters"))
 
-    def get_ti(self) -> RPTemplateInstantiation:
+    @property
+    def ti(self) -> RPTemplateInstantiation:
         """For template instantiations, returns an object containing the template instantiation parameters.
 
         Returns:
@@ -1266,6 +1433,18 @@ class IRPModelElement(ComHelper):
 
         return cast(RPTemplateInstantiation, ComHelper.wrap(ComHelper.get_com_property(self._com, "ti")))
 
+    @ti.setter
+    def ti(self, ti: RPTemplateInstantiation) -> None:
+        """Sets the template instantiation for the model element.
+
+        Args:
+            ti: The wrapped template instantiation to set.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPModelElement::setTi(com.telelogic.rhapsody.core.IRPTemplateInstantiation ti)
+        """
+        ComHelper.set_com_property(self._com, "ti", ti._com)
+
     def get_tool_tip_html(self) -> str:
         """Returns the HTML that would be used to display the tooltip for the element in the user interface.
 
@@ -1277,11 +1456,12 @@ class IRPModelElement(ComHelper):
         """
         return str(ComHelper.call_com(lambda: self._com.getToolTipHTML()))
 
-    def get_user_defined_meta_class(self) -> str:
+    @property
+    def user_defined_meta_class(self) -> str:
         """Gets the name of the New Term on which the model element is based.
 
         To get the name of the metaclass on which the New Term is based, use
-        :meth:`get_meta_class`.
+        :attr:`meta_class`.
 
         Returns:
             The user-defined metaclass name as a string.
@@ -1459,17 +1639,6 @@ class IRPModelElement(ComHelper):
         """
         ComHelper.call_com(lambda: self._com.setDecorationStyle(new_val))
 
-    def set_description(self, description: str) -> None:
-        """Sets the specified string as the description of the element.
-
-        Args:
-            description: The description text to set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPModelElement::setDescription(java.lang.String description)
-        """
-        ComHelper.set_com_property(self._com, "description", description)
-
     def set_description_and_hyperlinks(self, rtf_text: str, targets: IRPCollection) -> None:
         """Specifies an RTF description for the element and a collection of elements to hyperlink.
 
@@ -1499,28 +1668,6 @@ class IRPModelElement(ComHelper):
         """
         raise NotImplementedError("setDescriptionHTML is documented as 'Not implemented - should not be used' in the Rhapsody Java API. This method is not available in the COM automation interface.")
 
-    def set_description_rtf(self, description_rtf: str) -> None:
-        """Specifies the RTF string to use for the description of the model element.
-
-        Args:
-            description_rtf: The RTF description to set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPModelElement::setDescriptionRTF(java.lang.String descriptionRTF)
-        """
-        ComHelper.set_com_property(self._com, "descriptionRTF", description_rtf)
-
-    def set_display_name(self, display_name: str) -> None:
-        """Specifies the text to use for the label of the model element.
-
-        Args:
-            display_name: The label text to set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPModelElement::setDisplayName(java.lang.String displayName)
-        """
-        ComHelper.set_com_property(self._com, "displayName", display_name)
-
     def set_display_name_rtf(self, new_val: str) -> None:
         """Specifies the RTF string to use for the label of the model element.
 
@@ -1531,67 +1678,6 @@ class IRPModelElement(ComHelper):
             com.telelogic.rhapsody.core.IRPModelElement::setDisplayNameRTF(java.lang.String newVal)
         """
         ComHelper.call_com(lambda: self._com.setDisplayNameRTF(new_val))
-
-    def set_guid(self, guid: str) -> None:
-        """Sets a new GUID for the model element.
-
-        Args:
-            guid: The new GUID to set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPModelElement::setGUID(java.lang.String gUID)
-        """
-        ComHelper.set_com_property(self._com, "GUID", guid)
-
-    def set_is_show_display_name(self, is_show_display_name: int) -> None:
-        """Specifies whether the label of the element should be displayed instead of the element name in diagrams.
-
-        This changes the value of the ``General::Graphics::ShowLabels``
-        property.
-
-        Args:
-            is_show_display_name: ``1`` to show the label, ``0`` to show the name.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPModelElement::setIsShowDisplayName(int isShowDisplayName)
-        """
-        ComHelper.set_com_property(self._com, "isShowDisplayName", is_show_display_name)
-
-    def set_main_diagram(self, main_diagram: RPDiagram) -> None:
-        """Specifies the "main" diagram for the element.
-
-        This operation is valid only for packages, classes, actors, use
-        cases, objects, and interfaces.
-
-        Args:
-            main_diagram: The wrapped diagram to set as the main diagram.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPModelElement::setMainDiagram(com.telelogic.rhapsody.core.IRPDiagram mainDiagram)
-        """
-        ComHelper.set_com_property(self._com, "mainDiagram", main_diagram._com)
-
-    def set_of_template(self, of_template: IRPModelElement) -> None:
-        """Makes the current model element a template instantiation of the specified template.
-
-        Args:
-            of_template: The wrapped template to instantiate.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPModelElement::setOfTemplate(com.telelogic.rhapsody.core.IRPModelElement ofTemplate)
-        """
-        ComHelper.set_com_property(self._com, "ofTemplate", of_template._com)
-
-    def set_owner(self, owner: IRPModelElement) -> None:
-        """Specifies the model element that should be the owner of this element.
-
-        Args:
-            owner: The wrapped element that should own this element.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPModelElement::setOwner(com.telelogic.rhapsody.core.IRPModelElement owner)
-        """
-        ComHelper.set_com_property(self._com, "owner", owner._com)
 
     def set_property_value(self, property_key: str, property_value: str) -> None:
         """Sets the value of a property for the model element.
@@ -1608,17 +1694,6 @@ class IRPModelElement(ComHelper):
             com.telelogic.rhapsody.core.IRPModelElement::setPropertyValue(java.lang.String propertyKey, java.lang.String propertyValue)
         """
         ComHelper.call_com(lambda: self._com.setPropertyValue(property_key, property_value))
-
-    def set_requirement_traceability_handle(self, requirement_traceability_handle: int) -> None:
-        """Sets a new ID to be used to reference this requirement.
-
-        Args:
-            requirement_traceability_handle: The new DOORS traceability handle.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPModelElement::setRequirementTraceabilityHandle(int requirementTraceabilityHandle)
-        """
-        ComHelper.set_com_property(self._com, "requirementTraceabilityHandle", requirement_traceability_handle)
 
     def set_tag_context_value(self, tag: RPTag, elements: IRPCollection, multiplicities: IRPCollection) -> RPTag:
         """Applies the specified tag and sets its value to a specific instance of another model element.
@@ -1688,17 +1763,6 @@ class IRPModelElement(ComHelper):
 
         return cast(RPTag, ComHelper.wrap(ComHelper.call_com(lambda: self._com.setTagValue(tag._com, val))))
 
-    def set_ti(self, ti: RPTemplateInstantiation) -> None:
-        """Sets the template instantiation for the model element (for internal use only).
-
-        Args:
-            ti: The wrapped template instantiation to set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPModelElement::setTi(com.telelogic.rhapsody.core.IRPTemplateInstantiation ti)
-        """
-        ComHelper.set_com_property(self._com, "ti", ti._com)
-
     def synchronize_template_instantiation(self) -> None:
         """Updates the instantiation to match changes made to its template.
 
@@ -1720,4 +1784,4 @@ class IRPModelElement(ComHelper):
         return hash(id(self._com))
 
     def __repr__(self) -> str:
-        return f"{type(self).__name__}(name={self.get_name()!r})"
+        return f"{type(self).__name__}(name={self.name!r})"

@@ -11,7 +11,7 @@ class TestRPSysMLPort:
         fake = make_fake_element("SysMLPort", properties={"name": "P1"})
         port = RPSysMLPort(fake)
         assert isinstance(port, IRPModelElement)
-        assert port.get_name() == "P1"
+        assert port.name == "P1"
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("SysMLPort", properties={"name": "P1"})
@@ -37,7 +37,7 @@ class TestRPSysMLPort:
         fake.getType.return_value = t
         port = RPSysMLPort(fake)
         wrapped = port.get_type()
-        assert wrapped.get_name() == "T1"
+        assert wrapped.name == "T1"
 
     def test_set_is_reversed_delegates(self) -> None:
         # Pattern D — single-arg setter (int arg)
@@ -83,5 +83,5 @@ class TestRPSysMLPort:
             RPSysMLPort(to_port),
             IRPPackage(new_owner),
         )
-        assert wrapped.get_name() == "L1"
+        assert wrapped.name == "L1"
         fake.addLink.assert_called_once_with(from_part, to_part, assoc, to_port, new_owner)

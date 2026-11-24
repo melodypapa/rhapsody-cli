@@ -45,7 +45,7 @@ class TestPackageCLIIntegration:
             create_cmd.execute()
 
             # Step 2: Verify package exists via model API
-            pkg_names = [p.get_name() for p in self.project.get_packages()]
+            pkg_names = [p.name for p in self.project.get_packages()]
             assert pkg_name in pkg_names, f"Package '{pkg_name}' should exist after creation"
         finally:
             # Step 3: Delete the package
@@ -70,7 +70,7 @@ class TestPackageCLIIntegration:
             create_cmd.execute()
 
             # Step 1b: Verify package exists via model API
-            pkg_names = [p.get_name() for p in self.project.get_packages()]
+            pkg_names = [p.name for p in self.project.get_packages()]
             assert pkg_name in pkg_names, f"Package '{pkg_name}' should exist after creation"
 
             # Step 2: Try to create the same package again
@@ -89,7 +89,7 @@ class TestPackageCLIIntegration:
                 assert "Exception occurred" not in error_msg, f"Error message should not contain raw COM exception text, got: {error_msg}"
 
             # Step 2b: Verify there's still exactly one package (duplicate was rejected)
-            pkg_names_after = [p.get_name() for p in self.project.get_packages()]
+            pkg_names_after = [p.name for p in self.project.get_packages()]
             matches = [n for n in pkg_names_after if n == pkg_name]
             assert len(matches) == 1, f"Should be exactly one package named '{pkg_name}', found {len(matches)}"
         finally:
@@ -118,9 +118,9 @@ class TestPackageCLIIntegration:
 
             # Step 3: Verify nested package exists via model API
             pkgs = self.project.get_packages()
-            parent = next((p for p in pkgs if p.get_name() == parent_pkg_name), None)
+            parent = next((p for p in pkgs if p.name == parent_pkg_name), None)
             assert parent is not None, f"Parent package '{parent_pkg_name}' should exist"
-            child_names = [c.get_name() for c in parent.get_nested_packages()]
+            child_names = [c.name for c in parent.get_nested_packages()]
             assert child_pkg_name in child_names, f"Child package '{child_pkg_name}' should exist under parent"
         finally:
             # Step 4: Clean up (delete child first, then parent)
@@ -157,9 +157,9 @@ class TestPackageCLIIntegration:
 
             # Step 2b: Verify child exists via model API
             pkgs = self.project.get_packages()
-            parent = next((p for p in pkgs if p.get_name() == parent_pkg_name), None)
+            parent = next((p for p in pkgs if p.name == parent_pkg_name), None)
             assert parent is not None, f"Parent package '{parent_pkg_name}' should exist"
-            child_names = [c.get_name() for c in parent.get_nested_packages()]
+            child_names = [c.name for c in parent.get_nested_packages()]
             assert child_pkg_name in child_names, f"Child package '{child_pkg_name}' should exist under parent"
 
             # Step 3: Try to create duplicate nested package
@@ -176,7 +176,7 @@ class TestPackageCLIIntegration:
                 assert "-2147" not in error_msg, f"Error message should not contain raw COM error codes, got: {error_msg}"
 
             # Step 3b: Verify there's still exactly one child (duplicate was rejected)
-            child_names_after = [c.get_name() for c in parent.get_nested_packages()]
+            child_names_after = [c.name for c in parent.get_nested_packages()]
             matches = [n for n in child_names_after if n == child_pkg_name]
             assert len(matches) == 1, f"Should be exactly one child named '{child_pkg_name}', found {len(matches)}"
         finally:

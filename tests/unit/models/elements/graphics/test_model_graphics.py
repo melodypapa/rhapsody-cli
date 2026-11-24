@@ -41,7 +41,7 @@ class TestRPGraphElementTask15:
         fake.getModelObject.return_value = model_obj
         ge = RPGraphElement(fake)
         wrapped = ge.get_model_object()
-        assert wrapped is not None and wrapped.get_name() == "Widget"
+        assert wrapped is not None and wrapped.name == "Widget"
 
     def test_get_all_graphical_properties_returns_collection(self) -> None:
         # Pattern C — no-arg getter returning collection
@@ -75,7 +75,7 @@ class TestRPGraphElementTask15:
         fake.getGraphicalProperty.return_value = prop
         ge = RPGraphElement(fake)
         wrapped = ge.get_graphical_property("FillColor")
-        assert wrapped.get_name() == "FillColor"
+        assert wrapped.name == "FillColor"
         fake.getGraphicalProperty.assert_called_once_with("FillColor")
 
     def test_remove_property_delegates(self) -> None:
@@ -93,7 +93,7 @@ class TestRPGraphElementTask15:
         fake.getDiagram.return_value = diagram
         ge = RPGraphElement(fake)
         wrapped = ge.get_diagram()
-        assert wrapped.get_name() == "Diagram1"
+        assert wrapped.name == "Diagram1"
 
     def test_get_graphical_parent_wraps_result(self) -> None:
         # Pattern B — no-arg getter returning wrapped element
@@ -102,7 +102,7 @@ class TestRPGraphElementTask15:
         fake.getGraphicalParent.return_value = parent
         ge = RPGraphElement(fake)
         wrapped = ge.get_graphical_parent()
-        assert wrapped.get_name() == "Parent"
+        assert wrapped.name == "Parent"
 
     def test_get_property_value_parameterized(self) -> None:
         # Parameterized getter — must use call_com
@@ -141,7 +141,7 @@ class TestRPGraphEdgeTask15:
         fake.getSource.return_value = src
         edge = RPGraphEdge(fake)
         wrapped = edge.get_source()
-        assert wrapped.get_name() == "src"
+        assert wrapped.name == "src"
 
     def test_get_target_wraps_result(self) -> None:
         # Pattern B
@@ -150,7 +150,7 @@ class TestRPGraphEdgeTask15:
         fake.getTarget.return_value = tgt
         edge = RPGraphEdge(fake)
         wrapped = edge.get_target()
-        assert wrapped.get_name() == "tgt"
+        assert wrapped.name == "tgt"
 
     def test_embed_new_flow_returns_self(self) -> None:
         # Pattern E — no-arg method returning wrapped element (self)
@@ -168,7 +168,7 @@ class TestRPGraphEdgeTask15:
         fake.getContainingArrow.return_value = arrow
         edge = RPGraphEdge(fake)
         wrapped = edge.get_containing_arrow()
-        assert wrapped.get_name() == "arrow"
+        assert wrapped.name == "arrow"
 
 
 class TestRPGraphNodeTask15:
@@ -275,7 +275,7 @@ class TestRPConnectorTask15:
         fake.getOfState.return_value = state
         conn = RPConnector(fake)
         wrapped = conn.get_of_state()
-        assert wrapped.get_name() == "S1"
+        assert wrapped.name == "S1"
 
     def test_set_of_state_delegates(self) -> None:
         # Pattern F — setter with wrapped element
@@ -314,7 +314,7 @@ class TestRPPinTask15:
         fake.getPinType.return_value = classifier
         pin = RPPin(fake)
         wrapped = pin.get_pin_type()
-        assert wrapped.get_name() == "DataType"
+        assert wrapped.name == "DataType"
 
     def test_set_pin_type_delegates(self) -> None:
         # Pattern F — setter with wrapped element
@@ -411,7 +411,7 @@ class TestRPLinkTask15:
         fake.getFrom.return_value = instance
         link = RPLink(fake)
         wrapped = link.get_from()
-        assert wrapped.get_name() == "Inst1"
+        assert wrapped.name == "Inst1"
 
     def test_get_instantiates_wraps_result(self) -> None:
         # Pattern B — returns wrapped RPRelation
@@ -420,7 +420,7 @@ class TestRPLinkTask15:
         fake.getInstantiates.return_value = relation
         link = RPLink(fake)
         wrapped = link.get_instantiates()
-        assert wrapped.get_name() == "Assoc1"
+        assert wrapped.name == "Assoc1"
 
     def test_set_end1_name_delegates(self) -> None:
         # Pattern D
@@ -451,7 +451,7 @@ class TestRPMessagePointTask15:
         fake.getMessage.return_value = message
         mp = RPMessagePoint(fake)
         wrapped = mp.get_message()
-        assert wrapped.get_name() == "Msg1"
+        assert wrapped.name == "Msg1"
 
 
 class TestRPTableLayoutTask15:
@@ -527,7 +527,7 @@ class TestRPTableViewTask15:
         fake.getItsTableLayout.return_value = layout
         tv = RPTableView(fake)
         wrapped = tv.get_its_table_layout()
-        assert wrapped.get_name() == "TL1"
+        assert wrapped.name == "TL1"
 
     def test_open_delegates(self) -> None:
         # Pattern F — void method

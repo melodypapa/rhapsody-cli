@@ -19,7 +19,7 @@ class TestRPStateVertex:
         fake = make_fake_element("StateVertex", properties={"name": "SV1"})
         sv = RPStateVertex(fake)
         assert isinstance(sv, IRPModelElement)
-        assert sv.get_name() == "SV1"
+        assert sv.name == "SV1"
 
     def test_add_flow_delegates_and_wraps(self) -> None:
         fake = make_fake_element("StateVertex")
@@ -28,7 +28,7 @@ class TestRPStateVertex:
         fake.addFlow.return_value = result
         sv = RPStateVertex(fake)
         wrapped = sv.add_flow("ControlFlow", RPStateVertex(to))
-        assert wrapped.get_name() == "Flow1"
+        assert wrapped.name == "Flow1"
         fake.addFlow.assert_called_once_with("ControlFlow", to)
 
     def test_add_transition_delegates_and_wraps(self) -> None:
@@ -38,7 +38,7 @@ class TestRPStateVertex:
         fake.addTransition.return_value = result
         sv = RPStateVertex(fake)
         wrapped = sv.add_transition(RPStateVertex(to))
-        assert wrapped.get_name() == "T1"
+        assert wrapped.name == "T1"
         fake.addTransition.assert_called_once_with(to)
 
     def test_delete_transition_delegates(self) -> None:
@@ -72,7 +72,7 @@ class TestRPStateVertex:
         sv = RPStateVertex(fake)
         result = sv.get_parent()
         assert isinstance(result, RPState)
-        assert result.get_name() == "Parent"
+        assert result.name == "Parent"
 
     def test_set_parent_delegates(self) -> None:
         fake = make_fake_element("StateVertex")
@@ -100,7 +100,7 @@ class TestRPState:
         fake.addActivityFinal.return_value = result
         s = RPState(fake)
         wrapped = s.add_activity_final()
-        assert wrapped.get_name() == "Final"
+        assert wrapped.name == "Final"
         fake.addActivityFinal.assert_called_once_with()
 
     def test_add_connector_delegates_and_wraps(self) -> None:
@@ -119,7 +119,7 @@ class TestRPState:
         fake.addInternalTransition.return_value = result
         s = RPState(fake)
         wrapped = s.add_internal_transition(cast("IRPInterfaceItem", IRPModelElement(trigger)))
-        assert wrapped.get_name() == "T1"
+        assert wrapped.name == "T1"
         fake.addInternalTransition.assert_called_once_with(trigger)
 
     def test_add_state_delegates_and_wraps(self) -> None:
@@ -128,7 +128,7 @@ class TestRPState:
         fake.addState.return_value = result
         s = RPState(fake)
         wrapped = s.add_state("Sub")
-        assert wrapped.get_name() == "Sub"
+        assert wrapped.name == "Sub"
         fake.addState.assert_called_once_with("Sub")
 
     def test_add_static_reaction_delegates_and_wraps(self) -> None:
@@ -138,7 +138,7 @@ class TestRPState:
         fake.addStaticReaction.return_value = result
         s = RPState(fake)
         wrapped = s.add_static_reaction(cast("IRPInterfaceItem", IRPModelElement(trigger)))
-        assert wrapped.get_name() == "T1"
+        assert wrapped.name == "T1"
         fake.addStaticReaction.assert_called_once_with(trigger)
 
     def test_add_termination_state_delegates_and_wraps(self) -> None:
@@ -147,7 +147,7 @@ class TestRPState:
         fake.addTerminationState.return_value = result
         s = RPState(fake)
         wrapped = s.add_termination_state()
-        assert wrapped.get_name() == "Term"
+        assert wrapped.name == "Term"
         fake.addTerminationState.assert_called_once_with()
 
     def test_create_default_transition_delegates_and_wraps(self) -> None:
@@ -157,7 +157,7 @@ class TestRPState:
         fake.createDefaultTransition.return_value = result
         s = RPState(fake)
         wrapped = s.create_default_transition(RPState(from_))
-        assert wrapped.get_name() == "DT1"
+        assert wrapped.name == "DT1"
         fake.createDefaultTransition.assert_called_once_with(from_)
 
     def test_create_sub_statechart_delegates_and_wraps(self) -> None:
@@ -166,7 +166,7 @@ class TestRPState:
         fake.createSubStatechart.return_value = result
         s = RPState(fake)
         wrapped = s.create_sub_statechart()
-        assert wrapped.get_name() == "Sub"
+        assert wrapped.name == "Sub"
         fake.createSubStatechart.assert_called_once_with()
 
     def test_delete_connector_delegates(self) -> None:
@@ -199,7 +199,7 @@ class TestRPState:
         fake.getDefaultTransition.return_value = result
         s = RPState(fake)
         wrapped = s.get_default_transition()
-        assert wrapped.get_name() == "DT1"
+        assert wrapped.name == "DT1"
 
     def test_get_entry_action_returns_string(self) -> None:
         fake = make_fake_element("State", getEntryAction="entry()")
@@ -223,7 +223,7 @@ class TestRPState:
         s = RPState(fake)
         wrapped = s.get_inherits_from()
         assert isinstance(wrapped, RPState)
-        assert wrapped.get_name() == "Parent"
+        assert wrapped.name == "Parent"
 
     def test_get_internal_transitions_returns_collection(self) -> None:
         fake = make_fake_element("State")
@@ -249,7 +249,7 @@ class TestRPState:
         fake.getItsStatechart.return_value = sc
         s = RPState(fake)
         wrapped = s.get_its_statechart()
-        assert wrapped.get_name() == "SC1"
+        assert wrapped.name == "SC1"
 
     def test_get_its_swimlane_wraps_result(self) -> None:
         fake = make_fake_element("State")
@@ -257,7 +257,7 @@ class TestRPState:
         fake.getItsSwimlane.return_value = sw
         s = RPState(fake)
         wrapped = s.get_its_swimlane()
-        assert wrapped.get_name() == "Lane1"
+        assert wrapped.name == "Lane1"
 
     def test_get_logical_states_returns_collection(self) -> None:
         fake = make_fake_element("State")
@@ -273,7 +273,7 @@ class TestRPState:
         fake.getNestedStatechart.return_value = sc
         s = RPState(fake)
         wrapped = s.get_nested_statechart()
-        assert wrapped.get_name() == "Sub"
+        assert wrapped.name == "Sub"
 
     def test_get_reference_to_activity_wraps_result(self) -> None:
         fake = make_fake_element("State")
@@ -281,7 +281,7 @@ class TestRPState:
         fake.getReferenceToActivity.return_value = act
         s = RPState(fake)
         wrapped = s.get_reference_to_activity()
-        assert cast(IRPModelElement, wrapped).get_name() == "Act1"
+        assert cast(IRPModelElement, wrapped).name == "Act1"
 
     def test_get_send_action_wraps_result(self) -> None:
         fake = make_fake_element("State")
@@ -289,7 +289,7 @@ class TestRPState:
         fake.getSendAction.return_value = sa
         s = RPState(fake)
         wrapped = s.get_send_action()
-        assert wrapped.get_name() == "SA1"
+        assert wrapped.name == "SA1"
 
     def test_get_state_type_returns_string(self) -> None:
         fake = make_fake_element("State", getStateType="And")
@@ -326,7 +326,7 @@ class TestRPState:
         fake.getTheEntryAction.return_value = action
         s = RPState(fake)
         wrapped = s.get_the_entry_action()
-        assert wrapped.get_name() == "entryAct"
+        assert wrapped.name == "entryAct"
 
     def test_get_the_exit_action_wraps_result(self) -> None:
         fake = make_fake_element("State")
@@ -334,7 +334,7 @@ class TestRPState:
         fake.getTheExitAction.return_value = action
         s = RPState(fake)
         wrapped = s.get_the_exit_action()
-        assert wrapped.get_name() == "exitAct"
+        assert wrapped.name == "exitAct"
 
     def test_is_and_returns_int(self) -> None:
         fake = make_fake_element("State", isAnd=True)

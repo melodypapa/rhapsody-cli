@@ -37,8 +37,8 @@ class TestRPRequirementIntegration:
             req = pkg.add_new_aggr("Requirement", req_name)
             assert req is not None
             assert isinstance(req, RPRequirement)
-            assert req.get_name() == req_name
-            assert req.get_meta_class() == "Requirement"
+            assert req.name == req_name
+            assert req.meta_class == "Requirement"
         finally:
             req.delete_from_project()
 

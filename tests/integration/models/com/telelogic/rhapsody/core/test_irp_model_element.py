@@ -15,6 +15,8 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCo
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
+from rhapsody_cli.models.elements.classifiers.model_stereotype import RPStereotype
+from rhapsody_cli.models.elements.variables import RPTag
 
 
 @pytest.mark.integration
@@ -23,25 +25,25 @@ class TestRPModelElementIntegration:
 
     def test_get_name(self, test_project: IRPProject) -> None:
         assert isinstance(test_project, IRPModelElement)
-        name = test_project.get_name()
+        name = test_project.name
         assert name == "TestProject"
         assert isinstance(name, str)
 
     def test_set_name(self, test_project: IRPProject) -> None:
-        original_name = test_project.get_name()
-        test_project.set_name("RenamedProject")
-        new_name = test_project.get_name()
+        original_name = test_project.name
+        test_project.name = "RenamedProject"
+        new_name = test_project.name
         assert new_name == "RenamedProject"
         assert isinstance(new_name, str)
-        test_project.set_name(original_name)
+        test_project.name = original_name
 
     def test_get_meta_class(self, test_project: IRPProject) -> None:
-        meta_class = test_project.get_meta_class()
+        meta_class = test_project.meta_class
         assert meta_class == "Project"
         assert isinstance(meta_class, str)
 
     def test_get_guid(self, test_project: IRPProject) -> None:
-        guid = test_project.get_guid()
+        guid = test_project.guid
         assert isinstance(guid, str)
         assert len(guid) > 0
 
@@ -99,9 +101,9 @@ class TestRPCollectionAddItemIntegration:
             assert isinstance(after, int)
             assert after == before + 2
 
-            items = [item.get_name() for item in collection]
-            assert cls1.get_name() in items
-            assert cls2.get_name() in items
+            items = [item.name for item in collection]
+            assert cls1.name in items
+            assert cls2.name in items
         finally:
             pkg.delete_from_project()
 
@@ -117,8 +119,8 @@ class TestRPCollectionAddItemIntegration:
             collection.add_item(cls)
             assert collection.get_count() == 2
 
-            names = [item.get_name() for item in collection]
-            assert names.count(cls.get_name()) == 2
+            names = [item.name for item in collection]
+            assert names.count(cls.name) == 2
         finally:
             pkg.delete_from_project()
 
@@ -191,9 +193,9 @@ class TestRPCollectionMutationMethodsIntegration:
             assert isinstance(after, int)
             assert after == before - 1
 
-            remaining = [item.get_name() for item in collection]
-            assert cls1.get_name() not in remaining
-            assert cls2.get_name() in remaining
+            remaining = [item.name for item in collection]
+            assert cls1.name not in remaining
+            assert cls2.name in remaining
         finally:
             pkg.delete_from_project()
 
@@ -213,7 +215,7 @@ class TestRPCollectionMutationMethodsIntegration:
             collection.set_model_element(1, cls3)
             replaced = collection.get_item(1)
             assert isinstance(replaced, IRPModelElement)
-            assert replaced.get_name() == cls3.get_name()
+            assert replaced.name == cls3.name
         finally:
             pkg.delete_from_project()
 
@@ -287,16 +289,16 @@ class TestRPModelElementDependenciesIntegration:
             dependency = source.add_dependency_to(target)
             assert dependency is not None
             assert isinstance(dependency, IRPModelElement)
-            assert dependency.get_meta_class() == "Dependency"
+            assert dependency.meta_class == "Dependency"
 
-            deps = source.get_dependencies()
+            deps = source.dependencies
             assert isinstance(deps, IRPCollection)
             assert isinstance(deps.get_count(), int)
             assert deps.get_count() >= 0
             assert len(list(deps)) >= 1
 
             source.delete_dependency(dependency)
-            deps_after = source.get_dependencies()
+            deps_after = source.dependencies
             assert len(list(deps_after)) == 0
         finally:
             pkg.delete_from_project()
@@ -306,13 +308,13 @@ class TestRPModelElementDependenciesIntegration:
         pkg = self._create_package(test_project, pkg_name)
         try:
             target = pkg.add_class(self._unique("Target"))
-            target_name = target.get_name()
+            target_name = target.name
             source = pkg.add_class(self._unique("Source"))
             dependency = source.add_dependency(target_name, "Class")
             assert dependency is not None
             assert isinstance(dependency, IRPModelElement)
-            assert dependency.get_meta_class() == "Dependency"
-            deps = source.get_dependencies()
+            assert dependency.meta_class == "Dependency"
+            deps = source.dependencies
             assert len(list(deps)) >= 1
             source.delete_dependency(dependency)
         finally:
@@ -327,7 +329,7 @@ class TestRPModelElementDependenciesIntegration:
             dependency = pkg.add_dependency_between(source, target)
             assert dependency is not None
             assert isinstance(dependency, IRPModelElement)
-            assert dependency.get_meta_class() == "Dependency"
+            assert dependency.meta_class == "Dependency"
             deps = pkg.get_owned_dependencies()
             assert isinstance(deps, IRPCollection)
             assert isinstance(deps.get_count(), int)
@@ -367,7 +369,7 @@ class TestRPModelElementDependenciesIntegration:
         pkg_name = self._unique("AssocClsPkg")
         pkg = self._create_package(test_project, pkg_name)
         try:
-            assoc_classes = pkg.get_association_classes()
+            assoc_classes = pkg.association_classes
             assert isinstance(assoc_classes, IRPCollection)
             # smoke test: no associations created, but confirm the COM call returns a valid IRPCollection
             assert isinstance(assoc_classes.get_count(), int)
@@ -381,7 +383,7 @@ class TestRPModelElementDependenciesIntegration:
             source = pkg.add_class(self._unique("Source"))
             target = pkg.add_class(self._unique("Target"))
             dependency = source.add_dependency_to(target)
-            references = target.get_references()
+            references = target.references
             assert isinstance(references, IRPCollection)
             assert isinstance(references.get_count(), int)
             assert references.get_count() >= 0
@@ -415,7 +417,7 @@ class TestRPModelElementStereotypesTagsIntegration:
         return pkg
 
     def test_get_stereotypes_initially_empty(self, test_project: IRPProject) -> None:
-        stereotypes = test_project.get_stereotypes()
+        stereotypes = test_project.stereotypes
         assert stereotypes is not None
         assert isinstance(stereotypes, IRPCollection)
         assert len(list(stereotypes)) == 0
@@ -426,10 +428,24 @@ class TestRPModelElementStereotypesTagsIntegration:
             stereo = pkg.add_stereotype(self._unique("TestStereo"), "Package")
             assert stereo is not None
             assert isinstance(stereo, IRPModelElement)
-            stereotypes = pkg.get_stereotypes()
+            stereotypes = pkg.stereotypes
             assert isinstance(stereotypes, IRPCollection)
-            names = [s.get_name() for s in stereotypes]
-            assert stereo.get_name() in names
+            names = [s.name for s in stereotypes]
+            assert stereo.name in names
+        finally:
+            pkg.delete_from_project()
+
+    def test_stereotype_property_reads_and_writes_applied_stereotype(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("SingleStereoPkg"))
+        try:
+            stereo = pkg.add_stereotype(self._unique("SingleStereo"), "Package")
+            assert isinstance(stereo, RPStereotype)
+
+            pkg.stereotype = stereo
+            applied_stereotype = pkg.stereotype
+
+            assert applied_stereotype is not None
+            assert applied_stereotype.name == stereo.name
         finally:
             pkg.delete_from_project()
 
@@ -440,10 +456,10 @@ class TestRPModelElementStereotypesTagsIntegration:
             assert stereo is not None
             assert isinstance(stereo, IRPModelElement)
             pkg.remove_stereotype(stereo)
-            stereotypes = pkg.get_stereotypes()
+            stereotypes = pkg.stereotypes
             assert isinstance(stereotypes, IRPCollection)
-            names = [s.get_name() for s in stereotypes]
-            assert stereo.get_name() not in names
+            names = [s.name for s in stereotypes]
+            assert stereo.name not in names
         finally:
             pkg.delete_from_project()
 
@@ -456,22 +472,26 @@ class TestRPModelElementStereotypesTagsIntegration:
             pkg.remove_stereotype(stereo)
             # add_specific_stereotype returns void (None) according to Java API
             pkg.add_specific_stereotype(stereo)
-            stereotypes = pkg.get_stereotypes()
+            stereotypes = pkg.stereotypes
             assert isinstance(stereotypes, IRPCollection)
-            names = [s.get_name() for s in stereotypes]
-            assert stereo.get_name() in names
+            names = [s.name for s in stereotypes]
+            assert stereo.name in names
         finally:
             pkg.delete_from_project()
 
     def test_get_all_tags(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("AllTagsTestPkg"))
         try:
-            stereo = pkg.add_stereotype(self._unique("TagTestStereo"), "Package")
-            assert stereo is not None
-            assert isinstance(stereo, IRPModelElement)
-            tags = pkg.get_all_tags()
+            tag_name = self._unique("AllTagsTestTag")
+            tag = pkg.add_new_aggr("Tag", tag_name)
+            assert isinstance(tag, RPTag)
+            pkg.set_tag_value(tag, "retrievable tag value")
+
+            tags = pkg.all_tags
+
             assert tags is not None
             assert isinstance(tags, IRPCollection)
+            assert any(item.name == tag_name for item in tags)
         finally:
             pkg.delete_from_project()
 
@@ -481,7 +501,7 @@ class TestRPModelElementStereotypesTagsIntegration:
             stereo = pkg.add_stereotype(self._unique("LocalTagTestStereo"), "Package")
             assert stereo is not None
             assert isinstance(stereo, IRPModelElement)
-            tags = pkg.get_local_tags()
+            tags = pkg.local_tags
             assert tags is not None
             assert isinstance(tags, IRPCollection)
         finally:
@@ -550,12 +570,12 @@ class TestRPModelElementDescriptionDisplayNameIntegration:
         pkg = self._create_package(test_project, self._unique("DescPkg"))
         try:
             cls = pkg.add_class(self._unique("DescCls"))
-            cls.set_description("A test description")
-            description = cls.get_description()
+            cls.description = "A test description"
+            description = cls.description
             assert description == "A test description"
             assert isinstance(description, str)
 
-            plain_text = cls.get_description_plain_text()
+            plain_text = cls.description_plain_text
             assert isinstance(plain_text, str)
             assert "A test description" in plain_text
         finally:
@@ -566,17 +586,17 @@ class TestRPModelElementDescriptionDisplayNameIntegration:
         try:
             cls = pkg.add_class(self._unique("RtfDescCls"))
             rtf_string = r"{\rtf1 Hello}"
-            cls.set_description_rtf(rtf_string)
+            cls.description_rtf = rtf_string
 
             is_rtf = cls.is_description_rtf()
             assert is_rtf
             assert isinstance(is_rtf, (bool, int))
 
-            retrieved_rtf = cls.get_description_rtf()
+            retrieved_rtf = cls.description_rtf
             assert isinstance(retrieved_rtf, str)
             assert retrieved_rtf == rtf_string
 
-            description = cls.get_description()
+            description = cls.description
             assert isinstance(description, str)
             assert "Hello" in description
         finally:
@@ -594,7 +614,7 @@ class TestRPModelElementDescriptionDisplayNameIntegration:
                 cls.set_description_html(html)
 
             # getDescriptionHTML should work normally
-            retrieved_html = cls.get_description_html()
+            retrieved_html = cls.description_html
             assert isinstance(retrieved_html, str)
         finally:
             pkg.delete_from_project()
@@ -602,7 +622,7 @@ class TestRPModelElementDescriptionDisplayNameIntegration:
     def test_get_description_html_on_empty(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("HtmlEmptyPkg"))
         try:
-            result = pkg.get_description_html()
+            result = pkg.description_html
             assert isinstance(result, str)
         finally:
             pkg.delete_from_project()
@@ -621,9 +641,9 @@ class TestRPModelElementDescriptionDisplayNameIntegration:
         try:
             cls = pkg.add_class(self._unique("DispNameCls"))
             display_name = "My Custom Label"
-            cls.set_display_name(display_name)
+            cls.display_name = display_name
 
-            retrieved = cls.get_display_name()
+            retrieved = cls.display_name
             assert retrieved == display_name
             assert isinstance(retrieved, str)
         finally:
@@ -644,7 +664,7 @@ class TestRPModelElementDescriptionDisplayNameIntegration:
             assert isinstance(retrieved_rtf, str)
             assert retrieved_rtf == rtf_string
 
-            display_name = cls.get_display_name()
+            display_name = cls.display_name
             assert isinstance(display_name, str)
         finally:
             pkg.delete_from_project()
@@ -766,7 +786,7 @@ class TestRPModelElementNavigationIntegration:
             found = pkg.find_nested_element(class_name, "Class")
             assert found is not None
             assert isinstance(found, IRPModelElement)
-            assert found.get_name() == class_name
+            assert found.name == class_name
 
             not_found = pkg.find_nested_element(self._unique("Missing"), "Class")
             # Rhapsody findNestedElement returns None (not an empty-name element) when no match.
@@ -786,7 +806,7 @@ class TestRPModelElementNavigationIntegration:
             found = pkg.find_nested_element_recursive(class_name, "Class")
             assert found is not None
             assert isinstance(found, IRPModelElement)
-            assert found.get_name() == class_name
+            assert found.name == class_name
         finally:
             pkg.delete_from_project()
 
@@ -795,11 +815,11 @@ class TestRPModelElementNavigationIntegration:
         try:
             class_name = self._unique("FullNameCls")
             pkg.add_class(class_name)
-            full_path = f"{pkg.get_name()}::{class_name}"
+            full_path = f"{pkg.name}::{class_name}"
             found = test_project.find_elements_by_full_name(full_path, "Class")
             assert found is not None
             assert isinstance(found, IRPModelElement)
-            assert found.get_name() == class_name
+            assert found.name == class_name
         finally:
             pkg.delete_from_project()
 
@@ -822,7 +842,7 @@ class TestRPModelElementNavigationIntegration:
             cls = pkg.add_class(class_name)
             full_path = cls.get_full_path_name()
             assert isinstance(full_path, str)
-            assert pkg.get_name() in full_path
+            assert pkg.name in full_path
             assert class_name in full_path
         finally:
             pkg.delete_from_project()
@@ -835,7 +855,7 @@ class TestRPModelElementNavigationIntegration:
             path_in = cls.get_full_path_name_in()
             assert isinstance(path_in, str)
             assert class_name in path_in
-            assert pkg.get_name() in path_in
+            assert pkg.name in path_in
         finally:
             pkg.delete_from_project()
 
@@ -844,10 +864,10 @@ class TestRPModelElementNavigationIntegration:
         try:
             class_name = self._unique("ProjCls")
             cls = pkg.add_class(class_name)
-            project = cls.get_project()
+            project = cls.project
             assert project is not None
             assert isinstance(project, IRPProject)
-            assert project.get_name() == test_project.get_name()
+            assert project.name == test_project.name
         finally:
             pkg.delete_from_project()
 
@@ -856,11 +876,11 @@ class TestRPModelElementNavigationIntegration:
         pkg2 = self._create_package(test_project, self._unique("OwnerPkg2"))
         try:
             cls = pkg1.add_class(self._unique("OwnerCls"))
-            cls.set_owner(pkg2)
-            owner = cls.get_owner()
+            cls.owner = pkg2
+            owner = cls.owner
             assert owner is not None
             assert isinstance(owner, IRPModelElement)
-            assert owner.get_name() == pkg2.get_name()
+            assert owner.name == pkg2.name
         finally:
             pkg2.delete_from_project()
             pkg1.delete_from_project()
@@ -896,14 +916,14 @@ class TestRPModelElementCloningTemplatesIntegration:
         pkg = self._create_package(test_project, self._unique("ClonePkg"))
         try:
             cls = pkg.add_class(self._unique("Original"))
-            original_guid = cls.get_guid()
+            original_guid = cls.guid
 
             clone_name = self._unique("Clone")
             cloned = cls.clone(clone_name, pkg)
             assert cloned is not None
             assert isinstance(cloned, IRPModelElement)
-            assert cloned.get_name() == clone_name
-            assert cloned.get_guid() != original_guid
+            assert cloned.name == clone_name
+            assert cloned.guid != original_guid
         finally:
             pkg.delete_from_project()
 
@@ -929,7 +949,7 @@ class TestRPModelElementCloningTemplatesIntegration:
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
-            assert cls.get_of_template() is None
+            assert cls.of_template is None
         finally:
             pkg.delete_from_project()
 
@@ -943,10 +963,15 @@ class TestRPModelElementCloningTemplatesIntegration:
             pkg.delete_from_project()
 
     def test_set_of_template(self, test_project: IRPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("DocPkg"))
-        cls = pkg.add_class(self._unique("DocCls"))
+        pkg = self._create_package(test_project, self._unique("TemplatePkg"))
+        template = pkg.add_class(self._unique("TemplateClass"))
+        instance = pkg.add_class(self._unique("TemplateInstance"))
         try:
-            assert cls.set_of_template(cls) is None  # type: ignore[func-returns-value]
+            instance.of_template = template
+            retrieved_template = instance.of_template
+
+            assert retrieved_template is not None
+            assert retrieved_template.name == template.name
         finally:
             pkg.delete_from_project()
 
@@ -954,7 +979,7 @@ class TestRPModelElementCloningTemplatesIntegration:
         pkg = self._create_package(test_project, self._unique("TemplParamsPkg"))
         try:
             cls = pkg.add_class(self._unique("Plain"))
-            params = cls.get_template_parameters()
+            params = cls.template_parameters
             assert params is not None
             assert isinstance(params, IRPCollection)
             assert isinstance(params.get_count(), int)
@@ -962,19 +987,28 @@ class TestRPModelElementCloningTemplatesIntegration:
             pkg.delete_from_project()
 
     def test_get_ti(self, test_project: IRPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("DocPkg"))
-        cls = pkg.add_class(self._unique("DocCls"))
+        pkg = self._create_package(test_project, self._unique("TemplatePkg"))
+        template = pkg.add_class(self._unique("TemplateClass"))
+        instance = pkg.add_class(self._unique("TemplateInstance"))
         try:
-            assert cls.get_ti() is None
+            instance.become_template_instantiation_of(template)
+            template_instantiation = instance.ti
+
+            assert template_instantiation.meta_class == "TemplateInstantiation"
+            assert instance.ti == template_instantiation
         finally:
             pkg.delete_from_project()
 
     def test_set_ti(self, test_project: IRPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("DocPkg"))
-        cls = pkg.add_class(self._unique("DocCls"))
+        pkg = self._create_package(test_project, self._unique("TemplatePkg"))
+        template = pkg.add_class(self._unique("TemplateClass"))
+        instance = pkg.add_class(self._unique("TemplateInstance"))
         try:
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.set_ti(cls)  # type: ignore[arg-type]
+            instance.become_template_instantiation_of(template)
+            template_instantiation = instance.ti
+            instance.ti = template_instantiation
+
+            assert instance.ti == template_instantiation
         finally:
             pkg.delete_from_project()
 
@@ -1025,7 +1059,7 @@ class TestRPModelElementRedefinesConstraintsIntegration:
         pkg = self._create_package(test_project, self._unique("ConstrPkg"))
         try:
             cls = pkg.add_class(self._unique("ConstrCls"))
-            constraints = cls.get_constraints()
+            constraints = cls.constraints
             assert constraints is not None
             assert isinstance(constraints, IRPCollection)
             assert isinstance(constraints.get_count(), int)
@@ -1036,7 +1070,7 @@ class TestRPModelElementRedefinesConstraintsIntegration:
         pkg = self._create_package(test_project, self._unique("ConstrHimPkg"))
         try:
             cls = pkg.add_class(self._unique("ConstrHimCls"))
-            constraints = cls.get_constraints_by_him()
+            constraints = cls.constraints_by_him
             assert constraints is not None
             assert isinstance(constraints, IRPCollection)
             assert isinstance(constraints.get_count(), int)
@@ -1071,7 +1105,7 @@ class TestRPModelElementOslcRemoteIntegration:
         pkg = self._create_package(test_project, self._unique("HyperLinkPkg"))
         try:
             cls = pkg.add_class(self._unique("HyperLinkCls"))
-            hyper_links = cls.get_hyper_links()
+            hyper_links = cls.hyper_links
             assert isinstance(hyper_links, IRPCollection)
             assert isinstance(hyper_links.get_count(), int)
             assert hyper_links.get_count() == 0
@@ -1112,7 +1146,7 @@ class TestRPModelElementOslcRemoteIntegration:
         pkg = self._create_package(test_project, self._unique("ReqTracePkg"))
         try:
             cls = pkg.add_class(self._unique("ReqTraceCls"))
-            handle = cls.get_requirement_traceability_handle()
+            handle = cls.requirement_traceability_handle
             assert isinstance(handle, int)
         finally:
             pkg.delete_from_project()
@@ -1122,8 +1156,8 @@ class TestRPModelElementOslcRemoteIntegration:
         try:
             cls = pkg.add_class(self._unique("ReqTraceRoundCls"))
             handle_value = 12345
-            cls.set_requirement_traceability_handle(handle_value)
-            retrieved = cls.get_requirement_traceability_handle()
+            cls.requirement_traceability_handle = handle_value
+            retrieved = cls.requirement_traceability_handle
             assert isinstance(retrieved, int)
             assert retrieved == handle_value
         finally:
@@ -1149,11 +1183,11 @@ class TestRPModelElementMetadataIntegration:
         pkg = self._create_package(test_project, self._unique("BinIdPkg"))
         try:
             cls = pkg.add_class(self._unique("BinIdCls"))
-            binary_id = cls.get_binary_id()
+            binary_id = cls.binary_id
             assert isinstance(binary_id, bytes)
             assert len(binary_id) > 0
 
-            guid = cls.get_guid()
+            guid = cls.guid
             assert isinstance(guid, str)
             assert len(guid) > 0
         finally:
@@ -1163,7 +1197,7 @@ class TestRPModelElementMetadataIntegration:
         pkg = self._create_package(test_project, self._unique("IntNamePkg"))
         try:
             cls = pkg.add_class(self._unique("IntNameCls"))
-            iface = cls.get_interface_name()
+            iface = cls.interface_name
             assert isinstance(iface, str)
             assert iface == "IRPClass"
         finally:
@@ -1217,7 +1251,7 @@ class TestRPModelElementMetadataIntegration:
         pkg = self._create_package(test_project, self._unique("IsExtPkg"))
         try:
             cls = pkg.add_class(self._unique("IsExtCls"))
-            result = cls.get_is_external()
+            result = cls.is_external
             assert isinstance(result, int)
             assert result == 0
         finally:
@@ -1227,7 +1261,7 @@ class TestRPModelElementMetadataIntegration:
         pkg = self._create_package(test_project, self._unique("IsUnresPkg"))
         try:
             cls = pkg.add_class(self._unique("IsUnresCls"))
-            result = cls.get_is_unresolved()
+            result = cls.is_unresolved
             assert isinstance(result, int)
             assert result == 0
         finally:
@@ -1237,7 +1271,7 @@ class TestRPModelElementMetadataIntegration:
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
-            assert isinstance(cls.get_user_defined_meta_class(), str)
+            assert isinstance(cls.user_defined_meta_class, str)
         finally:
             pkg.delete_from_project()
 
@@ -1245,18 +1279,20 @@ class TestRPModelElementMetadataIntegration:
         pkg = self._create_package(test_project, self._unique("ModPkg"))
         try:
             cls = pkg.add_class(self._unique("ModCls"))
-            cls.set_name(self._unique("Renamed"))
+            cls.name = self._unique("Renamed")
             modified = cls.is_modified()
             assert modified
         finally:
             pkg.delete_from_project()
 
     def test_set_guid_and_get_guid(self, test_project: IRPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("DocPkg"))
-        cls = pkg.add_class(self._unique("DocCls"))
+        pkg = self._create_package(test_project, self._unique("GuidPkg"))
+        cls = pkg.add_class(self._unique("GuidClass"))
+        new_guid = "{" + uuid.uuid4().hex + "}"
         try:
-            assert cls.set_guid("{" + uuid.uuid4().hex + "}") is None  # type: ignore[func-returns-value]
-            assert isinstance(cls.get_guid(), str)
+            cls.guid = new_guid
+
+            assert cls.guid == new_guid
         finally:
             pkg.delete_from_project()
 
@@ -1274,14 +1310,14 @@ class TestRPModelElementMetadataIntegration:
         pkg = self._create_package(test_project, self._unique("ShowDnPkg"))
         try:
             cls = pkg.add_class(self._unique("ShowDnCls"))
-            original = cls.get_is_show_display_name()
+            original = cls.is_show_display_name
             assert isinstance(original, int)
 
-            cls.set_is_show_display_name(0)
-            assert cls.get_is_show_display_name() == 0
+            cls.is_show_display_name = 0
+            assert cls.is_show_display_name == 0
 
-            cls.set_is_show_display_name(1)
-            assert cls.get_is_show_display_name() == 1
+            cls.is_show_display_name = 1
+            assert cls.is_show_display_name == 1
         finally:
             pkg.delete_from_project()
 
@@ -1305,7 +1341,7 @@ class TestRPModelElementDiagnosticsUiIntegration:
         pkg = self._create_package(test_project, self._unique("ErrPkg"))
         try:
             cls = pkg.add_class(self._unique("ErrCls"))
-            cls.get_name()
+            assert cls.name
             message = cls.error_message()
             assert message == ""
             assert isinstance(message, str)
@@ -1316,8 +1352,8 @@ class TestRPModelElementDiagnosticsUiIntegration:
         pkg = self._create_package(test_project, self._unique("GetErrPkg"))
         try:
             cls = pkg.add_class(self._unique("GetErrCls"))
-            cls.get_name()
-            message = cls.get_error_message()
+            assert cls.name
+            message = cls.get_error_message("")
             assert message == ""
             assert isinstance(message, str)
         finally:
@@ -1327,7 +1363,7 @@ class TestRPModelElementDiagnosticsUiIntegration:
         pkg = self._create_package(test_project, self._unique("AnnPkg"))
         try:
             cls = pkg.add_class(self._unique("AnnCls"))
-            annotations = cls.get_annotations()
+            annotations = cls.annotations
             assert isinstance(annotations, IRPCollection)
             assert isinstance(annotations.get_count(), int)
             assert annotations.get_count() == 0
@@ -1339,7 +1375,7 @@ class TestRPModelElementDiagnosticsUiIntegration:
         pkg = self._create_package(test_project, self._unique("CtrlPkg"))
         try:
             cls = pkg.add_class(self._unique("CtrlCls"))
-            files = cls.get_controlled_files()
+            files = cls.controlled_files
             assert isinstance(files, IRPCollection)
             assert isinstance(files.get_count(), int)
             assert files.get_count() == 0
@@ -1354,20 +1390,21 @@ class TestRPModelElementDiagnosticsUiIntegration:
             cls = pkg.add_class(self._unique("SaveUnitCls"))
             unit = cls.get_save_unit()
             assert isinstance(unit, IRPUnit)
-            unit_name = unit.get_name()
+            unit_name = unit.name
             assert isinstance(unit_name, str)
-            assert pkg.get_name() in unit_name
+            assert pkg.name in unit_name
         finally:
             pkg.delete_from_project()
 
     def test_get_main_diagram_and_set_main_diagram_roundtrip(self, test_project: IRPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("DocPkg"))
-        cls = pkg.add_class(self._unique("DocCls"))
+        pkg = self._create_package(test_project, self._unique("MainDiagramPkg"))
+        diagram = pkg.add_object_model_diagram(self._unique("MainDiagram"))
         try:
-            assert cls.add_new_aggr("Class", "Nested") is not None
-            assert cls.get_main_diagram() is None
-            with pytest.raises(RhapsodyRuntimeException):
-                cls.set_main_diagram(cls)  # type: ignore[arg-type]
+            pkg.main_diagram = diagram
+            retrieved_diagram = pkg.main_diagram
+
+            assert retrieved_diagram == diagram
+            assert retrieved_diagram.name == diagram.name
         finally:
             pkg.delete_from_project()
 

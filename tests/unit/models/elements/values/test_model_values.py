@@ -17,7 +17,7 @@ class TestRPInstanceSlot:
         fake = make_fake_element("InstanceSlot", properties={"name": "Slot1"})
         slot = RPInstanceSlot(fake)
         assert isinstance(slot, IRPModelElement)
-        assert slot.get_name() == "Slot1"
+        assert slot.name == "Slot1"
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("InstanceSlot", properties={"name": "Slot1"})
@@ -31,7 +31,7 @@ class TestRPInstanceSlot:
         fake.addElementValue.return_value = result
         slot = RPInstanceSlot(fake)
         wrapped = slot.add_element_value(IRPModelElement(val))
-        assert wrapped.get_name() == "IV1"
+        assert wrapped.name == "IV1"
         fake.addElementValue.assert_called_once_with(val)
 
     def test_add_string_value_delegates_and_wraps(self) -> None:
@@ -40,7 +40,7 @@ class TestRPInstanceSlot:
         fake.addStringValue.return_value = result
         slot = RPInstanceSlot(fake)
         wrapped = slot.add_string_value("hello")
-        assert wrapped.get_name() == "LS1"
+        assert wrapped.name == "LS1"
         fake.addStringValue.assert_called_once_with("hello")
 
     def test_get_slot_property_wraps_result(self) -> None:
@@ -49,7 +49,7 @@ class TestRPInstanceSlot:
         fake.getSlotProperty.return_value = prop
         slot = RPInstanceSlot(fake)
         wrapped = slot.get_slot_property()
-        assert wrapped is not None and wrapped.get_name() == "attr1"
+        assert wrapped is not None and wrapped.name == "attr1"
 
     def test_get_values_returns_collection(self) -> None:
         fake = make_fake_element("InstanceSlot")
@@ -73,7 +73,7 @@ class TestRPInstanceSpecification:
         fake = make_fake_element("InstanceSpecification", properties={"name": "IS1"})
         spec = RPInstanceSpecification(fake)
         assert isinstance(spec, IRPModelElement)
-        assert spec.get_name() == "IS1"
+        assert spec.name == "IS1"
 
     def test_is_registered(self) -> None:
         fake = make_fake_element("InstanceSpecification", properties={"name": "IS1"})
@@ -87,7 +87,7 @@ class TestRPInstanceSpecification:
         fake.addInstanceSlot.return_value = slot
         spec = RPInstanceSpecification(fake)
         wrapped = spec.add_instance_slot("s1", IRPModelElement(prop))
-        assert wrapped.get_name() == "s1"
+        assert wrapped.name == "s1"
         fake.addInstanceSlot.assert_called_once_with("s1", prop)
 
     def test_get_classifier_wraps_result(self) -> None:
@@ -96,7 +96,7 @@ class TestRPInstanceSpecification:
         fake.getClassifier.return_value = clf
         spec = RPInstanceSpecification(fake)
         wrapped = spec.get_classifier()
-        assert wrapped.get_name() == "C1"
+        assert wrapped.name == "C1"
 
     def test_get_instance_slots_returns_collection(self) -> None:
         fake = make_fake_element("InstanceSpecification")
@@ -141,7 +141,7 @@ class TestRPInstanceValue:
         fake.getValue.return_value = val
         iv = RPInstanceValue(fake)
         wrapped = iv.get_value()
-        assert wrapped is not None and wrapped.get_name() == "C1"
+        assert wrapped is not None and wrapped.name == "C1"
 
     def test_set_value_delegates(self) -> None:
         fake = make_fake_element("InstanceValue")
@@ -179,4 +179,4 @@ class TestRPValueSpecification:
     def test_can_be_instantiated(self) -> None:
         fake = make_fake_element("ValueSpecification", properties={"name": "VS1"})
         vs = RPValueSpecification(fake)
-        assert vs.get_name() == "VS1"
+        assert vs.name == "VS1"

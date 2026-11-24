@@ -29,6 +29,6 @@ class TestRPDiagramIntegration:
             diagram = pkg.add_object_model_diagram(diag_name)
             assert diagram is not None
             assert isinstance(diagram, RPDiagram)
-            assert diagram.get_name() == diag_name
+            assert diagram.name == diag_name
         finally:
             diagram.delete_from_project()

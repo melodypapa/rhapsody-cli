@@ -12,7 +12,7 @@ def test_diagram_is_a_unit() -> None:
     diagram = RPDiagram(fake)
 
     assert isinstance(diagram, IRPUnit)
-    assert diagram.get_name() == "MainFlow"
+    assert diagram.name == "MainFlow"
 
 
 def test_diagram_close_diagram_delegates_to_com() -> None:
@@ -33,7 +33,7 @@ def test_diagram_add_text_box_delegates_to_com_and_wraps_result() -> None:
     result = diagram.add_text_box("hello", 0, 0, 50, 20)
 
     fake.addTextBox.assert_called_once_with("hello", 0, 0, 50, 20)
-    assert result.get_name() == "Note1"
+    assert result.name == "Note1"
 
 
 def test_diagram_get_custom_views_returns_collection() -> None:
@@ -45,7 +45,7 @@ def test_diagram_get_custom_views_returns_collection() -> None:
     views = diagram.get_custom_views()
 
     assert len(views) == 1
-    assert views[0].get_name() == "CustomView1"
+    assert views[0].name == "CustomView1"
 
 
 def test_diagram_get_corresponding_graphic_elements_returns_collection() -> None:
@@ -59,7 +59,7 @@ def test_diagram_get_corresponding_graphic_elements_returns_collection() -> None
 
     fake.getCorrespondingGraphicElements.assert_called_once_with(model_element)
     assert len(elements) == 1
-    assert elements[0].get_name() == "Shape1"
+    assert elements[0].name == "Shape1"
 
 
 def test_diagram_is_registered_for_meta_class_activity_diagram() -> None:

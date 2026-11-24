@@ -12,7 +12,7 @@ def test_statechart_is_a_class() -> None:
     statechart = RPStatechart(fake)
 
     assert isinstance(statechart, IRPClass)
-    assert statechart.get_name() == "Behavior"
+    assert statechart.name == "Behavior"
 
 
 def test_statechart_add_new_node_by_type_wraps_result() -> None:
@@ -24,7 +24,7 @@ def test_statechart_add_new_node_by_type_wraps_result() -> None:
     result = statechart.add_new_node_by_type("State", 10, 20, 100, 50)
 
     fake.addNewNodeByType.assert_called_once_with("State", 10, 20, 100, 50)
-    assert result.get_name() == "Idle"
+    assert result.name == "Idle"
 
 
 def test_statechart_create_graphics_delegates_to_com() -> None:

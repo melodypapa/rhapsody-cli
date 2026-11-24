@@ -21,23 +21,38 @@ import time
 from typing import Generator, Optional
 
 import pytest
+from _pytest.config.argparsing import Parser
+from pytest import FixtureRequest
 
 from rhapsody_cli import RhapsodyApplication
 
 
+def pytest_addoption(parser: Parser) -> None:
+    parser.addoption(
+        "--rhapsody-hidden-ui",
+        action="store_true",
+        default=False,
+        help="Run integration/system cases with the Rhapsody UI hidden",
+    )
+
+
 @pytest.fixture(scope="session")
-def rhapsody_instance() -> Generator[Optional[RhapsodyApplication], None, None]:
+def rhapsody_instance(request: FixtureRequest) -> Generator[Optional[RhapsodyApplication], None, None]:
     """Single owner of the Rhapsody process lifecycle.
 
     Launches (or attaches to) one Rhapsody instance for the whole test session
-    and quits it on teardown. Yields ``None`` when Rhapsody cannot be reached so
-    dependent fixtures can skip gracefully rather than error.
+    and quits it on teardown. The opt-in ``--rhapsody-hidden-ui`` flag passes
+    ``show_gui=False`` and explicitly hides the application. Yields ``None``
+    when Rhapsody cannot be reached so dependent fixtures can skip gracefully.
 
     Finalized last because it is the root dependency of every Rhapsody fixture,
     so ``app.quit()`` runs only after all other teardown has finished.
     """
+    hidden_ui = request.config.getoption("--rhapsody-hidden-ui", default=False)
     try:
-        app = RhapsodyApplication.connect(attach_only=False, show_gui=True)
+        app = RhapsodyApplication.connect(attach_only=False, show_gui=not hidden_ui)
+        if hidden_ui:
+            app.set_hidden_ui(True)
     except Exception:
         yield None
         return

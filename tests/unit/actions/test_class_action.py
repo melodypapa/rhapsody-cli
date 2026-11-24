@@ -22,7 +22,7 @@ class TestAbstractClassAction:
         """Test successful package resolution for create/list."""
         action = AbstractClassAction()
         mock_package = MagicMock()
-        mock_package.get_meta_class.return_value = "Package"
+        mock_package.meta_class = "Package"
 
         with patch.object(ElementManagementAction, "_get_active_root", return_value=MagicMock()):
             with patch(
@@ -36,7 +36,7 @@ class TestAbstractClassAction:
         """Test project root accepted as package parent (IRPProject inherits addClass)."""
         action = AbstractClassAction()
         mock_project = MagicMock()
-        mock_project.get_meta_class.return_value = "Project"
+        mock_project.meta_class = "Project"
 
         with patch.object(ElementManagementAction, "_get_active_root", return_value=MagicMock()):
             with patch(
@@ -50,7 +50,7 @@ class TestAbstractClassAction:
         """Test validation fails for non-package element."""
         action = AbstractClassAction()
         mock_class = MagicMock()
-        mock_class.get_meta_class.return_value = "Class"
+        mock_class.meta_class = "Class"
 
         with patch.object(ElementManagementAction, "_get_active_root", return_value=MagicMock()):
             with patch(
@@ -67,7 +67,7 @@ class TestAbstractClassAction:
         """Test successful class resolution for delete/view/link."""
         action = AbstractClassAction()
         mock_class = MagicMock()
-        mock_class.get_meta_class.return_value = "Class"
+        mock_class.meta_class = "Class"
 
         with patch.object(ElementManagementAction, "_get_active_root", return_value=MagicMock()):
             with patch(
@@ -81,7 +81,7 @@ class TestAbstractClassAction:
         """Test validation fails for non-class element."""
         action = AbstractClassAction()
         mock_package = MagicMock()
-        mock_package.get_meta_class.return_value = "Package"
+        mock_package.meta_class = "Package"
 
         with patch.object(ElementManagementAction, "_get_active_root", return_value=MagicMock()):
             with patch(
@@ -98,7 +98,7 @@ class TestAbstractClassAction:
         """Test successful class lookup by GUID."""
         action = AbstractClassAction()
         mock_class = MagicMock()
-        mock_class.get_meta_class.return_value = "Class"
+        mock_class.meta_class = "Class"
 
         mock_project = MagicMock()
         mock_project.find_element_by_guid.return_value = mock_class
@@ -112,7 +112,7 @@ class TestAbstractClassAction:
         """Test GUID lookup fails for non-class element."""
         action = AbstractClassAction()
         mock_package = MagicMock()
-        mock_package.get_meta_class.return_value = "Package"
+        mock_package.meta_class = "Package"
 
         mock_project = MagicMock()
         mock_project.find_element_by_guid.return_value = mock_package
@@ -146,7 +146,7 @@ class TestClassCreateAction:
 
         action = ClassCreateAction()
         mock_parent = MagicMock()
-        mock_parent.get_meta_class.return_value = "Package"
+        mock_parent.meta_class = "Package"
         return action, mock_parent
 
     def test_create_single_class_inline_json(self) -> None:
@@ -164,7 +164,7 @@ class TestClassCreateAction:
             action.execute(args)
 
             mock_parent.add_class.assert_called_once_with("TemperatureSensor")
-            mock_class.set_description.assert_called_once_with("Temp sensor")
+            assert mock_class.description == "Temp sensor"
 
     def test_create_bulk_classes_from_file(self, tmp_path: Any) -> None:
         """UTS_CLS_00002: Test creating multiple classes from JSON file."""
@@ -343,7 +343,7 @@ class TestClassDeleteAction:
 
         action = ClassDeleteAction()
         mock_class = MagicMock()
-        mock_class.get_meta_class.return_value = "Class"
+        mock_class.meta_class = "Class"
 
         with patch.object(action, "_resolve_and_validate_class", return_value=mock_class):
             args = MagicMock()
@@ -360,7 +360,7 @@ class TestClassDeleteAction:
 
         action = ClassDeleteAction()
         mock_class = MagicMock()
-        mock_class.get_meta_class.return_value = "Class"
+        mock_class.meta_class = "Class"
 
         with patch.object(action, "_resolve_class_by_guid", return_value=mock_class):
             args = MagicMock()
@@ -377,7 +377,7 @@ class TestClassDeleteAction:
 
         action = ClassDeleteAction()
         mock_class = MagicMock()
-        mock_class.get_meta_class.return_value = "Class"
+        mock_class.meta_class = "Class"
         mock_class.delete_from_project.side_effect = Exception("COM error")
 
         with patch.object(action, "_resolve_and_validate_class", return_value=mock_class):
@@ -433,10 +433,10 @@ class TestClassViewAction:
     def _make_mock_class(self) -> MagicMock:
         """Helper: build a fully-populated mock class."""
         mock_class = MagicMock()
-        mock_class.get_meta_class.return_value = "Class"
-        mock_class.get_name.return_value = "TemperatureSensor"
-        mock_class.get_guid.return_value = "12345678-1234-1234-1234-123456789abc"
-        mock_class.get_description.return_value = "Temperature sensor"
+        mock_class.meta_class = "Class"
+        mock_class.name = "TemperatureSensor"
+        mock_class.guid = "12345678-1234-1234-1234-123456789abc"
+        mock_class.description = "Temperature sensor"
         mock_class.is_abstract = True  # bool
         mock_class.is_active = 1
         mock_class.get_is_final.return_value = 0
@@ -445,15 +445,15 @@ class TestClassViewAction:
         mock_class.get_full_path_name.return_value = "Sensors/TemperatureSensor"
 
         op1 = MagicMock()
-        op1.get_name.return_value = "readValue"
+        op1.name = "readValue"
         op2 = MagicMock()
-        op2.get_name.return_value = "setThreshold"
+        op2.name = "setThreshold"
         mock_class.get_operations.return_value = [op1, op2]
 
         attr1 = MagicMock()
-        attr1.get_name.return_value = "threshold"
+        attr1.name = "threshold"
         attr2 = MagicMock()
-        attr2.get_name.return_value = "unit"
+        attr2.name = "unit"
         mock_class.get_attributes.return_value = [attr1, attr2]
 
         return mock_class
@@ -577,11 +577,11 @@ class TestClassListAction:
 
         action = ClassListAction()
         mock_package = MagicMock()
-        mock_package.get_meta_class.return_value = "Package"
+        mock_package.meta_class = "Package"
         cls1 = MagicMock()
-        cls1.get_name.return_value = "TemperatureSensor"
+        cls1.name = "TemperatureSensor"
         cls2 = MagicMock()
-        cls2.get_name.return_value = "PressureSensor"
+        cls2.name = "PressureSensor"
         mock_package.get_classes.return_value = [cls1, cls2]
 
         with patch.object(action, "_resolve_and_validate_package", return_value=mock_package):
@@ -602,7 +602,7 @@ class TestClassListAction:
 
         action = ClassListAction()
         mock_package = MagicMock()
-        mock_package.get_meta_class.return_value = "Package"
+        mock_package.meta_class = "Package"
         mock_package.get_classes.return_value = []
 
         with patch.object(action, "_resolve_and_validate_package", return_value=mock_package):
@@ -623,11 +623,11 @@ class TestClassListAction:
 
         action = ClassListAction()
         mock_package = MagicMock()
-        mock_package.get_meta_class.return_value = "Package"
+        mock_package.meta_class = "Package"
         cls1 = MagicMock()
-        cls1.get_name.return_value = "TemperatureSensor"
+        cls1.name = "TemperatureSensor"
         cls2 = MagicMock()
-        cls2.get_name.return_value = "PressureSensor"
+        cls2.name = "PressureSensor"
         mock_package.get_classes.return_value = [cls1, cls2]
 
         with patch.object(action, "_resolve_and_validate_package", return_value=mock_package):
@@ -659,9 +659,9 @@ class TestClassLinkAction:
 
         action = ClassLinkAction()
         mock_source = MagicMock()
-        mock_source.get_meta_class.return_value = "Class"
+        mock_source.meta_class = "Class"
         mock_owner = MagicMock()
-        mock_source.get_owner.return_value = mock_owner
+        mock_source.owner = mock_owner
         mock_target = MagicMock()
 
         with patch.object(action, "_resolve_and_validate_class", return_value=mock_source):
@@ -685,9 +685,9 @@ class TestClassLinkAction:
 
         action = ClassLinkAction()
         mock_source = MagicMock()
-        mock_source.get_meta_class.return_value = "Class"
+        mock_source.meta_class = "Class"
         mock_owner = MagicMock()
-        mock_source.get_owner.return_value = mock_owner
+        mock_source.owner = mock_owner
         mock_target = MagicMock()
 
         with patch.object(action, "_resolve_and_validate_class", return_value=mock_source):
@@ -728,9 +728,9 @@ class TestClassLinkAction:
 
         action = ClassLinkAction()
         mock_source = MagicMock()
-        mock_source.get_meta_class.return_value = "Class"
+        mock_source.meta_class = "Class"
         mock_owner = MagicMock()
-        mock_source.get_owner.return_value = mock_owner
+        mock_source.owner = mock_owner
         mock_owner.find_nested_classifier_recursive.return_value = None
 
         with patch.object(action, "_resolve_and_validate_class", return_value=mock_source):
@@ -752,9 +752,9 @@ class TestClassLinkAction:
 
         action = ClassLinkAction()
         mock_source = MagicMock()
-        mock_source.get_meta_class.return_value = "Class"
+        mock_source.meta_class = "Class"
         mock_owner = MagicMock()
-        mock_source.get_owner.return_value = mock_owner
+        mock_source.owner = mock_owner
         mock_target = MagicMock()
 
         with patch.object(action, "_resolve_class_by_guid", return_value=mock_source):
@@ -801,7 +801,7 @@ class TestClassUpdateAction:
 
             action.execute(args)
 
-            mock_class.set_description.assert_called_once_with("Updated description")
+            assert mock_class.description == "Updated description"
 
     def test_update_class_with_guid(self) -> None:
         """UTS_CLS_00031: Test updating class via --guid with type validation."""
@@ -809,7 +809,7 @@ class TestClassUpdateAction:
 
         action = ClassUpdateAction()
         mock_class = MagicMock()
-        mock_class.get_meta_class.return_value = "Class"
+        mock_class.meta_class = "Class"
 
         with patch.object(action, "_resolve_class_by_guid", return_value=mock_class):
             args = MagicMock()
@@ -820,7 +820,7 @@ class TestClassUpdateAction:
 
             action.execute(args)
 
-            mock_class.set_description.assert_called_once_with("Updated")
+            assert mock_class.description == "Updated"
 
     def test_update_class_guid_wrong_type(self) -> None:
         """UTS_CLS_00032: Test --guid resolving to non-Class raises error."""
@@ -829,7 +829,7 @@ class TestClassUpdateAction:
         action = ClassUpdateAction()
         mock_project = MagicMock()
         mock_element = MagicMock()
-        mock_element.get_meta_class.return_value = "Package"
+        mock_element.meta_class = "Package"
         mock_project.find_element_by_guid.return_value = mock_element
 
         with patch.object(ElementManagementAction, "_get_active_project", return_value=mock_project):
@@ -904,7 +904,7 @@ class TestClassUpdateAction:
 
                 mock_warning.assert_called_once()
                 assert "unknown_field" in str(mock_warning.call_args)
-                mock_class.set_description.assert_called_once_with("real desc")
+                assert mock_class.description == "real desc"
 
     def test_update_class_from_file(self, tmp_path: Any) -> None:
         """UTS_CLS_00036: Test loading JSON from --input file."""
@@ -925,7 +925,7 @@ class TestClassUpdateAction:
 
             action.execute(args)
 
-            mock_class.set_description.assert_called_once_with("From file")
+            assert mock_class.description == "From file"
 
     def test_update_class_requires_path_or_guid(self) -> None:
         """UTS_CLS_00037: Test that neither --path nor --guid raises error."""

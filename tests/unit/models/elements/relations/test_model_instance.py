@@ -13,7 +13,7 @@ def test_instance_is_a_relation() -> None:
     instance = RPInstance(fake)
 
     assert isinstance(instance, RPRelation)
-    assert instance.get_name() == "driver1"
+    assert instance.name == "driver1"
 
 
 def test_instance_get_all_nested_elements_returns_collection() -> None:
@@ -25,7 +25,7 @@ def test_instance_get_all_nested_elements_returns_collection() -> None:
     nested_elements = instance.get_all_nested_elements()
 
     assert len(nested_elements) == 1
-    assert nested_elements[0].get_name() == "speed"
+    assert nested_elements[0].name == "speed"
 
 
 def test_instance_get_attribute_value_delegates_to_com() -> None:
@@ -55,7 +55,7 @@ def test_instance_get_in_links_returns_collection() -> None:
     links = instance.get_in_links()
 
     assert len(links) == 1
-    assert links[0].get_name() == "conn1"
+    assert links[0].name == "conn1"
 
 
 def test_instance_get_out_links_returns_collection() -> None:
@@ -67,7 +67,7 @@ def test_instance_get_out_links_returns_collection() -> None:
     links = instance.get_out_links()
 
     assert len(links) == 1
-    assert links[0].get_name() == "conn2"
+    assert links[0].name == "conn2"
 
 
 def test_instance_is_registered_for_meta_class_instance() -> None:
@@ -102,7 +102,7 @@ def test_instance_add_relation_to_the_whole_wraps_result() -> None:
     result = instance.add_relation_to_the_whole("whole")
 
     fake.addRelationToTheWhole.assert_called_once_with("whole")
-    assert result.get_name() == "whole"
+    assert result.name == "whole"
 
 
 def test_instance_get_instantiated_by_wraps_result() -> None:
@@ -112,7 +112,7 @@ def test_instance_get_instantiated_by_wraps_result() -> None:
     instance = RPInstance(fake)
 
     result = instance.get_instantiated_by()
-    assert result.get_name() == "create"
+    assert result.name == "create"
 
 
 def test_instance_get_list_of_initializer_arguments_returns_collection() -> None:
@@ -125,7 +125,7 @@ def test_instance_get_list_of_initializer_arguments_returns_collection() -> None
 
     assert isinstance(result, IRPCollection)
     assert len(result) == 1
-    assert result[0].get_name() == "x"
+    assert result[0].name == "x"
 
 
 def test_instance_set_explicit_delegates_to_com() -> None:

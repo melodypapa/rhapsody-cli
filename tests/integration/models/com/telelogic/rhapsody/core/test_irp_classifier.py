@@ -40,7 +40,7 @@ class TestRPClassifierIntegration:
             assert found is not None
             assert found == attribute
             classifier.delete_attribute(attribute)
-            attrs_after = [a.get_name() for a in classifier.get_attributes()]
+            attrs_after = [a.name for a in classifier.get_attributes()]
             assert attr_name not in attrs_after
         finally:
             classifier.delete_from_project()
@@ -152,7 +152,7 @@ class TestRPClassifierIntegration:
         try:
             relation = class_a.add_relation_to(class_b, role1, "Association", "1", role2, "Association", "1", "")
             assert relation is not None
-            found = class_a.find_relation(relation.get_name())
+            found = class_a.find_relation(relation.name)
             assert found is not None
             relations = list(class_a.get_relations())
             assert relation in relations

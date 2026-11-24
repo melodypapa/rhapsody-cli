@@ -11,7 +11,7 @@ def test_profile_is_a_package() -> None:
     profile = RPProfile(fake)
 
     assert isinstance(profile, IRPPackage)
-    assert profile.get_name() == "SysML"
+    assert profile.name == "SysML"
 
 
 def test_profile_is_registered_for_meta_class_profile() -> None:

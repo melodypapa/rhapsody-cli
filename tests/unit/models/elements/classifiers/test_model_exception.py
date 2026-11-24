@@ -9,7 +9,7 @@ def test_exception_is_model_element() -> None:
     fake = make_fake_element("Exception", properties={"name": "Exc1"})
     exc = RPException(fake)
     assert isinstance(exc, IRPModelElement)
-    assert exc.get_name() == "Exc1"
+    assert exc.name == "Exc1"
 
 
 def test_exception_is_registered() -> None:

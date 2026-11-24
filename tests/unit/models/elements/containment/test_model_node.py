@@ -12,7 +12,7 @@ def test_node_is_a_unit() -> None:
     node = RPNode(fake)
 
     assert isinstance(node, IRPUnit)
-    assert node.get_name() == "Node1"
+    assert node.name == "Node1"
 
 
 def test_node_is_registered_for_meta_class_node() -> None:
@@ -35,7 +35,7 @@ def test_node_add_component_instance_delegates_and_wraps() -> None:
     result = node.add_component_instance("Inst1")
 
     fake.addComponentInstance.assert_called_once_with("Inst1")
-    assert result.get_name() == "Inst1"
+    assert result.name == "Inst1"
 
 
 def test_node_get_component_instances_returns_collection() -> None:
@@ -57,7 +57,7 @@ def test_node_find_component_instance_wraps_result() -> None:
     result = node.find_component_instance("Inst1")
 
     fake.findComponentInstance.assert_called_once_with("Inst1")
-    assert result is not None and result.get_name() == "Inst1"
+    assert result is not None and result.name == "Inst1"
 
 
 def test_node_find_component_instance_returns_none_when_not_found() -> None:

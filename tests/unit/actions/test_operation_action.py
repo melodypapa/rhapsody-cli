@@ -22,7 +22,7 @@ class TestAbstractOperationAction:
         """Test successful classifier resolution."""
         action = AbstractOperationAction()
         mock_classifier = MagicMock()
-        mock_classifier.get_meta_class.return_value = "Class"
+        mock_classifier.meta_class = "Class"
 
         with patch.object(ElementManagementAction, "_get_active_root", return_value=MagicMock()):
             with patch(
@@ -58,7 +58,7 @@ class TestAbstractOperationAction:
         """Test successful operation lookup by GUID."""
         action = AbstractOperationAction()
         mock_op = MagicMock()
-        mock_op.get_meta_class.return_value = "Operation"
+        mock_op.meta_class = "Operation"
 
         mock_project = MagicMock()
         mock_project.find_element_by_guid.return_value = mock_op
@@ -84,7 +84,7 @@ class TestAbstractOperationAction:
         """Test GUID lookup fails for non-operation element."""
         action = AbstractOperationAction()
         mock_class = MagicMock()
-        mock_class.get_meta_class.return_value = "Class"
+        mock_class.meta_class = "Class"
 
         mock_project = MagicMock()
         mock_project.find_element_by_guid.return_value = mock_class
@@ -130,7 +130,7 @@ class TestOperationCreateAction:
             action.execute(args)
 
             mock_classifier.add_operation.assert_called_once_with("readValue")
-            mock_op.set_description.assert_called_once_with("Reads value")
+            assert mock_op.description == "Reads value"
 
     def test_create_bulk_operations_from_file(self, tmp_path: Any) -> None:
         """UTS_OP_00002: Test creating multiple operations from JSON file."""
@@ -150,6 +150,18 @@ class TestOperationCreateAction:
             action.execute(args)
 
             assert mock_classifier.add_operation.call_count == 2
+
+    def test_load_json_data_rejects_non_object_shapes(self, tmp_path: Any) -> None:
+        from rhapsody_cli.actions.operation_action import OperationCreateAction
+
+        action = OperationCreateAction()
+        json_file = tmp_path / "invalid.json"
+
+        for content in ('"scalar"', '[{"name":"valid"},"scalar"]'):
+            json_file.write_text(content, encoding="utf-8")
+
+            with pytest.raises(CliExecutionError, match="object or a list of objects"):
+                action._load_json_data(str(json_file))
 
     def test_create_with_boolean_flags(self) -> None:
         """UTS_OP_00003: Test isAbstract/isStatic/isVirtual set via setIsX(1/0)."""
@@ -176,7 +188,7 @@ class TestOperationCreateAction:
         mock_classifier.add_operation.return_value = mock_op
         mock_owner = MagicMock()
         mock_type = MagicMock()
-        mock_classifier.get_owner.return_value = mock_owner
+        mock_classifier.owner = mock_owner
         mock_owner.find_nested_classifier_recursive.return_value = mock_type
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
@@ -187,7 +199,6 @@ class TestOperationCreateAction:
 
             action.execute(args)
 
-            mock_classifier.get_owner.assert_called_once()
             mock_owner.find_nested_classifier_recursive.assert_called_once_with("Temperature")
             mock_op.set_returns.assert_called_once_with(mock_type)
 
@@ -257,9 +268,9 @@ class TestOperationDeleteAction:
 
         action = OperationDeleteAction()
         mock_op = MagicMock()
-        mock_op.get_meta_class.return_value = "Operation"
+        mock_op.meta_class = "Operation"
         mock_owner = MagicMock()
-        mock_op.get_owner.return_value = mock_owner
+        mock_op.owner = mock_owner
 
         with patch.object(action, "_resolve_operation_by_guid", return_value=mock_op):
             args = MagicMock()
@@ -269,7 +280,6 @@ class TestOperationDeleteAction:
 
             action.execute(args)
 
-            mock_op.get_owner.assert_called_once()
             mock_owner.delete_operation.assert_called_once_with(mock_op)
 
     def test_delete_operation_guid_wrong_type(self) -> None:
@@ -278,7 +288,7 @@ class TestOperationDeleteAction:
 
         action = OperationDeleteAction()
         mock_class = MagicMock()
-        mock_class.get_meta_class.return_value = "Class"
+        mock_class.meta_class = "Class"
 
         mock_project = MagicMock()
         mock_project.find_element_by_guid.return_value = mock_class
@@ -322,10 +332,10 @@ class TestOperationViewAction:
     def _make_mock_operation(self) -> MagicMock:
         """Helper: build a fully-populated mock operation."""
         mock_op = MagicMock()
-        mock_op.get_meta_class.return_value = "Operation"
-        mock_op.get_name.return_value = "readValue"
-        mock_op.get_guid.return_value = "12345678-1234-1234-1234-123456789abc"
-        mock_op.get_description.return_value = "Reads the value"
+        mock_op.meta_class = "Operation"
+        mock_op.name = "readValue"
+        mock_op.guid = "12345678-1234-1234-1234-123456789abc"
+        mock_op.description = "Reads the value"
         mock_op.get_body.return_value = "return threshold;"
         mock_op.get_is_abstract.return_value = True
         mock_op.get_is_static.return_value = 0
@@ -334,13 +344,13 @@ class TestOperationViewAction:
         mock_op.get_full_path_name.return_value = "Sensors/TemperatureSensor/readValue"
 
         mock_returns = MagicMock()
-        mock_returns.get_name.return_value = "Temperature"
+        mock_returns.name = "Temperature"
         mock_op.get_returns.return_value = mock_returns
 
         arg1 = MagicMock()
-        arg1.get_name.return_value = "x"
+        arg1.name = "x"
         arg2 = MagicMock()
-        arg2.get_name.return_value = "y"
+        arg2.name = "y"
         mock_op.get_arguments.return_value = [arg1, arg2]
 
         return mock_op
@@ -392,6 +402,7 @@ class TestOperationViewAction:
                 data = json_module.loads(output_file.read_text())
                 assert data["name"] == "readValue"
                 assert data["guid"] == "12345678-1234-1234-1234-123456789abc"
+                assert data["description"] == "Reads the value"
                 assert data["isAbstract"] == 1  # bool True normalized to int
                 assert data["isStatic"] == 0
                 assert data["isVirtual"] == 1
@@ -459,9 +470,9 @@ class TestOperationListAction:
         action = OperationListAction()
         mock_classifier = MagicMock()
         op1 = MagicMock()
-        op1.get_name.return_value = "readValue"
+        op1.name = "readValue"
         op2 = MagicMock()
-        op2.get_name.return_value = "setValue"
+        op2.name = "setValue"
         mock_classifier.get_operations.return_value = [op1, op2]
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
@@ -503,9 +514,9 @@ class TestOperationListAction:
         action = OperationListAction()
         mock_classifier = MagicMock()
         op1 = MagicMock()
-        op1.get_name.return_value = "readValue"
+        op1.name = "readValue"
         op2 = MagicMock()
-        op2.get_name.return_value = "setValue"
+        op2.name = "setValue"
         mock_classifier.get_operations.return_value = [op1, op2]
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
@@ -555,7 +566,7 @@ class TestOperationUpdateAction:
 
         action = OperationUpdateAction()
         mock_op = MagicMock()
-        mock_op.get_meta_class.return_value = "Operation"
+        mock_op.meta_class = "Operation"
 
         with patch.object(action, "_resolve_operation_by_guid", return_value=mock_op):
             args = MagicMock()

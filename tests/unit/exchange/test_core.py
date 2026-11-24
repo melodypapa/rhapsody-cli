@@ -54,20 +54,20 @@ class TestFindOrCreatePackage:
         parent = MagicMock()
         parent.get_nested_elements.return_value = []
         new_pkg = MagicMock()
-        new_pkg.get_name.return_value = "My_Pkg"
+        new_pkg.name = "My_Pkg"
         parent.add_new_aggr.return_value = new_pkg
         helper = _make_helper()
 
         result = helper.find_or_create_package(parent, "My Pkg")
 
         parent.add_new_aggr.assert_called_once_with("Package", "My_Pkg")
-        assert result.get_name() == "My_Pkg"
+        assert result.name == "My_Pkg"
 
     def test_returns_existing_package_without_creating(self) -> None:
         """UTS_XCH_00030: if a Package child with matching name exists, return it."""
         existing = MagicMock()
-        existing.get_meta_class.return_value = "Package"
-        existing.get_name.return_value = "Existing"
+        existing.meta_class = "Package"
+        existing.name = "Existing"
         parent = MagicMock()
         parent.get_nested_elements.return_value = [existing]
         helper = _make_helper()
@@ -75,7 +75,7 @@ class TestFindOrCreatePackage:
         result = helper.find_or_create_package(parent, "Existing")
 
         parent.add_new_aggr.assert_not_called()
-        assert result.get_name() == "Existing"
+        assert result.name == "Existing"
 
 
 class TestFindOrCreateClass:
@@ -85,14 +85,14 @@ class TestFindOrCreateClass:
         parent = MagicMock()
         parent.get_nested_elements.return_value = []
         new_cls = MagicMock()
-        new_cls.get_name.return_value = "Widget"
+        new_cls.name = "Widget"
         parent.add_new_aggr.return_value = new_cls
         helper = _make_helper()
 
         result = helper.find_or_create_class(parent, "Widget")
 
         parent.add_new_aggr.assert_called_once_with("Class", "Widget")
-        assert result.get_name() == "Widget"
+        assert result.name == "Widget"
 
 
 class TestFindOrCreateOperation:
@@ -101,10 +101,10 @@ class TestFindOrCreateOperation:
     def test_on_package_uses_add_global_function(self) -> None:
         """UTS_XCH_00011: global function path when parent is a Package."""
         parent = MagicMock()
-        parent.get_meta_class.return_value = "Package"
+        parent.meta_class = "Package"
         parent.get_nested_elements.return_value = []
         new_op = MagicMock()
-        new_op.get_name.return_value = "globalFn"
+        new_op.name = "globalFn"
         parent.add_global_function.return_value = new_op
         helper = _make_helper()
 
@@ -112,15 +112,15 @@ class TestFindOrCreateOperation:
 
         parent.add_global_function.assert_called_once_with("globalFn")
         parent.add_new_aggr.assert_not_called()
-        assert result.get_name() == "globalFn"
+        assert result.name == "globalFn"
 
     def test_on_class_uses_add_new_aggr(self) -> None:
         """UTS_XCH_00012: regular add_new_aggr path when parent is a Class."""
         parent = MagicMock()
-        parent.get_meta_class.return_value = "Class"
+        parent.meta_class = "Class"
         parent.get_nested_elements.return_value = []
         new_op = MagicMock()
-        new_op.get_name.return_value = "method"
+        new_op.name = "method"
         parent.add_new_aggr.return_value = new_op
         helper = _make_helper()
 
@@ -137,14 +137,14 @@ class TestFindOrCreateArgument:
         parent = MagicMock()
         parent.get_nested_elements.return_value = []
         new_arg = MagicMock()
-        new_arg.get_name.return_value = "x"
+        new_arg.name = "x"
         parent.add_argument.return_value = new_arg
         helper = _make_helper()
 
         result = helper.find_or_create_argument(parent, "x")
 
         parent.add_argument.assert_called_once_with("x")
-        assert result.get_name() == "x"
+        assert result.name == "x"
 
 
 class TestFindOrCreateAttribute:
@@ -154,14 +154,14 @@ class TestFindOrCreateAttribute:
         parent = MagicMock()
         parent.get_nested_elements.return_value = []
         new_attr = MagicMock()
-        new_attr.get_name.return_value = "count"
+        new_attr.name = "count"
         parent.add_new_aggr.return_value = new_attr
         helper = _make_helper()
 
         result = helper.find_or_create_attribute(parent, "count")
 
         parent.add_new_aggr.assert_called_once_with("Attribute", "count")
-        assert result.get_name() == "count"
+        assert result.name == "count"
 
 
 class TestFindOrCreateType:
@@ -171,7 +171,7 @@ class TestFindOrCreateType:
         parent = MagicMock()
         parent.get_nested_elements.return_value = []
         new_type = MagicMock()
-        new_type.get_name.return_value = "Color"
+        new_type.name = "Color"
         parent.add_new_aggr.return_value = new_type
         helper = _make_helper()
 
@@ -179,13 +179,13 @@ class TestFindOrCreateType:
 
         parent.add_new_aggr.assert_called_once_with("Type", "Color")
         new_type.set_kind.assert_called_once_with("Enumeration")
-        assert result.get_name() == "Color"
+        assert result.name == "Color"
 
     def test_creates_type_without_kind_skips_set_kind(self) -> None:
         parent = MagicMock()
         parent.get_nested_elements.return_value = []
         new_type = MagicMock()
-        new_type.get_name.return_value = "Plain"
+        new_type.name = "Plain"
         parent.add_new_aggr.return_value = new_type
         helper = _make_helper()
 
@@ -201,14 +201,14 @@ class TestFindOrCreateObject:
         parent = MagicMock()
         parent.get_nested_elements.return_value = []
         new_obj = MagicMock()
-        new_obj.get_name.return_value = "myObj"
+        new_obj.name = "myObj"
         parent.add_new_aggr.return_value = new_obj
         helper = _make_helper()
 
         result = helper.find_or_create_object(parent, "myObj")
 
         parent.add_new_aggr.assert_called_once_with("Object", "myObj")
-        assert result.get_name() == "myObj"
+        assert result.name == "myObj"
 
 
 class TestFindOrCreateEnumerationLiteral:
@@ -218,14 +218,14 @@ class TestFindOrCreateEnumerationLiteral:
         parent = MagicMock()
         parent.get_nested_elements.return_value = []
         new_lit = MagicMock()
-        new_lit.get_name.return_value = "RED"
+        new_lit.name = "RED"
         parent.add_new_aggr.return_value = new_lit
         helper = _make_helper()
 
         result = helper.find_or_create_enumeration_literal(parent, "RED")
 
         parent.add_new_aggr.assert_called_once_with("EnumerationLiteral", "RED")
-        assert result.get_name() == "RED"
+        assert result.name == "RED"
 
 
 class TestFindChildByName:
@@ -233,11 +233,11 @@ class TestFindChildByName:
 
     def test_returns_matching_child(self) -> None:
         match = MagicMock()
-        match.get_meta_class.return_value = "Class"
-        match.get_name.return_value = "Widget"
+        match.meta_class = "Class"
+        match.name = "Widget"
         other = MagicMock()
-        other.get_meta_class.return_value = "Class"
-        other.get_name.return_value = "Other"
+        other.meta_class = "Class"
+        other.name = "Other"
         parent = MagicMock()
         parent.get_nested_elements.return_value = [other, match]
         helper = _make_helper()
@@ -245,12 +245,12 @@ class TestFindChildByName:
         result = helper.find_child_by_name(parent, "Class", "Widget")
 
         assert result is not None
-        assert result.get_name() == "Widget"
+        assert result.name == "Widget"
 
     def test_returns_none_when_no_match(self) -> None:
         other = MagicMock()
-        other.get_meta_class.return_value = "Class"
-        other.get_name.return_value = "Other"
+        other.meta_class = "Class"
+        other.name = "Other"
         parent = MagicMock()
         parent.get_nested_elements.return_value = [other]
         helper = _make_helper()
@@ -262,8 +262,8 @@ class TestFindChildByName:
     def test_filters_by_meta_class(self) -> None:
         """A child with the right name but wrong metaclass is not returned."""
         same_name_diff_type = MagicMock()
-        same_name_diff_type.get_meta_class.return_value = "Package"
-        same_name_diff_type.get_name.return_value = "Widget"
+        same_name_diff_type.meta_class = "Package"
+        same_name_diff_type.name = "Widget"
         parent = MagicMock()
         parent.get_nested_elements.return_value = [same_name_diff_type]
         helper = _make_helper()
@@ -278,8 +278,8 @@ class TestApplyStereotypes:
 
     def test_infers_meta_type_and_calls_add_stereotype(self) -> None:
         element = MagicMock()
-        element.get_meta_class.return_value = "Class"
-        element.get_stereotypes.return_value = []
+        element.meta_class = "Class"
+        element.stereotypes = []
         helper = _make_helper()
 
         helper.apply_stereotypes(element, ["Interface", "SwComponent"])
@@ -291,10 +291,10 @@ class TestApplyStereotypes:
     def test_skips_already_applied_stereotypes(self) -> None:
         """If get_stereotypes() returns an existing stereotype, don't re-add it."""
         existing = MagicMock()
-        existing.get_name.return_value = "Interface"
+        existing.name = "Interface"
         element = MagicMock()
-        element.get_meta_class.return_value = "Class"
-        element.get_stereotypes.return_value = [existing]
+        element.meta_class = "Class"
+        element.stereotypes = [existing]
         helper = _make_helper()
 
         helper.apply_stereotypes(element, ["Interface", "SwComponent"])
@@ -331,36 +331,36 @@ class TestResolveClassifier:
     def test_searches_project_nested_elements_recursively(self) -> None:
         """Found classifier is returned."""
         target = MagicMock()
-        target.get_name.return_value = "Widget"
-        target.get_meta_class.return_value = "Class"
+        target.name = "Widget"
+        target.meta_class = "Class"
         target.get_nested_elements.return_value = []
         sibling = MagicMock()
-        sibling.get_name.return_value = "Other"
-        sibling.get_meta_class.return_value = "Class"
+        sibling.name = "Other"
+        sibling.meta_class = "Class"
         sibling.get_nested_elements.return_value = []
         nested_pkg = MagicMock()
-        nested_pkg.get_name.return_value = "Sub"
-        nested_pkg.get_meta_class.return_value = "Package"
+        nested_pkg.name = "Sub"
+        nested_pkg.meta_class = "Package"
         nested_pkg.get_nested_elements.return_value = [target]
         project = MagicMock()
-        project.get_name.return_value = "P"
-        project.get_meta_class.return_value = "Project"
+        project.name = "P"
+        project.meta_class = "Project"
         project.get_nested_elements.return_value = [sibling, nested_pkg]
         helper = _make_helper(project=project)
 
         result = helper.resolve_classifier("Widget")
 
         assert result is not None
-        assert result.get_name() == "Widget"
+        assert result.name == "Widget"
 
     def test_returns_none_when_not_found(self) -> None:
         sibling = MagicMock()
-        sibling.get_name.return_value = "Other"
-        sibling.get_meta_class.return_value = "Class"
+        sibling.name = "Other"
+        sibling.meta_class = "Class"
         sibling.get_nested_elements.return_value = []
         project = MagicMock()
-        project.get_name.return_value = "P"
-        project.get_meta_class.return_value = "Project"
+        project.name = "P"
+        project.meta_class = "Project"
         project.get_nested_elements.return_value = [sibling]
         helper = _make_helper(project=project)
 
@@ -381,7 +381,7 @@ class TestGetClassifierName:
 
     def test_returns_name_of_classifier(self) -> None:
         classifier = MagicMock()
-        classifier.get_name.return_value = "Widget"
+        classifier.name = "Widget"
         helper = _make_helper()
 
         assert helper.get_classifier_name(classifier) == "Widget"
@@ -409,32 +409,32 @@ class TestCollectChildren:
 
     def test_returns_nested_elements_for_class(self) -> None:
         child1 = MagicMock()
-        child1.get_name.return_value = "a"
+        child1.name = "a"
         child2 = MagicMock()
-        child2.get_name.return_value = "b"
+        child2.name = "b"
         container = MagicMock()
-        container.get_meta_class.return_value = "Class"
+        container.meta_class = "Class"
         container.get_nested_elements.return_value = [child1, child2]
         helper = _make_helper()
 
         result = helper._collect_children(container)
 
         assert len(result) == 2
-        assert result[0].get_name() == "a"
-        assert result[1].get_name() == "b"
+        assert result[0].name == "a"
+        assert result[1].name == "b"
 
     def test_merges_package_globals_when_available(self) -> None:
         """UTS_XCH_00028: Package globals merged into children."""
         nested = MagicMock()
-        nested.get_name.return_value = "Nested"
+        nested.name = "Nested"
         global_fn = MagicMock()
-        global_fn.get_name.return_value = "globalFn"
+        global_fn.name = "globalFn"
         global_var = MagicMock()
-        global_var.get_name.return_value = "globalVar"
+        global_var.name = "globalVar"
         global_obj = MagicMock()
-        global_obj.get_name.return_value = "globalObj"
+        global_obj.name = "globalObj"
         pkg = MagicMock()
-        pkg.get_meta_class.return_value = "Package"
+        pkg.meta_class = "Package"
         pkg.get_nested_elements.return_value = [nested]
         pkg.get_global_functions.return_value = [global_fn]
         pkg.get_global_variables.return_value = [global_var]
@@ -443,7 +443,7 @@ class TestCollectChildren:
 
         result = helper._collect_children(pkg)
 
-        names = [e.get_name() for e in result]
+        names = [e.name for e in result]
         assert "Nested" in names
         assert "globalFn" in names
         assert "globalVar" in names
@@ -457,16 +457,16 @@ class TestCollectChildren:
         ``getattr(container, getter_name, None)`` returns None and skips them.
         """
         nested = MagicMock()
-        nested.get_name.return_value = "Nested"
+        nested.name = "Nested"
         pkg = MagicMock(spec=IRPModelElement)
-        pkg.get_meta_class.return_value = "Package"
+        pkg.meta_class = "Package"
         pkg.get_nested_elements.return_value = [nested]
         helper = _make_helper()
 
         result = helper._collect_children(pkg)
 
         assert len(result) == 1
-        assert result[0].get_name() == "Nested"
+        assert result[0].name == "Nested"
 
 
 class TestGetProjectName:
@@ -474,13 +474,13 @@ class TestGetProjectName:
 
     def test_walks_owner_chain_to_project(self) -> None:
         project = MagicMock()
-        project.get_meta_class.return_value = "Project"
-        project.get_name.return_value = "MyProject"
-        project.get_owner.return_value = None
+        project.meta_class = "Project"
+        project.name = "MyProject"
+        project.owner = None
         pkg = MagicMock()
-        pkg.get_meta_class.return_value = "Package"
-        pkg.get_name.return_value = "Sub"
-        pkg.get_owner.return_value = project
+        pkg.meta_class = "Package"
+        pkg.name = "Sub"
+        pkg.owner = project
         helper = _make_helper()
 
         result = helper._get_project_name(pkg)
@@ -489,9 +489,9 @@ class TestGetProjectName:
 
     def test_returns_project_name_when_container_is_project(self) -> None:
         project = MagicMock()
-        project.get_meta_class.return_value = "Project"
-        project.get_name.return_value = "TopLevel"
-        project.get_owner.return_value = None
+        project.meta_class = "Project"
+        project.name = "TopLevel"
+        project.owner = None
         helper = _make_helper()
 
         result = helper._get_project_name(project)
@@ -501,9 +501,9 @@ class TestGetProjectName:
     def test_returns_empty_string_when_no_project_in_chain(self) -> None:
         """If owner chain never reaches a Project, return empty string (defensive)."""
         orphan = MagicMock()
-        orphan.get_meta_class.return_value = "Package"
-        orphan.get_name.return_value = "Orphan"
-        orphan.get_owner.return_value = None
+        orphan.meta_class = "Package"
+        orphan.name = "Orphan"
+        orphan.owner = None
         helper = _make_helper()
 
         result = helper._get_project_name(orphan)
@@ -518,19 +518,19 @@ class TestFindOrCreateDependency:
         parent = MagicMock()
         parent.get_nested_elements.return_value = []
         new_dep = MagicMock()
-        new_dep.get_name.return_value = "dep1"
+        new_dep.name = "dep1"
         parent.add_new_aggr.return_value = new_dep
         helper = _make_helper()
 
         result = helper.find_or_create_dependency(parent, "dep1")
 
         parent.add_new_aggr.assert_called_once_with("Dependency", "dep1")
-        assert result.get_name() == "dep1"
+        assert result.name == "dep1"
 
     def test_returns_existing_dependency(self) -> None:
         existing = MagicMock()
-        existing.get_meta_class.return_value = "Dependency"
-        existing.get_name.return_value = "dep1"
+        existing.meta_class = "Dependency"
+        existing.name = "dep1"
         parent = MagicMock()
         parent.get_nested_elements.return_value = [existing]
         helper = _make_helper()
@@ -538,7 +538,7 @@ class TestFindOrCreateDependency:
         result = helper.find_or_create_dependency(parent, "dep1")
 
         parent.add_new_aggr.assert_not_called()
-        assert result.get_name() == "dep1"
+        assert result.name == "dep1"
 
 
 class TestFindOrCreateGeneralization:
@@ -548,14 +548,14 @@ class TestFindOrCreateGeneralization:
         parent = MagicMock()
         parent.get_nested_elements.return_value = []
         new_gen = MagicMock()
-        new_gen.get_name.return_value = "gen1"
+        new_gen.name = "gen1"
         parent.add_new_aggr.return_value = new_gen
         helper = _make_helper()
 
         result = helper.find_or_create_generalization(parent, "gen1")
 
         parent.add_new_aggr.assert_called_once_with("Generalization", "gen1")
-        assert result.get_name() == "gen1"
+        assert result.name == "gen1"
 
 
 class TestFindOrCreateRelation:
@@ -565,14 +565,14 @@ class TestFindOrCreateRelation:
         parent = MagicMock()
         parent.get_nested_elements.return_value = []
         new_rel = MagicMock()
-        new_rel.get_name.return_value = "assoc1"
+        new_rel.name = "assoc1"
         parent.add_new_aggr.return_value = new_rel
         helper = _make_helper()
 
         result = helper.find_or_create_relation(parent, "assoc1")
 
         parent.add_new_aggr.assert_called_once_with("Relation", "assoc1")
-        assert result.get_name() == "assoc1"
+        assert result.name == "assoc1"
 
 
 class TestFindOrCreatePort:
@@ -582,14 +582,14 @@ class TestFindOrCreatePort:
         parent = MagicMock()
         parent.get_nested_elements.return_value = []
         new_port = MagicMock()
-        new_port.get_name.return_value = "p1"
+        new_port.name = "p1"
         parent.add_new_aggr.return_value = new_port
         helper = _make_helper()
 
         result = helper.find_or_create_port(parent, "p1")
 
         parent.add_new_aggr.assert_called_once_with("Port", "p1")
-        assert result.get_name() == "p1"
+        assert result.name == "p1"
 
 
 class TestFindOrCreateEvent:
@@ -599,14 +599,14 @@ class TestFindOrCreateEvent:
         parent = MagicMock()
         parent.get_nested_elements.return_value = []
         new_evt = MagicMock()
-        new_evt.get_name.return_value = "TickEvent"
+        new_evt.name = "TickEvent"
         parent.add_new_aggr.return_value = new_evt
         helper = _make_helper()
 
         result = helper.find_or_create_event(parent, "TickEvent")
 
         parent.add_new_aggr.assert_called_once_with("Event", "TickEvent")
-        assert result.get_name() == "TickEvent"
+        assert result.name == "TickEvent"
 
 
 class TestFindOrCreateEventReception:
@@ -616,11 +616,11 @@ class TestFindOrCreateEventReception:
         parent = MagicMock()
         parent.get_nested_elements.return_value = []
         new_rec = MagicMock()
-        new_rec.get_name.return_value = "onTick"
+        new_rec.name = "onTick"
         parent.add_new_aggr.return_value = new_rec
         helper = _make_helper()
 
         result = helper.find_or_create_event_reception(parent, "onTick")
 
         parent.add_new_aggr.assert_called_once_with("EventReception", "onTick")
-        assert result.get_name() == "onTick"
+        assert result.name == "onTick"

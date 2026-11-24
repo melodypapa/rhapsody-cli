@@ -109,7 +109,7 @@ class TestIRPClassIntegration:
             assert isinstance(reception, RPEventReception)
             assert reception in list(test_class.get_interface_items())
             test_class.delete_reception(reception)
-            items_after = [i.get_name() for i in test_class.get_interface_items()]
+            items_after = [i.name for i in test_class.get_interface_items()]
             assert reception_name not in items_after
         finally:
             test_class.delete_from_project()
@@ -178,10 +178,10 @@ class TestIRPClassIntegration:
         try:
             inner = outer.add_class(inner_name)
             assert inner is not None
-            nested_names = [c.get_name() for c in outer.get_nested_classifiers()]
+            nested_names = [c.name for c in outer.get_nested_classifiers()]
             assert inner_name in nested_names
             outer.delete_class(inner_name)
-            nested_after = [c.get_name() for c in outer.get_nested_classifiers()]
+            nested_after = [c.name for c in outer.get_nested_classifiers()]
             assert inner_name not in nested_after
         finally:
             outer.delete_from_project()
@@ -227,10 +227,10 @@ class TestIRPClassIntegration:
         try:
             reception = test_class.add_event_reception(reception_name)
             assert reception is not None
-            items = [i.get_name() for i in test_class.get_interface_items()]
+            items = [i.name for i in test_class.get_interface_items()]
             assert reception_name in items
             test_class.delete_event_reception(reception)
-            items_after = [i.get_name() for i in test_class.get_interface_items()]
+            items_after = [i.name for i in test_class.get_interface_items()]
             assert reception_name not in items_after
         finally:
             test_class.delete_from_project()
