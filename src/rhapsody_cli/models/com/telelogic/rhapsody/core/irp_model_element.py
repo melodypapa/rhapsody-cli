@@ -240,7 +240,8 @@ class IRPModelElement(ComHelper):
         """
         from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_association_class import IRPAssociationClass
 
-        return cast(IRPAssociationClass, ComHelper.wrap(ComHelper.call_com(lambda: self._com.addAssociation(end1._com, end2._com, name))))
+        association_class_com = self.call_com(lambda: self._com.addAssociation(end1._com, end2._com, name))
+        return IRPAssociationClass(association_class_com)
 
     def add_dependency(self, depends_on_name: str, depends_on_type: str) -> RPDependency:
         """Adds a dependency from the model element to the model element specified by the parameters.

@@ -10,6 +10,7 @@ import pytest
 import rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element as model_element_module
 import rhapsody_cli.models.core as core_module
 from rhapsody_cli.exceptions import RhapsodyRuntimeException
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_association_class import IRPAssociationClass
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.elements.classifiers import RPStereotype
@@ -382,13 +383,14 @@ def test_wrap_handles_none_com_object() -> None:
 def test_model_element_add_association_unwraps_args_and_wraps_result() -> None:
     end1 = IRPModelElement(make_fake_element("Element"))
     end2 = IRPModelElement(make_fake_element("Element"))
-    result_fake = make_fake_element("AssociationClass", properties={"name": "Assoc"})
+    result_fake = make_fake_element("Association", properties={"name": "Assoc"})
     fake = make_fake_element("Class", addAssociation=result_fake)
     element = IRPModelElement(fake)
 
     result = element.add_association(cast(RPRelation, end1), cast(RPRelation, end2), "Assoc")
 
-    assert isinstance(result, IRPModelElement)
+    assert isinstance(result, IRPAssociationClass)
+    assert result._com is result_fake
     assert result.name == "Assoc"
     fake.addAssociation.assert_called_once_with(end1._com, end2._com, "Assoc")
 
