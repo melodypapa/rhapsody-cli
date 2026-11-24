@@ -68,14 +68,14 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [ ] Step 8 — §8 verify and report: validator + `verify_sync.py` + skill tests + both full suites + ruff/black/mypy
 - [ ] irp_classifier_remediation - IRPClassifier
   - Baseline: 17 property-shape conversions; add_port maps to COM addNewAggr absent from JavaDoc (D2 default: retain and document).
-  - [ ] Section 1 member checklist and getter matrix published.
-  - [x] Section 2 canonical wrapper, tests, exports, and inherited-member scope verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Section 3 all 17 property members and add_port disposition reconciled.
-  - [ ] Section 4 fake-COM tests first; full unit suite green; irp_classifier.py at 100% statements/branches.
-  - [ ] Section 5 each collection getter creates its target attribute/operation/port/diagram/relationship and asserts membership/identity.
-  - [ ] Section 6 irp_classifier.md checked/updated.
-  - [ ] Section 7 irp_classifier.rst checked/updated for every public member.
-  - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded.
+  - [x] Section 1 member checklist and getter matrix published. Evidence: 47-member checklist rendered in the 2026-11-24 sync report with a Getter fixture matrix row per owned getter (real parent/child, setup, identity assertion, mirrored test path, cleanup).
+  - [x] Section 2 canonical wrapper, tests, exports, and inherited-member scope verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2158 passed, ruff/black clean.
+  - [x] Section 3 all 17 property members and add_port disposition reconciled. Evidence: `validate_interface.py IRPClassifier --source authority` report regenerated — 46 members MATCH, 1 actionable `JAVA_DOC_MISSING` (`add_port` → `addNewAggr`); D2 disposition retained-and-documented in `docs/requirements/com/telelogic/rhapsody/core/irp_classifier.md`.
+  - [x] Section 4 fake-COM tests first; full unit suite green; irp_classifier.py at 100% statements/branches. Evidence: focused unit file 48 passed, 134 statements / 0 branches, 100.00%; full unit suite 2158 passed.
+  - [ ] Section 5 each collection getter creates its target attribute/operation/port/diagram/relationship and asserts membership/identity. Evidence: populated assertions in mirrored integration file (attributes, operations, ports, relations, interface_items, base/derived classifiers, nested classifiers, flows, flow_items, statechart, activity/behavioral diagrams); `get_attributes_including_bases` upgraded to assert a real base attribute is inherited. Open: `links`, `source_artifacts`, `sequence_diagrams` have empty-state tests only; live Windows run unavailable on macOS (collection-only: 472 tests collected).
+  - [x] Section 6 irp_classifier.md checked/updated. Evidence: requirement entry `SWR_ELEM_00003` documents all owned members, property shapes, and the `add_port` COM-only disposition; Last Changed 2026-11-24.
+  - [x] Section 7 irp_classifier.rst checked/updated for every public member. Evidence: anchor `.. _rhapsody-java-interface-IRPClassifier:` + `API reference` with 47 `autofunction`/`autoproperty` directives; `verify_sync.py IRPClassifier` exits 0.
+  - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded. Evidence: report regenerated, `verify_sync.py` exit 0, skill harness 49 passed, full unit 2158 passed, ruff/black clean, integration collection 472. Blocker: Windows live integration run and the three empty-state getter fixtures remain open per the machine-split decision.
 - [ ] irp_association_class_remediation - IRPAssociationClass
   - Baseline: end1, end2, and is_class are property-shaped; integration test asserts AttributeError on a regular association; test docstring contains stale xfail text.
   - [ ] Section 1 member checklist and getter matrix published.
