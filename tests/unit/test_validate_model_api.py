@@ -633,17 +633,21 @@ def _authority(
     aliases: Optional[Dict[str, Dict[str, str]]] = None,
     unavailable: Optional[Dict[str, List[str]]] = None,
     signatures: Optional[Dict[str, Dict[str, Dict[str, object]]]] = None,
+    intentionally: Optional[Dict[str, List[str]]] = None,
 ) -> AuthorityData:
     """Build an AuthorityData carrying only the documented-decision maps under test."""
     return AuthorityData(
         catalog=catalog or {},
         documented_aliases=aliases or {},
         documented_unavailable=unavailable or {},
+        documented_intentionally_unsupported=intentionally or {},
         signatures=signatures or {},
     )
 
 
 def test_apply_pywin32_authority_keeps_property_shape_mismatch_as_deviation() -> None:
+    """Accessor/shape findings are never skipped by label alone: without a
+    documented decision the wrapper's binding defect stays actionable."""
     rows = [
         (
             "get_activity_diagram() -> activityDiagram; get_activity_diagram() -> getActivityDiagram",
@@ -661,12 +665,34 @@ def test_apply_pywin32_authority_keeps_property_shape_mismatch_as_deviation() ->
             "get_activity_diagram() -> activityDiagram; get_activity_diagram() -> getActivityDiagram",
             "getActivityDiagram (method)",
             "activityDiagram (property)",
-            "METHOD_PROPERTY_MISMATCH",
+            "ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH",
             "Use a property-aware getter/setter fallback.",
         )
     ]
     assert informational == []
     assert backlog == []
+
+
+def test_apply_pywin32_authority_promotes_verified_accessor_binding_to_match() -> None:
+    """A wrapper that calls exactly the exposed member is correct despite the
+    Java naming difference: the row is demoted, then promoted to MATCH."""
+    rows = [
+        (
+            "get_activity_diagram() -> activityDiagram",
+            "getActivityDiagram (method)",
+            "activityDiagram (property)",
+            "ACCESSOR_ALIAS_MISMATCH",
+            "Review the related API spellings.",
+        )
+    ]
+
+    deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPClass", _authority())
+
+    assert deviations == []
+    assert backlog == []
+    remaining, promoted = validator.promote_correct_com_bindings(informational)
+    assert remaining == []
+    assert promoted == [("get_activity_diagram() -> activityDiagram", "getActivityDiagram (method)", "activityDiagram (property)", "MATCH", "—")]
 
 
 def test_apply_pywin32_authority_marks_documented_alias_in_row() -> None:
@@ -682,17 +708,17 @@ def test_apply_pywin32_authority_marks_documented_alias_in_row() -> None:
 
     deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPClass", _authority(aliases={"IRPClass": {"get_description_html": "description_html"}}))
 
-    assert deviations == [
+    assert deviations == []
+    assert backlog == []
+    assert informational == [
         (
             "get_description_html() -> descriptionHTML; get_description_html() -> getDescriptionHTML",
             "getDescriptionHTML (method)",
             "descriptionHTML (property)",
-            "ALIAS_DOCUMENTED; METHOD_PROPERTY_MISMATCH",
-            "Rename the Python method.",
+            "ALIAS_DOCUMENTED; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH",
+            "Documented decision: keep the current binding; no change.",
         )
     ]
-    assert backlog == []
-    assert informational == []
 
 
 def test_apply_pywin32_authority_marks_documented_unavailable_member() -> None:
@@ -780,20 +806,28 @@ def test_apply_pywin32_authority_moves_documented_unavailable_backlog_to_informa
             "createOSLCLink (method)",
             "createOSLCLink (method)",
             "MISSING_PYTHON_WRAPPER",
-            "Implement the Python wrapper or mark this API member intentionally unsupported.",
+            "Implement the Python wrapper, or record the Java member in documented_intentionally_unsupported with a rationale.",
         ),
         (
             "—",
             "deleteStatechart (method)",
             "deleteStatechart (method)",
             "MISSING_PYTHON_WRAPPER",
-            "Implement the Python wrapper or mark this API member intentionally unsupported.",
+            "Implement the Python wrapper, or record the Java member in documented_intentionally_unsupported with a rationale.",
         ),
     ]
 
     deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPClass", _authority(unavailable={"IRPClass": ["createOSLCLink"]}))
 
-    assert deviations == []
+    assert deviations == [
+        (
+            "—",
+            "deleteStatechart (method)",
+            "deleteStatechart (method)",
+            "MISSING_PYTHON_WRAPPER",
+            "Implement the Python wrapper, or record the Java member in documented_intentionally_unsupported with a rationale.",
+        )
+    ]
     assert informational == [
         (
             "—",
@@ -803,7 +837,7 @@ def test_apply_pywin32_authority_moves_documented_unavailable_backlog_to_informa
             "Documented decision: intentionally unsupported; no change.",
         )
     ]
-    assert backlog == [rows[1]]
+    assert backlog == []
 
 
 def test_apply_pywin32_authority_keeps_actionable_deviation_alongside_documented_alias() -> None:
@@ -824,7 +858,7 @@ def test_apply_pywin32_authority_keeps_actionable_deviation_alongside_documented
             "get_binary_id() -> binaryID; get_binary_id() -> getBinaryID",
             "getBinaryID (method)",
             "BinaryID (property)",
-            "COM_MEMBER_NOT_EXPOSED; METHOD_PROPERTY_MISMATCH",
+            "ALIAS_DOCUMENTED; COM_MEMBER_NOT_EXPOSED",
             "Use the BinaryID property.",
         )
     ]
@@ -833,6 +867,8 @@ def test_apply_pywin32_authority_keeps_actionable_deviation_alongside_documented
 
 
 def test_apply_pywin32_authority_keeps_unexposed_member_as_deviation() -> None:
+    """Without a documented decision the derived accessor statuses stay in the
+    actionable row alongside the binding defect — nothing is skipped."""
     rows = [
         (
             "get_binary_id() -> binaryID; get_binary_id() -> getBinaryID",
@@ -850,8 +886,136 @@ def test_apply_pywin32_authority_keeps_unexposed_member_as_deviation() -> None:
             "get_binary_id() -> binaryID; get_binary_id() -> getBinaryID",
             "getBinaryID (method)",
             "BinaryID (property)",
-            "COM_MEMBER_NOT_EXPOSED; METHOD_PROPERTY_MISMATCH",
+            "COM_MEMBER_NOT_EXPOSED; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH",
             "Use the BinaryID property.",
+        )
+    ]
+    assert informational == []
+    assert backlog == []
+
+
+def test_apply_pywin32_authority_demotes_documented_intentionally_unsupported() -> None:
+    """MISSING_PYTHON_WRAPPER is actionable by default; recording the Java
+    member in documented_intentionally_unsupported moves it to the Wrapper
+    Backlog with an explicit documented-decision status."""
+    rows = [
+        (
+            "—",
+            "save (method)",
+            "save (method)",
+            "MISSING_PYTHON_WRAPPER",
+            "Implement the Python wrapper, or record the Java member in documented_intentionally_unsupported with a rationale.",
+        )
+    ]
+
+    deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPThing", _authority(intentionally={"IRPThing": ["save"]}))
+
+    assert deviations == []
+    assert informational == []
+    assert backlog == [
+        (
+            "—",
+            "save (method)",
+            "save (method)",
+            "INTENTIONALLY_UNSUPPORTED_DOCUMENTED",
+            "Documented decision: intentionally unsupported; no change.",
+        )
+    ]
+
+
+def test_apply_pywin32_authority_demotes_intentionally_unsupported_family_with_derived_statuses() -> None:
+    """An accessor family documented as intentionally unsupported demotes as a
+    whole: the derived alias/shape statuses are consequences of the family
+    being unwrapped, not independent findings."""
+    rows = [
+        (
+            "—",
+            "getStereotype (method); setStereotype (method)",
+            "stereotype (property)",
+            "MISSING_PYTHON_WRAPPER; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH",
+            "Implement the Python wrapper, or record the Java member in documented_intentionally_unsupported with a rationale.",
+        )
+    ]
+
+    deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPThing", _authority(intentionally={"IRPThing": ["getStereotype", "setStereotype"]}))
+
+    assert deviations == []
+    assert informational == []
+    assert backlog == [
+        (
+            "—",
+            "getStereotype (method); setStereotype (method)",
+            "stereotype (property)",
+            "INTENTIONALLY_UNSUPPORTED_DOCUMENTED",
+            "Documented decision: intentionally unsupported; no change.",
+        )
+    ]
+
+
+def test_apply_pywin32_authority_reports_pywin32_only_member_as_actionable() -> None:
+    """COM-only members are not blanket-backlog: the sync must wrap them or
+    record an explicit documented decision."""
+    rows = [
+        (
+            "—",
+            "—",
+            "legacyHelper (method)",
+            "PYWIN32_ONLY_MEMBER",
+            "Confirm this version-specific member should be wrapped; otherwise classify it as unsupported.",
+        )
+    ]
+
+    deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPThing", _authority())
+
+    assert deviations == [rows[0]]
+    assert informational == []
+    assert backlog == []
+
+
+def test_apply_pywin32_authority_ignores_unavailable_entry_present_in_catalog(capsys: pytest.CaptureFixture[str]) -> None:
+    """documented_unavailable entries that the pywin32 catalog actually
+    exposes are ignored with a warning instead of hiding wrappable work."""
+    rows = [
+        (
+            "—",
+            "save (method)",
+            "—",
+            "PYWIN32_MEMBER_MISSING",
+            "Use a member exposed by the registered type library.",
+        )
+    ]
+
+    deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPThing", _authority(catalog={"IRPThing": {"save": "method"}}, unavailable={"IRPThing": ["save"]}))
+
+    assert deviations == [rows[0]]
+    assert informational == []
+    assert backlog == []
+    captured = capsys.readouterr()
+    assert "documented_unavailable lists save for IRPThing" in captured.err
+
+
+def test_apply_pywin32_authority_rejects_alias_whose_target_is_unrelated() -> None:
+    """A documented alias must reference the row's own Java member; a phantom
+    target no longer hides the naming mismatch."""
+    rows = [
+        (
+            "get_thing() -> thing",
+            "getThing (method)",
+            "thing (property)",
+            "PYTHON_METHOD_NAME_MISMATCH; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH",
+            "Rename the Python method.",
+        )
+    ]
+
+    deviations, informational, backlog = validator.apply_pywin32_authority(rows, "IRPThing", _authority(aliases={"IRPThing": {"get_thing": "unrelated_member"}}))
+
+    assert deviations == [
+        (
+            "get_thing() -> thing",
+            "getThing (method)",
+            "thing (property)",
+            "PYTHON_METHOD_NAME_MISMATCH; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH",
+            "Rename the Python method.",
         )
     ]
     assert informational == []

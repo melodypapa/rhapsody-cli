@@ -18,6 +18,7 @@ class AuthorityData(TypedDict):
     catalog: Dict[str, Dict[str, str]]
     documented_aliases: Dict[str, Dict[str, str]]
     documented_unavailable: Dict[str, List[str]]
+    documented_intentionally_unsupported: Dict[str, List[str]]
     signatures: Dict[str, Dict[str, Dict[str, object]]]
 
 
@@ -50,6 +51,7 @@ def build_authority(reports_dir: Path) -> AuthorityData:
         catalog=export_catalog_from_reports(reports_dir),
         documented_aliases={},
         documented_unavailable={},
+        documented_intentionally_unsupported={},
         signatures={},
     )
 
@@ -72,7 +74,7 @@ def build_authority_from_typelib(reports_dir: Path) -> AuthorityData:
             signatures[interface_name] = collect_registered_pywin32_signatures(interface_name)
         except Exception:
             signatures[interface_name] = {}
-    return AuthorityData(catalog=catalog, documented_aliases={}, documented_unavailable={}, signatures=signatures)
+    return AuthorityData(catalog=catalog, documented_aliases={}, documented_unavailable={}, documented_intentionally_unsupported={}, signatures=signatures)
 
 
 def load_authority(path: Path = AUTHORITY_PATH) -> AuthorityData:
@@ -85,6 +87,7 @@ def load_authority(path: Path = AUTHORITY_PATH) -> AuthorityData:
         catalog=data["catalog"],
         documented_aliases=data["documented_aliases"],
         documented_unavailable=data["documented_unavailable"],
+        documented_intentionally_unsupported=data.get("documented_intentionally_unsupported", {}),
         signatures=data.get("signatures", {}),
     )
 
