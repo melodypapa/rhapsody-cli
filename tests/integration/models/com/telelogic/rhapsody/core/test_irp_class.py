@@ -40,10 +40,10 @@ class TestIRPClassIntegration:
         child = pkg.add_class(child_name)
         try:
             child.add_superclass(parent)
-            generalizations = list(child.get_generalizations())
+            generalizations = list(child.generalizations)
             assert any(gen.get_base_class() == parent for gen in generalizations)
             child.delete_superclass(parent)
-            generalizations_after = list(child.get_generalizations())
+            generalizations_after = list(child.generalizations)
             assert not any(gen.get_base_class() == parent for gen in generalizations_after)
         finally:
             child.delete_from_project()
@@ -59,7 +59,7 @@ class TestIRPClassIntegration:
             assert ctor is not None
             dtor = test_class.add_destructor()
             assert dtor is not None
-            operations = list(test_class.get_operations())
+            operations = list(test_class.operations)
             assert ctor in operations
             assert dtor in operations
         finally:
@@ -107,9 +107,9 @@ class TestIRPClassIntegration:
             reception = test_class.add_reception(reception_name)
             assert reception is not None
             assert isinstance(reception, RPEventReception)
-            assert reception in list(test_class.get_interface_items())
+            assert reception in list(test_class.interface_items)
             test_class.delete_reception(reception)
-            items_after = [i.name for i in test_class.get_interface_items()]
+            items_after = [i.name for i in test_class.interface_items]
             assert reception_name not in items_after
         finally:
             test_class.delete_from_project()
@@ -124,7 +124,7 @@ class TestIRPClassIntegration:
             reception = test_class.add_event_reception(reception_name)
             assert reception is not None
             assert isinstance(reception, RPEventReception)
-            assert reception in list(test_class.get_interface_items())
+            assert reception in list(test_class.interface_items)
         finally:
             test_class.delete_from_project()
 
@@ -164,7 +164,7 @@ class TestIRPClassIntegration:
             triggered_op = test_class.add_triggered_operation(op_name)
             assert triggered_op is not None
             assert isinstance(triggered_op, IRPOperation)
-            operations = list(test_class.get_operations())
+            operations = list(test_class.operations)
             assert triggered_op in operations
         finally:
             test_class.delete_from_project()
@@ -178,10 +178,10 @@ class TestIRPClassIntegration:
         try:
             inner = outer.add_class(inner_name)
             assert inner is not None
-            nested_names = [c.name for c in outer.get_nested_classifiers()]
+            nested_names = [c.name for c in outer.nested_classifiers]
             assert inner_name in nested_names
             outer.delete_class(inner_name)
-            nested_after = [c.name for c in outer.get_nested_classifiers()]
+            nested_after = [c.name for c in outer.nested_classifiers]
             assert inner_name not in nested_after
         finally:
             outer.delete_from_project()
@@ -194,10 +194,10 @@ class TestIRPClassIntegration:
         try:
             ctor = test_class.add_constructor("void()")
             assert ctor is not None
-            operations = list(test_class.get_operations())
+            operations = list(test_class.operations)
             assert ctor in operations
             test_class.delete_constructor(ctor)
-            operations_after = list(test_class.get_operations())
+            operations_after = list(test_class.operations)
             assert ctor not in operations_after
         finally:
             test_class.delete_from_project()
@@ -210,10 +210,10 @@ class TestIRPClassIntegration:
         try:
             dtor = test_class.add_destructor()
             assert dtor is not None
-            operations = list(test_class.get_operations())
+            operations = list(test_class.operations)
             assert dtor in operations
             test_class.delete_destructor()
-            operations_after = list(test_class.get_operations())
+            operations_after = list(test_class.operations)
             assert dtor not in operations_after
         finally:
             test_class.delete_from_project()
@@ -227,10 +227,10 @@ class TestIRPClassIntegration:
         try:
             reception = test_class.add_event_reception(reception_name)
             assert reception is not None
-            items = [i.name for i in test_class.get_interface_items()]
+            items = [i.name for i in test_class.interface_items]
             assert reception_name in items
             test_class.delete_event_reception(reception)
-            items_after = [i.name for i in test_class.get_interface_items()]
+            items_after = [i.name for i in test_class.interface_items]
             assert reception_name not in items_after
         finally:
             test_class.delete_from_project()

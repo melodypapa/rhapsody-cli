@@ -43,14 +43,14 @@
 | allow_browser_refresh() -> allowBrowserRefresh | allowBrowserRefresh (method) | allowBrowserRefresh (method) | MATCH | — |
 | allow_ge_refresh() -> allowGERefresh | allowGERefresh (method) | allowGERefresh (method) | MATCH | — |
 | allow_rmm_remote_oslc_links_load() -> allowRmmRemoteOslcLinksLoad | allowRmmRemoteOslcLinksLoad (method) | allowRmmRemoteOslcLinksLoad (method) | MATCH | — |
-| application_root() -> ApplicationRoot | getApplicationRoot (method) | ApplicationRoot (property) | MATCH | — |
+| application_root (property) -> ApplicationRoot | getApplicationRoot (method) | ApplicationRoot (property) | MATCH | — |
 | apply_new_terms_profile() -> applyNewTermsProfile | applyNewTermsProfile (method) | applyNewTermsProfile (method) | MATCH | — |
 | apply_window_layout() -> applyWindowLayout | applyWindowLayout (method) | applyWindowLayout (method) | MATCH | — |
 | arc_check_out() -> arcCheckOut | arcCheckOut (method) | arcCheckOut (method) | MATCH | — |
 | bring_window_to_top() -> bringWindowToTop | bringWindowToTop (method) | bringWindowToTop (method) | MATCH | — |
 | build() -> build | build (method) | build (method) | MATCH | — |
 | build_entire_project() -> buildEntireProject | buildEntireProject (method) | buildEntireProject (method) | MATCH | — |
-| build_no() -> BuildNo | getBuildNo (method) | BuildNo (property) | MATCH | — |
+| build_no (property) -> BuildNo | getBuildNo (method) | BuildNo (property) | MATCH | — |
 | build_with_dependencies() -> buildWithDependencies | buildWithDependencies (method) | buildWithDependencies (method) | MATCH | — |
 | can_redo() -> canRedo | canRedo (method) | canRedo (method) | MATCH | — |
 | can_undo() -> canUndo | canUndo (method) | canUndo (method) | MATCH | — |
@@ -142,16 +142,16 @@
 | import_window_layout() -> importWindowLayout | importWindowLayout (method) | importWindowLayout (method) | MATCH | — |
 | insert_project() -> insertProject | insertProject (method) | insertProject (method) | MATCH | — |
 | insert_project_from_design_manager() -> insertProjectFromDesignManager | insertProjectFromDesignManager (method) | insertProjectFromDesignManager (method) | MATCH | — |
-| interface_name() -> interfaceName | getInterfaceName (method) | interfaceName (property) | MATCH | — |
+| interface_name (property) -> interfaceName | getInterfaceName (method) | interfaceName (property) | MATCH | — |
 | invoke_plugins_method() -> invokePluginsMethod | invokePluginsMethod (method) | invokePluginsMethod (method) | MATCH | — |
 | invoke_rpe() -> invokeRPE | invokeRPE (method) | invokeRPE (method) | MATCH | — |
-| is_hidden_ui() -> isHiddenUI | getIsHiddenUI (method) | isHiddenUI (property) | MATCH | — |
-| is_load_on_demand() -> isLoadOnDemand | getIsLoadOnDemand (method); setIsLoadOnDemand (method) | isLoadOnDemand (property) | MATCH | — |
+| is_hidden_ui (property) -> isHiddenUI | getIsHiddenUI (method) | isHiddenUI (property) | MATCH | — |
+| is_load_on_demand (property) -> isLoadOnDemand | getIsLoadOnDemand (method); setIsLoadOnDemand (method) | isLoadOnDemand (property) | MATCH | — |
 | is_rhapsody_cl() -> isRhapsodyCL | isRhapsodyCL (method) | isRhapsodyCL (method) | MATCH | — |
 | is_rhapsody_file_type() -> isRhapsodyFileType | isRhapsodyFileType (method) | isRhapsodyFileType (method) | MATCH | — |
 | is_valid_web_view() -> isValidWebView | isValidWebView (method) | isValidWebView (method) | MATCH | — |
-| language() -> Language | getLanguage (method); setLanguage (method) | Language (property) | MATCH | — |
-| log_root() -> LogRoot | getLogRoot (method) | LogRoot (property) | MATCH | — |
+| language (property) -> Language | getLanguage (method); setLanguage (method) | Language (property) | MATCH | — |
+| log_root (property) -> LogRoot | getLogRoot (method) | LogRoot (property) | MATCH | — |
 | login_to_design_manager_with_alias() -> loginToDesignManagerWithAlias | loginToDesignManagerWithAlias (method) | loginToDesignManagerWithAlias (method) | MATCH | — |
 | login_to_design_manager_with_certificate() -> loginToDesignManagerWithCertificate | loginToDesignManagerWithCertificate (method) | loginToDesignManagerWithCertificate (method) | MATCH | — |
 | login_to_design_manager_with_username() -> loginToDesignManagerWithUsername | loginToDesignManagerWithUsername (method) | loginToDesignManagerWithUsername (method) | MATCH | — |
@@ -159,7 +159,7 @@
 | merge_elements() -> mergeElements | mergeElements (method) | mergeElements (method) | MATCH | — |
 | new_project_on_design_manager() -> newProjectOnDesignManager | newProjectOnDesignManager (method) | newProjectOnDesignManager (method) | MATCH | — |
 | notify_file_changed() -> notifyFileChanged | notifyFileChanged (method) | notifyFileChanged (method) | MATCH | — |
-| omroot() -> OMROOT | getOMROOT (method) | OMROOT (property) | MATCH | — |
+| omroot (property) -> OMROOT | getOMROOT (method) | OMROOT (property) | MATCH | — |
 | open_active_x_view() -> OpenActiveXView | openActiveXView (method) | OpenActiveXView (method) | MATCH | — |
 | open_advanced_search_and_replace_dialog() -> openAdvancedSearchAndReplaceDialog | openAdvancedSearchAndReplaceDialog (method) | openAdvancedSearchAndReplaceDialog (method) | MATCH | — |
 | open_diagram_view() -> OpenDiagramView | openDiagramView (method) | OpenDiagramView (method) | MATCH | — |
@@ -170,7 +170,7 @@
 | open_project_from_url() -> openProjectFromURL | openProjectFromURL (method) | openProjectFromURL (method) | MATCH | — |
 | open_project_with_last_session() -> openProjectWithLastSession | openProjectWithLastSession (method) | openProjectWithLastSession (method) | MATCH | — |
 | open_project_without_sub_units() -> openProjectWithoutSubUnits | openProjectWithoutSubUnits (method) | openProjectWithoutSubUnits (method) | MATCH | — |
-| projects() -> projects | getProjects (method) | projects (property) | MATCH | — |
+| projects (property) -> projects | getProjects (method) | projects (property) | MATCH | — |
 | quit() -> quit | quit (method) | quit (method) | MATCH | — |
 | rebuild() -> rebuild | rebuild (method) | rebuild (method) | MATCH | — |
 | rebuild_entire_project() -> rebuildEntireProject | rebuildEntireProject (method) | rebuildEntireProject (method) | MATCH | — |
@@ -199,7 +199,7 @@
 | save_window_layout() -> saveWindowLayout | saveWindowLayout (method) | saveWindowLayout (method) | MATCH | — |
 | select_graph_elements() -> selectGraphElements | selectGraphElements (method) | selectGraphElements (method) | MATCH | — |
 | select_model_elements() -> selectModelElements | selectModelElements (method) | selectModelElements (method) | MATCH | — |
-| serial_no() -> SerialNo | getSerialNo (method) | SerialNo (property) | MATCH | — |
+| serial_no (property) -> SerialNo | getSerialNo (method) | SerialNo (property) | MATCH | — |
 | set_component() -> setComponent | setComponent (method) | setComponent (method) | MATCH | — |
 | set_configuration() -> setConfiguration | setConfiguration (method) | setConfiguration (method) | MATCH | — |
 | set_hidden_ui() -> setHiddenUI | setHiddenUI (method) | setHiddenUI (method) | MATCH | — |
@@ -208,13 +208,13 @@
 | start_undo_transaction() -> startUndoTransaction | startUndoTransaction (method) | startUndoTransaction (method) | MATCH | — |
 | sync_build() -> syncBuild | syncBuild (method) | syncBuild (method) | MATCH | — |
 | terminate_application() -> terminateApplication | terminateApplication (method) | terminateApplication (method) | MATCH | — |
-| tool_set() -> ToolSet | getToolSet (method); setToolSet (method) | ToolSet (property) | MATCH | — |
+| tool_set (property) -> ToolSet | getToolSet (method); setToolSet (method) | ToolSet (property) | MATCH | — |
 | undo() -> undo | undo (method) | undo (method) | MATCH | — |
 | unload_from_target() -> unloadFromTarget | unloadFromTarget (method) | unloadFromTarget (method) | MATCH | — |
 | unregister_com_client() -> unregisterCOMClient | unregisterCOMClient (method) | unregisterCOMClient (method) | MATCH | — |
 | update_rmm_data_to_new_version() -> updateRmmDataToNewVersion | updateRmmDataToNewVersion (method) | updateRmmDataToNewVersion (method) | MATCH | — |
-| user_data_root() -> UserDataRoot | getUserDataRoot (method) | UserDataRoot (property) | MATCH | — |
-| user_omroot() -> UserOMROOT | getUserOMROOT (method) | UserOMROOT (property) | MATCH | — |
+| user_data_root (property) -> UserDataRoot | getUserDataRoot (method) | UserDataRoot (property) | MATCH | — |
+| user_omroot (property) -> UserOMROOT | getUserOMROOT (method) | UserOMROOT (property) | MATCH | — |
 | version() -> version | version (method) | version (method) | MATCH | — |
 | version_number_long() -> versionNumberLong | versionNumberLong (method) | versionNumberLong (method) | MATCH | — |
 | write_to_output_window() -> writeToOutputWindow | writeToOutputWindow (method) | writeToOutputWindow (method) | MATCH | — |

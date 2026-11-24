@@ -132,7 +132,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
             return_type = cast(str, spec["return_type"])
             classifier = self.resolve_classifier(return_type)
             if classifier is not None:
-                operation.set_returns(classifier)  # type: ignore[attr-defined]
+                operation.returns = classifier  # type: ignore[attr-defined]
             else:
                 logger.warning(
                     "Cannot resolve return_type '%s' for operation '%s'",
@@ -140,7 +140,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
                     operation.name,
                 )
         if "is_static" in spec:
-            operation.set_is_static(cast(bool, spec["is_static"]))  # type: ignore[attr-defined]
+            operation.is_static = cast(bool, spec["is_static"])  # type: ignore[attr-defined]
         for arg_spec in cast(List[Dict[str, object]], spec.get("arguments", [])):
             arg = self.find_or_create_argument(operation, cast(str, arg_spec["name"]))
             self._apply_argument_extras(arg, arg_spec)
@@ -159,7 +159,7 @@ class RhapsodyImporter(RhapsodyModelHelper):
                     arg.name,
                 )
         if "direction" in spec:
-            arg.set_argument_direction(cast(str, spec["direction"]))  # type: ignore[attr-defined]
+            arg.argument_direction = cast(str, spec["direction"])  # type: ignore[attr-defined]
         # Common properties (parity with _process_element path)
         self.apply_stereotypes(arg, cast(List[str], spec.get("stereotypes", [])))
         self.apply_tags(arg, cast(Dict[str, str], spec.get("tags", {})))
@@ -178,11 +178,11 @@ class RhapsodyImporter(RhapsodyModelHelper):
                     attr.name,
                 )
         if "visibility" in spec:
-            attr.set_visibility(cast(str, spec["visibility"]))  # type: ignore[attr-defined]
+            attr.visibility = cast(str, spec["visibility"])  # type: ignore[attr-defined]
         if "multiplicity" in spec:
-            attr.set_multiplicity(cast(str, spec["multiplicity"]))  # type: ignore[attr-defined]
+            attr.multiplicity = cast(str, spec["multiplicity"])  # type: ignore[attr-defined]
         if "is_static" in spec:
-            attr.set_is_static(cast(bool, spec["is_static"]))  # type: ignore[attr-defined]
+            attr.is_static = cast(bool, spec["is_static"])  # type: ignore[attr-defined]
 
     def _apply_type_extras(self, type_element: IRPModelElement, spec: Dict[str, object]) -> None:
         """Apply Type-specific fields: enumeration literals (kind already set in find_or_create_type)."""
@@ -280,14 +280,14 @@ class RhapsodyImporter(RhapsodyModelHelper):
     def _apply_port_extras(self, port: IRPModelElement, spec: Dict[str, object]) -> None:
         """Apply Port-specific fields: is_behavioral, is_reversed, contract, provided/required_interfaces."""
         if "is_behavioral" in spec:
-            port.set_is_behavioral(cast(bool, spec["is_behavioral"]))  # type: ignore[attr-defined]
+            port.is_behavioral = cast(bool, spec["is_behavioral"])  # type: ignore[attr-defined]
         if "is_reversed" in spec:
-            port.set_is_reversed(cast(bool, spec["is_reversed"]))  # type: ignore[attr-defined]
+            port.is_reversed = cast(bool, spec["is_reversed"])  # type: ignore[attr-defined]
         if "contract" in spec:
             contract_name = cast(str, spec["contract"])
             classifier = self.resolve_classifier(contract_name)
             if classifier is not None:
-                port.set_contract(classifier)  # type: ignore[attr-defined]
+                port.port_contract = classifier  # type: ignore[attr-defined]
             else:
                 logger.warning(
                     "Cannot resolve contract '%s' for port '%s'",

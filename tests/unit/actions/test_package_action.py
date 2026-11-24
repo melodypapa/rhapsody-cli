@@ -260,10 +260,10 @@ class TestPackageCreateAction:
         action = PackageCreateAction()
         mock_root = MagicMock()
 
-        # Mock getPackages() to return collection with existing package named "TopLevel"
+        # Project root exposes top-level packages through the packages property
         existing_pkg = MagicMock()
         existing_pkg.name = "TopLevel"
-        mock_root.get_packages.return_value = [existing_pkg]
+        mock_root.packages = [existing_pkg]
 
         with patch.object(action, "_get_active_root", return_value=mock_root):
             args = MagicMock()

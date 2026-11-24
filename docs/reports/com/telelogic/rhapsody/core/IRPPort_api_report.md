@@ -3,7 +3,7 @@
 ## Summary
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `IRPPort` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_port.py`)
-- Members: Python `14`, Java `14`, pywin32 `9`
+- Members: Python `11`, Java `14`, pywin32 `9`
 - Deviation items: `1` (actionable `0`, expected binding differences `1`, wrapper backlog `0`)
 - Status legend: `MATCH` verified binding · `UNAVAILABLE_DOCUMENTED` pywin32 lacks the member (NotImplementedError stub) · `ALIAS_DOCUMENTED` documented alias · actionable rows are named by code in `Comparison details`
 
@@ -34,13 +34,13 @@
 | --- | --- | --- | --- | --- |
 | add_provided_interface() -> addProvidedInterface | addProvidedInterface (method) | addProvidedInterface (method) | MATCH | — |
 | add_required_interface() -> addRequiredInterface | addRequiredInterface (method) | addRequiredInterface (method) | MATCH | — |
-| get_is_behavioral() -> isBehavioral; set_is_behavioral() -> isBehavioral | getIsBehavioral (method); setIsBehavioral (method) | isBehavioral (property) | MATCH | — |
-| get_is_reversed() -> isReversed; set_is_reversed() -> isReversed | getIsReversed (method); setIsReversed (method) | isReversed (property) | MATCH | — |
-| get_port_contract() -> portContract; set_port_contract() -> portContract | getPortContract (method); setPortContract (method) | portContract (property) | MATCH | — |
-| get_provided_interfaces() -> providedInterfaces | getProvidedInterfaces (method) | providedInterfaces (property) | MATCH | — |
-| get_required_interfaces() -> requiredInterfaces | getRequiredInterfaces (method) | requiredInterfaces (property) | MATCH | — |
+| is_behavioral (property) -> isBehavioral | getIsBehavioral (method); setIsBehavioral (method) | isBehavioral (property) | MATCH | — |
+| is_reversed (property) -> isReversed | getIsReversed (method); setIsReversed (method) | isReversed (property) | MATCH | — |
+| port_contract (property) -> portContract | getPortContract (method); setPortContract (method) | portContract (property) | MATCH | — |
+| provided_interfaces (property) -> providedInterfaces | getProvidedInterfaces (method) | providedInterfaces (property) | MATCH | — |
 | remove_provided_interface() -> removeProvidedInterface | removeProvidedInterface (method) | removeProvidedInterface (method) | MATCH | — |
 | remove_required_interface() -> removeRequiredInterface | removeRequiredInterface (method) | removeRequiredInterface (method) | MATCH | — |
+| required_interfaces (property) -> requiredInterfaces | getRequiredInterfaces (method) | requiredInterfaces (property) | MATCH | — |
 
 </details>
 

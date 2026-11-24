@@ -19,7 +19,7 @@ class TestRPAssociationClassIntegration:
     Note: In this Rhapsody build, ``addRelationTo`` with a non-empty ``linkName``
     does not actually create an association class — it creates a regular
     association with metaclass ``AssociationEnd`` roles.  The four
-    ``IRPAssociationClass``-specific methods therefore cannot be exercised via
+    ``IRPAssociationClass``-specific members therefore cannot be exercised via
     live COM in this environment.  They **do** have unit-test coverage via
     fakes, and the integration test below is marked ``xfail`` with a clear
     description of the limitation.
@@ -35,21 +35,22 @@ class TestRPAssociationClassIntegration:
         assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_owned_methods_via_wrapped_com_object(self, test_project: IRPProject) -> None:
-        """Exercise the owned methods on a wrapped COM object. This Rhapsody build
+    def test_owned_properties_via_wrapped_com_object(self, test_project: IRPProject) -> None:
+        """Exercise the owned properties on a wrapped COM object. This Rhapsody build
         creates a plain association via addRelationTo, not an AssociationClass.
         """
         pkg = self._create_package(test_project, self._unique("AssocPkg"))
         cls = pkg.add_class(self._unique("AssocCls"))
         try:
             assoc = IRPAssociationClass(cls._com)
-            for call in (
-                assoc.get_end1,
-                assoc.get_end2,
-                assoc.get_is_class,
-                lambda: assoc.set_is_class(1),
+            for accessor in (
+                lambda: assoc.end1,
+                lambda: assoc.end2,
+                lambda: assoc.is_class,
             ):
                 with pytest.raises(AttributeError):
-                    call()
+                    accessor()
+            with pytest.raises(AttributeError):
+                assoc.is_class = 1
         finally:
             cls.delete_from_project()

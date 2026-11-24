@@ -57,14 +57,14 @@ class TestProjectListAction:
     """Tests for ProjectListAction."""
 
     def test_list_action_prints_name_and_filename_for_each_project(self) -> None:
-        """Regression test: the list action must call get_filename() (not the
+        """Regression test: the list action must read the ``filename`` property (not the
         non-existent get_path()) on each project to render its table row."""
         action = ProjectListAction()
         args = argparse.Namespace(verbose=False)
 
         fake_project = MagicMock(name="FakeProject")
         fake_project.name = "MyProject"
-        fake_project.get_filename.return_value = "C:/models/MyProject.rpyx"
+        fake_project.filename = "C:/models/MyProject.rpyx"
         fake_app = MagicMock(name="FakeApplication")
         fake_app.get_projects.return_value = [fake_project]
 

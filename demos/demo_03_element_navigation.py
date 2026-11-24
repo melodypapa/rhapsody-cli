@@ -35,7 +35,7 @@ def demo_navigate_packages(project: Any) -> None:
 
     try:
         print("Getting top-level packages...")
-        packages = project.get_packages()
+        packages = project.packages
 
         if packages and len(packages) > 0:
             print(f"[OK] Found {len(packages)} top-level package(s)")
@@ -223,7 +223,7 @@ def demo_collection_iteration(project: Any) -> None:
 
     try:
         # Get packages collection
-        packages = project.get_packages()
+        packages = project.packages
 
         if not packages or len(packages) == 0:
             print("[-] No packages found for collection demonstration")

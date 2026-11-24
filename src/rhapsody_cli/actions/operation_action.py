@@ -228,11 +228,11 @@ class OperationCreateAction(AbstractOperationAction):
         if "name" in attrs:
             operation.name = cast(str, attrs["name"])
         if "body" in attrs:
-            operation.set_body(cast(str, attrs["body"]))  # type: ignore[attr-defined]
+            operation.body = cast(str, attrs["body"])  # type: ignore[attr-defined]
         if "description" in attrs:
             operation.description = cast(str, attrs["description"])
         if "visibility" in attrs:
-            operation.set_visibility(cast(str, attrs["visibility"]))  # type: ignore[attr-defined]
+            operation.visibility = cast(str, attrs["visibility"])  # type: ignore[attr-defined]
         if "arguments" in attrs:
             operation.set_arguments(attrs["arguments"])  # type: ignore[attr-defined]
         self._set_boolean_flags(operation, attrs)
@@ -244,11 +244,11 @@ class OperationCreateAction(AbstractOperationAction):
         SWR_OP_00012: Boolean Flag Support
         """
         if "isAbstract" in attrs:
-            operation.set_is_abstract(1 if attrs["isAbstract"] else 0)  # type: ignore[attr-defined]
+            operation.is_abstract = 1 if attrs["isAbstract"] else 0  # type: ignore[attr-defined]
         if "isStatic" in attrs:
-            operation.set_is_static(1 if attrs["isStatic"] else 0)  # type: ignore[attr-defined]
+            operation.is_static = 1 if attrs["isStatic"] else 0  # type: ignore[attr-defined]
         if "isVirtual" in attrs:
-            operation.set_is_virtual(1 if attrs["isVirtual"] else 0)  # type: ignore[attr-defined]
+            operation.is_virtual = 1 if attrs["isVirtual"] else 0  # type: ignore[attr-defined]
 
     def _set_returns(self, classifier: IRPModelElement, operation: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Resolve and set the returns type.
@@ -261,7 +261,7 @@ class OperationCreateAction(AbstractOperationAction):
             target = owner.find_nested_classifier_recursive(type_name)  # type: ignore[attr-defined]
             if target is None:
                 raise CliExecutionError(f"Returns type '{type_name}' not found")
-            operation.set_returns(target)  # type: ignore[attr-defined]
+            operation.returns = target  # type: ignore[attr-defined]
 
 
 class OperationDeleteAction(AbstractOperationAction):
@@ -351,7 +351,7 @@ class OperationListAction(AbstractOperationAction):
 
     def _collect_operation_names(self, classifier: IRPModelElement) -> List[str]:
         """Collect names of operations on a classifier."""
-        operations = classifier.get_operations()  # type: ignore[attr-defined]
+        operations = classifier.operations  # type: ignore[attr-defined]
         return [cast(IRPModelElement, op).name for op in operations]
 
     def _format_output(self, op_names: List[str], format_type: str) -> str:
@@ -471,19 +471,19 @@ class OperationViewAction(AbstractOperationAction):
             except (AttributeError, RuntimeError):
                 return default
 
-        returns = safe(lambda: operation.get_returns(), None)  # type: ignore[attr-defined]
+        returns = safe(lambda: operation.returns, None)  # type: ignore[attr-defined]
         returns_name = cast(IRPModelElement, returns).name if returns is not None else ""
-        arguments = safe(lambda: operation.get_arguments(), [])  # type: ignore[attr-defined]
+        arguments = safe(lambda: operation.arguments, [])  # type: ignore[attr-defined]
         return {
             "name": operation.name,
             "guid": operation.guid,
             "description": safe(lambda: operation.description, ""),
-            "body": safe(lambda: operation.get_body(), ""),  # type: ignore[attr-defined]
-            "isAbstract": int(safe(lambda: operation.get_is_abstract(), 0)),  # type: ignore[attr-defined,call-overload]
-            "isStatic": int(safe(lambda: operation.get_is_static(), 0)),  # type: ignore[attr-defined,call-overload]
-            "isVirtual": int(safe(lambda: operation.get_is_virtual(), 0)),  # type: ignore[attr-defined,call-overload]
+            "body": safe(lambda: operation.body, ""),  # type: ignore[attr-defined]
+            "isAbstract": int(safe(lambda: operation.is_abstract, 0)),  # type: ignore[attr-defined,call-overload]
+            "isStatic": int(safe(lambda: operation.is_static, 0)),  # type: ignore[attr-defined,call-overload]
+            "isVirtual": int(safe(lambda: operation.is_virtual, 0)),  # type: ignore[attr-defined,call-overload]
             "returns": returns_name,
-            "visibility": safe(lambda: operation.get_visibility(), ""),  # type: ignore[attr-defined]
+            "visibility": safe(lambda: operation.visibility, ""),  # type: ignore[attr-defined]
             "arguments": [cast(IRPModelElement, arg).name for arg in arguments],  # type: ignore[attr-defined]
             "metaClass": operation.meta_class,
             "fullPath": operation.get_full_path_name(),
@@ -617,23 +617,23 @@ class OperationUpdateAction(AbstractOperationAction):
         if "name" in attrs:
             operation.name = cast(str, attrs["name"])
         if "body" in attrs:
-            operation.set_body(cast(str, attrs["body"]))  # type: ignore[attr-defined]
+            operation.body = cast(str, attrs["body"])  # type: ignore[attr-defined]
         if "description" in attrs:
             operation.description = cast(str, attrs["description"])
         if "visibility" in attrs:
-            operation.set_visibility(cast(str, attrs["visibility"]))  # type: ignore[attr-defined]
+            operation.visibility = cast(str, attrs["visibility"])  # type: ignore[attr-defined]
         if "arguments" in attrs:
             operation.set_arguments(attrs["arguments"])  # type: ignore[attr-defined]
         if "isAbstract" in attrs:
-            operation.set_is_abstract(1 if attrs["isAbstract"] else 0)  # type: ignore[attr-defined]
+            operation.is_abstract = 1 if attrs["isAbstract"] else 0  # type: ignore[attr-defined]
         if "isStatic" in attrs:
-            operation.set_is_static(1 if attrs["isStatic"] else 0)  # type: ignore[attr-defined]
+            operation.is_static = 1 if attrs["isStatic"] else 0  # type: ignore[attr-defined]
         if "isVirtual" in attrs:
-            operation.set_is_virtual(1 if attrs["isVirtual"] else 0)  # type: ignore[attr-defined]
+            operation.is_virtual = 1 if attrs["isVirtual"] else 0  # type: ignore[attr-defined]
         if "returns" in attrs:
             type_name = cast(str, attrs["returns"])
             owner = classifier.owner
             target = owner.find_nested_classifier_recursive(type_name)  # type: ignore[attr-defined]
             if target is None:
                 raise CliExecutionError(f"Returns type '{type_name}' not found")
-            operation.set_returns(target)  # type: ignore[attr-defined]
+            operation.returns = target  # type: ignore[attr-defined]

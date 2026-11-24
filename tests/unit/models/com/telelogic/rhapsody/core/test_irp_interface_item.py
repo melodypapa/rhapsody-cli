@@ -38,23 +38,23 @@ def test_interface_item_add_argument_before_position_wraps_result() -> None:
     assert result.name == "y"
 
 
-def test_interface_item_get_arguments_returns_collection() -> None:
+def test_interface_item_arguments_returns_collection() -> None:
     inner = make_fake_element("Argument", properties={"name": "x"})
     fake = make_fake_element("InterfaceItem")
     fake.arguments = make_fake_collection([inner])
     item = IRPInterfaceItem(fake)
 
-    result = item.get_arguments()
+    result = item.arguments
 
     assert isinstance(result, IRPCollection)
     assert len(result) == 1
 
 
-def test_interface_item_get_signature_delegates_to_com() -> None:
+def test_interface_item_signature_delegates_to_com() -> None:
     fake = make_fake_element("InterfaceItem", properties={"signature": "void doIt(int x)"})
     item = IRPInterfaceItem(fake)
 
-    assert item.get_signature() == "void doIt(int x)"
+    assert item.signature == "void doIt(int x)"
 
 
 def test_interface_item_get_signature_no_arg_names_delegates_to_com() -> None:

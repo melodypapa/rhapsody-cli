@@ -156,7 +156,7 @@ def demo_element_not_found_errors(app: RhapsodyApplication) -> None:
                 test_class = classes[0]
                 print(f"  Using class: {test_class.get_name()}")
                 # Try to get packages from a class (should fail or return empty)
-                nested = test_class.get_packages()
+                nested = test_class.packages
                 print(f"  [OK] Operation handled (returned {len(nested)} items)")
         except RhapsodyRuntimeException as e:
             print(f"  [OK] Error caught: {type(e).__name__}")
@@ -215,7 +215,7 @@ def demo_safe_operation_patterns(app: RhapsodyApplication) -> None:
         if project:
             print("\nPattern 3: Safe nested operations")
             try:
-                packages = project.get_packages()
+                packages = project.packages
                 success_count = 0
                 error_count = 0
 

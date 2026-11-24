@@ -22,22 +22,22 @@ def test_association_class_is_registered_for_meta_class_association_class() -> N
     assert isinstance(wrapped, IRPAssociationClass)
 
 
-def test_get_end1_reads_property() -> None:
+def test_end1_reads_property() -> None:
     fake = make_fake_element("AssociationClass", properties={"end1": make_fake_element("Relation", properties={"name": "e1"})})
-    assert IRPAssociationClass(fake).get_end1().name == "e1"
+    assert IRPAssociationClass(fake).end1.name == "e1"
 
 
-def test_get_end2_reads_property() -> None:
+def test_end2_reads_property() -> None:
     fake = make_fake_element("AssociationClass", properties={"end2": make_fake_element("Relation", properties={"name": "e2"})})
-    assert IRPAssociationClass(fake).get_end2().name == "e2"
+    assert IRPAssociationClass(fake).end2.name == "e2"
 
 
-def test_get_is_class_reads_property() -> None:
+def test_is_class_reads_property() -> None:
     fake = make_fake_element("AssociationClass", properties={"isClass": 1})
-    assert IRPAssociationClass(fake).get_is_class() == 1
+    assert IRPAssociationClass(fake).is_class == 1
 
 
-def test_set_is_class_writes_property() -> None:
+def test_is_class_writes_property() -> None:
     fake = make_fake_element("AssociationClass")
-    IRPAssociationClass(fake).set_is_class(1)
+    IRPAssociationClass(fake).is_class = 1
     assert fake.isClass == 1

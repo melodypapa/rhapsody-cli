@@ -89,11 +89,11 @@ class RhapsodyExporter(RhapsodyModelHelper):
 
     def _export_type(self, type_element: IRPModelElement) -> Dict[str, object]:
         spec: Dict[str, object] = {"name": type_element.name, "type": "Type"}
-        kind = self._safe_get(type_element, "get_kind")
+        kind = self._safe_get(type_element, "kind")
         if kind:
             spec["kind"] = kind
         if kind == "Enumeration":
-            literals = self._export_collection(type_element, "get_enumeration_literals")
+            literals = self._export_collection(type_element, "enumeration_literals")
             if literals:
                 spec["literals"] = literals
         elif kind == "Structure":
@@ -105,14 +105,14 @@ class RhapsodyExporter(RhapsodyModelHelper):
 
     def _export_operation(self, op: IRPModelElement) -> Dict[str, object]:
         spec: Dict[str, object] = {"name": op.name, "type": "Operation"}
-        return_classifier = cast(Optional[IRPModelElement], self._safe_get(op, "get_returns"))
+        return_classifier = cast(Optional[IRPModelElement], self._safe_get(op, "returns"))
         return_name = self.get_classifier_name(return_classifier) if return_classifier is not None else None
         if return_name:
             spec["return_type"] = return_name
-        is_static = self._safe_get(op, "get_is_static")
+        is_static = self._safe_get(op, "is_static")
         if is_static is not None:
             spec["is_static"] = bool(is_static)
-        arguments = self._export_collection(op, "get_arguments")
+        arguments = self._export_collection(op, "arguments")
         if arguments:
             spec["arguments"] = arguments
         return spec
@@ -123,7 +123,7 @@ class RhapsodyExporter(RhapsodyModelHelper):
         type_name = self.get_classifier_name(type_classifier) if type_classifier is not None else None
         if type_name:
             spec["data_type"] = type_name
-        direction = self._safe_get(arg, "get_argument_direction")
+        direction = self._safe_get(arg, "argument_direction")
         if direction:
             spec["direction"] = direction
         return spec
@@ -134,13 +134,13 @@ class RhapsodyExporter(RhapsodyModelHelper):
         type_name = self.get_classifier_name(type_classifier) if type_classifier is not None else None
         if type_name:
             spec["data_type"] = type_name
-        visibility = self._safe_get(attr, "get_visibility")
+        visibility = self._safe_get(attr, "visibility")
         if visibility:
             spec["visibility"] = visibility
-        multiplicity = self._safe_get(attr, "get_multiplicity")
+        multiplicity = self._safe_get(attr, "multiplicity")
         if multiplicity:
             spec["multiplicity"] = multiplicity
-        is_static = self._safe_get(attr, "get_is_static")
+        is_static = self._safe_get(attr, "is_static")
         if is_static is not None:
             spec["is_static"] = bool(is_static)
         return spec
@@ -207,20 +207,20 @@ class RhapsodyExporter(RhapsodyModelHelper):
 
     def _export_port(self, port: IRPModelElement) -> Dict[str, object]:
         spec: Dict[str, object] = {"name": port.name, "type": "Port"}
-        is_behavioral = self._safe_get(port, "get_is_behavioral")
+        is_behavioral = self._safe_get(port, "is_behavioral")
         if is_behavioral is not None:
             spec["is_behavioral"] = bool(is_behavioral)
-        is_reversed = self._safe_get(port, "get_is_reversed")
+        is_reversed = self._safe_get(port, "is_reversed")
         if is_reversed is not None:
             spec["is_reversed"] = bool(is_reversed)
-        contract = self._safe_get(port, "get_contract")
+        contract = cast(Optional[IRPModelElement], getattr(port, "port_contract", None))
         contract_name = self._classifier_name(contract)
         if contract_name:
             spec["contract"] = contract_name
-        provided = self._export_name_list(port, "get_provided_interfaces")
+        provided = self._export_name_list(port, "provided_interfaces")
         if provided:
             spec["provided_interfaces"] = provided
-        required = self._export_name_list(port, "get_required_interfaces")
+        required = self._export_name_list(port, "required_interfaces")
         if required:
             spec["required_interfaces"] = required
         return spec
@@ -299,10 +299,11 @@ class RhapsodyExporter(RhapsodyModelHelper):
                 result.append(spec)
         return result
 
-    def _export_collection(self, element: IRPModelElement, method_name: str) -> List[Dict[str, object]]:
-        if not hasattr(element, method_name):
+    def _export_collection(self, element: IRPModelElement, member_name: str) -> List[Dict[str, object]]:
+        if not hasattr(element, member_name):
             return []
-        collection = getattr(element, method_name)()
+        value = getattr(element, member_name)
+        collection = value() if callable(value) else value
         if collection is None:
             return []
         result: List[Dict[str, object]] = []
@@ -312,11 +313,12 @@ class RhapsodyExporter(RhapsodyModelHelper):
                 result.append(spec)
         return result
 
-    def _safe_get(self, element: IRPModelElement, method_name: str) -> Optional[object]:
-        if not hasattr(element, method_name):
+    def _safe_get(self, element: IRPModelElement, member_name: str) -> Optional[object]:
+        if not hasattr(element, member_name):
             return None
         try:
-            return getattr(element, method_name)()  # type: ignore[no-any-return]
+            value = getattr(element, member_name)
+            return value() if callable(value) else value  # type: ignore[no-any-return]
         except Exception:
             return None
 
@@ -328,11 +330,12 @@ class RhapsodyExporter(RhapsodyModelHelper):
         if tags:
             spec["tags"] = tags
 
-    def _export_name_list(self, element: IRPModelElement, method_name: str) -> List[str]:
-        if not hasattr(element, method_name):
+    def _export_name_list(self, element: IRPModelElement, member_name: str) -> List[str]:
+        if not hasattr(element, member_name):
             return []
         try:
-            collection = getattr(element, method_name)()
+            value = getattr(element, member_name)
+            collection = value() if callable(value) else value
             if collection is None:
                 return []
             result: List[str] = []

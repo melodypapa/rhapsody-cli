@@ -120,7 +120,7 @@ def build_demo_project() -> None:
         print("Saving project...")
         project.save()
 
-        print(f"\n[OK] Demo project created at: {project.get_filename()}")
+        print(f"\n[OK] Demo project created at: {project.filename}")
     finally:
         print("Closing Rhapsody...")
         app.disconnect()

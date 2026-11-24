@@ -30,10 +30,10 @@ class IRPUseCase(IRPClassifier):
     # [ ] find_entry_point  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] find_extension_point  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [ ] get_describing_diagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] get_describing_diagrams  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_entry_points  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_extension_points  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] get_is_behavior_overriden  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] describing_diagrams  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] entry_points  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] extension_points  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] is_behavior_overriden  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] set_is_behavior_overriden (unimplemented -- raises NotImplementedError; getter works via COM)  [ ] impl  [x] docstring  [x] unit test  [x] integration test
     # [ ] update_contained_diagrams_on_server  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [inherited] irp_classifier / irp_unit / irp_model_element methods (covered by rp_classifier / rp_unit / rp_model_element checklists)
@@ -53,7 +53,8 @@ class IRPUseCase(IRPClassifier):
         """
         self.call_com(lambda: self._com.addExtensionPoint(entry_point))
 
-    def get_extension_points(self) -> IRPCollection:
+    @property
+    def extension_points(self) -> IRPCollection:
         """Returns all extension points defined on the use case.
 
         Returns:
@@ -67,7 +68,8 @@ class IRPUseCase(IRPClassifier):
         """
         return IRPCollection(self.get_com_property(self._com, "extensionPoints"))
 
-    def get_entry_points(self) -> IRPCollection:
+    @property
+    def entry_points(self) -> IRPCollection:
         """Returns all entry points defined on the use case.
 
         Returns:
@@ -81,7 +83,8 @@ class IRPUseCase(IRPClassifier):
         """
         return IRPCollection(self.get_com_property(self._com, "entryPoints"))
 
-    def get_describing_diagrams(self) -> IRPCollection:
+    @property
+    def describing_diagrams(self) -> IRPCollection:
         """Returns all diagrams that describe this use case.
 
         Returns:
@@ -198,7 +201,8 @@ class IRPUseCase(IRPClassifier):
 
         return cast(RPDiagram, self.wrap(self.call_com(lambda: self._com.getDescribingDiagram(name))))
 
-    def get_is_behavior_overriden(self) -> int:
+    @property
+    def is_behavior_overriden(self) -> int:
         """Checks whether the behavior of this use case is overridden.
 
         Returns:
@@ -229,7 +233,7 @@ class IRPUseCase(IRPClassifier):
         """
         raise NotImplementedError(
             "IRPUseCase.set_is_behavior_overriden is unimplemented: setIsBehaviorOverriden is not exposed in the "
-            "Rhapsody COM automation type library for UseCase (get_is_behavior_overriden works). See docstring for "
+            "Rhapsody COM automation type library for UseCase (is_behavior_overriden works). See docstring for "
             "details."
         )
 

@@ -53,7 +53,7 @@ def live_fixtures(rhapsody_app: IRPApplication, test_project: IRPProject) -> Ite
     """Create and clean up live objects for the individual integration case."""
     package = test_project.add_package(f"LiveFixturePkg_{uuid.uuid4().hex}")
     class_obj = package.add_class(f"LiveFixtureCls_{uuid.uuid4().hex}")
-    collection = test_project.get_packages()
+    collection = test_project.packages
     try:
         yield {
             "project": test_project,
@@ -102,7 +102,7 @@ class TestIRPApplicationIntegration:
     def test_projects_collection_contains_the_test_project(self, rhapsody_app: IRPApplication, test_project: IRPProject) -> None:
         projects = rhapsody_app.projects
 
-        names = [projects.get_item(index).name for index in range(1, projects.get_count() + 1)]
+        names = [projects.get_item(index).name for index in range(1, projects.count + 1)]
         assert TEST_PROJECT_NAME in names
 
     def test_hidden_ui_roundtrip_uses_real_state(self, rhapsody_app: IRPApplication) -> None:
@@ -164,7 +164,7 @@ class TestIRPApplicationIntegration:
         collection = rhapsody_app.create_new_collection()
 
         assert isinstance(collection, IRPCollection)
-        assert collection.get_count() == 0
+        assert collection.count == 0
 
     def test_support_accessors_return_live_objects(self, rhapsody_app: IRPApplication) -> None:
         assert isinstance(rhapsody_app.get_search_manager(), RPSearchManager)
@@ -176,7 +176,7 @@ class TestIRPApplicationIntegration:
     def test_generate_elements_runs_on_real_collection(self, rhapsody_app: IRPApplication, test_project: IRPProject) -> None:
         project = rhapsody_app.open_project(str(TEST_PROJECT_DIR / "TestProject.rpyx"))
         project.add_package("GeneratedPackage")
-        collection = project.get_packages()
+        collection = project.packages
 
         assert rhapsody_app.generate_elements(collection) is None  # type: ignore[func-returns-value]
 

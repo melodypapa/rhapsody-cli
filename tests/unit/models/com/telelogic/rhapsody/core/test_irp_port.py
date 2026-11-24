@@ -27,68 +27,68 @@ def test_port_is_registered_for_meta_class_port() -> None:
     assert isinstance(wrapped, IRPPort)
 
 
-def test_port_get_is_behavioral_delegates_to_com() -> None:
+def test_port_is_behavioral_reads_com_property() -> None:
     fake = make_fake_element("Port", properties={"isBehavioral": 1})
     port = IRPPort(fake)
 
-    assert port.get_is_behavioral() == 1
+    assert port.is_behavioral == 1
 
 
-def test_port_set_is_behavioral_delegates_to_com() -> None:
+def test_port_is_behavioral_writes_com_property() -> None:
     fake = make_fake_element("Port")
     port = IRPPort(fake)
 
-    port.set_is_behavioral(1)
+    port.is_behavioral = 1
 
     assert fake.isBehavioral == 1
 
 
-def test_port_get_is_reversed_delegates_to_com() -> None:
+def test_port_is_reversed_reads_com_property() -> None:
     fake = make_fake_element("Port", properties={"isReversed": 0})
     port = IRPPort(fake)
 
-    assert port.get_is_reversed() == 0
+    assert port.is_reversed == 0
 
 
-def test_port_set_is_reversed_delegates_to_com() -> None:
+def test_port_is_reversed_writes_com_property() -> None:
     fake = make_fake_element("Port")
     port = IRPPort(fake)
 
-    port.set_is_reversed(1)
+    port.is_reversed = 1
 
     assert fake.isReversed == 1
 
 
-def test_port_get_port_contract_wraps_result() -> None:
+def test_port_port_contract_wraps_result() -> None:
     contract_fake = make_fake_element("Class", properties={"name": "IEngine"})
     fake = make_fake_element("Port")
     fake.portContract = contract_fake
     port = IRPPort(fake)
 
-    result = port.get_port_contract()
+    result = port.port_contract
 
     assert isinstance(result, IRPClass)
     assert result.name == "IEngine"
 
 
-def test_port_set_port_contract_delegates_to_com() -> None:
+def test_port_port_contract_writes_com_property() -> None:
     contract_fake = make_fake_element("Class", properties={"name": "IEngine"})
     contract = IRPClass(contract_fake)
     fake = make_fake_element("Port")
     port = IRPPort(fake)
 
-    port.set_port_contract(contract)
+    port.port_contract = contract
 
     assert fake.portContract == contract_fake
 
 
-def test_port_get_provided_interfaces_returns_collection() -> None:
+def test_port_provided_interfaces_returns_collection() -> None:
     fake = make_fake_element("Port")
     interface = make_fake_element("Class", properties={"name": "IProvided"})
     fake.providedInterfaces = make_fake_collection([interface])
     port = IRPPort(fake)
 
-    result = port.get_provided_interfaces()
+    result = port.provided_interfaces
 
     assert isinstance(result, IRPCollection)
     assert len(result) == 1
@@ -117,13 +117,13 @@ def test_port_remove_provided_interface_delegates_to_com() -> None:
     fake.removeProvidedInterface.assert_called_once_with(interface_fake)
 
 
-def test_port_get_required_interfaces_returns_collection() -> None:
+def test_port_required_interfaces_returns_collection() -> None:
     fake = make_fake_element("Port")
     interface = make_fake_element("Class", properties={"name": "IRequired"})
     fake.requiredInterfaces = make_fake_collection([interface])
     port = IRPPort(fake)
 
-    result = port.get_required_interfaces()
+    result = port.required_interfaces
 
     assert isinstance(result, IRPCollection)
     assert len(result) == 1
@@ -178,7 +178,7 @@ def test_classifier_get_ports_returns_actual_rpport_instances() -> None:
     fake.ports = make_fake_collection([make_fake_element("Port", properties={"name": "clientPort"})])
     classifier = IRPClassifier(fake)
 
-    result = classifier.get_ports()
+    result = classifier.ports
 
     assert len(result) == 1
     assert isinstance(result[0], IRPPort)

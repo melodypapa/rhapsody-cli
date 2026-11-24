@@ -52,26 +52,26 @@ class IRPClassifier(IRPUnit):
     # [x] find_nested_classifier_recursive   [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] find_relation                    [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] find_trigger                     [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_activity_diagram              [x] impl  [x] docstring  [x] unit test  [x] integration test   (doc recommends get_behavioral_diagrams)
-    # [x] get_attributes                   [x] impl  [x] docstring  [x] unit test  [x] integration test   (already implemented)
+    # [x] activity_diagram              [x] impl  [x] docstring  [x] unit test  [x] integration test   (doc recommends behavioral_diagrams)
+    # [x] attributes                   [x] impl  [x] docstring  [x] unit test  [x] integration test   (already implemented)
     # [x] get_attributes_including_bases     [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_base_classifiers              [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_behavioral_diagrams           [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_derived_classifiers           [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_flow_items                    [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_flows                        [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_generalizations              [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_interface_items               [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] base_classifiers              [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] behavioral_diagrams           [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] derived_classifiers           [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] flow_items                    [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] flows                        [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] generalizations              [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] interface_items               [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_interface_items_including_bases [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_links                        [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_nested_classifiers            [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_operations                   [x] impl  [x] docstring  [x] unit test  [x] integration test   (already implemented)
-    # [x] get_ports                        [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_relations                    [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] links                        [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] nested_classifiers            [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] operations                   [x] impl  [x] docstring  [x] unit test  [x] integration test   (already implemented)
+    # [x] ports                        [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] relations                    [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_relations_including_bases      [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_sequence_diagrams             [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_source_artifacts              [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_statechart                   [x] impl  [x] docstring  [x] unit test  [x] integration test   (doc recommends get_behavioral_diagrams)
+    # [x] sequence_diagrams             [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] source_artifacts              [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] statechart                   [x] impl  [x] docstring  [x] unit test  [x] integration test   (doc recommends behavioral_diagrams)
     # [inherited] irp_unit / irp_model_element methods (get_name, set_name, get_owner, get_guid,
     #              addDependency, addStereotype, getStereotypes, getNestedElements, save, load, etc.)
     # No deprecated IRPClassifier methods in deprecated-list.html.
@@ -111,7 +111,8 @@ class IRPClassifier(IRPUnit):
 
         return cast(IRPOperation, self.wrap(self.call_com(lambda: self._com.addOperation(name))))
 
-    def get_attributes(self) -> IRPCollection:
+    @property
+    def attributes(self) -> IRPCollection:
         """Returns all attributes defined on the classifier.
 
         Returns:
@@ -122,7 +123,8 @@ class IRPClassifier(IRPUnit):
         """
         return IRPCollection(self.get_com_property(self._com, "attributes"))
 
-    def get_operations(self) -> IRPCollection:
+    @property
+    def operations(self) -> IRPCollection:
         """Returns all operations defined on the classifier.
 
         Returns:
@@ -640,10 +642,11 @@ class IRPClassifier(IRPUnit):
 
         return cast(IRPInterfaceItem, self.wrap(self.call_com(lambda: self._com.findTrigger(name))))
 
-    def get_activity_diagram(self) -> RPFlowchart:
+    @property
+    def activity_diagram(self) -> RPFlowchart:
         """Returns the activity diagram defined for the classifier.
 
-        Note: the Java API recommends using :meth:`get_behavioral_diagrams`
+        Note: the Java API recommends using :attr:`behavioral_diagrams`
         instead, because Rhapsody now allows more than one statechart and
         activity diagram to be defined for a class.
 
@@ -669,7 +672,8 @@ class IRPClassifier(IRPUnit):
         """
         return IRPCollection(self.call_com(lambda: self._com.getAttributesIncludingBases()))
 
-    def get_base_classifiers(self) -> IRPCollection:
+    @property
+    def base_classifiers(self) -> IRPCollection:
         """Returns the classifiers that serve as base classifiers for this classifier.
 
         Returns:
@@ -680,7 +684,8 @@ class IRPClassifier(IRPUnit):
         """
         return IRPCollection(self.get_com_property(self._com, "baseClassifiers"))
 
-    def get_behavioral_diagrams(self) -> IRPCollection:
+    @property
+    def behavioral_diagrams(self) -> IRPCollection:
         """Returns all the statecharts and activities defined for the classifier.
 
         The returned collection consists of elements of type ``IRPStatechart``.
@@ -693,7 +698,8 @@ class IRPClassifier(IRPUnit):
         """
         return IRPCollection(self.get_com_property(self._com, "behavioralDiagrams"))
 
-    def get_derived_classifiers(self) -> IRPCollection:
+    @property
+    def derived_classifiers(self) -> IRPCollection:
         """Returns all the classifiers derived from this classifier.
 
         Returns:
@@ -704,7 +710,8 @@ class IRPClassifier(IRPUnit):
         """
         return IRPCollection(self.get_com_property(self._com, "derivedClassifiers"))
 
-    def get_flow_items(self) -> IRPCollection:
+    @property
+    def flow_items(self) -> IRPCollection:
         """Returns all the classifier's item flows.
 
         Returns:
@@ -715,7 +722,8 @@ class IRPClassifier(IRPUnit):
         """
         return IRPCollection(self.get_com_property(self._com, "flowItems"))
 
-    def get_flows(self) -> IRPCollection:
+    @property
+    def flows(self) -> IRPCollection:
         """Returns all the classifier's flows.
 
         Returns:
@@ -726,7 +734,8 @@ class IRPClassifier(IRPUnit):
         """
         return IRPCollection(self.get_com_property(self._com, "flows"))
 
-    def get_generalizations(self) -> IRPCollection:
+    @property
+    def generalizations(self) -> IRPCollection:
         """Returns all the classifier's generalization relationships.
 
         Returns:
@@ -737,7 +746,8 @@ class IRPClassifier(IRPUnit):
         """
         return IRPCollection(self.get_com_property(self._com, "generalizations"))
 
-    def get_interface_items(self) -> IRPCollection:
+    @property
+    def interface_items(self) -> IRPCollection:
         """Returns the classifier's elements of type IRPInterfaceItem.
 
         This includes operations, triggered operations, and event receptions.
@@ -765,7 +775,8 @@ class IRPClassifier(IRPUnit):
         """
         return IRPCollection(self.call_com(lambda: self._com.getInterfaceItemsIncludingBases()))
 
-    def get_links(self) -> IRPCollection:
+    @property
+    def links(self) -> IRPCollection:
         """Returns all the classifier's link relationships.
 
         Returns:
@@ -776,7 +787,8 @@ class IRPClassifier(IRPUnit):
         """
         return IRPCollection(self.get_com_property(self._com, "links"))
 
-    def get_nested_classifiers(self) -> IRPCollection:
+    @property
+    def nested_classifiers(self) -> IRPCollection:
         """Returns the classifiers nested below the current classifier.
 
         This method is not recursive - it only returns the classifiers at the
@@ -790,7 +802,8 @@ class IRPClassifier(IRPUnit):
         """
         return IRPCollection(self.get_com_property(self._com, "nestedClassifiers"))
 
-    def get_ports(self) -> IRPCollection:
+    @property
+    def ports(self) -> IRPCollection:
         """Returns all the classifier's ports.
 
         Returns:
@@ -817,7 +830,8 @@ class IRPClassifier(IRPUnit):
         """
         return cast(IRPModelElement, self.wrap(self.call_com(lambda: self._com.addNewAggr("Port", name))))
 
-    def get_relations(self) -> IRPCollection:
+    @property
+    def relations(self) -> IRPCollection:
         """Returns all the classifier's associations.
 
         Returns:
@@ -840,7 +854,8 @@ class IRPClassifier(IRPUnit):
         """
         return IRPCollection(self.call_com(lambda: self._com.getRelationsIncludingBases()))
 
-    def get_sequence_diagrams(self) -> IRPCollection:
+    @property
+    def sequence_diagrams(self) -> IRPCollection:
         """Returns the classifier's sequence diagrams.
 
         Returns:
@@ -851,7 +866,8 @@ class IRPClassifier(IRPUnit):
         """
         return IRPCollection(self.get_com_property(self._com, "sequenceDiagrams"))
 
-    def get_source_artifacts(self) -> IRPCollection:
+    @property
+    def source_artifacts(self) -> IRPCollection:
         """Gets the source artifacts for the classifier.
 
         Returns:
@@ -862,10 +878,11 @@ class IRPClassifier(IRPUnit):
         """
         return IRPCollection(self.get_com_property(self._com, "sourceArtifacts"))
 
-    def get_statechart(self) -> RPStatechart:
+    @property
+    def statechart(self) -> RPStatechart:
         """Returns the statechart defined for the classifier.
 
-        Note: the Java API recommends using :meth:`get_behavioral_diagrams`
+        Note: the Java API recommends using :attr:`behavioral_diagrams`
         instead, because Rhapsody now allows more than one statechart and
         activity diagram to be defined for a class.
 

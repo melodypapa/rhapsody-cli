@@ -32,11 +32,11 @@ class TestRPOperationIntegration:
         test_class = pkg.add_class(class_name)
         try:
             op = test_class.add_operation(op_name)
-            assert op.get_is_static() is False
-            op.set_is_static(1)
-            assert op.get_is_static() is True
-            op.set_is_static(0)
-            assert op.get_is_static() is False
+            assert op.is_static is False
+            op.is_static = 1
+            assert op.is_static is True
+            op.is_static = 0
+            assert op.is_static is False
         finally:
             test_class.delete_from_project()
 
@@ -48,11 +48,11 @@ class TestRPOperationIntegration:
         test_class = pkg.add_class(class_name)
         try:
             op = test_class.add_operation(op_name)
-            assert op.get_is_virtual() is False
-            op.set_is_virtual(1)
-            assert op.get_is_virtual() is True
-            op.set_is_virtual(0)
-            assert op.get_is_virtual() is False
+            assert op.is_virtual is False
+            op.is_virtual = 1
+            assert op.is_virtual is True
+            op.is_virtual = 0
+            assert op.is_virtual is False
         finally:
             test_class.delete_from_project()
 
@@ -64,11 +64,11 @@ class TestRPOperationIntegration:
         test_class = pkg.add_class(class_name)
         try:
             op = test_class.add_operation(op_name)
-            assert op.get_is_abstract() is False
-            op.set_is_abstract(1)
-            assert op.get_is_abstract() is True
-            op.set_is_abstract(0)
-            assert op.get_is_abstract() is False
+            assert op.is_abstract is False
+            op.is_abstract = 1
+            assert op.is_abstract is True
+            op.is_abstract = 0
+            assert op.is_abstract is False
         finally:
             test_class.delete_from_project()
 
@@ -85,7 +85,7 @@ class TestRPOperationIntegration:
         finally:
             test_class.delete_from_project()
 
-    def test_get_body(self, test_project: IRPProject) -> None:
+    def test_body(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("BodyPkg")
         class_name = self._unique("BodyCls")
         op_name = self._unique("doSomething")
@@ -93,7 +93,7 @@ class TestRPOperationIntegration:
         test_class = pkg.add_class(class_name)
         try:
             op = test_class.add_operation(op_name)
-            body = op.get_body()
+            body = op.body
             assert isinstance(body, str)
         finally:
             test_class.delete_from_project()
@@ -103,8 +103,8 @@ class TestRPOperationIntegration:
         test_class = pkg.add_class(self._unique("RetTypeCls"))
         try:
             op = test_class.add_operation(self._unique("typedOp"))
-            op.set_returns(test_class)
-            assert op.get_returns() is not None
+            op.returns = test_class
+            assert op.returns is not None
         finally:
             test_class.delete_from_project()
 
@@ -114,9 +114,9 @@ class TestRPOperationIntegration:
         try:
             op = test_class.add_operation(self._unique("flowOp"))
             op.create_auto_flow_chart()
-            chart = op.get_flowchart()
+            chart = op.flowchart
             with pytest.raises(AttributeError):
-                op.set_flowchart(chart)
+                op.flowchart = chart
             assert op.delete_flowchart() is None  # type: ignore[func-returns-value]
         finally:
             test_class.delete_from_project()
@@ -135,8 +135,8 @@ class TestRPOperationIntegration:
         test_class = pkg.add_class(self._unique("PropCls"))
         try:
             op = test_class.add_operation(self._unique("propOp"))
-            assert isinstance(op.get_initializer(), str)
-            assert isinstance(op.get_visibility(), str)
+            assert isinstance(op.initializer, str)
+            assert isinstance(op.visibility, str)
         finally:
             test_class.delete_from_project()
 
@@ -145,41 +145,40 @@ class TestRPOperationIntegration:
         test_class = pkg.add_class(self._unique("FlagCls"))
         try:
             op = test_class.add_operation(self._unique("flagOp"))
-            for getter in (
-                op.get_is_cg_derived,
-                op.get_is_const,
-                op.get_is_ctor,
-                op.get_is_dtor,
-                op.get_is_final,
-                op.get_is_inline,
-                op.get_is_trigger,
+            for attribute in (
+                "is_cg_derived",
+                "is_const",
+                "is_ctor",
+                "is_dtor",
+                "is_final",
+                "is_inline",
+                "is_trigger",
             ):
-                assert isinstance(getter(), int)
+                assert isinstance(getattr(op, attribute), int)
         finally:
             test_class.delete_from_project()
 
-    def test_unsupported_setters_binding_shape(self, test_project: IRPProject) -> None:
+    def test_property_setters_binding_shape(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("SetterPkg"))
         test_class = pkg.add_class(self._unique("SetterCls"))
         try:
             op = test_class.add_operation(self._unique("setterOp"))
             # Property-shaped setters bind to documented COM properties.
             with patch.object(IRPModelElement, "set_com_property") as setter:
-                assert op.set_body("return 0;") is None  # type: ignore[func-returns-value]
+                op.body = "return 0;"
                 setter.assert_called_once_with(op._com, "body", "return 0;")
             with patch.object(IRPModelElement, "set_com_property") as setter:
-                assert op.set_initializer("value = 0;") is None  # type: ignore[func-returns-value]
+                op.initializer = "value = 0;"
                 setter.assert_called_once_with(op._com, "initializer", "value = 0;")
-            # Method-shaped setters bind to Java-named COM members via call_com.
-            with patch.object(IRPModelElement, "call_com") as com_call:
-                assert op.set_visibility("private") is None  # type: ignore[func-returns-value]
-                com_call.assert_called_once()
-            with patch.object(IRPModelElement, "call_com") as com_call:
-                assert op.set_is_const(1) is None  # type: ignore[func-returns-value]
-                com_call.assert_called_once()
-            with patch.object(IRPModelElement, "call_com") as com_call:
-                assert op.set_is_final(1) is None  # type: ignore[func-returns-value]
-                com_call.assert_called_once()
+            with patch.object(IRPModelElement, "set_com_property") as setter:
+                op.visibility = "private"
+                setter.assert_called_once_with(op._com, "visibility", "private")
+            with patch.object(IRPModelElement, "set_com_property") as setter:
+                op.is_const = 1
+                setter.assert_called_once_with(op._com, "isConst", 1)
+            with patch.object(IRPModelElement, "set_com_property") as setter:
+                op.is_final = 1
+                setter.assert_called_once_with(op._com, "isFinal", 1)
             with pytest.raises(NotImplementedError):
                 op.update_contained_diagrams_on_server(1)
         finally:
@@ -192,6 +191,6 @@ class TestRPOperationIntegration:
             op = test_class.add_operation(self._unique("argOp"))
             argument = op.add_argument(self._unique("arg"))
             op.delete_argument(argument)
-            assert len(list(op.get_arguments())) == 0
+            assert len(list(op.arguments)) == 0
         finally:
             test_class.delete_from_project()

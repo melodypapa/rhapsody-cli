@@ -38,9 +38,9 @@ class TestRPUseCaseIntegration:
         try:
             assert isinstance(uc, IRPUseCase)
             uc.add_extension_point(ep_name)
-            assert ep_name in [str(e) for e in uc.get_extension_points()]
+            assert ep_name in [str(e) for e in uc.extension_points]
             uc.delete_extension_point(ep_name)
-            assert ep_name not in [str(e) for e in uc.get_extension_points()]
+            assert ep_name not in [str(e) for e in uc.extension_points]
         finally:
             uc.delete_from_project()
 
@@ -57,13 +57,13 @@ class TestRPUseCaseIntegration:
         finally:
             uc.delete_from_project()
 
-    def test_get_entry_points_empty(self, test_project: IRPProject) -> None:
+    def test_entry_points_empty(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("UcPkg")
         uc_name = self._unique("MyUseCase")
         pkg = self._create_package(test_project, pkg_name)
         uc = pkg.add_use_case(uc_name)
         try:
-            entry_points = list(uc.get_entry_points())
+            entry_points = list(uc.entry_points)
             assert isinstance(entry_points, list)
         finally:
             uc.delete_from_project()
@@ -77,7 +77,7 @@ class TestRPUseCaseIntegration:
         pkg = self._create_package(test_project, pkg_name)
         uc = pkg.add_use_case(uc_name)
         try:
-            assert uc.get_is_behavior_overriden() in (0, 1)
+            assert uc.is_behavior_overriden in (0, 1)
             with pytest.raises(NotImplementedError, match="setIsBehaviorOverriden is not exposed"):
                 uc.set_is_behavior_overriden(1)
         finally:
@@ -100,27 +100,27 @@ class TestIRPUseCaseGenerated:
         finally:
             pkg.delete_from_project()
 
-    def test_get_extension_points(self, test_project: IRPProject) -> None:
+    def test_extension_points(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("UsePkg"))
         use_case = pkg.add_use_case(self._unique("UC"))
         try:
-            assert use_case.get_extension_points() is not None
+            assert use_case.extension_points is not None
         finally:
             pkg.delete_from_project()
 
-    def test_get_entry_points(self, test_project: IRPProject) -> None:
+    def test_entry_points(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("UsePkg"))
         use_case = pkg.add_use_case(self._unique("UC"))
         try:
-            assert use_case.get_entry_points() is not None
+            assert use_case.entry_points is not None
         finally:
             pkg.delete_from_project()
 
-    def test_get_describing_diagrams(self, test_project: IRPProject) -> None:
+    def test_describing_diagrams(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("UsePkg"))
         use_case = pkg.add_use_case(self._unique("UC"))
         try:
-            assert use_case.get_describing_diagrams() is not None
+            assert use_case.describing_diagrams is not None
         finally:
             pkg.delete_from_project()
 
@@ -196,11 +196,11 @@ class TestIRPUseCaseGenerated:
         finally:
             pkg.delete_from_project()
 
-    def test_get_is_behavior_overriden(self, test_project: IRPProject) -> None:
+    def test_is_behavior_overriden(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("UsePkg"))
         use_case = pkg.add_use_case(self._unique("UC"))
         try:
-            assert use_case.get_is_behavior_overriden() is not None
+            assert use_case.is_behavior_overriden is not None
         finally:
             pkg.delete_from_project()
 

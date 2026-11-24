@@ -31,13 +31,17 @@ class TestIRPPortIntegration:
         try:
             port = test_class.add_new_aggr("Port", self._unique("port"))
             assert isinstance(port, IRPPort)
-            assert port.get_is_behavioral() in (0, 1)
-            assert port.get_is_reversed() in (0, 1)
-            contract = port.get_port_contract()
+            assert port.is_behavioral in (0, 1)
+            assert port.is_reversed in (0, 1)
+            contract = port.port_contract
             assert contract is None or isinstance(contract, IRPClass)
-            assert port.set_is_behavioral(1) is None  # type: ignore[func-returns-value]
-            assert port.set_is_reversed(0) is None  # type: ignore[func-returns-value]
-            assert port.set_port_contract(test_class) is None  # type: ignore[func-returns-value]
+            port.is_behavioral = 1
+            assert port.is_behavioral == 1
+            port.is_reversed = 0
+            assert port.is_reversed == 0
+            port.port_contract = test_class
+            assert port.port_contract is not None
+            assert port.port_contract.name == test_class.name
             with pytest.raises(NotImplementedError):
                 port.get_contract()
             with pytest.raises(NotImplementedError):
@@ -51,8 +55,8 @@ class TestIRPPortIntegration:
         try:
             port = test_class.add_new_aggr("Port", self._unique("ifPort"))
             assert isinstance(port, IRPPort)
-            assert isinstance(port.get_provided_interfaces(), IRPCollection)
-            assert isinstance(port.get_required_interfaces(), IRPCollection)
+            assert isinstance(port.provided_interfaces, IRPCollection)
+            assert isinstance(port.required_interfaces, IRPCollection)
             assert port.add_provided_interface(test_class) is None  # type: ignore[func-returns-value]
             assert port.remove_provided_interface(test_class) is None  # type: ignore[func-returns-value]
             assert port.add_required_interface(test_class) is None  # type: ignore[func-returns-value]

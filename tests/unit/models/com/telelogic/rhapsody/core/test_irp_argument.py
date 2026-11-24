@@ -14,18 +14,18 @@ def test_argument_is_a_variable() -> None:
     assert argument.name == "id"
 
 
-def test_argument_get_argument_direction_delegates_to_com() -> None:
+def test_argument_direction_reads_com_property() -> None:
     fake = make_fake_element("Argument", properties={"argumentDirection": "in"})
     argument = IRPArgument(fake)
 
-    assert argument.get_argument_direction() == "in"
+    assert argument.argument_direction == "in"
 
 
-def test_argument_set_argument_direction_delegates_to_com() -> None:
+def test_argument_direction_writes_com_property() -> None:
     fake = make_fake_element("Argument")
     argument = IRPArgument(fake)
 
-    argument.set_argument_direction("out")
+    argument.argument_direction = "out"
 
     assert fake.argumentDirection == "out"
 

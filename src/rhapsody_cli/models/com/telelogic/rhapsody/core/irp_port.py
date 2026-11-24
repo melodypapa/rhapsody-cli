@@ -22,20 +22,18 @@ class IRPPort(RPInstance):
     # IRPPort method parity checklist:
     # [x] add_provided_interface      [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] add_required_interface      [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_is_behavioral           [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_is_reversed             [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_port_contract           [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_provided_interfaces     [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_required_interfaces     [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] is_behavioral               [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] is_reversed                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] port_contract               [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] provided_interfaces         [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] required_interfaces         [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] remove_provided_interface   [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] remove_required_interface   [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_is_behavioral           [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_is_reversed             [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_port_contract           [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_contract (deprecated, use get_port_contract) [x] impl [x] docstring [x] unit test  [ ] integration test
-    # [x] set_contract (deprecated, use set_port_contract) [x] impl [x] docstring [x] unit test  [ ] integration test
+    # [x] get_contract (deprecated, use port_contract) [x] impl [x] docstring [x] unit test  [ ] integration test
+    # [x] set_contract (deprecated, use port_contract) [x] impl [x] docstring [x] unit test  [ ] integration test
 
-    def get_is_behavioral(self) -> int:
+    @property
+    def is_behavioral(self) -> int:
         """Checks whether the port is a behavioral port.
 
         Returns:
@@ -49,7 +47,8 @@ class IRPPort(RPInstance):
         """
         return int(self.get_com_property(self._com, "isBehavioral"))
 
-    def set_is_behavioral(self, is_behavioral: int) -> None:
+    @is_behavioral.setter
+    def is_behavioral(self, is_behavioral: int) -> None:
         """Specifies whether the port should be a behavioral port.
 
         Args:
@@ -63,7 +62,8 @@ class IRPPort(RPInstance):
         """
         self.set_com_property(self._com, "isBehavioral", is_behavioral)
 
-    def get_is_reversed(self) -> int:
+    @property
+    def is_reversed(self) -> int:
         """Checks whether the port's direction is reversed.
 
         Returns:
@@ -77,7 +77,8 @@ class IRPPort(RPInstance):
         """
         return int(self.get_com_property(self._com, "isReversed"))
 
-    def set_is_reversed(self, is_reversed: int) -> None:
+    @is_reversed.setter
+    def is_reversed(self, is_reversed: int) -> None:
         """Specifies whether the port's direction should be reversed.
 
         Args:
@@ -91,7 +92,8 @@ class IRPPort(RPInstance):
         """
         self.set_com_property(self._com, "isReversed", is_reversed)
 
-    def get_port_contract(self) -> IRPClass:
+    @property
+    def port_contract(self) -> IRPClass:
         """Returns the contract defined for the port.
 
         Returns:
@@ -107,7 +109,8 @@ class IRPPort(RPInstance):
 
         return cast(IRPClass, self.wrap(self.get_com_property(self._com, "portContract")))
 
-    def set_port_contract(self, port_contract: IRPModelElement) -> None:
+    @port_contract.setter
+    def port_contract(self, port_contract: IRPModelElement) -> None:
         """Specifies the contract to use for the port.
 
         Args:
@@ -118,7 +121,8 @@ class IRPPort(RPInstance):
         """
         self.set_com_property(self._com, "portContract", port_contract._com)
 
-    def get_provided_interfaces(self) -> IRPCollection:
+    @property
+    def provided_interfaces(self) -> IRPCollection:
         """Returns the interfaces provided by the port.
 
         Returns:
@@ -160,7 +164,8 @@ class IRPPort(RPInstance):
         """
         self.call_com(lambda: self._com.removeProvidedInterface(new_val._com))
 
-    def get_required_interfaces(self) -> IRPCollection:
+    @property
+    def required_interfaces(self) -> IRPCollection:
         """Returns the interfaces required by the port.
 
         Returns:

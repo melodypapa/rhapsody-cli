@@ -50,7 +50,7 @@ def test_classifier_get_attributes_returns_collection() -> None:
     fake.attributes = make_fake_collection([make_fake_element("Attribute", properties={"name": "count"})])
     classifier = IRPClassifier(fake)
 
-    attributes = classifier.get_attributes()
+    attributes = classifier.attributes
 
     assert len(attributes) == 1
     assert attributes[0].name == "count"
@@ -61,7 +61,7 @@ def test_classifier_get_operations_returns_collection() -> None:
     fake.operations = make_fake_collection([make_fake_element("Operation", properties={"name": "doIt"})])
     classifier = IRPClassifier(fake)
 
-    operations = classifier.get_operations()
+    operations = classifier.operations
 
     assert len(operations) == 1
     assert operations[0].name == "doIt"
@@ -349,7 +349,7 @@ def test_classifier_get_activity_diagram_wraps_result() -> None:
     fake.activityDiagram = diagram
     classifier = IRPClassifier(fake)
 
-    result = classifier.get_activity_diagram()
+    result = classifier.activity_diagram
     assert result.name == "Act"
 
 
@@ -359,7 +359,7 @@ def test_classifier_get_statechart_wraps_result() -> None:
     fake.statechart = statechart
     classifier = IRPClassifier(fake)
 
-    result = classifier.get_statechart()
+    result = classifier.statechart
     assert result.name == "Behavior"
 
 
@@ -379,7 +379,7 @@ def test_classifier_get_base_classifiers_returns_collection() -> None:
     fake.baseClassifiers = make_fake_collection([make_fake_element("Class", properties={"name": "Base"})])
     classifier = IRPClassifier(fake)
 
-    result = classifier.get_base_classifiers()
+    result = classifier.base_classifiers
 
     assert len(result) == 1
     assert result[0].name == "Base"
@@ -390,7 +390,7 @@ def test_classifier_get_behavioral_diagrams_returns_collection() -> None:
     fake.behavioralDiagrams = make_fake_collection([make_fake_element("Statechart", properties={"name": "Behavior"})])
     classifier = IRPClassifier(fake)
 
-    result = classifier.get_behavioral_diagrams()
+    result = classifier.behavioral_diagrams
 
     assert len(result) == 1
     assert result[0].name == "Behavior"
@@ -401,7 +401,7 @@ def test_classifier_get_derived_classifiers_returns_collection() -> None:
     fake.derivedClassifiers = make_fake_collection([make_fake_element("Class", properties={"name": "Derived"})])
     classifier = IRPClassifier(fake)
 
-    result = classifier.get_derived_classifiers()
+    result = classifier.derived_classifiers
 
     assert len(result) == 1
     assert result[0].name == "Derived"
@@ -412,7 +412,7 @@ def test_classifier_get_flow_items_returns_collection() -> None:
     fake.flowItems = make_fake_collection([make_fake_element("FlowItem", properties={"name": "flowItem"})])
     classifier = IRPClassifier(fake)
 
-    result = classifier.get_flow_items()
+    result = classifier.flow_items
 
     assert len(result) == 1
     assert result[0].name == "flowItem"
@@ -423,7 +423,7 @@ def test_classifier_get_flows_returns_collection() -> None:
     fake.flows = make_fake_collection([make_fake_element("Flow", properties={"name": "flow"})])
     classifier = IRPClassifier(fake)
 
-    result = classifier.get_flows()
+    result = classifier.flows
 
     assert len(result) == 1
     assert result[0].name == "flow"
@@ -434,7 +434,7 @@ def test_classifier_get_generalizations_returns_collection() -> None:
     fake.generalizations = make_fake_collection([make_fake_element("Generalization", properties={"name": "gen"})])
     classifier = IRPClassifier(fake)
 
-    result = classifier.get_generalizations()
+    result = classifier.generalizations
 
     assert len(result) == 1
     assert result[0].name == "gen"
@@ -445,7 +445,7 @@ def test_classifier_get_interface_items_returns_collection() -> None:
     fake.interfaceItems = make_fake_collection([make_fake_element("Operation", properties={"name": "doIt"})])
     classifier = IRPClassifier(fake)
 
-    result = classifier.get_interface_items()
+    result = classifier.interface_items
 
     assert len(result) == 1
     assert result[0].name == "doIt"
@@ -467,7 +467,7 @@ def test_classifier_get_links_returns_collection() -> None:
     fake.links = make_fake_collection([make_fake_element("Link", properties={"name": "link"})])
     classifier = IRPClassifier(fake)
 
-    result = classifier.get_links()
+    result = classifier.links
 
     assert len(result) == 1
     assert result[0].name == "link"
@@ -478,7 +478,7 @@ def test_classifier_get_nested_classifiers_returns_collection() -> None:
     fake.nestedClassifiers = make_fake_collection([make_fake_element("Class", properties={"name": "Nested"})])
     classifier = IRPClassifier(fake)
 
-    result = classifier.get_nested_classifiers()
+    result = classifier.nested_classifiers
 
     assert len(result) == 1
     assert result[0].name == "Nested"
@@ -489,7 +489,7 @@ def test_classifier_get_ports_returns_collection() -> None:
     fake.ports = make_fake_collection([make_fake_element("Port", properties={"name": "port"})])
     classifier = IRPClassifier(fake)
 
-    result = classifier.get_ports()
+    result = classifier.ports
 
     assert len(result) == 1
     assert result[0].name == "port"
@@ -513,7 +513,7 @@ def test_classifier_get_relations_returns_collection() -> None:
     fake.relations = make_fake_collection([make_fake_element("Relation", properties={"name": "assoc"})])
     classifier = IRPClassifier(fake)
 
-    result = classifier.get_relations()
+    result = classifier.relations
 
     assert len(result) == 1
     assert result[0].name == "assoc"
@@ -535,7 +535,7 @@ def test_classifier_get_sequence_diagrams_returns_collection() -> None:
     fake.sequenceDiagrams = make_fake_collection([make_fake_element("SequenceDiagram", properties={"name": "seq"})])
     classifier = IRPClassifier(fake)
 
-    result = classifier.get_sequence_diagrams()
+    result = classifier.sequence_diagrams
 
     assert len(result) == 1
     assert result[0].name == "seq"
@@ -546,7 +546,7 @@ def test_classifier_get_source_artifacts_returns_collection() -> None:
     fake.sourceArtifacts = make_fake_collection([make_fake_element("File", properties={"name": "file"})])
     classifier = IRPClassifier(fake)
 
-    result = classifier.get_source_artifacts()
+    result = classifier.source_artifacts
 
     assert len(result) == 1
     assert result[0].name == "file"

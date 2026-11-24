@@ -34,8 +34,8 @@ class TestIRPUnitPersistenceIntegration:
         try:
             assert isinstance(pkg, IRPUnit)
             new_filename = self._unique("renamed_unit")
-            pkg.set_filename(new_filename)
-            filename = pkg.get_filename()
+            pkg.filename = new_filename
+            filename = pkg.filename
             assert new_filename in filename
             assert isinstance(filename, str)
         finally:
@@ -65,7 +65,7 @@ class TestIRPUnitPersistenceIntegration:
     def test_get_current_directory_matches_project(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("CurDirPkg"))
         try:
-            current_dir = pkg.get_current_directory()
+            current_dir = pkg.current_directory
             assert isinstance(current_dir, str)
             current_path = Path(current_dir)
             assert TEST_PROJECT_DIR == current_path or TEST_PROJECT_DIR in current_path.parents
@@ -126,8 +126,8 @@ class TestIRPUnitCmStateIntegration:
             assert isinstance(pkg, IRPUnit)
             pkg.save()
             header = self._unique("CMHeader")
-            pkg.set_cm_header(header)
-            retrieved = pkg.get_cm_header()
+            pkg.cm_header = header
+            retrieved = pkg.cm_header
             assert isinstance(retrieved, str)
             assert retrieved == header
         finally:
@@ -163,13 +163,13 @@ class TestIRPUnitCmStateIntegration:
         try:
             assert isinstance(pkg, IRPUnit)
             pkg.save()
-            original = pkg.get_include_in_next_load()
+            original = pkg.include_in_next_load
             assert isinstance(original, int)
-            pkg.set_include_in_next_load(1)
-            assert pkg.get_include_in_next_load() == 1
-            pkg.set_include_in_next_load(0)
-            assert pkg.get_include_in_next_load() == 0
-            pkg.set_include_in_next_load(original)
+            pkg.include_in_next_load = 1
+            assert pkg.include_in_next_load == 1
+            pkg.include_in_next_load = 0
+            assert pkg.include_in_next_load == 0
+            pkg.include_in_next_load = original
         finally:
             pkg.delete_from_project()
 
@@ -196,7 +196,7 @@ class TestIRPUnitCrossProjectIntegration:
             assert isinstance(pkg, IRPUnit)
             units = pkg.get_nested_save_units()
             assert isinstance(units, IRPCollection)
-            assert isinstance(units.get_count(), int)
+            assert isinstance(units.count, int)
             assert len(list(units)) == 0
         finally:
             pkg.delete_from_project()
@@ -223,9 +223,9 @@ class TestIRPUnitCrossProjectIntegration:
         try:
             cls = pkg.add_class(self._unique("StructCls"))
             assert isinstance(cls, IRPUnit)
-            diagrams = cls.get_structure_diagrams()
+            diagrams = cls.structure_diagrams
             assert isinstance(diagrams, IRPCollection)
-            assert isinstance(diagrams.get_count(), int)
+            assert isinstance(diagrams.count, int)
             assert len(list(diagrams)) == 0
         finally:
             pkg.delete_from_project()
@@ -253,7 +253,7 @@ class TestIRPUnitCrossProjectIntegration:
     def test_cross_project_and_lifecycle_members(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("UnitOpsPkg"))
         try:
-            assert pkg.get_is_stub() in (0, 1)
+            assert pkg.is_stub in (0, 1)
             with pytest.raises(RhapsodyRuntimeException):
                 pkg.copy_to_another_project(test_project)
             assert pkg.load(0) is None

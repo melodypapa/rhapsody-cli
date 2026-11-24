@@ -199,7 +199,9 @@ class PackageCreateAction(AbstractPackageAction):
 
         try:
             if is_root:
-                existing_packages = container.get_packages()  # type: ignore[attr-defined]
+                from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
+
+                existing_packages = cast(IRPProject, container).packages
                 container_desc = "project root"
             else:
                 existing_packages = container.get_nested_packages()  # type: ignore[attr-defined]

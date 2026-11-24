@@ -45,7 +45,7 @@ class TestAbstractPortAction:
         port1.name = "inputPort"
         port2 = MagicMock()
         port2.name = "outputPort"
-        mock_classifier.get_ports.return_value = [port1, port2]
+        mock_classifier.ports = [port1, port2]
 
         result = action._resolve_port(mock_classifier, "outputPort")
         assert result == port2
@@ -60,7 +60,7 @@ class TestAbstractPortAction:
         # Create mock ports without matching name
         port1 = MagicMock()
         port1.name = "inputPort"
-        mock_classifier.get_ports.return_value = [port1]
+        mock_classifier.ports = [port1]
 
         with pytest.raises(CliExecutionError) as exc_info:
             action._resolve_port(mock_classifier, "missingPort")
@@ -184,8 +184,8 @@ class TestPortCreateAction:
 
             action.execute(args)
 
-            mock_port.set_is_behavioral.assert_called_once_with(1)
-            mock_port.set_is_reversed.assert_called_once_with(0)
+            assert mock_port.is_behavioral == 1
+            assert mock_port.is_reversed == 0
 
     def test_create_with_port_contract(self) -> None:
         """UTS_PORT_00004: Test portContract resolved via findNestedClassifierRecursive."""
@@ -206,7 +206,7 @@ class TestPortCreateAction:
             action.execute(args)
 
             mock_owner.find_nested_classifier_recursive.assert_called_once_with("IClient")
-            mock_port.set_port_contract.assert_called_once_with(mock_contract)
+            assert mock_port.port_contract is mock_contract
 
     def test_create_skips_unknown_attributes(self) -> None:
         """UTS_PORT_00005: Test unknown attributes skipped with warning."""
@@ -259,7 +259,7 @@ class TestPortDeleteAction:
 
         # Setup getPorts to return the mock port
         mock_port.name = "clientPort"
-        mock_classifier.get_ports.return_value = [mock_port]
+        mock_classifier.ports = [mock_port]
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
             args = MagicMock()
@@ -343,13 +343,13 @@ class TestPortViewAction:
         mock_port.name = "clientPort"
         mock_port.guid = "12345678-1234-1234-1234-123456789abc"
         mock_port.description = "Client interface port"
-        mock_port.get_is_behavioral.return_value = 1
-        mock_port.get_is_reversed.return_value = 0
+        mock_port.is_behavioral = 1
+        mock_port.is_reversed = 0
         mock_port.get_full_path_name.return_value = "Sensors/TemperatureSensor/clientPort"
 
         mock_contract = MagicMock()
         mock_contract.name = "IClient"
-        mock_port.get_port_contract.return_value = mock_contract
+        mock_port.port_contract = mock_contract
 
         return mock_port
 
@@ -362,7 +362,7 @@ class TestPortViewAction:
         mock_classifier = MagicMock()
 
         mock_port.name = "clientPort"
-        mock_classifier.get_ports.return_value = [mock_port]
+        mock_classifier.ports = [mock_port]
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
             args = MagicMock()
@@ -389,7 +389,7 @@ class TestPortViewAction:
         mock_port = self._make_mock_port()
         mock_classifier = MagicMock()
 
-        mock_classifier.get_ports.return_value = [mock_port]
+        mock_classifier.ports = [mock_port]
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
             output_file = tmp_path / "port.json"
@@ -420,7 +420,7 @@ class TestPortViewAction:
         mock_port = self._make_mock_port()
         mock_classifier = MagicMock()
 
-        mock_classifier.get_ports.return_value = [mock_port]
+        mock_classifier.ports = [mock_port]
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
             args = MagicMock()
@@ -476,7 +476,7 @@ class TestPortListAction:
         port1.name = "inputPort"
         port2 = MagicMock()
         port2.name = "outputPort"
-        mock_classifier.get_ports.return_value = [port1, port2]
+        mock_classifier.ports = [port1, port2]
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
             args = MagicMock()
@@ -496,7 +496,7 @@ class TestPortListAction:
 
         action = PortListAction()
         mock_classifier = MagicMock()
-        mock_classifier.get_ports.return_value = []
+        mock_classifier.ports = []
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
             args = MagicMock()
@@ -520,7 +520,7 @@ class TestPortListAction:
         port1.name = "inputPort"
         port2 = MagicMock()
         port2.name = "outputPort"
-        mock_classifier.get_ports.return_value = [port1, port2]
+        mock_classifier.ports = [port1, port2]
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
             args = MagicMock()
@@ -550,7 +550,7 @@ class TestPortUpdateAction:
         mock_classifier = MagicMock()
         mock_port = MagicMock()
         mock_port.name = "clientPort"
-        mock_classifier.get_ports.return_value = [mock_port]
+        mock_classifier.ports = [mock_port]
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
             args = MagicMock()
@@ -562,7 +562,7 @@ class TestPortUpdateAction:
 
             action.execute(args)
 
-            mock_port.set_is_behavioral.assert_called_once_with(1)
+            assert mock_port.is_behavioral == 1
 
     def test_update_port_by_guid(self) -> None:
         """UTS_PORT_00019: Test updating port via --guid with type validation."""
@@ -582,7 +582,7 @@ class TestPortUpdateAction:
 
             action.execute(args)
 
-            mock_port.set_is_reversed.assert_called_once_with(1)
+            assert mock_port.is_reversed == 1
 
     def test_update_partial_update(self) -> None:
         """UTS_PORT_00020: Test that partial update only modifies specified fields."""
@@ -592,7 +592,8 @@ class TestPortUpdateAction:
         mock_classifier = MagicMock()
         mock_port = MagicMock()
         mock_port.name = "clientPort"
-        mock_classifier.get_ports.return_value = [mock_port]
+        mock_port.is_reversed = 0
+        mock_classifier.ports = [mock_port]
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
             args = MagicMock()
@@ -604,9 +605,9 @@ class TestPortUpdateAction:
 
             action.execute(args)
 
-            mock_port.set_is_behavioral.assert_called_once_with(1)
-            mock_port.set_is_reversed.assert_not_called()
-            mock_port.set_name.assert_not_called()
+            assert mock_port.is_behavioral == 1
+            assert mock_port.is_reversed == 0
+            assert mock_port.name == "clientPort"
 
     def test_update_skips_unknown_fields(self) -> None:
         """UTS_PORT_00021: Test that unknown fields are skipped with warning."""
@@ -616,7 +617,7 @@ class TestPortUpdateAction:
         mock_classifier = MagicMock()
         mock_port = MagicMock()
         mock_port.name = "clientPort"
-        mock_classifier.get_ports.return_value = [mock_port]
+        mock_classifier.ports = [mock_port]
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
             args = MagicMock()
@@ -629,6 +630,6 @@ class TestPortUpdateAction:
             with patch.object(action.logger, "warning") as mock_warning:
                 action.execute(args)
 
-                mock_port.set_is_behavioral.assert_called_once_with(1)
+                assert mock_port.is_behavioral == 1
                 mock_warning.assert_called()
                 assert "unknown_field" in str(mock_warning.call_args)

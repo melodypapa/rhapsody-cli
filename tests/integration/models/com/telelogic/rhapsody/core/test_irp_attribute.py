@@ -39,11 +39,11 @@ class TestRPAttributeIntegration:
         try:
             attr = test_class.add_attribute(attr_name)
             assert isinstance(attr, IRPAttribute)
-            assert attr.get_is_static() is False
-            attr.set_is_static(True)
-            assert attr.get_is_static() is True
-            attr.set_is_static(False)
-            assert attr.get_is_static() is False
+            assert attr.is_static is False
+            attr.is_static = True
+            assert attr.is_static is True
+            attr.is_static = False
+            assert attr.is_static is False
         finally:
             test_class.delete_from_project()
 
@@ -55,11 +55,11 @@ class TestRPAttributeIntegration:
         test_class = pkg.add_class(class_name)
         try:
             attr = test_class.add_attribute(attr_name)
-            assert attr.get_is_constant() in (0, 1)
-            attr.set_is_constant(True)
-            assert attr.get_is_constant() == 1
-            attr.set_is_constant(False)
-            assert attr.get_is_constant() == 0
+            assert attr.is_constant in (0, 1)
+            attr.is_constant = True
+            assert attr.is_constant == 1
+            attr.is_constant = False
+            assert attr.is_constant == 0
         finally:
             test_class.delete_from_project()
 
@@ -71,11 +71,11 @@ class TestRPAttributeIntegration:
         test_class = pkg.add_class(class_name)
         try:
             attr = test_class.add_attribute(attr_name)
-            assert attr.get_is_ordered() in (0, 1)
-            attr.set_is_ordered(True)
-            assert attr.get_is_ordered() == 1
-            attr.set_is_ordered(False)
-            assert attr.get_is_ordered() == 0
+            assert attr.is_ordered in (0, 1)
+            attr.is_ordered = True
+            assert attr.is_ordered == 1
+            attr.is_ordered = False
+            assert attr.is_ordered == 0
         finally:
             test_class.delete_from_project()
 
@@ -87,11 +87,11 @@ class TestRPAttributeIntegration:
         test_class = pkg.add_class(class_name)
         try:
             attr = test_class.add_attribute(attr_name)
-            assert attr.get_is_reference() in (0, 1)
-            attr.set_is_reference(True)
-            assert attr.get_is_reference() == 1
-            attr.set_is_reference(False)
-            assert attr.get_is_reference() == 0
+            assert attr.is_reference in (0, 1)
+            attr.is_reference = True
+            assert attr.is_reference == 1
+            attr.is_reference = False
+            assert attr.is_reference == 0
         finally:
             test_class.delete_from_project()
 
@@ -103,8 +103,8 @@ class TestRPAttributeIntegration:
         test_class = pkg.add_class(class_name)
         try:
             attr = test_class.add_attribute(attr_name)
-            attr.set_multiplicity("0..*")
-            assert attr.get_multiplicity() == "0..*"
+            attr.multiplicity = "0..*"
+            assert attr.multiplicity == "0..*"
         finally:
             test_class.delete_from_project()
 
@@ -116,7 +116,7 @@ class TestRPAttributeIntegration:
         test_class = pkg.add_class(class_name)
         try:
             attr = test_class.add_attribute(attr_name)
-            attr.set_visibility("private")
-            assert attr.get_visibility() == "private"
+            attr.visibility = "private"
+            assert attr.visibility == "private"
         finally:
             test_class.delete_from_project()

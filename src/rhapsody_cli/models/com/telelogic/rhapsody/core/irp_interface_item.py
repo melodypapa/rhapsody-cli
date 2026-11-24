@@ -25,8 +25,8 @@ class IRPInterfaceItem(IRPClassifier):
     # IRPInterfaceItem method parity checklist:
     # [x] add_argument  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] add_argument_before_position  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_arguments  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_signature  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] arguments  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] signature  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_signature_no_arg_names  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_signature_no_arg_types  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] match_on_signature  [x] impl  [x] docstring  [x] unit test  [x] integration test
@@ -74,7 +74,8 @@ class IRPInterfaceItem(IRPClassifier):
 
         return cast(IRPArgument, self.wrap(self.call_com(lambda: self._com.addArgumentBeforePosition(new_val, pos))))
 
-    def get_arguments(self) -> IRPCollection:
+    @property
+    def arguments(self) -> IRPCollection:
         """Returns all the arguments for the operation.
 
         Returns:
@@ -85,7 +86,8 @@ class IRPInterfaceItem(IRPClassifier):
         """
         return IRPCollection(self.get_com_property(self._com, "arguments"))
 
-    def get_signature(self) -> str:
+    @property
+    def signature(self) -> str:
         """Returns the signature of the operation.
 
         Returns:

@@ -5,7 +5,7 @@ import json
 import re
 import sys
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import List, Optional, Set, Tuple
 
 _INTERFACE_PATTERN = re.compile(r"^# Rhapsody API Validation: (IRP[A-Za-z0-9_]+)$", re.MULTILINE)
 _WRAPPER_PATTERN = re.compile(r"^- Target wrapper: `([^`]+)` \(`([^`]+)`\)$", re.MULTILINE)
@@ -175,8 +175,25 @@ def _canonical_import(root: Path, source_path: str) -> Tuple[Path, str]:
     return absolute_path, ".".join(module_parts)
 
 
-def parse_wrapper_bindings(wrapper_source: str) -> List[Tuple[str, str, int]]:
-    """Extract (com_member, expected_shape, call_arity) triples from a synced wrapper body.
+_PROPERTY_DECORATORS = {"property", "cached_property"}
+_PROPERTY_ACCESSOR_DECORATORS = {"getter", "setter"}
+_LEGACY_BINDING_HELPERS = {"_get_method_or_property", "_set_method_or_property"}
+
+
+def _is_python_property_accessor(node: ast.AST) -> bool:
+    """Return True when a function is a ``@property`` getter or setter."""
+    if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        return False
+    for decorator in node.decorator_list:
+        if isinstance(decorator, ast.Name) and decorator.id in _PROPERTY_DECORATORS:
+            return True
+        if isinstance(decorator, ast.Attribute) and decorator.attr in _PROPERTY_ACCESSOR_DECORATORS:
+            return True
+    return False
+
+
+def _collect_bindings(root_node: ast.AST) -> List[Tuple[str, str, int]]:
+    """Extract (com_member, expected_shape, call_arity) triples from one subtree.
 
     Recognised binding forms (per AGENTS.md / SKILL §3):
       * ``self.call_com(lambda: self._com.Name(...))`` -> ("Name", "method", arg_count)
@@ -191,21 +208,25 @@ def parse_wrapper_bindings(wrapper_source: str) -> List[Tuple[str, str, int]]:
     not what determines the COM member; the lambda body / property argument is.
     """
     bindings: List[Tuple[str, str, int]] = []
-    tree = ast.parse(wrapper_source)
-    for node in ast.walk(tree):
-        if not isinstance(node, ast.Call) or not isinstance(node.func, ast.Attribute):
+    for candidate in ast.walk(root_node):
+        if not isinstance(candidate, ast.Call) or not isinstance(candidate.func, ast.Attribute):
             continue
-        attr = node.func.attr
-        if attr == "call_com" and node.args:
-            lam = node.args[0]
+        attr = candidate.func.attr
+        if attr == "call_com" and candidate.args:
+            lam = candidate.args[0]
             if isinstance(lam, ast.Lambda) and isinstance(lam.body, ast.Call) and isinstance(lam.body.func, ast.Attribute):
                 if isinstance(lam.body.func.value, ast.Attribute) and lam.body.func.value.attr == "_com":
                     bindings.append((lam.body.func.attr, "method", len(lam.body.args)))
-        elif attr in ("get_com_property", "set_com_property") and len(node.args) >= 2:
-            arg = node.args[1]
+        elif attr in ("get_com_property", "set_com_property") and len(candidate.args) >= 2:
+            arg = candidate.args[1]
             if isinstance(arg, ast.Constant) and isinstance(arg.value, str):
                 bindings.append((arg.value, "property", 0))
     return bindings
+
+
+def parse_wrapper_bindings(wrapper_source: str) -> List[Tuple[str, str, int]]:
+    """Extract every synced COM binding in a wrapper module."""
+    return _collect_bindings(ast.parse(wrapper_source))
 
 
 def verify_wrapper_bindings(root: Path, interface_name: str, wrapper_source: str) -> List[str]:
@@ -217,11 +238,15 @@ def verify_wrapper_bindings(root: Path, interface_name: str, wrapper_source: str
     matched case-insensitively (COM identifiers are case-insensitive and the
     catalog preserves the type library's PascalCase). A member absent from the
     catalog, or bound with the wrong shape, is a sync defect and fails Step 8.
-    When the authority carries a ``signatures`` section, a method binding whose
-    call arity falls outside the declared parameter band (``required``..``count``)
-    fails Step 8 as well — a correct member name with the wrong argument count
-    still fails at runtime. Members without a committed signature are checked
-    for existence and shape only.
+    The Python-facing shape must follow the catalog too: a property-shaped
+    member is exposed as ``@property`` and a method-shaped member is not.
+    Direct ``self._com.<Name>`` access and the legacy
+    ``_get_method_or_property`` / ``_set_method_or_property`` probes are
+    forbidden. When the authority carries a ``signatures`` section, a method
+    binding whose call arity falls outside the declared parameter band
+    (``required``..``count``) fails Step 8 as well — a correct member name with
+    the wrong argument count still fails at runtime. Members without a
+    committed signature are checked for existence and shape only.
     """
     catalog_path = root / "docs" / "reports" / "pywin32_authority.json"
     if not catalog_path.is_file():
@@ -233,24 +258,58 @@ def verify_wrapper_bindings(root: Path, interface_name: str, wrapper_source: str
     lowered = {str(name).lower(): (name, shape) for name, shape in entries.items()}
     lowered_signatures = {str(name).lower(): sig for name, sig in authority_data.get("signatures", {}).get(interface_name, {}).items()}
     issues: List[str] = []
-    for member, shape, arity in parse_wrapper_bindings(wrapper_source):
+
+    def check_binding(owner: ast.AST, member: str, shape: str, arity: int) -> None:
         found = lowered.get(member.lower())
         if found is None:
             issues.append(f"{interface_name} binding '{member}' is absent from the pywin32 catalog")
-            continue
+            return
         if found[1] != shape:
             issues.append(f"{interface_name} binding '{member}' is {shape}-shaped in the wrapper but the pywin32 catalog declares '{found[0]}' as {found[1]}")
-            continue
+            return
+        if isinstance(owner, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            is_property = _is_python_property_accessor(owner)
+            if shape == "property" and not is_property:
+                issues.append(f"{interface_name} member '{owner.name}' binds property-shaped COM member '{found[0]}' but is not a Python @property (SKILL section 3)")
+            elif shape == "method" and is_property:
+                issues.append(f"{interface_name} member '{owner.name}' is a Python @property but binds method-shaped COM member '{found[0]}' (SKILL section 3)")
         if shape != "method":
-            continue
+            return
         signature = lowered_signatures.get(member.lower())
         count_val = signature.get("count") if isinstance(signature, dict) else None
         if not isinstance(count_val, int):
-            continue
+            return
         required_val = signature.get("required")
         required = int(required_val) if isinstance(required_val, int) else int(count_val)
         if arity > int(count_val) or arity < required:
             issues.append(f"{interface_name} binding '{member}' has call arity {arity} but the pywin32 signature declares {int(count_val)} parameter(s) ({required} required)")
+
+    tree = ast.parse(wrapper_source)
+    for class_node in (node for node in ast.walk(tree) if isinstance(node, ast.ClassDef)):
+        for function in class_node.body:
+            if not isinstance(function, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                continue
+            for member, shape, arity in _collect_bindings(function):
+                check_binding(function, member, shape, arity)
+
+    for candidate in ast.walk(tree):
+        if isinstance(candidate, ast.Call) and isinstance(candidate.func, ast.Attribute) and candidate.func.attr in _LEGACY_BINDING_HELPERS:
+            issues.append(f"{interface_name} uses legacy {candidate.func.attr} at line {candidate.lineno}; bind exactly one pywin32 member (SKILL section 4)")
+
+    call_com_nodes: Set[int] = set()
+    for candidate in ast.walk(tree):
+        if isinstance(candidate, ast.Call) and isinstance(candidate.func, ast.Attribute) and candidate.func.attr == "call_com" and candidate.args:
+            if isinstance(candidate.args[0], ast.Lambda):
+                for inner in ast.walk(candidate.args[0]):
+                    call_com_nodes.add(id(inner))
+    for candidate in ast.walk(tree):
+        if not isinstance(candidate, ast.Attribute) or id(candidate) in call_com_nodes:
+            continue
+        if not isinstance(candidate.value, ast.Attribute) or candidate.value.attr != "_com":
+            continue
+        if not isinstance(candidate.value.value, ast.Name) or candidate.value.value.id != "self":
+            continue
+        issues.append(f"{interface_name} accesses self._com.{candidate.attr} directly at line {candidate.lineno}; use call_com or the property helpers (SKILL section 3)")
     return issues
 
 

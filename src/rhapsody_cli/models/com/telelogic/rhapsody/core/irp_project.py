@@ -52,19 +52,22 @@ class IRPProject(IRPPackage):
     # [ ] find_element_by_file_name  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [x] find_element_by_guid  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] find_elements_with_oslc_link  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] get_active_component  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_active_configuration  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] active_component  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] active_configuration  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] get_active_custom_views_on_browser  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] get_active_custom_views_on_diagram  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_all_stereotypes  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] get_cg_simplified_model_package  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] all_stereotypes  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] cg_simplified_model_package  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [ ] get_code_generated_files  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] get_components  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_default_directory_scheme  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] components  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] default_directory_scheme  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] get_new_collaboration  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [x] get_new_progress_bar  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] get_notify_plugin_on_elements_changed  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] get_profiles  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] profiles  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] nodes  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] packages  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] use_unique_stereotype_and_ref_cache  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
     # [x] get_remote_resource_packages  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] get_requirements_by_id  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] get_roundtrip_shadow_model  [x] impl  [x] docstring  [x] unit test  [ ] integration test
@@ -86,14 +89,13 @@ class IRPProject(IRPPackage):
     # [ ] save  [x] impl  [x] docstring  [ ] unit test  [ ] integration test   (inherited from rp_unit)
     # [x] save_as  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] save_as_prev_version  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] set_active_component  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] set_active_configuration  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] set_default_directory_scheme  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] set_active_component  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] set_active_configuration  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] set_default_directory_scheme (via default_directory_scheme setter)  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] set_global_configuration  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] set_notify_plugin_on_elements_changed  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] set_object_explicit  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] set_object_implicit  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_use_unique_stereotype_and_ref_cache  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] set_wait_dialog_watchdog_value  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] start_transaction_of_no_cg_interest  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [inherited] irp_package / irp_unit / irp_model_element methods (covered by rp_package / rp_unit / rp_model_element checklists)
@@ -157,7 +159,8 @@ class IRPProject(IRPPackage):
 
         return cast(RPComponent, self.wrap(self.call_com(lambda: self._com.findComponent(name))))
 
-    def get_packages(self) -> IRPCollection:
+    @property
+    def packages(self) -> IRPCollection:
         """Returns all top-level packages in the project.
 
         Returns:
@@ -200,7 +203,8 @@ class IRPProject(IRPPackage):
 
         return cast(RPActor, self.wrap(self.call_com(lambda: self._com.addActor(name))))
 
-    def get_components(self) -> IRPCollection:
+    @property
+    def components(self) -> IRPCollection:
         """Returns all components in the project.
 
         Returns:
@@ -270,7 +274,8 @@ class IRPProject(IRPPackage):
 
         return cast(RPNode, self.wrap(self.call_com(lambda: self._com.addNode(name))))
 
-    def get_nodes(self) -> IRPCollection:
+    @property
+    def nodes(self) -> IRPCollection:
         """Returns all nodes in the project.
 
         Returns:
@@ -309,7 +314,8 @@ class IRPProject(IRPPackage):
         self.call_com(lambda: self._com.deleteNode(node._com))
 
     # --- Configuration methods ---
-    def get_active_configuration(self) -> RPConfiguration:
+    @property
+    def active_configuration(self) -> RPConfiguration:
         """Returns the active configuration of the project.
 
         Returns:
@@ -333,7 +339,8 @@ class IRPProject(IRPPackage):
         """
         self.call_com(lambda: self._com.setActiveConfiguration(config._com))
 
-    def get_active_component(self) -> RPComponent:
+    @property
+    def active_component(self) -> RPComponent:
         """Returns the active component of the project.
 
         Returns:
@@ -358,7 +365,8 @@ class IRPProject(IRPPackage):
         self.call_com(lambda: self._com.setActiveComponent(component._com))
 
     # --- Stereotype methods ---
-    def get_all_stereotypes(self) -> IRPCollection:
+    @property
+    def all_stereotypes(self) -> IRPCollection:
         """Returns all stereotypes in the project.
 
         Returns:
@@ -397,7 +405,8 @@ class IRPProject(IRPPackage):
         """
         return cast(IRPModelElement, self.wrap(self.call_com(lambda: self._com.addProfile(name))))
 
-    def get_profiles(self) -> IRPCollection:
+    @property
+    def profiles(self) -> IRPCollection:
         """Returns all profiles in the project.
 
         Returns:
@@ -484,7 +493,8 @@ class IRPProject(IRPPackage):
         """
         self.call_com(lambda: self._com.allowNonUniqueNames(allow))
 
-    def get_cg_simplified_model_package(self) -> IRPPackage:
+    @property
+    def cg_simplified_model_package(self) -> IRPPackage:
         """Returns the code generation simplified model package.
 
         Returns:
@@ -819,7 +829,8 @@ class IRPProject(IRPPackage):
         """
         self.call_com(lambda: self._com.endTransactionOfNoCGInterest())
 
-    def get_default_directory_scheme(self) -> int:
+    @property
+    def default_directory_scheme(self) -> int:
         """Returns the default directory scheme of the project.
 
         Returns:
@@ -829,6 +840,18 @@ class IRPProject(IRPPackage):
             com.telelogic.rhapsody.core.IRPProject::getDefaultDirectoryScheme()
         """
         return int(self.get_com_property(self._com, "defaultDirectoryScheme"))
+
+    @default_directory_scheme.setter
+    def default_directory_scheme(self, scheme: int) -> None:
+        """Sets the default directory scheme of the project.
+
+        Args:
+            scheme: The default directory scheme to set.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPProject::setDefaultDirectoryScheme(int scheme)
+        """
+        self.set_com_property(self._com, "defaultDirectoryScheme", scheme)
 
     def get_new_progress_bar(self) -> RPProgressBar:
         """Returns a new progress bar.
@@ -887,17 +910,6 @@ class IRPProject(IRPPackage):
         """
         self.call_com(lambda: self._com.saveAsPrevVersion(file_path))
 
-    def set_default_directory_scheme(self, scheme: int) -> None:
-        """Sets the default directory scheme of the project.
-
-        Args:
-            scheme: The default directory scheme to set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPProject::setDefaultDirectoryScheme(int scheme)
-        """
-        self.set_com_property(self._com, "defaultDirectoryScheme", scheme)
-
     def set_global_configuration(self, gc_uri: str, name: str) -> int:
         """Set the global configuration used for the project.
 
@@ -946,7 +958,20 @@ class IRPProject(IRPPackage):
         """
         self.call_com(lambda: self._com.setObjectImplicit(obj._com))
 
-    def set_use_unique_stereotype_and_ref_cache(self, enabled: int) -> None:
+    @property
+    def use_unique_stereotype_and_ref_cache(self) -> int:
+        """Returns whether a unique stereotype and reference cache is used.
+
+        Returns:
+            ``1`` if the unique cache is used, ``0`` otherwise.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPProject::setUseUniqueStereotypeAndRefCache(int enabled)
+        """
+        return int(self.get_com_property(self._com, "UseUniqueStereotypeAndRefCache"))
+
+    @use_unique_stereotype_and_ref_cache.setter
+    def use_unique_stereotype_and_ref_cache(self, enabled: int) -> None:
         """Sets whether to use a unique stereotype and reference cache.
 
         Args:

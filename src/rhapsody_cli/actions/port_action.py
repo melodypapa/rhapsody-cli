@@ -65,7 +65,7 @@ class AbstractPortAction(SessionAwareAction, ElementManagementAction):
         Raises:
             CliExecutionError: If port not found.
         """
-        ports = classifier.get_ports()  # type: ignore[attr-defined]
+        ports = classifier.ports  # type: ignore[attr-defined]
         for port in ports:
             if cast(IRPModelElement, port).name == name:
                 return cast(IRPModelElement, port)
@@ -219,9 +219,9 @@ class PortCreateAction(AbstractPortAction):
         SWR_PORT_00012: IsBehavioral and IsReversed Support
         """
         if "isBehavioral" in attrs:
-            port.set_is_behavioral(int(cast(Union[str, int], attrs["isBehavioral"])))  # type: ignore[attr-defined]
+            port.is_behavioral = int(cast(Union[str, int], attrs["isBehavioral"]))  # type: ignore[attr-defined]
         if "isReversed" in attrs:
-            port.set_is_reversed(int(cast(Union[str, int], attrs["isReversed"])))  # type: ignore[attr-defined]
+            port.is_reversed = int(cast(Union[str, int], attrs["isReversed"]))  # type: ignore[attr-defined]
 
     def _set_port_contract(self, classifier: IRPModelElement, port: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Resolve and set the portContract.
@@ -234,7 +234,7 @@ class PortCreateAction(AbstractPortAction):
             target = owner.find_nested_classifier_recursive(contract_name)  # type: ignore[attr-defined]
             if target is None:
                 raise CliExecutionError(f"PortContract '{contract_name}' not found")
-            port.set_port_contract(target)  # type: ignore[attr-defined]
+            port.port_contract = target  # type: ignore[attr-defined]
 
 
 class PortDeleteAction(AbstractPortAction):
@@ -323,7 +323,7 @@ class PortListAction(AbstractPortAction):
 
     def _collect_port_names(self, classifier: IRPModelElement) -> List[str]:
         """Collect names of ports on a classifier."""
-        ports = classifier.get_ports()  # type: ignore[attr-defined]
+        ports = classifier.ports  # type: ignore[attr-defined]
         return [cast(IRPModelElement, port).name for port in ports]
 
     def _format_output(self, port_names: List[str], format_type: str) -> str:
@@ -426,14 +426,14 @@ class PortViewAction(AbstractPortAction):
 
         Normalizes boolean flags to int for clean JSON round-trip.
         """
-        contract = port.get_port_contract()  # type: ignore[attr-defined]
+        contract = port.port_contract  # type: ignore[attr-defined]
         contract_name = cast(IRPModelElement, contract).name if contract is not None else ""
         return {
             "name": port.name,
             "guid": port.guid,
             "description": port.description,
-            "isBehavioral": int(port.get_is_behavioral()),  # type: ignore[attr-defined]
-            "isReversed": int(port.get_is_reversed()),  # type: ignore[attr-defined]
+            "isBehavioral": int(port.is_behavioral),  # type: ignore[attr-defined]
+            "isReversed": int(port.is_reversed),  # type: ignore[attr-defined]
             "portContract": contract_name,
             "metaClass": port.meta_class,
             "fullPath": port.get_full_path_name(),
@@ -561,13 +561,13 @@ class PortUpdateAction(AbstractPortAction):
         if "description" in attrs:
             port.description = cast(str, attrs["description"])
         if "isBehavioral" in attrs:
-            port.set_is_behavioral(int(cast(Union[str, int], attrs["isBehavioral"])))  # type: ignore[attr-defined]
+            port.is_behavioral = int(cast(Union[str, int], attrs["isBehavioral"]))  # type: ignore[attr-defined]
         if "isReversed" in attrs:
-            port.set_is_reversed(int(cast(Union[str, int], attrs["isReversed"])))  # type: ignore[attr-defined]
+            port.is_reversed = int(cast(Union[str, int], attrs["isReversed"]))  # type: ignore[attr-defined]
         if "portContract" in attrs:
             contract_name = cast(str, attrs["portContract"])
             owner = classifier.owner
             target = owner.find_nested_classifier_recursive(contract_name)  # type: ignore[attr-defined]
             if target is None:
                 raise CliExecutionError(f"PortContract '{contract_name}' not found")
-            port.set_port_contract(target)  # type: ignore[attr-defined]
+            port.port_contract = target  # type: ignore[attr-defined]

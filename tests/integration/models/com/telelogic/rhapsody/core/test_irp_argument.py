@@ -32,10 +32,10 @@ class TestIRPArgumentIntegration:
             op = test_class.add_operation(self._unique("dirOp"))
             argument = op.add_argument(self._unique("arg"))
             assert isinstance(argument, IRPArgument)
-            original = argument.get_argument_direction()
+            original = argument.argument_direction
             assert isinstance(original, str)
             with patch.object(IRPModelElement, "set_com_property") as setter:
-                assert argument.set_argument_direction("out") is None  # type: ignore[func-returns-value]
+                argument.argument_direction = "out"
                 setter.assert_called_once_with(argument._com, "argumentDirection", "out")
         finally:
             test_class.delete_from_project()

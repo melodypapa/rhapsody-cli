@@ -178,7 +178,7 @@ class TestFindOrCreateType:
         result = helper.find_or_create_type(parent, "Color", kind="Enumeration")
 
         parent.add_new_aggr.assert_called_once_with("Type", "Color")
-        new_type.set_kind.assert_called_once_with("Enumeration")
+        assert new_type.kind == "Enumeration"
         assert result.name == "Color"
 
     def test_creates_type_without_kind_skips_set_kind(self) -> None:
@@ -186,12 +186,13 @@ class TestFindOrCreateType:
         parent.get_nested_elements.return_value = []
         new_type = MagicMock()
         new_type.name = "Plain"
+        new_type.kind = "unchanged"
         parent.add_new_aggr.return_value = new_type
         helper = _make_helper()
 
         helper.find_or_create_type(parent, "Plain")
 
-        new_type.set_kind.assert_not_called()
+        assert new_type.kind == "unchanged"
 
 
 class TestFindOrCreateObject:
@@ -401,7 +402,7 @@ class TestSetTypeKind:
 
         helper._set_type_kind(type_element, "Enumeration")
 
-        type_element.set_kind.assert_called_once_with("Enumeration")
+        assert type_element.kind == "Enumeration"
 
 
 class TestCollectChildren:

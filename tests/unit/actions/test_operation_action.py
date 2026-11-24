@@ -177,9 +177,9 @@ class TestOperationCreateAction:
 
             action.execute(args)
 
-            mock_op.set_is_abstract.assert_called_once_with(1)
-            mock_op.set_is_static.assert_called_once_with(0)
-            mock_op.set_is_virtual.assert_called_once_with(1)
+            assert mock_op.is_abstract == 1
+            assert mock_op.is_static == 0
+            assert mock_op.is_virtual == 1
 
     def test_create_with_returns_type(self) -> None:
         """UTS_OP_00004: Test returns type resolved via findNestedClassifierRecursive."""
@@ -200,7 +200,7 @@ class TestOperationCreateAction:
             action.execute(args)
 
             mock_owner.find_nested_classifier_recursive.assert_called_once_with("Temperature")
-            mock_op.set_returns.assert_called_once_with(mock_type)
+            assert mock_op.returns is mock_type
 
     def test_create_skips_unknown_attributes(self) -> None:
         """UTS_OP_00005: Test unknown attributes skipped with warning."""
@@ -336,22 +336,22 @@ class TestOperationViewAction:
         mock_op.name = "readValue"
         mock_op.guid = "12345678-1234-1234-1234-123456789abc"
         mock_op.description = "Reads the value"
-        mock_op.get_body.return_value = "return threshold;"
-        mock_op.get_is_abstract.return_value = True
-        mock_op.get_is_static.return_value = 0
-        mock_op.get_is_virtual.return_value = 1
-        mock_op.get_visibility.return_value = "public"
+        mock_op.body = "return threshold;"
+        mock_op.is_abstract = True
+        mock_op.is_static = 0
+        mock_op.is_virtual = 1
+        mock_op.visibility = "public"
         mock_op.get_full_path_name.return_value = "Sensors/TemperatureSensor/readValue"
 
         mock_returns = MagicMock()
         mock_returns.name = "Temperature"
-        mock_op.get_returns.return_value = mock_returns
+        mock_op.returns = mock_returns
 
         arg1 = MagicMock()
         arg1.name = "x"
         arg2 = MagicMock()
         arg2.name = "y"
-        mock_op.get_arguments.return_value = [arg1, arg2]
+        mock_op.arguments = [arg1, arg2]
 
         return mock_op
 
@@ -473,7 +473,7 @@ class TestOperationListAction:
         op1.name = "readValue"
         op2 = MagicMock()
         op2.name = "setValue"
-        mock_classifier.get_operations.return_value = [op1, op2]
+        mock_classifier.operations = [op1, op2]
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
             args = MagicMock()
@@ -493,7 +493,7 @@ class TestOperationListAction:
 
         action = OperationListAction()
         mock_classifier = MagicMock()
-        mock_classifier.get_operations.return_value = []
+        mock_classifier.operations = []
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
             args = MagicMock()
@@ -517,7 +517,7 @@ class TestOperationListAction:
         op1.name = "readValue"
         op2 = MagicMock()
         op2.name = "setValue"
-        mock_classifier.get_operations.return_value = [op1, op2]
+        mock_classifier.operations = [op1, op2]
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
             args = MagicMock()
@@ -558,7 +558,7 @@ class TestOperationUpdateAction:
 
                 action.execute(args)
 
-                mock_op.set_body.assert_called_once_with("return 42;")
+                assert mock_op.body == "return 42;"
 
     def test_update_operation_by_guid(self) -> None:
         """UTS_OP_00019: Test updating operation via --guid with type validation."""
@@ -578,7 +578,7 @@ class TestOperationUpdateAction:
 
             action.execute(args)
 
-            mock_op.set_visibility.assert_called_once_with("private")
+            assert mock_op.visibility == "private"
 
     def test_update_partial_update(self) -> None:
         """UTS_OP_00020: Test that partial update only modifies specified fields."""
@@ -599,9 +599,9 @@ class TestOperationUpdateAction:
 
                 action.execute(args)
 
-                mock_op.set_is_abstract.assert_called_once_with(1)
-                mock_op.set_body.assert_not_called()
-                mock_op.set_name.assert_not_called()
+                assert mock_op.is_abstract == 1
+                assert "body" not in mock_op.__dict__
+                assert "name" not in mock_op.__dict__
 
     def test_update_skips_unknown_fields(self) -> None:
         """UTS_OP_00021: Test that unknown fields are skipped with warning."""
@@ -623,6 +623,6 @@ class TestOperationUpdateAction:
                 with patch.object(action.logger, "warning") as mock_warning:
                     action.execute(args)
 
-                    mock_op.set_body.assert_called_once_with("new body")
+                    assert mock_op.body == "new body"
                     mock_warning.assert_called()
                     assert "unknown_field" in str(mock_warning.call_args)

@@ -104,7 +104,7 @@ Access model elements:
 .. code-block:: python
 
    # Get all packages
-   packages = project.get_packages()
+   packages = project.packages
 
    # Find a specific package
    package = project.find_nested_package_by_name("MyPackage")

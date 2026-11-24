@@ -165,7 +165,7 @@ class TestAttributeCreateAction:
 
             action.execute(args)
 
-            mock_attr.set_is_static.assert_called_once_with(1)
+            assert mock_attr.is_static is True
 
     def test_create_with_type_resolution(self) -> None:
         """UTS_ATTR_00004: Test type resolved via findNestedClassifierRecursive."""
@@ -323,9 +323,9 @@ class TestAttributeViewAction:
         mock_attr.guid = "12345678-1234-1234-1234-123456789abc"
         mock_attr.description = "Temperature threshold"
         mock_attr.get_default_value.return_value = "25.0"
-        mock_attr.get_multiplicity.return_value = "1"
-        mock_attr.get_is_static.return_value = True
-        mock_attr.get_visibility.return_value = "private"
+        mock_attr.multiplicity = "1"
+        mock_attr.is_static = True
+        mock_attr.visibility = "private"
         mock_attr.get_declaration.return_value = "float threshold = 25.0;"
         mock_attr.get_full_path_name.return_value = "Sensors/TemperatureSensor/threshold"
 
@@ -454,7 +454,7 @@ class TestAttributeListAction:
         attr1.name = "threshold"
         attr2 = MagicMock()
         attr2.name = "sampleRate"
-        mock_classifier.get_attributes.return_value = [attr1, attr2]
+        mock_classifier.attributes = [attr1, attr2]
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
             args = MagicMock()
@@ -474,7 +474,7 @@ class TestAttributeListAction:
 
         action = AttributeListAction()
         mock_classifier = MagicMock()
-        mock_classifier.get_attributes.return_value = []
+        mock_classifier.attributes = []
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
             args = MagicMock()
@@ -498,7 +498,7 @@ class TestAttributeListAction:
         attr1.name = "threshold"
         attr2 = MagicMock()
         attr2.name = "sampleRate"
-        mock_classifier.get_attributes.return_value = [attr1, attr2]
+        mock_classifier.attributes = [attr1, attr2]
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
             args = MagicMock()
@@ -559,7 +559,7 @@ class TestAttributeUpdateAction:
 
             action.execute(args)
 
-            mock_attr.set_visibility.assert_called_once_with("public")
+            assert mock_attr.visibility == "public"
 
     def test_update_partial_update(self) -> None:
         """UTS_ATTR_00020: Test that partial update only modifies specified fields."""
@@ -580,7 +580,7 @@ class TestAttributeUpdateAction:
 
                 action.execute(args)
 
-                mock_attr.set_is_static.assert_called_once_with(1)
+                assert mock_attr.is_static is True
                 mock_attr.set_default_value.assert_not_called()
                 mock_attr.set_name.assert_not_called()
 

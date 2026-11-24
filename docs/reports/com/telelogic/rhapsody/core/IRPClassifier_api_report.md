@@ -33,6 +33,7 @@
 
 | Python model wrapper | Java API | pywin32 | Status | Recommended change |
 | --- | --- | --- | --- | --- |
+| activity_diagram (property) -> activityDiagram | getActivityDiagram (method) | activityDiagram (property) | MATCH | — |
 | add_activity_diagram() -> addActivityDiagram | addActivityDiagram (method) | addActivityDiagram (method) | MATCH | — |
 | add_attribute() -> addAttribute | addAttribute (method) | addAttribute (method) | MATCH | — |
 | add_flow_items() -> addFlowItems | addFlowItems (method) | addFlowItems (method) | MATCH | — |
@@ -44,12 +45,16 @@
 | add_statechart() -> addStatechart | addStatechart (method) | addStatechart (method) | MATCH | — |
 | add_unidirectional_relation() -> addUnidirectionalRelation | addUnidirectionalRelation (method) | addUnidirectionalRelation (method) | MATCH | — |
 | add_unidirectional_relation_to() -> addUnidirectionalRelationTo | addUnidirectionalRelationTo (method) | addUnidirectionalRelationTo (method) | MATCH | — |
+| attributes (property) -> attributes | getAttributes (method) | attributes (property) | MATCH | — |
+| base_classifiers (property) -> baseClassifiers | getBaseClassifiers (method) | baseClassifiers (property) | MATCH | — |
+| behavioral_diagrams (property) -> behavioralDiagrams | getBehavioralDiagrams (method) | behavioralDiagrams (property) | MATCH | — |
 | delete_attribute() -> deleteAttribute | deleteAttribute (method) | deleteAttribute (method) | MATCH | — |
 | delete_flow_items() -> deleteFlowItems | deleteFlowItems (method) | deleteFlowItems (method) | MATCH | — |
 | delete_flows() -> deleteFlows | deleteFlows (method) | deleteFlows (method) | MATCH | — |
 | delete_generalization() -> deleteGeneralization | deleteGeneralization (method) | deleteGeneralization (method) | MATCH | — |
 | delete_operation() -> deleteOperation | deleteOperation (method) | deleteOperation (method) | MATCH | — |
 | delete_relation() -> deleteRelation | deleteRelation (method) | deleteRelation (method) | MATCH | — |
+| derived_classifiers (property) -> derivedClassifiers | getDerivedClassifiers (method) | derivedClassifiers (property) | MATCH | — |
 | find_attribute() -> findAttribute | findAttribute (method) | findAttribute (method) | MATCH | — |
 | find_base_classifier() -> findBaseClassifier | findBaseClassifier (method) | findBaseClassifier (method) | MATCH | — |
 | find_derived_classifier() -> findDerivedClassifier | findDerivedClassifier (method) | findDerivedClassifier (method) | MATCH | — |
@@ -59,26 +64,21 @@
 | find_nested_classifier_recursive() -> findNestedClassifierRecursive | findNestedClassifierRecursive (method) | findNestedClassifierRecursive (method) | MATCH | — |
 | find_relation() -> findRelation | findRelation (method) | findRelation (method) | MATCH | — |
 | find_trigger() -> findTrigger | findTrigger (method) | findTrigger (method) | MATCH | — |
-| get_activity_diagram() -> activityDiagram | getActivityDiagram (method) | activityDiagram (property) | MATCH | — |
-| get_attributes() -> attributes | getAttributes (method) | attributes (property) | MATCH | — |
+| flow_items (property) -> flowItems | getFlowItems (method) | flowItems (property) | MATCH | — |
+| flows (property) -> flows | getFlows (method) | flows (property) | MATCH | — |
+| generalizations (property) -> generalizations | getGeneralizations (method) | generalizations (property) | MATCH | — |
 | get_attributes_including_bases() -> getAttributesIncludingBases | getAttributesIncludingBases (method) | getAttributesIncludingBases (method) | MATCH | — |
-| get_base_classifiers() -> baseClassifiers | getBaseClassifiers (method) | baseClassifiers (property) | MATCH | — |
-| get_behavioral_diagrams() -> behavioralDiagrams | getBehavioralDiagrams (method) | behavioralDiagrams (property) | MATCH | — |
-| get_derived_classifiers() -> derivedClassifiers | getDerivedClassifiers (method) | derivedClassifiers (property) | MATCH | — |
-| get_flow_items() -> flowItems | getFlowItems (method) | flowItems (property) | MATCH | — |
-| get_flows() -> flows | getFlows (method) | flows (property) | MATCH | — |
-| get_generalizations() -> generalizations | getGeneralizations (method) | generalizations (property) | MATCH | — |
-| get_interface_items() -> interfaceItems | getInterfaceItems (method) | interfaceItems (property) | MATCH | — |
 | get_interface_items_including_bases() -> getInterfaceItemsIncludingBases | getInterfaceItemsIncludingBases (method) | getInterfaceItemsIncludingBases (method) | MATCH | — |
-| get_links() -> links | getLinks (method) | links (property) | MATCH | — |
-| get_nested_classifiers() -> nestedClassifiers | getNestedClassifiers (method) | nestedClassifiers (property) | MATCH | — |
-| get_operations() -> operations | getOperations (method) | operations (property) | MATCH | — |
-| get_ports() -> ports | getPorts (method) | ports (property) | MATCH | — |
-| get_relations() -> relations | getRelations (method) | relations (property) | MATCH | — |
 | get_relations_including_bases() -> getRelationsIncludingBases | getRelationsIncludingBases (method) | getRelationsIncludingBases (method) | MATCH | — |
-| get_sequence_diagrams() -> sequenceDiagrams | getSequenceDiagrams (method) | sequenceDiagrams (property) | MATCH | — |
-| get_source_artifacts() -> sourceArtifacts | getSourceArtifacts (method) | sourceArtifacts (property) | MATCH | — |
-| get_statechart() -> statechart | getStatechart (method) | statechart (property) | MATCH | — |
+| interface_items (property) -> interfaceItems | getInterfaceItems (method) | interfaceItems (property) | MATCH | — |
+| links (property) -> links | getLinks (method) | links (property) | MATCH | — |
+| nested_classifiers (property) -> nestedClassifiers | getNestedClassifiers (method) | nestedClassifiers (property) | MATCH | — |
+| operations (property) -> operations | getOperations (method) | operations (property) | MATCH | — |
+| ports (property) -> ports | getPorts (method) | ports (property) | MATCH | — |
+| relations (property) -> relations | getRelations (method) | relations (property) | MATCH | — |
+| sequence_diagrams (property) -> sequenceDiagrams | getSequenceDiagrams (method) | sequenceDiagrams (property) | MATCH | — |
+| source_artifacts (property) -> sourceArtifacts | getSourceArtifacts (method) | sourceArtifacts (property) | MATCH | — |
+| statechart (property) -> statechart | getStatechart (method) | statechart (property) | MATCH | — |
 
 </details>
 

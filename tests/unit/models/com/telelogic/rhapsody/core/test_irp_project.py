@@ -60,14 +60,14 @@ def test_project_find_component_wraps_result() -> None:
     assert result.name == "Comp1"
 
 
-def test_project_get_packages_returns_collection() -> None:
+def test_project_packages_returns_collection() -> None:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Project")
     fake.packages = make_fake_collection([make_fake_element("Package", properties={"name": "P1"})])
     project = IRPProject(fake)
 
-    packages = project.get_packages()
+    packages = project.packages
 
     assert isinstance(packages, IRPCollection)
     assert len(packages) == 1
@@ -107,15 +107,15 @@ def test_project_add_actor_returns_wrapped_element() -> None:
     assert result.name == "Actor1"
 
 
-def test_project_get_components_returns_collection() -> None:
+def test_project_components_returns_collection() -> None:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Project")
     comp1 = make_fake_element("Component", properties={"name": "Comp1"})
-    fake.getComponents.return_value = make_fake_collection([comp1])
+    fake.components = make_fake_collection([comp1])
     project = IRPProject(fake)
 
-    result = project.get_components()
+    result = project.components
 
     assert isinstance(result, IRPCollection)
 
@@ -169,15 +169,15 @@ def test_project_add_node_delegates_to_com() -> None:
     assert result.name == "Node1"
 
 
-def test_project_get_nodes_returns_collection() -> None:
+def test_project_nodes_returns_collection() -> None:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Project")
     node = make_fake_element("Node", properties={"name": "Node1"})
-    fake.getNodes.return_value = make_fake_collection([node])
+    fake.nodes = make_fake_collection([node])
     project = IRPProject(fake)
 
-    result = project.get_nodes()
+    result = project.nodes
 
     assert isinstance(result, IRPCollection)
 
@@ -194,15 +194,15 @@ def test_project_find_node_delegates_to_com() -> None:
     assert result.name == "Node1"
 
 
-def test_project_get_all_stereotypes_returns_collection() -> None:
+def test_project_all_stereotypes_returns_collection() -> None:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
     fake = make_fake_element("Project")
     st = make_fake_element("Stereotype", properties={"name": "MyStereotype"})
-    fake.getAllStereotypes.return_value = make_fake_collection([st])
+    fake.allStereotypes = make_fake_collection([st])
     project = IRPProject(fake)
 
-    result = project.get_all_stereotypes()
+    result = project.all_stereotypes
 
     assert isinstance(result, IRPCollection)
 
@@ -524,11 +524,11 @@ def test_project_end_transaction_of_no_cg_interest_delegates_to_com() -> None:
     fake.endTransactionOfNoCGInterest.assert_called_once_with()
 
 
-def test_project_get_default_directory_scheme_returns_int() -> None:
-    fake = make_fake_element("Project", getDefaultDirectoryScheme=1)
+def test_project_default_directory_scheme_returns_int() -> None:
+    fake = make_fake_element("Project", properties={"defaultDirectoryScheme": 1})
     project = IRPProject(fake)
 
-    result = project.get_default_directory_scheme()
+    result = project.default_directory_scheme
     assert result == 1
 
 
@@ -584,11 +584,11 @@ def test_project_save_as_prev_version_delegates_to_com() -> None:
     fake.saveAsPrevVersion.assert_called_once_with("C:/old.rpy")
 
 
-def test_project_set_default_directory_scheme_delegates_to_com() -> None:
+def test_project_default_directory_scheme_writes_com_property() -> None:
     fake = make_fake_element("Project")
     project = IRPProject(fake)
 
-    project.set_default_directory_scheme(2)
+    project.default_directory_scheme = 2
 
     assert fake.defaultDirectoryScheme == 2
 
@@ -636,11 +636,11 @@ def test_project_set_object_implicit_delegates_to_com() -> None:
     fake.setObjectImplicit.assert_called_once_with(obj_fake)
 
 
-def test_project_set_use_unique_stereotype_and_ref_cache_delegates_to_com() -> None:
+def test_project_use_unique_stereotype_and_ref_cache_writes_com_property() -> None:
     fake = make_fake_element("Project")
     project = IRPProject(fake)
 
-    project.set_use_unique_stereotype_and_ref_cache(1)
+    project.use_unique_stereotype_and_ref_cache = 1
 
     assert fake.UseUniqueStereotypeAndRefCache == 1
 
@@ -689,9 +689,9 @@ def test_generated_find_component() -> None:
     assert result is not None
 
 
-def test_generated_get_packages() -> None:
+def test_generated_packages() -> None:
     fake = make_fake_element("Project", properties={"packages": make_fake_collection([])})
-    result = IRPProject(fake).get_packages()
+    result = IRPProject(fake).packages
     assert result is not None
 
 
@@ -709,9 +709,9 @@ def test_generated_add_actor() -> None:
     assert result is not None
 
 
-def test_generated_get_components() -> None:
+def test_generated_components() -> None:
     fake = make_fake_element("Project", properties={"components": make_fake_collection([])})
-    result = IRPProject(fake).get_components()
+    result = IRPProject(fake).components
     assert result is not None
 
 
@@ -742,9 +742,9 @@ def test_generated_add_node() -> None:
     assert result is not None
 
 
-def test_generated_get_nodes() -> None:
+def test_generated_nodes() -> None:
     fake = make_fake_element("Project", properties={"nodes": make_fake_collection([])})
-    result = IRPProject(fake).get_nodes()
+    result = IRPProject(fake).nodes
     assert result is not None
 
 
@@ -761,9 +761,9 @@ def test_generated_delete_node() -> None:
     IRPProject(fake).delete_node(make_fake_element("Class", properties={"name": "x"}))
 
 
-def test_generated_get_active_configuration() -> None:
+def test_generated_active_configuration() -> None:
     fake = make_fake_element("Project", properties={"activeConfiguration": make_fake_collection([])})
-    result = IRPProject(fake).get_active_configuration()
+    result = IRPProject(fake).active_configuration
     assert result is not None
 
 
@@ -773,9 +773,9 @@ def test_generated_set_active_configuration() -> None:
     IRPProject(fake).set_active_configuration(make_fake_element("Class", properties={"name": "x"}))
 
 
-def test_generated_get_active_component() -> None:
+def test_generated_active_component() -> None:
     fake = make_fake_element("Project", properties={"activeComponent": make_fake_collection([])})
-    result = IRPProject(fake).get_active_component()
+    result = IRPProject(fake).active_component
     assert result is not None
 
 
@@ -785,9 +785,9 @@ def test_generated_set_active_component() -> None:
     IRPProject(fake).set_active_component(make_fake_element("Class", properties={"name": "x"}))
 
 
-def test_generated_get_all_stereotypes() -> None:
+def test_generated_all_stereotypes() -> None:
     fake = make_fake_element("Project", properties={"allStereotypes": make_fake_collection([])})
-    result = IRPProject(fake).get_all_stereotypes()
+    result = IRPProject(fake).all_stereotypes
     assert result is not None
 
 
@@ -805,9 +805,9 @@ def test_generated_add_profile() -> None:
     assert result is not None
 
 
-def test_generated_get_profiles() -> None:
+def test_generated_profiles() -> None:
     fake = make_fake_element("Project", properties={"profiles": make_fake_collection([])})
-    result = IRPProject(fake).get_profiles()
+    result = IRPProject(fake).profiles
     assert result is not None
 
 
@@ -850,9 +850,9 @@ def test_generated_allow_non_unique_names() -> None:
     IRPProject(fake).allow_non_unique_names(1)
 
 
-def test_generated_get_cg_simplified_model_package() -> None:
+def test_generated_cg_simplified_model_package() -> None:
     fake = make_fake_element("Project", properties={"cgSimplifiedModelPackage": make_fake_collection([])})
-    result = IRPProject(fake).get_cg_simplified_model_package()
+    result = IRPProject(fake).cg_simplified_model_package
     assert result is not None
 
 
@@ -1051,9 +1051,9 @@ def test_generated_end_transaction_of_no_cg_interest() -> None:
     IRPProject(fake).end_transaction_of_no_cg_interest()
 
 
-def test_generated_get_default_directory_scheme() -> None:
+def test_generated_default_directory_scheme() -> None:
     fake = make_fake_element("Project", properties={"defaultDirectoryScheme": make_fake_collection([])})
-    result = IRPProject(fake).get_default_directory_scheme()
+    result = IRPProject(fake).default_directory_scheme
     assert result is not None
 
 
@@ -1090,9 +1090,9 @@ def test_generated_save_as_prev_version() -> None:
     IRPProject(fake).save_as_prev_version("x")
 
 
-def test_generated_set_default_directory_scheme() -> None:
+def test_generated_default_directory_scheme_write() -> None:
     fake = make_fake_element("Project")
-    IRPProject(fake).set_default_directory_scheme(1)
+    IRPProject(fake).default_directory_scheme = 1
 
 
 def test_generated_set_global_configuration_raises_not_implemented() -> None:
@@ -1122,9 +1122,9 @@ def test_generated_set_object_implicit() -> None:
     IRPProject(fake).set_object_implicit(make_fake_element("Class", properties={"name": "x"}))
 
 
-def test_generated_set_use_unique_stereotype_and_ref_cache() -> None:
+def test_generated_use_unique_stereotype_and_ref_cache() -> None:
     fake = make_fake_element("Project")
-    IRPProject(fake).set_use_unique_stereotype_and_ref_cache(1)
+    IRPProject(fake).use_unique_stereotype_and_ref_cache = 1
 
 
 def test_generated_set_wait_dialog_watchdog_value() -> None:

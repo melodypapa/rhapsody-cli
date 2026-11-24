@@ -17,6 +17,4 @@ API reference
 
 Wraps ``IRPArgument``: an argument/parameter of an operation.
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument.IRPArgument.get_argument_direction
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument.IRPArgument.set_argument_direction
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument.IRPArgument.argument_direction
