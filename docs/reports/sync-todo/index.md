@@ -157,16 +157,12 @@ wrapper-signature fix before its getter/member row can close.
 
 | Interface | Member(s) | Blocker |
 | --- | --- | --- |
-| IRPProject | `save_as`, `save_as_prev_version` | Writes/switches the session-shared project file; `saveAsPrevVersion` wrapper arity 1 vs COM 2. |
+| IRPProject | `save_as`, `save_as_prev_version` | Writes/switches the session-shared project file; cannot be exercised safely in the shared live project. |
 | IRPProject | `find_element_by_binary_id` | COM expects `byte[]`; wrapper declares `str`. |
-| IRPProject | `find_element_by_file_name`, `get_requirements_by_id` | Wrapper arity 1 vs COM 2. |
-| IRPProject | `locate_in_ide`, `apply_roundtrip_diff_merge` | Wrapper arity 0 vs COM 3. |
-| IRPProject | `apply_browser_custom_views_on_diagrams`, `get_active_custom_views_on_diagram`, `close_csv_file`, `reload_csv_file`, `get_roundtrip_shadow_model`, `clean_unresolved_elements` | Wrapper arity 0 vs COM 1. |
-| IRPProject | `find_elements_with_oslc_link` | Wrapper arity 1 vs COM 2. |
-| IRPProject | `import_package_from_rose`, `import_project_from_rose` | External `.rpy` fixture plus wrapper arity mismatch. |
+| IRPProject | `find_element_by_file_name`, `locate_in_ide`, `apply_roundtrip_diff_merge`, `get_roundtrip_shadow_model`, `clean_unresolved_elements` | Binding now matches COM, but no safe live fixture (known file name, UI focus, shadow model, or destructive cleanup). |
+| IRPProject | `close_csv_file`, `reload_csv_file`, `find_elements_with_oslc_link`, `add_spell_checker_result`, `get_requirements_by_id`, `get_new_progress_bar` | Binding now matches COM; still needs a CSV/OSLC/requirement/progress fixture or a meaningful assertion for a void result. |
+| IRPProject | `import_package_from_rose`, `import_project_from_rose` | External Rose fixture required; JavaDoc marks both unsupported since Rhapsody 8.1.4. |
 | IRPProject | `check_events_base_ids_solve_collisions` | JavaDoc returns void; wrapper wraps it in `int()`. |
-| IRPProject | `add_spell_checker_result` | Wrapper arity 2 vs COM 1. |
-| IRPProject | `get_new_progress_bar` | Wrapper arity 0 vs COM 2. |
 | IRPProject | `default_directory_scheme` | JavaDoc/COM is `String`; wrapper reads/writes `int`. |
 | IRPPackage | `get_remote_requirements_populate_mode` | Requires a Design Manager/remote requirements server. |
 | IRPPackage | `get_instance_specifications`, `get_source_artifacts`, `get_user_defined_stereotypes`, `get_nested_components` | No live create/relate API; `add_instance_specification` is a pywin32-absent stub and packages have no `add_component`. |
