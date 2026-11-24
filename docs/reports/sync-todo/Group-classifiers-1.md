@@ -78,14 +78,14 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded. Evidence: report regenerated, `verify_sync.py` exit 0, skill harness 49 passed, full unit 2158 passed, ruff/black clean, integration collection 472. Blocker: Windows live integration run and the three empty-state getter fixtures remain open per the machine-split decision.
 - [ ] irp_association_class_remediation - IRPAssociationClass
   - Baseline: end1, end2, and is_class are property-shaped; integration test asserts AttributeError on a regular association; test docstring contains stale xfail text.
-  - [ ] Section 1 member checklist and getter matrix published.
-  - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Section 3 establish whether a real AssociationClass can be created through documented live APIs.
-  - [ ] Section 4 fake-COM tests first; full unit suite green; irp_association_class.py at 100% statements/branches.
-  - [ ] Section 5 assert both ends and class flag on a real AssociationClass, or leave a user-approved blocker open; remove stale xfail claim.
-  - [ ] Section 6 irp_association_class.md checked/updated.
-  - [ ] Section 7 irp_association_class.rst checked/updated for every public member.
-  - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded.
+  - [x] Section 1 member checklist and getter matrix published. Evidence: 3 owned members (`end1`, `end2`, `is_class` getter/setter) rendered in the 2026-11-24 sync report; getter matrix rows name the two real relation ends from `add_relation_to` / `get_inverse`, the `add_association` fixture, identity assertions, mirrored test path, and package cleanup.
+  - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2164 passed, ruff/black clean.
+  - [x] Section 3 establish whether a real AssociationClass can be created through documented live APIs. Evidence: `validate_interface.py IRPAssociationClass --source authority` — 3 MATCH, 0 actionable, 0 deviations; `IRPModelElement.add_association(end1, end2, name)` is the documented fixture used by the mirrored integration test.
+  - [x] Section 4 fake-COM tests first; full unit suite green; irp_association_class.py at 100% statements/branches. Evidence: focused unit 6 passed, 20 statements / 0 branches, 100.00%; full unit 2164 passed.
+  - [ ] Section 5 assert both ends and class flag on a real AssociationClass, or leave a user-approved blocker open; remove stale xfail claim. Evidence: integration test builds a real association class, asserts `end1`/`end2` are the two distinct relation ends and `is_class` round-trips; no exception assertion or xfail text remains. Blocker: no Rhapsody on macOS — 472 integration tests collect only; live assertions unverified.
+  - [x] Section 6 irp_association_class.md checked/updated. Evidence: per-class requirement entry documents the three property-shaped owned members and the `add_association` fixture; Last Changed 2026-11-24.
+  - [x] Section 7 irp_association_class.rst checked/updated for every public member. Evidence: anchor + API reference with `end1`, `end2`, `is_class`; `verify_sync.py IRPAssociationClass` exits 0.
+  - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded. Evidence: report regenerated (0 actionable), verify_sync exit 0, skill harness 49 passed, full unit 2164, ruff/black clean, integration collection 472. Blocker: Windows live integration closeout per the machine-split decision.
 - [ ] irp_operation_remediation - IRPOperation
   - Baseline: 15 property-shaped members; integration test asserts AttributeError for get_flowchart.
   - [x] Section 1 member checklist and getter matrix published. Evidence: 21-member checklist rendered in the 2026-11-24 sync report; getter matrix rows for `body`, `flowchart`, `initializer`, `returns`, `visibility`, all flags, and the documented-unavailable server-diagram method.
