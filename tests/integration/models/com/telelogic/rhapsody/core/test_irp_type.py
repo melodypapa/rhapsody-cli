@@ -241,34 +241,39 @@ class TestIRPTypeIntegration:
         type_element, _cls, pkg = self._create_type(test_project)
         try:
             type_element.declaration = "int x"
+            assert type_element.declaration == "int x"
         finally:
             pkg.delete_from_project()
 
     def test_set_is_typedef_constant(self, test_project: IRPProject) -> None:
         type_element, _cls, pkg = self._create_type(test_project)
         try:
-            type_element.is_typedef_constant = 0
+            type_element.is_typedef_constant = 1
+            assert type_element.is_typedef_constant == 1
         finally:
             pkg.delete_from_project()
 
     def test_set_is_typedef_ordered(self, test_project: IRPProject) -> None:
         type_element, _cls, pkg = self._create_type(test_project)
         try:
-            type_element.is_typedef_ordered = 0
+            type_element.is_typedef_ordered = 1
+            assert type_element.is_typedef_ordered == 1
         finally:
             pkg.delete_from_project()
 
     def test_set_is_typedef_reference(self, test_project: IRPProject) -> None:
         type_element, _cls, pkg = self._create_type(test_project)
         try:
-            type_element.is_typedef_reference = 0
+            type_element.is_typedef_reference = 1
+            assert type_element.is_typedef_reference == 1
         finally:
             pkg.delete_from_project()
 
     def test_set_kind(self, test_project: IRPProject) -> None:
         type_element, _cls, pkg = self._create_type(test_project)
         try:
-            type_element.kind = "x"
+            type_element.kind = "Enumeration"
+            assert type_element.kind == "Enumeration"
         finally:
             pkg.delete_from_project()
 
@@ -289,5 +294,6 @@ class TestIRPTypeIntegration:
         type_element, _cls, pkg = self._create_type(test_project)
         try:
             type_element.typedef_multiplicity = "0..1"
+            assert type_element.typedef_multiplicity == "0..1"
         finally:
             pkg.delete_from_project()

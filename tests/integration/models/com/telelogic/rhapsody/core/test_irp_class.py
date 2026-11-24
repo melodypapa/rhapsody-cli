@@ -243,8 +243,9 @@ class TestIRPClassIntegration:
         try:
             added_type = test_class.add_type(type_name)
             assert added_type is not None
+            assert test_class.find_nested_classifier(type_name) == added_type
             test_class.delete_type(type_name)
-            assert True
+            assert test_class.find_nested_classifier(type_name) is None
         finally:
             test_class.delete_from_project()
 

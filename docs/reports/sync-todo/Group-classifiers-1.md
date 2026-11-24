@@ -88,14 +88,14 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded.
 - [ ] irp_operation_remediation - IRPOperation
   - Baseline: 15 property-shaped members; integration test asserts AttributeError for get_flowchart.
-  - [ ] Section 1 member checklist and getter matrix published.
-  - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Section 3 all 15 properties and the get_flowchart/catalog disposition reconciled.
-  - [ ] Section 4 fake-COM tests first; full unit suite green; irp_operation.py at 100% statements/branches.
-  - [ ] Section 5 create a real operation/flowchart fixture and assert live outcome, or document the verified unavailable-member stub.
-  - [ ] Section 6 irp_operation.md checked/updated.
-  - [ ] Section 7 irp_operation.rst checked/updated for every public member.
-  - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded.
+  - [x] Section 1 member checklist and getter matrix published. Evidence: 21-member checklist rendered in the 2026-11-24 sync report; getter matrix rows for `body`, `flowchart`, `initializer`, `returns`, `visibility`, all flags, and the documented-unavailable server-diagram method.
+  - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2164 passed, ruff/black clean.
+  - [x] Section 3 all 15 properties and the get_flowchart/catalog disposition reconciled. Evidence: report regenerated — 20 MATCH, 0 actionable, 1 `UNAVAILABLE_DOCUMENTED` (`update_contained_diagrams_on_server`); `get_flowchart` is now the `flowchart` pywin32 property with a real `create_auto_flow_chart` fixture; no exception assertion remains.
+  - [x] Section 4 fake-COM tests first; full unit suite green; irp_operation.py at 100% statements/branches. Evidence: focused unit 28 passed, 96 statements / 0 branches, 100.00%; full unit 2164 passed.
+  - [ ] Section 5 create a real operation/flowchart fixture and assert live outcome, or document the verified unavailable-member stub. Evidence: `test_flowchart_getters` creates an operation, generates a real flowchart, asserts the getter returns it and `delete_flowchart` succeeds; `update_contained_diagrams_on_server` stub asserted in the mirrored integration file. Blocker: no Rhapsody on macOS — 472 integration tests collect only; live assertions unverified.
+  - [x] Section 6 irp_operation.md checked/updated. Evidence: `SWR_ELEM_00006` description corrected to the `UNAVAILABLE_DOCUMENTED` `NotImplementedError` stub (was stale `PYWIN32_MEMBER_MISSING` direct-call text); Last Changed 2026-11-24.
+  - [x] Section 7 irp_operation.rst checked/updated for every public member. Evidence: anchor `.. _rhapsody-java-interface-IRPOperation:` plus 15 `autoproperty` and 6 `automethod` directives; `verify_sync.py IRPOperation` exits 0.
+  - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded. Evidence: report regenerated (0 actionable), verify_sync exit 0, skill harness 49 passed, full unit 2164, ruff/black clean, integration collection 472. Blocker: Windows live integration closeout per the machine-split decision.
 - [ ] irp_class_remediation - IRPClass
   - Baseline: property shape already conforms; 2 integration tests assert RhapsodyRuntimeException.
   - [ ] Section 1 member checklist and getter matrix published.

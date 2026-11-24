@@ -76,7 +76,8 @@ class TestIRPUseCaseGenerated:
         pkg = test_project.add_package(self._unique("UsePkg"))
         use_case = pkg.add_use_case(self._unique("UC"))
         try:
-            assert use_case.add_extension_point("x") is None  # type: ignore[func-returns-value]
+            extension_point_name = self._unique("ExtensionPoint")
+            assert use_case.add_extension_point(extension_point_name) is None  # type: ignore[func-returns-value]
         finally:
             pkg.delete_from_project()
 
@@ -134,7 +135,8 @@ class TestIRPUseCaseGenerated:
         pkg = test_project.add_package(self._unique("UsePkg"))
         use_case = pkg.add_use_case(self._unique("UC"))
         try:
-            assert use_case.delete_entry_point("x") is None  # type: ignore[func-returns-value]
+            missing_entry_point = self._unique("MissingEntryPoint")
+            assert use_case.delete_entry_point(missing_entry_point) is None  # type: ignore[func-returns-value]
         finally:
             pkg.delete_from_project()
 
@@ -142,7 +144,8 @@ class TestIRPUseCaseGenerated:
         pkg = test_project.add_package(self._unique("UsePkg"))
         use_case = pkg.add_use_case(self._unique("UC"))
         try:
-            assert use_case.delete_extension_point("x") is None  # type: ignore[func-returns-value]
+            missing_extension_point = self._unique("MissingExtensionPoint")
+            assert use_case.delete_extension_point(missing_extension_point) is None  # type: ignore[func-returns-value]
         finally:
             pkg.delete_from_project()
 
@@ -150,7 +153,8 @@ class TestIRPUseCaseGenerated:
         pkg = test_project.add_package(self._unique("UsePkg"))
         use_case = pkg.add_use_case(self._unique("UC"))
         try:
-            assert use_case.get_describing_diagram("x") is None
+            missing_diagram = self._unique("MissingDiagram")
+            assert use_case.get_describing_diagram(missing_diagram) is None
         finally:
             pkg.delete_from_project()
 

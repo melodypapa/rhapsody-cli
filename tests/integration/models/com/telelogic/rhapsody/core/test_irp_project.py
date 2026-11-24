@@ -5,6 +5,7 @@ These tests require a running Rhapsody instance with an open project.
 
 import time
 import uuid
+from pathlib import Path
 from unittest.mock import patch
 
 import pytest
@@ -292,16 +293,28 @@ class TestIRPProjectGenerated:
         assert test_project.cg_simplified_model_package is None
 
     def test_highlight_from_code(self, test_project: IRPProject) -> None:
-        assert test_project.highlight_from_code(self._unique("arg"), 0) is None  # type: ignore[func-returns-value]
+        # A real on-disk source file and a real line number from it.
+        source_file = Path(__file__).resolve()
+        line_number = 1
+        assert source_file.is_file()
+        assert test_project.highlight_from_code(source_file.as_posix(), line_number) is None  # type: ignore[func-returns-value]
 
-    def test_gateway_export_to_xml(self, test_project: IRPProject) -> None:
-        assert test_project.gateway_export_to_xml(self._unique("arg"), self._unique("arg")) is None  # type: ignore[func-returns-value]
+    def test_gateway_export_to_xml(self, test_project: IRPProject, tmp_path: Path) -> None:
+        export_file = tmp_path / "gateway-export.xml"
+        assert test_project.gateway_export_to_xml(export_file.as_posix(), "") is None  # type: ignore[func-returns-value]
 
-    def test_gateway_export_to_xml2(self, test_project: IRPProject) -> None:
-        assert test_project.gateway_export_to_xml2(self._unique("arg"), self._unique("arg"), test_project) is None  # type: ignore[func-returns-value]
+    def test_gateway_export_to_xml2(self, test_project: IRPProject, tmp_path: Path) -> None:
+        export_file = tmp_path / "gateway-export2.xml"
+        assert test_project.gateway_export_to_xml2(export_file.as_posix(), "", test_project) is None  # type: ignore[func-returns-value]
 
-    def test_generate_report(self, test_project: IRPProject) -> None:
-        assert test_project.generate_report(self._unique("arg"), self._unique("arg"), "html", self._unique("arg"), 0, 0) is None  # type: ignore[func-returns-value]
+    def test_generate_report(self, test_project: IRPProject, tmp_path: Path) -> None:
+        package = test_project.add_package(self._unique("ReportScope"))
+        template = Path(__file__).resolve()
+        report_file = tmp_path / "project-report.html"
+        try:
+            assert test_project.generate_report(package.name, template.as_posix(), "html", report_file.as_posix(), 0, 1) is None  # type: ignore[func-returns-value]
+        finally:
+            package.delete_from_project()
 
     def test_add_custom_view_on_browser(self, test_project: IRPProject) -> None:
         view = test_project.add_package(self._unique("ViewElem"))

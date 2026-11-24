@@ -68,13 +68,14 @@ class TestRPInterfaceItemIntegration:
         test_class = pkg.add_class(class_name)
         try:
             operation = test_class.add_operation(op_name)
-            operation.add_argument("x")
+            argument_name = self._unique("sigArg")
+            operation.add_argument(argument_name)
             sig = operation.signature
-            assert "x" in sig
+            assert argument_name in sig
             no_names = operation.get_signature_no_arg_names()
-            assert "x" not in no_names
+            assert argument_name not in no_names
             no_types = operation.get_signature_no_arg_types()
-            assert "x" in no_types
+            assert argument_name in no_types
         finally:
             test_class.delete_from_project()
 

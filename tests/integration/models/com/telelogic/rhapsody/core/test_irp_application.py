@@ -174,11 +174,14 @@ class TestIRPApplicationIntegration:
         assert isinstance(rhapsody_app.get_external_roundtrip_invoker(), IRPExternalRoundtripInvoker)
 
     def test_generate_elements_runs_on_real_collection(self, rhapsody_app: IRPApplication, test_project: IRPProject) -> None:
+        rhapsody_app.save_all()
         project = rhapsody_app.open_project(str(TEST_PROJECT_DIR / "TestProject.rpyx"))
-        project.add_package("GeneratedPackage")
-        collection = project.packages
-
-        assert rhapsody_app.generate_elements(collection) is None  # type: ignore[func-returns-value]
+        generated_package = project.add_package(f"GeneratedPackage_{uuid.uuid4().hex[:8]}")
+        try:
+            collection = project.packages
+            assert rhapsody_app.generate_elements(collection) is None  # type: ignore[func-returns-value]
+        finally:
+            generated_package.delete_from_project()
 
     def test_generate_entire_project_runs(self, rhapsody_app: IRPApplication, test_project: IRPProject) -> None:
         assert rhapsody_app.generate_entire_project() is None  # type: ignore[func-returns-value]
