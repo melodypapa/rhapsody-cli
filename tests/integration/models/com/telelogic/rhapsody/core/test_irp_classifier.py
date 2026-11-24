@@ -218,10 +218,12 @@ class TestRPClassifierIntegration:
         pkg_name = self._unique("GenPkg")
         base_name = self._unique("BaseCls")
         derived_name = self._unique("DerivedCls")
+        base_attr_name = self._unique("InheritedAttr")
         pkg = self._create_package(test_project, pkg_name)
         base = pkg.add_class(base_name)
         derived = pkg.add_class(derived_name)
         try:
+            base_attribute = base.add_attribute(base_attr_name)
             derived.add_generalization(base)
             base_classifiers = list(derived.base_classifiers)
             assert base in base_classifiers
@@ -233,7 +235,8 @@ class TestRPClassifierIntegration:
             assert found_derived == derived
             found_generalization = derived.find_generalization(base_name)
             assert found_generalization is not None
-            assert len(list(derived.get_attributes_including_bases())) >= 0
+            inherited_attributes = list(derived.get_attributes_including_bases())
+            assert base_attribute in inherited_attributes
             generalizations = list(derived.generalizations)
             assert len(generalizations) >= 1
             derived.delete_generalization(base)
