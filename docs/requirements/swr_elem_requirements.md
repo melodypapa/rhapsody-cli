@@ -7,23 +7,6 @@
 
 ---
 
-## SWR_ELEM_00005: RPActor Wrapper
-
-**ID:** SWR_ELEM_00005
-**Title:** RPActor wraps IRPActor, a UML actor (external role interacting with the system)
-**Status:** Implemented
-**Priority:** Medium
-**Description:**
-`RPActor` shall extend `IRPClassifier` to wrap `IRPActor`. It shall expose Java-mirrored
-methods: `addEventReceptionWithEvent(name, event)` (accepts an `IRPModelElement` event,
-returns wrapped reception), `getIsBehaviorOverriden()` (returns bool), and
-`setIsBehaviorOverriden(is_overridden)` (translates Python bool to 1/0). The wrapper
-shall register itself for the meta class `"Actor"`.
-**Implementation:** src/rhapsody_cli/models/elements/classifiers.py:RPActor
-**Last Changed:** 2026-07-07
-
----
-
 ## SWR_ELEM_00008: RPDiagram Wrapper
 
 **ID:** SWR_ELEM_00008
@@ -72,23 +55,6 @@ Java-mirrored methods: `getRequirementID()` (returns str) and
 `setRequirementID(requirement_id)` (str). The wrapper shall register itself for the
 meta class `"Requirement"`.
 **Implementation:** src/rhapsody_cli/models/elements/requirements.py:RPRequirement
-**Last Changed:** 2026-07-07
-
----
-
-## SWR_ELEM_00011: RPStatechart Wrapper
-
-**ID:** SWR_ELEM_00011
-**Title:** RPStatechart wraps IRPStatechart, a class's behavioral state machine
-**Status:** Implemented
-**Priority:** Medium
-**Description:**
-`RPStatechart` shall extend `IRPUnit` to wrap `IRPStatechart`. It shall expose
-Java-mirrored methods: `addNewNodeByType(meta_type, x_position, y_position, width, height)`
-(returns wrapped node), `createGraphics()`, `closeDiagram()`, and `deleteState(state)`
-(accepts an `IRPModelElement`). The wrapper shall register itself for the meta class
-`"Statechart"`.
-**Implementation:** src/rhapsody_cli/models/elements/classifiers.py:RPStatechart
 **Last Changed:** 2026-07-07
 
 ---

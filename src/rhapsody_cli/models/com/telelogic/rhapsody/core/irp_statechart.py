@@ -1,91 +1,294 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPStatechart``."""
 
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Optional, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_ide import IRPAXViewCtrl
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions import IRPAcceptEventAction, IRPAcceptTimeEvent
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types import IRPStatechartDiagram
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphEdge, IRPGraphNode
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphEdge, IRPGraphElement, IRPGraphNode
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import IRPInterfaceItem
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statemachine import IRPState
 
 
 class IRPStatechart(IRPClass):
-    """Wraps ``IRPStatechart``: represents a statechart behavior."""
+    """Represents the statechart elements underlying a statechart diagram.
 
-    # IRPStatechart method parity checklist:
-    # [ ] add_free_shape_by_type  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] add_image  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] add_new_edge_by_type  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] add_new_edge_for_element  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] add_new_node_by_type  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] add_new_node_for_element  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] add_text_box  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] open_diagram_view  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] add_new_accept_event_action  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] add_new_accept_time_event  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] close_diagram  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] create_graphics  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] delete_state  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] find_trigger  [x] impl  [x] docstring  [x] unit test  [ ] integration test   (inherited from rp_classifier)
-    # [ ] get_all_triggers  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_elements_in_diagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_graphical_elements  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_inherits_from  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_is_main_behavior  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_is_overridden  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_its_class  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_picture  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_picture_as  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_picture_as_divided_metafiles  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_pictures_with_image_map  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_root_state  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_statechart_diagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] override_inheritance  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] populate_diagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] set_as_main_behavior  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] set_show_diagram_frame  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] unoverride_inheritance  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [inherited] irp_class / irp_classifier / irp_unit / irp_model_element methods (covered by rp_class / rp_classifier / rp_unit / rp_model_element checklists)
-    # No deprecated IRPStatechart methods.
+    The diagram itself is represented by :class:`IRPStatechartDiagram`; a
+    statechart object is created through :meth:`IRPClass.add_statechart`.
+    """
 
-    def add_new_node_by_type(self, meta_type: str, x_position: int, y_position: int, width: int, height: int) -> "IRPGraphNode":
-        """Adds a statechart element of the specified type to the statechart.
+    # JavaDoc-owned methods are implemented below. The five property-shaped
+    # pywin32 members are exposed as Python properties, not duplicate get_* APIs.
 
-        The element is placed at the given position with the given dimensions.
-        This method works only for elements that have purely graphical
-        representations and are not actual model elements. To add an "ordinary"
-        model element to a statechart, first add the element to your model and
-        then add its graphical representation via ``add_new_node_for_element``.
+    def add_free_shape_by_type(self, meta_type: str, x_points: IRPCollection, y_points: IRPCollection) -> IRPGraphElement:
+        """Adds a free shape using collections of its x and y coordinates.
 
         Args:
-            meta_type: The type of node to create (e.g., 'State', 'Junction').
-            x_position: The X coordinate for the node.
-            y_position: The Y coordinate for the node.
-            width: The width of the node.
-            height: The height of the node.
+            meta_type: Shape type: ``Polyline``, ``Polygon``, ``Rectangle``,
+                ``Polycurve``, ``Closed Curve``, or ``Ellipse``.
+            x_points: Collection of integer x coordinates.
+            y_points: Collection of integer y coordinates.
 
         Returns:
-            The wrapped node element created.
+            The new graphical shape.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPStatechart::addNewNodeByType(java.lang.String metaType, int xPosition, int yPosition, int nWidth, int nHeight)
+            com.telelogic.rhapsody.core.IRPStatechart::addFreeShapeByType(
+            java.lang.String metaType, IRPCollection xPoints, IRPCollection yPoints)
         """
-        return cast("IRPGraphNode", self.wrap(self.call_com(lambda: self._com.addNewNodeByType(meta_type, x_position, y_position, width, height))))
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphElement
 
-    def create_graphics(self) -> None:
-        """Creates the graphical representation of the statechart's elements.
+        raw_shape = self.call_com(lambda: self._com.AddFreeShapeByType(meta_type, x_points._com, y_points._com))
+        return IRPGraphElement(raw_shape)
 
-        When a statechart is created through the API, its graphical
-        representation is not created by default; the first time you open it in
-        Rhapsody you would be prompted whether to create the graphics. Calling
-        this method creates the graphical representation directly.
+    def add_image(self, filename: str, x_position: int, y_position: int, width: int, height: int) -> IRPGraphElement:
+        """Adds an image from a file at the specified diagram position and size.
+
+        Args:
+            filename: Full path to the image file.
+            x_position: X coordinate of the image's top-left corner, in pixels.
+            y_position: Y coordinate of the image's top-left corner, in pixels.
+            width: Image width, in pixels.
+            height: Image height, in pixels.
+
+        Returns:
+            The new image graphical element.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPStatechart::createGraphics()
+            com.telelogic.rhapsody.core.IRPStatechart::addImage(
+            java.lang.String filename, int xPosition, int yPosition, int nWidth, int nHeight)
         """
-        self.call_com(lambda: self._com.createGraphics())
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphElement
+
+        raw_image = self.call_com(lambda: self._com.AddImage(filename, x_position, y_position, width, height))
+        return IRPGraphElement(raw_image)
+
+    def add_new_accept_event_action(self, name: str, parent: IRPState) -> IRPAcceptEventAction:
+        """Adds an Accept Event Action element to the statechart.
+
+        The parent is the diagram element to contain the action; use the root
+        state for an action on the main diagram canvas. JavaDoc declares this
+        API, but the registered pywin32 interface has no corresponding member,
+        so the wrapper raises before attempting COM dispatch.
+
+        Args:
+            name: Name for the Accept Event Action element.
+            parent: Parent state or diagram element.
+
+        Returns:
+            The created Accept Event Action element.
+
+        Raises:
+            NotImplementedError: The registered pywin32 interface does not
+                expose ``addNewAcceptEventAction``.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPStatechart::addNewAcceptEventAction(
+            java.lang.String name, IRPState parent)
+        """
+        raise NotImplementedError("addNewAcceptEventAction is not exposed by the registered pywin32 interface.")
+
+    def add_new_accept_time_event(self, name: str, parent: IRPState) -> IRPAcceptTimeEvent:
+        """Adds an Accept Time Event element to the statechart.
+
+        The parent is the diagram element to contain the event; use the root
+        state for an event on the main diagram canvas. JavaDoc declares this
+        API, but the registered pywin32 interface has no corresponding member,
+        so the wrapper raises before attempting COM dispatch.
+
+        Args:
+            name: Name for the Accept Time Event element.
+            parent: Parent state or diagram element.
+
+        Returns:
+            The created Accept Time Event element.
+
+        Raises:
+            NotImplementedError: The registered pywin32 interface does not
+                expose ``addNewAcceptTimeEvent``.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPStatechart::addNewAcceptTimeEvent(
+            java.lang.String name, IRPState parent)
+        """
+        raise NotImplementedError("addNewAcceptTimeEvent is not exposed by the registered pywin32 interface.")
+
+    def add_new_edge_by_type(
+        self,
+        meta_type: str,
+        source: IRPGraphElement,
+        x_source_position: int,
+        y_source_position: int,
+        target: IRPGraphElement,
+        x_target_position: int,
+        y_target_position: int,
+    ) -> IRPGraphEdge:
+        """Adds a graphical-only connector between two diagram elements.
+
+        Args:
+            meta_type: Connector type: ``anchor``, ``compRealization``,
+                ``Containment Arrow``, or ``communication path``.
+            source: Graphical source element.
+            x_source_position: Source point's horizontal position in pixels.
+            y_source_position: Source point's vertical position in pixels.
+            target: Graphical target element.
+            x_target_position: Target point's horizontal position in pixels.
+            y_target_position: Target point's vertical position in pixels.
+
+        Returns:
+            The connector graphical element added to the statechart.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPStatechart::addNewEdgeByType(
+            java.lang.String metaType, IRPGraphElement src, int xSrcPosition,
+            int ySrcPosition, IRPGraphElement trg, int xTrgPosition, int yTrgPosition)
+        """
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphEdge
+
+        raw_edge = self.call_com(
+            lambda: self._com.AddNewEdgeByType(
+                meta_type,
+                source._com,
+                x_source_position,
+                y_source_position,
+                target._com,
+                x_target_position,
+                y_target_position,
+            )
+        )
+        return IRPGraphEdge(raw_edge)
+
+    def add_new_edge_for_element(
+        self,
+        element: IRPModelElement,
+        source: IRPGraphNode,
+        x_source_position: int,
+        y_source_position: int,
+        target: IRPGraphNode,
+        x_target_position: int,
+        y_target_position: int,
+    ) -> IRPGraphEdge:
+        """Adds a connector representation for an existing model element.
+
+        Args:
+            element: Model element represented by the connector.
+            source: Graphical source node.
+            x_source_position: Source point's horizontal position in pixels.
+            y_source_position: Source point's vertical position in pixels.
+            target: Graphical target node.
+            x_target_position: Target point's horizontal position in pixels.
+            y_target_position: Target point's vertical position in pixels.
+
+        Returns:
+            The connector graphical element added to the statechart.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPStatechart::addNewEdgeForElement(
+            IRPModelElement element, IRPGraphNode src, int xSrcPosition,
+            int ySrcPosition, IRPGraphNode trg, int xTrgPosition, int yTrgPosition)
+        """
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphEdge
+
+        raw_edge = self.call_com(
+            lambda: self._com.AddNewEdgeForElement(
+                element._com,
+                source._com,
+                x_source_position,
+                y_source_position,
+                target._com,
+                x_target_position,
+                y_target_position,
+            )
+        )
+        return IRPGraphEdge(raw_edge)
+
+    def add_new_node_by_type(self, meta_type: str, x_position: int, y_position: int, width: int, height: int) -> IRPGraphNode:
+        """Adds a graphical-only statechart node of the specified type.
+
+        Args:
+            meta_type: Node type, such as ``OrState`` or ``Note``.
+            x_position: Left-edge position in pixels relative to the diagram.
+            y_position: Top-edge position in pixels relative to the diagram.
+            width: Node width in pixels.
+            height: Node height in pixels.
+
+        Returns:
+            The graphical node added to the statechart.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPStatechart::addNewNodeByType(
+            java.lang.String metaType, int xPosition, int yPosition,
+            int nWidth, int nHeight)
+        """
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphNode
+
+        raw_node = self.call_com(lambda: self._com.AddNewNodeByType(meta_type, x_position, y_position, width, height))
+        return IRPGraphNode(raw_node)
+
+    def add_new_node_for_element(self, element: IRPModelElement, x_position: int, y_position: int, width: int, height: int) -> IRPGraphNode:
+        """Adds a graphical representation of an existing model element.
+
+        Args:
+            element: Model element to represent in the statechart.
+            x_position: Left-edge position in pixels relative to the diagram.
+            y_position: Top-edge position in pixels relative to the diagram.
+            width: Graphical node width in pixels.
+            height: Graphical node height in pixels.
+
+        Returns:
+            The graphical node added to the statechart.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPStatechart::addNewNodeForElement(
+            IRPModelElement element, int xPosition, int yPosition,
+            int nWidth, int nHeight)
+        """
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphNode
+
+        raw_node = self.call_com(lambda: self._com.AddNewNodeForElement(element._com, x_position, y_position, width, height))
+        return IRPGraphNode(raw_node)
+
+    def add_text_box(self, text: str, x_position: int, y_position: int, width: int, height: int) -> IRPGraphElement:
+        """Adds a text box with the specified content and geometry.
+
+        Args:
+            text: Text displayed in the box.
+            x_position: Top-left x coordinate in pixels.
+            y_position: Top-left y coordinate in pixels.
+            width: Text-box width in pixels.
+            height: Text-box height in pixels.
+
+        Returns:
+            The new text-box graphical element.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPStatechart::addTextBox(
+            java.lang.String text, int xPosition, int yPosition,
+            int nWidth, int nHeight)
+        """
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphElement
+
+        raw_text_box = self.call_com(lambda: self._com.AddTextBox(text, x_position, y_position, width, height))
+        return IRPGraphElement(raw_text_box)
+
+    def open_diagram_view(self) -> IRPAXViewCtrl:
+        """Opens the statechart view in the Rhapsody-Eclipse integration.
+
+        Returns:
+            The ActiveX view controller for the opened diagram.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPStatechart::openDiagramView()
+        """
+        return IRPAXViewCtrl(self.call_com(lambda: self._com.OpenDiagramView()))
 
     def close_diagram(self) -> None:
         """Closes the statechart diagram.
@@ -95,354 +298,268 @@ class IRPStatechart(IRPClass):
         """
         self.call_com(lambda: self._com.closeDiagram())
 
-    def delete_state(self, state: IRPModelElement) -> None:
-        """Deletes a state from the statechart.
+    def create_graphics(self) -> None:
+        """Creates the graphical representation of statechart elements.
 
-        Args:
-            state: The state element to delete.
+        When a statechart is created through the API, its graphical
+        representation is not created by default. This method creates it
+        without waiting for Rhapsody to prompt when the diagram is first opened.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPStatechart::deleteState(com.telelogic.rhapsody.core.IRPState state)
+            com.telelogic.rhapsody.core.IRPStatechart::createGraphics()
+        """
+        self.call_com(lambda: self._com.createGraphics())
+
+    def delete_state(self, state: IRPState) -> None:
+        """Deletes the specified state from this statechart.
+
+        Args:
+            state: State element to delete.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPStatechart::deleteState(IRPState state)
         """
         self.call_com(lambda: self._com.deleteState(state._com))
 
-    def add_free_shape_by_type(self, meta_type: str, x_position: int, y_position: int, width: int, height: int) -> "IRPGraphNode":
-        """Adds a free shape to the statechart.
+    def find_trigger(self, item: IRPInterfaceItem) -> int:  # type: ignore[override]
+        """Checks whether an interface item is a trigger of a statechart transition.
 
         Args:
-            meta_type: The type of shape to add.
-            x_position: The X coordinate for the shape.
-            y_position: The Y coordinate for the shape.
-            width: The width of the shape.
-            height: The height of the shape.
+            item: Interface item to check.
 
         Returns:
-            The wrapped graph node created.
+            ``1`` if the item serves as a transition trigger, otherwise ``0``.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPStatechart::addFreeShapeByType(java.lang.String metaType, int xPosition, int yPosition, int nWidth, int nHeight)
+            com.telelogic.rhapsody.core.IRPStatechart::findTrigger(IRPInterfaceItem Item)
         """
-        return cast("IRPGraphNode", self.wrap(self.call_com(lambda: self._com.addFreeShapeByType(meta_type, x_position, y_position, width, height))))
-
-    def add_image(self, x_position: int, y_position: int, width: int, height: int) -> "IRPGraphNode":
-        """Adds an image to the statechart.
-
-        Args:
-            x_position: The X coordinate for the image.
-            y_position: The Y coordinate for the image.
-            width: The width of the image.
-            height: The height of the image.
-
-        Returns:
-            The wrapped graph node created.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPStatechart::addImage(int xPosition, int yPosition, int nWidth, int nHeight)
-        """
-        return cast("IRPGraphNode", self.wrap(self.call_com(lambda: self._com.addImage(x_position, y_position, width, height))))
-
-    def add_new_edge_by_type(self, meta_type: str, source: IRPModelElement, target: IRPModelElement) -> "IRPGraphEdge":
-        """Adds a transition edge of the specified type to the statechart.
-
-        Args:
-            meta_type: The type of edge to create (e.g., 'Transition').
-            source: The source node for the edge.
-            target: The target node for the edge.
-
-        Returns:
-            The wrapped graph edge created.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPStatechart::addNewEdgeByType(
-                java.lang.String metaType, IRPModelElement source, IRPModelElement target)
-        """
-        return cast("IRPGraphEdge", self.wrap(self.call_com(lambda: self._com.addNewEdgeByType(meta_type, source._com, target._com))))
-
-    def add_new_edge_for_element(self, element: IRPModelElement, source: IRPModelElement, target: IRPModelElement) -> "IRPGraphEdge":
-        """Adds a graphical edge for an existing model element to the statechart.
-
-        Args:
-            element: The existing model element to add an edge for.
-            source: The source node for the edge.
-            target: The target node for the edge.
-
-        Returns:
-            The wrapped graph edge created.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPStatechart::addNewEdgeForElement(
-                IRPModelElement element, IRPModelElement source, IRPModelElement target)
-        """
-        return cast("IRPGraphEdge", self.wrap(self.call_com(lambda: self._com.addNewEdgeForElement(element._com, source._com, target._com))))
-
-    def add_new_node_for_element(self, element: IRPModelElement, x_position: int, y_position: int, width: int, height: int) -> "IRPGraphNode":
-        """Adds a graphical node for an existing model element to the statechart.
-
-        Args:
-            element: The existing model element to add a node for.
-            x_position: The X coordinate for the node.
-            y_position: The Y coordinate for the node.
-            width: The width of the node.
-            height: The height of the node.
-
-        Returns:
-            The wrapped graph node created.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPStatechart::addNewNodeForElement(com.telelogic.rhapsody.core.IRPModelElement element, int xPosition, int yPosition, int nWidth, int nHeight)
-        """
-        return cast("IRPGraphNode", self.wrap(self.call_com(lambda: self._com.addNewNodeForElement(element._com, x_position, y_position, width, height))))
-
-    def add_text_box(self, x_position: int, y_position: int, width: int, height: int) -> "IRPGraphNode":
-        """Adds a text box to the statechart.
-
-        Args:
-            x_position: The X coordinate for the text box.
-            y_position: The Y coordinate for the text box.
-            width: The width of the text box.
-            height: The height of the text box.
-
-        Returns:
-            The wrapped graph node created.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPStatechart::addTextBox(int xPosition, int yPosition, int nWidth, int nHeight)
-        """
-        return cast("IRPGraphNode", self.wrap(self.call_com(lambda: self._com.addTextBox(x_position, y_position, width, height))))
-
-    def open_diagram_view(self) -> None:
-        """Opens the statechart diagram view in the Rhapsody GUI.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPStatechart::openDiagramView()
-        """
-        self.call_com(lambda: self._com.openDiagramView())
-
-    def add_new_accept_event_action(self, name: str) -> Optional["IRPModelElement"]:
-        """Adds a new accept event action to the statechart.
-
-        Args:
-            name: The name for the new accept event action.
-
-        Returns:
-            The wrapped accept event action created.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPStatechart::addNewAcceptEventAction(java.lang.String name)
-        """
-        return self.wrap(self.call_com(lambda: self._com.addNewAcceptEventAction(name)))
-
-    def add_new_accept_time_event(self, name: str) -> Optional["IRPModelElement"]:
-        """Adds a new accept time event to the statechart.
-
-        Args:
-            name: The name for the new accept time event.
-
-        Returns:
-            The wrapped accept time event created.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPStatechart::addNewAcceptTimeEvent(java.lang.String name)
-        """
-        return self.wrap(self.call_com(lambda: self._com.addNewAcceptTimeEvent(name)))
+        return int(self.call_com(lambda: self._com.findTrigger(item._com)))
 
     def get_all_triggers(self) -> IRPCollection:
-        """Returns all triggers defined in the statechart.
+        """Returns a collection of all triggers in the statechart.
 
         Returns:
-            An ``IRPCollection`` of triggers.
+            All triggers in the statechart.
 
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getAllTriggers()
         """
-        return IRPCollection(self._get_method_or_property(self._com, "getAllTriggers", "allTriggers"))
+        return IRPCollection(self.call_com(lambda: self._com.getAllTriggers()))
 
     def get_elements_in_diagram(self) -> IRPCollection:
         """Returns all model elements displayed in the statechart diagram.
 
         Returns:
-            An ``IRPCollection`` of model elements in the diagram.
+            All elements in the statechart diagram.
 
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getElementsInDiagram()
         """
-        return IRPCollection(self._get_method_or_property(self._com, "getElementsInDiagram", "elementsInDiagram"))
+        return IRPCollection(self.call_com(lambda: self._com.getElementsInDiagram()))
 
-    def get_graphical_elements(self) -> IRPCollection:
-        """Returns all graphical elements in the statechart.
+    @property
+    def graphical_elements(self) -> IRPCollection:
+        """Returns the graphical elements represented in this statechart.
 
         Returns:
-            An ``IRPCollection`` of graphical elements.
+            A collection of ``IRPGraphElement`` objects.
 
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getGraphicalElements()
         """
-        return IRPCollection(self._get_method_or_property(self._com, "getGraphicalElements", "graphicalElements"))
+        return IRPCollection(self.get_com_property(self._com, "graphicalElements"))
 
-    def get_inherits_from(self) -> "IRPStatechart":
-        """Returns the statechart that this statechart inherits from.
+    def get_inherits_from(self) -> IRPStatechart | None:
+        """Returns the statechart belonging to the base class.
 
         Returns:
-            The wrapped inherited statechart, or None if not inherited.
+            The base-class statechart, if available.
 
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getInheritsFrom()
         """
-        return cast("IRPStatechart", self.wrap(self._get_method_or_property(self._com, "getInheritsFrom", "inheritsFrom")))
+        return cast(Optional[IRPStatechart], self.wrap(self.call_com(lambda: self._com.getInheritsFrom())))
 
-    def get_is_main_behavior(self) -> int:
-        """Checks whether this statechart is the main behavior of its owning class.
+    @property
+    def is_main_behavior(self) -> int:
+        """Checks whether this is the class's main behavior.
 
         Returns:
-            ``1`` if this is the main behavior, ``0`` otherwise.
+            ``1`` if this is the main behavior, otherwise ``0``.
 
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getIsMainBehavior()
         """
-        return int(self._get_method_or_property(self._com, "getIsMainBehavior", "isMainBehavior"))
+        return int(self.get_com_property(self._com, "isMainBehavior"))
 
-    def get_is_overridden(self) -> int:
-        """Checks whether this statechart overrides an inherited statechart.
+    @property
+    def is_overridden(self) -> int:
+        """Checks whether this statechart's inheritance relationship was overridden.
 
         Returns:
-            ``1`` if this statechart is overridden, ``0`` otherwise.
+            ``1`` if overridden, otherwise ``0``.
 
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getIsOverridden()
         """
-        return int(self._get_method_or_property(self._com, "getIsOverridden", "isOverridden"))
+        return int(self.get_com_property(self._com, "isOverridden"))
 
-    def get_its_class(self) -> "IRPClass":
-        """Returns the class that owns this statechart.
+    @property
+    def its_class(self) -> IRPClassifier:
+        """Returns the classifier associated with this statechart.
 
         Returns:
-            The wrapped owning class.
+            The class or classifier that owns the statechart.
 
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getItsClass()
         """
-        return cast("IRPClass", self.wrap(self._get_method_or_property(self._com, "getItsClass", "itsClass")))
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 
-    def get_picture(self) -> object:
-        """Returns the picture representation of the statechart.
+        return cast(IRPClassifier, self.wrap(self.get_com_property(self._com, "itsClass")))
 
-        Returns:
-            The picture representation.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPStatechart::getPicture()
-        """
-        return self._get_method_or_property(self._com, "getPicture", "picture")
-
-    def get_picture_as(self, format: str) -> object:
-        """Returns the picture representation in the specified format.
+    def get_picture(self, filename: str) -> None:
+        """Saves the statechart as an EMF file at the specified full path.
 
         Args:
-            format: The format for the picture (e.g., 'BMP', 'PNG').
-
-        Returns:
-            The picture representation in the specified format.
+            filename: Full path and filename for the EMF output.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPStatechart::getPictureAs(java.lang.String format)
+            com.telelogic.rhapsody.core.IRPStatechart::getPicture(java.lang.String filename)
         """
-        return self.call_com(lambda: self._com.getPictureAs(format))
+        self.call_com(lambda: self._com.getPicture(filename))
 
-    def get_picture_as_divided_metafiles(self) -> IRPCollection:
-        """Returns the picture as divided metafiles.
-
-        Returns:
-            An ``IRPCollection`` of divided metafiles.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPStatechart::getPictureAsDividedMetafiles()
-        """
-        return IRPCollection(self.call_com(lambda: self._com.getPictureAsDividedMetafiles()))
-
-    def get_pictures_with_image_map(self, first_file_name: str, diagram_map: "IRPCollection") -> "IRPCollection":
-        """Saves the statechart as EMF file(s) and populates the given collection with image-map info.
-
-        Same semantics as ``IRPDiagram.getPicturesWithImageMap`` -- saves the statechart
-        diagram as EMF file(s) and populates ``diagram_map`` with ``IRPImageMap`` objects.
+    def get_picture_as(self, first_file_name: str, image_format: str, get_image_maps: int, diagram_map: IRPCollection) -> IRPCollection:
+        """Saves the statechart in a graphic format and returns generated filenames.
 
         Args:
-            first_file_name: The base name for the created EMF file(s).
-            diagram_map: An empty ``IRPCollection`` that will be populated with ``IRPImageMap`` objects.
+            first_file_name: Name/path for the first output file.
+            image_format: Output format: EMF, BMP, JPEG, JPG, or TIFF.
+            get_image_maps: ``1`` to request image-map information, otherwise ``0``.
+            diagram_map: Collection used for the returned ``IRPImageMap`` objects.
 
         Returns:
-            An ``IRPCollection`` containing the names of the files that were created.
+            Collection containing the names of files created.
 
-        Raises:
-            RhapsodyRuntimeException: If the operation fails.
+        Reference:
+            com.telelogic.rhapsody.core.IRPStatechart::getPictureAs(
+            java.lang.String firstFileName, java.lang.String imageFormat,
+            int getImageMaps, IRPCollection diagrammap)
+        """
+        filenames, returned_map = self.call_com(lambda: self._com.getPictureAs(first_file_name, image_format, get_image_maps, diagram_map._com))
+        diagram_map._com = returned_map
+        return IRPCollection(filenames)
+
+    def get_picture_as_divided_metafiles(self, first_file_name: str) -> IRPCollection:
+        """Saves the statechart as one or more EMF files.
+
+        Args:
+            first_file_name: Name/path to use for the first output file.
+
+        Returns:
+            Collection containing the names of files created.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPStatechart::getPictureAsDividedMetafiles(
+            java.lang.String firstFileName)
+        """
+        return IRPCollection(self.call_com(lambda: self._com.getPictureAsDividedMetafiles(first_file_name)))
+
+    def get_pictures_with_image_map(self, first_file_name: str, diagram_map: IRPCollection) -> IRPCollection:
+        """Saves the statechart as EMF files and returns image-map information.
+
+        Args:
+            first_file_name: Name/path for the first output file.
+            diagram_map: Collection to receive ``IRPImageMap`` objects.
+
+        Returns:
+            Collection containing the names of files created.
 
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getPicturesWithImageMap(
-                java.lang.String firstFileName, com.telelogic.rhapsody.core.IRPCollection diagrammap)
+            java.lang.String firstFileName, IRPCollection diagrammap)
         """
-        return IRPCollection(self.call_com(lambda: self._com.getPicturesWithImageMap(first_file_name, diagram_map._com)))
+        filenames, returned_map = self.call_com(lambda: self._com.getPicturesWithImageMap(first_file_name, diagram_map._com))
+        diagram_map._com = returned_map
+        return IRPCollection(filenames)
 
-    def get_root_state(self) -> Optional["IRPModelElement"]:
-        """Returns the root state of the statechart.
+    @property
+    def root_state(self) -> IRPState | None:
+        """Returns the root state used to contain top-level statechart elements.
 
         Returns:
-            The wrapped root state.
+            The root state of the statechart.
 
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getRootState()
         """
-        return self.wrap(self._get_method_or_property(self._com, "getRootState", "rootState"))
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statemachine import IRPState
 
-    def get_statechart_diagram(self) -> "IRPStatechartDiagram":
-        """Returns the statechart diagram associated with this statechart.
+        return cast(Optional[IRPState], self.wrap(self.get_com_property(self._com, "rootState")))
+
+    def get_statechart_diagram(self) -> IRPStatechartDiagram:
+        """Returns the diagram object associated with the statechart.
 
         Returns:
-            The wrapped statechart diagram.
+            The statechart diagram associated with this statechart.
 
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::getStatechartDiagram()
         """
-        return cast("IRPStatechartDiagram", self.wrap(self._get_method_or_property(self._com, "getStatechartDiagram", "statechartDiagram")))
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types import IRPStatechartDiagram
+
+        return cast(IRPStatechartDiagram, self.wrap(self.call_com(lambda: self._com.getStatechartDiagram())))
 
     def override_inheritance(self) -> None:
-        """Overrides the inherited statechart.
+        """Breaks the inheritance relationship with the base statechart.
 
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::overrideInheritance()
         """
         self.call_com(lambda: self._com.overrideInheritance())
 
-    def populate_diagram(self) -> None:
-        """Populates the diagram with elements.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPStatechart::populateDiagram()
-        """
-        self.call_com(lambda: self._com.populateDiagram())
-
-    def set_as_main_behavior(self, is_main: int) -> None:
-        """Sets whether this statechart is the main behavior.
+    def populate_diagram(self, elements_to_populate: IRPCollection, relation_types: IRPCollection, create_content: str) -> None:
+        """Populates the statechart with specified elements and relation types.
 
         Args:
-            is_main: ``1`` to set as main behavior, ``0`` otherwise.
+            elements_to_populate: Collection of model elements to add as nodes.
+            relation_types: Collection of relation types to draw, such as
+                ``AllRelations``, ``Composition``, ``Association``, ``Link``,
+                ``Dependency``, ``Inheritance``, ``Anchor``, or ``InformationFlow``.
+            create_content: Additional related content: ``among``, ``from``,
+                ``to``, or ``fromto``.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPStatechart::setAsMainBehavior(int isMain)
+            com.telelogic.rhapsody.core.IRPStatechart::populateDiagram(
+            IRPCollection elementsToPopulate, IRPCollection relationsTypes,
+            java.lang.String createContent)
         """
-        self.call_com(lambda: self._com.setAsMainBehavior(is_main))
+        self.call_com(lambda: self._com.populateDiagram(elements_to_populate._com, relation_types._com, create_content))
+
+    def set_as_main_behavior(self) -> None:
+        """Specifies that this statechart is the class's main behavior.
+
+        Rhapsody may define multiple statecharts and activities, with one
+        behavior defined as the main behavior for execution.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPStatechart::setAsMainBehavior()
+        """
+        self.call_com(lambda: self._com.setAsMainBehavior())
 
     def set_show_diagram_frame(self, show_frame: int) -> None:
-        """Sets whether to show the diagram frame.
+        """Shows or hides the statechart diagram frame.
 
         Args:
             show_frame: ``1`` to show the frame, ``0`` to hide it.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPStatechart::setShowDiagramFrame(int showFrame)
+            com.telelogic.rhapsody.core.IRPStatechart::setShowDiagramFrame(int bShow)
         """
         self.call_com(lambda: self._com.setShowDiagramFrame(show_frame))
 
     def unoverride_inheritance(self) -> None:
-        """Removes the override of the inherited statechart.
+        """Restores the inheritance relationship with the base statechart.
 
         Reference:
             com.telelogic.rhapsody.core.IRPStatechart::unoverrideInheritance()

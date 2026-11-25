@@ -16,56 +16,58 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
 
 ## Rows
 
-- [ ] irp_statechart_api_report (IRPStatechart · RPStatechart · elements/classifiers/model_statechart.py · 10 legacy sites)
-  - Note: behavioural container (97 src / 14 test, 31 owned methods). Already extends the synced `IRPClass`; a direct leaf migration once its report exists.
-  - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
-  - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Step 3 — §3 compare evidence: regenerate report + catalog entry; reconcile owned members; one pywin32 member per call; catalog-absent sites = blockers BLOCKER 2026-11-24: no committed API report at `docs/reports/com/telelogic/rhapsody/core/IRPStatechart_api_report.md` and no `pywin32_authority.json` catalog entry; SKILL §3 forbids offline edits without COM evidence. Wrapper/tests/docs unchanged; regenerate report + catalog on Windows with Rhapsody, then resume.
-  - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy sites; full unit suite green
-  - [ ] Step 5 — §5 integration tests: mirrored path, live run on Windows
-  - [ ] Step 6 — §6 SWR update: per-class requirement document `irp_statechart.md`
-  - [ ] Step 7 — §7 RST update: `irp_statechart.rst` (anchor + deviation list-table) and toctree entry
-  - [ ] Step 8 — §8 verify and report: validator + `verify_sync.py` + skill tests + both full suites + gate
-- [ ] irp_stereotype_api_report (IRPStereotype · RPStereotype · rhapsody_cli/models/elements/classifiers/model_stereotype.py · 3 legacy sites)
-  - Note: usage 30 src / 15 test refs, 6 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
-  - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
-  - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Step 3 — §3 compare evidence: regenerate report + catalog entry; reconcile owned members; one pywin32 member per call; catalog-absent sites = blockers BLOCKER 2026-11-24: no committed API report at `docs/reports/com/telelogic/rhapsody/core/IRPStereotype_api_report.md` and no `pywin32_authority.json` catalog entry; SKILL §3 forbids offline edits without COM evidence. Wrapper/tests/docs unchanged; regenerate report + catalog on Windows with Rhapsody, then resume.
-  - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy sites; full unit suite green
-  - [ ] Step 5 — §5 integration tests: mirrored path, assert only owned methods; live run on Windows
-  - [ ] Step 6 — §6 SWR update: per-class requirement document `irp_stereotype.md` (move entry out of the legacy monolith)
-  - [ ] Step 7 — §7 RST update: `irp_stereotype.rst` (anchor + deviation list-table) and toctree entry
-  - [ ] Step 8 — §8 verify and report: validator + `verify_sync.py` + skill tests + both full suites + ruff/black/mypy
-- [ ] irp_actor_api_report (IRPActor · RPActor · rhapsody_cli/models/elements/classifiers/model_actor.py · 2 legacy sites)
-  - Note: usage 31 src / 11 test refs, 4 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
-  - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
-  - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Step 3 — §3 compare evidence: regenerate report + catalog entry; reconcile owned members; one pywin32 member per call; catalog-absent sites = blockers BLOCKER 2026-11-24: no committed API report at `docs/reports/com/telelogic/rhapsody/core/IRPActor_api_report.md` and no `pywin32_authority.json` catalog entry; SKILL §3 forbids offline edits without COM evidence. Wrapper/tests/docs unchanged; regenerate report + catalog on Windows with Rhapsody, then resume.
-  - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy sites; full unit suite green
-  - [ ] Step 5 — §5 integration tests: mirrored path, assert only owned methods; live run on Windows
-  - [ ] Step 6 — §6 SWR update: per-class requirement document `irp_actor.md` (move entry out of the legacy monolith)
-  - [ ] Step 7 — §7 RST update: `irp_actor.rst` (anchor + deviation list-table) and toctree entry
-  - [ ] Step 8 — §8 verify and report: validator + `verify_sync.py` + skill tests + both full suites + ruff/black/mypy
-- [ ] irp_exception_api_report (IRPException · RPException · rhapsody_cli/models/elements/classifiers/model_exception.py · 0 legacy sites)
-  - Note: usage 5 src / 4 test refs, 0 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
-  - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
-  - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Step 3 — §3 compare evidence: regenerate report + catalog entry; reconcile owned members; one pywin32 member per call; catalog-absent sites = blockers BLOCKER 2026-11-24: no committed API report at `docs/reports/com/telelogic/rhapsody/core/IRPException_api_report.md` and no `pywin32_authority.json` catalog entry; SKILL §3 forbids offline edits without COM evidence. Wrapper/tests/docs unchanged; regenerate report + catalog on Windows with Rhapsody, then resume.
-  - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy sites; full unit suite green
-  - [ ] Step 5 — §5 integration tests: mirrored path, assert only owned methods; live run on Windows
-  - [ ] Step 6 — §6 SWR update: per-class requirement document `irp_exception.md` (move entry out of the legacy monolith)
-  - [ ] Step 7 — §7 RST update: `irp_exception.rst` (anchor + deviation list-table) and toctree entry
-  - [ ] Step 8 — §8 verify and report: validator + `verify_sync.py` + skill tests + both full suites + ruff/black/mypy
-- [ ] irp_extension_point_api_report (IRPExtensionPoint · RPExtensionPoint · rhapsody_cli/models/elements/classifiers/model_usecase.py · 0 legacy sites)
-  - Note: usage 6 src / 0 test refs, 0 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
-  - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
-  - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Step 3 — §3 compare evidence: regenerate report + catalog entry; reconcile owned members; one pywin32 member per call; catalog-absent sites = blockers BLOCKER 2026-11-24: no committed API report at `docs/reports/com/telelogic/rhapsody/core/IRPExtensionPoint_api_report.md` and no `pywin32_authority.json` catalog entry; SKILL §3 forbids offline edits without COM evidence. Wrapper/tests/docs unchanged; regenerate report + catalog on Windows with Rhapsody, then resume.
-  - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy sites; full unit suite green
-  - [ ] Step 5 — §5 integration tests: mirrored path, assert only owned methods; live run on Windows
-  - [ ] Step 6 — §6 SWR update: per-class requirement document `irp_extension_point.md` (move entry out of the legacy monolith)
-  - [ ] Step 7 — §7 RST update: `irp_extension_point.rst` (anchor + deviation list-table) and toctree entry
-  - [ ] Step 8 — §8 verify and report: validator + `verify_sync.py` + skill tests + both full suites + ruff/black/mypy
+- [ ] irp_statechart_api_report (IRPStatechart · `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_statechart.py` · Java package `com.telelogic.rhapsody.core`)
+  - Note: the wrapper/tests had already been moved to the canonical package. Registered typelib was available on 2026-11-25; `docs/reports/com/telelogic/rhapsody/core/IRPStatechart_api_report.md` and the catalog entry were generated. JavaDoc declares 32 owned members; validator reports 0 actionable deviations after the sync.
+  - [x] Step 1 — §1 sync TODO: per-run checklist published with all 32 owned JavaDoc members and 9 getter fixture rows; inherited APIs tracked separately.
+  - [x] Step 2 — §2 resolve target: JavaDoc package, canonical wrapper, exports, mirrored unit/integration paths confirmed; no shim or class move required.
+  - [x] Step 3 — §3 compare evidence: typelib catalog refreshed and manual exception decisions preserved; all 32 JavaDoc members reconciled. `addNewAcceptEventAction` and `addNewAcceptTimeEvent` are documented-unavailable; all other bindings match catalog member and shape. `validate_interface.py IRPStatechart --source authority`: 0 actionable deviations.
+  - [x] Step 4 — §4 unit tests (TDD): updated fake-COM tests failed first (21 red), then passed; focused file 33 passed; full unit suite 2192 passed. Coverage: `PYTHONPATH=src python -m pytest tests/unit/models/com/telelogic/rhapsody/core/test_irp_statechart.py --cov=rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statechart --cov-report=term-missing -q -o addopts=` → 96 statements, 50 branches, 0 missing/partial, 100.00%.
+  - [ ] Step 5 — §5 integration tests: mirrored test file passes 26 live tests. Open live blockers (no skip/xfail/exception-accepting tests): `AddNewEdgeByType` returns COM error `-2147221498` for JavaDoc-listed edge types; `OpenDiagramView` returns `-2147221504` outside the Rhapsody-Eclipse integration; `getInheritsFrom` did not return the base chart with real class generalization and base/derived charts; `overrideInheritance` / `unoverrideInheritance` return `-2147467263` (`E_NOTIMPL`) in that setup. These require a working live fixture/runtime or user approval before any runtime stub. Getter matrix row for `getInheritsFrom` remains open.
+  - [x] Step 6 — §6 SWR update: moved stable `SWR_ELEM_00011` into `docs/requirements/com/telelogic/rhapsody/core/irp_statechart.md`; added blocked live-limitation requirement `SWR_ELEM_00036`.
+  - [x] Step 7 — §7 RST update: `docs/api/com/telelogic/rhapsody/core/irp_statechart.rst` documents all 32 public members; added to the package toctree and updated the legacy element label.
+  - [x] Step 8 — §8 validation: `verify_sync.py IRPStatechart` and skill harness (49 passed) succeeded; validator reports 0 actionable deviations. Full unit suite 2192 passed; focused coverage 96 statements / 50 branches, 100.00%. Full integration suite 461 passed / 8 failed, the same 8 application failures as baseline (435 passed / 8 failed); focused IRPStatechart integration 26 passed. Full ruff/black/mypy passed. Sphinx dummy build exited 0 after installing `docs/requirements.txt`; it emitted 161 warnings, including the project-standard H2 requirement headings and generated reports not in the toctree; no diagnostics were reported for the new API RST page. The row stays open only for the §5 live blockers above.
+- [ ] irp_stereotype_api_report (IRPStereotype · `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_stereotype.py` · Java package `com.telelogic.rhapsody.core`)
+  - Note: wrapper and unit test were already in the canonical package; report-declared package verified against JavaDoc. The typelib reports 6 Java-owned members, 5 COM members (2 methods + 3 properties), with `isNewTerm` readable and writable.
+  - [x] Step 1 — §1 sync TODO: published a six-member checklist and getter matrix; inherited IRPClassifier/IRPUnit/IRPModelElement members kept separate.
+  - [x] Step 2 — §2 resolve target: canonical wrapper and unit test confirmed; no compatibility shim. Added the missing mirrored integration test package file and per-class docs.
+  - [x] Step 3 — §3 compare evidence: generated `IRPStereotype_api_report.md` and appended only the live typelib catalog/signature entry, preserving other interfaces. Converted `icon`, `is_new_term` (read/write), and `of_meta_class` to properties; report has 0 actionable deviations. `setIsNewTerm` maps to the writable `isNewTerm` property setter.
+  - [x] Step 4 — §4 unit tests (TDD): three property-shape tests failed first; implementation then passed focused unit (7 passed) and full unit (2198 passed). Coverage: `PYTHONPATH=src python -m pytest tests/unit/models/com/telelogic/rhapsody/core/test_irp_stereotype.py --cov=rhapsody_cli.models.com.telelogic.rhapsody.core.irp_stereotype --cov-report=term-missing -q -o addopts=` → 21 statements, 4 branches, 0 missing/partial, 100.00%.
+  - [ ] Step 5 — §5 integration tests: 5 live tests pass (add/remove metaclass, `is_new_term` round-trip, populated `of_meta_class`, and new stereotype icon empty-state). Open populated getter blocker: a newly created stereotype has no icon, `icon` is typelib read-only, JavaDoc defines no setter, and no documented API attaches an icon file; the empty-state case is additional only. Recorded as `SWR_ELEM_00038`.
+  - [x] Step 6 — §6 SWR update: created `docs/requirements/com/telelogic/rhapsody/core/irp_stereotype.md` with `SWR_ELEM_00037` and blocked getter requirement `SWR_ELEM_00038`; no Stereotype entry existed in the legacy monolith to move.
+  - [x] Step 7 — §7 RST update: added `docs/api/com/telelogic/rhapsody/core/irp_stereotype.rst` documenting all 5 Python public members and linked it in the package toctree; `verify_sync.py IRPStereotype` passes.
+  - [ ] Step 8 — §8 final validation: pending full quality and suite run for the group before this class commit; focused coverage/integration and targeted validator/verifier already pass. Keep the class row open for the populated icon getter fixture until a documented source is available.
+  - Getter fixture matrix: `is_new_term`—package stereotype, writable property set to 1 then 0, assert both values, `test_is_new_term`, delete package; `of_meta_class`—package stereotype plus documented `add_meta_class("Class")`, assert `Class` in returned comma-separated metaclasses, `test_of_meta_class`, delete package; `icon`—new package stereotype returns empty, `test_icon_empty_for_stereotype_without_custom_icon`, delete package; positive icon attachment remains blocked under `SWR_ELEM_00038`.
+- [x] irp_actor_api_report (IRPActor · `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_actor.py` · Java package `com.telelogic.rhapsody.core`)
+  - Note: wrapper and tests were already canonical. Typelib confirms four Java-owned members; pywin exposes `isBehaviorOverriden` as a writable property and lacks the other two Java methods.
+  - [x] Step 1 — §1 sync TODO: expanded checklist for all four owned members; documented-unavailable members and the behavior-override getter fixture tracked separately.
+  - [x] Step 2 — §2 resolve target: JavaDoc package, canonical wrapper/unit/integration paths, inheritance and Actor registration confirmed; no compatibility shim.
+  - [x] Step 3 — §3 compare evidence: generated report/catalog/signatures; 0 actionable deviations. `is_behavior_overriden` now maps to the property; `addEventReceptionWithEvent` and `updateContainedDiagramsOnServer(int)` are documented-unavailable stubs with preserved Java signatures.
+  - [x] Step 4 — §4 unit tests (TDD): property/unavailable-member tests failed first, then focused unit passed 5 tests; coverage 14 statements / 0 branches, 100.00%.
+  - [x] Step 5 — §5 focused live integration: 3 tests pass, including the property round-trip and both documented-unavailable stubs through a real actor fixture; no skip/xfail or non-NotImplementedError assertions.
+  - [x] Step 6 — §6 SWR update: moved stable `SWR_ELEM_00005` into `docs/requirements/com/telelogic/rhapsody/core/irp_actor.md`.
+  - [x] Step 7 — §7 RST update: added `docs/api/com/telelogic/rhapsody/core/irp_actor.rst` for the 3 Python public members and linked it in the package toctree.
+  - [x] Step 8 — §8 final validation: validator and `verify_sync.py` report 0 actionable deviations; skill harness 49 passed. Full unit suite 2197 passed; full integration suite 468 passed / 8 failed, the same 8 application failures as baseline (467 passed / 8 failed); focused Actor integration 3 passed. Full ruff/black/mypy passed. Sphinx dummy build exited 0 with expected H2 requirement/report-toctree warnings and no API RST diagnostics.
+  - Getter fixture matrix: `getIsBehaviorOverriden()` / `is_behavior_overriden` — real package-owned actor; set writable property to `True`; assert property reads `True` and round-trip back to `False`; `tests/integration/models/com/telelogic/rhapsody/core/test_irp_actor.py::test_is_behavior_overriden`; delete actor/package.
+- [ ] irp_exception_api_report (IRPException · canonical wrapper/test files exist; JavaDoc package and owned-member inventory unverified)
+  - Note: The group ledger's earlier "0 owned methods" note is not JavaDoc evidence and is not accepted as a disposition.
+  - [ ] Step 1 — §1 sync TODO/member checklist: blocked because the target JavaDoc file is absent; no owned members can be safely enumerated.
+  - [ ] Step 2 — §2 resolve package: `python .agents/skills/rhapsody-sync/scripts/validate_interface.py IRPException --source typelib` exits 2: `IRPException` JavaDoc not found under `docs/java_api`; package cannot be verified against JavaDoc.
+  - [ ] Step 3 — §3 compare evidence/report: blocked by missing `docs/java_api/com/telelogic/rhapsody/core/IRPException.html`; no report was generated. Do not infer the interface has zero owned members from the former ledger note.
+  - [ ] Step 4 — §4 unit tests/bindings: not started; wrapper/tests unchanged because JavaDoc evidence is missing.
+  - [ ] Step 5 — §5 integration/getter matrix: not started; member inventory unavailable.
+  - [ ] Step 6 — §6 requirements: not changed; cannot verify whether an entry exists or determine JavaDoc summary.
+  - [ ] Step 7 — §7 RST: not changed; cannot document unverified public members.
+  - [ ] Step 8 — §8 validation: blocked, validator exit 2. Resume only after JavaDoc is restored under `docs/java_api/<package>/IRPException.html`.
+- [ ] irp_extension_point_api_report (IRPExtensionPoint · JavaDoc package and owned-member inventory unverified)
+  - Note: The group ledger's earlier “0 owned methods” note is not JavaDoc evidence and is not accepted as a disposition.
+  - [ ] Step 1 — §1 sync TODO/member checklist: blocked because the target JavaDoc file is absent; no owned members can be safely enumerated.
+  - [ ] Step 2 — §2 resolve package: `python .agents/skills/rhapsody-sync/scripts/validate_interface.py IRPExtensionPoint --source typelib` exits 2: JavaDoc not found under `docs/java_api`; package cannot be verified against JavaDoc.
+  - [ ] Step 3 — §3 compare evidence/report: blocked by missing `docs/java_api/com/telelogic/rhapsody/core/IRPExtensionPoint.html`; no report was generated. Do not infer the interface has zero owned members from the former ledger note.
+  - [ ] Step 4 — §4 unit tests/bindings: not started; wrappers/tests unchanged because JavaDoc evidence is missing.
+  - [ ] Step 5 — §5 integration/getter matrix: not started; member inventory unavailable.
+  - [ ] Step 6 — §6 requirements: not changed; cannot verify whether an entry exists or determine JavaDoc summary.
+  - [ ] Step 7 — §7 RST: not changed; cannot document unverified public members.
+  - [ ] Step 8 — §8 validation: blocked, validator exit 2. Resume only after JavaDoc is restored under `docs/java_api/<package>/IRPExtensionPoint.html`.
 - [ ] irp_classifier_remediation - IRPClassifier
   - Baseline: 17 property-shape conversions; add_port maps to COM addNewAggr absent from JavaDoc (D2 default: retain and document).
   - [x] Section 1 member checklist and getter matrix published. Evidence: 47-member checklist rendered in the 2026-11-24 sync report with a Getter fixture matrix row per owned getter (real parent/child, setup, identity assertion, mirrored test path, cleanup).
