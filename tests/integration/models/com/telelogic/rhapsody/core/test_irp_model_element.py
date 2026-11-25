@@ -60,6 +60,7 @@ class TestRPModelElementIntegration:
         guid = test_project.guid
         assert isinstance(guid, str)
         assert len(guid) > 0
+        assert uuid.UUID(guid)
 
 
 @pytest.mark.integration
@@ -390,10 +391,12 @@ class TestRPModelElementDependenciesIntegration:
         pkg_name = self._unique("AssocClsPkg")
         pkg = self._create_package(test_project, pkg_name)
         try:
-            assoc_classes = pkg.association_classes
-            assert isinstance(assoc_classes, IRPCollection)
-            # smoke test: no associations created, but confirm the COM call returns a valid IRPCollection
-            assert isinstance(assoc_classes.count, int)
+            source = pkg.add_class(self._unique("AssocSource"))
+            target = pkg.add_class(self._unique("AssocTarget"))
+            end1 = source.add_relation_to(target, "targets", "Association", "1", "sources", "Association", "1", "")
+            end2 = IRPRelation(end1._com).get_inverse()
+            association_class = source.add_association(end1, end2, self._unique("AssocCls"))
+            assert association_class in list(source.association_classes)
         finally:
             pkg.delete_from_project()
 
@@ -404,10 +407,10 @@ class TestRPModelElementDependenciesIntegration:
             source = pkg.add_class(self._unique("Source"))
             target = pkg.add_class(self._unique("Target"))
             dependency = source.add_dependency_to(target)
-            references = target.references
-            assert isinstance(references, IRPCollection)
-            assert isinstance(references.count, int)
-            assert references.count >= 0
+            references = list(target.references)
+            # JavaDoc does not say whether the returned elements are the dependency or its
+            # client; either proves the getter resolves the incoming relationship.
+            assert dependency in references or source in references
             source.delete_dependency(dependency)
         finally:
             pkg.delete_from_project()
@@ -1310,7 +1313,8 @@ class TestRPModelElementMetadataIntegration:
             cls = pkg.add_class(self._unique("BinIdCls"))
             binary_id = cls.binary_id
             assert isinstance(binary_id, bytes)
-            assert len(binary_id) > 0
+            assert len(binary_id) == 16
+            assert binary_id == cls.binary_id
 
             guid = cls.guid
             assert isinstance(guid, str)
@@ -1393,6 +1397,8 @@ class TestRPModelElementMetadataIntegration:
             pkg.delete_from_project()
 
     def test_get_user_defined_meta_class(self, test_project: IRPProject) -> None:
+        """Open blocker: JavaDoc defines this as the New Term name, but the COM surface exposes no
+        API to define a New Term, so only the type of the default value is observable."""
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:

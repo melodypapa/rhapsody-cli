@@ -5,7 +5,6 @@ import uuid
 import pytest
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class import IRPClass
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type import IRPType
@@ -32,7 +31,8 @@ class TestIRPTypeIntegration:
     def test_get_declaration(self, test_project: IRPProject) -> None:
         type_element, _cls, pkg = self._create_type(test_project)
         try:
-            assert isinstance(type_element.declaration, str)
+            type_element.declaration = "int x"
+            assert type_element.declaration == "int x"
         finally:
             pkg.delete_from_project()
 
@@ -40,7 +40,9 @@ class TestIRPTypeIntegration:
         pkg = test_project.add_package(self._unique("TypePkg"))
         ti = IRPType(pkg.add_type(self._unique("Type"))._com)
         try:
-            assert isinstance(ti.enumeration_literals, IRPCollection)
+            ti.kind = "Enumeration"
+            literal = ti.add_enumeration_literal("Red")
+            assert literal in list(ti.enumeration_literals)
         finally:
             pkg.delete_from_project()
 
@@ -87,7 +89,8 @@ class TestIRPTypeIntegration:
     def test_get_kind(self, test_project: IRPProject) -> None:
         type_element, _cls, pkg = self._create_type(test_project)
         try:
-            assert isinstance(type_element.kind, str)
+            type_element.kind = "Enumeration"
+            assert type_element.kind == "Enumeration"
         finally:
             pkg.delete_from_project()
 
@@ -102,7 +105,8 @@ class TestIRPTypeIntegration:
     def test_get_typedef_multiplicity(self, test_project: IRPProject) -> None:
         type_element, _cls, pkg = self._create_type(test_project)
         try:
-            assert isinstance(type_element.typedef_multiplicity, str)
+            type_element.typedef_multiplicity = "0..1"
+            assert type_element.typedef_multiplicity == "0..1"
         finally:
             pkg.delete_from_project()
 

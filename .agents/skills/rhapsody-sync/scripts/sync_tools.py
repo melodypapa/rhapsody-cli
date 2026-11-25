@@ -5,7 +5,7 @@ import json
 import re
 import sys
 from pathlib import Path
-from typing import List, Optional, Set, Tuple
+from typing import Dict, List, Optional, Set, Tuple
 
 _INTERFACE_PATTERN = re.compile(r"^# Rhapsody API Validation: (IRP[A-Za-z0-9_]+)$", re.MULTILINE)
 _WRAPPER_PATTERN = re.compile(r"^- Target wrapper: `([^`]+)` \(`([^`]+)`\)$", re.MULTILINE)
@@ -428,14 +428,31 @@ def _owned_property_names(wrapper_source: str) -> Set[str]:
     return names
 
 
+def _is_empty_collection_literal(expression: ast.expr) -> bool:
+    """Return whether the expression is a literal empty list/tuple/set/dict."""
+    if isinstance(expression, ast.Dict):
+        return not expression.keys
+    if isinstance(expression, (ast.List, ast.Tuple, ast.Set)):
+        return not expression.elts
+    return False
+
+
 def _is_weak_getter_assertion(expression: ast.expr) -> bool:
     """Return whether an assertion proves only non-None/type/count/truthiness."""
     if isinstance(expression, ast.Constant):
+        return True
+    if isinstance(expression, ast.UnaryOp) and isinstance(expression.op, ast.Not):
         return True
     if isinstance(expression, ast.Compare):
         if len(expression.ops) == 1 and isinstance(expression.ops[0], ast.IsNot):
             comparator = expression.comparators[0]
             return isinstance(comparator, ast.Constant) and comparator.value is None
+        if any(_is_empty_collection_literal(comparator) for comparator in expression.comparators):
+            return True
+        if len(expression.ops) == 1 and isinstance(expression.ops[0], ast.GtE):
+            comparator = expression.comparators[0]
+            if isinstance(comparator, ast.Constant) and comparator.value == 0:
+                return True
         operands = [expression.left, *expression.comparators]
         return any(isinstance(operand, ast.Call) and isinstance(operand.func, ast.Name) and operand.func.id == "len" for operand in operands)
     if isinstance(expression, ast.Call):
@@ -443,24 +460,47 @@ def _is_weak_getter_assertion(expression: ast.expr) -> bool:
     return isinstance(expression, (ast.Name, ast.Attribute))
 
 
-def verify_getter_assertions(path: Path, property_names: Set[str]) -> List[str]:
-    """Reject getter tests that assert only non-None/type/count/truthiness.
+_GETTER_TEST_SUFFIXES = ("_empty_state", "_empty")
 
-    SKILL section 5 requires a getter integration test to create the real
-    related object, then assert identity or value; an empty collection or a
-    non-``None`` return is not evidence that retrieval works.
+
+def _getter_property_for_test(test_name: str, property_names: Set[str]) -> Optional[str]:
+    """Map ``test_<property>`` / ``test_get_<property>[_empty]`` to a wrapper property."""
+    if not test_name.startswith("test_"):
+        return None
+    member = test_name[len("test_") :]
+    if member.startswith("get_"):
+        member = member[len("get_") :]
+    for suffix in _GETTER_TEST_SUFFIXES:
+        if member.endswith(suffix):
+            member = member[: -len(suffix)]
+            break
+    return member if member in property_names else None
+
+
+def verify_getter_assertions(path: Path, property_names: Set[str]) -> List[str]:
+    """Reject getter properties covered only by non-None/type/count/empty assertions.
+
+    SKILL section 5 requires at least one getter integration test per property
+    that creates the real related object and asserts identity or value. An
+    empty-state test (``test_<property>_empty``) is an additional case, not a
+    substitute, so a property fails when every matching test is weak.
     """
     issues: List[str] = []
     tree = ast.parse(path.read_text(encoding="utf-8"))
+    coverage: Dict[str, List[Tuple[str, int, bool]]] = {}
     for node in ast.walk(tree):
-        if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) or not node.name.startswith("test_"):
+        if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
             continue
-        member = node.name[len("test_") :]
-        if member not in property_names:
+        member = _getter_property_for_test(node.name, property_names)
+        if member is None:
             continue
         assertions = [statement for statement in ast.walk(node) if isinstance(statement, ast.Assert)]
-        if not assertions or all(_is_weak_getter_assertion(assertion.test) for assertion in assertions):
-            issues.append(f"getter test {node.name} at line {node.lineno} only asserts non-None/type/count; create the related object and assert identity/value (SKILL section 5)")
+        weak = not assertions or all(_is_weak_getter_assertion(assertion.test) for assertion in assertions)
+        coverage.setdefault(member, []).append((node.name, node.lineno, weak))
+    for member, tests in coverage.items():
+        if all(weak for _, _, weak in tests):
+            names = ", ".join(f"{name} (line {lineno})" for name, lineno, _ in tests)
+            issues.append(f"getter {member!r} is only covered by weak assertions: {names}; create the related object and assert identity/value (SKILL section 5)")
     return issues
 
 

@@ -820,6 +820,60 @@ def test_getter_assertion_check_accepts_membership_assertion(tmp_path: Path) -> 
     assert tools.verify_getter_assertions(test_file, {"packages"}) == []
 
 
+def test_getter_assertion_check_flags_empty_only_getter_test(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    test_file = _write_test_file(
+        tmp_path,
+        "def test_get_source_artifacts_empty(classifier) -> None:\n    assert classifier.source_artifacts == []\n",
+    )
+
+    issues = tools.verify_getter_assertions(test_file, {"source_artifacts"})
+
+    assert len(issues) == 1
+    assert "test_get_source_artifacts_empty" in issues[0]
+
+
+def test_getter_assertion_check_flags_get_prefixed_non_none_test(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    test_file = _write_test_file(
+        tmp_path,
+        "def test_get_packages(project) -> None:\n    assert project.packages is not None\n",
+    )
+
+    issues = tools.verify_getter_assertions(test_file, {"packages"})
+
+    assert len(issues) == 1
+    assert "test_get_packages" in issues[0]
+
+
+def test_getter_assertion_check_accepts_empty_state_with_populated_sibling(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    test_file = _write_test_file(
+        tmp_path,
+        "def test_packages(project) -> None:\n"
+        "    created = project.add_package('p')\n"
+        "    assert created in list(project.packages)\n"
+        "\n"
+        "def test_packages_empty(project) -> None:\n"
+        "    assert project.packages == []\n",
+    )
+
+    assert tools.verify_getter_assertions(test_file, {"packages"}) == []
+
+
+def test_getter_assertion_check_flags_truthiness_only(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    test_file = _write_test_file(
+        tmp_path,
+        "def test_packages(project) -> None:\n    assert not project.packages\n",
+    )
+
+    issues = tools.verify_getter_assertions(test_file, {"packages"})
+
+    assert len(issues) == 1
+    assert "test_packages" in issues[0]
+
+
 def test_getter_assertion_check_ignores_non_getter_tests(tmp_path: Path) -> None:
     tools = _load_sync_tools()
     test_file = _write_test_file(

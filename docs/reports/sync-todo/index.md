@@ -164,6 +164,17 @@ row's Notes.
   `models/support/` location before any move.
 - **Termination (pending):** IRPApplication Step 8 and the 15 remediation rows remain open. After they archive, remove the deprecated `_get_method_or_property` / `_set_method_or_property` definitions from `ComHelper` in `src/rhapsody_cli/models/core.py`, drop legacy notes from `AGENTS.md`, `docs/CODE_GUIDELINES.md`, and the sync skill, and confirm `grep -rn "_method_or_property" src/ --include='*.py'` finds no definitions or call sites.
 
+## Getter-assertion checker tightening (2026-11-25)
+
+`verify_sync.py` now groups `test_<property>`, `test_get_<property>`, and their `_empty`/`_empty_state`
+variants under the same property and fails Step 8 unless at least one test in the group asserts
+identity/value (a weak empty-state test is accepted only beside a populated sibling). This makes the
+previously unscanned `test_get_*` tests visible. `IRPType`'s four getters and `IRPModelElement`'s
+`association_classes`, `references`, `guid`, and `binary_id` were fixed with JavaDoc-backed populated
+fixtures. `IRPClassifier` (three rows above) and `IRPModelElement.user_defined_meta_class` remain open
+getter blockers, so Step 8 reports getter failures for those two interfaces until a Windows + Rhapsody
+run settles the fixtures.
+
 ## P0 integration-test blockers (2026-11-24)
 
 The following integration tests were removed rather than converted into exception assertions or skips
@@ -185,6 +196,7 @@ wrapper-signature fix before its getter/member row can close.
 | IRPClassifier | `source_artifacts` (`getSourceArtifacts`) | No documented API creates or attaches a classifier-owned `IRPFile` source artifact, so only the empty-state case can run; evidence: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_get_source_artifacts_empty`. |
 | IRPClassifier | `sequence_diagrams` (`getSequenceDiagrams`) | `IRPPackage.add_sequence_diagram` creates a package-owned diagram and no member attaches it to a classifier, so the classifier getter cannot be shown to return a created diagram; evidence: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_get_sequence_diagrams_empty`. |
 | IRPClassifier | `links` (`getLinks`) | `IRPClass.add_link` / `add_link_to_part_via_port` require real part instances plus association or port endpoints and cannot prove the classifier `links` getter returns the created link (that path is an IRPClass blocker too); evidence: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_get_links_empty`. |
+| IRPModelElement | `user_defined_meta_class` (`getUserDefinedMetaClass`) | JavaDoc defines the result as the New Term name, but the COM surface exposes no API to define a New Term, so only the default value's type is observable; evidence: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_model_element.py::test_get_user_defined_meta_class`. |
 | IRPUnit | `copy_to_another_project`, `move_to_another_project_leave_a_reference`, `reference_to_another_project`, `set_unit_path` | Requires a second saved project/unit file and mutates the shared project. |
 | IRPUseCase | `find_entry_point`, `find_extension_point` | JavaDoc/pywin32 take `IRPGeneralization` and return `String`; wrapper takes `str` and wraps an element. |
 | IRPUseCase | `entry_points` | No documented add API in the COM surface; only an empty-state result is observable. |
