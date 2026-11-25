@@ -163,8 +163,8 @@ For each candidate in `docs/reports/sync-todo/getter-catalog-diff.md`, choose on
 | IRPCollection | 2 | `Items` / `interfaceName` not exposed |
 | IRPOperation | 1 | `returnType` exposed as `returns` |
 
-- [ ] Every candidate has a recorded outcome; diff `catalog-only` count reflects only deliberately skipped members.
-- [ ] If the mapping needs code, extend `sync_tools.py` TDD-first and regenerate all 16 sections.
+- [x] Every candidate has a recorded outcome (2026-11-25): `IRPOperation.returnType` is naming drift to `returns` (allowlisted alias); the remaining 26 catalog properties are not declared in the owning interface's own JavaDoc and are recorded as not-applicable in `sync_tools.py::_CATALOG_NOT_APPLICABLE`. Regenerated diff: catalog-only 0, match 159, stub 2.
+- [x] Extended `sync_tools.py` with TDD-first alias and not-applicable allowlists (2 new tests; skill harness 83 passed) and regenerated the five affected diff sections.
 
 ## Task 7 — Final gate and merge
 

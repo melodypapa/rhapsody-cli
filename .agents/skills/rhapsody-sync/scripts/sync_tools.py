@@ -841,16 +841,55 @@ def _mro_property_names(index: Dict[str, List[Tuple[Set[str], List[str]]]], clas
     return names
 
 
+# Documented naming drift: catalog property name -> actual Python property name.
+# These are deliberately not "catalog-only" gaps because the wrapper exposes the
+# value under a different snake_case name.
+_CATALOG_NAME_ALIASES: Dict[str, Dict[str, str]] = {
+    "IRPOperation": {"return_type": "returns"},
+}
+
+# Catalog properties with no own-JavaDoc declaration on the interface and no
+# Python property by design. Recorded per interface; verified 2026-11-25 that
+# IRPArgument/IRPAttribute/IRPPort do not declare these in their own JavaDoc,
+# and IRPCollection exposes Items through get_item/count/iteration instead.
+_CATALOG_NOT_APPLICABLE: Dict[str, Set[str]] = {
+    "IRPArgument": {"declaration", "defaultValue", "type", "typeOf", "valueSpecifications"},
+    "IRPAttribute": {"declaration", "defaultValue", "type", "typeOf", "valueSpecifications"},
+    "IRPCollection": {"Items", "interfaceName"},
+    "IRPPort": {
+        "ObjectAsObjectType",
+        "instantiatedBy",
+        "inverse",
+        "isNavigable",
+        "isSymmetric",
+        "multiplicity",
+        "ofClass",
+        "otherClass",
+        "qualifier",
+        "relationLabel",
+        "relationLinkName",
+        "relationRoleName",
+        "relationType",
+        "visibility",
+    },
+}
+
+
 def _catalog_only_properties(index: Dict[str, List[Tuple[Set[str], List[str]]]], wrapper_class: str, catalog: Dict[str, str]) -> List[Tuple[str, str]]:
     """Return catalog properties with no derived-name Python property in the wrapper MRO."""
     known = _mro_property_names(index, wrapper_class)
+    aliases = _CATALOG_NAME_ALIASES.get(wrapper_class, {})
+    not_applicable = {name.casefold() for name in _CATALOG_NOT_APPLICABLE.get(wrapper_class, set())}
     candidates: List[Tuple[str, str]] = []
     for member, shape in catalog.items():
         if str(shape) != "property":
             continue
         derived = _java_interface_snake(str(member))
-        if derived not in known:
-            candidates.append((str(member), derived))
+        if derived in known or aliases.get(derived) in known:
+            continue
+        if str(member).casefold() in not_applicable:
+            continue
+        candidates.append((str(member), derived))
     return sorted(candidates)
 
 

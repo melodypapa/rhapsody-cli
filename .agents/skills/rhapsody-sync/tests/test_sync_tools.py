@@ -1312,6 +1312,31 @@ def test_getter_catalog_diff_lists_unmapped_catalog_properties(tmp_path: Path) -
     assert "unmapped_thing` | catalog-only |" in section
 
 
+def test_catalog_only_properties_honours_documented_name_alias(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    wrapper = root / "src" / "rhapsody_cli" / "models" / "irp_operation.py"
+    wrapper.parent.mkdir(parents=True)
+    wrapper.write_text("class IRPOperation:\n    @property\n    def returns(self): return 1\n", encoding="utf-8")
+
+    index = tools._wrapper_class_index(root)
+    candidates = tools._catalog_only_properties(index, "IRPOperation", {"returnType": "property", "otherThing": "property"})
+
+    assert candidates == [("otherThing", "other_thing")]
+
+
+def test_catalog_only_properties_skip_documented_not_applicable_members(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    wrapper = root / "src" / "rhapsody_cli" / "models" / "irp_argument.py"
+    wrapper.parent.mkdir(parents=True)
+    wrapper.write_text("class IRPArgument:\n    pass\n", encoding="utf-8")
+
+    index = tools._wrapper_class_index(root)
+    catalog = {"declaration": "property", "unmappedThing": "property"}
+    assert tools._catalog_only_properties(index, "IRPArgument", catalog) == [("unmappedThing", "unmapped_thing")]
+
+
 def test_getter_catalog_diff_credits_inherited_property(tmp_path: Path) -> None:
     tools = _load_sync_tools()
     root = tmp_path / "repo"

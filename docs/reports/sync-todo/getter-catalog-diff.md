@@ -19,7 +19,7 @@ review rather than a failure.
 | shape-mismatch | 0 |
 | no-binding | 0 |
 | stub | 2 |
-| catalog-only | 27 |
+| catalog-only | 0 |
 
 ## IRPApplication
 
@@ -55,11 +55,7 @@ review rather than a failure.
 
 | Catalog property | Derived Python name | Status |
 | --- | --- | --- |
-| `declaration` | `declaration` | catalog-only |
-| `defaultValue` | `default_value` | catalog-only |
-| `type` | `type` | catalog-only |
-| `typeOf` | `type_of` | catalog-only |
-| `valueSpecifications` | `value_specifications` | catalog-only |
+| — | — | — |
 
 ## IRPAssociationClass
 
@@ -90,11 +86,7 @@ review rather than a failure.
 
 | Catalog property | Derived Python name | Status |
 | --- | --- | --- |
-| `declaration` | `declaration` | catalog-only |
-| `defaultValue` | `default_value` | catalog-only |
-| `type` | `type` | catalog-only |
-| `typeOf` | `type_of` | catalog-only |
-| `valueSpecifications` | `value_specifications` | catalog-only |
+| — | — | — |
 
 ## IRPClass
 
@@ -150,8 +142,7 @@ review rather than a failure.
 
 | Catalog property | Derived Python name | Status |
 | --- | --- | --- |
-| `Items` | `items` | catalog-only |
-| `interfaceName` | `interface_name` | catalog-only |
+| — | — | — |
 
 ## IRPInterfaceItem
 
@@ -234,7 +225,7 @@ review rather than a failure.
 
 | Catalog property | Derived Python name | Status |
 | --- | --- | --- |
-| `returnType` | `return_type` | catalog-only |
+| — | — | — |
 
 ## IRPPackage
 
@@ -291,20 +282,7 @@ review rather than a failure.
 
 | Catalog property | Derived Python name | Status |
 | --- | --- | --- |
-| `ObjectAsObjectType` | `object_as_object_type` | catalog-only |
-| `instantiatedBy` | `instantiated_by` | catalog-only |
-| `inverse` | `inverse` | catalog-only |
-| `isNavigable` | `is_navigable` | catalog-only |
-| `isSymmetric` | `is_symmetric` | catalog-only |
-| `multiplicity` | `multiplicity` | catalog-only |
-| `ofClass` | `of_class` | catalog-only |
-| `otherClass` | `other_class` | catalog-only |
-| `qualifier` | `qualifier` | catalog-only |
-| `relationLabel` | `relation_label` | catalog-only |
-| `relationLinkName` | `relation_link_name` | catalog-only |
-| `relationRoleName` | `relation_role_name` | catalog-only |
-| `relationType` | `relation_type` | catalog-only |
-| `visibility` | `visibility` | catalog-only |
+| — | — | — |
 
 ## IRPProject
 
