@@ -72,7 +72,7 @@ class TestRPProjectIntegration:
             test_project.default_directory_scheme = original
 
     def test_check_events_base_ids_solve_collisions_completes(self, test_project: IRPProject) -> None:
-        assert test_project.check_events_base_ids_solve_collisions() is None
+        assert test_project.check_events_base_ids_solve_collisions() is None  # type: ignore[func-returns-value]
 
 
 @pytest.mark.integration

@@ -243,8 +243,8 @@ def test_project_default_directory_scheme_uses_str_annotations() -> None:
     from typing import get_type_hints
 
     # Live COM reads/writes a string scheme such as "Flat" or "Nested".
-    prop = IRPProject.default_directory_scheme
-    assert prop is not None and prop.fget is not None and prop.fset is not None
+    prop = IRPProject.__dict__["default_directory_scheme"]
+    assert isinstance(prop, property) and prop.fget is not None and prop.fset is not None
     assert get_type_hints(prop.fget)["return"] is str
     assert get_type_hints(prop.fset)["scheme"] is str
 
@@ -253,7 +253,7 @@ def test_project_check_events_base_ids_solve_collisions_calls_catalog_member() -
     fake = make_fake_element("Project")
     project = IRPProject(fake)
 
-    assert project.check_events_base_ids_solve_collisions() is None
+    assert project.check_events_base_ids_solve_collisions() is None  # type: ignore[func-returns-value]
 
     fake.checkEventsBaseIdsSolveCollisions.assert_called_once_with()
 
@@ -521,7 +521,7 @@ def test_project_check_events_base_ids_solve_collisions_returns_none() -> None:
     fake = make_fake_element("Project", checkEventsBaseIdsSolveCollisions=None)
     project = IRPProject(fake)
 
-    result = project.check_events_base_ids_solve_collisions()
+    result = project.check_events_base_ids_solve_collisions()  # type: ignore[func-returns-value]
 
     fake.checkEventsBaseIdsSolveCollisions.assert_called_once_with()
     assert result is None
@@ -630,9 +630,9 @@ def test_project_default_directory_scheme_writes_com_property() -> None:
     fake = make_fake_element("Project")
     project = IRPProject(fake)
 
-    project.default_directory_scheme = 2
+    project.default_directory_scheme = "Nested"
 
-    assert fake.defaultDirectoryScheme == 2
+    assert fake.defaultDirectoryScheme == "Nested"
 
 
 def test_project_set_global_configuration_raises_not_implemented() -> None:
@@ -865,7 +865,7 @@ def test_generated_save_as() -> None:
 def test_generated_find_element_by_binary_id() -> None:
     fake = make_fake_element("Project")
     fake.findElementByBinaryID.return_value = make_fake_element("Class", properties={"name": "x"})
-    result = IRPProject(fake).find_element_by_binary_id("x")
+    result = IRPProject(fake).find_element_by_binary_id(b"x")
     assert result is not None
 
 
@@ -1079,7 +1079,7 @@ def test_generated_import_project_from_rose() -> None:
 def test_generated_check_events_base_ids_solve_collisions() -> None:
     fake = make_fake_element("Project")
     fake.checkEventsBaseIdsSolveCollisions.return_value = None
-    result = IRPProject(fake).check_events_base_ids_solve_collisions()
+    result = IRPProject(fake).check_events_base_ids_solve_collisions()  # type: ignore[func-returns-value]
     assert result is None
 
 
@@ -1148,7 +1148,7 @@ def test_generated_save_as_prev_version() -> None:
 
 def test_generated_default_directory_scheme_write() -> None:
     fake = make_fake_element("Project")
-    IRPProject(fake).default_directory_scheme = 1
+    IRPProject(fake).default_directory_scheme = "Flat"
 
 
 def test_generated_set_global_configuration_raises_not_implemented() -> None:
