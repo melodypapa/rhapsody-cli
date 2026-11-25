@@ -245,3 +245,27 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | `entry_points` | — | none | MISSING |
 | `extension_points` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_use_case.py::test_extension_points` | identity/value | OK |
 | `is_behavior_overriden` | — | none | MISSING |
+
+## IRPActor
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `is_behavior_overriden` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_actor.py::test_is_behavior_overriden` | identity/value | OK |
+
+## IRPStatechart
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `graphical_elements` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_statechart.py::test_graphical_elements` | identity/value | OK |
+| `is_main_behavior` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_statechart.py::test_is_main_behavior` | identity/value | OK |
+| `is_overridden` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_statechart.py::test_is_overridden` | identity/value | OK |
+| `its_class` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_statechart.py::test_its_class` | identity/value | OK |
+| `root_state` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_statechart.py::test_root_state` | identity/value | OK |
+
+## IRPStereotype
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `icon` | — | none | MISSING |
+| `is_new_term` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_stereotype.py::test_is_new_term` | identity/value | OK |
+| `of_meta_class` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_stereotype.py::test_of_meta_class` | identity/value | OK |
