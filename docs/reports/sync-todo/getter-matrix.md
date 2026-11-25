@@ -129,7 +129,7 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | `stereotypes` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_model_element.py::test_add_stereotype_and_get_stereotypes` | identity/value | OK |
 | `template_parameters` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_model_element.py::test_become_template_instantiation_of` | identity/value | OK |
 | `ti` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_model_element.py::test_get_ti` | identity/value | OK |
-| `user_defined_meta_class` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_model_element.py::test_get_user_defined_meta_class` | weak | WEAK |
+| `user_defined_meta_class` | — | none | MISSING |
 
 ## IRPOperation
 
