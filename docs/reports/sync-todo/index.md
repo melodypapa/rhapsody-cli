@@ -180,7 +180,7 @@ wrapper-signature fix before its getter/member row can close.
 | IRPProject | `check_events_base_ids_solve_collisions` | JavaDoc returns void; wrapper wraps it in `int()`. |
 | IRPProject | `default_directory_scheme` | JavaDoc/COM is `String`; wrapper reads/writes `int`. |
 | IRPPackage | `get_remote_requirements_populate_mode` | Requires a Design Manager/remote requirements server. |
-| IRPPackage | `get_instance_specifications`, `get_source_artifacts`, `get_user_defined_stereotypes`, `get_nested_components` | No live create/relate API; `add_instance_specification` is a pywin32-absent stub and packages have no `add_component`. |
+| IRPPackage | `get_instance_specifications`, `get_source_artifacts`, `get_user_defined_stereotypes`, `get_nested_components`, `links` | No live create/relate API; `add_instance_specification` is a pywin32-absent stub and packages have no `add_component`; package `links` inherits the IRPClass `add_link` fixture blocker. |
 | IRPClass | `add_link`, `add_link_to_part_via_port` | Needs a real `IRPInstance` part and structure-diagram endpoints; class-as-part fixtures only produced exceptions. |
 | IRPClassifier | `source_artifacts` (`getSourceArtifacts`) | No documented API creates or attaches a classifier-owned `IRPFile` source artifact, so only the empty-state case can run; evidence: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_get_source_artifacts_empty`. |
 | IRPClassifier | `sequence_diagrams` (`getSequenceDiagrams`) | `IRPPackage.add_sequence_diagram` creates a package-owned diagram and no member attaches it to a classifier, so the classifier getter cannot be shown to return a created diagram; evidence: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_get_sequence_diagrams_empty`. |
@@ -192,4 +192,6 @@ wrapper-signature fix before its getter/member row can close.
 | IRPProject | `get_code_generated_files` | Requires a real code-generation run; no safe fixture in the shared project. |
 | IRPProject | `get_active_custom_views_on_browser` | No API creates a browser-level custom view; the empty collection is the only observable state. |
 | IRPProject | `get_remote_resource_packages`, `is_actively_managed` | Require a remote resource/management server. |
+| IRPProject | `active_component`, `active_configuration` | Setting either mutates shared session state; a safe round-trip fixture is not yet available. |
+| IRPApplication | `add_profile_to_model` | Needs a real installed profile name on Windows; `"0"` is an unverified profile index and the model-level addition has no cleanup API. Evidence: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_application.py::test_add_profile_to_model`. |
 | IRPProject | `is_modified_recursive` | Needs a controlled modify/save transition on the session-shared project. |

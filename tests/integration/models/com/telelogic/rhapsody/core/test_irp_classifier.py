@@ -315,9 +315,9 @@ class TestRPClassifierIntegration:
             activity_diagram = classifier.add_activity_diagram()
             assert activity_diagram is not None
             fetched = classifier.activity_diagram
-            assert fetched is not None
+            assert fetched == activity_diagram
             behavioral = list(classifier.behavioral_diagrams)
-            assert len(behavioral) >= 1
+            assert activity_diagram in behavioral
         finally:
             classifier.delete_from_project()
 

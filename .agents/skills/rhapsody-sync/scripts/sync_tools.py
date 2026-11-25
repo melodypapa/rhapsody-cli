@@ -5,7 +5,7 @@ import json
 import re
 import sys
 from pathlib import Path
-from typing import List, Optional, Set, Tuple
+from typing import Dict, List, Optional, Set, Tuple
 
 _INTERFACE_PATTERN = re.compile(r"^# Rhapsody API Validation: (IRP[A-Za-z0-9_]+)$", re.MULTILINE)
 _WRAPPER_PATTERN = re.compile(r"^- Target wrapper: `([^`]+)` \(`([^`]+)`\)$", re.MULTILINE)
@@ -428,14 +428,31 @@ def _owned_property_names(wrapper_source: str) -> Set[str]:
     return names
 
 
+def _is_empty_collection_literal(expression: ast.expr) -> bool:
+    """Return whether the expression is a literal empty list/tuple/set/dict."""
+    if isinstance(expression, ast.Dict):
+        return not expression.keys
+    if isinstance(expression, (ast.List, ast.Tuple, ast.Set)):
+        return not expression.elts
+    return False
+
+
 def _is_weak_getter_assertion(expression: ast.expr) -> bool:
     """Return whether an assertion proves only non-None/type/count/truthiness."""
     if isinstance(expression, ast.Constant):
+        return True
+    if isinstance(expression, ast.UnaryOp) and isinstance(expression.op, ast.Not):
         return True
     if isinstance(expression, ast.Compare):
         if len(expression.ops) == 1 and isinstance(expression.ops[0], ast.IsNot):
             comparator = expression.comparators[0]
             return isinstance(comparator, ast.Constant) and comparator.value is None
+        if any(_is_empty_collection_literal(comparator) for comparator in expression.comparators):
+            return True
+        if len(expression.ops) == 1 and isinstance(expression.ops[0], ast.GtE):
+            comparator = expression.comparators[0]
+            if isinstance(comparator, ast.Constant) and comparator.value == 0:
+                return True
         operands = [expression.left, *expression.comparators]
         return any(isinstance(operand, ast.Call) and isinstance(operand.func, ast.Name) and operand.func.id == "len" for operand in operands)
     if isinstance(expression, ast.Call):
@@ -443,28 +460,147 @@ def _is_weak_getter_assertion(expression: ast.expr) -> bool:
     return isinstance(expression, (ast.Name, ast.Attribute))
 
 
-def verify_getter_assertions(path: Path, property_names: Set[str]) -> List[str]:
-    """Reject getter tests that assert only non-None/type/count/truthiness.
+_GETTER_TEST_SUFFIXES = ("_empty_state", "_empty")
 
-    SKILL section 5 requires a getter integration test to create the real
-    related object, then assert identity or value; an empty collection or a
-    non-``None`` return is not evidence that retrieval works.
+
+def _getter_property_for_test(test_name: str, property_names: Set[str]) -> Optional[str]:
+    """Map ``test_<property>`` / ``test_get_<property>[_empty]`` to a wrapper property."""
+    if not test_name.startswith("test_"):
+        return None
+    member = test_name[len("test_") :]
+    if member.startswith("get_"):
+        member = member[len("get_") :]
+    for suffix in _GETTER_TEST_SUFFIXES:
+        if member.endswith(suffix):
+            member = member[: -len(suffix)]
+            break
+    return member if member in property_names else None
+
+
+def verify_getter_assertions(path: Path, property_names: Set[str]) -> List[str]:
+    """Reject getter properties covered only by non-None/type/count/empty assertions.
+
+    SKILL section 5 requires at least one getter integration test per property
+    that creates the real related object and asserts identity or value. An
+    empty-state test (``test_<property>_empty``) is an additional case, not a
+    substitute, so a property fails when every matching test is weak.
     """
     issues: List[str] = []
     tree = ast.parse(path.read_text(encoding="utf-8"))
+    coverage: Dict[str, List[Tuple[str, int, bool]]] = {}
     for node in ast.walk(tree):
-        if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) or not node.name.startswith("test_"):
+        if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
             continue
-        member = node.name[len("test_") :]
-        if member not in property_names:
+        member = _getter_property_for_test(node.name, property_names)
+        if member is None:
             continue
         assertions = [statement for statement in ast.walk(node) if isinstance(statement, ast.Assert)]
-        if not assertions or all(_is_weak_getter_assertion(assertion.test) for assertion in assertions):
-            issues.append(f"getter test {node.name} at line {node.lineno} only asserts non-None/type/count; create the related object and assert identity/value (SKILL section 5)")
+        weak = not assertions or all(_is_weak_getter_assertion(assertion.test) for assertion in assertions)
+        coverage.setdefault(member, []).append((node.name, node.lineno, weak))
+    for member, tests in coverage.items():
+        if all(weak for _, _, weak in tests):
+            names = ", ".join(f"{name} (line {lineno})" for name, lineno, _ in tests)
+            issues.append(f"getter {member!r} is only covered by weak assertions: {names}; create the related object and assert identity/value (SKILL section 5)")
     return issues
 
 
-def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) -> List[str]:
+def _model_class_members(root: Path) -> Dict[str, List[Tuple[Set[str], Set[str], List[str]]]]:
+    """Index every model class as (methods, properties, base names)."""
+    index: Dict[str, List[Tuple[Set[str], Set[str], List[str]]]] = {}
+    models_root = root / "src" / "rhapsody_cli" / "models"
+    for path in models_root.rglob("*.py"):
+        try:
+            tree = ast.parse(path.read_text(encoding="utf-8"))
+        except (OSError, SyntaxError, UnicodeDecodeError):
+            continue
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.ClassDef):
+                continue
+            methods = {item.name for item in node.body if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))}
+            properties: Set[str] = set()
+            for item in node.body:
+                if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    decorators = {getattr(decorator, "id", None) or getattr(decorator, "attr", None) for decorator in item.decorator_list}
+                    if decorators & {"property", "cached_property"}:
+                        properties.add(item.name)
+            bases = [base.id if isinstance(base, ast.Name) else base.attr for base in node.bases if isinstance(base, (ast.Name, ast.Attribute))]
+            index.setdefault(node.name, []).append((methods, properties, bases))
+    return index
+
+
+def _mro_members(index: Dict[str, List[Tuple[Set[str], Set[str], List[str]]]], class_name: str, seen: Optional[Set[str]] = None) -> Tuple[Set[str], Set[str]]:
+    """Return the union of methods and properties declared on a class and its bases."""
+    seen = seen if seen is not None else set()
+    if class_name in seen:
+        return set(), set()
+    seen.add(class_name)
+    methods: Set[str] = set()
+    properties: Set[str] = set()
+    for own_methods, own_properties, bases in index.get(class_name, []):
+        methods |= own_methods
+        properties |= own_properties
+        for base in bases:
+            base_methods, base_properties = _mro_members(index, base, seen)
+            methods |= base_methods
+            properties |= base_properties
+    return methods, properties
+
+
+def _own_members(wrapper_source: str, wrapper_class: str) -> Tuple[Set[str], Set[str]]:
+    """Return the public methods and properties declared directly on the wrapper class."""
+    tree = ast.parse(wrapper_source)
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ClassDef) and node.name == wrapper_class:
+            methods = {item.name for item in node.body if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))}
+            properties: Set[str] = set()
+            for item in node.body:
+                if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    decorators = {getattr(decorator, "id", None) or getattr(decorator, "attr", None) for decorator in item.decorator_list}
+                    if decorators & {"property", "cached_property"}:
+                        properties.add(item.name)
+            return methods, properties
+    return set(), set()
+
+
+def collect_inherited_assertion_notes(root: Path, wrapper_source: str, wrapper_class: str, test_path: Path) -> List[str]:
+    """Return assertions whose only referenced wrapper member is inherited.
+
+    AGENTS.md scopes each mirrored integration file to the wrapper class's own
+    members: parent members may build the fixture but must not be the subject
+    of an assertion. This scan is advisory unless the caller promotes it.
+    """
+    own_methods, own_properties = _own_members(wrapper_source, wrapper_class)
+    index = _model_class_members(root)
+    for node in ast.walk(ast.parse(wrapper_source)):
+        if isinstance(node, ast.ClassDef) and node.name == wrapper_class:
+            methods = {item.name for item in node.body if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))}
+            properties: Set[str] = set()
+            for item in node.body:
+                if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    decorators = {getattr(decorator, "id", None) or getattr(decorator, "attr", None) for decorator in item.decorator_list}
+                    if decorators & {"property", "cached_property"}:
+                        properties.add(item.name)
+            bases = [base.id if isinstance(base, ast.Name) else base.attr for base in node.bases if isinstance(base, (ast.Name, ast.Attribute))]
+            index[wrapper_class] = [(methods, properties, bases)]
+            break
+    all_methods, all_properties = _mro_members(index, wrapper_class)
+    base_only = (all_methods | all_properties) - (own_methods | own_properties)
+    if not base_only:
+        return []
+    notes: List[str] = []
+    tree = ast.parse(test_path.read_text(encoding="utf-8"))
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Assert):
+            continue
+        attributes = {child.attr for child in ast.walk(node) if isinstance(child, ast.Attribute)}
+        inherited = attributes & base_only
+        own = attributes & (own_methods | own_properties)
+        if inherited and not own:
+            notes.append(f"{test_path.name}:{node.lineno} asserts inherited member(s) only: {', '.join(sorted(inherited))}; assert an own member instead (AGENTS.md integration scope)")
+    return notes
+
+
+def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path, inherited_notes: Optional[List[str]] = None, strict_inherited: bool = False) -> List[str]:
     """Check package placement, requirement entry, and RST coverage against a validator report."""
     issues: List[str] = []
     try:
@@ -542,6 +678,11 @@ def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) ->
                 issues.extend(verify_integration_exception_catches(test_path.read_text(encoding="utf-8")))
                 issues.extend(verify_no_empty_finally(test_path))
                 issues.extend(verify_getter_assertions(test_path, owned_properties))
+                notes = collect_inherited_assertion_notes(root, absolute_wrapper.read_text(encoding="utf-8"), wrapper_class, test_path)
+                if strict_inherited:
+                    issues.extend(notes)
+                elif inherited_notes is not None:
+                    inherited_notes.extend(notes)
     requirements_path = first_existing(root / "docs" / "requirements" / package_dir, "{stem}.md")
     if requirements_path is None:
         issues.append(f"Class requirement document not found: {root / 'docs' / 'requirements' / package_dir / f'{class_stem}.md'}")

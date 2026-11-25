@@ -30,6 +30,7 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_application import IRPA
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_unit import IRPUnit
 from tests.integration.conftest import TEST_PROJECT_DIR, TEST_PROJECT_NAME
 
 
@@ -71,16 +72,20 @@ class TestIRPApplicationIntegration:
 
     def test_active_project_returns_current_test_project(self, rhapsody_app: IRPApplication, test_project: IRPProject) -> None:
         active = rhapsody_app.active_project()
-        assert active is not None
-        assert active.name == TEST_PROJECT_NAME
+        assert active == test_project
 
     def test_application_ui_is_hidden_by_default(self, rhapsody_app: IRPApplication) -> None:
         assert rhapsody_app.is_hidden_ui is True
 
+    def test_environment_language_toolset_and_load_on_demand(self, rhapsody_app: IRPApplication) -> None:
+        assert rhapsody_app.language in {"C++", "C", "Java", "Ada", "C#"}
+        assert "Edition" in rhapsody_app.tool_set
+        assert rhapsody_app.is_load_on_demand in (0, 1)
+
     def test_open_project_returns_the_real_project(self, rhapsody_app: IRPApplication, test_project: IRPProject) -> None:
         opened = rhapsody_app.open_project(str(TEST_PROJECT_DIR / "TestProject.rpyx"))
 
-        assert opened.name == TEST_PROJECT_NAME
+        assert opened == test_project
 
     def test_create_new_project_returns_the_created_project(self, rhapsody_app: IRPApplication, tmp_path: Path, test_project: IRPProject) -> None:
         project_dir = tmp_path / "NewProj"
@@ -90,14 +95,11 @@ class TestIRPApplicationIntegration:
         rhapsody_app.save_all()
         created = rhapsody_app.create_new_project(str(project_dir), "CreatedProject")
 
-        assert created is not None
-        assert created.name == "CreatedProject"
         active = rhapsody_app.active_project()
-        assert active is not None
-        assert active.name == "CreatedProject"
+        assert active == created
         created.delete_from_project()
         reopened = rhapsody_app.open_project(str(TEST_PROJECT_DIR / "TestProject.rpyx"))
-        assert reopened.name == TEST_PROJECT_NAME
+        assert reopened == test_project
 
     def test_projects_collection_contains_the_test_project(self, rhapsody_app: IRPApplication, test_project: IRPProject) -> None:
         projects = rhapsody_app.projects
@@ -205,9 +207,15 @@ class TestIRPApplicationIntegration:
     def test_generate(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
         assert rhapsody_app.generate() is None  # type: ignore[func-returns-value]
 
-    def test_add_profile_to_model(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+    def test_add_profile_to_model(self, rhapsody_app: IRPApplication) -> None:
+        """Open blocker: the fixture set has no installed profile name.
+
+        ``0`` is the profile index accepted by the current Rhapsody build; the
+        row stays open in the sync ledger until a real profile from the
+        installation is used on Windows.
+        """
         result = rhapsody_app.add_profile_to_model("0")
-        assert result is not None
+        assert isinstance(result, IRPUnit)
 
     def test_add_selected_to_favorites(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
         assert rhapsody_app.add_selected_to_favorites() is None  # type: ignore[func-returns-value]
