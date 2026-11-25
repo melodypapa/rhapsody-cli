@@ -108,7 +108,8 @@ class TestIRPTypeIntegration:
             # Live 2026-11-25: typedefMultiplicity is readable but every write
             # faults with COM HRESULT -2147221498, so the setter is a recorded
             # blocker (index.md) and the getter asserts the observed default.
-            assert type_element.typedef_multiplicity in {"1", "0..1"}
+            value = type_element.typedef_multiplicity
+            assert value in {"1", "0..1"}
         finally:
             pkg.delete_from_project()
 

@@ -3,19 +3,19 @@
 IRPInterfaceItem
 ================
 
-The IRPInterfaceItem interface is the base for operation-like elements carrying arguments.
+The IRPInterfaceItem interface represents the features shared by operations, events, and event receptions in Rhapsody models.
 
 - **Java interface:** IRPInterfaceItem
 - **Java package:** com.telelogic.rhapsody.core
-- **JavaDoc description:** The IRPInterfaceItem interface represents an item with a signature and argument list.
+- **JavaDoc description:** The IRPInterfaceItem interface represents the features shared by operations, events, and event receptions in Rhapsody models.
 - **Python wrapper:** IRPInterfaceItem
 - **Python import:** ``from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPInterfaceItem``
-- **Canonical module:** ``rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item`` (the
+- **Canonical module:** ``rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item``
 
 API reference
 -------------
 
-Wraps ``IRPInterfaceItem``: the base interface for operation-like
+The IRPInterfaceItem interface represents the features shared by operations, events, and event receptions in Rhapsody models.
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item.IRPInterfaceItem.add_argument
 

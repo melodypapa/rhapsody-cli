@@ -8,7 +8,7 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProje
 
 
 @pytest.mark.integration
-class TestRPActorIntegration:
+class TestIRPActorIntegration:
     """Integration tests for IRPActor with live Rhapsody COM API."""
 
     @staticmethod
@@ -21,22 +21,32 @@ class TestRPActorIntegration:
         assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_actor_behavior_override(self, test_project: IRPProject) -> None:
+    def test_is_behavior_overriden(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("BehPkg")
         actor_name = self._unique("BehActor")
         pkg = self._create_package(test_project, pkg_name)
         try:
             actor = pkg.add_actor(actor_name)
-            assert actor.get_is_behavior_overriden() is False
-            actor.set_is_behavior_overriden(True)
-            assert actor.get_is_behavior_overriden() is True
-            actor.set_is_behavior_overriden(False)
-            assert actor.get_is_behavior_overriden() is False
+            assert actor.is_behavior_overriden is False
+            actor.is_behavior_overriden = True
+            assert actor.is_behavior_overriden is True
+            actor.is_behavior_overriden = False
+            assert actor.is_behavior_overriden is False
+        finally:
+            actor.delete_from_project()
+
+    def test_update_contained_diagrams_on_server_is_documented_unavailable(self, test_project: IRPProject) -> None:
+        """JavaDoc declares updateContainedDiagramsOnServer(int), but the registered IRPActor typelib/catalog expose no member; the stub raises before dispatch."""
+        package = self._create_package(test_project, self._unique("ActorDiagramServerPkg"))
+        actor = package.add_actor(self._unique("ActorDiagramServer"))
+        try:
+            with pytest.raises(NotImplementedError):
+                actor.update_contained_diagrams_on_server(0)
         finally:
             actor.delete_from_project()
 
     def test_add_event_reception_with_event(self, test_project: IRPProject) -> None:
-        """JavaDoc IRPActor.addEventReceptionWithEvent exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
+        """JavaDoc defines addEventReceptionWithEvent(name, event), but the IRPActor typelib/catalog expose no member; the stub raises before dispatch."""
         from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPEvent
 
         pkg_name = self._unique("ActorEvPkg")
@@ -47,7 +57,7 @@ class TestRPActorIntegration:
         try:
             actor = pkg.add_actor(actor_name)
             event = pkg.add_event(event_name)
-            with pytest.raises(NotImplementedError, match="addEventReceptionWithEvent is not exposed in the Rhapsody COM"):
+            with pytest.raises(NotImplementedError, match="addEventReceptionWithEvent is not exposed by the registered pywin32 interface"):
                 actor.add_event_reception_with_event(reception_name, cast(IRPEvent, event))
         finally:
             actor.delete_from_project()

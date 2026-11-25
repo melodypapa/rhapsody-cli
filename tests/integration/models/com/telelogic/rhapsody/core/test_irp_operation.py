@@ -186,7 +186,7 @@ class TestRPOperationIntegration:
         test_class = pkg.add_class(self._unique("ArgCls"))
         try:
             op = test_class.add_operation(self._unique("argOp"))
-            argument = op.add_argument(self._unique("arg"))
+            argument = op.add_argument(self._unique("Argument"))
             op.delete_argument(argument)
             assert len(list(op.arguments)) == 0
         finally:

@@ -77,11 +77,6 @@ class TestIRPApplicationIntegration:
     def test_application_ui_is_hidden_by_default(self, rhapsody_app: IRPApplication) -> None:
         assert rhapsody_app.is_hidden_ui is True
 
-    def test_environment_language_toolset_and_load_on_demand(self, rhapsody_app: IRPApplication) -> None:
-        assert rhapsody_app.language in {"C++", "C", "Java", "Ada", "C#"}
-        assert "Edition" in rhapsody_app.tool_set
-        assert rhapsody_app.is_load_on_demand in (0, 1)
-
     def test_open_project_returns_the_real_project(self, rhapsody_app: IRPApplication, test_project: IRPProject) -> None:
         opened = rhapsody_app.open_project(str(TEST_PROJECT_DIR / "TestProject.rpyx"))
 
@@ -144,7 +139,12 @@ class TestIRPApplicationIntegration:
         assert rhapsody_app.interface_name == "IRPApplication"
 
     def test_serial_number_is_non_empty(self, rhapsody_app: IRPApplication) -> None:
-        assert rhapsody_app.serial_no.strip()
+        assert rhapsody_app.serial_no.startswith("IBM:")
+
+    def test_environment_language_toolset_and_load_on_demand(self, rhapsody_app: IRPApplication) -> None:
+        assert rhapsody_app.language in {"C++", "C", "Java", "Ada", "C#"}
+        assert "Edition" in rhapsody_app.tool_set
+        assert rhapsody_app.is_load_on_demand in (0, 1)
 
     def test_version_number_long_is_non_empty(self, rhapsody_app: IRPApplication) -> None:
         assert rhapsody_app.version_number_long().strip()

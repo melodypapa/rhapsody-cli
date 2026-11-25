@@ -63,6 +63,7 @@ class IRPInterfaceItem(IRPClassifier):
         Args:
             new_val: The name to use for the new argument.
             pos: The 1-based position at which to insert the new argument.
+                The zero-based COM position is derived before dispatch.
 
         Returns:
             The wrapped ``IRPArgument`` created.
@@ -72,7 +73,7 @@ class IRPInterfaceItem(IRPClassifier):
         """
         from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument import IRPArgument
 
-        return cast(IRPArgument, self.wrap(self.call_com(lambda: self._com.addArgumentBeforePosition(new_val, pos))))
+        return cast(IRPArgument, self.wrap(self.call_com(lambda: self._com.addArgumentBeforePosition(new_val, pos - 1))))
 
     @property
     def arguments(self) -> IRPCollection:

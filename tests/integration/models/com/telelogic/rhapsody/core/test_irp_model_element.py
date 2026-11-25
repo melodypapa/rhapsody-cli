@@ -60,7 +60,8 @@ class TestRPModelElementIntegration:
         guid = test_project.guid
         assert isinstance(guid, str)
         # Live COM returns the value as "GUID <hex-uuid>", not a bare UUID string.
-        assert uuid.UUID(guid.split()[-1])
+        parsed = uuid.UUID(guid.split()[-1])
+        assert str(parsed) in guid
 
 
 @pytest.mark.integration
@@ -1062,6 +1063,9 @@ class TestRPModelElementCloningTemplatesIntegration:
             assert instance.become_template_instantiation_of(template) is None  # type: ignore[func-returns-value]
             assert instance.ti is not None
             assert instance.ti.meta_class == "TemplateInstantiation"
+            assert instance.of_template is not None
+            assert instance.of_template.name == template.name
+            assert "T" in [parameter.name for parameter in template.template_parameters]
         finally:
             pkg.delete_from_project()
 
@@ -1080,13 +1084,14 @@ class TestRPModelElementCloningTemplatesIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_get_template_parameters_returns_created_parameter(self, test_project: IRPProject) -> None:
+    def test_get_template_parameters_on_plain_element(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("TemplParamsPkg"))
         try:
-            cls = pkg.add_class(self._unique("Templated"))
-            cls.add_new_aggr("TemplateParameter", "T")
-            params = list(cls.template_parameters)
-            assert any(parameter.name == "T" for parameter in params)
+            cls = pkg.add_class(self._unique("Plain"))
+            params = cls.template_parameters
+            assert params is not None
+            assert isinstance(params, IRPCollection)
+            assert isinstance(params.count, int)
         finally:
             pkg.delete_from_project()
 
@@ -1492,6 +1497,17 @@ class TestRPModelElementDiagnosticsUiIntegration:
             assert isinstance(annotations.count, int)
             assert annotations.count == 0
             assert len(list(annotations)) == 0
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_annotations_returns_annotation_created_on_element(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("AnnPopPkg"))
+        try:
+            cls = pkg.add_class(self._unique("AnnPopCls"))
+            annotation_name = self._unique("Annotation")
+            cls.add_new_aggr("Annotation", annotation_name)
+
+            assert annotation_name in [annotation.name for annotation in cls.annotations]
         finally:
             pkg.delete_from_project()
 

@@ -222,12 +222,13 @@ class IRPUseCase(IRPClassifier):
 
         Raises:
             NotImplementedError: Always. Under Rhapsody2.Application.1 the
-                ``setIsBehaviorOverriden`` method is not exposed in the COM
-                automation type library for use cases (the getter
-                ``getIsBehaviorOverriden`` is exposed and works; the sibling
-                ``IRPActor``/``IRPClass`` versions of this setter *are* exposed).
-                Marked unimplemented rather than failing with a raw COM
-                ``AttributeError`` at runtime.
+                ``setIsBehaviorOverriden`` method is not exposed in the pywin32
+                catalog (``docs/reports/pywin32_authority.json``) for use cases:
+                only the ``isBehaviorOverriden`` property (getter) is listed.
+                The getter works, but writes have no effect for use cases (the
+                sibling ``IRPActor``/``IRPClass`` setters *are* exposed). The
+                user explicitly approved this runtime stub on 2026-11-25
+                (recorded in ``docs/reports/sync-todo/index.md``).
 
         Reference:
             com.telelogic.rhapsody.core.IRPUseCase::setIsBehaviorOverriden(int isBehaviorOverriden)
