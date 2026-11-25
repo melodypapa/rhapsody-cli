@@ -143,7 +143,12 @@ Mechanical per interface: for each `MISSING` matrix row, add `test_get_<property
 | IRPCollection | 1 | P3 |
 | IRPType | 0 | — |
 
-- [ ] P1 interfaces at 0 `MISSING` or documented blockers.
+- [x] P1 interfaces (2026-11-25): 43 of 99 `MISSING` rows closed by pointing the matrix at existing
+  JavaDoc-backed live tests (IRPOperation 14, IRPModelElement 17, IRPClassifier 12). Strengthened
+  weak tests for integer flags, visibility/initializer, description_html, annotations, template
+  parameters, activity/behavioral diagrams. The two IRPModelElement stub getters are recorded as
+  P0 blockers. All three P1 interfaces pass `verify_sync.py --strict-getters`; total MISSING is
+  now 56 (12 strict failures remain in P2/P3).
 - [ ] P2 interfaces at 0 `MISSING` or documented blockers.
 - [ ] P3 interfaces at 0 `MISSING` or documented blockers.
 

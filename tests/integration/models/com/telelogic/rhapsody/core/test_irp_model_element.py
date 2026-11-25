@@ -683,9 +683,12 @@ class TestRPModelElementDescriptionDisplayNameIntegration:
             with pytest.raises(NotImplementedError, match="setDescriptionHTML is documented as"):
                 cls.set_description_html(html)
 
-            # getDescriptionHTML should work normally
+            # getDescriptionHTML should work normally; set description through
+            # the writable property and assert the HTML getter reflects it.
+            cls.description = "A test description"
             retrieved_html = cls.description_html
             assert isinstance(retrieved_html, str)
+            assert "A test description" in retrieved_html
         finally:
             pkg.delete_from_project()
 
@@ -1060,6 +1063,9 @@ class TestRPModelElementCloningTemplatesIntegration:
             assert instance.become_template_instantiation_of(template) is None  # type: ignore[func-returns-value]
             assert instance.ti is not None
             assert instance.ti.meta_class == "TemplateInstantiation"
+            assert instance.of_template is not None
+            assert instance.of_template.name == template.name
+            assert "T" in [parameter.name for parameter in template.template_parameters]
         finally:
             pkg.delete_from_project()
 
@@ -1491,6 +1497,17 @@ class TestRPModelElementDiagnosticsUiIntegration:
             assert isinstance(annotations.count, int)
             assert annotations.count == 0
             assert len(list(annotations)) == 0
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_annotations_returns_annotation_created_on_element(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("AnnPopPkg"))
+        try:
+            cls = pkg.add_class(self._unique("AnnPopCls"))
+            annotation_name = self._unique("Annotation")
+            cls.add_new_aggr("Annotation", annotation_name)
+
+            assert annotation_name in [annotation.name for annotation in cls.annotations]
         finally:
             pkg.delete_from_project()
 
