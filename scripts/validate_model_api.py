@@ -518,9 +518,17 @@ def _camel_to_snake(name: str) -> str:
     return result.lower()
 
 
+# JavaDoc and the pywin32 type library occasionally use different names for the
+# same call. Normalize those pairs before family grouping so a documented alias
+# (authority JSON `documented_aliases`) can demote the family to ALIAS_DOCUMENTED
+# instead of splitting it into JAVA_DOC_MISSING + JAVA_ONLY_MEMBER rows.
+_COM_NAME_ALIASES = {"addgraphicalelementitem": "addGraphicalItem"}
+
+
 def _canonical_member_name(member_name: str) -> str:
     if member_name.startswith("python-only:"):
         return member_name
+    member_name = _COM_NAME_ALIASES.get(member_name.casefold(), member_name)
     if member_name[:3].lower() in ("get", "set") and len(member_name) > 3 and member_name[3].isupper():
         member_name = member_name[3:]
     return member_name[:1].lower() + member_name[1:]

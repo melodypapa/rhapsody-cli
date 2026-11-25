@@ -10,7 +10,7 @@ The IRPUnit interface represents model elements that can be saved as separate fi
 - **JavaDoc description:** The IRPUnit interface represents model elements that can be saved as separate files.
 - **Python wrapper:** IRPUnit
 - **Python import:** ``from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_unit import IRPUnit``
-- **Canonical module:** ``rhapsody_cli.models.com.telelogic.rhapsody.core.irp_unit`` (the
+- **Canonical module:** ``rhapsody_cli.models.com.telelogic.rhapsody.core.irp_unit``
 
 API reference
 -------------
