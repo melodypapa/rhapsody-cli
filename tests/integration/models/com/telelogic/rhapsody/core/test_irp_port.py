@@ -44,7 +44,7 @@ class TestIRPPortIntegration:
             port.is_reversed = 0
             assert port.is_reversed == 0
             # JavaDoc: portContract expects an interface/protocol, not a Class.
-            contract_interface = pkg.add_new_aggr("Interface", self._unique("contractIface"))
+            contract_interface = IRPClass(pkg.add_new_aggr("Interface", self._unique("contractIface"))._com)
             port.port_contract = contract_interface
             assert port.port_contract is not None
             assert port.port_contract.name == contract_interface.name
