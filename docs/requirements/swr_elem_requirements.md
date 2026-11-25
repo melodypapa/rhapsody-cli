@@ -76,23 +76,6 @@ meta class `"Requirement"`.
 
 ---
 
-## SWR_ELEM_00011: RPStatechart Wrapper
-
-**ID:** SWR_ELEM_00011
-**Title:** RPStatechart wraps IRPStatechart, a class's behavioral state machine
-**Status:** Implemented
-**Priority:** Medium
-**Description:**
-`RPStatechart` shall extend `IRPUnit` to wrap `IRPStatechart`. It shall expose
-Java-mirrored methods: `addNewNodeByType(meta_type, x_position, y_position, width, height)`
-(returns wrapped node), `createGraphics()`, `closeDiagram()`, and `deleteState(state)`
-(accepts an `IRPModelElement`). The wrapper shall register itself for the meta class
-`"Statechart"`.
-**Implementation:** src/rhapsody_cli/models/elements/classifiers.py:RPStatechart
-**Last Changed:** 2026-07-07
-
----
-
 ## SWR_ELEM_00013: Element Module Registration on Import
 
 **ID:** SWR_ELEM_00013

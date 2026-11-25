@@ -19,7 +19,7 @@ rhapsody-cli provides wrapper classes for all major Rhapsody element types:
 * IRPUseCase - Use case
 * RPInstance - Object instance
 * RPDiagram - Diagram
-* RPStatechart - State machine
+* IRPStatechart - Statechart behavior
 
 **Behavioral Elements**
 
@@ -59,6 +59,7 @@ Java Package API Reference
    com/telelogic/rhapsody/core/irp_package
    com/telelogic/rhapsody/core/irp_port
    com/telelogic/rhapsody/core/irp_project
+   com/telelogic/rhapsody/core/irp_statechart
    com/telelogic/rhapsody/core/irp_type
    com/telelogic/rhapsody/core/irp_use_case
    com/telelogic/rhapsody/core/irp_collection
