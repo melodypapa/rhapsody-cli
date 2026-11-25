@@ -3,6 +3,7 @@
 import pytest
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_generalization import IRPGeneralization
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_use_case import IRPUseCase
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
@@ -136,18 +137,28 @@ def test_generated_delete_extension_point() -> None:
     IRPUseCase(fake).delete_extension_point("x")
 
 
-def test_generated_find_entry_point() -> None:
+def test_generated_find_entry_point_uses_generalization_com_object() -> None:
     fake = make_fake_element("UseCase")
-    fake.findEntryPoint.return_value = make_fake_element("Class", properties={"name": "x"})
-    result = IRPUseCase(fake).find_entry_point("x")
-    assert result is not None
+    fake.findEntryPoint.return_value = "failure"
+    generalization_com = make_fake_element("Generalization")
+    generalization = IRPGeneralization(generalization_com)
+
+    result = IRPUseCase(fake).find_entry_point(generalization)
+
+    assert result == "failure"
+    fake.findEntryPoint.assert_called_once_with(generalization_com)
 
 
-def test_generated_find_extension_point() -> None:
+def test_generated_find_extension_point_uses_generalization_com_object() -> None:
     fake = make_fake_element("UseCase")
-    fake.findExtensionPoint.return_value = make_fake_element("Class", properties={"name": "x"})
-    result = IRPUseCase(fake).find_extension_point("x")
-    assert result is not None
+    fake.findExtensionPoint.return_value = "recovery"
+    generalization_com = make_fake_element("Generalization")
+    generalization = IRPGeneralization(generalization_com)
+
+    result = IRPUseCase(fake).find_extension_point(generalization)
+
+    assert result == "recovery"
+    fake.findExtensionPoint.assert_called_once_with(generalization_com)
 
 
 def test_generated_get_describing_diagram() -> None:

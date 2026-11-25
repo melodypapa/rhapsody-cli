@@ -14,6 +14,7 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IR
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPDiagram
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_generalization import IRPGeneralization
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interactions import IRPEvent, IRPEventReception
 
 
@@ -157,33 +158,33 @@ class IRPUseCase(IRPClassifier):
         """
         self.call_com(lambda: self._com.deleteExtensionPoint(extension_point))
 
-    def find_entry_point(self, name: str) -> IRPModelElement | None:
-        """Finds an entry point by name.
+    def find_entry_point(self, gen: IRPGeneralization) -> str:
+        """Finds the entry point associated with a generalization.
 
         Args:
-            name: The name of the entry point to find.
+            gen: The generalization whose entry point is requested.
 
         Returns:
-            The wrapped entry point, or None if not found.
+            The name of the entry point.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPUseCase::findEntryPoint(java.lang.String name)
+            com.telelogic.rhapsody.core.IRPUseCase::findEntryPoint(com.telelogic.rhapsody.core.IRPGeneralization gen)
         """
-        return self.wrap(self.call_com(lambda: self._com.findEntryPoint(name)))
+        return str(self.call_com(lambda: self._com.findEntryPoint(gen._com)))
 
-    def find_extension_point(self, name: str) -> IRPModelElement | None:
-        """Finds an extension point by name.
+    def find_extension_point(self, gen: IRPGeneralization) -> str:
+        """Finds the extension point associated with a generalization.
 
         Args:
-            name: The name of the extension point to find.
+            gen: The generalization whose extension point is requested.
 
         Returns:
-            The wrapped extension point, or None if not found.
+            The name of the extension point.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPUseCase::findExtensionPoint(java.lang.String name)
+            com.telelogic.rhapsody.core.IRPUseCase::findExtensionPoint(com.telelogic.rhapsody.core.IRPGeneralization gen)
         """
-        return self.wrap(self.call_com(lambda: self._com.findExtensionPoint(name)))
+        return str(self.call_com(lambda: self._com.findExtensionPoint(gen._com)))
 
     def get_describing_diagram(self, name: str) -> IRPDiagram:
         """Returns a specific describing diagram by name.

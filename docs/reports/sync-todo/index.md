@@ -17,6 +17,21 @@ all imports rewritten, canonical lazy exports rebuilt, and no compatibility shim
 committed API report / catalog entry exists (the Windows regeneration blocker); 2157 unit tests
 pass, ruff and black are clean, and all 479 integration tests collect.
 
+## Integration-test compliance pass (2026-11-24)
+
+All mirrored model-wrapper integration tests under `tests/integration/models/**` were audited
+against SKILL §5/§8: no non-`NotImplementedError` exception assertions, no `except` handlers or
+skip/xfail markers in test bodies, no `assert True`, no literal dummy inputs, and no empty
+`finally` cleanup. Fixes: `test_delete_type` now asserts the deleted type is absent instead of
+`assert True`; six `IRPType` setter cases now assert real round-trips with authentic values
+(`"Enumeration"`, `"int x"`, `"0..1"`, flag `1`); literal `"x"` lookups in `IRPUseCase`/`IRPInterfaceItem`
+cases use per-run unique keys; `IRPProject` file-based cases use real on-disk paths (`__file__`,
+`tmp_path`) instead of fabricated `"arg"` strings; the project-switch case calls `save_all()`
+before `open_project()` and deletes its created package. `verify_sync.py` passes for all 16
+interfaces; 472 integration tests collect (live Rhapsody unavailable on macOS). Open blockers:
+`cg_simplified_model_package` has no live populated fixture, and Gateway export / ReporterPLUS
+generation require external tools — recorded on the respective rows.
+
 ## Layout (2026-11-24)
 
 Group files are organized **by category**, where the category is the legacy module subpackage in

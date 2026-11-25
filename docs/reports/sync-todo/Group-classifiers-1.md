@@ -20,7 +20,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - Note: behavioural container (97 src / 14 test, 31 owned methods). Already extends the synced `IRPClass`; a direct leaf migration once its report exists.
   - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
   - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Step 3 — §3 compare evidence: regenerate report + catalog entry; reconcile owned members; one pywin32 member per call; catalog-absent sites = blockers
+  - [ ] Step 3 — §3 compare evidence: regenerate report + catalog entry; reconcile owned members; one pywin32 member per call; catalog-absent sites = blockers BLOCKER 2026-11-24: no committed API report at `docs/reports/com/telelogic/rhapsody/core/IRPStatechart_api_report.md` and no `pywin32_authority.json` catalog entry; SKILL §3 forbids offline edits without COM evidence. Wrapper/tests/docs unchanged; regenerate report + catalog on Windows with Rhapsody, then resume.
   - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy sites; full unit suite green
   - [ ] Step 5 — §5 integration tests: mirrored path, live run on Windows
   - [ ] Step 6 — §6 SWR update: per-class requirement document `irp_statechart.md`
@@ -30,7 +30,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - Note: usage 30 src / 15 test refs, 6 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
   - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
   - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Step 3 — §3 compare evidence: regenerate report + catalog entry; reconcile owned members; one pywin32 member per call; catalog-absent sites = blockers
+  - [ ] Step 3 — §3 compare evidence: regenerate report + catalog entry; reconcile owned members; one pywin32 member per call; catalog-absent sites = blockers BLOCKER 2026-11-24: no committed API report at `docs/reports/com/telelogic/rhapsody/core/IRPStereotype_api_report.md` and no `pywin32_authority.json` catalog entry; SKILL §3 forbids offline edits without COM evidence. Wrapper/tests/docs unchanged; regenerate report + catalog on Windows with Rhapsody, then resume.
   - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy sites; full unit suite green
   - [ ] Step 5 — §5 integration tests: mirrored path, assert only owned methods; live run on Windows
   - [ ] Step 6 — §6 SWR update: per-class requirement document `irp_stereotype.md` (move entry out of the legacy monolith)
@@ -40,7 +40,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - Note: usage 31 src / 11 test refs, 4 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
   - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
   - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Step 3 — §3 compare evidence: regenerate report + catalog entry; reconcile owned members; one pywin32 member per call; catalog-absent sites = blockers
+  - [ ] Step 3 — §3 compare evidence: regenerate report + catalog entry; reconcile owned members; one pywin32 member per call; catalog-absent sites = blockers BLOCKER 2026-11-24: no committed API report at `docs/reports/com/telelogic/rhapsody/core/IRPActor_api_report.md` and no `pywin32_authority.json` catalog entry; SKILL §3 forbids offline edits without COM evidence. Wrapper/tests/docs unchanged; regenerate report + catalog on Windows with Rhapsody, then resume.
   - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy sites; full unit suite green
   - [ ] Step 5 — §5 integration tests: mirrored path, assert only owned methods; live run on Windows
   - [ ] Step 6 — §6 SWR update: per-class requirement document `irp_actor.md` (move entry out of the legacy monolith)
@@ -50,7 +50,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - Note: usage 5 src / 4 test refs, 0 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
   - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
   - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Step 3 — §3 compare evidence: regenerate report + catalog entry; reconcile owned members; one pywin32 member per call; catalog-absent sites = blockers
+  - [ ] Step 3 — §3 compare evidence: regenerate report + catalog entry; reconcile owned members; one pywin32 member per call; catalog-absent sites = blockers BLOCKER 2026-11-24: no committed API report at `docs/reports/com/telelogic/rhapsody/core/IRPException_api_report.md` and no `pywin32_authority.json` catalog entry; SKILL §3 forbids offline edits without COM evidence. Wrapper/tests/docs unchanged; regenerate report + catalog on Windows with Rhapsody, then resume.
   - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy sites; full unit suite green
   - [ ] Step 5 — §5 integration tests: mirrored path, assert only owned methods; live run on Windows
   - [ ] Step 6 — §6 SWR update: per-class requirement document `irp_exception.md` (move entry out of the legacy monolith)
@@ -60,7 +60,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - Note: usage 6 src / 0 test refs, 0 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
   - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
   - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Step 3 — §3 compare evidence: regenerate report + catalog entry; reconcile owned members; one pywin32 member per call; catalog-absent sites = blockers
+  - [ ] Step 3 — §3 compare evidence: regenerate report + catalog entry; reconcile owned members; one pywin32 member per call; catalog-absent sites = blockers BLOCKER 2026-11-24: no committed API report at `docs/reports/com/telelogic/rhapsody/core/IRPExtensionPoint_api_report.md` and no `pywin32_authority.json` catalog entry; SKILL §3 forbids offline edits without COM evidence. Wrapper/tests/docs unchanged; regenerate report + catalog on Windows with Rhapsody, then resume.
   - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy sites; full unit suite green
   - [ ] Step 5 — §5 integration tests: mirrored path, assert only owned methods; live run on Windows
   - [ ] Step 6 — §6 SWR update: per-class requirement document `irp_extension_point.md` (move entry out of the legacy monolith)
@@ -78,41 +78,41 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded. Evidence: report regenerated, `verify_sync.py` exit 0, skill harness 49 passed, full unit 2158 passed, ruff/black clean, integration collection 472. Blocker: Windows live integration run and the three empty-state getter fixtures remain open per the machine-split decision.
 - [ ] irp_association_class_remediation - IRPAssociationClass
   - Baseline: end1, end2, and is_class are property-shaped; integration test asserts AttributeError on a regular association; test docstring contains stale xfail text.
-  - [ ] Section 1 member checklist and getter matrix published.
-  - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Section 3 establish whether a real AssociationClass can be created through documented live APIs.
-  - [ ] Section 4 fake-COM tests first; full unit suite green; irp_association_class.py at 100% statements/branches.
-  - [ ] Section 5 assert both ends and class flag on a real AssociationClass, or leave a user-approved blocker open; remove stale xfail claim.
-  - [ ] Section 6 irp_association_class.md checked/updated.
-  - [ ] Section 7 irp_association_class.rst checked/updated for every public member.
-  - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded.
+  - [x] Section 1 member checklist and getter matrix published. Evidence: 3 owned members (`end1`, `end2`, `is_class` getter/setter) rendered in the 2026-11-24 sync report; getter matrix rows name the two real relation ends from `add_relation_to` / `get_inverse`, the `add_association` fixture, identity assertions, mirrored test path, and package cleanup.
+  - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2164 passed, ruff/black clean.
+  - [x] Section 3 establish whether a real AssociationClass can be created through documented live APIs. Evidence: `validate_interface.py IRPAssociationClass --source authority` — 3 MATCH, 0 actionable, 0 deviations; `IRPModelElement.add_association(end1, end2, name)` is the documented fixture used by the mirrored integration test.
+  - [x] Section 4 fake-COM tests first; full unit suite green; irp_association_class.py at 100% statements/branches. Evidence: focused unit 6 passed, 20 statements / 0 branches, 100.00%; full unit 2164 passed.
+  - [ ] Section 5 assert both ends and class flag on a real AssociationClass, or leave a user-approved blocker open; remove stale xfail claim. Evidence: integration test builds a real association class, asserts `end1`/`end2` are the two distinct relation ends and `is_class` round-trips; no exception assertion or xfail text remains. Blocker: no Rhapsody on macOS — 472 integration tests collect only; live assertions unverified.
+  - [x] Section 6 irp_association_class.md checked/updated. Evidence: per-class requirement entry documents the three property-shaped owned members and the `add_association` fixture; Last Changed 2026-11-24.
+  - [x] Section 7 irp_association_class.rst checked/updated for every public member. Evidence: anchor + API reference with `end1`, `end2`, `is_class`; `verify_sync.py IRPAssociationClass` exits 0.
+  - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded. Evidence: report regenerated (0 actionable), verify_sync exit 0, skill harness 49 passed, full unit 2164, ruff/black clean, integration collection 472. Blocker: Windows live integration closeout per the machine-split decision.
 - [ ] irp_operation_remediation - IRPOperation
   - Baseline: 15 property-shaped members; integration test asserts AttributeError for get_flowchart.
-  - [ ] Section 1 member checklist and getter matrix published.
-  - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Section 3 all 15 properties and the get_flowchart/catalog disposition reconciled.
-  - [ ] Section 4 fake-COM tests first; full unit suite green; irp_operation.py at 100% statements/branches.
-  - [ ] Section 5 create a real operation/flowchart fixture and assert live outcome, or document the verified unavailable-member stub.
-  - [ ] Section 6 irp_operation.md checked/updated.
-  - [ ] Section 7 irp_operation.rst checked/updated for every public member.
-  - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded.
+  - [x] Section 1 member checklist and getter matrix published. Evidence: 21-member checklist rendered in the 2026-11-24 sync report; getter matrix rows for `body`, `flowchart`, `initializer`, `returns`, `visibility`, all flags, and the documented-unavailable server-diagram method.
+  - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2164 passed, ruff/black clean.
+  - [x] Section 3 all 15 properties and the get_flowchart/catalog disposition reconciled. Evidence: report regenerated — 20 MATCH, 0 actionable, 1 `UNAVAILABLE_DOCUMENTED` (`update_contained_diagrams_on_server`); `get_flowchart` is now the `flowchart` pywin32 property with a real `create_auto_flow_chart` fixture; no exception assertion remains.
+  - [x] Section 4 fake-COM tests first; full unit suite green; irp_operation.py at 100% statements/branches. Evidence: focused unit 28 passed, 96 statements / 0 branches, 100.00%; full unit 2164 passed.
+  - [ ] Section 5 create a real operation/flowchart fixture and assert live outcome, or document the verified unavailable-member stub. Evidence: `test_flowchart_getters` creates an operation, generates a real flowchart, asserts the getter returns it and `delete_flowchart` succeeds; `update_contained_diagrams_on_server` stub asserted in the mirrored integration file. Blocker: no Rhapsody on macOS — 472 integration tests collect only; live assertions unverified.
+  - [x] Section 6 irp_operation.md checked/updated. Evidence: `SWR_ELEM_00006` description corrected to the `UNAVAILABLE_DOCUMENTED` `NotImplementedError` stub (was stale `PYWIN32_MEMBER_MISSING` direct-call text); Last Changed 2026-11-24.
+  - [x] Section 7 irp_operation.rst checked/updated for every public member. Evidence: anchor `.. _rhapsody-java-interface-IRPOperation:` plus 15 `autoproperty` and 6 `automethod` directives; `verify_sync.py IRPOperation` exits 0.
+  - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded. Evidence: report regenerated (0 actionable), verify_sync exit 0, skill harness 49 passed, full unit 2164, ruff/black clean, integration collection 472. Blocker: Windows live integration closeout per the machine-split decision.
 - [ ] irp_class_remediation - IRPClass
   - Baseline: property shape already conforms; 2 integration tests assert RhapsodyRuntimeException.
-  - [ ] Section 1 member checklist and getter matrix published.
-  - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Section 3 resolve both failing members against JavaDoc and pywin32 signatures.
-  - [ ] Section 4 full unit suite green; irp_class.py at 100% statements/branches.
-  - [ ] Section 5 assert positive live outcomes for both members with authentic setup, or leave verified blockers open.
-  - [ ] Section 6 irp_class.md checked/updated.
-  - [ ] Section 7 irp_class.rst checked/updated for every public member.
-  - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded.
+  - [x] Section 1 member checklist and getter matrix published. Evidence: 26 Python members rendered in the 2026-11-24 sync report; getter matrix rows for `attributes`, `operations`, `nested_classifiers`, `interface_items`, `ports`, `relations`, all collection/identity getters with real created children and package cleanup.
+  - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2164 passed, ruff/black clean.
+  - [x] Section 3 resolve both failing members against JavaDoc and pywin32 signatures. Evidence: report regenerated — 0 actionable, 2 `UNAVAILABLE_DOCUMENTED` (`add_event_reception_with_event`, `update_contained_diagrams_on_server`), both JavaDoc-present / pywin32-absent stubs asserted at both layers; no `RhapsodyRuntimeException` assertion remains in the mirrored integration file.
+  - [x] Section 4 full unit suite green; irp_class.py at 100% statements/branches. Evidence: focused unit 34 passed, 77 statements / 0 branches, 100.00%; full unit 2164 passed.
+  - [ ] Section 5 assert positive live outcomes for both members with authentic setup, or leave verified blockers open. Evidence: all integration cases use authentic created classes/packages and assert real outcomes; no exception assertions remain. Blocker: no Rhapsody on macOS — 472 integration tests collect only; live assertions unverified. Open data item: `pywin32_authority.json` still lists OSLC members in `documented_unavailable` although the catalog exposes them (validator warns, entry ignored).
+  - [x] Section 6 irp_class.md checked/updated. Evidence: per-class requirement entry documents the owned members and the two documented-unavailable stubs; Last Changed 2026-11-24.
+  - [x] Section 7 irp_class.rst checked/updated for every public member. Evidence: anchor + API reference covering all 26 public members; `verify_sync.py IRPClass` exits 0.
+  - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded. Evidence: report regenerated (0 actionable), verify_sync exit 0, skill harness 49 passed, full unit 2164, ruff/black clean, integration collection 472. Blocker: Windows live integration closeout per the machine-split decision.
 - [ ] irp_use_case_remediation - IRPUseCase
   - Baseline: 4 property-shape conversions; 3 integration tests assert TypeError; two JavaDoc-only methods already have unavailable stubs.
-  - [ ] Section 1 member checklist and getter matrix published.
-  - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Section 3 reconcile find_extension_point and both other failing signatures against JavaDoc/catalog.
-  - [ ] Section 4 fake-COM tests first; full unit suite green; irp_use_case.py at 100% statements/branches.
-  - [ ] Section 5 create entry/extension points and assert getter identity/content; replace all three exception assertions.
-  - [ ] Section 6 irp_use_case.md checked/updated.
-  - [ ] Section 7 irp_use_case.rst checked/updated for every public member.
-  - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded.
+  - [x] Section 1 member checklist and getter matrix published. Evidence: 15-member checklist rendered in the 2026-11-24 sync report; getter matrix rows for `extension_points`, `entry_points`, `describing_diagrams`, `is_behavior_overriden` with real created use cases/generalizations, identity assertions, mirrored test path, and package cleanup.
+  - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2164 passed, ruff/black clean.
+  - [x] Section 3 reconcile find_extension_point and both other failing signatures against JavaDoc/catalog. Evidence: JavaDoc shows `findEntryPoint/findExtensionPoint(IRPGeneralization gen) -> String` and pywin32 declares a `com` parameter; wrapper now unwraps `gen._com` and returns `str`; report regenerated — 0 actionable, 2 `UNAVAILABLE_DOCUMENTED`; no `TypeError` assertion remains.
+  - [x] Section 4 fake-COM tests first; full unit suite green; irp_use_case.py at 100% statements/branches. Evidence: focused unit 22 passed, 39 statements / 0 branches, 100.00%; both find-method unit cases assert the COM object argument and string result; full unit 2164 passed.
+  - [ ] Section 5 create entry/extension points and assert getter identity/content; replace all three exception assertions. Evidence: mirrored integration file now builds a real `IRPGeneralization` from two classes for both find cases and asserts the documented `str` outcome; entry/extension point cases use unique authentic names. Blocker: no Rhapsody on macOS — 472 integration tests collect only; live assertions unverified.
+  - [x] Section 6 irp_use_case.md checked/updated. Evidence: `SWR_ELEM_00012` now records the corrected `IRPGeneralization`/`String` contract for both find methods; Last Changed 2026-11-24.
+  - [x] Section 7 irp_use_case.rst checked/updated for every public member. Evidence: anchor + `automethod` entries for all 15 public members; `verify_sync.py IRPUseCase` exits 0.
+  - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded. Evidence: report regenerated (0 actionable), verify_sync exit 0, skill harness 49 passed, full unit 2164, ruff/black clean, integration collection 472. Blocker: Windows live integration closeout per the machine-split decision.
