@@ -5,6 +5,7 @@ from typing import cast
 import pytest
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -67,15 +68,14 @@ def test_to_list_raises_not_implemented_without_com_dispatch() -> None:
     fake.Item.assert_not_called()
 
 
-def test_add_graphical_item_raises_not_implemented_without_com_dispatch() -> None:
+def test_add_graphical_item_delegates_to_catalog_alias() -> None:
     fake = make_fake_collection([])
     collection = IRPCollection(fake)
-    element = IRPModelElement(make_fake_element("Class"))
+    graph = IRPGraphElement(make_fake_element("GraphElement"))
 
-    with pytest.raises(NotImplementedError):
-        collection.add_graphical_item(element)
+    collection.add_graphical_item(graph)
 
-    fake.addGraphicalItem.assert_not_called()
+    fake.addGraphicalElementItem.assert_called_once_with(graph._com)
 
 
 def test_negative_index_raises_index_error() -> None:
@@ -85,3 +85,11 @@ def test_negative_index_raises_index_error() -> None:
 
     with pytest.raises(IndexError, match="negative indices"):
         collection[-1]
+
+
+def test_set_string_value_annotation_matches_pywin32_catalog() -> None:
+    from typing import get_type_hints
+
+    # pywin32 declares setString's second parameter as VT_BYREF|VT_BSTR -> "object"
+    # in docs/reports/pywin32_authority.json; the wrapper annotation must agree.
+    assert get_type_hints(IRPCollection.set_string)["value"] is object

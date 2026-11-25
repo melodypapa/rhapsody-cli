@@ -44,13 +44,13 @@ were mapped to their legacy category by class name. All 146 tracked rows are pre
 | --- | --- | --- | --- |
 | [Group-activity-1.md](Group-activity-1.md) | `activity` | 10 | ⬜ 10 open |
 | [Group-activity-2.md](Group-activity-2.md) | `activity` | 2 | ⬜ 2 open |
-| [Group-application-1.md](Group-application-1.md) | `application` | 1 | ⬜ 1 open (Step 8 only) |
+| [Group-application-1.md](Group-application-1.md) | `application` | 1 | ✅ all archived |
 | [Group-classifiers-1.md](Group-classifiers-1.md) | `classifiers` | 10 | ⬜ 10 open |
 | [Group-classifiers-2.md](Group-classifiers-2.md) | `classifiers` | 6 | ⬜ 1 open · ✅ 5 archived |
 | [Group-common-1.md](Group-common-1.md) | `common` | 7 | ⬜ 6 open · ✅ 1 archived |
 | [Group-containment-1.md](Group-containment-1.md) | `containment` | 10 | ⬜ 9 open · ✅ 1 archived |
 | [Group-containment-2.md](Group-containment-2.md) | `containment` | 1 | ✅ all archived |
-| [Group-core-1.md](Group-core-1.md) | `core` | 7 | ⬜ 3 open · ✅ 4 archived |
+| [Group-core-1.md](Group-core-1.md) | `core` | 7 | ✅ all archived |
 | [Group-diagrams-1.md](Group-diagrams-1.md) | `diagrams` | 10 | ⬜ 10 open |
 | [Group-diagrams-2.md](Group-diagrams-2.md) | `diagrams` | 2 | ⬜ 2 open |
 | [Group-graphics-1.md](Group-graphics-1.md) | `graphics` | 10 | ⬜ 10 open |
@@ -67,9 +67,9 @@ were mapped to their legacy category by class name. All 146 tracked rows are pre
 | [Group-values-1.md](Group-values-1.md) | `values` | 5 | ⬜ 5 open |
 | [Group-variables-1.md](Group-variables-1.md) | `variables` | 8 | ⬜ 6 open · ✅ 2 archived |
 
-Progress: **15/146 rows tracked as archived** (128 wrapper classes + 1 application layer + 15 current-rule remediation rows + duplicate remediation rows preserved as in the source ledger).
-The open IRPApplication Step 8 row lives in [Group-application-1.md](Group-application-1.md); the
-15 current-rule remediation rows are spread across their category files; the queued unsynced
+Progress: **19/146 rows tracked as archived** (128 wrapper classes + 1 application layer + the completed remediation rows + duplicate remediation rows preserved as in the source ledger).
+As of 2026-11-25 the `application` row in [Group-application-1.md](Group-application-1.md) and
+all seven `core` rows in [Group-core-1.md](Group-core-1.md) are archived; the queued unsynced
 classes are in the remaining files, ordered by importance within each category. Commits
 `6cbebc3` (sync), `1778607` (test-rule compliance), `5175b93` (COM hardening), `2a6334c`…`3479937`
 (Windows closeout: real-COM outcome enforcement, report regeneration) and the review-fix commit
@@ -94,8 +94,8 @@ decision).
 
 ## Resume rule
 
-Take the open IRPApplication Step 8 row in [Group-application-1.md](Group-application-1.md), then
-the 15 current-rule remediation rows in their category files (`core`, `containment`, `classifiers`,
+The IRPApplication Step 8 row and the `core` remediation rows are complete. Next take the
+remaining current-rule remediation rows in their category files (`containment`, `classifiers`,
 `relations`, `common`, `variables`), then the queued rows in the category files (once their
 Windows-side Step 1/3 report regeneration unblocks them). Execute one rhapsody-sync run for that
 interface following SKILL.md §1–§8 exactly as enumerated in the row's steps; tick a step when
@@ -162,7 +162,7 @@ row's Notes.
   files, in descending importance within each category. Support-layer wrappers (codegen, files, IDE) are queued
   too; §2 must confirm whether their canonical home is the core package or their current
   `models/support/` location before any move.
-- **Termination (pending):** IRPApplication Step 8 and the 15 remediation rows remain open. After they archive, remove the deprecated `_get_method_or_property` / `_set_method_or_property` definitions from `ComHelper` in `src/rhapsody_cli/models/core.py`, drop legacy notes from `AGENTS.md`, `docs/CODE_GUIDELINES.md`, and the sync skill, and confirm `grep -rn "_method_or_property" src/ --include='*.py'` finds no definitions or call sites.
+- **Termination (pending):** IRPApplication Step 8 and the `core` remediation rows are archived; the remaining remediation rows in other category files are still open. After all of them archive, remove the deprecated `_get_method_or_property` / `_set_method_or_property` definitions from `ComHelper` in `src/rhapsody_cli/models/core.py`, drop legacy notes from `AGENTS.md`, `docs/CODE_GUIDELINES.md`, and the sync skill, and confirm `grep -rn "_method_or_property" src/ --include='*.py'` finds no definitions or call sites.
 
 ## P0 integration-test blockers (2026-11-24)
 
