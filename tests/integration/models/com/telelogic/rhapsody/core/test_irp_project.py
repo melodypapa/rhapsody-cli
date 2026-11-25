@@ -118,8 +118,9 @@ class TestIRPProjectGenerated:
     def test_add_package(self, test_project: IRPProject) -> None:
         pkg = None
         try:
-            pkg = test_project.add_package(self._unique("arg"))
-            assert pkg is not None
+            package_name = self._unique("AddPackage")
+            pkg = test_project.add_package(package_name)
+            assert pkg.name == package_name
         finally:
             if pkg is not None:
                 pkg.delete_from_project()
@@ -147,8 +148,9 @@ class TestIRPProjectGenerated:
     def test_add_component(self, test_project: IRPProject) -> None:
         pkg = None
         try:
-            pkg = test_project.add_component(self._unique("arg"))
-            assert pkg is not None
+            component_name = self._unique("AddComponent")
+            pkg = test_project.add_component(component_name)
+            assert pkg.name == component_name
         finally:
             if pkg is not None:
                 pkg.delete_from_project()
@@ -173,8 +175,9 @@ class TestIRPProjectGenerated:
     def test_add_profile(self, test_project: IRPProject) -> None:
         profile = None
         try:
-            profile = test_project.add_profile(self._unique("arg"))
-            assert profile is not None
+            profile_name = self._unique("AddProfile")
+            profile = test_project.add_profile(profile_name)
+            assert profile.name == profile_name
         finally:
             if profile is not None:
                 profile.delete_from_project()
@@ -220,7 +223,7 @@ class TestIRPProjectGenerated:
             pkg.delete_from_project()
 
     def test_open_csv_file(self, test_project: IRPProject) -> None:
-        assert test_project.open_csv_file(self._unique("arg"), 0) is None  # type: ignore[func-returns-value]
+        assert test_project.open_csv_file(self._unique("MissingCsv"), 0) is None  # type: ignore[func-returns-value]
 
     def test_enable_rhapsody_model_manager(self, test_project: IRPProject) -> None:
         """JavaDoc IRPProject.enableRhapsodyModelManager exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""

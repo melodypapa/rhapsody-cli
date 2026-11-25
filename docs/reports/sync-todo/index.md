@@ -175,6 +175,10 @@ fixtures. `IRPClassifier` (three rows above) and `IRPModelElement.user_defined_m
 getter blockers, so Step 8 reports getter failures for those two interfaces until a Windows + Rhapsody
 run settles the fixtures.
 
+The same pass replaced 21 `assert pkg.add_* (...) is not None` factory checks in `test_irp_package.py`
+and the `add_package`/`add_component`/`add_profile` checks in `test_irp_project.py` with name-identity
+assertions, and removed the remaining literal `"arg"` fixture prefixes from the integration tests.
+
 ## P0 integration-test blockers (2026-11-24)
 
 The following integration tests were removed rather than converted into exception assertions or skips
