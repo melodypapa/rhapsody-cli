@@ -138,7 +138,7 @@ class TestPortCreateAction:
         """UTS_PORT_00001: Test creating single port with inline JSON."""
         action, mock_classifier = self._make_action_with_classifier()
         mock_port = MagicMock()
-        mock_classifier.add_port.return_value = mock_port
+        mock_classifier.add_new_aggr.return_value = mock_port
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
             args = MagicMock()
@@ -148,14 +148,14 @@ class TestPortCreateAction:
 
             action.execute(args)
 
-            mock_classifier.add_port.assert_called_once_with("clientPort")
+            mock_classifier.add_new_aggr.assert_called_once_with("Port", "clientPort")
             assert mock_port.description == "Client interface"
 
     def test_create_bulk_ports_from_file(self, tmp_path: Any) -> None:
         """UTS_PORT_00002: Test creating multiple ports from JSON file."""
         action, mock_classifier = self._make_action_with_classifier()
         mock_port = MagicMock()
-        mock_classifier.add_port.return_value = mock_port
+        mock_classifier.add_new_aggr.return_value = mock_port
 
         json_file = tmp_path / "ports.json"
         json_file.write_text('[{"name":"inputPort"},{"name":"outputPort"}]', encoding="utf-8")
@@ -168,13 +168,13 @@ class TestPortCreateAction:
 
             action.execute(args)
 
-            assert mock_classifier.add_port.call_count == 2
+            assert mock_classifier.add_new_aggr.call_count == 2
 
     def test_create_with_boolean_flags(self) -> None:
         """UTS_PORT_00003: Test isBehavioral/isReversed set via setIsX(0/1)."""
         action, mock_classifier = self._make_action_with_classifier()
         mock_port = MagicMock()
-        mock_classifier.add_port.return_value = mock_port
+        mock_classifier.add_new_aggr.return_value = mock_port
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
             args = MagicMock()
@@ -191,7 +191,7 @@ class TestPortCreateAction:
         """UTS_PORT_00004: Test portContract resolved via findNestedClassifierRecursive."""
         action, mock_classifier = self._make_action_with_classifier()
         mock_port = MagicMock()
-        mock_classifier.add_port.return_value = mock_port
+        mock_classifier.add_new_aggr.return_value = mock_port
         mock_owner = MagicMock()
         mock_contract = MagicMock()
         mock_classifier.owner = mock_owner
@@ -212,7 +212,7 @@ class TestPortCreateAction:
         """UTS_PORT_00005: Test unknown attributes skipped with warning."""
         action, mock_classifier = self._make_action_with_classifier()
         mock_port = MagicMock()
-        mock_classifier.add_port.return_value = mock_port
+        mock_classifier.add_new_aggr.return_value = mock_port
 
         with patch.object(action, "_resolve_classifier", return_value=mock_classifier):
             args = MagicMock()

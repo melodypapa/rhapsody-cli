@@ -420,11 +420,13 @@ class IRPProject(IRPPackage):
         self.call_com(lambda: self._com.saveAs(file_path))
 
     # --- Find by binary ID ---
-    def find_element_by_binary_id(self, binary_id: str) -> IRPModelElement | None:
+    def find_element_by_binary_id(self, binary_id: bytes) -> IRPModelElement | None:
         """Finds an element in the project by binary ID.
 
         Args:
-            binary_id: The binary ID of the element to find.
+            binary_id: The binary ID of the element to find; pywin32 exposes
+                this as a VT_UI1 SAFEARRAY, so pass the raw ``bytes`` from an
+                element's ``binary_id`` property.
 
         Returns:
             The wrapped element if found.
@@ -826,16 +828,17 @@ class IRPProject(IRPPackage):
         self.call_com(lambda: self._com.importProjectFromRose(project_name, log_file_name))
 
     # --- Events methods ---
-    def check_events_base_ids_solve_collisions(self) -> int:
+    def check_events_base_ids_solve_collisions(self) -> None:
         """Checks events base IDs and solves collisions.
 
-        Returns:
-            The number of collisions solved.
+        The pywin32 member is ``checkEventsBaseIdsSolveCollisions`` (capital ``I`` in
+        ``Ids``); a live probe on 2026-11-25 confirmed the call returns ``None``,
+        matching the JavaDoc's void contract.
 
         Reference:
             com.telelogic.rhapsody.core.IRPProject::checkEventsBaseIdsSolveCollisions()
         """
-        return int(self.call_com(lambda: self._com.checkEventsBaseIdsSolveCollisions()))
+        self.call_com(lambda: self._com.checkEventsBaseIdsSolveCollisions())
 
     def recalculate_events_base_ids(self) -> None:
         """Recalculates the events base IDs for the project.
@@ -879,26 +882,26 @@ class IRPProject(IRPPackage):
         self.call_com(lambda: self._com.endTransactionOfNoCGInterest())
 
     @property
-    def default_directory_scheme(self) -> int:
+    def default_directory_scheme(self) -> str:
         """Returns the default directory scheme of the project.
 
         Returns:
-            The default directory scheme as an int.
+            The default directory scheme (for example ``"Flat"`` or ``"Nested"``).
 
         Reference:
             com.telelogic.rhapsody.core.IRPProject::getDefaultDirectoryScheme()
         """
-        return int(self.get_com_property(self._com, "defaultDirectoryScheme"))
+        return str(self.get_com_property(self._com, "defaultDirectoryScheme"))
 
     @default_directory_scheme.setter
-    def default_directory_scheme(self, scheme: int) -> None:
+    def default_directory_scheme(self, scheme: str) -> None:
         """Sets the default directory scheme of the project.
 
         Args:
-            scheme: The default directory scheme to set.
+            scheme: The default directory scheme to set, e.g. ``"Flat"``.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::setDefaultDirectoryScheme(int scheme)
+            com.telelogic.rhapsody.core.IRPProject::setDefaultDirectoryScheme(java.lang.String scheme)
         """
         self.set_com_property(self._com, "defaultDirectoryScheme", scheme)
 

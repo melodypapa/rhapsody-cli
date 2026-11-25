@@ -31,7 +31,6 @@ Wraps ``IRPClassifier``: the base class for all classifiable elements.
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier.IRPClassifier.add_operation
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier.IRPClassifier.add_port
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier.IRPClassifier.add_relation
 

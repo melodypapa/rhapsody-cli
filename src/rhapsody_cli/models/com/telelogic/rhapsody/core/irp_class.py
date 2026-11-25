@@ -93,7 +93,18 @@ class IRPClass(IRPClassifier):
 
     @is_abstract.setter
     def is_abstract(self, is_abstract: bool) -> None:
-        """Unimplemented: the COM write is accepted but never persists."""
+        """Unimplemented: the COM write is accepted but never persists.
+
+        Raises:
+            NotImplementedError: Always. ``setIsAbstract`` is absent from the
+                pywin32 catalog and listed in ``documented_unavailable``; the
+                ``isAbstract`` property accepts the write under
+                ``Rhapsody2.Application.1`` but never persists it (observed
+                live).
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPClass::setIsAbstract(int isAbstract)
+        """
         raise NotImplementedError("IRPClass.is_abstract setter is unimplemented: Rhapsody2.Application.1 accepts the write but never persists it.")
 
     def add_class(self, name: str) -> IRPClass:

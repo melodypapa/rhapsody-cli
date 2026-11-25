@@ -7,7 +7,6 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute import IRPAtt
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port import IRPPort
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
@@ -491,19 +490,6 @@ def test_classifier_get_ports_returns_collection() -> None:
 
     assert len(result) == 1
     assert result[0].name == "port"
-
-
-def test_classifier_add_port_delegates_to_add_new_aggr() -> None:
-    fake = make_fake_element("Class")
-    port_fake = make_fake_element("Port", properties={"name": "clientPort"})
-    fake.addNewAggr.return_value = port_fake
-    classifier = IRPClassifier(fake)
-
-    result = classifier.add_port("clientPort")
-
-    fake.addNewAggr.assert_called_once_with("Port", "clientPort")
-    assert isinstance(result, IRPPort)
-    assert result.name == "clientPort"
 
 
 def test_classifier_get_relations_returns_collection() -> None:

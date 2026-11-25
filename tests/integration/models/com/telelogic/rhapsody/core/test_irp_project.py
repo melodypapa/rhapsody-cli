@@ -50,6 +50,30 @@ class TestRPProjectIntegration:
         finally:
             comp.delete_from_project()
 
+    def test_find_element_by_binary_id_finds_created_class(self, test_project: IRPProject) -> None:
+        pkg = test_project.add_package(self._unique("BinIdPkg"))
+        try:
+            created = pkg.add_class(self._unique("BinIdCls"))
+
+            found = test_project.find_element_by_binary_id(created.binary_id)
+
+            assert found is not None
+            assert found.binary_id == created.binary_id
+        finally:
+            pkg.delete_from_project()
+
+    def test_default_directory_scheme_roundtrip(self, test_project: IRPProject) -> None:
+        original = test_project.default_directory_scheme
+        try:
+            assert isinstance(original, str)
+            test_project.default_directory_scheme = "Flat"
+            assert test_project.default_directory_scheme == "Flat"
+        finally:
+            test_project.default_directory_scheme = original
+
+    def test_check_events_base_ids_solve_collisions_completes(self, test_project: IRPProject) -> None:
+        assert test_project.check_events_base_ids_solve_collisions() is None  # type: ignore[func-returns-value]
+
 
 @pytest.mark.integration
 class TestRPPackageIntegration:
@@ -118,8 +142,9 @@ class TestIRPProjectGenerated:
     def test_add_package(self, test_project: IRPProject) -> None:
         pkg = None
         try:
-            pkg = test_project.add_package(self._unique("arg"))
-            assert pkg is not None
+            package_name = self._unique("AddPackage")
+            pkg = test_project.add_package(package_name)
+            assert pkg.name == package_name
         finally:
             if pkg is not None:
                 pkg.delete_from_project()
@@ -147,8 +172,9 @@ class TestIRPProjectGenerated:
     def test_add_component(self, test_project: IRPProject) -> None:
         pkg = None
         try:
-            pkg = test_project.add_component(self._unique("arg"))
-            assert pkg is not None
+            component_name = self._unique("AddComponent")
+            pkg = test_project.add_component(component_name)
+            assert pkg.name == component_name
         finally:
             if pkg is not None:
                 pkg.delete_from_project()
@@ -173,8 +199,9 @@ class TestIRPProjectGenerated:
     def test_add_profile(self, test_project: IRPProject) -> None:
         profile = None
         try:
-            profile = test_project.add_profile(self._unique("arg"))
-            assert profile is not None
+            profile_name = self._unique("AddProfile")
+            profile = test_project.add_profile(profile_name)
+            assert profile.name == profile_name
         finally:
             if profile is not None:
                 profile.delete_from_project()
@@ -220,7 +247,7 @@ class TestIRPProjectGenerated:
             pkg.delete_from_project()
 
     def test_open_csv_file(self, test_project: IRPProject) -> None:
-        assert test_project.open_csv_file(self._unique("arg"), 0) is None  # type: ignore[func-returns-value]
+        assert test_project.open_csv_file(self._unique("MissingCsv"), 0) is None  # type: ignore[func-returns-value]
 
     def test_enable_rhapsody_model_manager(self, test_project: IRPProject) -> None:
         """JavaDoc IRPProject.enableRhapsodyModelManager exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""

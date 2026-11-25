@@ -26,42 +26,54 @@ class TestIRPPackageIntegration:
     def test_add_class(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.add_class(self._unique("arg")) is not None
+            created_name = self._unique("AddClass")
+            created = pkg.add_class(created_name)
+            assert created.name == created_name
         finally:
             pkg.delete_from_project()
 
     def test_add_nested_package(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.add_nested_package(self._unique("arg")) is not None
+            created_name = self._unique("AddNestedPackage")
+            created = pkg.add_nested_package(created_name)
+            assert created.name == created_name
         finally:
             pkg.delete_from_project()
 
     def test_add_actor(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.add_actor(self._unique("arg")) is not None
+            created_name = self._unique("AddActor")
+            created = pkg.add_actor(created_name)
+            assert created.name == created_name
         finally:
             pkg.delete_from_project()
 
     def test_add_global_function(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.add_global_function(self._unique("arg")) is not None
+            created_name = self._unique("AddGlobalFunction")
+            created = pkg.add_global_function(created_name)
+            assert created.name == created_name
         finally:
             pkg.delete_from_project()
 
     def test_add_flow_items(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.add_flow_items(self._unique("arg")) is not None
+            created_name = self._unique("AddFlowItems")
+            created = pkg.add_flow_items(created_name)
+            assert created.name == created_name
         finally:
             pkg.delete_from_project()
 
     def test_add_flows(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.add_flows(self._unique("arg")) is not None
+            created_name = self._unique("AddFlows")
+            created = pkg.add_flows(created_name)
+            assert created.name == created_name
         finally:
             pkg.delete_from_project()
 
@@ -104,7 +116,9 @@ class TestIRPPackageIntegration:
     def test_add_use_case(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.add_use_case(self._unique("arg")) is not None
+            created_name = self._unique("AddUseCase")
+            created = pkg.add_use_case(created_name)
+            assert created.name == created_name
         finally:
             pkg.delete_from_project()
 
@@ -119,42 +133,54 @@ class TestIRPPackageIntegration:
     def test_add_sequence_diagram(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.add_sequence_diagram(self._unique("arg")) is not None
+            created_name = self._unique("AddSequenceDiagram")
+            created = pkg.add_sequence_diagram(created_name)
+            assert created.name == created_name
         finally:
             pkg.delete_from_project()
 
     def test_add_use_case_diagram(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.add_use_case_diagram(self._unique("arg")) is not None
+            created_name = self._unique("AddUseCaseDiagram")
+            created = pkg.add_use_case_diagram(created_name)
+            assert created.name == created_name
         finally:
             pkg.delete_from_project()
 
     def test_add_collaboration_diagram(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.add_collaboration_diagram(self._unique("arg")) is not None
+            created_name = self._unique("AddCollaborationDiagram")
+            created = pkg.add_collaboration_diagram(created_name)
+            assert created.name == created_name
         finally:
             pkg.delete_from_project()
 
     def test_add_component_diagram(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.add_component_diagram(self._unique("arg")) is not None
+            created_name = self._unique("AddComponentDiagram")
+            created = pkg.add_component_diagram(created_name)
+            assert created.name == created_name
         finally:
             pkg.delete_from_project()
 
     def test_add_deployment_diagram(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.add_deployment_diagram(self._unique("arg")) is not None
+            created_name = self._unique("AddDeploymentDiagram")
+            created = pkg.add_deployment_diagram(created_name)
+            assert created.name == created_name
         finally:
             pkg.delete_from_project()
 
     def test_add_object_model_diagram(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.add_object_model_diagram(self._unique("arg")) is not None
+            created_name = self._unique("AddObjectModelDiagram")
+            created = pkg.add_object_model_diagram(created_name)
+            assert created.name == created_name
         finally:
             pkg.delete_from_project()
 
@@ -169,14 +195,18 @@ class TestIRPPackageIntegration:
     def test_add_timing_diagram(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.add_timing_diagram(self._unique("arg")) is not None
+            created_name = self._unique("AddTimingDiagram")
+            created = pkg.add_timing_diagram(created_name)
+            assert created.name == created_name
         finally:
             pkg.delete_from_project()
 
     def test_add_panel_diagram(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.add_panel_diagram(self._unique("arg")) is not None
+            created_name = self._unique("AddPanelDiagram")
+            created = pkg.add_panel_diagram(created_name)
+            assert created.name == created_name
         finally:
             pkg.delete_from_project()
 
@@ -453,7 +483,9 @@ class TestIRPPackageIntegration:
     def test_add_event(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.add_event(self._unique("arg")) is not None
+            created_name = self._unique("AddEvent")
+            created = pkg.add_event(created_name)
+            assert created.name == created_name
         finally:
             pkg.delete_from_project()
 
@@ -503,7 +535,9 @@ class TestIRPPackageIntegration:
     def test_add_node(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.add_node(self._unique("arg")) is not None
+            created_name = self._unique("AddNode")
+            created = pkg.add_node(created_name)
+            assert created.name == created_name
         finally:
             pkg.delete_from_project()
 
@@ -539,7 +573,9 @@ class TestIRPPackageIntegration:
     def test_add_module(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.add_module(self._unique("arg")) is not None
+            created_name = self._unique("AddModule")
+            created = pkg.add_module(created_name)
+            assert created.name == created_name
         finally:
             pkg.delete_from_project()
 
@@ -555,7 +591,9 @@ class TestIRPPackageIntegration:
     def test_add_type(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.add_type(self._unique("arg")) is not None
+            created_name = self._unique("AddType")
+            created = pkg.add_type(created_name)
+            assert created.name == created_name
         finally:
             pkg.delete_from_project()
 
@@ -657,7 +695,9 @@ class TestIRPPackageIntegration:
     def test_add_global_variable(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.add_global_variable(self._unique("arg")) is not None
+            created_name = self._unique("AddGlobalVariable")
+            created = pkg.add_global_variable(created_name)
+            assert created.name == created_name
         finally:
             pkg.delete_from_project()
 
@@ -785,7 +825,9 @@ class TestIRPPackageIntegration:
     def test_add_implicit_object(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
-            assert pkg.add_implicit_object(self._unique("arg")) is not None
+            created_name = self._unique("AddImplicitObject")
+            created = pkg.add_implicit_object(created_name)
+            assert created.name == created_name
         finally:
             pkg.delete_from_project()
 
