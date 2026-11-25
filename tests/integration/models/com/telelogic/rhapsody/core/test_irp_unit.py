@@ -211,10 +211,11 @@ class TestIRPUnitCrossProjectIntegration:
             sub_pkg.save()
 
             count = pkg.get_nested_save_units_count()
-            units = pkg.get_nested_save_units()
+            unit_list = list(pkg.get_nested_save_units())
             assert isinstance(count, int)
-            assert count == len(list(units))
+            assert count == len(unit_list)
             assert count >= 1
+            assert sub_pkg in unit_list
         finally:
             pkg.delete_from_project()
 
@@ -227,6 +228,21 @@ class TestIRPUnitCrossProjectIntegration:
             assert isinstance(diagrams, IRPCollection)
             assert isinstance(diagrams.count, int)
             assert len(list(diagrams)) == 0
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_structure_diagrams_returns_diagram_created_on_class(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("StructPopPkg"))
+        try:
+            cls = pkg.add_class(self._unique("StructPopCls"))
+            assert isinstance(cls, IRPUnit)
+            diagram_name = self._unique("StructDiagram")
+            diagram = cls.add_new_aggr("StructureDiagram", diagram_name)
+
+            diagrams = list(cls.structure_diagrams)
+
+            assert diagram in diagrams
+            assert diagram_name in [item.name for item in diagrams]
         finally:
             pkg.delete_from_project()
 

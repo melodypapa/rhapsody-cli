@@ -52,16 +52,36 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [x] Section 6 irp_collection.md checked/updated. Evidence: SWR_ELEM_00015 records the catalog-aligned `set_string` annotation, the working graphical alias, and the `to_list` blocker; SWR_ELEM_00036 records the live alias evidence.
   - [x] Section 7 irp_collection.rst checked/updated for every public member. Evidence: all 11 public members remain documented via autodoc directives; no deviation tables; verify_sync.py exits 0.
   - [x] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded. Evidence on 2026-11-25: report regenerated (Python `11`, Java `11`, pywin32 `10`, 0 actionable, 1 expected difference `to_list`); `validate_interface.py IRPCollection --source authority` exits 0; `verify_sync.py` exits 0; skill harness 49 passed; focused unit coverage 100.00% (40 statements / 26 branches), full unit suite 2168 passed; focused live 5 passed / 0 failed; full live integration 443 passed / 0 failed; ruff, black, and mypy clean.
-- [ ] irp_unit_remediation - IRPUnit
+- [x] irp_unit_remediation - IRPUnit
   - Baseline: 6 property-shape conversions; 4 integration tests assert RhapsodyRuntimeException.
-  - [ ] Section 1 member checklist and getter matrix published.
+  - [x] Section 1 member checklist and getter matrix published. Evidence: wrapper checklist covers all 26 owned members (23 MATCH + `get_unit_path`/`set_unit_path` family + inherited `get_nested_elements`); no `RhapsodyRuntimeException` assertions and no skip/xfail markers remain in either mirrored test file. Getter matrix:
+
+    | Getter / Python member | Parent and real related data | JavaDoc setup / relationship | Retrieval assertion | Integration test | Cleanup |
+    | --- | --- | --- | --- | --- | --- |
+    | `getCMHeader()` / `cm_header` | package created for the case | `pkg.save()` then unique `cm_header` | read-back equals set value | `::test_set_and_get_cm_header_roundtrip` | `pkg.delete_from_project()` |
+    | `getCurrentDirectory()` / `current_directory` | live test project | `test_project.add_package(...)` | resolved path contains `TEST_PROJECT_DIR` | `::test_get_current_directory_matches_project` | delete package |
+    | `getFilename()` / `filename` | package created for the case | unique `pkg.filename` | set name present in read-back | `::test_set_and_get_filename_roundtrip` | delete package |
+    | `getIncludeInNextLoad()` / `include_in_next_load` | saved package | set to 1 then 0 | read-back equals each value | `::test_set_and_get_include_in_next_load_roundtrip` | delete package |
+    | `getIsStub()` / `is_stub` | package created for the case | `load(0)` then `unload()` | value in `(0, 1)` | `::test_load_and_unload_roundtrip` | delete package |
+    | `getStructureDiagrams()` / `structure_diagrams` | class + diagram created on it | `cls.add_new_aggr("StructureDiagram", unique)` | created diagram present by identity and name | `::test_get_structure_diagrams_returns_diagram_created_on_class` | delete package |
+    | `getAddToModelMode()` / `get_add_to_model_mode()` | saved package | `pkg.save()` | value in `AddToModelMode` | `::test_get_add_to_model_mode_returns_int` | delete package |
+    | `getCMState()` / `get_cm_state()` | saved package | `pkg.save()` | int result | `::test_get_cm_state_returns_int` | delete package |
+    | `getLanguage()` / `get_language()` | package created for the case | `pkg.set_language("C++", 0)` | read-back equals `C++`, then restored | `::test_set_and_get_language_roundtrip` | delete package |
+    | `getLastModifiedTime()` / `get_last_modified_time()` | renamed + saved package | `pkg.name = unique; pkg.save()` | non-empty string | `::test_get_last_modified_time_after_save` | delete package |
+    | `getNestedSaveUnits()` / `get_nested_save_units()` | package + nested package saved as own unit | `add_nested_package`, `set_separate_save_unit(1)`, `save()` | created nested package present in returned collection | `::test_get_nested_save_units_count_matches_collection` | delete package |
+    | `getNestedSaveUnitsCount()` / `get_nested_save_units_count()` | same fixture | same | count equals `len(units)` and is at least 1 | same test | delete package |
+    | `getUnitPath()` / `get_unit_path()` | package created for the case | live COM probe found no `getUnitPath`-like member (SWR_CORE_00012) | stub raises `NotImplementedError` before dispatch | `::test_get_unit_path_raises_not_implemented` | delete package |
+    | `isReadOnly()` / `is_read_only()` | saved package | `set_read_only(True/False)` | read-back `True`/`False` | `::test_set_and_get_read_only_roundtrip` | delete package |
+    | `isReferenceUnit()` / `is_reference_unit()` | saved local package | `pkg.save()` | `0` | `::test_is_reference_unit_false_for_local_unit` | delete package |
+    | `isSeparateSaveUnit()` / `is_separate_save_unit()` | saved package | `set_separate_save_unit(1/0)` | read-back `1`/`0` | `::test_set_and_get_separate_save_unit_roundtrip` | delete package |
+
   - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Section 3 all 6 properties and four failing cases reconciled against the report/catalog.
-  - [ ] Section 4 fake-COM tests first; full unit suite green; irp_unit.py at 100% statements/branches.
-  - [ ] Section 5 replace the four exception assertions with authentic live outcomes or evidence-backed blockers.
-  - [ ] Section 6 irp_unit.md checked/updated.
-  - [ ] Section 7 irp_unit.rst checked/updated for every public member.
-  - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded.
+  - [x] Section 3 all 6 properties and four failing cases reconciled against the report/catalog. Evidence: regenerated report shows Python `26` / Java `29` / pywin32 `25`, 0 actionable findings, 23 MATCH rows; `CMHeader`, `currentDirectory`, `filename`, `includeInNextLoad`, `isStub`, `structureDiagrams` are `@property` backed by `get_com_property`/`set_com_property`. The four former `RhapsodyRuntimeException` assertions were already replaced with real roundtrips. `get_unit_path` remains a documented-unavailable stub; a live COM probe on 2026-11-25 confirmed no getter member exists (only `setUnitPath`), recorded in SWR_CORE_00012.
+  - [x] Section 4 fake-COM tests first; full unit suite green; irp_unit.py at 100% statements/branches. Evidence: focused unit file 33 passed; coverage 76 statements/38 branches, 100.00%; full unit suite 2168 passed; skill harness 49 passed; mypy found no issues in 230 files.
+  - [x] Section 5 replace the four exception assertions with authentic live outcomes or evidence-backed blockers. Evidence: no `RhapsodyRuntimeException` assertions, `try`/`except`, skip or xfail markers remain; the only exception assertion is the documented-unavailable `get_unit_path` `NotImplementedError` stub. Populated getter assertions added for `structure_diagrams` (diagram created via `add_new_aggr`) and `get_nested_save_units` (nested package saved as own unit, asserted by containment). Focused live file 18 passed / 0 failed; full live suite 444 passed / 0 failed.
+  - [x] Section 6 irp_unit.md checked/updated. Evidence: SWR_CORE_00002 records the binding rules and live-confirmed `get_unit_path` absence; new SWR_CORE_00012 records the live path-member probe and populated getter fixtures; no duplicate monolith entry.
+  - [x] Section 7 irp_unit.rst checked/updated for every public member. Evidence: 6 autoproperty and 20 automethod directives cover all 26 public members; the malformed `Canonical module` line was repaired; verify_sync.py exits 0.
+  - [x] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded. Evidence on 2026-11-25: report regenerated from authority (Python `26`, Java `29`, pywin32 `25`, 0 actionable, 1 expected difference `getUnitPath`/`setUnitPath` family); `validate_interface.py IRPUnit --source authority` exits 0; `verify_sync.py` exits 0; skill harness 49 passed; focused unit coverage 100.00% (76 statements / 38 branches), full unit suite 2168 passed; focused live 18 passed / 0 failed; full live integration 444 passed / 0 failed; ruff, black, and mypy clean.
 - [x] irp_class_api_report (IRPClass · IRPClass · models/com/telelogic/rhapsody/core/irp_class.py · 0 sites left)
   - Note: pilot run 2026-11-21, commits `7163149` + `b27a8bb`; 7 property-shaped flag sites migrated to `get_com_property`/`set_com_property` (`is_final` was already direct); six flag rows rewritten in `elements.rst`, SWR_ELEM_00004 updated.
   - [x] Step 1 — §1 sync TODO published (per-run checklist rendered live in the run report)
