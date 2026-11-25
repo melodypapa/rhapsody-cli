@@ -28,30 +28,34 @@ def test_actor_add_event_reception_with_event_wraps_result() -> None:
     with pytest.raises(NotImplementedError):
         actor.add_event_reception_with_event("onStart", cast(IRPEvent, IRPModelElement(event)))
 
+    fake.addEventReceptionWithEvent.assert_not_called()
 
-def test_actor_get_is_behavior_overridden_delegates_to_com() -> None:
-    fake = make_fake_element("Actor", getIsBehaviorOverriden=1)
+
+def test_actor_is_behavior_overridden_property_reads_and_writes_com_property() -> None:
+    fake = make_fake_element("Actor", properties={"isBehaviorOverriden": 0})
     actor = IRPActor(fake)
 
-    assert actor.get_is_behavior_overriden() is True
+    assert actor.is_behavior_overriden is False
+
+    actor.is_behavior_overriden = True
+
+    assert fake.isBehaviorOverriden == 1
+    assert actor.is_behavior_overriden is True
+
+    actor.is_behavior_overriden = False
+
+    assert fake.isBehaviorOverriden == 0
+    assert actor.is_behavior_overriden is False
 
 
-def test_actor_set_is_behavior_overridden_delegates_to_com() -> None:
+def test_actor_update_contained_diagrams_on_server_is_documented_unavailable() -> None:
     fake = make_fake_element("Actor")
     actor = IRPActor(fake)
 
-    actor.set_is_behavior_overriden(False)
+    with pytest.raises(NotImplementedError):
+        actor.update_contained_diagrams_on_server(0)
 
-    fake.setIsBehaviorOverriden.assert_called_once_with(0)
-
-
-def test_actor_update_contained_diagrams_on_server_delegates_to_com() -> None:
-    fake = make_fake_element("Actor")
-    actor = IRPActor(fake)
-
-    actor.update_contained_diagrams_on_server()
-
-    fake.updateContainedDiagramsOnServer.assert_called_once_with()
+    fake.updateContainedDiagramsOnServer.assert_not_called()
 
 
 def test_actor_is_registered_for_meta_class_actor() -> None:

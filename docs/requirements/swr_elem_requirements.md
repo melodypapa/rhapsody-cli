@@ -7,23 +7,6 @@
 
 ---
 
-## SWR_ELEM_00005: RPActor Wrapper
-
-**ID:** SWR_ELEM_00005
-**Title:** RPActor wraps IRPActor, a UML actor (external role interacting with the system)
-**Status:** Implemented
-**Priority:** Medium
-**Description:**
-`RPActor` shall extend `IRPClassifier` to wrap `IRPActor`. It shall expose Java-mirrored
-methods: `addEventReceptionWithEvent(name, event)` (accepts an `IRPModelElement` event,
-returns wrapped reception), `getIsBehaviorOverriden()` (returns bool), and
-`setIsBehaviorOverriden(is_overridden)` (translates Python bool to 1/0). The wrapper
-shall register itself for the meta class `"Actor"`.
-**Implementation:** src/rhapsody_cli/models/elements/classifiers.py:RPActor
-**Last Changed:** 2026-07-07
-
----
-
 ## SWR_ELEM_00008: RPDiagram Wrapper
 
 **ID:** SWR_ELEM_00008

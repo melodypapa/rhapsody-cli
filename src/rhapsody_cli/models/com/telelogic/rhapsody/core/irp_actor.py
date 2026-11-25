@@ -1,5 +1,7 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPActor``."""
 
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
@@ -10,85 +12,78 @@ if TYPE_CHECKING:
 
 
 class IRPActor(IRPClassifier):
-    """Wraps ``IRPActor``: represents an actor in the model."""
+    """Represents an actor in a Rhapsody model."""
 
-    # IRPActor method parity checklist:
-    # [x] add_event_reception_with_event  [x] impl (raises NotImplementedError)  [x] docstring  [x] unit test  [x] integration test  (COM method not exposed)
-    # [x] get_is_behavior_overriden  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] set_is_behavior_overriden  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] update_contained_diagrams_on_server  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [inherited] irp_classifier / irp_unit / irp_model_element methods (covered by rp_classifier / rp_unit / rp_model_element checklists)
-    # No deprecated IRPActor methods.
+    # The behavior-override getter/setter pair maps to the writable COM property
+    # isBehaviorOverriden. Inherited classifier/unit/model-element members remain
+    # owned by their respective wrappers.
 
-    def add_event_reception_with_event(self, name: str, event: "IRPEvent") -> "IRPEventReception":
-        """Adds a new event reception to the actor, using the specified event.
+    def add_event_reception_with_event(self, name: str, event: IRPEvent) -> IRPEventReception:
+        """Adds an event reception associated with the specified event.
 
-        Note: ``addEventReceptionWithEvent`` is not exposed in the Rhapsody COM
-        automation type library. This method raises ``NotImplementedError`` to
-        prevent its use.
+        The registered IRPActor typelib does not expose this JavaDoc method, so
+        the wrapper raises before attempting COM dispatch.
 
         Args:
-            name: The name to use for the new event reception.
-            event: The event model element that should be associated with the
-                new event reception.
+            name: Name for the new event reception.
+            event: Event to associate with the reception.
 
         Returns:
-            The wrapped ``IRPEventReception`` that was created.
+            The event reception that would be created when the Java API is available.
 
         Raises:
-            NotImplementedError: Always raised, as this method is not exposed
-                in the Rhapsody COM type library.
+            NotImplementedError: ``addEventReceptionWithEvent`` is absent from
+                the registered pywin32 interface.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPActor::addEventReceptionWithEvent(java.lang.String name, com.telelogic.rhapsody.core.IRPEvent event)
+            com.telelogic.rhapsody.core.IRPActor::addEventReceptionWithEvent(
+            java.lang.String name, IRPEvent event)
         """
-        raise NotImplementedError(
-            "addEventReceptionWithEvent is not exposed in the Rhapsody COM automation type library. " "Use add_event_reception(name) instead and set the event via the reception object."
-        )
+        raise NotImplementedError("addEventReceptionWithEvent is not exposed by the registered pywin32 interface.")
 
-    def get_is_behavior_overriden(self) -> bool:
-        """Checks whether the actor overrides the behavior defined in its base class's statechart.
-
-        When you create a statechart for an actor, by default it inherits the
-        behavior defined in the statechart of its base class. Rhapsody lets you
-        specify that the actor should not inherit this behavior; this method
-        reports whether that option has been exercised.
+    @property
+    def is_behavior_overriden(self) -> bool:
+        """Checks whether the actor does not inherit its base class's statechart behavior.
 
         Returns:
-            ``True`` if the actor does not inherit its base class's statechart
-            behavior (i.e. behavior is overridden), ``False`` otherwise.
+            ``True`` if the actor overrides the inherited behavior, otherwise ``False``.
 
         Reference:
             com.telelogic.rhapsody.core.IRPActor::getIsBehaviorOverriden()
         """
-        return bool(self._get_method_or_property(self._com, "getIsBehaviorOverriden", "isBehaviorOverriden"))
+        return bool(self.get_com_property(self._com, "isBehaviorOverriden"))
 
-    def set_is_behavior_overriden(self, is_overridden: bool) -> None:
-        """Specifies whether the actor should inherit the behavior defined in its base class's statechart.
-
-        When you create a statechart for an actor, by default it inherits the
-        behavior defined in the statechart of its base class. Rhapsody lets you
-        specify that the actor should not inherit this behavior.
+    @is_behavior_overriden.setter
+    def is_behavior_overriden(self, is_overridden: bool) -> None:
+        """Sets whether the actor should inherit the base class's statechart behavior.
 
         Args:
-            is_overridden: ``True`` to stop the actor inheriting its base
-                class's statechart behavior (override it), ``False`` to inherit.
+            is_overridden: ``True`` to stop inheriting the base behavior;
+                ``False`` to inherit it.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPActor::setIsBehaviorOverriden(int)
+            com.telelogic.rhapsody.core.IRPActor::setIsBehaviorOverriden(int isBehaviorOverriden)
         """
-        self._set_method_or_property(self._com, "setIsBehaviorOverriden", "isBehaviorOverriden", 1 if is_overridden else 0)
+        self.set_com_property(self._com, "isBehaviorOverriden", 1 if is_overridden else 0)
 
-    def update_contained_diagrams_on_server(self) -> None:
-        """Updates the contained diagrams on the remote requirements server.
+    def update_contained_diagrams_on_server(self, enforce_update: int) -> int:
+        """Updates views on the Rhapsody Model Manager server for contained diagrams.
+
+        Args:
+            enforce_update: ``0`` updates only changed views; ``1`` forces an update.
+
+        Returns:
+            Number of views updated; JavaDoc specifies ``0`` when none need
+            updating and ``-1`` when the update attempt fails.
 
         Raises:
-            RhapsodyRuntimeException: If the operation fails.
+            NotImplementedError: ``updateContainedDiagramsOnServer`` is absent
+                from the registered pywin32 interface.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPActor::updateContainedDiagramsOnServer()
+            com.telelogic.rhapsody.core.IRPActor::updateContainedDiagramsOnServer(int enforceUpdate)
         """
-        self.call_com(lambda: self._com.updateContainedDiagramsOnServer())
+        raise NotImplementedError("updateContainedDiagramsOnServer is not exposed by the registered pywin32 interface.")
 
 
 IRPModelElement.register_wrapper("Actor", IRPActor)
