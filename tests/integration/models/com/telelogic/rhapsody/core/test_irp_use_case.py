@@ -71,6 +71,12 @@ class TestIRPUseCaseGenerated:
     def _unique(prefix: str = "Test") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
+    @staticmethod
+    def _create_package(project: IRPProject, name: str) -> IRPPackage:
+        pkg = project.add_package(name)
+        assert pkg is not None and isinstance(pkg, IRPPackage)
+        return pkg
+
     def test_find_entry_point_uses_real_generalization(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("FindEntryPkg"))
         try:
