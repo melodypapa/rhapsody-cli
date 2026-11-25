@@ -71,7 +71,7 @@ Work one interface per run, following SKILL §8. For each row: `validate_interfa
 | IRPUnit | verify OK | live run + cross-project blockers |
 | IRPUseCase | verify OK | live run + `find_entry_point` gate |
 
-- [ ] All 16 `verify_sync.py` exit 0.
+- [x] All 16 `verify_sync.py` exit 0 (2026-11-25): P0 blocker waivers now apply in both default and strict modes; the four WEAK getters are recorded blockers with fresh live evidence.
 - [ ] Ledger rows in `docs/reports/sync-todo/Group-*.md` ticked with command output and test counts.
 
 ## Task 3 — Close the 4 weak getter rows

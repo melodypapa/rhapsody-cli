@@ -1213,7 +1213,7 @@ def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path, st
     model_segment = Path("models") / Path(*rel_parent.parts[1:]) if is_model_wrapper else Path()
     owned_properties = _owned_property_names(wrapper_source) if wrapper_source else set()
     test_paths: Dict[str, Path] = {}
-    blockers = _parse_blocker_members(root, simple_name) if strict_getters else set()
+    blockers = _parse_blocker_members(root, simple_name)
     for label, test_base in (("Unit", "unit"), ("Integration", "integration")):
         test_dir = root / "tests" / test_base / model_segment
         test_path = first_existing(test_dir, "test_{stem}.py")
