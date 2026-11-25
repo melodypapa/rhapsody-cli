@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING, Any, Iterator
 from rhapsody_cli.models.core import ComHelper
 
 if TYPE_CHECKING:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphElement
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 
@@ -84,19 +85,26 @@ class IRPCollection:
         """
         ComHelper.call_com(lambda: self._com.addItem(element._com))
 
-    def add_graphical_item(self, item: IRPModelElement) -> None:
+    def add_graphical_item(self, item: IRPGraphElement) -> None:
         """Add a graphical element to the collection.
+
+        The JavaDoc name ``addGraphicalItem`` is exposed by pywin32 as
+        ``addGraphicalElementItem`` (one COM-object argument); the alias is
+        recorded in ``documented_aliases``. A live probe on 2026-11-25 with a
+        real ``IRPGraphElement`` from an object-model diagram confirmed the call
+        succeeds and increments ``count``; passing a non-graph model element
+        faults with COM ``Type mismatch``.
 
         Args:
             item: The graphical element to add.
 
         Raises:
-            NotImplementedError: This Java API method is not exposed by pywin32.
+            RhapsodyRuntimeException: if the COM call fails.
 
         Reference:
             com.telelogic.rhapsody.core.IRPCollection::addGraphicalItem(com.telelogic.rhapsody.core.IRPGraphElement newVal)
         """
-        raise NotImplementedError("addGraphicalItem is not exposed in the Rhapsody COM automation type library.")
+        ComHelper.call_com(lambda: self._com.addGraphicalElementItem(item._com))
 
     def to_list(self) -> list[IRPModelElement]:
         """Convert the collection to a Python list.
@@ -137,12 +145,13 @@ class IRPCollection:
         """
         ComHelper.call_com(lambda: self._com.remove(index))
 
-    def set_string(self, index: int, value: str) -> None:
+    def set_string(self, index: int, value: object) -> None:
         """Sets a string value at the specified index.
 
         Args:
             index: The 1-based index where to set the value.
-            value: The string value to set.
+            value: The value to set; pywin32 declares this parameter as
+                ``object`` (VT_BYREF|VT_BSTR) even though callers pass a string.
 
         Raises:
             RhapsodyRuntimeException: If the operation fails.

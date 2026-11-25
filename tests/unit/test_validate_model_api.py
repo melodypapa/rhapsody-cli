@@ -24,6 +24,13 @@ from scripts.validate_model_api import (
 )
 
 
+def test_canonical_member_name_groups_documented_com_alias_family() -> None:
+    # JavaDoc addGraphicalItem is exposed by pywin32 as addGraphicalElementItem.
+    # Both must canonicalize to one family so documented_aliases can demote it.
+    assert validator._canonical_member_name("addGraphicalItem") == "addGraphicalItem"
+    assert validator._canonical_member_name("addGraphicalElementItem") == "addGraphicalItem"
+
+
 def test_resolve_java_interface_docs_uses_declared_package(tmp_path: Path) -> None:
     docs_root = tmp_path / "java_api"
     package_docs = docs_root / "org" / "example" / "rhapsody"
