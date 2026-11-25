@@ -36,10 +36,16 @@
 
 ## Task 1 — Regenerate COM authority from the type library
 
-- [ ] `python scripts/pywin32_authority.py --source typelib`
+- [x] `python scripts/pywin32_authority.py --source typelib` — 2026-11-25: catalog and signatures are
+  unchanged except that every signature gains `required: 0`, which would *loosen* the arity check
+  (band `0..count` instead of `count..count`); that field was not kept. The export also drops the
+  documented-decision sections, which were restored from HEAD. Net catalog diff: none.
 - [ ] Review the JSON diff (`git diff docs/reports/pywin32_authority.json`). Keep only changes explained by the live type library; commit the refreshed catalog separately.
-- [ ] For each of the 16 interfaces, regenerate the report:
-  `python scripts/validate_model_api.py <INTERFACE> --source typelib --path docs/reports`
+- [x] Regenerating all 16 reports with `--source typelib` exposed that the typelib path skipped
+  `apply_pywin32_authority`, so documented aliases/unavailable members were reported as actionable.
+  Fixed `scripts/validate_model_api.py` to apply documented decisions for both catalog sources
+  (validator unit tests 58 passed). Typelib reports still differ structurally from authority reports
+  (ordering and `PASS` rows), so the committed authority-mode reports were retained.
 - [ ] Re-run `python .agents/skills/rhapsody-sync/scripts/verify_sync.py <INTERFACE>` and record which new deviations (if any) appear. Expected: only the 2 approved stub actionables on `IRPModelElement`/`IRPUseCase`.
 
 ## Task 2 — Live Step 8 closeout for the 16 interfaces
@@ -72,10 +78,10 @@ Work one interface per run, following SKILL §8. For each row: `validate_interfa
 
 Each item must end as `OK` (populated fixture asserting identity/value) or as a blocker with fresh live evidence. Never leave an empty-state assertion as completion evidence.
 
-- [ ] `IRPClassifier.source_artifacts` — inspect the live catalog for `*SourceArtifact*` members on `IRPClassifier`, `IRPProject`, and `IRPFile`; if an attach/create member exists, create the artifact, attach it, assert the getter returns it. Otherwise record the exact COM inventory that proves no setup API exists and keep the blocker.
-- [ ] `IRPClassifier.sequence_diagrams` — check `IRPClassifier` for a classifier-level sequence-diagram factory; if none, try `IRPPackage.add_sequence_diagram` plus any documented owner/attach member. Assert the getter returns the created diagram or record the negative evidence.
-- [ ] `IRPClassifier.links` — build two classes with association or port endpoints, create real part instances, call `IRPClass.add_link` / `add_link_to_part_via_port`, then assert `classifier.links` contains the created link. This also unblocks the `IRPClass` link row.
-- [ ] `IRPModelElement.user_defined_meta_class` — check the stereotype / New Term surface (`IRPStereotype` members, profile application). If a New Term can be defined, assert the getter returns its name; otherwise record the live evidence and keep the blocker.
+- [x] `IRPClassifier.source_artifacts` — live 2026-11-25: the `IRPClassifier` COM surface has no `*SourceArtifact*` factory (only the `sourceArtifacts` getter); no setup API exists. Blocker retained with fresh evidence in `docs/reports/sync-todo/index.md`.
+- [x] `IRPClassifier.sequence_diagrams` — live 2026-11-25: no class-level factory; `IRPPackage.add_sequence_diagram` created a diagram visible only in the package's `sequence_diagrams` while the class getter stayed empty. Negative evidence recorded; blocker retained.
+- [x] `IRPClassifier.links` — live 2026-11-25: `IRPClass.addLink` faults `com_error` `Type mismatch` for both null parts and class-as-part fixtures, confirming real `IRPInstance` parts are required. Class-only fixtures cannot populate the getter; blocker retained (also governs the `IRPClass` link row).
+- [x] `IRPModelElement.user_defined_meta_class` — live 2026-11-25: `userDefinedMetaClass` returns the default `"Class"`; the COM surface has no New Term factory (`getNewTermStereotype` only reads a stereotype). Live evidence recorded; blocker retained.
 - [ ] Regenerate both artifacts after each close:
   `verify_sync.py <IFACE> --write-getter-matrix` and `--write-getter-diff`.
 - [ ] Target: matrix `WEAK` count 0; `verify_sync.py` passes for `IRPClassifier` and `IRPModelElement`.
@@ -86,11 +92,11 @@ Classify each row before working it.
 
 ### 4a. Signature / shape defects (fix wrapper first, TDD)
 
-- [ ] `IRPProject.find_element_by_binary_id`: change the parameter to the COM `byte[]` shape (bytes), search by the element's real `BinaryID`, assert identity. Regenerate the report and update unit + integration tests.
-- [ ] `IRPProject.default_directory_scheme`: change to `str`; round-trip a real scheme value.
-- [ ] `IRPProject.check_events_base_ids_solve_collisions`: JavaDoc returns void; stop wrapping in `int()`, assert the call completes and base IDs are unchanged/consistent.
-- [ ] `IRPUseCase.find_entry_point` / `find_extension_point`: align argument (`IRPGeneralization`) and return (`str`) with JavaDoc/pywin32; add unit coverage and a live populated case.
-- [ ] `IRPOperation.flowchart` setter: confirm live read-only behavior; either remove the setter or keep it with documented evidence (D2).
+- [x] `IRPProject.find_element_by_binary_id`: changed the parameter to `bytes`; live call with a created class's real `BinaryID` finds that element. Fake-COM unit test + live identity test added.
+- [x] `IRPProject.default_directory_scheme`: changed getter/setter to `str`; live round-trip of `"Flat"` asserted.
+- [x] `IRPProject.check_events_base_ids_solve_collisions`: the COM member exists with catalog spelling `checkEventsBaseIdsSolveCollisions` (the earlier `IDs` capitalisation was wrong); now calls it directly and returns `None` per JavaDoc void. Live call asserted.
+- [x] `IRPUseCase.find_entry_point` / `find_extension_point`: no signature change needed — wrappers already take `IRPGeneralization`. Live COM requires a generalization object; `addExtensionPoint` returns `None` and `extensionPoints` yields strings, so no factory exists. Blocker retained with corrected evidence.
+- [x] `IRPOperation.flowchart` setter: wrapper already accepts `IRPFlowchart`; live write with a real activity diagram succeeds, so the "read-only" blocker note was stale and its row was closed.
 
 ### 4b. Buildable fixtures (live project, disposable objects)
 
@@ -165,9 +171,19 @@ For each candidate in `docs/reports/sync-todo/getter-catalog-diff.md`, choose on
 - [ ] `PYTHONPATH=src python -m pytest tests/unit -q -o addopts=`
 - [ ] `PYTHONPATH=src python -m pytest tests/integration -q -o addopts= --rhapsody-hidden-ui`
 - [ ] `PYTHONPATH=src python -m pytest tests/system -q -o addopts= --rhapsody-hidden-ui`
-- [ ] `python -m pytest -o addopts= .agents/skills/rhapsody-sync/tests -q`
+- [x] `python -m pytest -o addopts= .agents/skills/rhapsody-sync/tests -q` — 77 passed at baseline.
+
+Task 0 evidence (2026-11-25, Windows, fresh hidden-UI Rhapsody): `win32com.client` imports;
+`docs/java_api/` present; `PYTHONPATH=src python -m pytest tests/unit -q -o addopts=` → 2168 passed;
+`tests/integration ... --rhapsody-hidden-ui` → initially 3 failed / 441 passed (see below), after
+fixes 444 passed / 0 failed; `tests/system ... --rhapsody-hidden-ui` → 54 passed / 3 skipped;
+skill harness 77 passed (81 after the strict-getter gate tests). The three live failures came from
+PR #159's newly strengthened getters: `guid` needed the COM `"GUID "` prefix stripped before
+`uuid.UUID`, `binary_id` is 20 bytes on this build (not 16), and `typedefMultiplicity` is read-only
+(HRESULT `-2147221498` on every write) — all three tests now assert real live outcomes and the
+setter is recorded as a blocker.
 - [ ] `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/`
-- [ ] `for i in <16 interfaces>; do python .agents/skills/rhapsody-sync/scripts/verify_sync.py "$i"; done` → all exit 0.
+- [ ] `for i in <16 interfaces>; do python .agents/skills/rhapsody-sync/scripts/verify_sync.py "$i" --strict-getters; done` → all exit 0 (the strict gate fails `WEAK`/`MISSING` getter rows unless the member is recorded in the P0 blocker table).
 - [ ] Regenerate `docs/reports/**/*_api_report.md`, `pywin32_authority.json`, `getter-matrix.md`, `getter-catalog-diff.md`; commit with the ledger updates.
 - [ ] Update the report/status paragraph in `docs/reports/sync-todo/index.md` with the Windows counts and remaining blockers.
 - [ ] Push the branch, let `windows-latest` CI run, merge PR #159.

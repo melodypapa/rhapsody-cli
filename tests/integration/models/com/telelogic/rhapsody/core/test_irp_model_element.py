@@ -59,8 +59,9 @@ class TestRPModelElementIntegration:
     def test_get_guid(self, test_project: IRPProject) -> None:
         guid = test_project.guid
         assert isinstance(guid, str)
-        assert len(guid) > 0
-        assert uuid.UUID(guid)
+        # Live COM returns the value as "GUID <hex-uuid>", not a bare UUID string.
+        parsed = uuid.UUID(guid.split()[-1])
+        assert str(parsed) in guid
 
 
 @pytest.mark.integration
@@ -1313,12 +1314,14 @@ class TestRPModelElementMetadataIntegration:
             cls = pkg.add_class(self._unique("BinIdCls"))
             binary_id = cls.binary_id
             assert isinstance(binary_id, bytes)
-            assert len(binary_id) == 16
+            # Live COM returns 16 bytes of GUID data plus 4 trailing bytes.
+            assert len(binary_id) >= 16
             assert binary_id == cls.binary_id
+            assert binary_id != test_project.binary_id
 
             guid = cls.guid
             assert isinstance(guid, str)
-            assert len(guid) > 0
+            assert uuid.UUID(guid.split()[-1])
         finally:
             pkg.delete_from_project()
 

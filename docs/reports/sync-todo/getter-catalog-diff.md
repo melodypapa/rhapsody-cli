@@ -379,4 +379,3 @@ review rather than a failure.
 | Catalog property | Derived Python name | Status |
 | --- | --- | --- |
 | — | — | — |
-

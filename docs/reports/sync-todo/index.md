@@ -208,7 +208,6 @@ layers. A row whose member no longer raises is stale and fails Step 8.
 | IRPClass | `is_abstract` | `isAbstract` | not-exposed | The setter's `setIsAbstract` is absent from the catalog and listed in `documented_unavailable`; the `isAbstract` property accepts the write but never persists it (observed live). | — |
 | IRPClass | `add_event_reception_with_event` | `addEventReceptionWithEvent` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPClass | `update_contained_diagrams_on_server` | `updateContainedDiagramsOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
-| IRPCollection | `add_graphical_item` | `addGraphicalItem` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPCollection | `to_list` | `toList` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPModelElement | `constraints_by_him` | `constraintsByHim` | runtime-stub | Java API documents it as internal-only; the user's explicit decision on 2026-11-24 keeps the stub before COM dispatch. | 2026-11-24 |
 | IRPModelElement | `hyper_links` | `hyperLinks` | runtime-stub | Live retrieval could not be established through the documented APIs; the user's explicit decision on 2026-11-24 keeps the stub before COM dispatch. | 2026-11-24 |
@@ -231,6 +230,11 @@ layers. A row whose member no longer raises is stale and fails Step 8.
 | IRPUseCase | `set_is_behavior_overriden` | `isBehaviorOverriden` | runtime-stub | `setIsBehaviorOverriden` is absent from the catalog; the `isBehaviorOverriden` property is readable, but writes do not work for use cases (the IRPActor/IRPClass setters do); observed live; user approved on 2026-11-25. | 2026-11-25 |
 | IRPUseCase | `update_contained_diagrams_on_server` | `updateContainedDiagramsOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 
+`IRPCollection.add_graphical_item` had a `not-exposed` row here until 2026-11-25, when a live
+probe proved the pywin32 `addGraphicalElementItem` alias works with a real `IRPGraphElement`
+(SWR_ELEM_00036). The wrapper now forwards to that member, so the stub row was removed; a row
+for a member that no longer raises `NotImplementedError` fails Step 8 as stale.
+
 ## P0 integration-test blockers (2026-11-24)
 
 The following integration tests were removed rather than converted into exception assertions or skips
@@ -240,12 +244,9 @@ wrapper-signature fix before its getter/member row can close.
 | Interface | Member(s) | Blocker |
 | --- | --- | --- |
 | IRPProject | `save_as`, `save_as_prev_version` | Writes/switches the session-shared project file; cannot be exercised safely in the shared live project. |
-| IRPProject | `find_element_by_binary_id` | COM expects `byte[]`; wrapper declares `str`. |
 | IRPProject | `find_element_by_file_name`, `locate_in_ide`, `apply_roundtrip_diff_merge`, `get_roundtrip_shadow_model`, `clean_unresolved_elements` | Binding now matches COM, but no safe live fixture (known file name, UI focus, shadow model, or destructive cleanup). |
 | IRPProject | `close_csv_file`, `reload_csv_file`, `find_elements_with_oslc_link`, `add_spell_checker_result`, `get_requirements_by_id`, `get_new_progress_bar` | Binding now matches COM; still needs a CSV/OSLC/requirement/progress fixture or a meaningful assertion for a void result. |
 | IRPProject | `import_package_from_rose`, `import_project_from_rose` | External Rose fixture required; JavaDoc marks both unsupported since Rhapsody 8.1.4. |
-| IRPProject | `check_events_base_ids_solve_collisions` | JavaDoc returns void; wrapper wraps it in `int()`. |
-| IRPProject | `default_directory_scheme` | JavaDoc/COM is `String`; wrapper reads/writes `int`. |
 | IRPPackage | `get_remote_requirements_populate_mode` | Requires a Design Manager/remote requirements server. |
 | IRPPackage | `get_instance_specifications`, `get_source_artifacts`, `get_user_defined_stereotypes`, `get_nested_components` | No live create/relate API; `add_instance_specification` is a pywin32-absent stub and packages have no `add_component`. |
 | IRPClass | `add_link`, `add_link_to_part_via_port` | Needs a real `IRPInstance` part and structure-diagram endpoints; class-as-part fixtures only produced exceptions. |
@@ -254,10 +255,29 @@ wrapper-signature fix before its getter/member row can close.
 | IRPClassifier | `links` (`getLinks`) | `IRPClass.add_link` / `add_link_to_part_via_port` require real part instances plus association or port endpoints and cannot prove the classifier `links` getter returns the created link (that path is an IRPClass blocker too); evidence: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_get_links_empty`. |
 | IRPModelElement | `user_defined_meta_class` (`getUserDefinedMetaClass`) | JavaDoc defines the result as the New Term name, but the COM surface exposes no API to define a New Term, so only the default value's type is observable; evidence: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_model_element.py::test_get_user_defined_meta_class`. |
 | IRPUnit | `copy_to_another_project`, `move_to_another_project_leave_a_reference`, `reference_to_another_project`, `set_unit_path` | Requires a second saved project/unit file and mutates the shared project. |
-| IRPUseCase | `find_entry_point`, `find_extension_point` | JavaDoc/pywin32 take `IRPGeneralization` and return `String`; wrapper takes `str` and wraps an element. |
+| IRPType | `typedef_multiplicity` setter | Live 2026-11-25: the catalog exposes `typedefMultiplicity` as a property and reads return `"1"` on a new type, but every write (`"0..1"`, `"1"`, `"0..*"`, `"*"`, `"[0..1]"`, `"1..1"`) faults with COM HRESULT `-2147221498`; no live setter success, so the getter asserts the observed default and the setter stays a blocker. |
 | IRPUseCase | `entry_points` | No documented add API in the COM surface; only an empty-state result is observable. |
-| IRPOperation | `flowchart` setter | JavaDoc lists `setFlowchart`, but live COM exposes it read-only; the wrapper setter is retained pending Windows confirmation. |
 | IRPProject | `get_code_generated_files` | Requires a real code-generation run; no safe fixture in the shared project. |
 | IRPProject | `get_active_custom_views_on_browser` | No API creates a browser-level custom view; the empty collection is the only observable state. |
 | IRPProject | `get_remote_resource_packages`, `is_actively_managed` | Require a remote resource/management server. |
 | IRPProject | `is_modified_recursive` | Needs a controlled modify/save transition on the session-shared project. |
+
+**Fresh live evidence (2026-11-25, hidden-UI Rhapsody):** the four WEAK getter rows were probed
+directly. `IRPClassifier` COM exposes no source-artifact factory; `IRPPackage.add_sequence_diagram`
+creates a diagram visible only in the package's `sequence_diagrams` (the class getter stayed empty);
+`IRPClass.addLink` faults `com_error` `Type mismatch` for both null parts and class-as-part fixtures,
+so real `IRPInstance` parts are required; `IRPModelElement.userDefinedMetaClass` returns the default
+`"Class"` and the surface has no New Term factory (`getNewTermStereotype` only reads a stereotype).
+These rows stay blockers with empty-state tests as extra cases, not completion evidence.
+
+**D2 signature cases (2026-11-25, approved case-by-case):** `IRPProject.find_element_by_binary_id`
+now takes `bytes` (live COM requires a VT_UI1 SAFEARRAY and finds the real element);
+`default_directory_scheme` now reads/writes `str` (live values `"Flat"`/`"Nested"`);
+`check_events_base_ids_solve_collisions` now calls the exact catalog spelling
+`checkEventsBaseIdsSolveCollisions` and returns `None` (the earlier probe used the wrong
+capitalisation, `IDs` instead of `Ids`). All three have fake-COM unit tests and live identity/value
+assertions, so their blocker rows are closed. `IRPUseCase.find_entry_point` /
+`find_extension_point` already take `IRPGeneralization` (the old note was stale); no live factory
+returns a generalization, so the rows stay blockers with corrected evidence. `IRPOperation.flowchart`
+already has an `IRPFlowchart` setter and writing a real flowchart object succeeds live, so that
+blocker row is closed.

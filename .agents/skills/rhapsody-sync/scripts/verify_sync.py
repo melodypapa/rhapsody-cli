@@ -15,6 +15,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser.add_argument("--report", type=Path, help="Validator report; defaults to docs/reports/<java.package.path>/<INTERFACE>_api_report.md")
     parser.add_argument("--write-getter-matrix", action="store_true", help="Regenerate this interface's Getter fixture matrix section from the wrapper and integration tests")
     parser.add_argument("--write-getter-diff", action="store_true", help="Regenerate this interface's getter-vs-pywin32-catalog diff section")
+    parser.add_argument("--strict-getters", action="store_true", help="Fail on WEAK/MISSING getter matrix rows unless the member is recorded as a blocker")
     args = parser.parse_args(argv)
 
     try:
@@ -30,7 +31,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             diff_path = write_getter_catalog_diff(root, args.interface, report_path)
             print(f"Getter catalog diff updated: {diff_path}")
             return 0
-        issues = verify_sync_artifacts(root, args.interface, report_path)
+        issues = verify_sync_artifacts(root, args.interface, report_path, strict_getters=args.strict_getters)
     except (FileNotFoundError, OSError, ValueError) as exc:
         print(f"Sync verification could not run: {exc}", file=sys.stderr)
         return 2

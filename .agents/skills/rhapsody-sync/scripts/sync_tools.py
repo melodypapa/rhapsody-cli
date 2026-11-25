@@ -493,7 +493,30 @@ def _collect_getter_coverage(path: Path, property_names: Set[str]) -> Dict[str, 
     return coverage
 
 
-def verify_getter_assertions(path: Path, property_names: Set[str]) -> List[str]:
+_BLOCKER_HEADING = "## P0 integration-test blockers"
+
+
+def _parse_blocker_members(root: Path, interface_name: str) -> Set[str]:
+    """Return backticked member names recorded as blockers for one interface."""
+    path = getter_matrix_path(root).parent / "index.md"
+    if not path.is_file():
+        return set()
+    lines = path.read_text(encoding="utf-8").splitlines()
+    start = next((index for index, line in enumerate(lines) if line.strip().startswith(_BLOCKER_HEADING)), None)
+    if start is None:
+        return set()
+    members: Set[str] = set()
+    for line in lines[start + 1 :]:
+        if line.startswith("## "):
+            break
+        cells = _split_table_row(line)
+        if cells is None or len(cells) < 2 or cells[0].strip() != interface_name:
+            continue
+        members.update(re.findall(r"`([^`]+)`", cells[1]))
+    return members
+
+
+def verify_getter_assertions(path: Path, property_names: Set[str], blocked: Optional[Set[str]] = None) -> List[str]:
     """Reject getter properties covered only by non-None/type/count/empty assertions.
 
     SKILL section 5 requires at least one getter integration test per property
@@ -503,6 +526,8 @@ def verify_getter_assertions(path: Path, property_names: Set[str]) -> List[str]:
     """
     issues: List[str] = []
     for member, tests in _collect_getter_coverage(path, property_names).items():
+        if member in (blocked or set()):
+            continue
         if all(weak for _, _, weak in tests):
             names = ", ".join(f"{name} (line {lineno})" for name, lineno, _ in tests)
             issues.append(f"getter {member!r} is only covered by weak assertions: {names}; create the related object and assert identity/value (SKILL section 5)")
@@ -619,7 +644,7 @@ def upsert_getter_matrix_section(root: Path, interface_name: str, section: str) 
     return path
 
 
-def verify_getter_matrix(root: Path, interface_name: str, property_names: Set[str], test_path: Path) -> List[str]:
+def verify_getter_matrix(root: Path, interface_name: str, property_names: Set[str], test_path: Path, strict: bool = False, blocked: Optional[Set[str]] = None) -> List[str]:
     """Check the committed Getter fixture matrix covers every owned getter.
 
     The matrix is a machine-readable companion to SKILL section 1: one row per
@@ -650,6 +675,8 @@ def verify_getter_matrix(root: Path, interface_name: str, property_names: Set[st
         if expected_status is None:
             issues.append(f"Getter fixture matrix row {interface_name}.{prop} has an unknown assertion '{assertion}' (expected identity/value, weak, or none)")
             continue
+        if strict and assertion in {"weak", "none"} and prop not in (blocked or set()):
+            issues.append(f"Getter fixture matrix row {interface_name}.{prop} is '{assertion}' but not recorded as a blocker; add a populated test or a blocker row in index.md")
         if status != expected_status:
             issues.append(f"Getter fixture matrix row {interface_name}.{prop} records status '{status}' for assertion '{assertion}'; expected '{expected_status}'")
         if test_ref == "—":
@@ -1080,7 +1107,7 @@ def verify_not_implemented_evidence(root: Path, interface_name: str, wrapper_sou
     return issues
 
 
-def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) -> List[str]:
+def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path, strict_getters: bool = False) -> List[str]:
     """Check package placement, requirement entry, and RST coverage against a validator report."""
     issues: List[str] = []
     try:
@@ -1147,6 +1174,7 @@ def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) ->
     model_segment = Path("models") / Path(*rel_parent.parts[1:]) if is_model_wrapper else Path()
     owned_properties = _owned_property_names(wrapper_source) if wrapper_source else set()
     test_paths: Dict[str, Path] = {}
+    blockers = _parse_blocker_members(root, simple_name) if strict_getters else set()
     for label, test_base in (("Unit", "unit"), ("Integration", "integration")):
         test_dir = root / "tests" / test_base / model_segment
         test_path = first_existing(test_dir, "test_{stem}.py")
@@ -1160,8 +1188,8 @@ def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) ->
             if label == "Integration":
                 issues.extend(verify_integration_exception_catches(test_path.read_text(encoding="utf-8")))
                 issues.extend(verify_no_empty_finally(test_path))
-                issues.extend(verify_getter_assertions(test_path, owned_properties))
-                issues.extend(verify_getter_matrix(root, simple_name, owned_properties, test_path))
+                issues.extend(verify_getter_assertions(test_path, owned_properties, blockers))
+                issues.extend(verify_getter_matrix(root, simple_name, owned_properties, test_path, strict=strict_getters, blocked=blockers))
     issues.extend(verify_not_implemented_evidence(root, simple_name, wrapper_source, test_paths.get("Unit"), test_paths.get("Integration")))
     requirements_path = first_existing(root / "docs" / "requirements" / package_dir, "{stem}.md")
     if requirements_path is None:

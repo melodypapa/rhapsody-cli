@@ -953,6 +953,53 @@ def test_getter_matrix_accepts_a_generated_section(tmp_path: Path) -> None:
     assert tools.verify_getter_matrix(root, "IRPType", {"declaration"}, test_path) == []
 
 
+_WEAK_MATRIX_TEST_BODY = "def test_declaration(type_element) -> None:\n    assert isinstance(type_element.declaration, str)\n"
+
+
+def test_getter_matrix_strict_flags_weak_row_without_blocker(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    test_path = _write_matrix_project(root, _WEAK_MATRIX_TEST_BODY)
+    tools.upsert_getter_matrix_section(root, "IRPType", tools.render_getter_matrix_section(root, "IRPType", {"declaration"}, test_path))
+
+    assert tools.verify_getter_matrix(root, "IRPType", {"declaration"}, test_path) == []
+    issues = tools.verify_getter_matrix(root, "IRPType", {"declaration"}, test_path, strict=True)
+
+    assert any("declaration" in issue and "not recorded as a blocker" in issue for issue in issues)
+
+
+def test_getter_matrix_strict_accepts_weak_row_with_blocker(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    test_path = _write_matrix_project(root, _WEAK_MATRIX_TEST_BODY)
+    tools.upsert_getter_matrix_section(root, "IRPType", tools.render_getter_matrix_section(root, "IRPType", {"declaration"}, test_path))
+
+    assert tools.verify_getter_matrix(root, "IRPType", {"declaration"}, test_path, strict=True, blocked={"declaration"}) == []
+
+
+def test_parse_blocker_members_reads_only_the_requested_interface(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    index = tools.getter_matrix_path(root).parent / "index.md"
+    index.parent.mkdir(parents=True)
+    index.write_text(
+        "## P0 integration-test blockers\n\n" "| Interface | Member(s) | Blocker |\n| --- | --- | --- |\n" "| IRPType | `declaration` (`getDeclaration`) | x |\n" "| IRPOther | `declaration` | x |\n",
+        encoding="utf-8",
+    )
+
+    assert tools._parse_blocker_members(root, "IRPType") == {"declaration", "getDeclaration"}
+    assert tools._parse_blocker_members(root, "IRPOther") == {"declaration"}
+
+
+def test_getter_assertions_skips_blocked_property(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    test_path = _write_matrix_project(root, _WEAK_MATRIX_TEST_BODY)
+
+    assert any("declaration" in issue for issue in tools.verify_getter_assertions(test_path, {"declaration"}))
+    assert tools.verify_getter_assertions(test_path, {"declaration"}, blocked={"declaration"}) == []
+
+
 def test_getter_matrix_flags_dangling_test_reference(tmp_path: Path) -> None:
     tools = _load_sync_tools()
     root = tmp_path / "repo"

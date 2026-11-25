@@ -50,6 +50,30 @@ class TestRPProjectIntegration:
         finally:
             comp.delete_from_project()
 
+    def test_find_element_by_binary_id_finds_created_class(self, test_project: IRPProject) -> None:
+        pkg = test_project.add_package(self._unique("BinIdPkg"))
+        try:
+            created = pkg.add_class(self._unique("BinIdCls"))
+
+            found = test_project.find_element_by_binary_id(created.binary_id)
+
+            assert found is not None
+            assert found.binary_id == created.binary_id
+        finally:
+            pkg.delete_from_project()
+
+    def test_default_directory_scheme_roundtrip(self, test_project: IRPProject) -> None:
+        original = test_project.default_directory_scheme
+        try:
+            assert isinstance(original, str)
+            test_project.default_directory_scheme = "Flat"
+            assert test_project.default_directory_scheme == "Flat"
+        finally:
+            test_project.default_directory_scheme = original
+
+    def test_check_events_base_ids_solve_collisions_completes(self, test_project: IRPProject) -> None:
+        assert test_project.check_events_base_ids_solve_collisions() is None
+
 
 @pytest.mark.integration
 class TestRPPackageIntegration:
