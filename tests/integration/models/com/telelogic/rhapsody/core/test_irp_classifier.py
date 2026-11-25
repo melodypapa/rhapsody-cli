@@ -76,6 +76,18 @@ class TestRPClassifierIntegration:
             classifier.delete_from_project()
 
     def test_get_source_artifacts_empty(self, test_project: IRPProject) -> None:
+        """Additional empty-state case only; it is not getter completion evidence.
+
+        SKILL §5 closes a getter only when a populated fixture proves retrieval by
+        identity; an empty result is an extra case. That fixture is blocked here:
+        JavaDoc defines ``getSourceArtifacts()`` as "the source artifacts for the
+        classifier, as a collection of IRPFile objects", but neither the JavaDoc
+        surface nor the wrapper exposes a member that creates or attaches a
+        classifier-owned source artifact, so no live setup can show the getter
+        returns one. Recorded as a blocker in
+        ``docs/reports/sync-todo/Group-classifiers-1.md`` (Section 5) and the P0
+        integration-test blocker table in ``docs/reports/sync-todo/index.md``.
+        """
         pkg_name = self._unique("SrcArtPkg")
         class_name = self._unique("SrcArtCls")
         pkg = self._create_package(test_project, pkg_name)
@@ -87,6 +99,18 @@ class TestRPClassifierIntegration:
             classifier.delete_from_project()
 
     def test_get_sequence_diagrams_empty(self, test_project: IRPProject) -> None:
+        """Additional empty-state case only; it is not getter completion evidence.
+
+        SKILL §5 closes a getter only when a populated fixture proves retrieval by
+        identity; an empty result is an extra case. That fixture is blocked here:
+        JavaDoc defines ``getSequenceDiagrams()`` as "all the classifier's sequence
+        diagrams", but the only diagram factory,
+        ``IRPPackage.add_sequence_diagram(name)``, creates a package-owned diagram
+        and no documented member attaches it to a classifier, so the classifier
+        getter cannot be shown to return a created diagram. Recorded as a blocker in
+        ``docs/reports/sync-todo/Group-classifiers-1.md`` (Section 5) and the P0
+        integration-test blocker table in ``docs/reports/sync-todo/index.md``.
+        """
         pkg_name = self._unique("SeqDiagPkg")
         class_name = self._unique("SeqDiagCls")
         pkg = self._create_package(test_project, pkg_name)
@@ -98,6 +122,20 @@ class TestRPClassifierIntegration:
             classifier.delete_from_project()
 
     def test_get_links_empty(self, test_project: IRPProject) -> None:
+        """Additional empty-state case only; it is not getter completion evidence.
+
+        SKILL §5 closes a getter only when a populated fixture proves retrieval by
+        identity; an empty result is an extra case. That fixture is blocked here:
+        JavaDoc defines ``getLinks()`` as "all the classifier's link relationships",
+        but the only link factories, ``IRPClass.add_link`` /
+        ``IRPClass.add_link_to_part_via_port``, build links between a class's part
+        instances (requiring real ``IRPInstance`` parts plus association or port
+        endpoints), and no documented member proves the result is what the
+        classifier's ``links`` getter returns; ``add_link`` itself is an open
+        IRPClass blocker. Recorded here as a blocker in
+        ``docs/reports/sync-todo/Group-classifiers-1.md`` (Section 5) and the P0
+        integration-test blocker table in ``docs/reports/sync-todo/index.md``.
+        """
         pkg_name = self._unique("LinksPkg")
         class_name = self._unique("LinksCls")
         pkg = self._create_package(test_project, pkg_name)

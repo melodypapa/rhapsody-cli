@@ -561,11 +561,15 @@ def test_model_element_clone_unwraps_owner_and_wraps_result() -> None:
     fake.clone.assert_called_once_with("Clone", new_owner._com)
 
 
-def test_model_element_create_oslc_link_raises_not_implemented() -> None:
-    element = IRPModelElement(make_fake_element("Class"))
+def test_model_element_create_oslc_link_delegates_to_com() -> None:
+    fake = make_fake_element("Class")
+    element = IRPModelElement(fake)
+    link_type = "http://jazz.net/ns/dm/linktypes#external"
+    purl = "https://example.com/oslc/req/1"
 
-    with pytest.raises(NotImplementedError):
-        element.create_oslc_link("type", "purl")
+    element.create_oslc_link(link_type, purl)
+
+    fake.createOSLCLink.assert_called_once_with(link_type, purl)
 
 
 def test_model_element_delete_dependency_unwraps_argument() -> None:
@@ -587,11 +591,15 @@ def test_model_element_delete_from_project_delegates_to_com() -> None:
     fake.deleteFromProject.assert_called_once_with()
 
 
-def test_model_element_delete_oslc_link_raises_not_implemented() -> None:
-    element = IRPModelElement(make_fake_element("Class"))
+def test_model_element_delete_oslc_link_delegates_to_com() -> None:
+    fake = make_fake_element("Class")
+    element = IRPModelElement(fake)
+    link_type = "http://jazz.net/ns/dm/linktypes#external"
+    purl = "https://example.com/oslc/req/1"
 
-    with pytest.raises(NotImplementedError):
-        element.delete_oslc_link("type", "purl")
+    element.delete_oslc_link(link_type, purl)
+
+    fake.deleteOSLCLink.assert_called_once_with(link_type, purl)
 
 
 def test_model_element_error_message_returns_str() -> None:

@@ -324,10 +324,12 @@ class TestIRPProjectGenerated:
         assert test_project.open_csv_file(self._unique("arg"), 0) is None  # type: ignore[func-returns-value]
 
     def test_enable_rhapsody_model_manager(self, test_project: IRPProject) -> None:
+        """JavaDoc IRPProject.enableRhapsodyModelManager exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
         with pytest.raises(NotImplementedError):
             test_project.enable_rhapsody_model_manager()
 
     def test_migrate_design_manager_links(self, test_project: IRPProject) -> None:
+        """JavaDoc IRPProject.migrateDesignManagerLinks exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
         with pytest.raises(NotImplementedError):
             test_project.migrate_design_manager_links()
 
@@ -354,6 +356,7 @@ class TestIRPProjectGenerated:
             com_call.assert_called_once()
 
     def test_set_global_configuration(self, test_project: IRPProject) -> None:
+        """JavaDoc IRPProject.setGlobalConfiguration exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
         with pytest.raises(NotImplementedError):
             test_project.set_global_configuration(self._unique("gc"), self._unique("name"))
 

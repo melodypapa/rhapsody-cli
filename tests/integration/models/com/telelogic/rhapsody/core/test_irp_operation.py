@@ -162,6 +162,7 @@ class TestRPOperationIntegration:
             test_class.delete_from_project()
 
     def test_property_setters_binding_shape(self, test_project: IRPProject) -> None:
+        """Also covers the setters above; JavaDoc IRPOperation.updateContainedDiagramsOnServer exists but pywin32 does not expose it (absent from pywin32_authority.json), so the stub raises."""
         pkg = self._create_package(test_project, self._unique("SetterPkg"))
         test_class = pkg.add_class(self._unique("SetterCls"))
         try:
