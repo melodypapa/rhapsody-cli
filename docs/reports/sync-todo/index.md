@@ -187,6 +187,50 @@ records 58 `OK`, 4 `WEAK`, and 99 `MISSING` rows; `MISSING` marks getters whose 
 discoverable by the `test_<property>`/`test_get_<property>` convention (for example `ports` is covered
 by `test_add_port_and_get_ports`) and must be pointed at the real test by hand.
 
+## NotImplementedError stubs
+
+Added 2026-11-25. `verify_sync.py` reads this table for every interface wrapper and fails Step 8 unless every
+`NotImplementedError` stub has one row whose basis matches the committed COM evidence:
+
+- `not-exposed` — the Java member is absent from `docs/reports/pywin32_authority.json` and listed
+  in `documented_unavailable`; the stub raises before any COM dispatch (SKILL §4).
+- `java-doc-unimplemented` — JavaDoc itself declares the member "Not implemented"; the catalog may
+  expose a property, but the Java API forbids its use.
+- `runtime-stub` — pywin32 exposes the member, the documented call is proven ineffective, and the
+  user approved the deviation on the recorded date; the wrapper and test docstrings cite the
+  JavaDoc member, the catalog entry, and the live evidence (SKILL §4/§5).
+
+Each stub must also be asserted as `pytest.raises(NotImplementedError)` in both mirrored test
+layers. A row whose member no longer raises is stale and fails Step 8.
+
+| Interface | Python member | COM member | Basis | Evidence | Approved |
+| --- | --- | --- | --- | --- | --- |
+| IRPClass | `is_abstract` | `isAbstract` | not-exposed | The setter's `setIsAbstract` is absent from the catalog and listed in `documented_unavailable`; the `isAbstract` property accepts the write but never persists it (observed live). | — |
+| IRPClass | `add_event_reception_with_event` | `addEventReceptionWithEvent` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPClass | `update_contained_diagrams_on_server` | `updateContainedDiagramsOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPCollection | `add_graphical_item` | `addGraphicalItem` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPCollection | `to_list` | `toList` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPModelElement | `constraints_by_him` | `constraintsByHim` | runtime-stub | Java API documents it as internal-only; the user's explicit decision on 2026-11-24 keeps the stub before COM dispatch. | 2026-11-24 |
+| IRPModelElement | `hyper_links` | `hyperLinks` | runtime-stub | Live retrieval could not be established through the documented APIs; the user's explicit decision on 2026-11-24 keeps the stub before COM dispatch. | 2026-11-24 |
+| IRPModelElement | `get_rmm_url` | `getRmmUrl` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPModelElement | `set_description_html` | `descriptionHTML` | java-doc-unimplemented | JavaDoc: "Not implemented - should not be used." | — |
+| IRPOperation | `update_contained_diagrams_on_server` | `updateContainedDiagramsOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPPackage | `add_instance_specification` | `addInstanceSpecification` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPPackage | `get_root_instance_specifications` | `getRootInstanceSpecifications` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPPackage | `login_to_remote_artifact_server` | `loginToRemoteArtifactServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPPackage | `update_contained_diagrams_on_server` | `updateContainedDiagramsOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPPackage | `update_contained_matrices_on_server` | `updateContainedMatricesOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPPackage | `update_contained_tables_on_server` | `updateContainedTablesOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPPort | `get_contract` | `getContract` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPPort | `set_contract` | `setContract` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPProject | `enable_rhapsody_model_manager` | `enableRhapsodyModelManager` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPProject | `migrate_design_manager_links` | `migrateDesignManagerLinks` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPProject | `set_global_configuration` | `setGlobalConfiguration` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPUnit | `get_unit_path` | `getUnitPath` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPUseCase | `add_event_reception_with_event` | `addEventReceptionWithEvent` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPUseCase | `set_is_behavior_overriden` | `isBehaviorOverriden` | runtime-stub | `setIsBehaviorOverriden` is absent from the catalog; the `isBehaviorOverriden` property is readable, but writes do not work for use cases (the IRPActor/IRPClass setters do); observed live; user approved on 2026-11-25. | 2026-11-25 |
+| IRPUseCase | `update_contained_diagrams_on_server` | `updateContainedDiagramsOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+
 ## P0 integration-test blockers (2026-11-24)
 
 The following integration tests were removed rather than converted into exception assertions or skips

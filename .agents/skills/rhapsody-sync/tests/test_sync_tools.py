@@ -4,7 +4,7 @@ import importlib.util
 import sys
 from pathlib import Path
 from types import ModuleType
-from typing import Optional
+from typing import Optional, Tuple
 
 import pytest
 
@@ -1008,3 +1008,189 @@ def test_getter_matrix_upsert_preserves_other_sections(tmp_path: Path) -> None:
 
     assert "## IRPOther" in text
     assert text.count("## IRPType") == 1
+
+
+_NOT_EXPOSED_WRAPPER = (
+    "class IRPThing:\n"
+    "    def get_thing(self) -> str:\n"
+    '        """Return the thing.\n\n'
+    "        Raises:\n"
+    "            NotImplementedError: pywin32 does not expose ``getThing``.\n\n"
+    "        Reference:\n"
+    "            com.telelogic.rhapsody.core.IRPThing::getThing()\n"
+    '        """\n'
+    '        raise NotImplementedError("getThing is not exposed in the Rhapsody COM automation type library.")\n'
+)
+
+_RUNTIME_STUB_WRAPPER = (
+    "class IRPThing:\n"
+    "    @property\n"
+    "    def thing(self) -> str:\n"
+    '        """Return the thing.\n\n'
+    "        pywin32 catalog entry: ``thing`` (property). Live evidence: the documented\n"
+    "        read returns no usable value, so the wrapper raises before COM dispatch.\n\n"
+    "        Raises:\n"
+    "            NotImplementedError: Always raised because the live call is ineffective.\n\n"
+    "        Reference:\n"
+    "            com.telelogic.rhapsody.core.IRPThing::getThing()\n"
+    '        """\n'
+    '        raise NotImplementedError("thing is ineffective")\n'
+)
+
+_JAVA_DOC_WRAPPER = (
+    "class IRPThing:\n"
+    "    def set_description_html(self, value: str) -> None:\n"
+    '        """Set the HTML description.\n\n'
+    '        Note: the Java API documents this method as "Not implemented - should not be used."\n\n'
+    "        Raises:\n"
+    "            NotImplementedError: Always raised; Rhapsody does not implement it.\n\n"
+    "        Reference:\n"
+    "            com.telelogic.rhapsody.core.IRPThing::setDescriptionHTML(java.lang.String value)\n"
+    '        """\n'
+    '        raise NotImplementedError("setDescriptionHTML is not implemented")\n'
+)
+
+
+def _write_stub_ledger(root: Path, rows: str) -> Path:
+    ledger = root / "docs" / "reports" / "sync-todo" / "index.md"
+    ledger.parent.mkdir(parents=True)
+    ledger.write_text(
+        "# Sync todo index\n\n" "## NotImplementedError stubs\n\n" "| Interface | Python member | COM member | Basis | Evidence | Approved |\n" "| --- | --- | --- | --- | --- | --- |\n" + rows,
+        encoding="utf-8",
+    )
+    return ledger
+
+
+def _write_stub_authority(root: Path, catalog: str, unavailable: str = "{}") -> None:
+    reports = root / "docs" / "reports"
+    reports.mkdir(parents=True, exist_ok=True)
+    (reports / "pywin32_authority.json").write_text(
+        '{"catalog": ' + catalog + ', "documented_unavailable": ' + unavailable + "}",
+        encoding="utf-8",
+    )
+
+
+def _write_stub_tests(root: Path, expression: str) -> Tuple[Path, Path]:
+    body = "import pytest\n\n\ndef test_stub() -> None:\n" f"    with pytest.raises(NotImplementedError):\n        {expression}\n"
+    paths = []
+    for layer in ("unit", "integration"):
+        path = root / "tests" / layer / "test_irp_thing.py"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(body, encoding="utf-8")
+        paths.append(path)
+    return paths[0], paths[1]
+
+
+def test_stub_evidence_flags_missing_ledger(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    _write_stub_authority(root, '{"IRPThing": {}}', '{"IRPThing": ["getThing"]}')
+    unit, integration = _write_stub_tests(root, "wrapper.get_thing()")
+
+    issues = tools.verify_not_implemented_evidence(root, "IRPThing", _NOT_EXPOSED_WRAPPER, unit, integration)
+
+    assert any("NotImplementedError" in issue and "ledger" in issue.lower() for issue in issues)
+
+
+def test_stub_evidence_accepts_documented_unavailable_stub(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    _write_stub_authority(root, '{"IRPThing": {}}', '{"IRPThing": ["getThing"]}')
+    _write_stub_ledger(root, "| IRPThing | `get_thing` | `getThing` | not-exposed | `getThing` is absent from the catalog and listed in `documented_unavailable`. | — |\n")
+    unit, integration = _write_stub_tests(root, "wrapper.get_thing()")
+
+    assert tools.verify_not_implemented_evidence(root, "IRPThing", _NOT_EXPOSED_WRAPPER, unit, integration) == []
+
+
+def test_stub_evidence_flags_runtime_stub_without_approval(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    _write_stub_authority(root, '{"IRPThing": {"thing": "property"}}')
+    _write_stub_ledger(root, "| IRPThing | `thing` | `thing` | runtime-stub | pywin32 exposes `thing`; live read returns no usable value. | — |\n")
+    unit, integration = _write_stub_tests(root, "wrapper.thing")
+
+    issues = tools.verify_not_implemented_evidence(root, "IRPThing", _RUNTIME_STUB_WRAPPER, unit, integration)
+
+    assert any("approval" in issue.lower() and "thing" in issue for issue in issues)
+
+
+def test_stub_evidence_accepts_approved_runtime_stub(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    _write_stub_authority(root, '{"IRPThing": {"thing": "property"}}')
+    _write_stub_ledger(root, "| IRPThing | `thing` | `thing` | runtime-stub | pywin32 exposes `thing`; live read returns no usable value. | 2026-11-25 |\n")
+    unit, integration = _write_stub_tests(root, "wrapper.thing")
+
+    assert tools.verify_not_implemented_evidence(root, "IRPThing", _RUNTIME_STUB_WRAPPER, unit, integration) == []
+
+
+def test_stub_evidence_accepts_java_doc_unimplemented_stub(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    _write_stub_authority(root, '{"IRPThing": {"descriptionHTML": "property"}}')
+    _write_stub_ledger(root, '| IRPThing | `set_description_html` | `descriptionHTML` | java-doc-unimplemented | JavaDoc: "Not implemented - should not be used." | — |\n')
+    unit, integration = _write_stub_tests(root, "wrapper.set_description_html('x')")
+
+    assert tools.verify_not_implemented_evidence(root, "IRPThing", _JAVA_DOC_WRAPPER, unit, integration) == []
+
+
+def test_stub_evidence_flags_not_exposed_basis_when_catalog_exposes_member(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    _write_stub_authority(root, '{"IRPThing": {"getThing": "method"}}', '{"IRPThing": ["getThing"]}')
+    _write_stub_ledger(root, "| IRPThing | `get_thing` | `getThing` | not-exposed | Absent from the catalog. | — |\n")
+    unit, integration = _write_stub_tests(root, "wrapper.get_thing()")
+
+    issues = tools.verify_not_implemented_evidence(root, "IRPThing", _NOT_EXPOSED_WRAPPER, unit, integration)
+
+    assert any("getThing" in issue and "catalog" in issue for issue in issues)
+
+
+def test_stub_evidence_flags_stub_without_javadoc_reference(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    _write_stub_authority(root, '{"IRPThing": {}}', '{"IRPThing": ["getThing"]}')
+    _write_stub_ledger(root, "| IRPThing | `get_thing` | `getThing` | not-exposed | Absent from the catalog. | — |\n")
+    unit, integration = _write_stub_tests(root, "wrapper.get_thing()")
+    wrapper = _NOT_EXPOSED_WRAPPER.replace("com.telelogic.rhapsody.core.IRPThing::getThing()", "")
+
+    issues = tools.verify_not_implemented_evidence(root, "IRPThing", wrapper, unit, integration)
+
+    assert any("Reference" in issue and "get_thing" in issue for issue in issues)
+
+
+def test_stub_evidence_flags_missing_test_assertion(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    _write_stub_authority(root, '{"IRPThing": {}}', '{"IRPThing": ["getThing"]}')
+    _write_stub_ledger(root, "| IRPThing | `get_thing` | `getThing` | not-exposed | Absent from the catalog. | — |\n")
+    unit, integration = _write_stub_tests(root, "wrapper.get_thing()")
+    integration.write_text("def test_stub() -> None:\n    assert True\n", encoding="utf-8")
+
+    issues = tools.verify_not_implemented_evidence(root, "IRPThing", _NOT_EXPOSED_WRAPPER, unit, integration)
+
+    assert any("integration" in issue.lower() and "get_thing" in issue for issue in issues)
+
+
+def test_stub_evidence_flags_stale_ledger_row(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    _write_stub_authority(root, '{"IRPThing": {}}')
+    _write_stub_ledger(root, "| IRPThing | `get_thing` | `getThing` | not-exposed | Absent from the catalog. | — |\n")
+    unit, integration = _write_stub_tests(root, "wrapper.get_thing()")
+
+    issues = tools.verify_not_implemented_evidence(root, "IRPThing", "class IRPThing:\n    pass\n", unit, integration)
+
+    assert any("stale" in issue.lower() and "get_thing" in issue for issue in issues)
+
+
+def test_stub_evidence_flags_com_member_mismatch(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    _write_stub_authority(root, '{"IRPThing": {}}', '{"IRPThing": ["getThing"]}')
+    _write_stub_ledger(root, "| IRPThing | `get_thing` | `otherThing` | not-exposed | Absent from the catalog. | — |\n")
+    unit, integration = _write_stub_tests(root, "wrapper.get_thing()")
+
+    issues = tools.verify_not_implemented_evidence(root, "IRPThing", _NOT_EXPOSED_WRAPPER, unit, integration)
+
+    assert any("otherThing" in issue and "getThing" in issue for issue in issues)

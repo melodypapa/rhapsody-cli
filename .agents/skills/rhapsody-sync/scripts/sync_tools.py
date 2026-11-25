@@ -693,6 +693,170 @@ def write_getter_matrix(root: Path, interface_name: str, report_path: Path) -> P
     return upsert_getter_matrix_section(root, simple_name, section)
 
 
+_NOT_IMPLEMENTED_LEDGER_RELATIVE = Path("docs") / "reports" / "sync-todo" / "index.md"
+_NOT_IMPLEMENTED_LEDGER_HEADING = "## NotImplementedError stubs"
+_NOT_IMPLEMENTED_BASES = {"not-exposed", "java-doc-unimplemented", "runtime-stub"}
+_ISO_DATE_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+_COM_REFERENCE_PATTERN = re.compile(r"::(\w+)\(")
+
+
+def _raises_not_implemented(node: ast.AST) -> bool:
+    """Return whether an AST node raises ``NotImplementedError`` directly."""
+    return isinstance(node, ast.Raise) and isinstance(node.exc, ast.Call) and isinstance(node.exc.func, ast.Name) and node.exc.func.id == "NotImplementedError"
+
+
+def _collect_not_implemented_stubs(wrapper_source: str) -> List[Tuple[str, str, str, str]]:
+    """Return (Python member, COM member, docstring, class name) for every stub.
+
+    The COM member comes from the docstring's ``Reference:
+    com.telelogic...IRPX::member(...)`` line. Without that line a stub has no
+    JavaDoc evidence and fails Step 8.
+    """
+    stubs: List[Tuple[str, str, str, str]] = []
+    tree = ast.parse(wrapper_source)
+    for class_node in (node for node in ast.walk(tree) if isinstance(node, ast.ClassDef)):
+        for function in class_node.body:
+            if not isinstance(function, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                continue
+            if not any(_raises_not_implemented(candidate) for candidate in ast.walk(function)):
+                continue
+            docstring = ast.get_docstring(function) or ""
+            reference = _COM_REFERENCE_PATTERN.search(docstring)
+            stubs.append((function.name, reference.group(1) if reference else "", docstring, class_node.name))
+    return stubs
+
+
+def _split_table_row(line: str) -> Optional[List[str]]:
+    stripped = line.strip()
+    if not stripped.startswith("|"):
+        return None
+    return [cell.strip() for cell in stripped.strip("|").split("|")]
+
+
+def _accessor_property_names(member: str) -> List[str]:
+    """Return a member plus the pywin32 property name of a get/set accessor."""
+    names = [member]
+    if len(member) > 3 and member[:3].lower() in {"get", "set"} and member[3].isupper():
+        names.append(member[3].lower() + member[4:])
+    return names
+
+
+def _parse_not_implemented_ledger(root: Path, interface_name: str) -> Tuple[Dict[str, Tuple[str, str, str, str, str]], List[str]]:
+    """Return this interface's ledger rows keyed by Python member and parse issues."""
+    path = root / _NOT_IMPLEMENTED_LEDGER_RELATIVE
+    if not path.is_file():
+        return {}, [f"NotImplementedError evidence ledger not found: {path}"]
+    lines = path.read_text(encoding="utf-8").splitlines()
+    start: Optional[int] = None
+    for index, line in enumerate(lines):
+        if line.strip() == _NOT_IMPLEMENTED_LEDGER_HEADING:
+            start = index + 1
+            break
+    if start is None:
+        return {}, [f"{path} has no '{_NOT_IMPLEMENTED_LEDGER_HEADING}' section"]
+    rows: Dict[str, Tuple[str, str, str, str, str]] = {}
+    for line in lines[start:]:
+        if line.startswith("## "):
+            break
+        cells = _split_table_row(line)
+        if cells is None or len(cells) < 6:
+            continue
+        member = cells[1].strip("`").strip()
+        if cells[0].strip("`").strip() != interface_name or not member or member == "Python member" or set(cells[0]) <= {"-", ":", " "}:
+            continue
+        rows[member] = (member, cells[2].strip("`").strip(), cells[3].strip().lower(), cells[4].strip(), cells[5].strip())
+    return rows, []
+
+
+def _test_asserts_not_implemented(path: Path, member: str) -> bool:
+    """Return whether a test function asserts this stub raises NotImplementedError."""
+    try:
+        source = path.read_text(encoding="utf-8")
+        tree = ast.parse(source)
+    except (OSError, SyntaxError, UnicodeDecodeError):
+        return False
+    for function in (node for node in ast.walk(tree) if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))):
+        segment = ast.get_source_segment(source, function) or ""
+        if member in segment and "NotImplementedError" in segment and "raises" in segment:
+            return True
+    return False
+
+
+def verify_not_implemented_evidence(root: Path, interface_name: str, wrapper_source: str, unit_test_path: Optional[Path], integration_test_path: Optional[Path]) -> List[str]:
+    """Check every NotImplementedError stub against its ledger evidence row.
+
+    SKILL section 4 permits a stub only in one of three evidence states:
+    ``not-exposed`` (the Java member is absent from the pywin32 catalog and is
+    listed in ``documented_unavailable``), ``java-doc-unimplemented`` (JavaDoc
+    itself declares the member unimplemented), or ``runtime-stub`` (pywin32
+    exposes the member but the documented call is proven ineffective and the
+    user approved the deviation with a date). ``docs/reports/sync-todo/index.md``
+    records one row per stub; a missing row, a stale row, a basis inconsistent
+    with the catalog, a runtime stub without an approval date, or a stub that
+    neither mirrored test asserts fails Step 8.
+    """
+    stubs = _collect_not_implemented_stubs(wrapper_source)
+    ledger_rows, parse_issues = _parse_not_implemented_ledger(root, interface_name)
+    if not stubs:
+        return [f"NotImplementedError evidence ledger row for {interface_name}.{member} is stale: the wrapper no longer raises NotImplementedError" for member in sorted(ledger_rows)]
+    if parse_issues:
+        return parse_issues
+
+    catalog_path = root / "docs" / "reports" / "pywin32_authority.json"
+    authority: object = json.loads(catalog_path.read_text(encoding="utf-8")) if catalog_path.is_file() else {}
+    catalog: object = authority.get("catalog", {}).get(interface_name, {}) if isinstance(authority, dict) else {}
+    unavailable: object = authority.get("documented_unavailable", {}).get(interface_name, []) if isinstance(authority, dict) else {}
+    catalog_names = {str(name).lower(): str(name) for name in catalog} if isinstance(catalog, dict) else {}
+    unavailable_names = {str(name).lower() for name in unavailable} if isinstance(unavailable, list) else set()
+
+    issues: List[str] = []
+    stub_members = {member for member, _, _, _ in stubs}
+    for member in sorted(set(ledger_rows) - stub_members):
+        issues.append(f"NotImplementedError evidence ledger row for {interface_name}.{member} is stale: the wrapper no longer raises NotImplementedError")
+
+    for member, reference, docstring, _class_name in stubs:
+        row = ledger_rows.get(member)
+        if row is None:
+            issues.append(f"{interface_name}.{member} raises NotImplementedError without an evidence row in {root / _NOT_IMPLEMENTED_LEDGER_RELATIVE}")
+            continue
+        _recorded, recorded_com, basis, evidence, approved = row
+        if not reference:
+            issues.append(f"{interface_name}.{member} stub docstring has no 'Reference: com.telelogic...::{member}(...)' line, so its JavaDoc member cannot be verified")
+        elif recorded_com.lower() not in {name.lower() for name in _accessor_property_names(reference)}:
+            issues.append(f"{interface_name}.{member} ledger records COM member '{recorded_com}' but its JavaDoc Reference names '{reference}'")
+        if basis not in _NOT_IMPLEMENTED_BASES:
+            issues.append(f"{interface_name}.{member} ledger basis '{basis}' is unknown (expected one of {', '.join(sorted(_NOT_IMPLEMENTED_BASES))})")
+            continue
+        if evidence in {"", "—", "-"}:
+            issues.append(f"{interface_name}.{member} ledger has no evidence text")
+        candidates = {name.lower() for name in _accessor_property_names(recorded_com or reference)}
+        exposed = sorted(catalog_names[name] for name in candidates if name in catalog_names)
+        exact_exposed = bool(reference) and reference.lower() in catalog_names
+        if basis == "not-exposed":
+            if reference and reference.lower() not in unavailable_names:
+                issues.append(f"{interface_name}.{member} is recorded 'not-exposed' but '{reference}' is not listed in documented_unavailable")
+            if exact_exposed:
+                issues.append(f"{interface_name}.{member} is recorded 'not-exposed' but the catalog exposes '{catalog_names[reference.lower()]}'")
+        elif basis == "runtime-stub":
+            if reference and reference.lower() in unavailable_names:
+                issues.append(f"{interface_name}.{member} is recorded 'runtime-stub' but '{reference}' is listed in documented_unavailable")
+            if not exposed:
+                issues.append(f"{interface_name}.{member} is recorded 'runtime-stub' but the catalog exposes no member among {', '.join(sorted(candidates))}")
+            if not _ISO_DATE_PATTERN.match(approved):
+                issues.append(f"{interface_name}.{member} runtime stub has no user approval date in the ledger (expected YYYY-MM-DD, found '{approved}')")
+            if "pywin32" not in docstring.lower() and "catalog" not in docstring.lower():
+                issues.append(f"{interface_name}.{member} runtime stub docstring does not cite the pywin32 catalog entry")
+        else:
+            if "not implemented" not in docstring.lower():
+                issues.append(f"{interface_name}.{member} is recorded 'java-doc-unimplemented' but its docstring does not quote the JavaDoc's 'not implemented' statement")
+            if not exposed:
+                issues.append(f"{interface_name}.{member} is recorded 'java-doc-unimplemented' but the catalog exposes no member among {', '.join(sorted(candidates))}")
+        for label, test_path in (("unit", unit_test_path), ("integration", integration_test_path)):
+            if test_path is None or not _test_asserts_not_implemented(test_path, member):
+                issues.append(f"{interface_name}.{member} stub is not asserted as pytest.raises(NotImplementedError) in the {label} test file")
+    return issues
+
+
 def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) -> List[str]:
     """Check package placement, requirement entry, and RST coverage against a validator report."""
     issues: List[str] = []
@@ -741,6 +905,7 @@ def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) ->
         # Step 3/4 enforcement: every wrapper COM binding must exist in the
         # pywin32 catalog with the correct method/property shape.
         issues.extend(verify_wrapper_bindings(root, simple_name, absolute_wrapper.read_text(encoding="utf-8")))
+    wrapper_source = absolute_wrapper.read_text(encoding="utf-8") if absolute_wrapper.is_file() else ""
 
     class_stem = absolute_wrapper.stem
     java_snake = _java_interface_snake(simple_name)
@@ -757,7 +922,8 @@ def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) ->
 
     # Unit and integration tests mirror the wrapper's package and must exercise the class.
     model_segment = Path("models") / Path(*rel_parent.parts[1:]) if is_model_wrapper else Path()
-    owned_properties = _owned_property_names(absolute_wrapper.read_text(encoding="utf-8")) if absolute_wrapper.is_file() else set()
+    owned_properties = _owned_property_names(wrapper_source) if wrapper_source else set()
+    test_paths: Dict[str, Path] = {}
     for label, test_base in (("Unit", "unit"), ("Integration", "integration")):
         test_dir = root / "tests" / test_base / model_segment
         test_path = first_existing(test_dir, "test_{stem}.py")
@@ -766,12 +932,14 @@ def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) ->
         elif wrapper_class not in test_path.read_text(encoding="utf-8"):
             issues.append(f"{label} test file does not exercise {wrapper_class}: {test_path}")
         else:
+            test_paths[label] = test_path
             issues.extend(verify_no_skip_or_xfail(test_path, allow_reasoned_skip=label == "Integration"))
             if label == "Integration":
                 issues.extend(verify_integration_exception_catches(test_path.read_text(encoding="utf-8")))
                 issues.extend(verify_no_empty_finally(test_path))
                 issues.extend(verify_getter_assertions(test_path, owned_properties))
                 issues.extend(verify_getter_matrix(root, simple_name, owned_properties, test_path))
+    issues.extend(verify_not_implemented_evidence(root, simple_name, wrapper_source, test_paths.get("Unit"), test_paths.get("Integration")))
     requirements_path = first_existing(root / "docs" / "requirements" / package_dir, "{stem}.md")
     if requirements_path is None:
         issues.append(f"Class requirement document not found: {root / 'docs' / 'requirements' / package_dir / f'{class_stem}.md'}")
@@ -803,7 +971,6 @@ def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) ->
     # The RST page is a JavaDoc-style API reference of the Python wrapper: it
     # must document every public member. Deviations live in the generated
     # report, not here.
-    wrapper_source = absolute_wrapper.read_text(encoding="utf-8") if absolute_wrapper.is_file() else ""
     public_members = parse_wrapper_public_members(wrapper_source, wrapper_class)
     undocumented = [name for name in public_members if not re.search(rf"\b{re.escape(name)}\b", rst_section)]
     if undocumented:
