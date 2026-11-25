@@ -1,5 +1,8 @@
 """Cross-wrapper integration tests: factory methods return correct subclasses."""
 
+import subprocess
+import sys
+
 from rhapsody_cli.models.com.telelogic.rhapsody.core import (
     IRPAssociationRole,
     IRPClass,
@@ -17,6 +20,24 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCo
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_misc import IRPComment, IRPConstraint, IRPEnumerationLiteral
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
+
+
+def test_fresh_import_registers_all_core_wrappers() -> None:
+    """A standalone CLI process must resolve Class/Attribute/Operation/Port.
+
+    Unit tests import the wrapper modules at collection time, hiding the fact
+    that a bare ``import rhapsody_cli`` registers only three wrappers.
+    """
+    code = (
+        "import rhapsody_cli\n"
+        "from rhapsody_cli.models.core import ComHelper\n"
+        "required = {'Class', 'Attribute', 'Operation', 'Port', 'Package', 'Project'}\n"
+        "missing = required - set(ComHelper._WRAPPER_REGISTRY)\n"
+        "assert not missing, missing\n"
+    )
+    result = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, timeout=30)
+
+    assert result.returncode == 0, result.stderr
 
 
 def test_wrap_dispatches_profile_to_rpprofile() -> None:
