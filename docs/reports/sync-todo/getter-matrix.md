@@ -88,10 +88,10 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 
 ## IRPInterfaceItem
 
-| Java getter / Python member | Integration test | Assertion | Status |
-| --- | --- | --- | --- |
-| `arguments` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_interface_item.py::test_add_argument_and_get_arguments` | identity/value | OK |
-| `signature` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_interface_item.py::test_signature_methods` | identity/value | OK |
+| Java getter / Python member | Integration test | Assertion | Status | Real parent and created child/value | JavaDoc-verified setup and relationship | Expected returned identity/value | Cleanup |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `arguments` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_interface_item.py::test_add_argument_and_get_arguments` | identity/value | OK | Test package → class → operation; created `IRPArgument` | `IRPInterfaceItem.addArgument(name)` creates and attaches the argument to the operation's argument list. | `operation.arguments` contains the exact argument returned by `add_argument`. | Delete the test package. |
+| `signature` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_interface_item.py::test_signature_methods` | identity/value | OK | Test package → class → operation with a created argument | `addArgument(name)` attaches a real argument; JavaDoc defines `getSignature()` as the operation signature. | Exact live value: `<operation>(int <argument>)`, including the created operation and argument names. | Delete the test package. |
 
 ## IRPModelElement
 

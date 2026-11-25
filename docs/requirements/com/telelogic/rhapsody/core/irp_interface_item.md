@@ -1,16 +1,20 @@
 ## SWR_ELEM_00018: IRPInterfaceItem Wrapper
 
 **ID:** SWR_ELEM_00018
-**Title:** IRPInterfaceItem wraps IRPInterfaceItem, the base for operation-like elements
+**Title:** IRPInterfaceItem wraps the features shared by operations, events, and event receptions
 **Status:** Implemented
 **Priority:** Medium
 **Description:**
-The `IRPInterfaceItem` JavaDoc interface represents operation-like elements that
-carry an argument list and signature. The Python `IRPInterfaceItem` shall extend
-`IRPClassifier` and expose `add_argument`, `add_argument_before_position`,
+The JavaDoc defines `IRPInterfaceItem` as the interface representing the
+features shared by operations, events, and event receptions in Rhapsody models.
+The Python `IRPInterfaceItem` shall extend `IRPClassifier` and expose
+`add_argument`, `add_argument_before_position`,
 `arguments`, `signature`, `get_signature_no_arg_names`,
 `get_signature_no_arg_types` and `match_on_signature`. The wrapper registers
-itself for meta class `"InterfaceItem"`.
+itself for meta class `"InterfaceItem"`. Its JavaDoc-facing `pos` argument for
+`add_argument_before_position` remains 1-based; the pywin32 COM call uses a
+zero-based position, so the wrapper subtracts one before dispatch. This behavior
+was confirmed against live Rhapsody with a populated operation argument list.
 Every COM call targets exactly one pywin32 member from
 `docs/reports/pywin32_authority.json`: `arguments` and `signature` are
 **properties** exposed as Python `@property` accessors and read via
@@ -21,4 +25,4 @@ The module uses `from __future__ import annotations` with unquoted type referenc
 **Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_interface_item.py:IRPInterfaceItem
 (class renamed from `RPInterfaceItem`; §2 canonical package move completed; 4
 legacy dual-binding call sites migrated)
-**Last Changed:** 2026-11-24
+**Last Changed:** 2026-11-25
