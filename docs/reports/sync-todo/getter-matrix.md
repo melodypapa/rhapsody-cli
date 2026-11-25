@@ -202,14 +202,14 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | --- | --- | --- | --- |
 | `active_component` | — | none | MISSING |
 | `active_configuration` | — | none | MISSING |
-| `all_stereotypes` | — | none | MISSING |
+| `all_stereotypes` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_all_stereotypes` | identity/value | OK |
 | `cg_simplified_model_package` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_cg_simplified_model_package` | identity/value | OK |
 | `components` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_components` | identity/value | OK |
 | `default_directory_scheme` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_default_directory_scheme_roundtrip` | identity/value | OK |
-| `nodes` | — | none | MISSING |
+| `nodes` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_nodes` | identity/value | OK |
 | `packages` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_packages` | identity/value | OK |
 | `profiles` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_profiles` | identity/value | OK |
-| `use_unique_stereotype_and_ref_cache` | — | none | MISSING |
+| `use_unique_stereotype_and_ref_cache` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_use_unique_stereotype_and_ref_cache` | identity/value | OK |
 
 ## IRPType
 
@@ -245,3 +245,27 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | `entry_points` | — | none | MISSING |
 | `extension_points` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_use_case.py::test_extension_points` | identity/value | OK |
 | `is_behavior_overriden` | — | none | MISSING |
+
+## IRPActor
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `is_behavior_overriden` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_actor.py::test_is_behavior_overriden` | identity/value | OK |
+
+## IRPStatechart
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `graphical_elements` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_statechart.py::test_graphical_elements` | identity/value | OK |
+| `is_main_behavior` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_statechart.py::test_is_main_behavior` | identity/value | OK |
+| `is_overridden` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_statechart.py::test_is_overridden` | identity/value | OK |
+| `its_class` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_statechart.py::test_its_class` | identity/value | OK |
+| `root_state` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_statechart.py::test_root_state` | identity/value | OK |
+
+## IRPStereotype
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `icon` | — | none | MISSING |
+| `is_new_term` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_stereotype.py::test_is_new_term` | identity/value | OK |
+| `of_meta_class` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_stereotype.py::test_of_meta_class` | identity/value | OK |

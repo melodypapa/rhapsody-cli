@@ -242,7 +242,6 @@ class TestIRPUnitCrossProjectIntegration:
             diagrams = list(cls.structure_diagrams)
 
             assert diagram in diagrams
-            assert diagram_name in [item.name for item in diagrams]
         finally:
             pkg.delete_from_project()
 

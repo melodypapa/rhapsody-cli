@@ -205,6 +205,8 @@ layers. A row whose member no longer raises is stale and fails Step 8.
 
 | Interface | Python member | COM member | Basis | Evidence | Approved |
 | --- | --- | --- | --- | --- | --- |
+| IRPActor | `add_event_reception_with_event` | `addEventReceptionWithEvent` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPActor | `update_contained_diagrams_on_server` | `updateContainedDiagramsOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPClass | `is_abstract` | `isAbstract` | not-exposed | The setter's `setIsAbstract` is absent from the catalog and listed in `documented_unavailable`; the `isAbstract` property accepts the write but never persists it (observed live). | — |
 | IRPClass | `add_event_reception_with_event` | `addEventReceptionWithEvent` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPClass | `update_contained_diagrams_on_server` | `updateContainedDiagramsOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
@@ -225,6 +227,8 @@ layers. A row whose member no longer raises is stale and fails Step 8.
 | IRPProject | `enable_rhapsody_model_manager` | `enableRhapsodyModelManager` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPProject | `migrate_design_manager_links` | `migrateDesignManagerLinks` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPProject | `set_global_configuration` | `setGlobalConfiguration` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPStatechart | `add_new_accept_event_action` | `addNewAcceptEventAction` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPStatechart | `add_new_accept_time_event` | `addNewAcceptTimeEvent` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPUnit | `get_unit_path` | `getUnitPath` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPUseCase | `add_event_reception_with_event` | `addEventReceptionWithEvent` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPUseCase | `set_is_behavior_overriden` | `isBehaviorOverriden` | runtime-stub | `setIsBehaviorOverriden` is absent from the catalog; the `isBehaviorOverriden` property is readable, but writes do not work for use cases (the IRPActor/IRPClass setters do); observed live; user approved on 2026-11-25. | 2026-11-25 |
@@ -248,16 +252,19 @@ wrapper-signature fix before its getter/member row can close.
 | IRPProject | `close_csv_file`, `reload_csv_file`, `find_elements_with_oslc_link`, `add_spell_checker_result`, `get_requirements_by_id`, `get_new_progress_bar` | Binding now matches COM; still needs a CSV/OSLC/requirement/progress fixture or a meaningful assertion for a void result. |
 | IRPProject | `import_package_from_rose`, `import_project_from_rose` | External Rose fixture required; JavaDoc marks both unsupported since Rhapsody 8.1.4. |
 | IRPPackage | `get_remote_requirements_populate_mode` | Requires a Design Manager/remote requirements server. |
-| IRPPackage | `get_instance_specifications`, `get_source_artifacts`, `get_user_defined_stereotypes`, `get_nested_components` | No live create/relate API; `add_instance_specification` is a pywin32-absent stub and packages have no `add_component`. |
+| IRPPackage | `get_instance_specifications`, `get_source_artifacts`, `get_user_defined_stereotypes`, `get_nested_components`, `links` | No live create/relate API; `add_instance_specification` is a pywin32-absent stub and packages have no `add_component`; package `links` inherits the IRPClass `add_link` fixture blocker. |
 | IRPClass | `add_link`, `add_link_to_part_via_port` | Needs a real `IRPInstance` part and structure-diagram endpoints; class-as-part fixtures only produced exceptions. |
 | IRPModelElement | `user_defined_meta_class` (`getUserDefinedMetaClass`) | JavaDoc defines the result as the New Term name, but the COM surface exposes no API to define a New Term, so only the default value's type is observable; evidence: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_model_element.py::test_get_user_defined_meta_class`. |
 | IRPModelElement | `constraints_by_him`, `hyper_links` | User-approved runtime stubs (2026-11-24, `runtime-stub` rows in the NotImplementedError evidence ledger); retrieval fixtures could not be built live. |
 | IRPUnit | `copy_to_another_project`, `move_to_another_project_leave_a_reference`, `reference_to_another_project`, `set_unit_path` | Requires a second saved project/unit file and mutates the shared project. |
 | IRPType | `typedef_multiplicity` setter | Live 2026-11-25: the catalog exposes `typedefMultiplicity` as a property and reads return `"1"` on a new type, but every write (`"0..1"`, `"1"`, `"0..*"`, `"*"`, `"[0..1]"`, `"1..1"`) faults with COM HRESULT `-2147221498`; no live setter success, so the getter asserts the observed default and the setter stays a blocker. |
 | IRPUseCase | `entry_points` | No documented add API in the COM surface; only an empty-state result is observable. |
+| IRPStereotype | `icon` | No documented API attaches or edits a stereotype icon; the getter returns the image path declared by the stereotype definition file, so no populated live fixture exists. |
 | IRPProject | `get_code_generated_files` | Requires a real code-generation run; no safe fixture in the shared project. |
 | IRPProject | `get_active_custom_views_on_browser` | No API creates a browser-level custom view; the empty collection is the only observable state. |
 | IRPProject | `get_remote_resource_packages`, `is_actively_managed` | Require a remote resource/management server. |
+| IRPProject | `active_component`, `active_configuration` | Setting either mutates shared session state; a safe round-trip fixture is not yet available. |
+| IRPApplication | `add_profile_to_model` | Needs a real installed profile name on Windows; `"0"` is an unverified profile index and the model-level addition has no cleanup API. Evidence: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_application.py::test_add_profile_to_model`. |
 | IRPProject | `is_modified_recursive` | Needs a controlled modify/save transition on the session-shared project. |
 | IRPClass | `is_abstract`, `is_active`, `is_behavior_overriden` | Documented pywin32 aliases; getters are readable but no populated live fixture exists (setters are read-only or JavaDoc-unimplemented). |
 | IRPPackage | `instance_specifications`, `links`, `nested_components`, `saved_in_seperate_directory`, `source_artifacts`, `user_defined_stereotypes` | No documented create/relate API for these package-owned relationships; see the existing P0 rows and the 2026-11-25 live COM inventory. |

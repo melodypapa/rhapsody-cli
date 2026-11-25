@@ -10,6 +10,7 @@ build that generalization from two real classes.
 """
 
 import uuid
+from typing import cast
 
 import pytest
 
@@ -145,12 +146,18 @@ class TestIRPUseCaseGenerated:
             pkg.delete_from_project()
 
     def test_add_event_reception_with_event(self, test_project: IRPProject) -> None:
-        """JavaDoc IRPUseCase.addEventReceptionWithEvent exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
+        """JavaDoc IRPUseCase.addEventReceptionWithEvent exists, but pywin32 does not expose it
+        (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError
+        before dispatch. The event is a real model element so the call keeps the documented
+        (name, IRPEvent) signature."""
+        from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPEvent
+
         pkg = test_project.add_package(self._unique("UsePkg"))
-        use_case = pkg.add_use_case(self._unique("UC"))
         try:
+            use_case = pkg.add_use_case(self._unique("UC"))
+            event = pkg.add_event(self._unique("Evt"))
             with pytest.raises(NotImplementedError):
-                use_case.add_event_reception_with_event("x", None)  # type: ignore[arg-type]
+                use_case.add_event_reception_with_event(self._unique("Recv"), cast(IRPEvent, event))
         finally:
             pkg.delete_from_project()
 

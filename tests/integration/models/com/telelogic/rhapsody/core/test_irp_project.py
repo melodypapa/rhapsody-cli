@@ -31,16 +31,35 @@ class TestRPProjectIntegration:
     def test_add_package_to_project(self, test_project: IRPProject) -> None:
         name = self._unique("TopLevelPkg")
         new_pkg = test_project.add_package(name)
-        assert new_pkg is not None
-        assert isinstance(new_pkg, IRPPackage)
-        assert isinstance(new_pkg, IRPPackage)
-        pkgs = test_project.packages
-        names = [p.name for p in pkgs]
-        assert name in names
+        try:
+            assert isinstance(new_pkg, IRPPackage)
+            pkgs = test_project.packages
+            names = [p.name for p in pkgs]
+            assert name in names
+        finally:
+            new_pkg.delete_from_project()
 
     def test_project_packages_returns_collection(self, test_project: IRPProject) -> None:
         pkgs = test_project.packages
         assert pkgs is not None
+
+    def test_nodes(self, test_project: IRPProject) -> None:
+        node = test_project.add_node(self._unique("Node"))
+        try:
+            assert node in list(test_project.nodes)
+        finally:
+            node.delete_from_project()
+
+    def test_use_unique_stereotype_and_ref_cache(self, test_project: IRPProject) -> None:
+        assert test_project.use_unique_stereotype_and_ref_cache in (0, 1)
+
+    def test_all_stereotypes(self, test_project: IRPProject) -> None:
+        pkg = test_project.add_package(self._unique("StereoPkg"))
+        try:
+            stereotype = pkg.add_stereotype(self._unique("ProjectStereo"), "Class")
+            assert stereotype in list(test_project.all_stereotypes)
+        finally:
+            pkg.delete_from_project()
 
     def test_create_component_in_project(self, test_project: IRPProject) -> None:
         comp_name = self._unique("MyComponent")
@@ -94,31 +113,37 @@ class TestRPPackageIntegration:
         parent_name = self._unique("ParentPkg")
         child_name = self._unique("ChildPkg")
         parent_pkg = self._create_package(test_project, parent_name)
-        child_pkg = parent_pkg.add_nested_package(child_name)
-        assert child_pkg is not None
-        assert isinstance(child_pkg, IRPPackage)
-        assert child_pkg in list(parent_pkg.packages)
+        try:
+            child_pkg = parent_pkg.add_nested_package(child_name)
+            assert isinstance(child_pkg, IRPPackage)
+            assert child_pkg in list(parent_pkg.packages)
+        finally:
+            parent_pkg.delete_from_project()
 
     def test_package_navigation(self, test_project: IRPProject) -> None:
         parent_name = self._unique("NavParent")
         child_name = self._unique("NavChild")
         parent_pkg = self._create_package(test_project, parent_name)
-        child_pkg = parent_pkg.add_nested_package(child_name)
-        owner = child_pkg.owner
-        assert owner is not None
-        assert owner == parent_pkg
-        assert isinstance(owner, IRPPackage)
+        try:
+            child_pkg = parent_pkg.add_nested_package(child_name)
+            owner = child_pkg.owner
+            assert owner == parent_pkg
+            assert isinstance(owner, IRPPackage)
+        finally:
+            parent_pkg.delete_from_project()
 
     def test_add_class_to_package(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("ClassPkg")
         class_name = self._unique("TestClass")
         pkg = self._create_package(test_project, pkg_name)
         new_class = pkg.add_class(class_name)
-        assert new_class is not None
-        assert isinstance(new_class, IRPClass)
-        classes = pkg.classes
-        class_names = [c.name for c in classes]
-        assert class_name in class_names
+        try:
+            assert isinstance(new_class, IRPClass)
+            classes = pkg.classes
+            class_names = [c.name for c in classes]
+            assert class_name in class_names
+        finally:
+            pkg.delete_from_project()
 
     def test_create_module_in_package(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("ModPkg")
