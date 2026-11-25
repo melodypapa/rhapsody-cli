@@ -97,6 +97,7 @@ class IRPModelElement(ComHelper):
     # [x] get_nested_elements_recursive      [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_new_term_stereotype            [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_of_template                   [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] get_oslc_links                    [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_overlay_icon_file_name          [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_overridden_properties         [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_overridden_properties_by_pattern [x] impl  [x] docstring  [x] unit test  [x] integration test
@@ -1080,6 +1081,20 @@ class IRPModelElement(ComHelper):
             com.telelogic.rhapsody.core.IRPModelElement::setOfTemplate(com.telelogic.rhapsody.core.IRPModelElement ofTemplate)
         """
         ComHelper.set_com_property(self._com, "ofTemplate", of_template._com)
+
+    def get_oslc_links(self) -> IRPCollection:
+        """Returns a collection of all the element's OSLC links.
+
+        Each item in the returned collection is a string in the format
+        ``"Type=<<link type>>\\nURL=<<linked item URL>>"``.
+
+        Returns:
+            An ``IRPCollection`` of the element's OSLC links.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPModelElement::getOSLCLinks()
+        """
+        return IRPCollection(ComHelper.call_com(lambda: self._com.getOSLCLinks()))
 
     def get_overlay_icon_file_name(self) -> str:
         """Returns the full path of the graphic file used as an overlay on this specific model element.

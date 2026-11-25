@@ -572,6 +572,19 @@ def test_model_element_create_oslc_link_delegates_to_com() -> None:
     fake.createOSLCLink.assert_called_once_with(link_type, purl)
 
 
+def test_model_element_get_oslc_links_wraps_collection() -> None:
+    link_text = "Type=external\nURL=https://example.com/oslc/req/1"
+    links_com = make_fake_collection([link_text])
+    fake = make_fake_element("Class", getOSLCLinks=links_com)
+    element = IRPModelElement(fake)
+
+    links = element.get_oslc_links()
+
+    assert isinstance(links, IRPCollection)
+    assert list(links) == [link_text]
+    fake.getOSLCLinks.assert_called_once_with()
+
+
 def test_model_element_delete_dependency_unwraps_argument() -> None:
     dependency = IRPModelElement(make_fake_element("Dependency"))
     fake = make_fake_element("Class")

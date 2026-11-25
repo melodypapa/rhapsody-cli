@@ -2971,6 +2971,10 @@
       "updateRmmDataToNewVersion",
       "versionNumberLong",
       "writeToOutputWindow"
+    ],
+    "IRPModelElement": [
+      "lockOnDesignManager",
+      "unlockOnDesignManager"
     ]
   },
   "documented_unavailable": {
