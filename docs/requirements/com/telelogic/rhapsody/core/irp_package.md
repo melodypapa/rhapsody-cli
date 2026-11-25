@@ -28,3 +28,19 @@ imports for names used only in `cast()`.
 (class renamed from `RPPackage`; §2 canonical package move completed; 35 legacy
 dual-binding sites migrated; 1 catalog-absent site left unchanged)
 **Last Changed:** 2026-11-22
+
+## SWR_ELEM_00034: IRPPackage link mutators live-fixture blocker
+
+**ID:** SWR_ELEM_00034
+**Title:** add_link and link getters have no live integration proof
+**Status:** Blocked
+**Priority:** Low
+**Description:**
+`addLink` between real objects or SysML ports fails with `E_FAIL` in this
+Rhapsody build, which also blocks the `get_links` populated-getter fixture. This
+matches the previously recorded `add_link_to_element` `E_FAIL` blocker. The
+integration tests were removed per SKILL §5; the bindings keep full fake-COM
+unit coverage. Live verification needs a build that accepts link creation,
+after which the rows can be closed.
+**Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py:IRPPackage
+**Last Changed:** 2026-11-25

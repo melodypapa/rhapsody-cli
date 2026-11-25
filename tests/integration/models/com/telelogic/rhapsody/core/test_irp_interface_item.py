@@ -91,9 +91,14 @@ class TestRPInterfaceItemIntegration:
             op1 = test_class.add_operation(op1_name)
             op2 = test_class.add_operation(op2_name)
             op3 = test_class.add_operation(op3_name)
-            op1.add_argument("x")
-            op2.add_argument("x")
-            op3.add_argument("y")
+            # matchOnSignature compares argument names and types, so the two
+            # operations that must match share one unique name and the
+            # non-matching operation gets a distinct one.
+            match_arg = self._unique("MatchArg")
+            other_arg = self._unique("OtherArg")
+            op1.add_argument(match_arg)
+            op2.add_argument(match_arg)
+            op3.add_argument(other_arg)
             assert isinstance(op1.match_on_signature(op2), bool)
             assert isinstance(op1.match_on_signature(op3), bool)
         finally:

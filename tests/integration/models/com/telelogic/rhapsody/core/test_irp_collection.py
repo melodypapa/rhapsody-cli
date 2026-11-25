@@ -1,5 +1,7 @@
 """Integration tests for IRPCollection with live Rhapsody COM API."""
 
+import uuid
+
 import pytest
 
 from rhapsody_cli import RhapsodyApplication
@@ -12,10 +14,14 @@ class TestIRPCollectionIntegration:
     """Own-method coverage for the canonical IRPCollection wrapper."""
 
     def test_nested_elements_are_wrapped_collections(self, test_project: IRPProject) -> None:
-        elements = test_project.get_nested_elements()
+        created = test_project.add_package(f"NestedPkg_{uuid.uuid4().hex[:8]}")
+        try:
+            elements = test_project.get_nested_elements()
 
-        assert isinstance(elements, IRPCollection)
-        assert len(list(elements)) >= 0
+            assert isinstance(elements, IRPCollection)
+            assert created in list(elements)
+        finally:
+            created.delete_from_project()
 
     def test_create_new_collection_is_empty(self, rhapsody_app: RhapsodyApplication) -> None:
         collection = rhapsody_app.create_new_collection()
@@ -31,8 +37,9 @@ class TestIRPCollectionIntegration:
         collection.set_string(1, "value")
         collection.set_integer(2, 7)
         collection.set_model_element(3, test_project)
-        assert collection[0] is not None
-        assert len(collection[0:2]) >= 0
+        assert collection[0] == "value"
+        assert collection[1] == 7
+        assert collection[2] == test_project
         collection.remove(1)
         collection.add_item(test_project)
         collection.empty()

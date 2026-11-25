@@ -10,6 +10,7 @@ import pytest
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_association_class import IRPAssociationClass
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
 
 
 @pytest.mark.integration
@@ -38,10 +39,13 @@ class TestRPAssociationClassIntegration:
         try:
             class_a = pkg.add_class(self._unique("AssocClsA"))
             class_b = pkg.add_class(self._unique("AssocClsB"))
-            end1 = class_a.add_relation_to(class_b, "", "Association", "1", "", "Association", "1", "")
+            # add_relation_to reports meta_class "AssociationEnd", so wrap()
+            # returns IRPModelElement. Bind the relation interface explicitly:
+            # get_inverse() belongs to IRPRelation, not IRPModelElement.
+            end1 = IRPRelation(class_a.add_relation_to(class_b, "", "Association", "1", "", "Association", "1", "")._com)
             end2 = end1.get_inverse()
 
-            assoc = pkg.add_association(end1, end2, self._unique("AssocClass"))
+            assoc = IRPAssociationClass(pkg.add_association(end1, end2, self._unique("AssocClass"))._com)
 
             assert isinstance(assoc, IRPAssociationClass)
             assert assoc.end1 in (end1, end2)

@@ -32,3 +32,35 @@ finished-class remediation ledger. The module uses
 `cast()` are imported locally inside the method to avoid circular imports.
 **Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_model_element.py
 **Last Changed:** 2026-11-25
+
+## SWR_ELEM_00023: IRPModelElement GUI-dialog methods live-fixture blocker
+
+**ID:** SWR_ELEM_00023
+**Title:** high_light_element and open_features_dialog have no live integration proof
+**Status:** Blocked
+**Priority:** Low
+**Description:**
+`IRPModelElement.high_light_element()` opens a modal GUI window and
+`open_features_dialog()` opens a modal "Features" window, both of which block
+COM automation for the rest of the session. Their former integration tests
+asserted a mocked `call_com` binding shape, which proves only the call shape and
+not the live behaviour (SKILL §5). Those tests were removed; the bindings keep
+full fake-COM unit coverage. Live verification needs a session that can drive or
+dismiss those dialogs, after which the rows can be closed.
+**Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_model_element.py:IRPModelElement
+**Last Changed:** 2026-11-25
+
+## SWR_ELEM_00033: IRPModelElement OSLC link roundtrip live-fixture blocker
+
+**ID:** SWR_ELEM_00033
+**Title:** OSLC link create/delete has no live integration proof
+**Status:** Blocked
+**Priority:** Low
+**Description:**
+`createOSLCLink`/`deleteOSLCLink` dispatch to pywin32-exposed members, but a
+round trip against a real element fails with `E_FAIL` in this Rhapsody build.
+The integration test was removed per SKILL §5; the bindings keep full fake-COM
+unit coverage. Live verification needs an OSLC-enabled server configuration,
+after which the row can be closed.
+**Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_model_element.py:IRPModelElement
+**Last Changed:** 2026-11-25

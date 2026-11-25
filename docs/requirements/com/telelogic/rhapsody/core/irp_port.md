@@ -26,3 +26,21 @@ The module uses `from __future__ import annotations` with unquoted type referenc
 (class renamed from `RPPort`; §2 canonical package move completed; 8 legacy call
 sites migrated; 2 catalog-absent sites left unchanged)
 **Last Changed:** 2026-11-24
+
+## SWR_ELEM_00027: IRPPort interface mutators live-fixture blocker
+
+**ID:** SWR_ELEM_00027
+**Title:** provided/required interface mutators have no live integration proof
+**Status:** Blocked
+**Priority:** Low
+**Description:**
+`addProvidedInterface`, `removeProvidedInterface`, `addRequiredInterface` and
+`removeRequiredInterface` are exposed by pywin32 but this Rhapsody build rejects
+every write with `E_FAIL`, for Class and Interface arguments alike. The former
+integration test asserted those failures indirectly; per SKILL §5 the assertions
+were removed and the rows recorded as blocked, while the collection getters keep
+their live smoke assertions and the bindings keep full fake-COM unit coverage.
+Live verification needs a build that accepts the mutators, after which the rows
+can be closed.
+**Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_port.py:IRPPort
+**Last Changed:** 2026-11-25

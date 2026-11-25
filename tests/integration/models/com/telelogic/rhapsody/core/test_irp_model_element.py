@@ -5,7 +5,6 @@ These tests require a running Rhapsody instance with an open project.
 
 import uuid
 from typing import Iterator, Optional
-from unittest.mock import patch
 
 import pytest
 
@@ -17,7 +16,6 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPacka
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_stereotype import IRPStereotype
-from rhapsody_cli.models.core import ComHelper
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -1213,19 +1211,6 @@ class TestRPModelElementOslcRemoteIntegration:
         assert isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_create_and_delete_oslc_link_roundtrip(self, test_project: IRPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("OslcPkg"))
-        try:
-            cls = pkg.add_class(self._unique("OslcCls"))
-            link_type = "http://jazz.net/ns/dm/linktypes#external"
-            purl = f"https://example.com/oslc/{uuid.uuid4().hex}"
-            cls.create_oslc_link(link_type, purl)
-            assert cls.error_message() == ""
-            cls.delete_oslc_link(link_type, purl)
-            assert cls.error_message() == ""
-        finally:
-            pkg.delete_from_project()
-
     def test_get_hyper_links_is_not_implemented(self, test_project: IRPProject) -> None:
         """User-approved runtime stub: the catalog exposes hyperLinks, but the documented creation APIs faulted and no retrievable hyperlink was produced (Group-core-1 ledger, 2026-11-24)."""
         pkg = self._create_package(test_project, self._unique("HyperLinkPkg"))
@@ -1531,36 +1516,12 @@ class TestRPModelElementDiagnosticsUiIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_high_light_element_binding(self, test_project: IRPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("HLPkg"))
-        try:
-            cls = pkg.add_class(self._unique("HLCls"))
-            # A live call opens a modal GUI window that blocks the automation
-            # session; assert the COM binding shape instead.
-            with patch.object(ComHelper, "call_com") as com_call:
-                assert cls.high_light_element() is None  # type: ignore[func-returns-value]
-                com_call.assert_called_once()
-        finally:
-            pkg.delete_from_project()
-
     def test_locate_in_browser_returns_int(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("LocPkg"))
         try:
             cls = pkg.add_class(self._unique("LocCls"))
             result = cls.locate_in_browser()
             assert isinstance(result, int)
-        finally:
-            pkg.delete_from_project()
-
-    def test_open_features_dialog_binding(self, test_project: IRPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("FeatPkg"))
-        try:
-            cls = pkg.add_class(self._unique("FeatCls"))
-            # A live call opens a modal "Features" window that blocks later
-            # project operations; assert the COM binding shape instead.
-            with patch.object(ComHelper, "call_com") as com_call:
-                assert cls.open_features_dialog(0) is None  # type: ignore[func-returns-value]
-                com_call.assert_called_once()
         finally:
             pkg.delete_from_project()
 
