@@ -89,6 +89,7 @@ class TestIRPApplicationIntegration:
         # Save shared-project changes before switching to avoid Rhapsody's modal save prompt.
         rhapsody_app.save_all()
         created = rhapsody_app.create_new_project(str(project_dir), "CreatedProject")
+        assert created is not None
 
         active = rhapsody_app.active_project()
         assert active == created
