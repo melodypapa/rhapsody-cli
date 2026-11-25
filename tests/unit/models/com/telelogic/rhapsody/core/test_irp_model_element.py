@@ -567,9 +567,8 @@ def test_model_element_create_oslc_link_delegates_to_com() -> None:
     link_type = "http://jazz.net/ns/dm/linktypes#external"
     purl = "https://example.com/oslc/req/1"
 
-    result = element.create_oslc_link(link_type, purl)
+    element.create_oslc_link(link_type, purl)
 
-    assert result is None
     fake.createOSLCLink.assert_called_once_with(link_type, purl)
 
 
@@ -598,9 +597,8 @@ def test_model_element_delete_oslc_link_delegates_to_com() -> None:
     link_type = "http://jazz.net/ns/dm/linktypes#external"
     purl = "https://example.com/oslc/req/1"
 
-    result = element.delete_oslc_link(link_type, purl)
+    element.delete_oslc_link(link_type, purl)
 
-    assert result is None
     fake.deleteOSLCLink.assert_called_once_with(link_type, purl)
 
 

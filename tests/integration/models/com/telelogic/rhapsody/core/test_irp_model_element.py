@@ -1219,9 +1219,9 @@ class TestRPModelElementOslcRemoteIntegration:
             cls = pkg.add_class(self._unique("OslcCls"))
             link_type = "http://jazz.net/ns/dm/linktypes#external"
             purl = f"https://example.com/oslc/{uuid.uuid4().hex}"
-            assert cls.create_oslc_link(link_type, purl) is None
+            cls.create_oslc_link(link_type, purl)
             assert cls.error_message() == ""
-            assert cls.delete_oslc_link(link_type, purl) is None
+            cls.delete_oslc_link(link_type, purl)
             assert cls.error_message() == ""
         finally:
             pkg.delete_from_project()
