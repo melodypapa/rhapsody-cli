@@ -39,12 +39,14 @@ class TestIRPCollectionIntegration:
         assert collection.count == 0
 
     def test_add_graphical_item_raises_not_implemented(self, rhapsody_app: RhapsodyApplication, test_project: IRPProject) -> None:
+        """JavaDoc IRPCollection.addGraphicalItem exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
         collection = rhapsody_app.create_new_collection()
 
         with pytest.raises(NotImplementedError):
             collection.add_graphical_item(test_project)
 
     def test_to_list_raises_not_implemented(self, rhapsody_app: RhapsodyApplication) -> None:
+        """JavaDoc IRPCollection.toList exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
         collection = rhapsody_app.create_new_collection()
 
         with pytest.raises(NotImplementedError):

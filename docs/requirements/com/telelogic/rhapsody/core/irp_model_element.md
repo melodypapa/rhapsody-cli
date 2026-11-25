@@ -19,7 +19,8 @@ two port arguments when the link represents an association (per JavaDoc). The de
 single-stereotype access is exposed as the read/write `stereotype` property. Every COM call
 targets exactly one pywin32-exposed member from `docs/reports/pywin32_authority.json` with no
 runtime name probing. `AbstractRPModelElement.wrap()` resolves the wrapper class from the
-`meta_class` property. `get_rmm_url` is a documented blocker: the `getRmmUrl`/`rmmUrl` members
+`meta_class` property. `create_oslc_link`/`delete_oslc_link` dispatch to the pywin32
+`createOSLCLink`/`deleteOSLCLink` methods. `get_rmm_url` is a documented blocker: the `getRmmUrl`/`rmmUrl` members
 are absent from the committed pywin32 catalog (see `documented_unavailable` for
 IRPModelElement), so it raises `NotImplementedError` before any COM dispatch. By the user's
 explicit decision on 2026-11-24, `constraints_by_him` and `hyper_links` also raise
@@ -30,4 +31,4 @@ finished-class remediation ledger. The module uses
 `from __future__ import annotations` with unquoted type references; names used only in
 `cast()` are imported locally inside the method to avoid circular imports.
 **Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_model_element.py
-**Last Changed:** 2026-11-24
+**Last Changed:** 2026-11-25
