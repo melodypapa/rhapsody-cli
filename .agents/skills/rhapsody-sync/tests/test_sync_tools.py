@@ -882,3 +882,129 @@ def test_getter_assertion_check_ignores_non_getter_tests(tmp_path: Path) -> None
     )
 
     assert tools.verify_getter_assertions(test_file, {"packages"}) == []
+
+
+_MATRIX_TEST_BODY = "def test_get_declaration(type_element) -> None:\n    type_element.declaration = 'int x'\n    assert type_element.declaration == 'int x'\n"
+
+
+def _write_matrix_project(root: Path, body: str = _MATRIX_TEST_BODY) -> Path:
+    test_dir = root / "tests" / "integration" / "models" / Path(*_REPORT_PACKAGE_PARTS)
+    test_dir.mkdir(parents=True)
+    test_path = test_dir / "test_irp_type.py"
+    test_path.write_text(body, encoding="utf-8")
+    return test_path
+
+
+def test_getter_matrix_flags_missing_file(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    test_path = _write_matrix_project(root)
+
+    issues = tools.verify_getter_matrix(root, "IRPType", {"declaration"}, test_path)
+
+    assert len(issues) == 1
+    assert "Getter fixture matrix not found" in issues[0]
+
+
+def test_getter_matrix_flags_missing_interface_section(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    test_path = _write_matrix_project(root)
+    matrix = tools.getter_matrix_path(root)
+    matrix.parent.mkdir(parents=True)
+    matrix.write_text("# Getter fixture matrix\n\n## IRPOther\n\n", encoding="utf-8")
+
+    issues = tools.verify_getter_matrix(root, "IRPType", {"declaration"}, test_path)
+
+    assert len(issues) == 1
+    assert "no '## IRPType' section" in issues[0]
+
+
+def test_getter_matrix_flags_missing_property_row(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    test_path = _write_matrix_project(root)
+    tools.upsert_getter_matrix_section(root, "IRPType", tools.render_getter_matrix_section(root, "IRPType", {"declaration"}, test_path))
+
+    issues = tools.verify_getter_matrix(root, "IRPType", {"declaration", "kind"}, test_path)
+
+    assert any("kind" in issue and "missing a row" in issue for issue in issues)
+
+
+def test_getter_matrix_flags_stale_row_for_removed_property(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    test_path = _write_matrix_project(root)
+    tools.upsert_getter_matrix_section(root, "IRPType", tools.render_getter_matrix_section(root, "IRPType", {"declaration", "kind"}, test_path))
+
+    issues = tools.verify_getter_matrix(root, "IRPType", {"declaration"}, test_path)
+
+    assert any("kind" in issue and "no longer exposes" in issue for issue in issues)
+
+
+def test_getter_matrix_accepts_a_generated_section(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    test_path = _write_matrix_project(root)
+    section = tools.render_getter_matrix_section(root, "IRPType", {"declaration"}, test_path)
+    tools.upsert_getter_matrix_section(root, "IRPType", section)
+
+    assert tools.verify_getter_matrix(root, "IRPType", {"declaration"}, test_path) == []
+
+
+def test_getter_matrix_flags_dangling_test_reference(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    test_path = _write_matrix_project(root)
+    matrix = tools.getter_matrix_path(root)
+    matrix.parent.mkdir(parents=True)
+    matrix.write_text(
+        "# Getter fixture matrix\n\n"
+        "## IRPType\n\n"
+        "| Java getter / Python member | Integration test | Assertion | Status |\n"
+        "| --- | --- | --- | --- |\n"
+        f"| `declaration` | `{test_path.relative_to(root).as_posix()}::test_gone` | identity/value | OK |\n",
+        encoding="utf-8",
+    )
+
+    issues = tools.verify_getter_matrix(root, "IRPType", {"declaration"}, test_path)
+
+    assert any("test_gone" in issue and "missing test" in issue for issue in issues)
+
+
+def test_getter_matrix_flags_inconsistent_status(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    test_path = _write_matrix_project(root)
+    matrix = tools.getter_matrix_path(root)
+    matrix.parent.mkdir(parents=True)
+    matrix.write_text(
+        "# Getter fixture matrix\n\n" "## IRPType\n\n" "| Java getter / Python member | Integration test | Assertion | Status |\n" "| --- | --- | --- | --- |\n" "| `declaration` | — | none | OK |\n",
+        encoding="utf-8",
+    )
+
+    issues = tools.verify_getter_matrix(root, "IRPType", {"declaration"}, test_path)
+
+    assert any("declaration" in issue and "expected 'MISSING'" in issue for issue in issues)
+
+
+def test_getter_matrix_skips_interface_without_properties(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    test_path = _write_matrix_project(root)
+
+    assert tools.verify_getter_matrix(root, "IRPType", set(), test_path) == []
+
+
+def test_getter_matrix_upsert_preserves_other_sections(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    test_path = _write_matrix_project(root)
+    tools.upsert_getter_matrix_section(root, "IRPType", tools.render_getter_matrix_section(root, "IRPType", {"declaration"}, test_path))
+    tools.upsert_getter_matrix_section(root, "IRPOther", "## IRPOther\n\n| Java getter / Python member | Integration test | Assertion | Status |\n| --- | --- | --- | --- |\n")
+    tools.upsert_getter_matrix_section(root, "IRPType", tools.render_getter_matrix_section(root, "IRPType", {"declaration"}, test_path))
+
+    text = tools.getter_matrix_path(root).read_text(encoding="utf-8")
+
+    assert "## IRPOther" in text
+    assert text.count("## IRPType") == 1

@@ -179,6 +179,14 @@ The same pass replaced 21 `assert pkg.add_* (...) is not None` factory checks in
 and the `add_package`/`add_component`/`add_profile` checks in `test_irp_project.py` with name-identity
 assertions, and removed the remaining literal `"arg"` fixture prefixes from the integration tests.
 
+Step 8 now also validates the machine-readable Getter fixture matrix at
+`docs/reports/sync-todo/getter-matrix.md`: every interface section must exist, hold one row per owned
+wrapper property, use a known assertion/status pair, and reference an integration test that still
+exists. Regenerate a section with `verify_sync.py <INTERFACE> --write-getter-matrix`. The seed run
+records 58 `OK`, 4 `WEAK`, and 99 `MISSING` rows; `MISSING` marks getters whose test is not
+discoverable by the `test_<property>`/`test_get_<property>` convention (for example `ports` is covered
+by `test_add_port_and_get_ports`) and must be pointed at the real test by hand.
+
 ## P0 integration-test blockers (2026-11-24)
 
 The following integration tests were removed rather than converted into exception assertions or skips

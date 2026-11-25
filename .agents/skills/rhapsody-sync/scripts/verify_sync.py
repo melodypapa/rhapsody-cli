@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 from typing import List, Optional
 
-from sync_tools import api_report_path, find_project_root, verify_sync_artifacts
+from sync_tools import api_report_path, find_project_root, verify_sync_artifacts, write_getter_matrix
 
 
 def main(argv: Optional[List[str]] = None) -> int:
@@ -13,6 +13,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser.add_argument("interface", help="Java interface, such as IRPClass; a fully qualified name is also accepted")
     parser.add_argument("--root", type=Path, help="Project root; discovered from the current directory when omitted")
     parser.add_argument("--report", type=Path, help="Validator report; defaults to docs/reports/<java.package.path>/<INTERFACE>_api_report.md")
+    parser.add_argument("--write-getter-matrix", action="store_true", help="Regenerate this interface's Getter fixture matrix section from the wrapper and integration tests")
     args = parser.parse_args(argv)
 
     try:
@@ -20,6 +21,10 @@ def main(argv: Optional[List[str]] = None) -> int:
         report_path = args.report or api_report_path(root, args.interface)
         if not report_path.is_absolute():
             report_path = root / report_path
+        if args.write_getter_matrix:
+            matrix_path = write_getter_matrix(root, args.interface, report_path)
+            print(f"Getter fixture matrix updated: {matrix_path}")
+            return 0
         issues = verify_sync_artifacts(root, args.interface, report_path)
     except (FileNotFoundError, OSError, ValueError) as exc:
         print(f"Sync verification could not run: {exc}", file=sys.stderr)

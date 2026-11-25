@@ -477,17 +477,10 @@ def _getter_property_for_test(test_name: str, property_names: Set[str]) -> Optio
     return member if member in property_names else None
 
 
-def verify_getter_assertions(path: Path, property_names: Set[str]) -> List[str]:
-    """Reject getter properties covered only by non-None/type/count/empty assertions.
-
-    SKILL section 5 requires at least one getter integration test per property
-    that creates the real related object and asserts identity or value. An
-    empty-state test (``test_<property>_empty``) is an additional case, not a
-    substitute, so a property fails when every matching test is weak.
-    """
-    issues: List[str] = []
-    tree = ast.parse(path.read_text(encoding="utf-8"))
+def _collect_getter_coverage(path: Path, property_names: Set[str]) -> Dict[str, List[Tuple[str, int, bool]]]:
+    """Map each owned property to its integration tests and whether they are weak."""
     coverage: Dict[str, List[Tuple[str, int, bool]]] = {}
+    tree = ast.parse(path.read_text(encoding="utf-8"))
     for node in ast.walk(tree):
         if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
             continue
@@ -497,11 +490,207 @@ def verify_getter_assertions(path: Path, property_names: Set[str]) -> List[str]:
         assertions = [statement for statement in ast.walk(node) if isinstance(statement, ast.Assert)]
         weak = not assertions or all(_is_weak_getter_assertion(assertion.test) for assertion in assertions)
         coverage.setdefault(member, []).append((node.name, node.lineno, weak))
-    for member, tests in coverage.items():
+    return coverage
+
+
+def verify_getter_assertions(path: Path, property_names: Set[str]) -> List[str]:
+    """Reject getter properties covered only by non-None/type/count/empty assertions.
+
+    SKILL section 5 requires at least one getter integration test per property
+    that creates the real related object and asserts identity or value. An
+    empty-state test (``test_<property>_empty``) is an additional case, not a
+    substitute, so a property fails when every matching test is weak.
+    """
+    issues: List[str] = []
+    for member, tests in _collect_getter_coverage(path, property_names).items():
         if all(weak for _, _, weak in tests):
             names = ", ".join(f"{name} (line {lineno})" for name, lineno, _ in tests)
             issues.append(f"getter {member!r} is only covered by weak assertions: {names}; create the related object and assert identity/value (SKILL section 5)")
     return issues
+
+
+_GETTER_MATRIX_RELATIVE = Path("docs") / "reports" / "sync-todo" / "getter-matrix.md"
+_GETTER_MATRIX_HEADER = "| Java getter / Python member | Integration test | Assertion | Status |"
+_GETTER_MATRIX_SEPARATOR = "| --- | --- | --- | --- |"
+_MATRIX_ASSERTION_STATUS = {"identity/value": "OK", "weak": "WEAK", "none": "MISSING"}
+_GETTER_MATRIX_PREAMBLE = (
+    "# Getter fixture matrix\n\n"
+    "Machine-readable record of one integration test per owned getter, checked by `verify_sync.py` Step 8.\n"
+    "Regenerate an interface section with\n"
+    "`python .agents/skills/rhapsody-sync/scripts/verify_sync.py <INTERFACE> --write-getter-matrix`,\n"
+    "then replace a `MISSING` or `WEAK` row with the test that really asserts the getter.\n"
+)
+
+
+def getter_matrix_path(root: Path) -> Path:
+    """Return the committed machine-readable Getter fixture matrix path."""
+    return root / _GETTER_MATRIX_RELATIVE
+
+
+def _relative_to_root(root: Path, path: Path) -> str:
+    try:
+        return path.resolve().relative_to(root.resolve()).as_posix()
+    except ValueError:
+        return path.as_posix()
+
+
+def _getter_matrix_rows(root: Path, test_path: Path, property_names: Set[str]) -> Dict[str, Tuple[str, str, str]]:
+    """Derive (test reference, assertion kind, status) for every owned property."""
+    coverage = _collect_getter_coverage(test_path, property_names) if test_path.is_file() else {}
+    relative_test = _relative_to_root(root, test_path)
+    rows: Dict[str, Tuple[str, str, str]] = {}
+    for prop in sorted(property_names):
+        tests = coverage.get(prop, [])
+        strong = [name for name, _, weak in tests if not weak]
+        if strong:
+            rows[prop] = (f"{relative_test}::{strong[0]}", "identity/value", "OK")
+        elif tests:
+            rows[prop] = (f"{relative_test}::{tests[0][0]}", "weak", "WEAK")
+        else:
+            rows[prop] = ("—", "none", "MISSING")
+    return rows
+
+
+def render_getter_matrix_section(root: Path, interface_name: str, property_names: Set[str], test_path: Path) -> str:
+    """Render the ``## <INTERFACE>`` matrix section for one wrapper."""
+    lines = [f"## {interface_name}", "", _GETTER_MATRIX_HEADER, _GETTER_MATRIX_SEPARATOR]
+    for prop, (test_ref, assertion, status) in _getter_matrix_rows(root, test_path, property_names).items():
+        test_cell = f"`{test_ref}`" if test_ref != "—" else "—"
+        lines.append(f"| `{prop}` | {test_cell} | {assertion} | {status} |")
+    return "\n".join(lines) + "\n"
+
+
+def _extract_matrix_section(text: str, interface_name: str) -> Optional[str]:
+    lines = text.splitlines()
+    marker = f"## {interface_name}"
+    start: Optional[int] = None
+    for index, line in enumerate(lines):
+        if line.strip() == marker:
+            start = index + 1
+            break
+    if start is None:
+        return None
+    end = len(lines)
+    for index in range(start, len(lines)):
+        if lines[index].startswith("## "):
+            end = index
+            break
+    return "\n".join(lines[start:end])
+
+
+def _parse_matrix_rows(section: str) -> Dict[str, Tuple[str, str, str]]:
+    rows: Dict[str, Tuple[str, str, str]] = {}
+    for line in section.splitlines():
+        stripped = line.strip()
+        if not stripped.startswith("|"):
+            continue
+        cells = [cell.strip() for cell in stripped.strip("|").split("|")]
+        if len(cells) < 4 or cells[0] == "Java getter / Python member" or set(cells[0]) <= {"-", ":", " "}:
+            continue
+        prop = cells[0].strip("`").strip()
+        test_ref = cells[1].strip("`").strip() if cells[1].startswith("`") else cells[1]
+        rows[prop] = (test_ref, cells[2], cells[3])
+    return rows
+
+
+def upsert_getter_matrix_section(root: Path, interface_name: str, section: str) -> Path:
+    """Insert or replace one interface section, preserving every other section."""
+    path = getter_matrix_path(root)
+    text = path.read_text(encoding="utf-8") if path.is_file() else _GETTER_MATRIX_PREAMBLE
+    lines = text.rstrip("\n").splitlines()
+    marker = f"## {interface_name}"
+    start: Optional[int] = None
+    for index, line in enumerate(lines):
+        if line.strip() == marker:
+            start = index
+            break
+    section_lines = section.rstrip("\n").splitlines()
+    if start is None:
+        lines = lines + [""] + section_lines
+    else:
+        end = len(lines)
+        for index in range(start + 1, len(lines)):
+            if lines[index].startswith("## "):
+                end = index
+                break
+        lines = lines[:start] + section_lines + [""] + lines[end:]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(re.sub(r"\n{3,}", "\n\n", "\n".join(lines)) + "\n", encoding="utf-8")
+    return path
+
+
+def verify_getter_matrix(root: Path, interface_name: str, property_names: Set[str], test_path: Path) -> List[str]:
+    """Check the committed Getter fixture matrix covers every owned getter.
+
+    The matrix is a machine-readable companion to SKILL section 1: one row per
+    owned property, an assertion kind (``identity/value``, ``weak``, ``none``),
+    a status consistent with that kind, and an integration test reference that
+    resolves to a real test. Coverage status itself is reported by
+    ``verify_getter_assertions``; this check owns structure, staleness, and
+    dangling references.
+    """
+    if not property_names:
+        return []
+    hint = f"run `python .agents/skills/rhapsody-sync/scripts/verify_sync.py {interface_name} --write-getter-matrix`"
+    matrix_path = getter_matrix_path(root)
+    if not matrix_path.is_file():
+        return [f"Getter fixture matrix not found: {matrix_path}; {hint}"]
+    section = _extract_matrix_section(matrix_path.read_text(encoding="utf-8"), interface_name)
+    if section is None:
+        return [f"Getter fixture matrix has no '## {interface_name}' section; {hint}"]
+    rows = _parse_matrix_rows(section)
+    issues: List[str] = []
+    for prop in sorted(property_names):
+        if prop not in rows:
+            issues.append(f"Getter fixture matrix is missing a row for {interface_name}.{prop}; {hint}")
+    for prop in sorted(set(rows) - set(property_names)):
+        issues.append(f"Getter fixture matrix has a stale row for {interface_name}.{prop}: the wrapper no longer exposes that property; {hint}")
+    for prop, (test_ref, assertion, status) in rows.items():
+        expected_status = _MATRIX_ASSERTION_STATUS.get(assertion)
+        if expected_status is None:
+            issues.append(f"Getter fixture matrix row {interface_name}.{prop} has an unknown assertion '{assertion}' (expected identity/value, weak, or none)")
+            continue
+        if status != expected_status:
+            issues.append(f"Getter fixture matrix row {interface_name}.{prop} records status '{status}' for assertion '{assertion}'; expected '{expected_status}'")
+        if test_ref == "—":
+            continue
+        file_part, _, test_name = test_ref.partition("::")
+        test_file = root / file_part
+        if not test_file.is_file():
+            issues.append(f"Getter fixture matrix row {interface_name}.{prop} references a missing test file: {file_part}")
+        elif test_name and test_name not in test_file.read_text(encoding="utf-8"):
+            issues.append(f"Getter fixture matrix row {interface_name}.{prop} references a missing test: {test_ref}")
+    return issues
+
+
+def _find_integration_test(root: Path, wrapper_path: Path, interface_name: str) -> Path:
+    """Resolve the mirrored integration test path for a wrapper, existing or not."""
+    java_snake = _java_interface_snake(interface_name)
+    stems = [wrapper_path.stem] if wrapper_path.stem == java_snake else [wrapper_path.stem, java_snake]
+    try:
+        rel_parent = wrapper_path.parent.relative_to(root / "src" / "rhapsody_cli")
+    except ValueError:
+        rel_parent = Path()
+    if rel_parent.parts and rel_parent.parts[0] == "models":
+        test_dir = root / "tests" / "integration" / rel_parent
+    else:
+        test_dir = root / "tests" / "integration"
+    for stem in stems:
+        candidate = test_dir / f"test_{stem}.py"
+        if candidate.is_file():
+            return candidate
+    return test_dir / f"test_{stems[0]}.py"
+
+
+def write_getter_matrix(root: Path, interface_name: str, report_path: Path) -> Path:
+    """Regenerate one interface's matrix section from the wrapper and its tests."""
+    simple_name, _java_package, _java_doc = find_java_doc(root, interface_name)
+    _wrapper_class, source_path = parse_report_target(report_path.read_text(encoding="utf-8"))
+    wrapper_path, _canonical = _canonical_import(root, source_path)
+    property_names = _owned_property_names(wrapper_path.read_text(encoding="utf-8")) if wrapper_path.is_file() else set()
+    test_path = _find_integration_test(root, wrapper_path, simple_name)
+    section = render_getter_matrix_section(root, simple_name, property_names, test_path)
+    return upsert_getter_matrix_section(root, simple_name, section)
 
 
 def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) -> List[str]:
@@ -582,6 +771,7 @@ def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) ->
                 issues.extend(verify_integration_exception_catches(test_path.read_text(encoding="utf-8")))
                 issues.extend(verify_no_empty_finally(test_path))
                 issues.extend(verify_getter_assertions(test_path, owned_properties))
+                issues.extend(verify_getter_matrix(root, simple_name, owned_properties, test_path))
     requirements_path = first_existing(root / "docs" / "requirements" / package_dir, "{stem}.md")
     if requirements_path is None:
         issues.append(f"Class requirement document not found: {root / 'docs' / 'requirements' / package_dir / f'{class_stem}.md'}")
