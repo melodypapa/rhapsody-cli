@@ -168,7 +168,7 @@ class PortCreateAction(AbstractPortAction):
         if unknown:
             self.logger.warning("Skipping unknown attributes: %s", unknown)
 
-        port = classifier.add_port(name)  # type: ignore[attr-defined]
+        port = classifier.add_new_aggr("Port", name)
         self._set_attributes(classifier, port, port_attrs)
 
         full_path = f"{parent_path}/{name}"
@@ -182,14 +182,14 @@ class PortCreateAction(AbstractPortAction):
         if errors:
             self.logger.info("Created %d/%d ports with %d error(s)", len(created), total, len(errors))
 
-    def _load_json_data(self, attributes_input: str) -> Dict[str, object]:
-        """Load JSON data from inline string or external file.
+    def _load_json_data(self, attributes_input: str) -> Union[Dict[str, object], List[Dict[str, object]]]:
+        """Load one port object or a list of port objects from JSON.
 
         SWR_PORT_00007: External JSON File Support
         """
         if attributes_input.startswith("{") or attributes_input.startswith("["):
             try:
-                return cast(Dict[str, object], json.loads(attributes_input))
+                return cast(Union[Dict[str, object], List[Dict[str, object]]], json.loads(attributes_input))
             except json.JSONDecodeError as e:
                 raise CliExecutionError(f"Invalid JSON: {e}") from e
 
@@ -198,7 +198,7 @@ class PortCreateAction(AbstractPortAction):
 
         try:
             with open(attributes_input, encoding="utf-8") as f:
-                return cast(Dict[str, object], json.load(f))
+                return cast(Union[Dict[str, object], List[Dict[str, object]]], json.load(f))
         except json.JSONDecodeError as e:
             raise CliExecutionError(f"Invalid JSON in file: {e}") from e
         except OSError as e:

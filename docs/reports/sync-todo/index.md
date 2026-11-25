@@ -250,9 +250,6 @@ wrapper-signature fix before its getter/member row can close.
 | IRPPackage | `get_remote_requirements_populate_mode` | Requires a Design Manager/remote requirements server. |
 | IRPPackage | `get_instance_specifications`, `get_source_artifacts`, `get_user_defined_stereotypes`, `get_nested_components` | No live create/relate API; `add_instance_specification` is a pywin32-absent stub and packages have no `add_component`. |
 | IRPClass | `add_link`, `add_link_to_part_via_port` | Needs a real `IRPInstance` part and structure-diagram endpoints; class-as-part fixtures only produced exceptions. |
-| IRPClassifier | `source_artifacts` (`getSourceArtifacts`) | No documented API creates or attaches a classifier-owned `IRPFile` source artifact, so only the empty-state case can run; evidence: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_get_source_artifacts_empty`. |
-| IRPClassifier | `sequence_diagrams` (`getSequenceDiagrams`) | `IRPPackage.add_sequence_diagram` creates a package-owned diagram and no member attaches it to a classifier, so the classifier getter cannot be shown to return a created diagram; evidence: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_get_sequence_diagrams_empty`. |
-| IRPClassifier | `links` (`getLinks`) | `IRPClass.add_link` / `add_link_to_part_via_port` require real part instances plus association or port endpoints and cannot prove the classifier `links` getter returns the created link (that path is an IRPClass blocker too); evidence: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_get_links_empty`. |
 | IRPModelElement | `user_defined_meta_class` (`getUserDefinedMetaClass`) | JavaDoc defines the result as the New Term name, but the COM surface exposes no API to define a New Term, so only the default value's type is observable; evidence: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_model_element.py::test_get_user_defined_meta_class`. |
 | IRPModelElement | `constraints_by_him`, `hyper_links` | User-approved runtime stubs (2026-11-24, `runtime-stub` rows in the NotImplementedError evidence ledger); retrieval fixtures could not be built live. |
 | IRPUnit | `copy_to_another_project`, `move_to_another_project_leave_a_reference`, `reference_to_another_project`, `set_unit_path` | Requires a second saved project/unit file and mutates the shared project. |
@@ -268,13 +265,18 @@ wrapper-signature fix before its getter/member row can close.
 | IRPProject | `active_component`, `active_configuration`, `all_stereotypes`, `nodes`, `use_unique_stereotype_and_ref_cache` | Project state getters observable only in the default live project; no safe fixture without mutating shared state. |
 | IRPUseCase | `is_behavior_overriden` | Runtime stub (user approved 2026-11-25): setter faults live; see the NotImplementedError evidence ledger. |
 
-**Fresh live evidence (2026-11-25, hidden-UI Rhapsody):** the four WEAK getter rows were probed
-directly. `IRPClassifier` COM exposes no source-artifact factory; `IRPPackage.add_sequence_diagram`
-creates a diagram visible only in the package's `sequence_diagrams` (the class getter stayed empty);
-`IRPClass.addLink` faults `com_error` `Type mismatch` for both null parts and class-as-part fixtures,
-so real `IRPInstance` parts are required; `IRPModelElement.userDefinedMetaClass` returns the default
-`"Class"` and the surface has no New Term factory (`getNewTermStereotype` only reads a stereotype).
-These rows stay blockers with empty-state tests as extra cases, not completion evidence.
+**Fresh live evidence (2026-11-25, hidden-UI Rhapsody):** three of the original four WEAK getter
+rows were closed by attaching children with the documented generic factory
+`IRPModelElement.add_new_aggr` directly on the classifier — `add_new_aggr("File")`,
+`add_new_aggr("SequenceDiagram")` and `add_new_aggr("Link")` each produce a child that the
+corresponding `source_artifacts` / `sequence_diagrams` / `links` getter returns by identity
+(`test_source_artifacts`,
+`test_sequence_diagrams`,
+`test_links`). Earlier probes of the specialized factories
+(`addLink`, `add_sequence_diagram`) failed, but the generic factory is sufficient. The remaining
+`IRPModelElement.userDefinedMetaClass` row stays a blocker: it returns the default `"Class"` and the
+surface has no New Term factory (`getNewTermStereotype` only reads a stereotype); its empty-state
+test is an additional case, not completion evidence.
 
 **D2 signature cases (2026-11-25, approved case-by-case):** `IRPProject.find_element_by_binary_id`
 now takes `bytes` (live COM requires a VT_UI1 SAFEARRAY and finds the real element);

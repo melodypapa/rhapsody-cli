@@ -71,13 +71,13 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | `flows` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_add_flows_and_delete` | identity/value | OK |
 | `generalizations` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_generalization_hierarchy` | identity/value | OK |
 | `interface_items` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_get_interface_items` | identity/value | OK |
-| `links` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_get_links_empty` | weak | WEAK |
+| `links` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_links` | identity/value | OK |
 | `nested_classifiers` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_nested_classifiers_and_find` | identity/value | OK |
 | `operations` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_delete_operation` | identity/value | OK |
-| `ports` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_add_port_and_get_ports` | identity/value | OK |
+| `ports` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_get_ports_returns_port_created_with_generic_factory` | identity/value | OK |
 | `relations` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_get_relations_including_bases` | identity/value | OK |
-| `sequence_diagrams` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_get_sequence_diagrams_empty` | weak | WEAK |
-| `source_artifacts` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_get_source_artifacts_empty` | weak | WEAK |
+| `sequence_diagrams` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_sequence_diagrams` | identity/value | OK |
+| `source_artifacts` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_source_artifacts` | identity/value | OK |
 | `statechart` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_get_statechart` | identity/value | OK |
 
 ## IRPCollection
