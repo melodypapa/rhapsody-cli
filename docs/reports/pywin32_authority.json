@@ -2821,6 +2821,9 @@
       "is_behavior_overriden": "get_is_behavior_overriden",
       "is_composite": "get_is_composite",
       "is_reactive": "get_is_reactive"
+    },
+    "IRPCollection": {
+      "add_graphical_item": "addGraphicalItem"
     }
   },
   "documented_intentionally_unsupported": {
@@ -2990,7 +2993,6 @@
       "updateContainedDiagramsOnServer"
     ],
     "IRPCollection": [
-      "addGraphicalItem",
       "toList"
     ],
     "IRPModelElement": [

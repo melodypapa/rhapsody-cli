@@ -6,6 +6,7 @@ import pytest
 
 from rhapsody_cli import RhapsodyApplication
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 
 
@@ -45,12 +46,26 @@ class TestIRPCollectionIntegration:
         collection.empty()
         assert collection.count == 0
 
-    def test_add_graphical_item_raises_not_implemented(self, rhapsody_app: RhapsodyApplication, test_project: IRPProject) -> None:
-        """JavaDoc IRPCollection.addGraphicalItem exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
-        collection = rhapsody_app.create_new_collection()
+    def test_add_graphical_item_adds_real_graph_element(self, rhapsody_app: RhapsodyApplication, test_project: IRPProject) -> None:
+        """Live proof for the documented alias addGraphicalItem -> addGraphicalElementItem.
 
-        with pytest.raises(NotImplementedError):
-            collection.add_graphical_item(test_project)
+        The diagram wrapper's add_text_box calls a lowercase COM name that the
+        registered type library does not expose, so this fixture creates the
+        real IRPGraphElement through the pywin32-exposed AddTextBox member.
+        Passing a non-graph model element instead faults with COM Type mismatch.
+        """
+        pkg = test_project.add_package(f"GraphPkg_{uuid.uuid4().hex[:8]}")
+        try:
+            diagram = pkg.add_object_model_diagram("GraphDiagram")
+            graph_com = diagram._com.AddTextBox("probe", 10, 10, 120, 40)
+            graph = IRPGraphElement(graph_com)
+            collection = rhapsody_app.create_new_collection()
+
+            collection.add_graphical_item(graph)
+
+            assert collection.count == 1
+        finally:
+            pkg.delete_from_project()
 
     def test_to_list_raises_not_implemented(self, rhapsody_app: RhapsodyApplication) -> None:
         """JavaDoc IRPCollection.toList exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
