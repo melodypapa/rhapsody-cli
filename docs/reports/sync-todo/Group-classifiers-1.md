@@ -58,16 +58,16 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [ ] Step 6 — §6 requirements: not changed; cannot verify whether an entry exists or determine JavaDoc summary.
   - [ ] Step 7 — §7 RST: not changed; cannot document unverified public members.
   - [ ] Step 8 — §8 validation: blocked, validator exit 2. Resume only after JavaDoc is restored under `docs/java_api/<package>/IRPException.html`.
-- [ ] irp_extension_point_api_report (IRPExtensionPoint · RPExtensionPoint · rhapsody_cli/models/elements/classifiers/model_usecase.py · 0 legacy sites)
-  - Note: usage 6 src / 0 test refs, 0 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
-  - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
-  - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Step 3 — §3 compare evidence: regenerate report + catalog entry; reconcile owned members; one pywin32 member per call; catalog-absent sites = blockers BLOCKER 2026-11-24: no committed API report at `docs/reports/com/telelogic/rhapsody/core/IRPExtensionPoint_api_report.md` and no `pywin32_authority.json` catalog entry; SKILL §3 forbids offline edits without COM evidence. Wrapper/tests/docs unchanged; regenerate report + catalog on Windows with Rhapsody, then resume.
-  - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy sites; full unit suite green
-  - [ ] Step 5 — §5 integration tests: mirrored path, assert only owned methods; live run on Windows
-  - [ ] Step 6 — §6 SWR update: per-class requirement document `irp_extension_point.md` (move entry out of the legacy monolith)
-  - [ ] Step 7 — §7 RST update: `irp_extension_point.rst` (anchor + deviation list-table) and toctree entry
-  - [ ] Step 8 — §8 verify and report: validator + `verify_sync.py` + skill tests + both full suites + ruff/black/mypy
+- [ ] irp_extension_point_api_report (IRPExtensionPoint · JavaDoc package and owned-member inventory unverified)
+  - Note: The group ledger's earlier “0 owned methods” note is not JavaDoc evidence and is not accepted as a disposition.
+  - [ ] Step 1 — §1 sync TODO/member checklist: blocked because the target JavaDoc file is absent; no owned members can be safely enumerated.
+  - [ ] Step 2 — §2 resolve package: `python .agents/skills/rhapsody-sync/scripts/validate_interface.py IRPExtensionPoint --source typelib` exits 2: JavaDoc not found under `docs/java_api`; package cannot be verified against JavaDoc.
+  - [ ] Step 3 — §3 compare evidence/report: blocked by missing `docs/java_api/com/telelogic/rhapsody/core/IRPExtensionPoint.html`; no report was generated. Do not infer the interface has zero owned members from the former ledger note.
+  - [ ] Step 4 — §4 unit tests/bindings: not started; wrappers/tests unchanged because JavaDoc evidence is missing.
+  - [ ] Step 5 — §5 integration/getter matrix: not started; member inventory unavailable.
+  - [ ] Step 6 — §6 requirements: not changed; cannot verify whether an entry exists or determine JavaDoc summary.
+  - [ ] Step 7 — §7 RST: not changed; cannot document unverified public members.
+  - [ ] Step 8 — §8 validation: blocked, validator exit 2. Resume only after JavaDoc is restored under `docs/java_api/<package>/IRPExtensionPoint.html`.
 - [ ] irp_classifier_remediation - IRPClassifier
   - Baseline: 17 property-shape conversions; add_port maps to COM addNewAggr absent from JavaDoc (D2 default: retain and document).
   - [x] Section 1 member checklist and getter matrix published. Evidence: 47-member checklist rendered in the 2026-11-24 sync report with a Getter fixture matrix row per owned getter (real parent/child, setup, identity assertion, mirrored test path, cleanup).
