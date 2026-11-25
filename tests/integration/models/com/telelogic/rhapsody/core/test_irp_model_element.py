@@ -1221,6 +1221,22 @@ class TestRPModelElementOslcRemoteIntegration:
         finally:
             pkg.delete_from_project()
 
+    def test_get_oslc_links_returns_empty_collection_for_plain_class(self, test_project: IRPProject) -> None:
+        """Exercise the live getOSLCLinks binding and assert its documented empty result.
+
+        This is COM execution evidence only, not populated-getter closure: creating an OSLC link
+        needs an OSLC-enabled remote server and the documented createOSLCLink call faults E_FAIL
+        in this build (SWR_ELEM_00033). The populated retrieval row stays an open blocker.
+        """
+        pkg = self._create_package(test_project, self._unique("OslcLinksPkg"))
+        try:
+            cls = pkg.add_class(self._unique("OslcLinksCls"))
+            links = cls.get_oslc_links()
+            assert isinstance(links, IRPCollection)
+            assert len(links) == 0
+        finally:
+            pkg.delete_from_project()
+
     def test_get_remote_uri_returns_empty_string(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("RemoteUriPkg"))
         try:

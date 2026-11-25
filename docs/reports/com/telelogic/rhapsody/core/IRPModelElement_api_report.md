@@ -3,16 +3,16 @@
 ## Summary
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `IRPModelElement` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_model_element.py`)
-- Members: Python `103`, Java `119`, pywin32 `104`
-- Deviation items: `7` (actionable `2`, expected binding differences `2`, wrapper backlog `3`)
+- Members: Python `104`, Java `119`, pywin32 `104`
+- Deviation items: `6` (actionable `2`, expected binding differences `2`, wrapper backlog `2`)
 - Status legend: `MATCH` verified binding · `UNAVAILABLE_DOCUMENTED` pywin32 lacks the member (NotImplementedError stub) · `ALIAS_DOCUMENTED` documented alias · actionable rows are named by code in `Comparison details`
 
 ## Comparison details
 
 | Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |
 | --- | --- | --- | --- | --- |
-| constraints_by_him (property) (no static COM member) | getConstraintsByHim (method) | constraintsByHim (property) | PYTHON_METHOD_NAME_MISMATCH; COM_MEMBER_NOT_EXPOSED | Use the constraintsByHim property or a getter/setter fallback instead of calling getConstraintsByHim directly. |
-| hyper_links (property) (no static COM member) | getHyperLinks (method) | hyperLinks (property) | PYTHON_METHOD_NAME_MISMATCH; COM_MEMBER_NOT_EXPOSED | Use the hyperLinks property or a getter/setter fallback instead of calling getHyperLinks directly. |
+| constraints_by_him (property) (no static COM member) | getConstraintsByHim (method) | constraintsByHim (property) | PYTHON_METHOD_NAME_MISMATCH; COM_MEMBER_NOT_EXPOSED; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Use the constraintsByHim property or a getter/setter fallback instead of calling getConstraintsByHim directly. |
+| hyper_links (property) (no static COM member) | getHyperLinks (method) | hyperLinks (property) | PYTHON_METHOD_NAME_MISMATCH; COM_MEMBER_NOT_EXPOSED; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Use the hyperLinks property or a getter/setter fallback instead of calling getHyperLinks directly. |
 
 ## Expected Binding Differences
 
@@ -25,12 +25,11 @@
 
 | Python model wrapper | Java API | pywin32 | Status | Recommended change |
 | --- | --- | --- | --- | --- |
-| — | lockOnDesignManager (method) | lockOnDesignManager (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | getOSLCLinks (method) | getOSLCLinks (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
-| — | unlockOnDesignManager (method) | unlockOnDesignManager (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper or mark this API member intentionally unsupported. |
+| — | lockOnDesignManager (method) | lockOnDesignManager (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| — | unlockOnDesignManager (method) | unlockOnDesignManager (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
 
 <details>
-<summary>Correct items (95) — bindings verified against pywin32</summary>
+<summary>Correct items (96) — bindings verified against pywin32</summary>
 
 
 ## Correct Items
@@ -57,10 +56,10 @@
 | clone() -> clone | clone (method) | clone (method) | MATCH | — |
 | constraints (property) -> constraints | getConstraints (method) | constraints (property) | MATCH | — |
 | controlled_files (property) -> controlledFiles | getControlledFiles (method) | controlledFiles (property) | MATCH | — |
-| create_oslc_link() (no static COM member) | createOSLCLink (method) | createOSLCLink (method) | MATCH | — |
+| create_oslc_link() -> createOSLCLink | createOSLCLink (method) | createOSLCLink (method) | MATCH | — |
 | delete_dependency() -> deleteDependency | deleteDependency (method) | deleteDependency (method) | MATCH | — |
 | delete_from_project() -> deleteFromProject | deleteFromProject (method) | deleteFromProject (method) | MATCH | — |
-| delete_oslc_link() (no static COM member) | deleteOSLCLink (method) | deleteOSLCLink (method) | MATCH | — |
+| delete_oslc_link() -> deleteOSLCLink | deleteOSLCLink (method) | deleteOSLCLink (method) | MATCH | — |
 | dependencies (property) -> dependencies | getDependencies (method) | dependencies (property) | MATCH | — |
 | description (property) -> description | getDescription (method); setDescription (method) | description (property) | MATCH | — |
 | description_html (property) -> descriptionHTML; set_description_html() (no static COM member) | getDescriptionHTML (method); setDescriptionHTML (method) | descriptionHTML (property) | MATCH | — |
@@ -81,6 +80,7 @@
 | get_nested_elements_by_meta_class() -> getNestedElementsByMetaClass | getNestedElementsByMetaClass (method) | getNestedElementsByMetaClass (method) | MATCH | — |
 | get_nested_elements_recursive() -> getNestedElementsRecursive | getNestedElementsRecursive (method) | getNestedElementsRecursive (method) | MATCH | — |
 | get_new_term_stereotype() -> getNewTermStereotype | getNewTermStereotype (method) | getNewTermStereotype (method) | MATCH | — |
+| get_oslc_links() -> getOSLCLinks | getOSLCLinks (method) | getOSLCLinks (method) | MATCH | — |
 | get_overlay_icon_file_name() -> getOverlayIconFileName | getOverlayIconFileName (method) | getOverlayIconFileName (method) | MATCH | — |
 | get_overridden_properties() -> getOverriddenProperties | getOverriddenProperties (method) | getOverriddenProperties (method) | MATCH | — |
 | get_overridden_properties_by_pattern() -> getOverriddenPropertiesByPattern | getOverriddenPropertiesByPattern (method) | getOverriddenPropertiesByPattern (method) | MATCH | — |
@@ -137,7 +137,7 @@
 
 ## AI Fix Guidance
 
-### PYTHON_METHOD_NAME_MISMATCH; COM_MEMBER_NOT_EXPOSED (2 findings)
+### PYTHON_METHOD_NAME_MISMATCH; COM_MEMBER_NOT_EXPOSED; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH (2 findings)
 - **Target:** `IRPModelElement` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_model_element.py`
 - **Affected call(s):** constraints_by_him (property) (no static COM member); hyper_links (property) (no static COM member)
 - **Recommended change:** Use the constraintsByHim property or a getter/setter fallback instead of calling getConstraintsByHim directly.
