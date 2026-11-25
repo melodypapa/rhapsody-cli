@@ -697,6 +697,7 @@ class TestIRPPackageIntegration:
             pkg.delete_from_project()
 
     def test_add_instance_specification(self, test_project: IRPProject) -> None:
+        """JavaDoc IRPPackage.addInstanceSpecification exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
         pkg = self._pkg(test_project)
         try:
             classifier = pkg.add_class(self._unique("InstCls"))
@@ -767,6 +768,7 @@ class TestIRPPackageIntegration:
             pkg.delete_from_project()
 
     def test_get_root_instance_specifications(self, test_project: IRPProject) -> None:
+        """JavaDoc IRPPackage.getRootInstanceSpecifications exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
         pkg = self._pkg(test_project)
         try:
             with pytest.raises(NotImplementedError):
@@ -775,6 +777,7 @@ class TestIRPPackageIntegration:
             pkg.delete_from_project()
 
     def test_login_to_remote_artifact_server(self, test_project: IRPProject) -> None:
+        """JavaDoc IRPPackage.loginToRemoteArtifactServer exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
         pkg = self._pkg(test_project)
         try:
             with pytest.raises(NotImplementedError):
@@ -804,6 +807,7 @@ class TestIRPPackageIntegration:
             pkg.delete_from_project()
 
     def test_update_contained_diagrams_on_server(self, test_project: IRPProject) -> None:
+        """JavaDoc IRPPackage.updateContainedDiagramsOnServer exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
         pkg = self._pkg(test_project)
         try:
             with pytest.raises(NotImplementedError):
@@ -886,6 +890,7 @@ class TestIRPPackageIntegration:
             pkg.delete_from_project()
 
     def test_update_contained_matrices_on_server(self, test_project: IRPProject) -> None:
+        """JavaDoc IRPPackage.updateContainedMatricesOnServer exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
         pkg = self._pkg(test_project)
         try:
             with pytest.raises(NotImplementedError):
@@ -894,6 +899,7 @@ class TestIRPPackageIntegration:
             pkg.delete_from_project()
 
     def test_update_contained_tables_on_server(self, test_project: IRPProject) -> None:
+        """JavaDoc IRPPackage.updateContainedTablesOnServer exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
         pkg = self._pkg(test_project)
         try:
             with pytest.raises(NotImplementedError):

@@ -26,6 +26,7 @@ class TestIRPPortIntegration:
         return pkg
 
     def test_port_state_and_contract(self, test_project: IRPProject) -> None:
+        """JavaDoc getContract/setContract exist as deprecated aliases; pywin32 exposes only portContract, so the stubs raise NotImplementedError (port_contract is covered above)."""
         pkg = self._create_package(test_project, self._unique("PortPkg"))
         test_class = pkg.add_class(self._unique("PortCls"))
         try:

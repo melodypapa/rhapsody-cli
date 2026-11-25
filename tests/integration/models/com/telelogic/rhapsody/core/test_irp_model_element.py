@@ -162,6 +162,7 @@ class TestRPCollectionMutationMethodsIntegration:
         return pkg
 
     def test_to_list_returns_python_list_of_items(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
+        """JavaDoc IRPCollection.toList exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
         pkg = self._create_package(test_project, self._unique("ToListPkg"))
         try:
             cls1 = pkg.add_class(self._unique("ToListCls1"))
@@ -670,7 +671,7 @@ class TestRPModelElementDescriptionDisplayNameIntegration:
             pkg.delete_from_project()
 
     def test_set_and_get_description_html(self, test_project: IRPProject) -> None:
-        """Test that setDescriptionHTML raises NotImplementedError (documented as unimplemented)."""
+        """JavaDoc declares setDescriptionHTML but says "Not implemented - should not be used"; pywin32 exposes only the descriptionHTML property, so the wrapper raises instead of writing."""
         pkg = self._create_package(test_project, self._unique("HtmlDescPkg"))
         try:
             cls = pkg.add_class(self._unique("HtmlDescCls"))
@@ -1187,6 +1188,7 @@ class TestRPModelElementRedefinesConstraintsIntegration:
             pkg.delete_from_project()
 
     def test_get_constraints_by_him_is_not_implemented(self, test_project: IRPProject) -> None:
+        """User-approved runtime stub: the catalog exposes constraintsByHim, but live probing returned no result and JavaDoc marks it internal-only (Group-core-1 ledger, 2026-11-24)."""
         pkg = self._create_package(test_project, self._unique("ConstrHimPkg"))
         try:
             cls = pkg.add_class(self._unique("ConstrHimCls"))
@@ -1211,15 +1213,21 @@ class TestRPModelElementOslcRemoteIntegration:
         assert isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_create_oslc_link_raises_not_implemented(self, test_project: IRPProject) -> None:
-        with pytest.raises(NotImplementedError):
-            test_project.create_oslc_link("someType", "http://example.com")
-
-    def test_delete_oslc_link_raises_not_implemented(self, test_project: IRPProject) -> None:
-        with pytest.raises(NotImplementedError):
-            test_project.delete_oslc_link("someType", "http://example.com")
+    def test_create_and_delete_oslc_link_roundtrip(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("OslcPkg"))
+        try:
+            cls = pkg.add_class(self._unique("OslcCls"))
+            link_type = "http://jazz.net/ns/dm/linktypes#external"
+            purl = f"https://example.com/oslc/{uuid.uuid4().hex}"
+            cls.create_oslc_link(link_type, purl)
+            assert cls.error_message() == ""
+            cls.delete_oslc_link(link_type, purl)
+            assert cls.error_message() == ""
+        finally:
+            pkg.delete_from_project()
 
     def test_get_hyper_links_is_not_implemented(self, test_project: IRPProject) -> None:
+        """User-approved runtime stub: the catalog exposes hyperLinks, but the documented creation APIs faulted and no retrievable hyperlink was produced (Group-core-1 ledger, 2026-11-24)."""
         pkg = self._create_package(test_project, self._unique("HyperLinkPkg"))
         try:
             cls = pkg.add_class(self._unique("HyperLinkCls"))
@@ -1249,6 +1257,7 @@ class TestRPModelElementOslcRemoteIntegration:
             pkg.delete_from_project()
 
     def test_get_rmm_url_returns_empty_string(self, test_project: IRPProject) -> None:
+        """JavaDoc IRPModelElement.getRmmUrl exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:

@@ -128,7 +128,7 @@ class TestIRPClassIntegration:
             test_class.delete_from_project()
 
     def test_add_event_reception_with_event(self, test_project: IRPProject) -> None:
-        """Test that add_event_reception_with_event raises NotImplementedError (not exposed in COM type library)."""
+        """JavaDoc IRPClass.addEventReceptionWithEvent exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
         from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPEvent
 
         pkg_name = self._unique("EvWEvPkg")
@@ -145,6 +145,7 @@ class TestIRPClassIntegration:
             test_class.delete_from_project()
 
     def test_update_contained_diagrams_on_server_raises_not_implemented(self, test_project: IRPProject) -> None:
+        """JavaDoc IRPClass.updateContainedDiagramsOnServer exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
         pkg = self._create_package(test_project, self._unique("UnavailableDiagramPkg"))
         test_class = pkg.add_class(self._unique("UnavailableDiagramClass"))
         try:

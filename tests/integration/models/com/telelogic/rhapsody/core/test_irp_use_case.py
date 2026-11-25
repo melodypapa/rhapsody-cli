@@ -145,6 +145,7 @@ class TestIRPUseCaseGenerated:
             pkg.delete_from_project()
 
     def test_add_event_reception_with_event(self, test_project: IRPProject) -> None:
+        """JavaDoc IRPUseCase.addEventReceptionWithEvent exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
         pkg = test_project.add_package(self._unique("UsePkg"))
         use_case = pkg.add_use_case(self._unique("UC"))
         try:
@@ -201,6 +202,7 @@ class TestIRPUseCaseGenerated:
             pkg.delete_from_project()
 
     def test_update_contained_diagrams_on_server(self, test_project: IRPProject) -> None:
+        """JavaDoc IRPUseCase.updateContainedDiagramsOnServer exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
         pkg = test_project.add_package(self._unique("UsePkg"))
         use_case = pkg.add_use_case(self._unique("UC"))
         try:

@@ -36,7 +36,7 @@ class TestRPActorIntegration:
             actor.delete_from_project()
 
     def test_add_event_reception_with_event(self, test_project: IRPProject) -> None:
-        """Test that add_event_reception_with_event raises NotImplementedError (not exposed in COM type library)."""
+        """JavaDoc IRPActor.addEventReceptionWithEvent exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
         from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPEvent
 
         pkg_name = self._unique("ActorEvPkg")

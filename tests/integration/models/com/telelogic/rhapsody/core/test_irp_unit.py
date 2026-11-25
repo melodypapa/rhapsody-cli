@@ -54,6 +54,7 @@ class TestIRPUnitPersistenceIntegration:
             pkg.delete_from_project()
 
     def test_get_unit_path_raises_not_implemented(self, test_project: IRPProject) -> None:
+        """JavaDoc IRPUnit.getUnitPath exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
         pkg = self._create_package(test_project, self._unique("UnitPathPkg"))
         try:
             with pytest.raises(NotImplementedError):
