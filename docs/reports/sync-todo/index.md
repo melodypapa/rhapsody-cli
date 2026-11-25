@@ -262,6 +262,11 @@ wrapper-signature fix before its getter/member row can close.
 | IRPProject | `get_active_custom_views_on_browser` | No API creates a browser-level custom view; the empty collection is the only observable state. |
 | IRPProject | `get_remote_resource_packages`, `is_actively_managed` | Require a remote resource/management server. |
 | IRPProject | `is_modified_recursive` | Needs a controlled modify/save transition on the session-shared project. |
+| IRPClass | `is_abstract`, `is_active`, `is_behavior_overriden` | Documented pywin32 aliases; getters are readable but no populated live fixture exists (setters are read-only or JavaDoc-unimplemented). |
+| IRPPackage | `instance_specifications`, `links`, `nested_components`, `saved_in_seperate_directory`, `source_artifacts`, `user_defined_stereotypes` | No documented create/relate API for these package-owned relationships; see the existing P0 rows and the 2026-11-25 live COM inventory. |
+| IRPPort | `is_behavioral`, `is_reversed`, `port_contract`, `provided_interfaces`, `required_interfaces` | Port relation/end properties have no live factory; recovered via catalog-only triage but no populated fixture. |
+| IRPProject | `active_component`, `active_configuration`, `all_stereotypes`, `nodes`, `use_unique_stereotype_and_ref_cache` | Project state getters observable only in the default live project; no safe fixture without mutating shared state. |
+| IRPUseCase | `is_behavior_overriden` | Runtime stub (user approved 2026-11-25): setter faults live; see the NotImplementedError evidence ledger. |
 
 **Fresh live evidence (2026-11-25, hidden-UI Rhapsody):** the four WEAK getter rows were probed
 directly. `IRPClassifier` COM exposes no source-artifact factory; `IRPPackage.add_sequence_diagram`

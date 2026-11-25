@@ -149,8 +149,8 @@ Mechanical per interface: for each `MISSING` matrix row, add `test_get_<property
   parameters, activity/behavioral diagrams. The two IRPModelElement stub getters are recorded as
   P0 blockers. All three P1 interfaces pass `verify_sync.py --strict-getters`; total MISSING is
   now 56 (12 strict failures remain in P2/P3).
-- [ ] P2 interfaces at 0 `MISSING` or documented blockers.
-- [ ] P3 interfaces at 0 `MISSING` or documented blockers.
+- [x] P2 interfaces (2026-11-25): existing live tests mapped into the matrix; remaining rows recorded as P0 blockers with live evidence.
+- [x] P3 interfaces (2026-11-25): remaining rows mapped to real live tests or recorded blockers.
 
 ## Task 6 — Catalog-only triage (27 candidates)
 
@@ -173,8 +173,8 @@ For each candidate in `docs/reports/sync-todo/getter-catalog-diff.md`, choose on
 
 ## Task 7 — Final gate and merge
 
-- [ ] `PYTHONPATH=src python -m pytest tests/unit -q -o addopts=`
-- [ ] `PYTHONPATH=src python -m pytest tests/integration -q -o addopts= --rhapsody-hidden-ui`
+- [x] `PYTHONPATH=src python -m pytest tests/unit -q -o addopts=` — 2171 passed.
+- [x] `PYTHONPATH=src python -m pytest tests/integration -q -o addopts= --rhapsody-hidden-ui` — 449 passed / 0 failed on a fresh hidden-UI instance.
 - [ ] `PYTHONPATH=src python -m pytest tests/system -q -o addopts= --rhapsody-hidden-ui`
 - [x] `python -m pytest -o addopts= .agents/skills/rhapsody-sync/tests -q` — 77 passed at baseline.
 
@@ -187,8 +187,8 @@ PR #159's newly strengthened getters: `guid` needed the COM `"GUID "` prefix str
 `uuid.UUID`, `binary_id` is 20 bytes on this build (not 16), and `typedefMultiplicity` is read-only
 (HRESULT `-2147221498` on every write) — all three tests now assert real live outcomes and the
 setter is recorded as a blocker.
-- [ ] `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/`
-- [ ] `for i in <16 interfaces>; do python .agents/skills/rhapsody-sync/scripts/verify_sync.py "$i" --strict-getters; done` → all exit 0 (the strict gate fails `WEAK`/`MISSING` getter rows unless the member is recorded in the P0 blocker table).
+- [x] `ruff check src/ tests/ && black --check src/ tests/ && mypy src/ tests/` — clean.
+- [x] `for i in <16 interfaces>; do python .agents/skills/rhapsody-sync/scripts/verify_sync.py "$i" --strict-getters; done` — all 16 exit 0. → all exit 0 (the strict gate fails `WEAK`/`MISSING` getter rows unless the member is recorded in the P0 blocker table).
 - [ ] Regenerate `docs/reports/**/*_api_report.md`, `pywin32_authority.json`, `getter-matrix.md`, `getter-catalog-diff.md`; commit with the ledger updates.
 - [ ] Update the report/status paragraph in `docs/reports/sync-todo/index.md` with the Windows counts and remaining blockers.
 - [ ] Push the branch, let `windows-latest` CI run, merge PR #159.

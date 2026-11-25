@@ -9,17 +9,17 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |
-| `application_root` | — | none | MISSING |
-| `build_no` | — | none | MISSING |
-| `interface_name` | — | none | MISSING |
-| `is_hidden_ui` | — | none | MISSING |
-| `is_load_on_demand` | — | none | MISSING |
-| `language` | — | none | MISSING |
+| `application_root` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_application.py::test_application_root_is_the_install_directory` | identity/value | OK |
+| `build_no` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_application.py::test_build_number_is_numeric` | identity/value | OK |
+| `interface_name` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_application.py::test_interface_name_is_irp_application` | identity/value | OK |
+| `is_hidden_ui` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_application.py::test_hidden_ui_roundtrip_uses_real_state` | identity/value | OK |
+| `is_load_on_demand` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_application.py::test_environment_language_toolset_and_load_on_demand` | identity/value | OK |
+| `language` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_application.py::test_environment_language_toolset_and_load_on_demand` | identity/value | OK |
 | `log_root` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_application.py::test_log_root` | identity/value | OK |
-| `omroot` | — | none | MISSING |
-| `projects` | — | none | MISSING |
-| `serial_no` | — | none | MISSING |
-| `tool_set` | — | none | MISSING |
+| `omroot` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_application.py::test_omroot_is_share_directory_under_application_root` | identity/value | OK |
+| `projects` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_application.py::test_projects_collection_contains_the_test_project` | identity/value | OK |
+| `serial_no` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_application.py::test_serial_number_is_non_empty` | identity/value | OK |
+| `tool_set` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_application.py::test_environment_language_toolset_and_load_on_demand` | identity/value | OK |
 | `user_data_root` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_application.py::test_user_data_root` | identity/value | OK |
 | `user_omroot` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_application.py::test_user_omroot` | identity/value | OK |
 
@@ -27,26 +27,26 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |
-| `argument_direction` | — | none | MISSING |
+| `argument_direction` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_argument.py::test_argument_direction_is_readable` | identity/value | OK |
 
 ## IRPAssociationClass
 
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |
-| `end1` | — | none | MISSING |
-| `end2` | — | none | MISSING |
-| `is_class` | — | none | MISSING |
+| `end1` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_association_class.py::test_owned_properties_via_wrapped_com_object` | identity/value | OK |
+| `end2` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_association_class.py::test_owned_properties_via_wrapped_com_object` | identity/value | OK |
+| `is_class` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_association_class.py::test_owned_properties_via_wrapped_com_object` | identity/value | OK |
 
 ## IRPAttribute
 
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |
-| `is_constant` | — | none | MISSING |
-| `is_ordered` | — | none | MISSING |
-| `is_reference` | — | none | MISSING |
-| `is_static` | — | none | MISSING |
-| `multiplicity` | — | none | MISSING |
-| `visibility` | — | none | MISSING |
+| `is_constant` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_attribute.py::test_is_constant_roundtrip` | identity/value | OK |
+| `is_ordered` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_attribute.py::test_is_ordered_roundtrip` | identity/value | OK |
+| `is_reference` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_attribute.py::test_is_reference_roundtrip` | identity/value | OK |
+| `is_static` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_attribute.py::test_is_static_roundtrip` | identity/value | OK |
+| `multiplicity` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_attribute.py::test_multiplicity_roundtrip` | identity/value | OK |
+| `visibility` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_attribute.py::test_visibility_roundtrip` | identity/value | OK |
 
 ## IRPClass
 
@@ -55,8 +55,8 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | `is_abstract` | — | none | MISSING |
 | `is_active` | — | none | MISSING |
 | `is_behavior_overriden` | — | none | MISSING |
-| `is_composite` | — | none | MISSING |
-| `is_reactive` | — | none | MISSING |
+| `is_composite` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_class.py::test_is_composite_readonly` | identity/value | OK |
+| `is_reactive` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_class.py::test_is_reactive_readonly` | identity/value | OK |
 
 ## IRPClassifier
 
@@ -84,14 +84,14 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |
-| `count` | — | none | MISSING |
+| `count` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_collection.py::test_collection_mutators_and_accessors` | identity/value | OK |
 
 ## IRPInterfaceItem
 
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |
-| `arguments` | — | none | MISSING |
-| `signature` | — | none | MISSING |
+| `arguments` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_interface_item.py::test_add_argument_and_get_arguments` | identity/value | OK |
+| `signature` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_interface_item.py::test_signature_methods` | identity/value | OK |
 
 ## IRPModelElement
 
@@ -175,7 +175,7 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | `nested_components` | — | none | MISSING |
 | `nodes` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_nodes` | identity/value | OK |
 | `object_model_diagrams` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_object_model_diagrams` | identity/value | OK |
-| `packages` | — | none | MISSING |
+| `packages` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_nested_packages` | identity/value | OK |
 | `panel_diagrams` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_panel_diagrams` | identity/value | OK |
 | `saved_in_seperate_directory` | — | none | MISSING |
 | `sequence_diagrams` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_sequence_diagrams` | identity/value | OK |
@@ -205,7 +205,7 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | `all_stereotypes` | — | none | MISSING |
 | `cg_simplified_model_package` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_cg_simplified_model_package` | identity/value | OK |
 | `components` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_components` | identity/value | OK |
-| `default_directory_scheme` | — | none | MISSING |
+| `default_directory_scheme` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_default_directory_scheme_roundtrip` | identity/value | OK |
 | `nodes` | — | none | MISSING |
 | `packages` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_packages` | identity/value | OK |
 | `profiles` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_profiles` | identity/value | OK |
@@ -230,12 +230,12 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |
-| `cm_header` | — | none | MISSING |
-| `current_directory` | — | none | MISSING |
-| `filename` | — | none | MISSING |
-| `include_in_next_load` | — | none | MISSING |
-| `is_stub` | — | none | MISSING |
-| `structure_diagrams` | — | none | MISSING |
+| `cm_header` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_unit.py::test_set_and_get_cm_header_roundtrip` | identity/value | OK |
+| `current_directory` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_unit.py::test_get_current_directory_matches_project` | identity/value | OK |
+| `filename` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_unit.py::test_set_and_get_filename_roundtrip` | identity/value | OK |
+| `include_in_next_load` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_unit.py::test_set_and_get_include_in_next_load_roundtrip` | identity/value | OK |
+| `is_stub` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_unit.py::test_load_and_unload_roundtrip` | identity/value | OK |
+| `structure_diagrams` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_unit.py::test_get_structure_diagrams_returns_diagram_created_on_class` | identity/value | OK |
 
 ## IRPUseCase
 
