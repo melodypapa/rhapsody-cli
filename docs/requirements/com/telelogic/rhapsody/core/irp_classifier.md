@@ -27,9 +27,10 @@ fallback. The three JavaDoc method-shaped getters (`getAttributesIncludingBases`
 `call_com`; the remaining collection members are pywin32 **properties** and are
 exposed as Python ``@property`` accessors read via `get_com_property` using the
 exact catalogued name (for example `attributes`, `operations`, `relations`,
-`ports`, `statechart`). `add_port()` calls the pywin32 `addNewAggr` method directly;
-this member is absent from the JavaDoc and is recorded as a `JAVA_DOC_MISSING`
-deviation in the API report. The module uses `from __future__ import annotations`
+`ports`, `statechart`). Ports are created through the inherited, JavaDoc-documented
+`IRPModelElement.add_new_aggr("Port", name)` factory; the former `add_port()` convenience
+method was removed because it bound directly to a COM-only member absent from the JavaDoc.
+The module uses `from __future__ import annotations`
 with unquoted type references; names used only in `cast()` are imported locally
 inside the method to avoid circular imports.
 **Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_classifier.py:IRPClassifier

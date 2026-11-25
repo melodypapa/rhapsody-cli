@@ -662,7 +662,10 @@ class IRPModelElement(ComHelper):
         """Returns all of the element's constraints (for internal use only).
 
         This getter is intentionally unavailable because the Java API documents
-        it as internal-only and no supported live retrieval setup is known.
+        it as internal-only and no supported live retrieval setup is known. The
+        pywin32 catalog still exposes ``constraintsByHim`` (property), so the
+        user explicitly approved this runtime stub on 2026-11-24 (recorded in
+        ``docs/reports/sync-todo/index.md``).
 
         Raises:
             NotImplementedError: Always raised because the runtime behavior is unsupported.
@@ -861,7 +864,10 @@ class IRPModelElement(ComHelper):
         """Returns a collection of all the hyperlinks associated with the element.
 
         Runtime retrieval is intentionally unavailable because the documented
-        live setup APIs have not produced a retrievable hyperlink.
+        live setup APIs have not produced a retrievable hyperlink. The pywin32
+        catalog still exposes ``hyperLinks`` (property), so the user explicitly
+        approved this runtime stub on 2026-11-24 (recorded in
+        ``docs/reports/sync-todo/index.md``).
 
         Raises:
             NotImplementedError: Always raised because live retrieval is unsupported.

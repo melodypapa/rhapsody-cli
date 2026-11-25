@@ -137,8 +137,8 @@ class TestRPOperationIntegration:
         test_class = pkg.add_class(self._unique("PropCls"))
         try:
             op = test_class.add_operation(self._unique("propOp"))
-            assert isinstance(op.initializer, str)
-            assert isinstance(op.visibility, str)
+            assert op.initializer in ("", "0") or op.initializer.startswith("class ")
+            assert op.visibility in {"public", "private", "protected"}
         finally:
             test_class.delete_from_project()
 
@@ -156,7 +156,7 @@ class TestRPOperationIntegration:
                 "is_inline",
                 "is_trigger",
             ):
-                assert isinstance(getattr(op, attribute), int)
+                assert getattr(op, attribute) in (0, 1)
         finally:
             test_class.delete_from_project()
 
@@ -186,7 +186,7 @@ class TestRPOperationIntegration:
         test_class = pkg.add_class(self._unique("ArgCls"))
         try:
             op = test_class.add_operation(self._unique("argOp"))
-            argument = op.add_argument(self._unique("arg"))
+            argument = op.add_argument(self._unique("Argument"))
             op.delete_argument(argument)
             assert len(list(op.arguments)) == 0
         finally:

@@ -164,6 +164,77 @@ row's Notes.
   `models/support/` location before any move.
 - **Termination (pending):** IRPApplication Step 8 and the `core` remediation rows are archived; the remaining remediation rows in other category files are still open. After all of them archive, remove the deprecated `_get_method_or_property` / `_set_method_or_property` definitions from `ComHelper` in `src/rhapsody_cli/models/core.py`, drop legacy notes from `AGENTS.md`, `docs/CODE_GUIDELINES.md`, and the sync skill, and confirm `grep -rn "_method_or_property" src/ --include='*.py'` finds no definitions or call sites.
 
+## Getter-assertion checker tightening (2026-11-25)
+
+`verify_sync.py` now groups `test_<property>`, `test_get_<property>`, and their `_empty`/`_empty_state`
+variants under the same property and fails Step 8 unless at least one test in the group asserts
+identity/value (a weak empty-state test is accepted only beside a populated sibling). This makes the
+previously unscanned `test_get_*` tests visible. `IRPType`'s four getters and `IRPModelElement`'s
+`association_classes`, `references`, `guid`, and `binary_id` were fixed with JavaDoc-backed populated
+fixtures. `IRPClassifier` (three rows above) and `IRPModelElement.user_defined_meta_class` remain open
+getter blockers, so Step 8 reports getter failures for those two interfaces until a Windows + Rhapsody
+run settles the fixtures.
+
+The same pass replaced 21 `assert pkg.add_* (...) is not None` factory checks in `test_irp_package.py`
+and the `add_package`/`add_component`/`add_profile` checks in `test_irp_project.py` with name-identity
+assertions, and removed the remaining literal `"arg"` fixture prefixes from the integration tests.
+
+Step 8 now also validates the machine-readable Getter fixture matrix at
+`docs/reports/sync-todo/getter-matrix.md`: every interface section must exist, hold one row per owned
+wrapper property, use a known assertion/status pair, and reference an integration test that still
+exists. Regenerate a section with `verify_sync.py <INTERFACE> --write-getter-matrix`. The seed run
+records 58 `OK`, 4 `WEAK`, and 99 `MISSING` rows; `MISSING` marks getters whose test is not
+discoverable by the `test_<property>`/`test_get_<property>` convention (for example `ports` is covered
+by `test_add_port_and_get_ports`) and must be pointed at the real test by hand.
+
+## NotImplementedError stubs
+
+Added 2026-11-25. `verify_sync.py` reads this table for every interface wrapper and fails Step 8 unless every
+`NotImplementedError` stub has one row whose basis matches the committed COM evidence:
+
+- `not-exposed` — the Java member is absent from `docs/reports/pywin32_authority.json` and listed
+  in `documented_unavailable`; the stub raises before any COM dispatch (SKILL §4).
+- `java-doc-unimplemented` — JavaDoc itself declares the member "Not implemented"; the catalog may
+  expose a property, but the Java API forbids its use.
+- `runtime-stub` — pywin32 exposes the member, the documented call is proven ineffective, and the
+  user approved the deviation on the recorded date; the wrapper and test docstrings cite the
+  JavaDoc member, the catalog entry, and the live evidence (SKILL §4/§5).
+
+Each stub must also be asserted as `pytest.raises(NotImplementedError)` in both mirrored test
+layers. A row whose member no longer raises is stale and fails Step 8.
+
+| Interface | Python member | COM member | Basis | Evidence | Approved |
+| --- | --- | --- | --- | --- | --- |
+| IRPClass | `is_abstract` | `isAbstract` | not-exposed | The setter's `setIsAbstract` is absent from the catalog and listed in `documented_unavailable`; the `isAbstract` property accepts the write but never persists it (observed live). | — |
+| IRPClass | `add_event_reception_with_event` | `addEventReceptionWithEvent` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPClass | `update_contained_diagrams_on_server` | `updateContainedDiagramsOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPCollection | `to_list` | `toList` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPModelElement | `constraints_by_him` | `constraintsByHim` | runtime-stub | Java API documents it as internal-only; the user's explicit decision on 2026-11-24 keeps the stub before COM dispatch. | 2026-11-24 |
+| IRPModelElement | `hyper_links` | `hyperLinks` | runtime-stub | Live retrieval could not be established through the documented APIs; the user's explicit decision on 2026-11-24 keeps the stub before COM dispatch. | 2026-11-24 |
+| IRPModelElement | `get_rmm_url` | `getRmmUrl` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPModelElement | `set_description_html` | `descriptionHTML` | java-doc-unimplemented | JavaDoc: "Not implemented - should not be used." | — |
+| IRPOperation | `update_contained_diagrams_on_server` | `updateContainedDiagramsOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPPackage | `add_instance_specification` | `addInstanceSpecification` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPPackage | `get_root_instance_specifications` | `getRootInstanceSpecifications` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPPackage | `login_to_remote_artifact_server` | `loginToRemoteArtifactServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPPackage | `update_contained_diagrams_on_server` | `updateContainedDiagramsOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPPackage | `update_contained_matrices_on_server` | `updateContainedMatricesOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPPackage | `update_contained_tables_on_server` | `updateContainedTablesOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPPort | `get_contract` | `getContract` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPPort | `set_contract` | `setContract` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPProject | `enable_rhapsody_model_manager` | `enableRhapsodyModelManager` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPProject | `migrate_design_manager_links` | `migrateDesignManagerLinks` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPProject | `set_global_configuration` | `setGlobalConfiguration` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPUnit | `get_unit_path` | `getUnitPath` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPUseCase | `add_event_reception_with_event` | `addEventReceptionWithEvent` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPUseCase | `set_is_behavior_overriden` | `isBehaviorOverriden` | runtime-stub | `setIsBehaviorOverriden` is absent from the catalog; the `isBehaviorOverriden` property is readable, but writes do not work for use cases (the IRPActor/IRPClass setters do); observed live; user approved on 2026-11-25. | 2026-11-25 |
+| IRPUseCase | `update_contained_diagrams_on_server` | `updateContainedDiagramsOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+
+`IRPCollection.add_graphical_item` had a `not-exposed` row here until 2026-11-25, when a live
+probe proved the pywin32 `addGraphicalElementItem` alias works with a real `IRPGraphElement`
+(SWR_ELEM_00036). The wrapper now forwards to that member, so the stub row was removed; a row
+for a member that no longer raises `NotImplementedError` fails Step 8 as stale.
+
 ## P0 integration-test blockers (2026-11-24)
 
 The following integration tests were removed rather than converted into exception assertions or skips
@@ -173,23 +244,48 @@ wrapper-signature fix before its getter/member row can close.
 | Interface | Member(s) | Blocker |
 | --- | --- | --- |
 | IRPProject | `save_as`, `save_as_prev_version` | Writes/switches the session-shared project file; cannot be exercised safely in the shared live project. |
-| IRPProject | `find_element_by_binary_id` | COM expects `byte[]`; wrapper declares `str`. |
 | IRPProject | `find_element_by_file_name`, `locate_in_ide`, `apply_roundtrip_diff_merge`, `get_roundtrip_shadow_model`, `clean_unresolved_elements` | Binding now matches COM, but no safe live fixture (known file name, UI focus, shadow model, or destructive cleanup). |
 | IRPProject | `close_csv_file`, `reload_csv_file`, `find_elements_with_oslc_link`, `add_spell_checker_result`, `get_requirements_by_id`, `get_new_progress_bar` | Binding now matches COM; still needs a CSV/OSLC/requirement/progress fixture or a meaningful assertion for a void result. |
 | IRPProject | `import_package_from_rose`, `import_project_from_rose` | External Rose fixture required; JavaDoc marks both unsupported since Rhapsody 8.1.4. |
-| IRPProject | `check_events_base_ids_solve_collisions` | JavaDoc returns void; wrapper wraps it in `int()`. |
-| IRPProject | `default_directory_scheme` | JavaDoc/COM is `String`; wrapper reads/writes `int`. |
 | IRPPackage | `get_remote_requirements_populate_mode` | Requires a Design Manager/remote requirements server. |
 | IRPPackage | `get_instance_specifications`, `get_source_artifacts`, `get_user_defined_stereotypes`, `get_nested_components` | No live create/relate API; `add_instance_specification` is a pywin32-absent stub and packages have no `add_component`. |
 | IRPClass | `add_link`, `add_link_to_part_via_port` | Needs a real `IRPInstance` part and structure-diagram endpoints; class-as-part fixtures only produced exceptions. |
-| IRPClassifier | `source_artifacts` (`getSourceArtifacts`) | No documented API creates or attaches a classifier-owned `IRPFile` source artifact, so only the empty-state case can run; evidence: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_get_source_artifacts_empty`. |
-| IRPClassifier | `sequence_diagrams` (`getSequenceDiagrams`) | `IRPPackage.add_sequence_diagram` creates a package-owned diagram and no member attaches it to a classifier, so the classifier getter cannot be shown to return a created diagram; evidence: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_get_sequence_diagrams_empty`. |
-| IRPClassifier | `links` (`getLinks`) | `IRPClass.add_link` / `add_link_to_part_via_port` require real part instances plus association or port endpoints and cannot prove the classifier `links` getter returns the created link (that path is an IRPClass blocker too); evidence: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier.py::test_get_links_empty`. |
+| IRPModelElement | `user_defined_meta_class` (`getUserDefinedMetaClass`) | JavaDoc defines the result as the New Term name, but the COM surface exposes no API to define a New Term, so only the default value's type is observable; evidence: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_model_element.py::test_get_user_defined_meta_class`. |
+| IRPModelElement | `constraints_by_him`, `hyper_links` | User-approved runtime stubs (2026-11-24, `runtime-stub` rows in the NotImplementedError evidence ledger); retrieval fixtures could not be built live. |
 | IRPUnit | `copy_to_another_project`, `move_to_another_project_leave_a_reference`, `reference_to_another_project`, `set_unit_path` | Requires a second saved project/unit file and mutates the shared project. |
-| IRPUseCase | `find_entry_point`, `find_extension_point` | JavaDoc/pywin32 take `IRPGeneralization` and return `String`; wrapper takes `str` and wraps an element. |
+| IRPType | `typedef_multiplicity` setter | Live 2026-11-25: the catalog exposes `typedefMultiplicity` as a property and reads return `"1"` on a new type, but every write (`"0..1"`, `"1"`, `"0..*"`, `"*"`, `"[0..1]"`, `"1..1"`) faults with COM HRESULT `-2147221498`; no live setter success, so the getter asserts the observed default and the setter stays a blocker. |
 | IRPUseCase | `entry_points` | No documented add API in the COM surface; only an empty-state result is observable. |
-| IRPOperation | `flowchart` setter | JavaDoc lists `setFlowchart`, but live COM exposes it read-only; the wrapper setter is retained pending Windows confirmation. |
 | IRPProject | `get_code_generated_files` | Requires a real code-generation run; no safe fixture in the shared project. |
 | IRPProject | `get_active_custom_views_on_browser` | No API creates a browser-level custom view; the empty collection is the only observable state. |
 | IRPProject | `get_remote_resource_packages`, `is_actively_managed` | Require a remote resource/management server. |
 | IRPProject | `is_modified_recursive` | Needs a controlled modify/save transition on the session-shared project. |
+| IRPClass | `is_abstract`, `is_active`, `is_behavior_overriden` | Documented pywin32 aliases; getters are readable but no populated live fixture exists (setters are read-only or JavaDoc-unimplemented). |
+| IRPPackage | `instance_specifications`, `links`, `nested_components`, `saved_in_seperate_directory`, `source_artifacts`, `user_defined_stereotypes` | No documented create/relate API for these package-owned relationships; see the existing P0 rows and the 2026-11-25 live COM inventory. |
+| IRPPort | `is_behavioral`, `is_reversed`, `port_contract`, `provided_interfaces`, `required_interfaces` | Port relation/end properties have no live factory; recovered via catalog-only triage but no populated fixture. |
+| IRPProject | `active_component`, `active_configuration`, `all_stereotypes`, `nodes`, `use_unique_stereotype_and_ref_cache` | Project state getters observable only in the default live project; no safe fixture without mutating shared state. |
+| IRPUseCase | `is_behavior_overriden` | Runtime stub (user approved 2026-11-25): setter faults live; see the NotImplementedError evidence ledger. |
+
+**Fresh live evidence (2026-11-25, hidden-UI Rhapsody):** three of the original four WEAK getter
+rows were closed by attaching children with the documented generic factory
+`IRPModelElement.add_new_aggr` directly on the classifier — `add_new_aggr("File")`,
+`add_new_aggr("SequenceDiagram")` and `add_new_aggr("Link")` each produce a child that the
+corresponding `source_artifacts` / `sequence_diagrams` / `links` getter returns by identity
+(`test_source_artifacts`,
+`test_sequence_diagrams`,
+`test_links`). Earlier probes of the specialized factories
+(`addLink`, `add_sequence_diagram`) failed, but the generic factory is sufficient. The remaining
+`IRPModelElement.userDefinedMetaClass` row stays a blocker: it returns the default `"Class"` and the
+surface has no New Term factory (`getNewTermStereotype` only reads a stereotype); its empty-state
+test is an additional case, not completion evidence.
+
+**D2 signature cases (2026-11-25, approved case-by-case):** `IRPProject.find_element_by_binary_id`
+now takes `bytes` (live COM requires a VT_UI1 SAFEARRAY and finds the real element);
+`default_directory_scheme` now reads/writes `str` (live values `"Flat"`/`"Nested"`);
+`check_events_base_ids_solve_collisions` now calls the exact catalog spelling
+`checkEventsBaseIdsSolveCollisions` and returns `None` (the earlier probe used the wrong
+capitalisation, `IDs` instead of `Ids`). All three have fake-COM unit tests and live identity/value
+assertions, so their blocker rows are closed. `IRPUseCase.find_entry_point` /
+`find_extension_point` already take `IRPGeneralization` (the old note was stale); no live factory
+returns a generalization, so the rows stay blockers with corrected evidence. `IRPOperation.flowchart`
+already has an `IRPFlowchart` setter and writing a real flowchart object succeeds live, so that
+blocker row is closed.

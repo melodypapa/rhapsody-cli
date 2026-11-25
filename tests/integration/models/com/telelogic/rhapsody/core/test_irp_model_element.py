@@ -59,7 +59,9 @@ class TestRPModelElementIntegration:
     def test_get_guid(self, test_project: IRPProject) -> None:
         guid = test_project.guid
         assert isinstance(guid, str)
-        assert len(guid) > 0
+        # Live COM returns the value as "GUID <hex-uuid>", not a bare UUID string.
+        parsed = uuid.UUID(guid.split()[-1])
+        assert str(parsed) in guid
 
 
 @pytest.mark.integration
@@ -390,10 +392,12 @@ class TestRPModelElementDependenciesIntegration:
         pkg_name = self._unique("AssocClsPkg")
         pkg = self._create_package(test_project, pkg_name)
         try:
-            assoc_classes = pkg.association_classes
-            assert isinstance(assoc_classes, IRPCollection)
-            # smoke test: no associations created, but confirm the COM call returns a valid IRPCollection
-            assert isinstance(assoc_classes.count, int)
+            source = pkg.add_class(self._unique("AssocSource"))
+            target = pkg.add_class(self._unique("AssocTarget"))
+            end1 = source.add_relation_to(target, "targets", "Association", "1", "sources", "Association", "1", "")
+            end2 = IRPRelation(end1._com).get_inverse()
+            association_class = source.add_association(end1, end2, self._unique("AssocCls"))
+            assert association_class in list(source.association_classes)
         finally:
             pkg.delete_from_project()
 
@@ -404,10 +408,10 @@ class TestRPModelElementDependenciesIntegration:
             source = pkg.add_class(self._unique("Source"))
             target = pkg.add_class(self._unique("Target"))
             dependency = source.add_dependency_to(target)
-            references = target.references
-            assert isinstance(references, IRPCollection)
-            assert isinstance(references.count, int)
-            assert references.count >= 0
+            references = list(target.references)
+            # JavaDoc does not say whether the returned elements are the dependency or its
+            # client; either proves the getter resolves the incoming relationship.
+            assert dependency in references or source in references
             source.delete_dependency(dependency)
         finally:
             pkg.delete_from_project()
@@ -679,9 +683,12 @@ class TestRPModelElementDescriptionDisplayNameIntegration:
             with pytest.raises(NotImplementedError, match="setDescriptionHTML is documented as"):
                 cls.set_description_html(html)
 
-            # getDescriptionHTML should work normally
+            # getDescriptionHTML should work normally; set description through
+            # the writable property and assert the HTML getter reflects it.
+            cls.description = "A test description"
             retrieved_html = cls.description_html
             assert isinstance(retrieved_html, str)
+            assert "A test description" in retrieved_html
         finally:
             pkg.delete_from_project()
 
@@ -1056,6 +1063,9 @@ class TestRPModelElementCloningTemplatesIntegration:
             assert instance.become_template_instantiation_of(template) is None  # type: ignore[func-returns-value]
             assert instance.ti is not None
             assert instance.ti.meta_class == "TemplateInstantiation"
+            assert instance.of_template is not None
+            assert instance.of_template.name == template.name
+            assert "T" in [parameter.name for parameter in template.template_parameters]
         finally:
             pkg.delete_from_project()
 
@@ -1310,11 +1320,14 @@ class TestRPModelElementMetadataIntegration:
             cls = pkg.add_class(self._unique("BinIdCls"))
             binary_id = cls.binary_id
             assert isinstance(binary_id, bytes)
-            assert len(binary_id) > 0
+            # Live COM returns 16 bytes of GUID data plus 4 trailing bytes.
+            assert len(binary_id) >= 16
+            assert binary_id == cls.binary_id
+            assert binary_id != test_project.binary_id
 
             guid = cls.guid
             assert isinstance(guid, str)
-            assert len(guid) > 0
+            assert uuid.UUID(guid.split()[-1])
         finally:
             pkg.delete_from_project()
 
@@ -1393,6 +1406,8 @@ class TestRPModelElementMetadataIntegration:
             pkg.delete_from_project()
 
     def test_get_user_defined_meta_class(self, test_project: IRPProject) -> None:
+        """Open blocker: JavaDoc defines this as the New Term name, but the COM surface exposes no
+        API to define a New Term, so only the type of the default value is observable."""
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
@@ -1482,6 +1497,17 @@ class TestRPModelElementDiagnosticsUiIntegration:
             assert isinstance(annotations.count, int)
             assert annotations.count == 0
             assert len(list(annotations)) == 0
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_annotations_returns_annotation_created_on_element(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("AnnPopPkg"))
+        try:
+            cls = pkg.add_class(self._unique("AnnPopCls"))
+            annotation_name = self._unique("Annotation")
+            cls.add_new_aggr("Annotation", annotation_name)
+
+            assert annotation_name in [annotation.name for annotation in cls.annotations]
         finally:
             pkg.delete_from_project()
 

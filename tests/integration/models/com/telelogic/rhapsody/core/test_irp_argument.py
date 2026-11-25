@@ -30,8 +30,8 @@ class TestIRPArgumentIntegration:
         test_class = pkg.add_class(self._unique("ArgDirCls"))
         try:
             op = test_class.add_operation(self._unique("dirOp"))
-            argument = op.add_argument(self._unique("arg"))
+            argument = op.add_argument(self._unique("Argument"))
             assert isinstance(argument, IRPArgument)
-            assert isinstance(argument.argument_direction, str)
+            assert argument.argument_direction in {"In", "Out", "InOut"}
         finally:
             test_class.delete_from_project()

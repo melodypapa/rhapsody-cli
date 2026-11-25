@@ -34,7 +34,7 @@ def test_interface_item_add_argument_before_position_wraps_result() -> None:
 
     result = item.add_argument_before_position("y", 1)
 
-    fake.addArgumentBeforePosition.assert_called_once_with("y", 1)
+    fake.addArgumentBeforePosition.assert_called_once_with("y", 0)
     assert result.name == "y"
 
 
@@ -48,6 +48,7 @@ def test_interface_item_arguments_returns_collection() -> None:
 
     assert isinstance(result, IRPCollection)
     assert len(result) == 1
+    assert result[0]._com is inner
 
 
 def test_interface_item_signature_delegates_to_com() -> None:
@@ -80,3 +81,14 @@ def test_interface_item_match_on_signature_delegates_to_com() -> None:
 
     fake.matchOnSignature.assert_called_once_with(other)
     assert result is True
+
+
+def test_interface_item_match_on_signature_returns_false_for_different_signatures() -> None:
+    fake = make_fake_element("InterfaceItem", matchOnSignature=0)
+    other = make_fake_element("InterfaceItem")
+    item = IRPInterfaceItem(fake)
+
+    result = item.match_on_signature(IRPInterfaceItem(other))
+
+    fake.matchOnSignature.assert_called_once_with(other)
+    assert result is False
