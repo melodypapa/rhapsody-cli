@@ -56,3 +56,107 @@ the 21 members that previously took fewer arguments: `find_element_by_file_name`
 (class renamed from `RPProject`; §2 canonical package move completed; 22 legacy
 call sites migrated; 2 catalog-absent sites left unchanged)
 **Last Changed:** 2026-11-25
+
+## SWR_ELEM_00022: IRPProject lifecycle methods live-fixture blocker
+
+**ID:** SWR_ELEM_00022
+**Title:** close, become_active_project and remove have no live integration proof
+**Status:** Blocked
+**Priority:** Low
+**Description:**
+`IRPProject.close()` raises a modal "Projects can only be removed from project
+lists" dialog on the session-shared project, `become_active_project()` would
+switch the active project out from under the shared fixture, and `remove()`
+deletes the session-shared project. Their former integration tests asserted a
+mocked `call_com` binding shape, which proves only the call shape and not the
+live behaviour (SKILL §5). Those tests were removed; the bindings keep full
+fake-COM unit coverage. Live verification needs an isolated project per case and
+a session that tolerates project switching, after which the rows can be closed.
+**Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py:IRPProject
+**Last Changed:** 2026-11-25
+
+## SWR_ELEM_00024: IRPProject generate_report live-fixture blocker
+
+**ID:** SWR_ELEM_00024
+**Title:** generate_report has no live integration proof
+**Status:** Blocked
+**Priority:** Low
+**Description:**
+`IRPProject.generate_report()` requires a ReporterPLUS `.tpl` template file. No
+`.tpl` template ships with the installed Rhapsody build (verified across the
+installation, user profile, ProgramData and this workspace), and passing any
+other file makes Rhapsody raise a modal "Error Opening the Template" dialog that
+blocks COM automation. The former integration test passed a Python source file
+as the template, which produced that modal and blocked the live suite. Per SKILL
+§5 the test was removed rather than kept as a fake or exception assertion; the
+binding keeps full fake-COM unit coverage. Live verification needs a valid
+ReporterPLUS template, after which the row can be closed.
+**Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py:IRPProject.generate_report
+**Last Changed:** 2026-11-25
+
+## SWR_ELEM_00028: IRPProject creation and collection live-fixture blocker
+
+**ID:** SWR_ELEM_00028
+**Title:** add_class/add_actor/add_node and related getters have no live proof
+**Status:** Blocked
+**Priority:** Low
+**Description:**
+`addClass(name)`, `addActor(name)` and `addNode(name)` are catalog-backed methods
+with the documented single string argument, but this Rhapsody build rejects them
+with HRESULT `0x80040006`. The `nodes` and `all_stereotypes` getter cases are
+blocked at their `add_node`/`add_stereotype` setup step for the same reason.
+Their integration tests were removed per SKILL §5; the bindings keep full
+fake-COM unit coverage. Live verification needs a build that permits these
+project-level creations, after which the rows can be closed.
+**Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py:IRPProject
+**Last Changed:** 2026-11-25
+
+## SWR_ELEM_00029: IRPProject active component/configuration live-fixture blocker
+
+**ID:** SWR_ELEM_00029
+**Title:** active component and configuration access have no live integration proof
+**Status:** Blocked
+**Priority:** Low
+**Description:**
+`activeConfiguration`, `activeComponent`, `setActiveConfiguration` and
+`setActiveComponent` are catalog-backed, but this Rhapsody build rejects both
+the getter and the setter with HRESULT `0x80040005`/`0x80040006` regardless of
+whether the setter receives the documented name string or the COM object. The
+integration tests were removed; the bindings keep full fake-COM unit coverage.
+Live verification needs a build that permits switching active configuration,
+after which the rows can be closed.
+**Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py:IRPProject
+**Last Changed:** 2026-11-25
+
+## SWR_ELEM_00030: IRPProject gateway and explicit-object live-fixture blocker
+
+**ID:** SWR_ELEM_00030
+**Title:** gateway exports and setObjectExplicit/Implicit have no live proof
+**Status:** Blocked
+**Priority:** Low
+**Description:**
+`GatewayExportToXML`/`GatewayExportToXML2` are documented as internal-use-only
+and fail with `E_FAIL` even with a real output path. `setObjectExplicit` and
+`setObjectImplicit` reject a real model element with `E_FAIL`/typemismatch.
+Their integration tests were removed per SKILL §5; the bindings keep full
+fake-COM unit coverage. Live verification needs the gateway feature and the
+correct instance fixture, after which the rows can be closed.
+**Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py:IRPProject
+**Last Changed:** 2026-11-25
+
+## SWR_ELEM_00031: IRPProject UseUniqueStereotypeAndRefCache catalog mismatch
+
+**ID:** SWR_ELEM_00031
+**Title:** UseUniqueStereotypeAndRefCache has no live integration proof
+**Status:** Blocked
+**Priority:** Low
+**Description:**
+The pywin32 catalog and generated `IRPProject` class list
+`UseUniqueStereotypeAndRefCache`, but the live Rhapsody instance omits it from
+`_prop_map_get_`, so any access raises `AttributeError`. This is a catalog /
+runtime type-library mismatch, not a wrapper binding defect. The integration
+test was removed per SKILL §5; the binding keeps full fake-COM unit coverage.
+Live verification needs an authority catalog regenerated from this build's type
+library, after which the row can be closed.
+**Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py:IRPProject.use_unique_stereotype_and_ref_cache
+**Last Changed:** 2026-11-25

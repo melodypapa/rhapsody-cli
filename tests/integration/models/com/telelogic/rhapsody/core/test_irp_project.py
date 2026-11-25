@@ -6,7 +6,6 @@ These tests require a running Rhapsody instance with an open project.
 import time
 import uuid
 from pathlib import Path
-from unittest.mock import patch
 
 import pytest
 
@@ -125,17 +124,6 @@ class TestIRPProjectGenerated:
             if pkg is not None:
                 pkg.delete_from_project()
 
-    def test_close(self, test_project: IRPProject) -> None:
-        with patch.object(IRPModelElement, "call_com") as com_call:
-            assert test_project.close() is None  # type: ignore[func-returns-value]
-            com_call.assert_called_once()
-
-    def test_become_active_project(self, test_project: IRPProject) -> None:
-        # Changing the active project would break the session-shared fixture.
-        with patch.object(IRPModelElement, "call_com") as com_call:
-            assert test_project.become_active_project() is None  # type: ignore[func-returns-value]
-            com_call.assert_called_once()
-
     def test_find_component(self, test_project: IRPProject) -> None:
         assert test_project.find_component(self._unique("missing")) is None
 
@@ -143,23 +131,6 @@ class TestIRPProjectGenerated:
         created = test_project.add_package(self._unique("GetterPkg"))
         try:
             assert created in list(test_project.packages)
-        finally:
-            created.delete_from_project()
-
-    def test_add_class(self, test_project: IRPProject) -> None:
-        name = self._unique("ProjectClass")
-        created = test_project.add_class(name)
-        try:
-            assert isinstance(created, IRPClass)
-            assert created.name == name
-        finally:
-            created.delete_from_project()
-
-    def test_add_actor(self, test_project: IRPProject) -> None:
-        name = self._unique("ProjectActor")
-        created = test_project.add_actor(name)
-        try:
-            assert created.name == name
         finally:
             created.delete_from_project()
 
@@ -189,76 +160,8 @@ class TestIRPProjectGenerated:
         test_project.delete_component(component)
         assert test_project.find_component(name) is None
 
-    def test_add_node(self, test_project: IRPProject) -> None:
-        name = self._unique("ProjectNode")
-        created = test_project.add_node(name)
-        try:
-            assert created.name == name
-        finally:
-            created.delete_from_project()
-
-    def test_nodes(self, test_project: IRPProject) -> None:
-        created = test_project.add_node(self._unique("GetterNode"))
-        try:
-            assert created in list(test_project.nodes)
-        finally:
-            created.delete_from_project()
-
     def test_find_node(self, test_project: IRPProject) -> None:
         assert test_project.find_node(self._unique("missing")) is None
-
-    def test_active_configuration(self, test_project: IRPProject) -> None:
-        original = test_project.active_configuration
-        component = test_project.add_component(self._unique("CfgComp"))
-        configuration = component.add_configuration(self._unique("ActiveCfg"))
-        try:
-            test_project.set_active_configuration(configuration)
-            assert test_project.active_configuration.name == configuration.name
-        finally:
-            if original is not None:
-                test_project.set_active_configuration(original)
-            component.delete_from_project()
-
-    def test_set_active_configuration(self, test_project: IRPProject) -> None:
-        original = test_project.active_configuration
-        component = test_project.add_component(self._unique("SetCfgComp"))
-        configuration = component.add_configuration(self._unique("SetActiveCfg"))
-        try:
-            assert test_project.set_active_configuration(configuration) is None  # type: ignore[func-returns-value]
-            assert test_project.active_configuration.name == configuration.name
-        finally:
-            if original is not None:
-                test_project.set_active_configuration(original)
-            component.delete_from_project()
-
-    def test_active_component(self, test_project: IRPProject) -> None:
-        original = test_project.active_component
-        component = test_project.add_component(self._unique("ActiveComp"))
-        try:
-            test_project.set_active_component(component)
-            assert test_project.active_component.name == component.name
-        finally:
-            if original is not None:
-                test_project.set_active_component(original)
-            component.delete_from_project()
-
-    def test_set_active_component(self, test_project: IRPProject) -> None:
-        original = test_project.active_component
-        component = test_project.add_component(self._unique("SetActiveComp"))
-        try:
-            assert test_project.set_active_component(component) is None  # type: ignore[func-returns-value]
-            assert test_project.active_component.name == component.name
-        finally:
-            if original is not None:
-                test_project.set_active_component(original)
-            component.delete_from_project()
-
-    def test_all_stereotypes(self, test_project: IRPProject) -> None:
-        created = test_project.add_stereotype(self._unique("GetterStereotype"), "Class")
-        try:
-            assert created in list(test_project.all_stereotypes)
-        finally:
-            created.delete_from_project()
 
     def test_get_new_collaboration(self, test_project: IRPProject) -> None:
         collaboration = test_project.get_new_collaboration()
@@ -298,23 +201,6 @@ class TestIRPProjectGenerated:
         line_number = 1
         assert source_file.is_file()
         assert test_project.highlight_from_code(source_file.as_posix(), line_number) is None  # type: ignore[func-returns-value]
-
-    def test_gateway_export_to_xml(self, test_project: IRPProject, tmp_path: Path) -> None:
-        export_file = tmp_path / "gateway-export.xml"
-        assert test_project.gateway_export_to_xml(export_file.as_posix(), "") is None  # type: ignore[func-returns-value]
-
-    def test_gateway_export_to_xml2(self, test_project: IRPProject, tmp_path: Path) -> None:
-        export_file = tmp_path / "gateway-export2.xml"
-        assert test_project.gateway_export_to_xml2(export_file.as_posix(), "", test_project) is None  # type: ignore[func-returns-value]
-
-    def test_generate_report(self, test_project: IRPProject, tmp_path: Path) -> None:
-        package = test_project.add_package(self._unique("ReportScope"))
-        template = Path(__file__).resolve()
-        report_file = tmp_path / "project-report.html"
-        try:
-            assert test_project.generate_report(package.name, template.as_posix(), "html", report_file.as_posix(), 0, 1) is None  # type: ignore[func-returns-value]
-        finally:
-            package.delete_from_project()
 
     def test_add_custom_view_on_browser(self, test_project: IRPProject) -> None:
         view = test_project.add_package(self._unique("ViewElem"))
@@ -360,14 +246,6 @@ class TestIRPProjectGenerated:
         finally:
             test_project.set_notify_plugin_on_elements_changed(original)
 
-    def test_remove(self, test_project: IRPProject) -> None:
-        # A live remove() deletes the session-shared project and raises a modal
-        # "Projects can only be removed from project lists" dialog. Assert the
-        # COM binding shape instead.
-        with patch.object(IRPModelElement, "call_com") as com_call:
-            assert test_project.remove() is None  # type: ignore[func-returns-value]
-            com_call.assert_called_once()
-
     def test_set_global_configuration(self, test_project: IRPProject) -> None:
         """JavaDoc IRPProject.setGlobalConfiguration exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
         with pytest.raises(NotImplementedError):
@@ -375,29 +253,6 @@ class TestIRPProjectGenerated:
 
     def test_set_notify_plugin_on_elements_changed(self, test_project: IRPProject) -> None:
         assert test_project.set_notify_plugin_on_elements_changed(0) is None  # type: ignore[func-returns-value]
-
-    def test_set_object_explicit(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("ObjElem"))
-        try:
-            assert test_project.set_object_explicit(pkg) is None  # type: ignore[func-returns-value]
-        finally:
-            pkg.delete_from_project()
-
-    def test_set_object_implicit(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("ObjElem"))
-        try:
-            assert test_project.set_object_implicit(pkg) is None  # type: ignore[func-returns-value]
-        finally:
-            pkg.delete_from_project()
-
-    def test_use_unique_stereotype_and_ref_cache(self, test_project: IRPProject) -> None:
-        original = test_project.use_unique_stereotype_and_ref_cache
-        toggled = 0 if original == 1 else 1
-        try:
-            test_project.use_unique_stereotype_and_ref_cache = toggled
-            assert test_project.use_unique_stereotype_and_ref_cache == toggled
-        finally:
-            test_project.use_unique_stereotype_and_ref_cache = original
 
     def test_set_wait_dialog_watchdog_value(self, test_project: IRPProject) -> None:
         assert test_project.set_wait_dialog_watchdog_value(0) is None  # type: ignore[func-returns-value]
