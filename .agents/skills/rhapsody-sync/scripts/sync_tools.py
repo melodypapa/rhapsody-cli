@@ -693,6 +693,229 @@ def write_getter_matrix(root: Path, interface_name: str, report_path: Path) -> P
     return upsert_getter_matrix_section(root, simple_name, section)
 
 
+_GETTER_DIFF_RELATIVE = Path("docs") / "reports" / "sync-todo" / "getter-catalog-diff.md"
+_GETTER_DIFF_HEADER = "| Python getter | COM member | Binding shape | Catalog shape | Status |"
+_GETTER_DIFF_SEPARATOR = "| --- | --- | --- | --- | --- |"
+_GETTER_DIFF_CATALOG_HEADER = "| Catalog property | Derived Python name | Status |"
+_GETTER_DIFF_CATALOG_SEPARATOR = "| --- | --- | --- |"
+_GETTER_DIFF_STATUSES = ("match", "catalog-missing", "shape-mismatch", "no-binding", "stub", "catalog-only")
+_GETTER_DIFF_MISSING = "—"
+_GETTER_DIFF_PREAMBLE = (
+    "# Getter implementation vs pywin32 catalog\n\n"
+    "Per-owned-getter comparison of the Python binding against `docs/reports/pywin32_authority.json`.\n"
+    "Regenerate one interface section with\n"
+    "`python .agents/skills/rhapsody-sync/scripts/verify_sync.py <INTERFACE> --write-getter-diff`.\n\n"
+    "Statuses: `match` — the bound COM member exists with the catalog's shape; `catalog-missing` — the bound member is absent\n"
+    "from the catalog; `shape-mismatch` — the binding form differs from the catalog shape; `no-binding` — the property is pure\n"
+    "Python; `stub` — the property raises `NotImplementedError` (see the stub evidence ledger); `catalog-only` — a catalog\n"
+    "property has no Python property with the derived snake_case name anywhere in the wrapper MRO, a candidate gap for human\n"
+    "review rather than a failure.\n\n"
+    "## Summary\n\n"
+    "| Status | Count |\n"
+    "| --- | --- |\n"
+    "| match | 0 |\n"
+    "| catalog-missing | 0 |\n"
+    "| shape-mismatch | 0 |\n"
+    "| no-binding | 0 |\n"
+    "| stub | 0 |\n"
+    "| catalog-only | 0 |\n"
+)
+
+
+def getter_catalog_diff_path(root: Path) -> Path:
+    """Return the committed Getter implementation-vs-catalog diff report path."""
+    return root / _GETTER_DIFF_RELATIVE
+
+
+def _property_getter_nodes(wrapper_source: str) -> List[Tuple[str, ast.AST]]:
+    """Return the ``@property`` getter names and nodes declared in a wrapper module."""
+    getters: List[Tuple[str, ast.AST]] = []
+    tree = ast.parse(wrapper_source)
+    for class_node in (node for node in ast.walk(tree) if isinstance(node, ast.ClassDef)):
+        for function in class_node.body:
+            if not isinstance(function, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                continue
+            decorators = {getattr(decorator, "id", None) or getattr(decorator, "attr", None) for decorator in function.decorator_list}
+            if decorators & _PROPERTY_DECORATORS:
+                getters.append((function.name, function))
+    return getters
+
+
+def _diff_code_cell(value: str) -> str:
+    return _GETTER_DIFF_MISSING if value == _GETTER_DIFF_MISSING else f"`{value}`"
+
+
+def _getter_diff_binding_rows(wrapper_source: str, catalog: Dict[str, str]) -> List[Tuple[str, str, str, str, str]]:
+    """Return (Python getter, COM member, binding shape, catalog shape, status) rows."""
+    lowered = {str(name).lower(): (str(name), str(shape)) for name, shape in catalog.items()}
+    rows: List[Tuple[str, str, str, str, str]] = []
+    for name, getter in _property_getter_nodes(wrapper_source):
+        bindings = _collect_bindings(getter)
+        if not bindings:
+            status = "stub" if any(_raises_not_implemented(candidate) for candidate in ast.walk(getter)) else "no-binding"
+            rows.append((name, _GETTER_DIFF_MISSING, _GETTER_DIFF_MISSING, _GETTER_DIFF_MISSING, status))
+            continue
+        for member, shape, _arity in bindings:
+            found = lowered.get(member.lower())
+            if found is None:
+                rows.append((name, member, shape, _GETTER_DIFF_MISSING, "catalog-missing"))
+            elif found[1] != shape:
+                rows.append((name, member, shape, found[1], "shape-mismatch"))
+            else:
+                rows.append((name, found[0], shape, found[1], "match"))
+    return rows
+
+
+def _base_class_name(node: ast.expr) -> Optional[str]:
+    if isinstance(node, ast.Name):
+        return node.id
+    if isinstance(node, ast.Attribute):
+        return node.attr
+    if isinstance(node, ast.Subscript):
+        return _base_class_name(node.value)
+    return None
+
+
+def _wrapper_class_index(root: Path) -> Dict[str, List[Tuple[Set[str], List[str]]]]:
+    """Index every model wrapper class by name: (property names, base class names)."""
+    index: Dict[str, List[Tuple[Set[str], List[str]]]] = {}
+    models_root = root / "src" / "rhapsody_cli" / "models"
+    if not models_root.is_dir():
+        return index
+    for path in sorted(models_root.rglob("*.py")):
+        try:
+            tree = ast.parse(path.read_text(encoding="utf-8"))
+        except (OSError, SyntaxError, UnicodeDecodeError):
+            continue
+        for class_node in (node for node in ast.walk(tree) if isinstance(node, ast.ClassDef)):
+            properties: Set[str] = set()
+            for function in class_node.body:
+                if not isinstance(function, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    continue
+                decorators = {getattr(decorator, "id", None) or getattr(decorator, "attr", None) for decorator in function.decorator_list}
+                if decorators & _PROPERTY_DECORATORS:
+                    properties.add(function.name)
+            bases = [name for name in (_base_class_name(base) for base in class_node.bases) if name]
+            index.setdefault(class_node.name, []).append((properties, bases))
+    return index
+
+
+def _mro_property_names(index: Dict[str, List[Tuple[Set[str], List[str]]]], class_name: str, seen: Optional[Set[str]] = None) -> Set[str]:
+    """Return property names declared by a class and its resolvable in-repo bases."""
+    visited = seen if seen is not None else set()
+    if class_name in visited:
+        return set()
+    visited.add(class_name)
+    names: Set[str] = set()
+    for properties, bases in index.get(class_name, []):
+        names |= properties
+        for base in bases:
+            names |= _mro_property_names(index, base, visited)
+    return names
+
+
+def _catalog_only_properties(index: Dict[str, List[Tuple[Set[str], List[str]]]], wrapper_class: str, catalog: Dict[str, str]) -> List[Tuple[str, str]]:
+    """Return catalog properties with no derived-name Python property in the wrapper MRO."""
+    known = _mro_property_names(index, wrapper_class)
+    candidates: List[Tuple[str, str]] = []
+    for member, shape in catalog.items():
+        if str(shape) != "property":
+            continue
+        derived = _java_interface_snake(str(member))
+        if derived not in known:
+            candidates.append((str(member), derived))
+    return sorted(candidates)
+
+
+def render_getter_catalog_diff_section(root: Path, interface_name: str, wrapper_class: str, wrapper_source: str, catalog: Dict[str, str]) -> str:
+    """Render the ``## <INTERFACE>`` diff section for one wrapper."""
+    lines = [f"## {interface_name}", "", _GETTER_DIFF_HEADER, _GETTER_DIFF_SEPARATOR]
+    for name, member, shape, catalog_shape, status in _getter_diff_binding_rows(wrapper_source, catalog):
+        lines.append(f"| {_diff_code_cell(name)} | {_diff_code_cell(member)} | {shape} | {catalog_shape} | {status} |")
+    lines.extend(["", "### Catalog properties with no matching Python property", "", _GETTER_DIFF_CATALOG_HEADER, _GETTER_DIFF_CATALOG_SEPARATOR])
+    candidates = _catalog_only_properties(_wrapper_class_index(root), wrapper_class, catalog)
+    if candidates:
+        lines.extend(f"| `{member}` | `{derived}` | catalog-only |" for member, derived in candidates)
+    else:
+        lines.append(f"| {_GETTER_DIFF_MISSING} | {_GETTER_DIFF_MISSING} | {_GETTER_DIFF_MISSING} |")
+    return "\n".join(lines) + "\n"
+
+
+def _getter_catalog_diff_counts(text: str) -> Dict[str, int]:
+    counts = {status: 0 for status in _GETTER_DIFF_STATUSES}
+    for line in text.splitlines():
+        cells = _split_table_row(line)
+        if cells is None or cells[-1] not in counts:
+            continue
+        if len(cells) == 5 or (len(cells) == 3 and cells[-1] == "catalog-only"):
+            counts[cells[-1]] += 1
+    return counts
+
+
+def _rewrite_getter_catalog_diff_summary(path: Path) -> None:
+    text = path.read_text(encoding="utf-8")
+    lines = text.splitlines()
+    start: Optional[int] = None
+    for index, line in enumerate(lines):
+        if line.strip() == "## Summary":
+            start = index
+            break
+    if start is None:
+        return
+    end = len(lines)
+    for index in range(start + 1, len(lines)):
+        if lines[index].startswith("## "):
+            end = index
+            break
+    counts = _getter_catalog_diff_counts(text)
+    summary = ["## Summary", "", "| Status | Count |", "| --- | --- |"]
+    summary.extend(f"| {status} | {counts[status]} |" for status in _GETTER_DIFF_STATUSES)
+    lines = lines[:start] + summary + [""] + lines[end:]
+    path.write_text(re.sub(r"\n{3,}", "\n\n", "\n".join(lines)) + "\n", encoding="utf-8")
+
+
+def upsert_getter_catalog_diff_section(root: Path, interface_name: str, section: str) -> Path:
+    """Insert or replace one interface diff section, then refresh the summary."""
+    path = getter_catalog_diff_path(root)
+    text = path.read_text(encoding="utf-8") if path.is_file() else _GETTER_DIFF_PREAMBLE
+    lines = text.rstrip("\n").splitlines()
+    marker = f"## {interface_name}"
+    start: Optional[int] = None
+    for index, line in enumerate(lines):
+        if line.strip() == marker:
+            start = index
+            break
+    section_lines = section.rstrip("\n").splitlines()
+    if start is None:
+        lines = lines + [""] + section_lines
+    else:
+        end = len(lines)
+        for index in range(start + 1, len(lines)):
+            if lines[index].startswith("## "):
+                end = index
+                break
+        lines = lines[:start] + section_lines + [""] + lines[end:]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(re.sub(r"\n{3,}", "\n\n", "\n".join(lines)) + "\n", encoding="utf-8")
+    _rewrite_getter_catalog_diff_summary(path)
+    return path
+
+
+def write_getter_catalog_diff(root: Path, interface_name: str, report_path: Path) -> Path:
+    """Regenerate one interface's getter-vs-catalog diff section."""
+    simple_name, _package = split_interface_name(interface_name)
+    wrapper_class, source_path = parse_report_target(report_path.read_text(encoding="utf-8"))
+    wrapper_path, _canonical = _canonical_import(root, source_path)
+    if not wrapper_path.is_file():
+        raise FileNotFoundError(f"Wrapper source does not exist: {wrapper_path}")
+    authority = json.loads((root / "docs" / "reports" / "pywin32_authority.json").read_text(encoding="utf-8"))
+    catalog = authority.get("catalog", {}).get(simple_name, {})
+    if not isinstance(catalog, dict) or not catalog:
+        raise ValueError(f"pywin32 catalog has no entry for {simple_name}")
+    section = render_getter_catalog_diff_section(root, simple_name, wrapper_class, wrapper_path.read_text(encoding="utf-8"), catalog)
+    return upsert_getter_catalog_diff_section(root, simple_name, section)
+
+
 _NOT_IMPLEMENTED_LEDGER_RELATIVE = Path("docs") / "reports" / "sync-todo" / "index.md"
 _NOT_IMPLEMENTED_LEDGER_HEADING = "## NotImplementedError stubs"
 _NOT_IMPLEMENTED_BASES = {"not-exposed", "java-doc-unimplemented", "runtime-stub"}

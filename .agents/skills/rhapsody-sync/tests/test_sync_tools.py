@@ -1,6 +1,7 @@
 """Tests for the project-local Rhapsody sync helpers."""
 
 import importlib.util
+import json
 import sys
 from pathlib import Path
 from types import ModuleType
@@ -1194,3 +1195,124 @@ def test_stub_evidence_flags_com_member_mismatch(tmp_path: Path) -> None:
     issues = tools.verify_not_implemented_evidence(root, "IRPThing", _NOT_EXPOSED_WRAPPER, unit, integration)
 
     assert any("otherThing" in issue and "getThing" in issue for issue in issues)
+
+
+_GETTER_DIFF_WRAPPER = (
+    "class IRPThing:\n"
+    "    @property\n"
+    "    def name(self) -> str:\n"
+    '        return str(self.get_com_property(self._com, "name"))\n\n'
+    "    @property\n"
+    "    def ghost(self) -> str:\n"
+    '        return str(self.get_com_property(self._com, "ghostValue"))\n\n'
+    "    @property\n"
+    "    def wrong_shape(self) -> str:\n"
+    "        return str(self.call_com(lambda: self._com.name()))\n\n"
+    "    @property\n"
+    "    def local(self) -> int:\n"
+    "        return 1\n\n"
+    "    @property\n"
+    "    def stub(self) -> str:\n"
+    '        raise NotImplementedError("not exposed")\n\n'
+    "    def get_name(self) -> str:\n"
+    '        return str(self.get_com_property(self._com, "name"))\n'
+)
+
+_GETTER_DIFF_CATALOG = {"name": "property", "unmappedThing": "property"}
+
+
+def _write_getter_diff_fixture(root: Path, wrapper_source: str = _GETTER_DIFF_WRAPPER) -> Path:
+    package = root / "src" / "rhapsody_cli" / "models" / Path(*_REPORT_PACKAGE_PARTS)
+    package.mkdir(parents=True)
+    wrapper = package / "model_thing.py"
+    wrapper.write_text(wrapper_source, encoding="utf-8")
+    reports = root / "docs" / "reports"
+    reports.mkdir(parents=True, exist_ok=True)
+    (reports / "pywin32_authority.json").write_text(json.dumps({"catalog": {"IRPThing": _GETTER_DIFF_CATALOG}}), encoding="utf-8")
+    return wrapper
+
+
+def _getter_diff_report(root: Path, wrapper: Path) -> Path:
+    report = root / "docs" / "reports" / Path(*_REPORT_PACKAGE_PARTS) / "IRPThing_api_report.md"
+    report.parent.mkdir(parents=True, exist_ok=True)
+    report.write_text(f"- Target wrapper: `IRPThing` (`{wrapper.relative_to(root).as_posix()}`)\n", encoding="utf-8")
+    return report
+
+
+def test_getter_catalog_diff_classifies_each_binding(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    _write_getter_diff_fixture(root)
+
+    section = tools.render_getter_catalog_diff_section(root, "IRPThing", "IRPThing", _GETTER_DIFF_WRAPPER, _GETTER_DIFF_CATALOG)
+
+    assert "| `name` | `name` | property | property | match |" in section
+    assert "| `ghost` | `ghostValue` | property | — | catalog-missing |" in section
+    assert "| `wrong_shape` | `name` | method | property | shape-mismatch |" in section
+    assert "| `local` | — | — | — | no-binding |" in section
+    assert "| `stub` | — | — | — | stub |" in section
+    assert "`get_name`" not in section
+
+
+def test_getter_catalog_diff_lists_unmapped_catalog_properties(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    _write_getter_diff_fixture(root)
+
+    section = tools.render_getter_catalog_diff_section(root, "IRPThing", "IRPThing", _GETTER_DIFF_WRAPPER, _GETTER_DIFF_CATALOG)
+
+    assert "| `unmappedThing` | `unmapped_thing` | catalog-only |" in section
+    assert "unmapped_thing` | catalog-only |" in section
+
+
+def test_getter_catalog_diff_credits_inherited_property(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    wrapper = (
+        "class BaseThing:\n"
+        "    @property\n"
+        "    def unmapped_thing(self) -> str:\n"
+        '        return str(self.get_com_property(self._com, "unmappedThing"))\n\n'
+        "class IRPThing(BaseThing):\n"
+        "    @property\n"
+        "    def name(self) -> str:\n"
+        '        return str(self.get_com_property(self._com, "name"))\n'
+    )
+    _write_getter_diff_fixture(root, wrapper)
+
+    section = tools.render_getter_catalog_diff_section(root, "IRPThing", "IRPThing", wrapper, _GETTER_DIFF_CATALOG)
+
+    assert "| `unmappedThing` | `unmapped_thing` | catalog-only |" not in section
+
+
+def test_write_getter_catalog_diff_writes_summary_and_section(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    wrapper = _write_getter_diff_fixture(root)
+    report = _getter_diff_report(root, wrapper)
+
+    path = tools.write_getter_catalog_diff(root, "IRPThing", report)
+    text = path.read_text(encoding="utf-8")
+
+    assert "## Summary" in text
+    assert "| match | 1 |" in text
+    assert "| catalog-missing | 1 |" in text
+    assert "| shape-mismatch | 1 |" in text
+    assert "| no-binding | 1 |" in text
+    assert "| stub | 1 |" in text
+    assert "| catalog-only | 1 |" in text
+    assert text.count("## IRPThing") == 1
+
+
+def test_write_getter_catalog_diff_replaces_existing_section(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    wrapper = _write_getter_diff_fixture(root)
+    report = _getter_diff_report(root, wrapper)
+
+    tools.write_getter_catalog_diff(root, "IRPThing", report)
+    second = tools.write_getter_catalog_diff(root, "IRPThing", report)
+
+    text = second.read_text(encoding="utf-8")
+    assert text.count("## IRPThing") == 1
+    assert text.count("| `name` | `name` | property | property | match |") == 1
