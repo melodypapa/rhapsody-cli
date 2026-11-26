@@ -13,104 +13,21 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IR
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actor import IRPActor
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collaboration import IRPCollaboration
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_component import IRPComponent
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_configuration import IRPConfiguration
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagrams import IRPDiagram
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_ide import IRPProgressBar
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_node import IRPNode
 
 
 class IRPProject(IRPPackage):
     """Wraps ``IRPProject``: represents the top-level project container."""
 
-    # IRPProject method parity checklist:
-    # [x] gateway_export_to_xml  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] gateway_export_to_xml2  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] generate_report  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] add_component  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] add_custom_view_on_browser  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] add_custom_view_on_diagram  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] add_package  [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [ ] add_profile  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] add_spell_checker_result  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] allow_auto_save  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] allow_non_unique_names  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] apply_browser_custom_views_on_diagrams  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] apply_roundtrip_diff_merge  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] become_active_project  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] check_events_base_ids_solve_collisions  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] clean_unresolved_elements  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] close  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] close_csv_file  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] delete_component  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] enable_rhapsody_model_manager  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] end_transaction_of_no_cg_interest  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] find_component  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] find_element_by_binary_id  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] find_element_by_file_name  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] find_element_by_guid  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] find_elements_with_oslc_link  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] active_component  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] active_configuration  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_active_custom_views_on_browser  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_active_custom_views_on_diagram  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] all_stereotypes  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] cg_simplified_model_package  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] get_code_generated_files  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] components  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] default_directory_scheme  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_new_collaboration  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] get_new_progress_bar  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_notify_plugin_on_elements_changed  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] profiles  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] nodes  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] packages  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] use_unique_stereotype_and_ref_cache  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] get_remote_resource_packages  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_requirements_by_id  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_roundtrip_shadow_model  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] highlight_from_code  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] import_package_from_rose  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] import_project_from_rose  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] is_actively_managed  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] is_modified_recursive  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] locate_in_ide  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] migrate_design_manager_links  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [deprecated] move_to_design_manager  - skipped (deprecated in Rhapsody Java API; see deprecated-list.html)
-    # [deprecated] move_to_design_manager_after_login  - skipped (deprecated in Rhapsody Java API; see deprecated-list.html)
-    # [x] open_csv_file  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] recalculate_events_base_ids  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] reload_csv_file  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] remove  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] remove_custom_view_on_browser  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] remove_custom_view_on_diagram  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] save  [x] impl  [x] docstring  [ ] unit test  [ ] integration test   (inherited from rp_unit)
-    # [x] save_as  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] save_as_prev_version  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_active_component  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] set_active_configuration  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] set_default_directory_scheme (via default_directory_scheme setter)  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_global_configuration  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_notify_plugin_on_elements_changed  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_object_explicit  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_object_implicit  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_wait_dialog_watchdog_value  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] start_transaction_of_no_cg_interest  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [inherited] irp_package / irp_unit / irp_model_element methods (covered by rp_package / rp_unit / rp_model_element checklists)
-    # Deprecated IRPProject methods listed above.
-    #
-    # Audit 2026-07-18: methods implemented in IRPProject but NOT declared on IRPProject in the Java API (docs/java_api HTML).
-    # The following [not-in-api] methods were REMOVED from IRPProject (they did not exist on any IRP* interface in Java API):
-    #   find_by_name (findByName), find_by_meta_class (findByMetaClass),
-    #   get_is_dirty (getIsDirty), set_dirty (setDirty),
-    #   add_collaboration (addCollaboration), get_collaborations (getCollaborations),
-    #   find_collaboration (findCollaboration), delete_collaboration (deleteCollaboration)
-    # The following [wrong-interface] methods were REMOVED from IRPProject (they exist on IRPComponent, not IRPProject - use IRPComponent instead):
-    #   add_configuration (addConfiguration), get_configurations (getConfigurations),
-    #   find_configuration (findConfiguration), delete_configuration (deleteConfiguration)
+    # Inherited members such as IRPPackage.add_actor/add_class/add_node/find_node,
+    # IRPPackage.nodes/packages, and IRPUnit methods are not duplicated here.
+    # IRPProject.save overrides IRPUnit.save(int) with its zero-argument COM shape.
+    # JavaDoc-only/pywin32-absent methods are documented NotImplementedError stubs;
+    # deprecated Design Manager methods retain their exact catalog bindings.
 
     def add_package(self, name: str) -> IRPPackage:
         """Adds a new package to the project.
@@ -159,50 +76,6 @@ class IRPProject(IRPPackage):
         from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_component import IRPComponent
 
         return cast(IRPComponent, self.wrap(self.call_com(lambda: self._com.findComponent(name))))
-
-    @property
-    def packages(self) -> IRPCollection:
-        """Returns all top-level packages in the project.
-
-        Returns:
-            An ``IRPCollection`` of ``IRPPackage`` objects.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPPackage::getPackages()
-        """
-        return IRPCollection(self.get_com_property(self._com, "packages"))
-
-    def add_class(self, name: str) -> IRPClass:
-        """Adds a new class to the project's top level.
-
-        Args:
-            name: The name of the new class.
-
-        Returns:
-            The wrapped ``IRPClass`` created.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPPackage::addClass(java.lang.String name)
-        """
-        from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass
-
-        return cast(IRPClass, self.wrap(self.call_com(lambda: self._com.addClass(name))))
-
-    def add_actor(self, name: str) -> IRPActor:
-        """Adds a new actor to the project's top level.
-
-        Args:
-            name: The name of the new actor.
-
-        Returns:
-            The wrapped ``IRPActor`` created.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPPackage::addActor(java.lang.String name)
-        """
-        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actor import IRPActor
-
-        return cast(IRPActor, self.wrap(self.call_com(lambda: self._com.addActor(name))))
 
     @property
     def components(self) -> IRPCollection:
@@ -258,51 +131,6 @@ class IRPProject(IRPPackage):
         """
         self.call_com(lambda: self._com.deleteComponent(component._com))
 
-    # --- Node methods ---
-    def add_node(self, name: str) -> IRPNode:
-        """Adds a new node to the project.
-
-        Args:
-            name: The name of the new node.
-
-        Returns:
-            The wrapped ``IRPNode`` created.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPProject::addNode(java.lang.String name)
-        """
-        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_node import IRPNode
-
-        return cast(IRPNode, self.wrap(self.call_com(lambda: self._com.addNode(name))))
-
-    @property
-    def nodes(self) -> IRPCollection:
-        """Returns all nodes in the project.
-
-        Returns:
-            An ``IRPCollection`` of ``IRPNode`` objects.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPProject::getNodes()
-        """
-        return IRPCollection(self.get_com_property(self._com, "nodes"))
-
-    def find_node(self, name: str) -> IRPNode:
-        """Finds a node in the project by name.
-
-        Args:
-            name: The name of the node to find.
-
-        Returns:
-            The wrapped ``IRPNode`` if found, otherwise empty wrapper.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPProject::findNode(java.lang.String name)
-        """
-        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_node import IRPNode
-
-        return cast(IRPNode, self.wrap(self.call_com(lambda: self._com.findNode(name))))
-
     # --- Configuration methods ---
     @property
     def active_configuration(self) -> IRPConfiguration:
@@ -318,16 +146,18 @@ class IRPProject(IRPPackage):
 
         return cast(IRPConfiguration, self.wrap(self.get_com_property(self._com, "activeConfiguration")))
 
-    def set_active_configuration(self, config: IRPModelElement) -> None:
-        """Sets the active configuration of the project.
+    def set_active_configuration(self, name: str) -> None:
+        """Sets the active configuration by name.
+
+        The configuration must belong to the active component.
 
         Args:
-            config: The configuration to set as active.
+            name: The name of the configuration to activate.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::setActiveConfiguration(com.telelogic.rhapsody.core.IRPConfiguration config)
+            com.telelogic.rhapsody.core.IRPProject::setActiveConfiguration(java.lang.String name)
         """
-        self.call_com(lambda: self._com.setActiveConfiguration(config._com))
+        self.call_com(lambda: self._com.setActiveConfiguration(name))
 
     @property
     def active_component(self) -> IRPComponent:
@@ -343,16 +173,20 @@ class IRPProject(IRPPackage):
 
         return cast(IRPComponent, self.wrap(self.get_com_property(self._com, "activeComponent")))
 
-    def set_active_component(self, component: IRPModelElement) -> None:
-        """Sets the active component of the project.
+    def set_active_component(self, name: str) -> None:
+        """Sets the active component by its project-qualified name.
+
+        A component nested in a package or component is named by joining its
+        location in the project hierarchy with ``::`` (for example,
+        ``Default::subpackage::component``).
 
         Args:
-            component: The component to set as active.
+            name: The name or project-qualified path of the component to activate.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::setActiveComponent(com.telelogic.rhapsody.core.IRPComponent component)
+            com.telelogic.rhapsody.core.IRPProject::setActiveComponent(java.lang.String name)
         """
-        self.call_com(lambda: self._com.setActiveComponent(component._com))
+        self.call_com(lambda: self._com.setActiveComponent(name))
 
     # --- Stereotype methods ---
     @property
@@ -408,6 +242,17 @@ class IRPProject(IRPPackage):
         return IRPCollection(self.get_com_property(self._com, "profiles"))
 
     # --- Save methods ---
+    def save(self) -> None:  # type: ignore[override]
+        """Saves the project.
+
+        This zero-argument project method overrides ``IRPUnit.save(with_subs)``;
+        pywin32 exposes ``IRPProject.save`` with no arguments.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPProject::save()
+        """
+        self.call_com(lambda: self._com.save())
+
     def save_as(self, file_path: str) -> None:
         """Saves the project to a new file path.
 
@@ -785,16 +630,65 @@ class IRPProject(IRPPackage):
         """
         return int(self.call_com(lambda: self._com.isActivelyManaged()))
 
-    def migrate_design_manager_links(self) -> None:
-        """Migrate Design Manager links for the project.
+    def is_resolve_on_demand(self) -> int:
+        """Checks whether remote artifacts are resolved on demand.
+
+        Returns:
+            ``1`` if remote artifacts are resolved on demand, ``0`` otherwise.
 
         Raises:
             NotImplementedError: This Java API method is not exposed by pywin32.
 
         Reference:
+            com.telelogic.rhapsody.core.IRPProject::isResolveOnDemand()
+        """
+        raise NotImplementedError("isResolveOnDemand is not exposed in the Rhapsody COM automation type library.")
+
+    def migrate_design_manager_links(self) -> None:
+        """Migrate Design Manager links to Rhapsody Model Manager links.
+
+        Ensure the OSLC links are imported, Model Manager is enabled, and any
+        required global configuration is set before calling this method.
+
+        Reference:
             com.telelogic.rhapsody.core.IRPProject::migrateDesignManagerLinks()
         """
         raise NotImplementedError("migrateDesignManagerLinks is not exposed in the Rhapsody COM automation type library.")
+
+    def move_to_design_manager(self, user_name: str, password: str, server_url: str, project_area_name: str, stream_name: str) -> None:
+        """Moves the project to Design Manager.
+
+        Deprecated: Rhapsody removed Design Manager support in release 8.4.
+        The binding remains available because this member is exposed by pywin32.
+
+        Args:
+            user_name: The Design Manager user name.
+            password: The Design Manager password.
+            server_url: The Design Manager server URL.
+            project_area_name: The Design Manager project area name.
+            stream_name: The Design Manager stream name.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPProject::moveToDesignManager(
+                java.lang.String userName, java.lang.String password, java.lang.String serverURL, java.lang.String projectAreaName, java.lang.String streamName)
+        """
+        self.call_com(lambda: self._com.moveToDesignManager(user_name, password, server_url, project_area_name, stream_name))
+
+    def move_to_design_manager_after_login(self, server_url: str, project_area_name: str, stream_name: str) -> None:
+        """Moves the project to Design Manager after login.
+
+        Deprecated: Rhapsody removed Design Manager support in release 8.4.
+        The binding remains available because this member is exposed by pywin32.
+
+        Args:
+            server_url: The Design Manager server URL.
+            project_area_name: The Design Manager project area name.
+            stream_name: The Design Manager stream name.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPProject::moveToDesignManagerAfterLogin(java.lang.String serverURL, java.lang.String projectAreaName, java.lang.String streamName)
+        """
+        self.call_com(lambda: self._com.moveToDesignManagerAfterLogin(server_url, project_area_name, stream_name))
 
     # --- Rose Import methods ---
     def import_package_from_rose(self, project_name: str, package_name: str, log_file_name: str) -> IRPPackage:
@@ -971,6 +865,20 @@ class IRPProject(IRPPackage):
         """
         self.call_com(lambda: self._com.saveAsPrevVersion(file_name, previous_version))
 
+    def set_resolve_on_demand(self, resolve_on_demand: int) -> None:
+        """Sets whether remote artifacts should be resolved on demand.
+
+        Args:
+            resolve_on_demand: ``1`` to enable on-demand resolution, ``0`` to disable it.
+
+        Raises:
+            NotImplementedError: This Java API method is not exposed by pywin32.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPProject::setResolveOnDemand(int resolveOnDemand)
+        """
+        raise NotImplementedError("setResolveOnDemand is not exposed in the Rhapsody COM automation type library.")
+
     def set_global_configuration(self, gc_uri: str, name: str) -> int:
         """Set the global configuration used for the project.
 
@@ -1036,14 +944,18 @@ class IRPProject(IRPPackage):
         """
         self.set_com_property(self._com, "UseUniqueStereotypeAndRefCache", enabled)
 
-    def set_wait_dialog_watchdog_value(self, value: int) -> None:
-        """Sets the wait dialog watchdog value.
+    def set_wait_dialog_watchdog_value(self, value: str) -> None:
+        """Reports whether an external process is still running.
+
+        Pass a non-blank string while the external process is running and call
+        again with an empty string when it completes. Rhapsody assumes the
+        process has crashed if it receives no update for two minutes.
 
         Args:
-            value: The wait dialog watchdog value to set.
+            value: A non-blank running marker or an empty string on completion.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPProject::setWaitDialogWatchdogValue(int value)
+            com.telelogic.rhapsody.core.IRPProject::setWaitDialogWatchdogValue(java.lang.String value)
         """
         self.call_com(lambda: self._com.setWaitDialogWatchdogValue(value))
 

@@ -80,6 +80,41 @@ def test_collect_java_members_includes_superinterfaces(tmp_path: Path) -> None:
     }
 
 
+def test_collect_python_members_includes_irp_base_binding(tmp_path: Path) -> None:
+    models_root = tmp_path / "models"
+    models_root.mkdir()
+    (models_root / "irp_package.py").write_text(
+        """class IRPPackage:
+    def add_actor(self, name: str):
+        return self.wrap(self.call_com(lambda: self._com.addActor(name)))
+""",
+        encoding="utf-8",
+    )
+    (models_root / "irp_project.py").write_text("class IRPProject(IRPPackage):\n    pass\n", encoding="utf-8")
+
+    members = collect_python_members("IRPProject", models_root)
+
+    assert members["addActor"] == {"add_actor() (inherited from IRPPackage) -> addActor"}
+
+
+def test_build_deviation_rows_credits_verified_inherited_com_member() -> None:
+    rows = build_deviation_rows(
+        {"addActor": {"add_actor() (inherited from IRPPackage) -> addActor"}},
+        set(),
+        {"addActor": "method"},
+    )
+
+    assert rows == [
+        (
+            "add_actor() (inherited from IRPPackage) -> addActor",
+            "—",
+            "addActor (method)",
+            "INHERITED_MEMBER",
+            "Inherited implementation from the base wrapper calls the exposed COM member.",
+        )
+    ]
+
+
 ACTIVE_ROW = (
     "is_active() -> isActive",
     "getIsActive (method); setIsActive (method)",

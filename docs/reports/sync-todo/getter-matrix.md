@@ -203,11 +203,9 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | `active_component` | — | none | MISSING |
 | `active_configuration` | — | none | MISSING |
 | `all_stereotypes` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_all_stereotypes` | identity/value | OK |
-| `cg_simplified_model_package` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_cg_simplified_model_package` | identity/value | OK |
+| `cg_simplified_model_package` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_cg_simplified_model_package` | weak | WEAK |
 | `components` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_components` | identity/value | OK |
 | `default_directory_scheme` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_default_directory_scheme_roundtrip` | identity/value | OK |
-| `nodes` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_nodes_empty_state` | weak | WEAK |
-| `packages` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_packages` | identity/value | OK |
 | `profiles` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_profiles` | identity/value | OK |
 
 ## IRPType

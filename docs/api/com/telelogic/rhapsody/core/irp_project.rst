@@ -117,11 +117,17 @@ Wraps ``IRPProject``: represents the top-level project container.
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.is_actively_managed
 
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.is_resolve_on_demand
+
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.is_modified_recursive
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.locate_in_ide
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.migrate_design_manager_links
+
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.move_to_design_manager
+
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.move_to_design_manager_after_login
 
 .. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.nodes
 
@@ -141,6 +147,8 @@ Wraps ``IRPProject``: represents the top-level project container.
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.remove_custom_view_on_diagram
 
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.save
+
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.save_as
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.save_as_prev_version
@@ -156,6 +164,8 @@ Wraps ``IRPProject``: represents the top-level project container.
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.set_object_explicit
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.set_object_implicit
+
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.set_resolve_on_demand
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project.IRPProject.set_wait_dialog_watchdog_value
 
