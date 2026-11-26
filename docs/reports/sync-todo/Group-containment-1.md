@@ -29,7 +29,7 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 | 4 | `irp_node_api_report` | IRPNode | `rhapsody_cli/models/elements/containment/model_node.py` | 2 | 6 | 1/8 (②) | ⬜ open |
 | 5 | `irp_component_instance_api_report` | IRPComponentInstance | `rhapsody_cli/models/elements/containment/model_component_instance.py` | 0 | 3 | 1/8 (②) | ⬜ open |
 | 6 | `irp_profile_api_report` | IRPProfile | `rhapsody_cli/models/elements/containment/model_profile.py` | 0 | 0 | 1/8 (②) | ⬜ open |
-| 7 | `irp_module_api_report` | IRPModule | `rhapsody_cli/models/elements/containment/model_module.py` | 0 | 0 | 1/8 (②) | ⬜ open |
+| 7 | `irp_module_api_report` | IRPModule | `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_module.py` | 0 | 0 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ evidenced |
 | 8 | `irp_package_remediation` | IRPPackage | — | — | 69 | 5/8 (②③④⑥⑦) | ⬜ open |
 | 9 | `irp_project_remediation` | IRPProject | — | — | — | 6/8 (①②③④⑥⑦) | ⬜ open |
 | 10 | `irp_package_api_report` | IRPPackage | `models/elements/containment/model_package.py` | — | — | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
@@ -133,18 +133,18 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 </details>
 
 <details>
-<summary><code>irp_module_api_report</code> · IRPModule · 1/8 steps · ⬜ open</summary>
+<summary><code>irp_module_api_report</code> · IRPModule · 8/8 steps evidenced · ✅ evidenced</summary>
 
-- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Status (2026-11-26):** verify_sync passes; validator 0 actionable. IRPModule declares no own members (extends IRPInstance); its only owned behavior, live registration via `IRPPackage.add_module`, is covered by `tests/integration/models/com/telelogic/rhapsody/core/test_irp_module.py`.
 - **Note:** usage 8 src / 8 test refs, 0 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
-- [ ] ① §1
-- [x] ② §2
-- [ ] ③ §3
-- [ ] ④ §4
-- [ ] ⑤ §5
-- [ ] ⑥ §6
-- [ ] ⑦ §7
-- [ ] ⑧ §8
+- [x] ① §1 — no own members; inherited members owned by IRPInstance/IRPRelation/IRPUnit/IRPModelElement.
+- [x] ② §2 — canonical package, mirrored unit/integration tests, RST toctree entry; `from __future__` header added.
+- [x] ③ §3 — typelib catalog entry merged (inherited surface only); validator 0 actionable.
+- [x] ④ §4 — unit `test_irp_module.py` 2 passed, `irp_module.py` 6 statements / 0 branches, 100.00%.
+- [x] ⑤ §5 — live `add_module` integration test passes (1 passed).
+- [x] ⑥ §6 — `docs/requirements/com/telelogic/rhapsody/core/irp_module.md` holds SWR_ELEM_00041.
+- [x] ⑦ §7 — `docs/api/com/telelogic/rhapsody/core/irp_module.rst` added to the toctree.
+- [x] ⑧ §8 — `verify_sync.py IRPModule` and `--strict-getters` pass; skill harness 90 passed; unit suite 2201 passed; ruff/black/mypy clean.
 
 </details>
 

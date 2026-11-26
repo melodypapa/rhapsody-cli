@@ -3555,6 +3555,431 @@
       "unload": "method",
       "unlockOnDesignManager": "method",
       "userDefinedMetaClass": "property"
+    },
+    "IRPModule": {
+      "BinaryID": "property",
+      "CMHeader": "property",
+      "GUID": "property",
+      "ObjectAsObjectType": "property",
+      "addAssociation": "method",
+      "addDependency": "method",
+      "addDependencyBetween": "method",
+      "addDependencyTo": "method",
+      "addLinkToElement": "method",
+      "addNewAggr": "method",
+      "addProperty": "method",
+      "addQualifier": "method",
+      "addRedefines": "method",
+      "addRelationToTheWhole": "method",
+      "addRemoteDependencyTo": "method",
+      "addSpecificStereotype": "method",
+      "addStereotype": "method",
+      "allTags": "property",
+      "annotations": "property",
+      "associationClasses": "property",
+      "becomeTemplateInstantiationOf": "method",
+      "changeTo": "method",
+      "clone": "method",
+      "constraints": "property",
+      "constraintsByHim": "property",
+      "controlledFiles": "property",
+      "copyToAnotherProject": "method",
+      "createOSLCLink": "method",
+      "currentDirectory": "property",
+      "deleteDependency": "method",
+      "deleteFromProject": "method",
+      "deleteOSLCLink": "method",
+      "dependencies": "property",
+      "description": "property",
+      "descriptionHTML": "property",
+      "descriptionPlainText": "property",
+      "descriptionRTF": "property",
+      "displayName": "property",
+      "errorMessage": "method",
+      "filename": "property",
+      "findElementsByFullName": "method",
+      "findNestedElement": "method",
+      "findNestedElementRecursive": "method",
+      "getAddToModelMode": "method",
+      "getAssociationClass": "method",
+      "getAttributeValue": "method",
+      "getCMState": "method",
+      "getDecorationStyle": "method",
+      "getDisplayNameRTF": "method",
+      "getErrorMessage": "method",
+      "getFullPathName": "method",
+      "getFullPathNameIn": "method",
+      "getIconFileName": "method",
+      "getInLinks": "method",
+      "getLanguage": "method",
+      "getLastModifiedTime": "method",
+      "getListOfInitializerArguments": "method",
+      "getNestedElements": "method",
+      "getNestedElementsByMetaClass": "method",
+      "getNestedElementsRecursive": "method",
+      "getNestedSaveUnits": "method",
+      "getNestedSaveUnitsCount": "method",
+      "getNewTermStereotype": "method",
+      "getOSLCLinks": "method",
+      "getOutLinks": "method",
+      "getOverlayIconFileName": "method",
+      "getOverriddenProperties": "method",
+      "getOverriddenPropertiesByPattern": "method",
+      "getOwnedDependencies": "method",
+      "getPropertyValue": "method",
+      "getPropertyValueConditional": "method",
+      "getPropertyValueConditionalExplicit": "method",
+      "getPropertyValueExplicit": "method",
+      "getQualifierType": "method",
+      "getQualifiers": "method",
+      "getRedefines": "method",
+      "getRemoteDependencies": "method",
+      "getRemoteURI": "method",
+      "getSaveUnit": "method",
+      "getTag": "method",
+      "getToolTipHTML": "method",
+      "hasNestedElements": "method",
+      "hasPanelWidget": "method",
+      "highLightElement": "method",
+      "hyperLinks": "property",
+      "includeInNextLoad": "property",
+      "instantiatedBy": "property",
+      "interfaceName": "property",
+      "inverse": "property",
+      "isATemplate": "method",
+      "isDescriptionRTF": "method",
+      "isDisplayNameRTF": "method",
+      "isExternal": "property",
+      "isModified": "method",
+      "isNavigable": "property",
+      "isOfMetaClass": "method",
+      "isReadOnly": "method",
+      "isReferenceUnit": "method",
+      "isRemote": "method",
+      "isSeparateSaveUnit": "method",
+      "isShowDisplayName": "property",
+      "isStub": "property",
+      "isSymmetric": "property",
+      "isTypelessObject": "method",
+      "isUnresolved": "property",
+      "load": "method",
+      "localTags": "property",
+      "locateInBrowser": "method",
+      "lockOnDesignManager": "method",
+      "mainDiagram": "property",
+      "makeUnidirect": "method",
+      "metaClass": "property",
+      "moveToAnotherProjectLeaveAReference": "method",
+      "multiplicity": "property",
+      "name": "property",
+      "ofClass": "property",
+      "ofTemplate": "property",
+      "openFeaturesDialog": "method",
+      "otherClass": "property",
+      "owner": "property",
+      "project": "property",
+      "qualifier": "property",
+      "referenceToAnotherProject": "method",
+      "references": "property",
+      "relationLabel": "property",
+      "relationLinkName": "property",
+      "relationRoleName": "property",
+      "relationType": "property",
+      "removeProperty": "method",
+      "removeQualifier": "method",
+      "removeRedefines": "method",
+      "removeStereotype": "method",
+      "requirementTraceabilityHandle": "property",
+      "save": "method",
+      "setAttributeValue": "method",
+      "setDecorationStyle": "method",
+      "setDescriptionAndHyperlinks": "method",
+      "setDisplayNameRTF": "method",
+      "setExplicit": "method",
+      "setImplicit": "method",
+      "setInitializerArgumentValue": "method",
+      "setInverse": "method",
+      "setLanguage": "method",
+      "setPropertyValue": "method",
+      "setQualifierType": "method",
+      "setReadOnly": "method",
+      "setSeparateSaveUnit": "method",
+      "setTagContextValue": "method",
+      "setTagElementValue": "method",
+      "setTagValue": "method",
+      "setUnitPath": "method",
+      "stereotype": "property",
+      "stereotypes": "property",
+      "structureDiagrams": "property",
+      "synchronizeTemplateInstantiation": "method",
+      "templateParameters": "property",
+      "ti": "property",
+      "unload": "method",
+      "unlockOnDesignManager": "method",
+      "userDefinedMetaClass": "property",
+      "visibility": "property"
+    },
+    "IRPRelation": {
+      "BinaryID": "property",
+      "CMHeader": "property",
+      "GUID": "property",
+      "ObjectAsObjectType": "property",
+      "addAssociation": "method",
+      "addDependency": "method",
+      "addDependencyBetween": "method",
+      "addDependencyTo": "method",
+      "addLinkToElement": "method",
+      "addNewAggr": "method",
+      "addProperty": "method",
+      "addQualifier": "method",
+      "addRedefines": "method",
+      "addRemoteDependencyTo": "method",
+      "addSpecificStereotype": "method",
+      "addStereotype": "method",
+      "allTags": "property",
+      "annotations": "property",
+      "associationClasses": "property",
+      "becomeTemplateInstantiationOf": "method",
+      "changeTo": "method",
+      "clone": "method",
+      "constraints": "property",
+      "constraintsByHim": "property",
+      "controlledFiles": "property",
+      "copyToAnotherProject": "method",
+      "createOSLCLink": "method",
+      "currentDirectory": "property",
+      "deleteDependency": "method",
+      "deleteFromProject": "method",
+      "deleteOSLCLink": "method",
+      "dependencies": "property",
+      "description": "property",
+      "descriptionHTML": "property",
+      "descriptionPlainText": "property",
+      "descriptionRTF": "property",
+      "displayName": "property",
+      "errorMessage": "method",
+      "filename": "property",
+      "findElementsByFullName": "method",
+      "findNestedElement": "method",
+      "findNestedElementRecursive": "method",
+      "getAddToModelMode": "method",
+      "getAssociationClass": "method",
+      "getCMState": "method",
+      "getDecorationStyle": "method",
+      "getDisplayNameRTF": "method",
+      "getErrorMessage": "method",
+      "getFullPathName": "method",
+      "getFullPathNameIn": "method",
+      "getIconFileName": "method",
+      "getLanguage": "method",
+      "getLastModifiedTime": "method",
+      "getNestedElements": "method",
+      "getNestedElementsByMetaClass": "method",
+      "getNestedElementsRecursive": "method",
+      "getNestedSaveUnits": "method",
+      "getNestedSaveUnitsCount": "method",
+      "getNewTermStereotype": "method",
+      "getOSLCLinks": "method",
+      "getOverlayIconFileName": "method",
+      "getOverriddenProperties": "method",
+      "getOverriddenPropertiesByPattern": "method",
+      "getOwnedDependencies": "method",
+      "getPropertyValue": "method",
+      "getPropertyValueConditional": "method",
+      "getPropertyValueConditionalExplicit": "method",
+      "getPropertyValueExplicit": "method",
+      "getQualifierType": "method",
+      "getQualifiers": "method",
+      "getRedefines": "method",
+      "getRemoteDependencies": "method",
+      "getRemoteURI": "method",
+      "getSaveUnit": "method",
+      "getTag": "method",
+      "getToolTipHTML": "method",
+      "hasNestedElements": "method",
+      "hasPanelWidget": "method",
+      "highLightElement": "method",
+      "hyperLinks": "property",
+      "includeInNextLoad": "property",
+      "interfaceName": "property",
+      "inverse": "property",
+      "isATemplate": "method",
+      "isDescriptionRTF": "method",
+      "isDisplayNameRTF": "method",
+      "isExternal": "property",
+      "isModified": "method",
+      "isNavigable": "property",
+      "isOfMetaClass": "method",
+      "isReadOnly": "method",
+      "isReferenceUnit": "method",
+      "isRemote": "method",
+      "isSeparateSaveUnit": "method",
+      "isShowDisplayName": "property",
+      "isStub": "property",
+      "isSymmetric": "property",
+      "isTypelessObject": "method",
+      "isUnresolved": "property",
+      "load": "method",
+      "localTags": "property",
+      "locateInBrowser": "method",
+      "lockOnDesignManager": "method",
+      "mainDiagram": "property",
+      "makeUnidirect": "method",
+      "metaClass": "property",
+      "moveToAnotherProjectLeaveAReference": "method",
+      "multiplicity": "property",
+      "name": "property",
+      "ofClass": "property",
+      "ofTemplate": "property",
+      "openFeaturesDialog": "method",
+      "otherClass": "property",
+      "owner": "property",
+      "project": "property",
+      "qualifier": "property",
+      "referenceToAnotherProject": "method",
+      "references": "property",
+      "relationLabel": "property",
+      "relationLinkName": "property",
+      "relationRoleName": "property",
+      "relationType": "property",
+      "removeProperty": "method",
+      "removeQualifier": "method",
+      "removeRedefines": "method",
+      "removeStereotype": "method",
+      "requirementTraceabilityHandle": "property",
+      "save": "method",
+      "setDecorationStyle": "method",
+      "setDescriptionAndHyperlinks": "method",
+      "setDisplayNameRTF": "method",
+      "setInverse": "method",
+      "setLanguage": "method",
+      "setPropertyValue": "method",
+      "setQualifierType": "method",
+      "setReadOnly": "method",
+      "setSeparateSaveUnit": "method",
+      "setTagContextValue": "method",
+      "setTagElementValue": "method",
+      "setTagValue": "method",
+      "setUnitPath": "method",
+      "stereotype": "property",
+      "stereotypes": "property",
+      "structureDiagrams": "property",
+      "synchronizeTemplateInstantiation": "method",
+      "templateParameters": "property",
+      "ti": "property",
+      "unload": "method",
+      "unlockOnDesignManager": "method",
+      "userDefinedMetaClass": "property",
+      "visibility": "property"
+    },
+    "IRPDependency": {
+      "BinaryID": "property",
+      "GUID": "property",
+      "addAssociation": "method",
+      "addDependency": "method",
+      "addDependencyBetween": "method",
+      "addDependencyTo": "method",
+      "addLinkToElement": "method",
+      "addNewAggr": "method",
+      "addProperty": "method",
+      "addRedefines": "method",
+      "addRemoteDependencyTo": "method",
+      "addSpecificStereotype": "method",
+      "addStereotype": "method",
+      "allTags": "property",
+      "annotations": "property",
+      "associationClasses": "property",
+      "becomeTemplateInstantiationOf": "method",
+      "changeTo": "method",
+      "clone": "method",
+      "constraints": "property",
+      "constraintsByHim": "property",
+      "controlledFiles": "property",
+      "createOSLCLink": "method",
+      "deleteDependency": "method",
+      "deleteFromProject": "method",
+      "deleteOSLCLink": "method",
+      "dependencies": "property",
+      "dependent": "property",
+      "dependsOn": "property",
+      "description": "property",
+      "descriptionHTML": "property",
+      "descriptionPlainText": "property",
+      "descriptionRTF": "property",
+      "displayName": "property",
+      "errorMessage": "method",
+      "findElementsByFullName": "method",
+      "findNestedElement": "method",
+      "findNestedElementRecursive": "method",
+      "getDecorationStyle": "method",
+      "getDisplayNameRTF": "method",
+      "getErrorMessage": "method",
+      "getFullPathName": "method",
+      "getFullPathNameIn": "method",
+      "getIconFileName": "method",
+      "getNestedElements": "method",
+      "getNestedElementsByMetaClass": "method",
+      "getNestedElementsRecursive": "method",
+      "getNewTermStereotype": "method",
+      "getOSLCLinks": "method",
+      "getOverlayIconFileName": "method",
+      "getOverriddenProperties": "method",
+      "getOverriddenPropertiesByPattern": "method",
+      "getOwnedDependencies": "method",
+      "getPropertyValue": "method",
+      "getPropertyValueConditional": "method",
+      "getPropertyValueConditionalExplicit": "method",
+      "getPropertyValueExplicit": "method",
+      "getRedefines": "method",
+      "getRemoteDependencies": "method",
+      "getRemoteURI": "method",
+      "getSaveUnit": "method",
+      "getTag": "method",
+      "getToolTipHTML": "method",
+      "hasNestedElements": "method",
+      "hasPanelWidget": "method",
+      "highLightElement": "method",
+      "hyperLinks": "property",
+      "interfaceName": "property",
+      "isATemplate": "method",
+      "isDescriptionRTF": "method",
+      "isDisplayNameRTF": "method",
+      "isExternal": "property",
+      "isModified": "method",
+      "isOfMetaClass": "method",
+      "isRemote": "method",
+      "isShowDisplayName": "property",
+      "isUnresolved": "property",
+      "localTags": "property",
+      "locateInBrowser": "method",
+      "lockOnDesignManager": "method",
+      "mainDiagram": "property",
+      "metaClass": "property",
+      "name": "property",
+      "ofTemplate": "property",
+      "openFeaturesDialog": "method",
+      "owner": "property",
+      "project": "property",
+      "references": "property",
+      "removeProperty": "method",
+      "removeRedefines": "method",
+      "removeStereotype": "method",
+      "requirementTraceabilityHandle": "property",
+      "setDecorationStyle": "method",
+      "setDescriptionAndHyperlinks": "method",
+      "setDisplayNameRTF": "method",
+      "setOwnerWithoutChangingDependent": "method",
+      "setPropertyValue": "method",
+      "setTagContextValue": "method",
+      "setTagElementValue": "method",
+      "setTagValue": "method",
+      "stereotype": "property",
+      "stereotypes": "property",
+      "synchronizeTemplateInstantiation": "method",
+      "templateParameters": "property",
+      "ti": "property",
+      "unlockOnDesignManager": "method",
+      "userDefinedMetaClass": "property"
     }
   },
   "documented_aliases": {
@@ -3812,6 +4237,10 @@
     "IRPUseCase": [
       "addEventReceptionWithEvent",
       "updateContainedDiagramsOnServer"
+    ],
+    "IRPDependency": [
+      "isNeedToMigrate",
+      "setLinkType"
     ]
   },
   "signatures": {
@@ -31124,6 +31553,3174 @@
         "codes": [],
         "count": 0,
         "names": [],
+        "types": []
+      }
+    },
+    "IRPModule": {
+      "addAssociation": {
+        "codes": [
+          9,
+          9,
+          8
+        ],
+        "count": 3,
+        "names": [
+          "end1",
+          "end2",
+          "name"
+        ],
+        "required": 0,
+        "types": [
+          "com",
+          "com",
+          "str"
+        ]
+      },
+      "addDependency": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "dependsOnName",
+          "dependsOnType"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "addDependencyBetween": {
+        "codes": [
+          9,
+          9
+        ],
+        "count": 2,
+        "names": [
+          "dependent",
+          "dependsOn"
+        ],
+        "required": 0,
+        "types": [
+          "com",
+          "com"
+        ]
+      },
+      "addDependencyTo": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "element"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "addLinkToElement": {
+        "codes": [
+          9,
+          9,
+          9,
+          9
+        ],
+        "count": 4,
+        "names": [
+          "toElement",
+          "assoc",
+          "fromPort",
+          "toPort"
+        ],
+        "required": 0,
+        "types": [
+          "com",
+          "com",
+          "com",
+          "com"
+        ]
+      },
+      "addNewAggr": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "metaType",
+          "name"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "addProperty": {
+        "codes": [
+          8,
+          8,
+          8
+        ],
+        "count": 3,
+        "names": [
+          "propertyKey",
+          "propertyType",
+          "propertyValue"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str",
+          "str"
+        ]
+      },
+      "addQualifier": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "pVal"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "addRedefines": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "newRedefine"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "addRelationToTheWhole": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "relName"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "addRemoteDependencyTo": {
+        "codes": [
+          9,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "element",
+          "linkType"
+        ],
+        "required": 0,
+        "types": [
+          "com",
+          "str"
+        ]
+      },
+      "addSpecificStereotype": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "stereotype"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "addStereotype": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "name",
+          "metaType"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "becomeTemplateInstantiationOf": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "newVal"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "changeTo": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "metaClass"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "clone": {
+        "codes": [
+          8,
+          9
+        ],
+        "count": 2,
+        "names": [
+          "name",
+          "newOwner"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "com"
+        ]
+      },
+      "copyToAnotherProject": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "parentInTarget"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "createOSLCLink": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "type",
+          "purl"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "deleteDependency": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "dependency"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "deleteFromProject": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "deleteOSLCLink": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "type",
+          "purl"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "errorMessage": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "findElementsByFullName": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "name",
+          "metaClass"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "findNestedElement": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "name",
+          "metaClass"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "findNestedElementRecursive": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "name",
+          "metaClass"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "getAddToModelMode": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getAssociationClass": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getAttributeValue": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "attName"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "getCMState": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getDecorationStyle": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getDisplayNameRTF": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getErrorMessage": {
+        "codes": [],
+        "count": 1,
+        "names": [
+          "_MIDL__IRPModelElement0002_"
+        ],
+        "required": 0,
+        "types": []
+      },
+      "getFullPathName": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getFullPathNameIn": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getIconFileName": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getInLinks": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getLanguage": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getLastModifiedTime": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getListOfInitializerArguments": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getNestedElements": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getNestedElementsByMetaClass": {
+        "codes": [
+          8,
+          3
+        ],
+        "count": 2,
+        "names": [
+          "metaClass",
+          "recursive"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "int"
+        ]
+      },
+      "getNestedElementsRecursive": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getNestedSaveUnits": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getNestedSaveUnitsCount": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getNewTermStereotype": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getOSLCLinks": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getOutLinks": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getOverlayIconFileName": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getOverriddenProperties": {
+        "codes": [
+          3
+        ],
+        "count": 1,
+        "names": [
+          "recursive"
+        ],
+        "required": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "getOverriddenPropertiesByPattern": {
+        "codes": [
+          8,
+          3,
+          3
+        ],
+        "count": 3,
+        "names": [
+          "pattern",
+          "localyOverridenOnly",
+          "withDefaultValues"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "int",
+          "int"
+        ]
+      },
+      "getOwnedDependencies": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getPropertyValue": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "propertyKey"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "getPropertyValueConditional": {
+        "codes": [
+          8,
+          9,
+          9
+        ],
+        "count": 3,
+        "names": [
+          "propertyKey",
+          "formalKey",
+          "actualValues"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "com",
+          "com"
+        ]
+      },
+      "getPropertyValueConditionalExplicit": {
+        "codes": [
+          8,
+          9,
+          9
+        ],
+        "count": 3,
+        "names": [
+          "propertyKey",
+          "formalKey",
+          "actualValues"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "com",
+          "com"
+        ]
+      },
+      "getPropertyValueExplicit": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "propertyKey"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "getQualifierType": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getQualifiers": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getRedefines": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getRemoteDependencies": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getRemoteURI": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getSaveUnit": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getTag": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "name"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "getToolTipHTML": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "hasNestedElements": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "hasPanelWidget": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "highLightElement": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "isATemplate": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "isDescriptionRTF": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "isDisplayNameRTF": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "isModified": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "isOfMetaClass": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "metaClass"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "isReadOnly": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "isReferenceUnit": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "isRemote": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "isSeparateSaveUnit": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "isTypelessObject": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "load": {
+        "codes": [
+          3
+        ],
+        "count": 1,
+        "names": [
+          "withSubs"
+        ],
+        "required": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "locateInBrowser": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "lockOnDesignManager": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "makeUnidirect": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "moveToAnotherProjectLeaveAReference": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "parentInTarget"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "openFeaturesDialog": {
+        "codes": [
+          3
+        ],
+        "count": 1,
+        "names": [
+          "newDialog"
+        ],
+        "required": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "referenceToAnotherProject": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "parentInTarget"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "removeProperty": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "propertyKey"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "removeQualifier": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "pVal"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "removeRedefines": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "removedRedefine"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "removeStereotype": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "stereotype"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "save": {
+        "codes": [
+          3
+        ],
+        "count": 1,
+        "names": [
+          "withSubs"
+        ],
+        "required": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "setAttributeValue": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "attName",
+          "attValue"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "setDecorationStyle": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "newVal"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "setDescriptionAndHyperlinks": {
+        "codes": [
+          8,
+          9
+        ],
+        "count": 2,
+        "names": [
+          "rtfText",
+          "targets"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "com"
+        ]
+      },
+      "setDisplayNameRTF": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "newVal"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "setExplicit": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "setImplicit": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "setInitializerArgumentValue": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "argName",
+          "argValue"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "setInverse": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "roleName",
+          "linkType"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "setLanguage": {
+        "codes": [
+          8,
+          3
+        ],
+        "count": 2,
+        "names": [
+          "newLanguage",
+          "recursive"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "int"
+        ]
+      },
+      "setPropertyValue": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "propertyKey",
+          "propertyValue"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "setQualifierType": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "pVal"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "setReadOnly": {
+        "codes": [
+          3
+        ],
+        "count": 1,
+        "names": [
+          "pVal"
+        ],
+        "required": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "setSeparateSaveUnit": {
+        "codes": [
+          3
+        ],
+        "count": 1,
+        "names": [
+          "pVal"
+        ],
+        "required": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "setTagContextValue": {
+        "codes": [
+          9,
+          9,
+          9
+        ],
+        "count": 3,
+        "names": [
+          "tag",
+          "elements",
+          "multiplicities"
+        ],
+        "required": 0,
+        "types": [
+          "com",
+          "com",
+          "com"
+        ]
+      },
+      "setTagElementValue": {
+        "codes": [
+          9,
+          9
+        ],
+        "count": 2,
+        "names": [
+          "tag",
+          "val"
+        ],
+        "required": 0,
+        "types": [
+          "com",
+          "com"
+        ]
+      },
+      "setTagValue": {
+        "codes": [
+          9,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "tag",
+          "val"
+        ],
+        "required": 0,
+        "types": [
+          "com",
+          "str"
+        ]
+      },
+      "setUnitPath": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "newPath"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "synchronizeTemplateInstantiation": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "unload": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "unlockOnDesignManager": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      }
+    },
+    "IRPRelation": {
+      "addAssociation": {
+        "codes": [
+          9,
+          9,
+          8
+        ],
+        "count": 3,
+        "names": [
+          "end1",
+          "end2",
+          "name"
+        ],
+        "required": 0,
+        "types": [
+          "com",
+          "com",
+          "str"
+        ]
+      },
+      "addDependency": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "dependsOnName",
+          "dependsOnType"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "addDependencyBetween": {
+        "codes": [
+          9,
+          9
+        ],
+        "count": 2,
+        "names": [
+          "dependent",
+          "dependsOn"
+        ],
+        "required": 0,
+        "types": [
+          "com",
+          "com"
+        ]
+      },
+      "addDependencyTo": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "element"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "addLinkToElement": {
+        "codes": [
+          9,
+          9,
+          9,
+          9
+        ],
+        "count": 4,
+        "names": [
+          "toElement",
+          "assoc",
+          "fromPort",
+          "toPort"
+        ],
+        "required": 0,
+        "types": [
+          "com",
+          "com",
+          "com",
+          "com"
+        ]
+      },
+      "addNewAggr": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "metaType",
+          "name"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "addProperty": {
+        "codes": [
+          8,
+          8,
+          8
+        ],
+        "count": 3,
+        "names": [
+          "propertyKey",
+          "propertyType",
+          "propertyValue"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str",
+          "str"
+        ]
+      },
+      "addQualifier": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "pVal"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "addRedefines": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "newRedefine"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "addRemoteDependencyTo": {
+        "codes": [
+          9,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "element",
+          "linkType"
+        ],
+        "required": 0,
+        "types": [
+          "com",
+          "str"
+        ]
+      },
+      "addSpecificStereotype": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "stereotype"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "addStereotype": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "name",
+          "metaType"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "becomeTemplateInstantiationOf": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "newVal"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "changeTo": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "metaClass"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "clone": {
+        "codes": [
+          8,
+          9
+        ],
+        "count": 2,
+        "names": [
+          "name",
+          "newOwner"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "com"
+        ]
+      },
+      "copyToAnotherProject": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "parentInTarget"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "createOSLCLink": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "type",
+          "purl"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "deleteDependency": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "dependency"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "deleteFromProject": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "deleteOSLCLink": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "type",
+          "purl"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "errorMessage": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "findElementsByFullName": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "name",
+          "metaClass"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "findNestedElement": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "name",
+          "metaClass"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "findNestedElementRecursive": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "name",
+          "metaClass"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "getAddToModelMode": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getAssociationClass": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getCMState": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getDecorationStyle": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getDisplayNameRTF": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getErrorMessage": {
+        "codes": [],
+        "count": 1,
+        "names": [
+          "_MIDL__IRPModelElement0002_"
+        ],
+        "required": 0,
+        "types": []
+      },
+      "getFullPathName": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getFullPathNameIn": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getIconFileName": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getLanguage": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getLastModifiedTime": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getNestedElements": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getNestedElementsByMetaClass": {
+        "codes": [
+          8,
+          3
+        ],
+        "count": 2,
+        "names": [
+          "metaClass",
+          "recursive"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "int"
+        ]
+      },
+      "getNestedElementsRecursive": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getNestedSaveUnits": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getNestedSaveUnitsCount": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getNewTermStereotype": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getOSLCLinks": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getOverlayIconFileName": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getOverriddenProperties": {
+        "codes": [
+          3
+        ],
+        "count": 1,
+        "names": [
+          "recursive"
+        ],
+        "required": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "getOverriddenPropertiesByPattern": {
+        "codes": [
+          8,
+          3,
+          3
+        ],
+        "count": 3,
+        "names": [
+          "pattern",
+          "localyOverridenOnly",
+          "withDefaultValues"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "int",
+          "int"
+        ]
+      },
+      "getOwnedDependencies": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getPropertyValue": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "propertyKey"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "getPropertyValueConditional": {
+        "codes": [
+          8,
+          9,
+          9
+        ],
+        "count": 3,
+        "names": [
+          "propertyKey",
+          "formalKey",
+          "actualValues"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "com",
+          "com"
+        ]
+      },
+      "getPropertyValueConditionalExplicit": {
+        "codes": [
+          8,
+          9,
+          9
+        ],
+        "count": 3,
+        "names": [
+          "propertyKey",
+          "formalKey",
+          "actualValues"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "com",
+          "com"
+        ]
+      },
+      "getPropertyValueExplicit": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "propertyKey"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "getQualifierType": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getQualifiers": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getRedefines": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getRemoteDependencies": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getRemoteURI": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getSaveUnit": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getTag": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "name"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "getToolTipHTML": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "hasNestedElements": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "hasPanelWidget": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "highLightElement": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "isATemplate": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "isDescriptionRTF": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "isDisplayNameRTF": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "isModified": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "isOfMetaClass": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "metaClass"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "isReadOnly": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "isReferenceUnit": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "isRemote": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "isSeparateSaveUnit": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "isTypelessObject": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "load": {
+        "codes": [
+          3
+        ],
+        "count": 1,
+        "names": [
+          "withSubs"
+        ],
+        "required": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "locateInBrowser": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "lockOnDesignManager": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "makeUnidirect": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "moveToAnotherProjectLeaveAReference": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "parentInTarget"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "openFeaturesDialog": {
+        "codes": [
+          3
+        ],
+        "count": 1,
+        "names": [
+          "newDialog"
+        ],
+        "required": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "referenceToAnotherProject": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "parentInTarget"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "removeProperty": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "propertyKey"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "removeQualifier": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "pVal"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "removeRedefines": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "removedRedefine"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "removeStereotype": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "stereotype"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "save": {
+        "codes": [
+          3
+        ],
+        "count": 1,
+        "names": [
+          "withSubs"
+        ],
+        "required": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "setDecorationStyle": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "newVal"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "setDescriptionAndHyperlinks": {
+        "codes": [
+          8,
+          9
+        ],
+        "count": 2,
+        "names": [
+          "rtfText",
+          "targets"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "com"
+        ]
+      },
+      "setDisplayNameRTF": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "newVal"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "setInverse": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "roleName",
+          "linkType"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "setLanguage": {
+        "codes": [
+          8,
+          3
+        ],
+        "count": 2,
+        "names": [
+          "newLanguage",
+          "recursive"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "int"
+        ]
+      },
+      "setPropertyValue": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "propertyKey",
+          "propertyValue"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "setQualifierType": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "pVal"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "setReadOnly": {
+        "codes": [
+          3
+        ],
+        "count": 1,
+        "names": [
+          "pVal"
+        ],
+        "required": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "setSeparateSaveUnit": {
+        "codes": [
+          3
+        ],
+        "count": 1,
+        "names": [
+          "pVal"
+        ],
+        "required": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "setTagContextValue": {
+        "codes": [
+          9,
+          9,
+          9
+        ],
+        "count": 3,
+        "names": [
+          "tag",
+          "elements",
+          "multiplicities"
+        ],
+        "required": 0,
+        "types": [
+          "com",
+          "com",
+          "com"
+        ]
+      },
+      "setTagElementValue": {
+        "codes": [
+          9,
+          9
+        ],
+        "count": 2,
+        "names": [
+          "tag",
+          "val"
+        ],
+        "required": 0,
+        "types": [
+          "com",
+          "com"
+        ]
+      },
+      "setTagValue": {
+        "codes": [
+          9,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "tag",
+          "val"
+        ],
+        "required": 0,
+        "types": [
+          "com",
+          "str"
+        ]
+      },
+      "setUnitPath": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "newPath"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "synchronizeTemplateInstantiation": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "unload": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "unlockOnDesignManager": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      }
+    },
+    "IRPDependency": {
+      "addAssociation": {
+        "codes": [
+          9,
+          9,
+          8
+        ],
+        "count": 3,
+        "names": [
+          "end1",
+          "end2",
+          "name"
+        ],
+        "required": 0,
+        "types": [
+          "com",
+          "com",
+          "str"
+        ]
+      },
+      "addDependency": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "dependsOnName",
+          "dependsOnType"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "addDependencyBetween": {
+        "codes": [
+          9,
+          9
+        ],
+        "count": 2,
+        "names": [
+          "dependent",
+          "dependsOn"
+        ],
+        "required": 0,
+        "types": [
+          "com",
+          "com"
+        ]
+      },
+      "addDependencyTo": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "element"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "addLinkToElement": {
+        "codes": [
+          9,
+          9,
+          9,
+          9
+        ],
+        "count": 4,
+        "names": [
+          "toElement",
+          "assoc",
+          "fromPort",
+          "toPort"
+        ],
+        "required": 0,
+        "types": [
+          "com",
+          "com",
+          "com",
+          "com"
+        ]
+      },
+      "addNewAggr": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "metaType",
+          "name"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "addProperty": {
+        "codes": [
+          8,
+          8,
+          8
+        ],
+        "count": 3,
+        "names": [
+          "propertyKey",
+          "propertyType",
+          "propertyValue"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str",
+          "str"
+        ]
+      },
+      "addRedefines": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "newRedefine"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "addRemoteDependencyTo": {
+        "codes": [
+          9,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "element",
+          "linkType"
+        ],
+        "required": 0,
+        "types": [
+          "com",
+          "str"
+        ]
+      },
+      "addSpecificStereotype": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "stereotype"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "addStereotype": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "name",
+          "metaType"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "becomeTemplateInstantiationOf": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "newVal"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "changeTo": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "metaClass"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "clone": {
+        "codes": [
+          8,
+          9
+        ],
+        "count": 2,
+        "names": [
+          "name",
+          "newOwner"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "com"
+        ]
+      },
+      "createOSLCLink": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "type",
+          "purl"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "deleteDependency": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "dependency"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "deleteFromProject": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "deleteOSLCLink": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "type",
+          "purl"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "errorMessage": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "findElementsByFullName": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "name",
+          "metaClass"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "findNestedElement": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "name",
+          "metaClass"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "findNestedElementRecursive": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "name",
+          "metaClass"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "getDecorationStyle": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getDisplayNameRTF": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getErrorMessage": {
+        "codes": [],
+        "count": 1,
+        "names": [
+          "_MIDL__IRPModelElement0002_"
+        ],
+        "required": 0,
+        "types": []
+      },
+      "getFullPathName": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getFullPathNameIn": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getIconFileName": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getNestedElements": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getNestedElementsByMetaClass": {
+        "codes": [
+          8,
+          3
+        ],
+        "count": 2,
+        "names": [
+          "metaClass",
+          "recursive"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "int"
+        ]
+      },
+      "getNestedElementsRecursive": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getNewTermStereotype": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getOSLCLinks": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getOverlayIconFileName": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getOverriddenProperties": {
+        "codes": [
+          3
+        ],
+        "count": 1,
+        "names": [
+          "recursive"
+        ],
+        "required": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "getOverriddenPropertiesByPattern": {
+        "codes": [
+          8,
+          3,
+          3
+        ],
+        "count": 3,
+        "names": [
+          "pattern",
+          "localyOverridenOnly",
+          "withDefaultValues"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "int",
+          "int"
+        ]
+      },
+      "getOwnedDependencies": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getPropertyValue": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "propertyKey"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "getPropertyValueConditional": {
+        "codes": [
+          8,
+          9,
+          9
+        ],
+        "count": 3,
+        "names": [
+          "propertyKey",
+          "formalKey",
+          "actualValues"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "com",
+          "com"
+        ]
+      },
+      "getPropertyValueConditionalExplicit": {
+        "codes": [
+          8,
+          9,
+          9
+        ],
+        "count": 3,
+        "names": [
+          "propertyKey",
+          "formalKey",
+          "actualValues"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "com",
+          "com"
+        ]
+      },
+      "getPropertyValueExplicit": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "propertyKey"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "getRedefines": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getRemoteDependencies": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getRemoteURI": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getSaveUnit": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "getTag": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "name"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "getToolTipHTML": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "hasNestedElements": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "hasPanelWidget": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "highLightElement": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "isATemplate": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "isDescriptionRTF": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "isDisplayNameRTF": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "isModified": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "isOfMetaClass": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "metaClass"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "isRemote": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "locateInBrowser": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "lockOnDesignManager": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "openFeaturesDialog": {
+        "codes": [
+          3
+        ],
+        "count": 1,
+        "names": [
+          "newDialog"
+        ],
+        "required": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "removeProperty": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "propertyKey"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "removeRedefines": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "removedRedefine"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "removeStereotype": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "stereotype"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "setDecorationStyle": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "newVal"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "setDescriptionAndHyperlinks": {
+        "codes": [
+          8,
+          9
+        ],
+        "count": 2,
+        "names": [
+          "rtfText",
+          "targets"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "com"
+        ]
+      },
+      "setDisplayNameRTF": {
+        "codes": [
+          8
+        ],
+        "count": 1,
+        "names": [
+          "newVal"
+        ],
+        "required": 0,
+        "types": [
+          "str"
+        ]
+      },
+      "setOwnerWithoutChangingDependent": {
+        "codes": [
+          9
+        ],
+        "count": 1,
+        "names": [
+          "newOwner"
+        ],
+        "required": 0,
+        "types": [
+          "com"
+        ]
+      },
+      "setPropertyValue": {
+        "codes": [
+          8,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "propertyKey",
+          "propertyValue"
+        ],
+        "required": 0,
+        "types": [
+          "str",
+          "str"
+        ]
+      },
+      "setTagContextValue": {
+        "codes": [
+          9,
+          9,
+          9
+        ],
+        "count": 3,
+        "names": [
+          "tag",
+          "elements",
+          "multiplicities"
+        ],
+        "required": 0,
+        "types": [
+          "com",
+          "com",
+          "com"
+        ]
+      },
+      "setTagElementValue": {
+        "codes": [
+          9,
+          9
+        ],
+        "count": 2,
+        "names": [
+          "tag",
+          "val"
+        ],
+        "required": 0,
+        "types": [
+          "com",
+          "com"
+        ]
+      },
+      "setTagValue": {
+        "codes": [
+          9,
+          8
+        ],
+        "count": 2,
+        "names": [
+          "tag",
+          "val"
+        ],
+        "required": 0,
+        "types": [
+          "com",
+          "str"
+        ]
+      },
+      "synchronizeTemplateInstantiation": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
+        "types": []
+      },
+      "unlockOnDesignManager": {
+        "codes": [],
+        "count": 0,
+        "names": [],
+        "required": 0,
         "types": []
       }
     }

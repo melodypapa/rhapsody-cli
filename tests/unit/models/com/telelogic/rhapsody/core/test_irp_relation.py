@@ -34,75 +34,115 @@ def test_relation_get_association_class_wraps_result() -> None:
     relation = IRPRelation(fake)
 
     result = relation.get_association_class()
+    assert result is not None
     assert result.name == "LinkClass"
 
 
-def test_relation_get_inverse_wraps_result() -> None:
+def test_relation_get_association_class_is_none_without_association_class() -> None:
     fake = make_fake_element("Relation")
-    inverse = make_fake_element("Relation", properties={"name": "inverseAssoc"})
-    fake.getInverse.return_value = inverse
+    fake.getAssociationClass.return_value = None
     relation = IRPRelation(fake)
 
-    result = relation.get_inverse()
+    assert relation.get_association_class() is None
+
+
+def test_relation_inverse_property_returns_relation_even_for_association_end_metaclass() -> None:
+    inverse = make_fake_element("AssociationEnd", properties={"name": "inverseAssoc"})
+    fake = make_fake_element("AssociationEnd", properties={"inverse": inverse})
+    relation = IRPRelation(fake)
+
+    result = relation.inverse
+
+    assert isinstance(result, IRPRelation)
     assert result.name == "inverseAssoc"
 
 
-def test_relation_get_is_navigable_delegates_to_com() -> None:
-    fake = make_fake_element("Relation", getIsNavigable=1)
+def test_relation_inverse_property_is_none_without_inverse() -> None:
+    fake = make_fake_element("Relation", properties={"inverse": None})
     relation = IRPRelation(fake)
 
-    assert relation.get_is_navigable() is True
+    assert relation.inverse is None
 
 
-def test_relation_get_is_symmetric_delegates_to_com() -> None:
-    fake = make_fake_element("Relation", getIsSymmetric=0)
+def test_relation_is_navigable_property_reads_bool() -> None:
+    fake = make_fake_element("Relation", properties={"isNavigable": 1})
     relation = IRPRelation(fake)
 
-    assert relation.get_is_symmetric() is False
+    assert relation.is_navigable is True
 
 
-def test_relation_get_multiplicity_delegates_to_com() -> None:
-    fake = make_fake_element("Relation", getMultiplicity="0..*")
+def test_relation_is_navigable_property_writes_com_flag() -> None:
+    fake = make_fake_element("Relation", properties={"isNavigable": 0})
     relation = IRPRelation(fake)
 
-    assert relation.get_multiplicity() == "0..*"
+    relation.is_navigable = True
+
+    assert fake.isNavigable == 1
+    fake.setIsNavigable.assert_not_called()
 
 
-def test_relation_get_object_as_object_type_wraps_result() -> None:
-    fake = make_fake_element("Relation")
+def test_relation_is_symmetric_property_reads_bool() -> None:
+    fake = make_fake_element("Relation", properties={"isSymmetric": 0})
+    relation = IRPRelation(fake)
+
+    assert relation.is_symmetric is False
+
+
+def test_relation_multiplicity_property_round_trips() -> None:
+    fake = make_fake_element("Relation", properties={"multiplicity": "0..*"})
+    relation = IRPRelation(fake)
+
+    assert relation.multiplicity == "0..*"
+    relation.multiplicity = "1"
+
+    assert fake.multiplicity == "1"
+    fake.setMultiplicity.assert_not_called()
+
+
+def test_relation_object_as_object_type_property_wraps_result() -> None:
     klass = make_fake_element("Class", properties={"name": "Widget"})
-    fake.getObjectAsObjectType.return_value = klass
+    fake = make_fake_element("Relation", properties={"ObjectAsObjectType": klass})
     relation = IRPRelation(fake)
 
-    result = relation.get_object_as_object_type()
+    result = relation.object_as_object_type
+
     assert result.name == "Widget"
+    fake.getObjectAsObjectType.assert_not_called()
 
 
-def test_relation_get_of_class_wraps_result() -> None:
-    fake = make_fake_element("Relation")
-    klass = make_fake_element("Class", properties={"name": "Widget"})
-    fake.getOfClass.return_value = klass
+def test_relation_of_class_property_wraps_result_and_writes_com_object() -> None:
+    klass_fake = make_fake_element("Class", properties={"name": "Widget"})
+    fake = make_fake_element("Relation", properties={"ofClass": klass_fake})
     relation = IRPRelation(fake)
 
-    result = relation.get_of_class()
-    assert result.name == "Widget"
+    assert relation.of_class.name == "Widget"
+    relation.of_class = IRPClassifier(klass_fake)
+
+    assert fake.ofClass is klass_fake
+    fake.setOfClass.assert_not_called()
 
 
-def test_relation_get_other_class_wraps_result() -> None:
-    fake = make_fake_element("Relation")
-    klass = make_fake_element("Class", properties={"name": "Other"})
-    fake.getOtherClass.return_value = klass
+def test_relation_other_class_property_wraps_result_and_writes_com_object() -> None:
+    klass_fake = make_fake_element("Class", properties={"name": "Other"})
+    fake = make_fake_element("Relation", properties={"otherClass": klass_fake})
     relation = IRPRelation(fake)
 
-    result = relation.get_other_class()
-    assert result.name == "Other"
+    assert relation.other_class.name == "Other"
+    relation.other_class = IRPClassifier(klass_fake)
+
+    assert fake.otherClass is klass_fake
+    fake.setOtherClass.assert_not_called()
 
 
-def test_relation_get_qualifier_delegates_to_com() -> None:
-    fake = make_fake_element("Relation", getQualifier="key")
+def test_relation_qualifier_property_round_trips() -> None:
+    fake = make_fake_element("Relation", properties={"qualifier": "key"})
     relation = IRPRelation(fake)
 
-    assert relation.get_qualifier() == "key"
+    assert relation.qualifier == "key"
+    relation.qualifier = "other"
+
+    assert fake.qualifier == "other"
+    fake.setQualifier.assert_not_called()
 
 
 def test_relation_get_qualifiers_returns_collection() -> None:
@@ -127,39 +167,55 @@ def test_relation_get_qualifier_type_wraps_result() -> None:
     assert result.name == "KeyType"
 
 
-def test_relation_get_relation_label_delegates_to_com() -> None:
-    fake = make_fake_element("Relation", getRelationLabel="owns")
+def test_relation_relation_label_property_round_trips() -> None:
+    fake = make_fake_element("Relation", properties={"relationLabel": "owns"})
     relation = IRPRelation(fake)
 
-    assert relation.get_relation_label() == "owns"
+    assert relation.relation_label == "owns"
+    relation.relation_label = "contains"
+
+    assert fake.relationLabel == "contains"
+    fake.setRelationLabel.assert_not_called()
 
 
-def test_relation_get_relation_link_name_delegates_to_com() -> None:
-    fake = make_fake_element("Relation", getRelationLinkName="Ownership")
+def test_relation_relation_link_name_property_round_trips() -> None:
+    fake = make_fake_element("Relation", properties={"relationLinkName": "Ownership"})
     relation = IRPRelation(fake)
 
-    assert relation.get_relation_link_name() == "Ownership"
+    assert relation.relation_link_name == "Ownership"
+    relation.relation_link_name = "Link2"
+
+    assert fake.relationLinkName == "Link2"
+    fake.setRelationLinkName.assert_not_called()
 
 
-def test_relation_get_relation_role_name_delegates_to_com() -> None:
-    fake = make_fake_element("Relation", getRelationRoleName="owner")
+def test_relation_relation_role_name_property_round_trips() -> None:
+    fake = make_fake_element("Relation", properties={"relationRoleName": "owner"})
     relation = IRPRelation(fake)
 
-    assert relation.get_relation_role_name() == "owner"
+    assert relation.relation_role_name == "owner"
+    relation.relation_role_name = "items"
+
+    assert fake.relationRoleName == "items"
+    fake.setRelationRoleName.assert_not_called()
 
 
-def test_relation_get_relation_type_delegates_to_com() -> None:
-    fake = make_fake_element("Relation", getRelationType="Association")
+def test_relation_relation_type_property_round_trips() -> None:
+    fake = make_fake_element("Relation", properties={"relationType": "Association"})
     relation = IRPRelation(fake)
 
-    assert relation.get_relation_type() == "Association"
+    assert relation.relation_type == "Association"
+    relation.relation_type = "Aggregation"
+
+    assert fake.relationType == "Aggregation"
+    fake.setRelationType.assert_not_called()
 
 
-def test_relation_get_visibility_delegates_to_com() -> None:
-    fake = make_fake_element("Relation", getVisibility="public")
+def test_relation_visibility_property_reads_string() -> None:
+    fake = make_fake_element("Relation", properties={"visibility": "public"})
     relation = IRPRelation(fake)
 
-    assert relation.get_visibility() == "public"
+    assert relation.visibility == "public"
 
 
 def test_relation_is_typeless_object_delegates_to_com() -> None:
@@ -197,53 +253,6 @@ def test_relation_set_inverse_delegates_to_com() -> None:
     fake.setInverse.assert_called_once_with("owner", "Association")
 
 
-def test_relation_set_is_navigable_delegates_to_com() -> None:
-    fake = make_fake_element("Relation")
-    relation = IRPRelation(fake)
-
-    relation.set_is_navigable(True)
-
-    fake.setIsNavigable.assert_called_once_with(1)
-
-
-def test_relation_set_multiplicity_delegates_to_com() -> None:
-    fake = make_fake_element("Relation")
-    relation = IRPRelation(fake)
-
-    relation.set_multiplicity("0..*")
-
-    fake.setMultiplicity.assert_called_once_with("0..*")
-
-
-def test_relation_set_of_class_delegates_to_com() -> None:
-    fake = make_fake_element("Relation")
-    klass_fake = make_fake_element("Class", properties={"name": "Widget"})
-    relation = IRPRelation(fake)
-
-    relation.set_of_class(IRPClassifier(klass_fake))
-
-    fake.setOfClass.assert_called_once_with(klass_fake)
-
-
-def test_relation_set_other_class_delegates_to_com() -> None:
-    fake = make_fake_element("Relation")
-    klass_fake = make_fake_element("Class", properties={"name": "Other"})
-    relation = IRPRelation(fake)
-
-    relation.set_other_class(IRPClassifier(klass_fake))
-
-    fake.setOtherClass.assert_called_once_with(klass_fake)
-
-
-def test_relation_set_qualifier_delegates_to_com() -> None:
-    fake = make_fake_element("Relation")
-    relation = IRPRelation(fake)
-
-    relation.set_qualifier("key")
-
-    fake.setQualifier.assert_called_once_with("key")
-
-
 def test_relation_set_qualifier_type_delegates_to_com() -> None:
     fake = make_fake_element("Relation")
     klass_fake = make_fake_element("Class", properties={"name": "KeyType"})
@@ -254,37 +263,20 @@ def test_relation_set_qualifier_type_delegates_to_com() -> None:
     fake.setQualifierType.assert_called_once_with(klass_fake)
 
 
-def test_relation_set_relation_label_delegates_to_com() -> None:
-    fake = make_fake_element("Relation")
-    relation = IRPRelation(fake)
+def test_relation_legacy_accessor_methods_are_removed() -> None:
+    relation = IRPRelation(make_fake_element("Relation"))
 
-    relation.set_relation_label("owns")
-
-    fake.setRelationLabel.assert_called_once_with("owns")
-
-
-def test_relation_set_relation_link_name_delegates_to_com() -> None:
-    fake = make_fake_element("Relation")
-    relation = IRPRelation(fake)
-
-    relation.set_relation_link_name("Ownership")
-
-    fake.setRelationLinkName.assert_called_once_with("Ownership")
-
-
-def test_relation_set_relation_role_name_delegates_to_com() -> None:
-    fake = make_fake_element("Relation")
-    relation = IRPRelation(fake)
-
-    relation.set_relation_role_name("owner")
-
-    fake.setRelationRoleName.assert_called_once_with("owner")
-
-
-def test_relation_set_relation_type_delegates_to_com() -> None:
-    fake = make_fake_element("Relation")
-    relation = IRPRelation(fake)
-
-    relation.set_relation_type("Association")
-
-    fake.setRelationType.assert_called_once_with("Association")
+    legacy_names = (
+        "get_inverse",
+        "get_is_navigable",
+        "set_is_navigable",
+        "get_multiplicity",
+        "set_multiplicity",
+        "get_visibility",
+        "get_of_class",
+        "set_of_class",
+        "get_relation_type",
+        "set_relation_type",
+    )
+    for legacy in legacy_names:
+        assert not hasattr(relation, legacy), legacy

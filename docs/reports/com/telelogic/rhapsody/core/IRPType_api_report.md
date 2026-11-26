@@ -11,18 +11,7 @@
 
 | Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |
 | --- | --- | --- | --- | --- |
-
-## Expected Binding Differences
-
-| Python model wrapper | Java API | pywin32 | Status | Recommended change |
-| --- | --- | --- | --- | --- |
-| — | — | — | — | — |
-
-## Wrapper Backlog
-
-| Python model wrapper | Java API | pywin32 | Status | Recommended change |
-| --- | --- | --- | --- | --- |
-| — | — | — | — | — |
+| — | — | — | PASS | No change needed. |
 
 <details>
 <summary>Correct items (28) — bindings verified against pywin32</summary>

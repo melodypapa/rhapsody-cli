@@ -395,7 +395,8 @@ class TestRPModelElementDependenciesIntegration:
             source = pkg.add_class(self._unique("AssocSource"))
             target = pkg.add_class(self._unique("AssocTarget"))
             end1 = source.add_relation_to(target, "targets", "Association", "1", "sources", "Association", "1", "")
-            end2 = IRPRelation(end1._com).get_inverse()
+            end2 = IRPRelation(end1._com).inverse
+            assert end2 is not None
             association_class = source.add_association(end1, end2, self._unique("AssocCls"))
             assert association_class in list(source.association_classes)
         finally:
@@ -425,7 +426,8 @@ class TestRPModelElementDependenciesIntegration:
             # The automation wrapper reports the concrete metaclass as
             # AssociationEnd, so wrap the dispatch explicitly to access the
             # documented IRPRelation inverse operation.
-            end2 = IRPRelation(end1._com).get_inverse()
+            end2 = IRPRelation(end1._com).inverse
+            assert end2 is not None
             assert end1.meta_class == "AssociationEnd"
             assert end2.meta_class == "AssociationEnd"
             association_name = self._unique("AssocCls")

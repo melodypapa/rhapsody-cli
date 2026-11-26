@@ -4,7 +4,7 @@
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `IRPModelElement` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_model_element.py`)
 - Members: Python `104`, Java `119`, pywin32 `104`
-- Deviation items: `6` (actionable `2`, expected binding differences `2`, wrapper backlog `2`)
+- Deviation items: `7` (actionable `2`, expected binding differences `3`, wrapper backlog `2`)
 - Status legend: `MATCH` verified binding · `UNAVAILABLE_DOCUMENTED` pywin32 lacks the member (NotImplementedError stub) · `ALIAS_DOCUMENTED` documented alias · actionable rows are named by code in `Comparison details`
 
 ## Comparison details
@@ -14,22 +14,8 @@
 | constraints_by_him (property) (no static COM member) | getConstraintsByHim (method) | constraintsByHim (property) | PYTHON_METHOD_NAME_MISMATCH; COM_MEMBER_NOT_EXPOSED; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Use the constraintsByHim property or a getter/setter fallback instead of calling getConstraintsByHim directly. |
 | hyper_links (property) (no static COM member) | getHyperLinks (method) | hyperLinks (property) | PYTHON_METHOD_NAME_MISMATCH; COM_MEMBER_NOT_EXPOSED; ACCESSOR_ALIAS_MISMATCH; METHOD_PROPERTY_MISMATCH | Use the hyperLinks property or a getter/setter fallback instead of calling getHyperLinks directly. |
 
-## Expected Binding Differences
-
-| Python model wrapper | Java API | pywin32 | Status | Recommended change |
-| --- | --- | --- | --- | --- |
-| — | resolveRemoteArtifact (method) | — | JAVA_ONLY_MEMBER | Verify the Java documentation against the installed COM type library. |
-| get_rmm_url() (no static COM member) | getRmmUrl (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
-
-## Wrapper Backlog
-
-| Python model wrapper | Java API | pywin32 | Status | Recommended change |
-| --- | --- | --- | --- | --- |
-| — | lockOnDesignManager (method) | lockOnDesignManager (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
-| — | unlockOnDesignManager (method) | unlockOnDesignManager (method) | INTENTIONALLY_UNSUPPORTED_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
-
 <details>
-<summary>Correct items (96) — bindings verified against pywin32</summary>
+<summary>Correct items (95) — bindings verified against pywin32</summary>
 
 
 ## Correct Items
@@ -57,48 +43,29 @@
 | constraints (property) -> constraints | getConstraints (method) | constraints (property) | MATCH | — |
 | controlled_files (property) -> controlledFiles | getControlledFiles (method) | controlledFiles (property) | MATCH | — |
 | create_oslc_link() -> createOSLCLink | createOSLCLink (method) | createOSLCLink (method) | MATCH | — |
+| get_decoration_style() -> getDecorationStyle; set_decoration_style() -> setDecorationStyle | getDecorationStyle (method); setDecorationStyle (method) | getDecorationStyle (method); setDecorationStyle (method) | MATCH | — |
 | delete_dependency() -> deleteDependency | deleteDependency (method) | deleteDependency (method) | MATCH | — |
 | delete_from_project() -> deleteFromProject | deleteFromProject (method) | deleteFromProject (method) | MATCH | — |
 | delete_oslc_link() -> deleteOSLCLink | deleteOSLCLink (method) | deleteOSLCLink (method) | MATCH | — |
 | dependencies (property) -> dependencies | getDependencies (method) | dependencies (property) | MATCH | — |
 | description (property) -> description | getDescription (method); setDescription (method) | description (property) | MATCH | — |
+| set_description_and_hyperlinks() -> setDescriptionAndHyperlinks | setDescriptionAndHyperlinks (method) | setDescriptionAndHyperlinks (method) | MATCH | — |
 | description_html (property) -> descriptionHTML; set_description_html() (no static COM member) | getDescriptionHTML (method); setDescriptionHTML (method) | descriptionHTML (property) | MATCH | — |
 | description_plain_text (property) -> descriptionPlainText | getDescriptionPlainText (method) | descriptionPlainText (property) | MATCH | — |
 | description_rtf (property) -> descriptionRTF | getDescriptionRTF (method); setDescriptionRTF (method) | descriptionRTF (property) | MATCH | — |
 | display_name (property) -> displayName | getDisplayName (method); setDisplayName (method) | displayName (property) | MATCH | — |
+| get_display_name_rtf() -> getDisplayNameRTF; set_display_name_rtf() -> setDisplayNameRTF | getDisplayNameRTF (method); setDisplayNameRTF (method) | getDisplayNameRTF (method); setDisplayNameRTF (method) | MATCH | — |
 | error_message() -> errorMessage; get_error_message() -> getErrorMessage | errorMessage (method); getErrorMessage (method) | errorMessage (method); getErrorMessage (method) | MATCH | — |
 | find_elements_by_full_name() -> findElementsByFullName | findElementsByFullName (method) | findElementsByFullName (method) | MATCH | — |
 | find_nested_element() -> findNestedElement | findNestedElement (method) | findNestedElement (method) | MATCH | — |
 | find_nested_element_recursive() -> findNestedElementRecursive | findNestedElementRecursive (method) | findNestedElementRecursive (method) | MATCH | — |
-| get_decoration_style() -> getDecorationStyle; set_decoration_style() -> setDecorationStyle | getDecorationStyle (method); setDecorationStyle (method) | getDecorationStyle (method); setDecorationStyle (method) | MATCH | — |
-| get_display_name_rtf() -> getDisplayNameRTF; set_display_name_rtf() -> setDisplayNameRTF | getDisplayNameRTF (method); setDisplayNameRTF (method) | getDisplayNameRTF (method); setDisplayNameRTF (method) | MATCH | — |
 | get_full_path_name() -> getFullPathName | getFullPathName (method) | getFullPathName (method) | MATCH | — |
 | get_full_path_name_in() -> getFullPathNameIn | getFullPathNameIn (method) | getFullPathNameIn (method) | MATCH | — |
-| get_icon_file_name() -> getIconFileName | getIconFileName (method) | getIconFileName (method) | MATCH | — |
-| get_is_of_meta_class() -> isOfMetaClass | getIsOfMetaClass (method) | isOfMetaClass (method) | MATCH | — |
-| get_nested_elements() -> getNestedElements | getNestedElements (method) | getNestedElements (method) | MATCH | — |
-| get_nested_elements_by_meta_class() -> getNestedElementsByMetaClass | getNestedElementsByMetaClass (method) | getNestedElementsByMetaClass (method) | MATCH | — |
-| get_nested_elements_recursive() -> getNestedElementsRecursive | getNestedElementsRecursive (method) | getNestedElementsRecursive (method) | MATCH | — |
-| get_new_term_stereotype() -> getNewTermStereotype | getNewTermStereotype (method) | getNewTermStereotype (method) | MATCH | — |
-| get_oslc_links() -> getOSLCLinks | getOSLCLinks (method) | getOSLCLinks (method) | MATCH | — |
-| get_overlay_icon_file_name() -> getOverlayIconFileName | getOverlayIconFileName (method) | getOverlayIconFileName (method) | MATCH | — |
-| get_overridden_properties() -> getOverriddenProperties | getOverriddenProperties (method) | getOverriddenProperties (method) | MATCH | — |
-| get_overridden_properties_by_pattern() -> getOverriddenPropertiesByPattern | getOverriddenPropertiesByPattern (method) | getOverriddenPropertiesByPattern (method) | MATCH | — |
-| get_owned_dependencies() -> getOwnedDependencies | getOwnedDependencies (method) | getOwnedDependencies (method) | MATCH | — |
-| get_property_value() -> getPropertyValue; set_property_value() -> setPropertyValue | getPropertyValue (method); setPropertyValue (method) | getPropertyValue (method); setPropertyValue (method) | MATCH | — |
-| get_property_value_conditional() -> getPropertyValueConditional | getPropertyValueConditional (method) | getPropertyValueConditional (method) | MATCH | — |
-| get_property_value_conditional_explicit() -> getPropertyValueConditionalExplicit | getPropertyValueConditionalExplicit (method) | getPropertyValueConditionalExplicit (method) | MATCH | — |
-| get_property_value_explicit() -> getPropertyValueExplicit | getPropertyValueExplicit (method) | getPropertyValueExplicit (method) | MATCH | — |
-| get_redefines() -> getRedefines | getRedefines (method) | getRedefines (method) | MATCH | — |
-| get_remote_dependencies() -> getRemoteDependencies | getRemoteDependencies (method) | getRemoteDependencies (method) | MATCH | — |
-| get_remote_uri() -> getRemoteURI | getRemoteURI (method) | getRemoteURI (method) | MATCH | — |
-| get_save_unit() -> getSaveUnit | getSaveUnit (method) | getSaveUnit (method) | MATCH | — |
-| get_tag() -> getTag | getTag (method) | getTag (method) | MATCH | — |
-| get_tool_tip_html() -> getToolTipHTML | getToolTipHTML (method) | getToolTipHTML (method) | MATCH | — |
 | guid (property) -> GUID | getGUID (method); setGUID (method) | GUID (property) | MATCH | — |
 | has_nested_elements() -> hasNestedElements | hasNestedElements (method) | hasNestedElements (method) | MATCH | — |
 | has_panel_widget() -> hasPanelWidget | hasPanelWidget (method) | hasPanelWidget (method) | MATCH | — |
 | high_light_element() -> highLightElement | highLightElement (method) | highLightElement (method) | MATCH | — |
+| get_icon_file_name() -> getIconFileName | getIconFileName (method) | getIconFileName (method) | MATCH | — |
 | interface_name (property) -> interfaceName | getInterfaceName (method) | interfaceName (property) | MATCH | — |
 | is_a_template() -> isATemplate | isATemplate (method) | isATemplate (method) | MATCH | — |
 | is_description_rtf() -> isDescriptionRTF | isDescriptionRTF (method) | isDescriptionRTF (method) | MATCH | — |
@@ -113,24 +80,42 @@
 | main_diagram (property) -> mainDiagram | getMainDiagram (method); setMainDiagram (method) | mainDiagram (property) | MATCH | — |
 | meta_class (property) -> metaClass | getMetaClass (method) | metaClass (property) | MATCH | — |
 | name (property) -> name | getName (method); setName (method) | name (property) | MATCH | — |
+| get_nested_elements() -> getNestedElements | getNestedElements (method) | getNestedElements (method) | MATCH | — |
+| get_nested_elements_by_meta_class() -> getNestedElementsByMetaClass | getNestedElementsByMetaClass (method) | getNestedElementsByMetaClass (method) | MATCH | — |
+| get_nested_elements_recursive() -> getNestedElementsRecursive | getNestedElementsRecursive (method) | getNestedElementsRecursive (method) | MATCH | — |
+| get_new_term_stereotype() -> getNewTermStereotype | getNewTermStereotype (method) | getNewTermStereotype (method) | MATCH | — |
+| get_oslc_links() -> getOSLCLinks | getOSLCLinks (method) | getOSLCLinks (method) | MATCH | — |
 | of_template (property) -> ofTemplate | getOfTemplate (method); setOfTemplate (method) | ofTemplate (property) | MATCH | — |
 | open_features_dialog() -> openFeaturesDialog | openFeaturesDialog (method) | openFeaturesDialog (method) | MATCH | — |
+| get_overlay_icon_file_name() -> getOverlayIconFileName | getOverlayIconFileName (method) | getOverlayIconFileName (method) | MATCH | — |
+| get_overridden_properties() -> getOverriddenProperties | getOverriddenProperties (method) | getOverriddenProperties (method) | MATCH | — |
+| get_overridden_properties_by_pattern() -> getOverriddenPropertiesByPattern | getOverriddenPropertiesByPattern (method) | getOverriddenPropertiesByPattern (method) | MATCH | — |
+| get_owned_dependencies() -> getOwnedDependencies | getOwnedDependencies (method) | getOwnedDependencies (method) | MATCH | — |
 | owner (property) -> owner | getOwner (method); setOwner (method) | owner (property) | MATCH | — |
 | project (property) -> project | getProject (method) | project (property) | MATCH | — |
+| get_property_value() -> getPropertyValue; set_property_value() -> setPropertyValue | getPropertyValue (method); setPropertyValue (method) | getPropertyValue (method); setPropertyValue (method) | MATCH | — |
+| get_property_value_conditional() -> getPropertyValueConditional | getPropertyValueConditional (method) | getPropertyValueConditional (method) | MATCH | — |
+| get_property_value_conditional_explicit() -> getPropertyValueConditionalExplicit | getPropertyValueConditionalExplicit (method) | getPropertyValueConditionalExplicit (method) | MATCH | — |
+| get_property_value_explicit() -> getPropertyValueExplicit | getPropertyValueExplicit (method) | getPropertyValueExplicit (method) | MATCH | — |
+| get_redefines() -> getRedefines | getRedefines (method) | getRedefines (method) | MATCH | — |
 | references (property) -> references | getReferences (method) | references (property) | MATCH | — |
+| get_remote_dependencies() -> getRemoteDependencies | getRemoteDependencies (method) | getRemoteDependencies (method) | MATCH | — |
+| get_remote_uri() -> getRemoteURI | getRemoteURI (method) | getRemoteURI (method) | MATCH | — |
 | remove_property() -> removeProperty | removeProperty (method) | removeProperty (method) | MATCH | — |
 | remove_redefines() -> removeRedefines | removeRedefines (method) | removeRedefines (method) | MATCH | — |
 | remove_stereotype() -> removeStereotype | removeStereotype (method) | removeStereotype (method) | MATCH | — |
 | requirement_traceability_handle (property) -> requirementTraceabilityHandle | getRequirementTraceabilityHandle (method); setRequirementTraceabilityHandle (method) | requirementTraceabilityHandle (property) | MATCH | — |
-| set_description_and_hyperlinks() -> setDescriptionAndHyperlinks | setDescriptionAndHyperlinks (method) | setDescriptionAndHyperlinks (method) | MATCH | — |
-| set_tag_context_value() -> setTagContextValue | setTagContextValue (method) | setTagContextValue (method) | MATCH | — |
-| set_tag_element_value() -> setTagElementValue | setTagElementValue (method) | setTagElementValue (method) | MATCH | — |
-| set_tag_value() -> setTagValue | setTagValue (method) | setTagValue (method) | MATCH | — |
+| get_save_unit() -> getSaveUnit | getSaveUnit (method) | getSaveUnit (method) | MATCH | — |
 | stereotype (property) -> stereotype | getStereotype (method); setStereotype (method) | stereotype (property) | MATCH | — |
 | stereotypes (property) -> stereotypes | getStereotypes (method) | stereotypes (property) | MATCH | — |
 | synchronize_template_instantiation() -> synchronizeTemplateInstantiation | synchronizeTemplateInstantiation (method) | synchronizeTemplateInstantiation (method) | MATCH | — |
+| get_tag() -> getTag | getTag (method) | getTag (method) | MATCH | — |
+| set_tag_context_value() -> setTagContextValue | setTagContextValue (method) | setTagContextValue (method) | MATCH | — |
+| set_tag_element_value() -> setTagElementValue | setTagElementValue (method) | setTagElementValue (method) | MATCH | — |
+| set_tag_value() -> setTagValue | setTagValue (method) | setTagValue (method) | MATCH | — |
 | template_parameters (property) -> templateParameters | getTemplateParameters (method) | templateParameters (property) | MATCH | — |
 | ti (property) -> ti | getTi (method); setTi (method) | ti (property) | MATCH | — |
+| get_tool_tip_html() -> getToolTipHTML | getToolTipHTML (method) | getToolTipHTML (method) | MATCH | — |
 | user_defined_meta_class (property) -> userDefinedMetaClass | getUserDefinedMetaClass (method) | userDefinedMetaClass (property) | MATCH | — |
 
 </details>
