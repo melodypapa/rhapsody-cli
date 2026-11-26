@@ -6,7 +6,6 @@ import pytest
 
 from rhapsody_cli import RhapsodyApplication
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPCollection
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 
 
@@ -49,16 +48,14 @@ class TestIRPCollectionIntegration:
     def test_add_graphical_item_adds_real_graph_element(self, rhapsody_app: RhapsodyApplication, test_project: IRPProject) -> None:
         """Live proof for the documented alias addGraphicalItem -> addGraphicalElementItem.
 
-        The diagram wrapper's add_text_box calls a lowercase COM name that the
-        registered type library does not expose, so this fixture creates the
-        real IRPGraphElement through the pywin32-exposed AddTextBox member.
+        The fixture creates the real IRPGraphElement through the wrapper's
+        ``IRPDiagram.add_text_box`` (pywin32-exposed ``AddTextBox``).
         Passing a non-graph model element instead faults with COM Type mismatch.
         """
         pkg = test_project.add_package(f"GraphPkg_{uuid.uuid4().hex[:8]}")
         try:
             diagram = pkg.add_object_model_diagram("GraphDiagram")
-            graph_com = diagram._com.AddTextBox("probe", 10, 10, 120, 40)
-            graph = IRPGraphElement(graph_com)
+            graph = diagram.add_text_box("probe", 10, 10, 120, 40)
             collection = rhapsody_app.create_new_collection()
 
             collection.add_graphical_item(graph)

@@ -27,12 +27,12 @@ def test_diagram_close_diagram_delegates_to_com() -> None:
 def test_diagram_add_text_box_delegates_to_com_and_wraps_result() -> None:
     fake = make_fake_element("ActivityDiagram")
     text_box = make_fake_element("GraphElement", properties={"name": "Note1"})
-    fake.addTextBox.return_value = text_box
+    fake.AddTextBox.return_value = text_box
     diagram = IRPDiagram(fake)
 
     result = diagram.add_text_box("hello", 0, 0, 50, 20)
 
-    fake.addTextBox.assert_called_once_with("hello", 0, 0, 50, 20)
+    fake.AddTextBox.assert_called_once_with("hello", 0, 0, 50, 20)
     assert result.name == "Note1"
 
 
