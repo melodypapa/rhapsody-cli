@@ -109,7 +109,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_module import IRPModule
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_node import IRPNode
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_other_model import IRPClassifierRole, IRPSysMLPort
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_other_model import IRPClassifierRole
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port import IRPPort
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_profile import IRPProfile
@@ -120,6 +120,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statemachine import IRPState, IRPStateVertex
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_stereotype import IRPStereotype
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_swimlane import IRPSwimlane
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_sysml_port import IRPSysMLPort
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_templates import IRPTemplateInstantiation, IRPTemplateInstantiationParameter, IRPTemplateParameter
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type import IRPType
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_unit import AddToModelMode, IRPUnit
@@ -239,7 +240,7 @@ _EXPORT_MODULES = {
     "IRPStereotype": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_stereotype",
     "IRPStructureDiagram": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types",
     "IRPSwimlane": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_swimlane",
-    "IRPSysMLPort": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_other_model",
+    "IRPSysMLPort": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_sysml_port",
     "IRPTableLayout": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics",
     "IRPTableView": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics",
     "IRPTag": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_variables",

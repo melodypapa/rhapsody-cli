@@ -379,3 +379,11 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |
 | `duration_time` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_accept_time_event.py::test_duration_time` | identity/value | OK |
+
+## IRPSysMLPort
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `is_reversed` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_sysml_port.py::test_is_reversed` | identity/value | OK |
+| `port_direction` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_sysml_port.py::test_port_direction` | identity/value | OK |
+| `type` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_sysml_port.py::test_type` | identity/value | OK |

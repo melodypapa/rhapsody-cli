@@ -14,7 +14,7 @@ review rather than a failure.
 
 | Status | Count |
 | --- | --- |
-| match | 192 |
+| match | 195 |
 | catalog-missing | 0 |
 | shape-mismatch | 0 |
 | no-binding | 0 |
@@ -516,6 +516,20 @@ review rather than a failure.
 | `icon` | `icon` | property | property | match |
 | `is_new_term` | `isNewTerm` | property | property | match |
 | `of_meta_class` | `ofMetaClass` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPSysMLPort
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `is_reversed` | `isReversed` | property | property | match |
+| `port_direction` | `portDirection` | property | property | match |
+| `type` | `type` | property | property | match |
 
 ### Catalog properties with no matching Python property
 

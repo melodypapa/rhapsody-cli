@@ -70,6 +70,7 @@ Java Package API Reference
    com/telelogic/rhapsody/core/irp_statechart
    com/telelogic/rhapsody/core/irp_stereotype
    com/telelogic/rhapsody/core/irp_swimlane
+   com/telelogic/rhapsody/core/irp_sysml_port
    com/telelogic/rhapsody/core/irp_type
    com/telelogic/rhapsody/core/irp_unit
    com/telelogic/rhapsody/core/irp_use_case

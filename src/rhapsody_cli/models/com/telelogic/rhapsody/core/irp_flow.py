@@ -9,8 +9,8 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IR
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_instance import IRPInstance
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_other_model import IRPSysMLPort
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port import IRPPort
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_sysml_port import IRPSysMLPort
 
 
 class IRPFlow(IRPModelElement):
@@ -122,7 +122,7 @@ class IRPFlow(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPFlow::getEnd1SysMLPort()
         """
-        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_other_model import IRPSysMLPort
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_sysml_port import IRPSysMLPort
 
         return cast(IRPSysMLPort, self.wrap(self.get_com_property(self._com, "end1SysMLPort")))
 
@@ -174,7 +174,7 @@ class IRPFlow(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPFlow::getEnd2SysMLPort()
         """
-        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_other_model import IRPSysMLPort
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_sysml_port import IRPSysMLPort
 
         return cast(IRPSysMLPort, self.wrap(self.get_com_property(self._com, "end2SysMLPort")))
 
