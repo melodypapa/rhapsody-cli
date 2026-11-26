@@ -1,6 +1,6 @@
-# Sync todo — `common` (group 1 of 1)
+# Sync todo — `common`
 
-**7 classes** · ✅ 5 archived · ⬜ 2 open
+**7 classes** · ✅ 4 archived · ⬜ 3 open
 
 One row per sync run. A step is ticked only when its evidence lands; a row is archived only after all eight steps pass. Binding rule: one pywin32-exposed COM member per call — `call_com(lambda: self._com.Name(...))` for methods, `get_com_property` / `set_com_property` for properties; catalog-absent sites are blockers, never blind migrations. Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/`, mirrored tests under `tests/{unit,integration}/models/com/telelogic/rhapsody/core/`.
 

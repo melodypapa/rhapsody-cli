@@ -1,8 +1,10 @@
-# Sync todo — `activity` (group 1 of 2)
+# Sync todo — `activity`
 
-**10 classes** · ✅ 10 archived · ⬜ 0 open
+**12 classes** · ✅ 10 archived · ⬜ 2 open
 
 One row per sync run. A step is ticked only when its evidence lands; a row is archived only after all eight steps pass. Binding rule: one pywin32-exposed COM member per call — `call_com(lambda: self._com.Name(...))` for methods, `get_com_property` / `set_com_property` for properties; catalog-absent sites are blockers, never blind migrations. Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/`, mirrored tests under `tests/{unit,integration}/models/com/telelogic/rhapsody/core/`.
+
+Merged from `Group-activity-1.md`, `Group-activity-2.md`; the per-row content is unchanged.
 
 ## Step legend
 
@@ -33,6 +35,8 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 | 8 | `irp_call_operation_api_report` | IRPCallOperation | `rhapsody_cli/models/elements/activity/model_actions.py` | 4 | 4 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 | 9 | `irp_context_specification_api_report` | IRPContextSpecification | `rhapsody_cli/models/elements/activity/model_actions.py` | 2 | 4 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 | 10 | `irp_accept_time_event_api_report` | IRPAcceptTimeEvent | `rhapsody_cli/models/elements/activity/model_actions.py` | 2 | 2 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
+| 11 | `irp_accept_event_action_api_report` | IRPAcceptEventAction | `rhapsody_cli/models/elements/activity/model_actions.py` | 2 | 2 | 1/8 (②) | ⬜ open |
+| 12 | `irp_action_block_api_report` | IRPActionBlock | `rhapsody_cli/models/elements/activity/model_actions.py` | 0 | 0 | 1/8 (②) | ⬜ open |
 
 ## Row details
 
@@ -193,5 +197,37 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 - [x] ⑥ §6 — `docs/requirements/com/telelogic/rhapsody/core/irp_accept_time_event.md`
 - [x] ⑦ §7 — `docs/api/com/telelogic/rhapsody/core/irp_accept_time_event.rst` + toctree entry
 - [x] ⑧ §8 — validator 0 deviations; verify_sync + --strict-getters green; full unit suite 2191 passed; ruff/black clean
+
+</details>
+
+<details>
+<summary><code>irp_accept_event_action_api_report</code> · IRPAcceptEventAction · 1/8 steps · ⬜ open</summary>
+
+- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Note:** usage 13 src / 6 test refs, 2 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
+- [ ] ① §1
+- [x] ② §2
+- [ ] ③ §3
+- [ ] ④ §4
+- [ ] ⑤ §5
+- [ ] ⑥ §6
+- [ ] ⑦ §7
+- [ ] ⑧ §8
+
+</details>
+
+<details>
+<summary><code>irp_action_block_api_report</code> · IRPActionBlock · 1/8 steps · ⬜ open</summary>
+
+- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Note:** usage 7 src / 4 test refs, 0 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
+- [ ] ① §1
+- [x] ② §2
+- [ ] ③ §3
+- [ ] ④ §4
+- [ ] ⑤ §5
+- [ ] ⑥ §6
+- [ ] ⑦ §7
+- [ ] ⑧ §8
 
 </details>

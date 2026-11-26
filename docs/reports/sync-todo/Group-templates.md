@@ -1,4 +1,4 @@
-# Sync todo — `templates` (group 1 of 1)
+# Sync todo — `templates`
 
 **3 classes** · ✅ 0 archived · ⬜ 3 open
 
