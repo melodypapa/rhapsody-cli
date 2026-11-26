@@ -12,7 +12,6 @@ if TYPE_CHECKING:
         IRPAcceptEventAction,
         IRPAcceptTimeEvent,
         IRPActionBlock,
-        IRPContextSpecification,
     )
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actor import IRPActor
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_application import IRPApplication
@@ -163,7 +162,7 @@ _EXPORT_MODULES = {
     "IRPConfiguration": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_configuration",
     "IRPConnector": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics",
     "IRPConstraint": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_misc",
-    "IRPContextSpecification": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions",
+    "IRPContextSpecification": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_context_specification",
     "IRPControlledFile": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_files",
     "IRPDependency": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_dependency",
     "IRPDeploymentDiagram": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types",

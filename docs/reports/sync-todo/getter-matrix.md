@@ -339,3 +339,10 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | --- | --- | --- | --- |
 | `operation` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_call_operation.py::test_operation` | identity/value | OK |
 | `target` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_call_operation.py::test_target` | identity/value | OK |
+
+## IRPContextSpecification
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `multiplicities` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_context_specification.py::test_multiplicities` | identity/value | OK |
+| `value` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_context_specification.py::test_value` | identity/value | OK |

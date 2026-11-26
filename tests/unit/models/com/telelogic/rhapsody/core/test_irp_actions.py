@@ -6,11 +6,9 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions import (
     IRPAcceptEventAction,
     IRPAcceptTimeEvent,
     IRPActionBlock,
-    IRPContextSpecification,
 )
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from tests.unit.models.fakes import make_fake_collection, make_fake_element
+from tests.unit.models.fakes import make_fake_element
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interactions import IRPEvent
@@ -79,46 +77,3 @@ class TestRPActionBlock:
         fake = make_fake_element("ActionBlock", properties={"name": "AB1"})
         wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, IRPActionBlock)
-
-
-class TestRPContextSpecification:
-    def test_is_value_specification(self) -> None:
-        fake = make_fake_element("ContextSpecification", properties={"name": "CS1"})
-        cs = IRPContextSpecification(fake)
-        assert isinstance(cs, IRPModelElement)
-        assert cs.name == "CS1"
-
-    def test_get_multiplicities_returns_collection(self) -> None:
-        fake = make_fake_element("ContextSpecification")
-        fake.getMultiplicities.return_value = make_fake_collection(["1", "2"])
-        cs = IRPContextSpecification(fake)
-        result = cs.get_multiplicities()
-        assert isinstance(result, IRPCollection)
-        assert len(result) == 2
-
-    def test_get_value_returns_collection(self) -> None:
-        fake = make_fake_element("ContextSpecification")
-        fake.getValue.return_value = make_fake_collection(["pkg", "cls"])
-        cs = IRPContextSpecification(fake)
-        result = cs.get_value()
-        assert isinstance(result, IRPCollection)
-        assert len(result) == 2
-
-    def test_set_multiplicities_delegates(self) -> None:
-        fake = make_fake_element("ContextSpecification")
-        coll = make_fake_collection(["1", "2"])
-        cs = IRPContextSpecification(fake)
-        cs.set_multiplicities(IRPCollection(coll))
-        fake.setMultiplicities.assert_called_once_with(coll)
-
-    def test_set_value_delegates(self) -> None:
-        fake = make_fake_element("ContextSpecification")
-        coll = make_fake_collection(["pkg", "cls"])
-        cs = IRPContextSpecification(fake)
-        cs.set_value(IRPCollection(coll))
-        fake.setValue.assert_called_once_with(coll)
-
-    def test_is_registered(self) -> None:
-        fake = make_fake_element("ContextSpecification", properties={"name": "CS1"})
-        wrapped = IRPModelElement.wrap(fake)
-        assert isinstance(wrapped, IRPContextSpecification)
