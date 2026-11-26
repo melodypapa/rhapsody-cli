@@ -10,7 +10,7 @@ import pytest
 import rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element as model_element_module
 import rhapsody_cli.models.core as core_module
 from rhapsody_cli.exceptions import RhapsodyRuntimeException
-from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPDependency, IRPDiagram, IRPRelation, IRPStereotype, IRPTag, IRPTemplateInstantiation
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPDependency, IRPDiagram, IRPGraphElement, IRPRelation, IRPStereotype, IRPTag, IRPTemplateInstantiation
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_association_class import IRPAssociationClass
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
@@ -270,15 +270,14 @@ def test_collection_get_item_falls_back_to_item_property_when_method_missing() -
     fake.Item.assert_called_once_with(1)
 
 
-def test_collection_add_graphical_item_raises_not_implemented() -> None:
+def test_collection_add_graphical_item_delegates_to_alias() -> None:
     fake = make_fake_collection([])
     collection = IRPCollection(fake)
-    item = make_fake_element("Class")
+    graph = IRPGraphElement(make_fake_element("GraphElement"))
 
-    with pytest.raises(NotImplementedError):
-        collection.add_graphical_item(IRPModelElement(item))
+    collection.add_graphical_item(graph)
 
-    fake.addGraphicalItem.assert_not_called()
+    fake.addGraphicalElementItem.assert_called_once_with(graph._com)
 
 
 def test_collection_to_list_raises_not_implemented() -> None:
@@ -561,11 +560,28 @@ def test_model_element_clone_unwraps_owner_and_wraps_result() -> None:
     fake.clone.assert_called_once_with("Clone", new_owner._com)
 
 
-def test_model_element_create_oslc_link_raises_not_implemented() -> None:
-    element = IRPModelElement(make_fake_element("Class"))
+def test_model_element_create_oslc_link_delegates_to_com() -> None:
+    fake = make_fake_element("Class")
+    element = IRPModelElement(fake)
+    link_type = "http://jazz.net/ns/dm/linktypes#external"
+    purl = "https://example.com/oslc/req/1"
 
-    with pytest.raises(NotImplementedError):
-        element.create_oslc_link("type", "purl")
+    element.create_oslc_link(link_type, purl)
+
+    fake.createOSLCLink.assert_called_once_with(link_type, purl)
+
+
+def test_model_element_get_oslc_links_wraps_collection() -> None:
+    link_text = "Type=external\nURL=https://example.com/oslc/req/1"
+    links_com = make_fake_collection([link_text])
+    fake = make_fake_element("Class", getOSLCLinks=links_com)
+    element = IRPModelElement(fake)
+
+    links = element.get_oslc_links()
+
+    assert isinstance(links, IRPCollection)
+    assert list(links) == [link_text]
+    fake.getOSLCLinks.assert_called_once_with()
 
 
 def test_model_element_delete_dependency_unwraps_argument() -> None:
@@ -587,11 +603,15 @@ def test_model_element_delete_from_project_delegates_to_com() -> None:
     fake.deleteFromProject.assert_called_once_with()
 
 
-def test_model_element_delete_oslc_link_raises_not_implemented() -> None:
-    element = IRPModelElement(make_fake_element("Class"))
+def test_model_element_delete_oslc_link_delegates_to_com() -> None:
+    fake = make_fake_element("Class")
+    element = IRPModelElement(fake)
+    link_type = "http://jazz.net/ns/dm/linktypes#external"
+    purl = "https://example.com/oslc/req/1"
 
-    with pytest.raises(NotImplementedError):
-        element.delete_oslc_link("type", "purl")
+    element.delete_oslc_link(link_type, purl)
+
+    fake.deleteOSLCLink.assert_called_once_with(link_type, purl)
 
 
 def test_model_element_error_message_returns_str() -> None:

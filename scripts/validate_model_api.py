@@ -518,9 +518,17 @@ def _camel_to_snake(name: str) -> str:
     return result.lower()
 
 
+# JavaDoc and the pywin32 type library occasionally use different names for the
+# same call. Normalize those pairs before family grouping so a documented alias
+# (authority JSON `documented_aliases`) can demote the family to ALIAS_DOCUMENTED
+# instead of splitting it into JAVA_DOC_MISSING + JAVA_ONLY_MEMBER rows.
+_COM_NAME_ALIASES = {"addgraphicalelementitem": "addGraphicalItem"}
+
+
 def _canonical_member_name(member_name: str) -> str:
     if member_name.startswith("python-only:"):
         return member_name
+    member_name = _COM_NAME_ALIASES.get(member_name.casefold(), member_name)
     if member_name[:3].lower() in ("get", "set") and len(member_name) > 3 and member_name[3].isupper():
         member_name = member_name[3:]
     return member_name[:1].lower() + member_name[1:]
@@ -1074,10 +1082,11 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     signature_rows = build_signature_rows(python_members, pywin32_signatures, wrapper_arities, wrapper_arg_types)
     raw_rows = build_deviation_rows(python_members, java_members, pywin32_members) + signature_rows
-    if args.source == "authority":
-        rows, informational_rows, backlog_rows = apply_pywin32_authority(raw_rows, args.java_interface, authority)
-    else:
-        rows, informational_rows, backlog_rows = raw_rows, [], []
+    # Documented decisions (aliases, documented_unavailable, intentionally
+    # unsupported) apply to both catalog sources. Without this, a typelib run
+    # reports already-documented families as actionable and cannot be compared
+    # against the authority-mode report.
+    rows, informational_rows, backlog_rows = apply_pywin32_authority(raw_rows, args.java_interface, authority)
 
     try:
         report_path.parent.mkdir(parents=True, exist_ok=True)

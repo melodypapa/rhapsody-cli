@@ -16,16 +16,17 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
 
 ## Rows
 
-- [ ] irp_interface_item_remediation - IRPInterfaceItem
-  - Baseline: arguments and signature are property-shaped; verify_sync.py passes.
-  - [ ] Section 1 member checklist and getter matrix published.
-  - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Section 3 both property members reconciled against JavaDoc/catalog.
-  - [ ] Section 4 fake-COM tests first; full unit suite green; irp_interface_item.py at 100% statements/branches.
-  - [ ] Section 5 create a real operation argument/signature and assert retrieved content/identity.
-  - [ ] Section 6 irp_interface_item.md checked/updated.
-  - [ ] Section 7 irp_interface_item.rst checked/updated for every public member.
-  - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded.
+- [x] irp_interface_item_remediation - IRPInterfaceItem
+  - Baseline: JavaDoc and report declare `com.telelogic.rhapsody.core`; seven owned members, zero validator deviations. Existing canonical wrapper/tests/exports verified.
+  - [x] Section 1: member checklist published; both getter matrix rows include fixture, relationship, identity/value assertion, test, and package cleanup.
+  - [x] Section 2: canonical wrapper, mirrored tests, imports/exports, and registration verified; report package agrees with JavaDoc.
+  - [x] Section 3: all seven owned members reconciled and matched. Live COM showed `addArgumentBeforePosition` expects zero-based position although JavaDoc specifies 1-based; wrapper converts `pos - 1`. Report regenerated; no actionable deviations.
+  - [x] Section 4: unit test first failed on the position conversion, then passed after the minimal wrapper fix. Focused unit coverage: 100% statements and branches (25 statements, 10 branches); full unit suite: 2,172 passed.
+  - [x] Section 5: four live integration tests pass, including populated `arguments` identity, exact operation/signature values, insertion order, and positive/negative signature matching. Fixtures delete their test packages; no exception assertions, skips, or xfails. Full integration suite: 449 passed.
+  - [x] Section 6: `docs/requirements/com/telelogic/rhapsody/core/irp_interface_item.md` updated with JavaDoc class description and verified COM position conversion.
+  - [x] Section 7: `docs/api/com/telelogic/rhapsody/core/irp_interface_item.rst` corrected to JavaDoc description and complete canonical identity; all seven public members documented; page already present in `docs/api/elements.rst` toctree.
+  - [x] Section 8: report regenerated; `validate_interface.py`, `verify_sync.py`, and `--strict-getters` pass; sync self-tests 83 passed; `ruff`, `black`, and `mypy` clean; baseline → final counts: unit 2,171 → 2,172 passed, integration 449 → 449 passed. Integration exception-catch list: none. Commit is recorded by the commit that archives this row.
+  - Members: `addArgument(String)` matched; `addArgumentBeforePosition(String, int)` matched with documented 1-based → COM 0-based conversion; `getArguments()` → `arguments` matched/property; `getSignature()` → `signature` matched/property; `getSignatureNoArgNames()` matched; `getSignatureNoArgTypes()` matched; `matchOnSignature(IRPInterfaceItem)` matched.
 - [x] irp_classifier_api_report (IRPClassifier · IRPClassifier · models/elements/classifiers/model_classifier.py · 20 sites)
   - Note: 3 method-shaped (`getAttributesIncludingBases`, `getInterfaceItemsIncludingBases`, `getRelationsIncludingBases`), rest property-shaped.
   - [x] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit

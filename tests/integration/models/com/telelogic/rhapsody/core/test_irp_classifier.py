@@ -15,7 +15,7 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProje
 
 
 @pytest.mark.integration
-class TestRPClassifierIntegration:
+class TestIRPClassifierIntegration:
     """Integration tests for IRPClassifier with real Rhapsody COM API."""
 
     @staticmethod
@@ -36,6 +36,7 @@ class TestRPClassifierIntegration:
         classifier: IRPClassifier = pkg.add_class(class_name)
         try:
             attribute = classifier.add_attribute(attr_name)
+            assert attribute in list(classifier.attributes)
             found = classifier.find_attribute(attr_name)
             assert found is not None
             assert found == attribute
@@ -43,39 +44,49 @@ class TestRPClassifierIntegration:
             attrs_after = [a.name for a in classifier.attributes]
             assert attr_name not in attrs_after
         finally:
-            classifier.delete_from_project()
+            pkg.delete_from_project()
 
     def test_find_interface_item(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("IfPkg")
         class_name = self._unique("IfCls")
         op_name = self._unique("myOp")
         pkg = self._create_package(test_project, pkg_name)
-        classifier: IRPClassifier = pkg.add_class(class_name)
+        classifier = pkg.add_class(class_name)
         try:
             op = classifier.add_operation(op_name)
             assert op is not None
             found = classifier.find_interface_item(f"{op_name}()")
             assert found is not None
             assert found == op
+            triggered_operation = classifier.add_triggered_operation(self._unique("TriggeredOp"))
+            found_trigger = classifier.find_trigger(triggered_operation.name)
+            assert found_trigger is not None
+            assert found_trigger == triggered_operation
             assert classifier.find_trigger(self._unique("NoSuchTrigger")) is None
         finally:
-            classifier.delete_from_project()
+            pkg.delete_from_project()
 
-    def test_add_port_and_get_ports(self, test_project: IRPProject) -> None:
-        pkg_name = self._unique("PortPkg")
-        class_name = self._unique("PortCls")
-        port_name = self._unique("myPort")
-        pkg = self._create_package(test_project, pkg_name)
-        classifier: IRPClassifier = pkg.add_class(class_name)
+    def test_get_ports_returns_port_created_with_generic_factory(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("PortPkg"))
+        classifier: IRPClassifier = pkg.add_class(self._unique("PortCls"))
         try:
-            port = classifier.add_port(port_name)
-            assert port is not None
+            port = classifier.add_new_aggr("Port", self._unique("myPort"))
             ports = list(classifier.ports)
             assert port in ports
         finally:
-            classifier.delete_from_project()
+            pkg.delete_from_project()
+
+    def test_source_artifacts(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("SrcArtPkg"))
+        classifier: IRPClassifier = pkg.add_class(self._unique("SrcArtCls"))
+        try:
+            artifact = classifier.add_new_aggr("File", self._unique("GeneratedSource"))
+            assert artifact in list(classifier.source_artifacts)
+        finally:
+            pkg.delete_from_project()
 
     def test_get_source_artifacts_empty(self, test_project: IRPProject) -> None:
+        """Additional empty-state assertion; the populated sibling verifies retrieval."""
         pkg_name = self._unique("SrcArtPkg")
         class_name = self._unique("SrcArtCls")
         pkg = self._create_package(test_project, pkg_name)
@@ -84,9 +95,19 @@ class TestRPClassifierIntegration:
             artifacts = list(classifier.source_artifacts)
             assert artifacts == []
         finally:
-            classifier.delete_from_project()
+            pkg.delete_from_project()
+
+    def test_sequence_diagrams(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("SeqDiagPkg"))
+        classifier: IRPClassifier = pkg.add_class(self._unique("SeqDiagCls"))
+        try:
+            diagram = classifier.add_new_aggr("SequenceDiagram", self._unique("ClassifierSequenceDiagram"))
+            assert diagram in list(classifier.sequence_diagrams)
+        finally:
+            pkg.delete_from_project()
 
     def test_get_sequence_diagrams_empty(self, test_project: IRPProject) -> None:
+        """Additional empty-state assertion; the populated sibling verifies retrieval."""
         pkg_name = self._unique("SeqDiagPkg")
         class_name = self._unique("SeqDiagCls")
         pkg = self._create_package(test_project, pkg_name)
@@ -95,9 +116,19 @@ class TestRPClassifierIntegration:
             diagrams = list(classifier.sequence_diagrams)
             assert diagrams == []
         finally:
-            classifier.delete_from_project()
+            pkg.delete_from_project()
+
+    def test_links(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("LinksPkg"))
+        classifier: IRPClassifier = pkg.add_class(self._unique("LinksCls"))
+        try:
+            link = classifier.add_new_aggr("Link", self._unique("ClassifierLink"))
+            assert link in list(classifier.links)
+        finally:
+            pkg.delete_from_project()
 
     def test_get_links_empty(self, test_project: IRPProject) -> None:
+        """Additional empty-state assertion; the populated sibling verifies retrieval."""
         pkg_name = self._unique("LinksPkg")
         class_name = self._unique("LinksCls")
         pkg = self._create_package(test_project, pkg_name)
@@ -106,7 +137,7 @@ class TestRPClassifierIntegration:
             links = list(classifier.links)
             assert links == []
         finally:
-            classifier.delete_from_project()
+            pkg.delete_from_project()
 
     def test_delete_operation(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("DelOpPkg")
@@ -123,7 +154,7 @@ class TestRPClassifierIntegration:
             ops_after = list(classifier.operations)
             assert op not in ops_after
         finally:
-            classifier.delete_from_project()
+            pkg.delete_from_project()
 
     def test_get_interface_items(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("IfItemsPkg")
@@ -136,9 +167,9 @@ class TestRPClassifierIntegration:
             items = list(classifier.interface_items)
             assert op in items
             inherited = list(classifier.get_interface_items_including_bases())
-            assert len(inherited) >= len(items)
+            assert op in inherited
         finally:
-            classifier.delete_from_project()
+            pkg.delete_from_project()
 
     def test_add_relation_to_and_find_and_delete(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("RelPkg")
@@ -160,8 +191,7 @@ class TestRPClassifierIntegration:
             relations_after = list(class_a.relations)
             assert relation not in relations_after
         finally:
-            class_a.delete_from_project()
-            class_b.delete_from_project()
+            pkg.delete_from_project()
 
     def test_add_relation_by_name(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("RelNmPkg")
@@ -170,15 +200,14 @@ class TestRPClassifierIntegration:
         role = self._unique("roleA")
         pkg = self._create_package(test_project, pkg_name)
         class_a = pkg.add_class(class_a_name)
-        class_b = pkg.add_class(class_b_name)
+        pkg.add_class(class_b_name)
         try:
             relation = class_a.add_relation(class_b_name, pkg_name, role, "Association", "1", role, "Association", "1", "")
             assert relation is not None
             relations = list(class_a.relations)
             assert relation in relations
         finally:
-            class_a.delete_from_project()
-            class_b.delete_from_project()
+            pkg.delete_from_project()
 
     def test_add_unidirectional_relation_to(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("UniRelPkg")
@@ -194,8 +223,7 @@ class TestRPClassifierIntegration:
             relations = list(class_a.relations)
             assert relation in relations
         finally:
-            class_a.delete_from_project()
-            class_b.delete_from_project()
+            pkg.delete_from_project()
 
     def test_add_unidirectional_relation_by_name(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("UniNmPkg")
@@ -204,15 +232,14 @@ class TestRPClassifierIntegration:
         role = self._unique("target")
         pkg = self._create_package(test_project, pkg_name)
         class_a = pkg.add_class(class_a_name)
-        class_b = pkg.add_class(class_b_name)
+        pkg.add_class(class_b_name)
         try:
             relation = class_a.add_unidirectional_relation(class_b_name, pkg_name, role, "Association", "1", "")
             assert relation is not None
             relations = list(class_a.relations)
             assert relation in relations
         finally:
-            class_a.delete_from_project()
-            class_b.delete_from_project()
+            pkg.delete_from_project()
 
     def test_generalization_hierarchy(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("GenPkg")
@@ -238,13 +265,12 @@ class TestRPClassifierIntegration:
             inherited_attributes = list(derived.get_attributes_including_bases())
             assert base_attribute in inherited_attributes
             generalizations = list(derived.generalizations)
-            assert len(generalizations) >= 1
+            assert found_generalization in generalizations
             derived.delete_generalization(base)
             base_classifiers_after = list(derived.base_classifiers)
             assert base not in base_classifiers_after
         finally:
-            derived.delete_from_project()
-            base.delete_from_project()
+            pkg.delete_from_project()
 
     def test_get_relations_including_bases(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("RelIncPkg")
@@ -264,9 +290,7 @@ class TestRPClassifierIntegration:
             derived_rels_incl = list(derived.get_relations_including_bases())
             assert rel in derived_rels_incl
         finally:
-            derived.delete_from_project()
-            base.delete_from_project()
-            other.delete_from_project()
+            pkg.delete_from_project()
 
     def test_add_activity_diagram_and_get_behavioral_diagrams(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("ActDiagPkg")
@@ -278,10 +302,11 @@ class TestRPClassifierIntegration:
             assert activity_diagram is not None
             fetched = classifier.activity_diagram
             assert fetched is not None
+            assert fetched == activity_diagram
             behavioral = list(classifier.behavioral_diagrams)
-            assert len(behavioral) >= 1
+            assert activity_diagram in behavioral
         finally:
-            classifier.delete_from_project()
+            pkg.delete_from_project()
 
     def test_get_statechart(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("ScPkg")
@@ -295,7 +320,7 @@ class TestRPClassifierIntegration:
             assert fetched is not None
             assert fetched == sc
         finally:
-            classifier.delete_from_project()
+            pkg.delete_from_project()
 
     def test_add_flow_items_and_delete(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("FlowItPkg")
@@ -312,7 +337,7 @@ class TestRPClassifierIntegration:
             items_after = list(classifier.flow_items)
             assert flow_item not in items_after
         finally:
-            classifier.delete_from_project()
+            pkg.delete_from_project()
 
     def test_add_flows_and_delete(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("FlowPkg")
@@ -329,7 +354,7 @@ class TestRPClassifierIntegration:
             flows_after = list(classifier.flows)
             assert flow not in flows_after
         finally:
-            classifier.delete_from_project()
+            pkg.delete_from_project()
 
     def test_nested_classifiers_and_find(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("NestPkg")
@@ -350,4 +375,4 @@ class TestRPClassifierIntegration:
             found_deep = outer.find_nested_classifier_recursive(deep_name)
             assert found_deep == deep
         finally:
-            outer.delete_from_project()
+            pkg.delete_from_project()

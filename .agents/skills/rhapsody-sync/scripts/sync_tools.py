@@ -5,7 +5,7 @@ import json
 import re
 import sys
 from pathlib import Path
-from typing import List, Optional, Set, Tuple
+from typing import Dict, List, Optional, Set, Tuple
 
 _INTERFACE_PATTERN = re.compile(r"^# Rhapsody API Validation: (IRP[A-Za-z0-9_]+)$", re.MULTILINE)
 _WRAPPER_PATTERN = re.compile(r"^- Target wrapper: `([^`]+)` \(`([^`]+)`\)$", re.MULTILINE)
@@ -428,14 +428,31 @@ def _owned_property_names(wrapper_source: str) -> Set[str]:
     return names
 
 
+def _is_empty_collection_literal(expression: ast.expr) -> bool:
+    """Return whether the expression is a literal empty list/tuple/set/dict."""
+    if isinstance(expression, ast.Dict):
+        return not expression.keys
+    if isinstance(expression, (ast.List, ast.Tuple, ast.Set)):
+        return not expression.elts
+    return False
+
+
 def _is_weak_getter_assertion(expression: ast.expr) -> bool:
     """Return whether an assertion proves only non-None/type/count/truthiness."""
     if isinstance(expression, ast.Constant):
+        return True
+    if isinstance(expression, ast.UnaryOp) and isinstance(expression.op, ast.Not):
         return True
     if isinstance(expression, ast.Compare):
         if len(expression.ops) == 1 and isinstance(expression.ops[0], ast.IsNot):
             comparator = expression.comparators[0]
             return isinstance(comparator, ast.Constant) and comparator.value is None
+        if any(_is_empty_collection_literal(comparator) for comparator in expression.comparators):
+            return True
+        if len(expression.ops) == 1 and isinstance(expression.ops[0], ast.GtE):
+            comparator = expression.comparators[0]
+            if isinstance(comparator, ast.Constant) and comparator.value == 0:
+                return True
         operands = [expression.left, *expression.comparators]
         return any(isinstance(operand, ast.Call) and isinstance(operand.func, ast.Name) and operand.func.id == "len" for operand in operands)
     if isinstance(expression, ast.Call):
@@ -443,28 +460,789 @@ def _is_weak_getter_assertion(expression: ast.expr) -> bool:
     return isinstance(expression, (ast.Name, ast.Attribute))
 
 
-def verify_getter_assertions(path: Path, property_names: Set[str]) -> List[str]:
-    """Reject getter tests that assert only non-None/type/count/truthiness.
+_GETTER_TEST_SUFFIXES = ("_empty_state", "_empty")
 
-    SKILL section 5 requires a getter integration test to create the real
-    related object, then assert identity or value; an empty collection or a
-    non-``None`` return is not evidence that retrieval works.
-    """
-    issues: List[str] = []
+
+def _getter_property_for_test(test_name: str, property_names: Set[str]) -> Optional[str]:
+    """Map ``test_<property>`` / ``test_get_<property>[_empty]`` to a wrapper property."""
+    if not test_name.startswith("test_"):
+        return None
+    member = test_name[len("test_") :]
+    if member.startswith("get_"):
+        member = member[len("get_") :]
+    for suffix in _GETTER_TEST_SUFFIXES:
+        if member.endswith(suffix):
+            member = member[: -len(suffix)]
+            break
+    return member if member in property_names else None
+
+
+def _collect_getter_coverage(path: Path, property_names: Set[str]) -> Dict[str, List[Tuple[str, int, bool]]]:
+    """Map each owned property to its integration tests and whether they are weak."""
+    coverage: Dict[str, List[Tuple[str, int, bool]]] = {}
     tree = ast.parse(path.read_text(encoding="utf-8"))
     for node in ast.walk(tree):
-        if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) or not node.name.startswith("test_"):
+        if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
             continue
-        member = node.name[len("test_") :]
-        if member not in property_names:
+        member = _getter_property_for_test(node.name, property_names)
+        if member is None:
             continue
         assertions = [statement for statement in ast.walk(node) if isinstance(statement, ast.Assert)]
-        if not assertions or all(_is_weak_getter_assertion(assertion.test) for assertion in assertions):
-            issues.append(f"getter test {node.name} at line {node.lineno} only asserts non-None/type/count; create the related object and assert identity/value (SKILL section 5)")
+        weak = not assertions or all(_is_weak_getter_assertion(assertion.test) for assertion in assertions)
+        coverage.setdefault(member, []).append((node.name, node.lineno, weak))
+    return coverage
+
+
+_BLOCKER_HEADING = "## P0 integration-test blockers"
+
+
+def _parse_blocker_members(root: Path, interface_name: str) -> Set[str]:
+    """Return backticked member names recorded as blockers for one interface."""
+    path = getter_matrix_path(root).parent / "index.md"
+    if not path.is_file():
+        return set()
+    lines = path.read_text(encoding="utf-8").splitlines()
+    start = next((index for index, line in enumerate(lines) if line.strip().startswith(_BLOCKER_HEADING)), None)
+    if start is None:
+        return set()
+    members: Set[str] = set()
+    for line in lines[start + 1 :]:
+        if line.startswith("## "):
+            break
+        cells = _split_table_row(line)
+        if cells is None or len(cells) < 2 or cells[0].strip() != interface_name:
+            continue
+        members.update(re.findall(r"`([^`]+)`", cells[1]))
+    return members
+
+
+def verify_getter_assertions(path: Path, property_names: Set[str], blocked: Optional[Set[str]] = None) -> List[str]:
+    """Reject getter properties covered only by non-None/type/count/empty assertions.
+
+    SKILL section 5 requires at least one getter integration test per property
+    that creates the real related object and asserts identity or value. An
+    empty-state test (``test_<property>_empty``) is an additional case, not a
+    substitute, so a property fails when every matching test is weak.
+    """
+    issues: List[str] = []
+    for member, tests in _collect_getter_coverage(path, property_names).items():
+        if member in (blocked or set()):
+            continue
+        if all(weak for _, _, weak in tests):
+            names = ", ".join(f"{name} (line {lineno})" for name, lineno, _ in tests)
+            issues.append(f"getter {member!r} is only covered by weak assertions: {names}; create the related object and assert identity/value (SKILL section 5)")
     return issues
 
 
-def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) -> List[str]:
+_GETTER_MATRIX_RELATIVE = Path("docs") / "reports" / "sync-todo" / "getter-matrix.md"
+_GETTER_MATRIX_HEADER = "| Java getter / Python member | Integration test | Assertion | Status |"
+_GETTER_MATRIX_SEPARATOR = "| --- | --- | --- | --- |"
+_MATRIX_ASSERTION_STATUS = {"identity/value": "OK", "weak": "WEAK", "none": "MISSING"}
+_GETTER_MATRIX_PREAMBLE = (
+    "# Getter fixture matrix\n\n"
+    "Machine-readable record of one integration test per owned getter, checked by `verify_sync.py` Step 8.\n"
+    "Regenerate an interface section with\n"
+    "`python .agents/skills/rhapsody-sync/scripts/verify_sync.py <INTERFACE> --write-getter-matrix`,\n"
+    "then replace a `MISSING` or `WEAK` row with the test that really asserts the getter.\n"
+)
+
+
+def getter_matrix_path(root: Path) -> Path:
+    """Return the committed machine-readable Getter fixture matrix path."""
+    return root / _GETTER_MATRIX_RELATIVE
+
+
+def _relative_to_root(root: Path, path: Path) -> str:
+    try:
+        return path.resolve().relative_to(root.resolve()).as_posix()
+    except ValueError:
+        return path.as_posix()
+
+
+def _getter_matrix_rows(root: Path, test_path: Path, property_names: Set[str]) -> Dict[str, Tuple[str, str, str]]:
+    """Derive (test reference, assertion kind, status) for every owned property."""
+    coverage = _collect_getter_coverage(test_path, property_names) if test_path.is_file() else {}
+    relative_test = _relative_to_root(root, test_path)
+    rows: Dict[str, Tuple[str, str, str]] = {}
+    for prop in sorted(property_names):
+        tests = coverage.get(prop, [])
+        strong = [name for name, _, weak in tests if not weak]
+        if strong:
+            rows[prop] = (f"{relative_test}::{strong[0]}", "identity/value", "OK")
+        elif tests:
+            rows[prop] = (f"{relative_test}::{tests[0][0]}", "weak", "WEAK")
+        else:
+            rows[prop] = ("—", "none", "MISSING")
+    return rows
+
+
+def render_getter_matrix_section(root: Path, interface_name: str, property_names: Set[str], test_path: Path) -> str:
+    """Render the ``## <INTERFACE>`` matrix section for one wrapper."""
+    lines = [f"## {interface_name}", "", _GETTER_MATRIX_HEADER, _GETTER_MATRIX_SEPARATOR]
+    for prop, (test_ref, assertion, status) in _getter_matrix_rows(root, test_path, property_names).items():
+        test_cell = f"`{test_ref}`" if test_ref != "—" else "—"
+        lines.append(f"| `{prop}` | {test_cell} | {assertion} | {status} |")
+    return "\n".join(lines) + "\n"
+
+
+def _extract_matrix_section(text: str, interface_name: str) -> Optional[str]:
+    lines = text.splitlines()
+    marker = f"## {interface_name}"
+    start: Optional[int] = None
+    for index, line in enumerate(lines):
+        if line.strip() == marker:
+            start = index + 1
+            break
+    if start is None:
+        return None
+    end = len(lines)
+    for index in range(start, len(lines)):
+        if lines[index].startswith("## "):
+            end = index
+            break
+    return "\n".join(lines[start:end])
+
+
+def _parse_matrix_rows(section: str) -> Dict[str, Tuple[str, str, str]]:
+    rows: Dict[str, Tuple[str, str, str]] = {}
+    for line in section.splitlines():
+        stripped = line.strip()
+        if not stripped.startswith("|"):
+            continue
+        cells = [cell.strip() for cell in stripped.strip("|").split("|")]
+        if len(cells) < 4 or cells[0] == "Java getter / Python member" or set(cells[0]) <= {"-", ":", " "}:
+            continue
+        prop = cells[0].strip("`").strip()
+        test_ref = cells[1].strip("`").strip() if cells[1].startswith("`") else cells[1]
+        rows[prop] = (test_ref, cells[2], cells[3])
+    return rows
+
+
+def upsert_getter_matrix_section(root: Path, interface_name: str, section: str) -> Path:
+    """Insert or replace one interface section, preserving every other section."""
+    path = getter_matrix_path(root)
+    text = path.read_text(encoding="utf-8") if path.is_file() else _GETTER_MATRIX_PREAMBLE
+    lines = text.rstrip("\n").splitlines()
+    marker = f"## {interface_name}"
+    start: Optional[int] = None
+    for index, line in enumerate(lines):
+        if line.strip() == marker:
+            start = index
+            break
+    section_lines = section.rstrip("\n").splitlines()
+    if start is None:
+        lines = lines + [""] + section_lines
+    else:
+        end = len(lines)
+        for index in range(start + 1, len(lines)):
+            if lines[index].startswith("## "):
+                end = index
+                break
+        lines = lines[:start] + section_lines + [""] + lines[end:]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(re.sub(r"\n{3,}", "\n\n", "\n".join(lines)) + "\n", encoding="utf-8")
+    return path
+
+
+def verify_getter_matrix(root: Path, interface_name: str, property_names: Set[str], test_path: Path, strict: bool = False, blocked: Optional[Set[str]] = None) -> List[str]:
+    """Check the committed Getter fixture matrix covers every owned getter.
+
+    The matrix is a machine-readable companion to SKILL section 1: one row per
+    owned property, an assertion kind (``identity/value``, ``weak``, ``none``),
+    a status consistent with that kind, and an integration test reference that
+    resolves to a real test. Coverage status itself is reported by
+    ``verify_getter_assertions``; this check owns structure, staleness, and
+    dangling references.
+    """
+    if not property_names:
+        return []
+    hint = f"run `python .agents/skills/rhapsody-sync/scripts/verify_sync.py {interface_name} --write-getter-matrix`"
+    matrix_path = getter_matrix_path(root)
+    if not matrix_path.is_file():
+        return [f"Getter fixture matrix not found: {matrix_path}; {hint}"]
+    section = _extract_matrix_section(matrix_path.read_text(encoding="utf-8"), interface_name)
+    if section is None:
+        return [f"Getter fixture matrix has no '## {interface_name}' section; {hint}"]
+    rows = _parse_matrix_rows(section)
+    issues: List[str] = []
+    for prop in sorted(property_names):
+        if prop not in rows:
+            issues.append(f"Getter fixture matrix is missing a row for {interface_name}.{prop}; {hint}")
+    for prop in sorted(set(rows) - set(property_names)):
+        issues.append(f"Getter fixture matrix has a stale row for {interface_name}.{prop}: the wrapper no longer exposes that property; {hint}")
+    for prop, (test_ref, assertion, status) in rows.items():
+        expected_status = _MATRIX_ASSERTION_STATUS.get(assertion)
+        if expected_status is None:
+            issues.append(f"Getter fixture matrix row {interface_name}.{prop} has an unknown assertion '{assertion}' (expected identity/value, weak, or none)")
+            continue
+        if strict and assertion in {"weak", "none"} and prop not in (blocked or set()):
+            issues.append(f"Getter fixture matrix row {interface_name}.{prop} is '{assertion}' but not recorded as a blocker; add a populated test or a blocker row in index.md")
+        if status != expected_status:
+            issues.append(f"Getter fixture matrix row {interface_name}.{prop} records status '{status}' for assertion '{assertion}'; expected '{expected_status}'")
+        if test_ref == "—":
+            continue
+        file_part, _, test_name = test_ref.partition("::")
+        test_file = root / file_part
+        if not test_file.is_file():
+            issues.append(f"Getter fixture matrix row {interface_name}.{prop} references a missing test file: {file_part}")
+        elif test_name and test_name not in test_file.read_text(encoding="utf-8"):
+            issues.append(f"Getter fixture matrix row {interface_name}.{prop} references a missing test: {test_ref}")
+    return issues
+
+
+def _find_integration_test(root: Path, wrapper_path: Path, interface_name: str) -> Path:
+    """Resolve the mirrored integration test path for a wrapper, existing or not."""
+    java_snake = _java_interface_snake(interface_name)
+    stems = [wrapper_path.stem] if wrapper_path.stem == java_snake else [wrapper_path.stem, java_snake]
+    try:
+        rel_parent = wrapper_path.parent.relative_to(root / "src" / "rhapsody_cli")
+    except ValueError:
+        rel_parent = Path()
+    if rel_parent.parts and rel_parent.parts[0] == "models":
+        test_dir = root / "tests" / "integration" / rel_parent
+    else:
+        test_dir = root / "tests" / "integration"
+    for stem in stems:
+        candidate = test_dir / f"test_{stem}.py"
+        if candidate.is_file():
+            return candidate
+    return test_dir / f"test_{stems[0]}.py"
+
+
+def write_getter_matrix(root: Path, interface_name: str, report_path: Path) -> Path:
+    """Regenerate one interface's matrix section from the wrapper and its tests."""
+    simple_name, _java_package, _java_doc = find_java_doc(root, interface_name)
+    _wrapper_class, source_path = parse_report_target(report_path.read_text(encoding="utf-8"))
+    wrapper_path, _canonical = _canonical_import(root, source_path)
+    property_names = _owned_property_names(wrapper_path.read_text(encoding="utf-8")) if wrapper_path.is_file() else set()
+    test_path = _find_integration_test(root, wrapper_path, simple_name)
+    section = render_getter_matrix_section(root, simple_name, property_names, test_path)
+    return upsert_getter_matrix_section(root, simple_name, section)
+
+
+_GETTER_DIFF_RELATIVE = Path("docs") / "reports" / "sync-todo" / "getter-catalog-diff.md"
+_GETTER_DIFF_HEADER = "| Python getter | COM member | Binding shape | Catalog shape | Status |"
+_GETTER_DIFF_SEPARATOR = "| --- | --- | --- | --- | --- |"
+_GETTER_DIFF_CATALOG_HEADER = "| Catalog property | Derived Python name | Status |"
+_GETTER_DIFF_CATALOG_SEPARATOR = "| --- | --- | --- |"
+_GETTER_DIFF_STATUSES = ("match", "catalog-missing", "shape-mismatch", "no-binding", "stub", "catalog-only")
+_GETTER_DIFF_MISSING = "—"
+_GETTER_DIFF_PREAMBLE = (
+    "# Getter implementation vs pywin32 catalog\n\n"
+    "Per-owned-getter comparison of the Python binding against `docs/reports/pywin32_authority.json`.\n"
+    "Regenerate one interface section with\n"
+    "`python .agents/skills/rhapsody-sync/scripts/verify_sync.py <INTERFACE> --write-getter-diff`.\n\n"
+    "Statuses: `match` — the bound COM member exists with the catalog's shape; `catalog-missing` — the bound member is absent\n"
+    "from the catalog; `shape-mismatch` — the binding form differs from the catalog shape; `no-binding` — the property is pure\n"
+    "Python; `stub` — the property raises `NotImplementedError` (see the stub evidence ledger); `catalog-only` — a catalog\n"
+    "property has no Python property with the derived snake_case name anywhere in the wrapper MRO, a candidate gap for human\n"
+    "review rather than a failure.\n\n"
+    "## Summary\n\n"
+    "| Status | Count |\n"
+    "| --- | --- |\n"
+    "| match | 0 |\n"
+    "| catalog-missing | 0 |\n"
+    "| shape-mismatch | 0 |\n"
+    "| no-binding | 0 |\n"
+    "| stub | 0 |\n"
+    "| catalog-only | 0 |\n"
+)
+
+
+def getter_catalog_diff_path(root: Path) -> Path:
+    """Return the committed Getter implementation-vs-catalog diff report path."""
+    return root / _GETTER_DIFF_RELATIVE
+
+
+def _property_getter_nodes(wrapper_source: str) -> List[Tuple[str, ast.AST]]:
+    """Return the ``@property`` getter names and nodes declared in a wrapper module."""
+    getters: List[Tuple[str, ast.AST]] = []
+    tree = ast.parse(wrapper_source)
+    for class_node in (node for node in ast.walk(tree) if isinstance(node, ast.ClassDef)):
+        for function in class_node.body:
+            if not isinstance(function, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                continue
+            decorators = {getattr(decorator, "id", None) or getattr(decorator, "attr", None) for decorator in function.decorator_list}
+            if decorators & _PROPERTY_DECORATORS:
+                getters.append((function.name, function))
+    return getters
+
+
+def _diff_code_cell(value: str) -> str:
+    return _GETTER_DIFF_MISSING if value == _GETTER_DIFF_MISSING else f"`{value}`"
+
+
+def _getter_diff_binding_rows(wrapper_source: str, catalog: Dict[str, str]) -> List[Tuple[str, str, str, str, str]]:
+    """Return (Python getter, COM member, binding shape, catalog shape, status) rows."""
+    lowered = {str(name).lower(): (str(name), str(shape)) for name, shape in catalog.items()}
+    rows: List[Tuple[str, str, str, str, str]] = []
+    for name, getter in _property_getter_nodes(wrapper_source):
+        bindings = _collect_bindings(getter)
+        if not bindings:
+            status = "stub" if any(_raises_not_implemented(candidate) for candidate in ast.walk(getter)) else "no-binding"
+            rows.append((name, _GETTER_DIFF_MISSING, _GETTER_DIFF_MISSING, _GETTER_DIFF_MISSING, status))
+            continue
+        for member, shape, _arity in bindings:
+            found = lowered.get(member.lower())
+            if found is None:
+                rows.append((name, member, shape, _GETTER_DIFF_MISSING, "catalog-missing"))
+            elif found[1] != shape:
+                rows.append((name, member, shape, found[1], "shape-mismatch"))
+            else:
+                rows.append((name, found[0], shape, found[1], "match"))
+    return rows
+
+
+def _base_class_name(node: ast.expr) -> Optional[str]:
+    if isinstance(node, ast.Name):
+        return node.id
+    if isinstance(node, ast.Attribute):
+        return node.attr
+    if isinstance(node, ast.Subscript):
+        return _base_class_name(node.value)
+    return None
+
+
+def _wrapper_class_index(root: Path) -> Dict[str, List[Tuple[Set[str], List[str]]]]:
+    """Index every model wrapper class by name: (property names, base class names)."""
+    index: Dict[str, List[Tuple[Set[str], List[str]]]] = {}
+    models_root = root / "src" / "rhapsody_cli" / "models"
+    if not models_root.is_dir():
+        return index
+    for path in sorted(models_root.rglob("*.py")):
+        try:
+            tree = ast.parse(path.read_text(encoding="utf-8"))
+        except (OSError, SyntaxError, UnicodeDecodeError):
+            continue
+        for class_node in (node for node in ast.walk(tree) if isinstance(node, ast.ClassDef)):
+            properties: Set[str] = set()
+            for function in class_node.body:
+                if not isinstance(function, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    continue
+                decorators = {getattr(decorator, "id", None) or getattr(decorator, "attr", None) for decorator in function.decorator_list}
+                if decorators & _PROPERTY_DECORATORS:
+                    properties.add(function.name)
+            bases = [name for name in (_base_class_name(base) for base in class_node.bases) if name]
+            index.setdefault(class_node.name, []).append((properties, bases))
+    return index
+
+
+def _mro_property_names(index: Dict[str, List[Tuple[Set[str], List[str]]]], class_name: str, seen: Optional[Set[str]] = None) -> Set[str]:
+    """Return property names declared by a class and its resolvable in-repo bases."""
+    visited = seen if seen is not None else set()
+    if class_name in visited:
+        return set()
+    visited.add(class_name)
+    names: Set[str] = set()
+    for properties, bases in index.get(class_name, []):
+        names |= properties
+        for base in bases:
+            names |= _mro_property_names(index, base, visited)
+    return names
+
+
+def _model_class_members(root: Path) -> Dict[str, List[Tuple[Set[str], Set[str], List[str]]]]:
+    """Index every model class as (methods, properties, base names)."""
+    index: Dict[str, List[Tuple[Set[str], Set[str], List[str]]]] = {}
+    models_root = root / "src" / "rhapsody_cli" / "models"
+    for path in models_root.rglob("*.py"):
+        try:
+            tree = ast.parse(path.read_text(encoding="utf-8"))
+        except (OSError, SyntaxError, UnicodeDecodeError):
+            continue
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.ClassDef):
+                continue
+            methods = {item.name for item in node.body if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))}
+            properties: Set[str] = set()
+            for item in node.body:
+                if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    decorators = {getattr(decorator, "id", None) or getattr(decorator, "attr", None) for decorator in item.decorator_list}
+                    if decorators & _PROPERTY_DECORATORS:
+                        properties.add(item.name)
+            bases = [name for name in (_base_class_name(base) for base in node.bases) if name]
+            index.setdefault(node.name, []).append((methods, properties, bases))
+    return index
+
+
+def _mro_members(index: Dict[str, List[Tuple[Set[str], Set[str], List[str]]]], class_name: str, seen: Optional[Set[str]] = None) -> Tuple[Set[str], Set[str]]:
+    """Return the union of methods and properties declared on a class and its bases."""
+    seen = seen if seen is not None else set()
+    if class_name in seen:
+        return set(), set()
+    seen.add(class_name)
+    methods: Set[str] = set()
+    properties: Set[str] = set()
+    for own_methods, own_properties, bases in index.get(class_name, []):
+        methods |= own_methods
+        properties |= own_properties
+        for base in bases:
+            base_methods, base_properties = _mro_members(index, base, seen)
+            methods |= base_methods
+            properties |= base_properties
+    return methods, properties
+
+
+def _own_members(wrapper_source: str, wrapper_class: str) -> Tuple[Set[str], Set[str]]:
+    """Return the public methods and properties declared directly on the wrapper class."""
+    tree = ast.parse(wrapper_source)
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ClassDef) and node.name == wrapper_class:
+            methods = {item.name for item in node.body if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))}
+            properties: Set[str] = set()
+            for item in node.body:
+                if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    decorators = {getattr(decorator, "id", None) or getattr(decorator, "attr", None) for decorator in item.decorator_list}
+                    if decorators & _PROPERTY_DECORATORS:
+                        properties.add(item.name)
+            return methods, properties
+    return set(), set()
+
+
+def collect_inherited_assertion_notes(root: Path, wrapper_source: str, wrapper_class: str, test_path: Path) -> List[str]:
+    """Return assertions whose only referenced wrapper member is inherited.
+
+    AGENTS.md scopes each mirrored integration file to the wrapper class's own
+    members: parent members may build the fixture but must not be the subject
+    of an assertion. This scan is advisory unless the caller promotes it.
+    """
+    own_methods, own_properties = _own_members(wrapper_source, wrapper_class)
+    index = _model_class_members(root)
+    for node in ast.walk(ast.parse(wrapper_source)):
+        if isinstance(node, ast.ClassDef) and node.name == wrapper_class:
+            methods = {item.name for item in node.body if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))}
+            properties: Set[str] = set()
+            for item in node.body:
+                if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    decorators = {getattr(decorator, "id", None) or getattr(decorator, "attr", None) for decorator in item.decorator_list}
+                    if decorators & _PROPERTY_DECORATORS:
+                        properties.add(item.name)
+            bases = [name for name in (_base_class_name(base) for base in node.bases) if name]
+            index[wrapper_class] = [(methods, properties, bases)]
+            break
+    all_methods, all_properties = _mro_members(index, wrapper_class)
+    base_only = (all_methods | all_properties) - (own_methods | own_properties)
+    if not base_only:
+        return []
+    notes: List[str] = []
+    tree = ast.parse(test_path.read_text(encoding="utf-8"))
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Assert):
+            continue
+        attributes = {child.attr for child in ast.walk(node) if isinstance(child, ast.Attribute)}
+        inherited = attributes & base_only
+        own = attributes & (own_methods | own_properties)
+        if inherited and not own:
+            notes.append(f"{test_path.name}:{node.lineno} asserts inherited member(s) only: {', '.join(sorted(inherited))}; assert an own member instead (AGENTS.md integration scope)")
+    return notes
+
+
+# Documented naming drift: catalog property name -> actual Python property name.
+# These are deliberately not "catalog-only" gaps because the wrapper exposes the
+# value under a different snake_case name.
+_CATALOG_NAME_ALIASES: Dict[str, Dict[str, str]] = {
+    "IRPOperation": {"return_type": "returns"},
+}
+
+# Catalog properties with no own-JavaDoc declaration on the interface and no
+# Python property by design. Recorded per interface; verified 2026-11-25 that
+# IRPArgument/IRPAttribute/IRPPort do not declare these in their own JavaDoc,
+# and IRPCollection exposes Items through get_item/count/iteration instead.
+_CATALOG_NOT_APPLICABLE: Dict[str, Set[str]] = {
+    "IRPArgument": {"declaration", "defaultValue", "type", "typeOf", "valueSpecifications"},
+    "IRPAttribute": {"declaration", "defaultValue", "type", "typeOf", "valueSpecifications"},
+    "IRPCollection": {"Items", "interfaceName"},
+    "IRPPort": {
+        "ObjectAsObjectType",
+        "instantiatedBy",
+        "inverse",
+        "isNavigable",
+        "isSymmetric",
+        "multiplicity",
+        "ofClass",
+        "otherClass",
+        "qualifier",
+        "relationLabel",
+        "relationLinkName",
+        "relationRoleName",
+        "relationType",
+        "visibility",
+    },
+}
+
+
+def _catalog_only_properties(index: Dict[str, List[Tuple[Set[str], List[str]]]], wrapper_class: str, catalog: Dict[str, str]) -> List[Tuple[str, str]]:
+    """Return catalog properties with no derived-name Python property in the wrapper MRO."""
+    known = _mro_property_names(index, wrapper_class)
+    aliases = _CATALOG_NAME_ALIASES.get(wrapper_class, {})
+    not_applicable = {name.casefold() for name in _CATALOG_NOT_APPLICABLE.get(wrapper_class, set())}
+    candidates: List[Tuple[str, str]] = []
+    for member, shape in catalog.items():
+        if str(shape) != "property":
+            continue
+        derived = _java_interface_snake(str(member))
+        if derived in known or aliases.get(derived) in known:
+            continue
+        if str(member).casefold() in not_applicable:
+            continue
+        candidates.append((str(member), derived))
+    return sorted(candidates)
+
+
+def render_getter_catalog_diff_section(root: Path, interface_name: str, wrapper_class: str, wrapper_source: str, catalog: Dict[str, str]) -> str:
+    """Render the ``## <INTERFACE>`` diff section for one wrapper."""
+    lines = [f"## {interface_name}", "", _GETTER_DIFF_HEADER, _GETTER_DIFF_SEPARATOR]
+    for name, member, shape, catalog_shape, status in _getter_diff_binding_rows(wrapper_source, catalog):
+        lines.append(f"| {_diff_code_cell(name)} | {_diff_code_cell(member)} | {shape} | {catalog_shape} | {status} |")
+    lines.extend(["", "### Catalog properties with no matching Python property", "", _GETTER_DIFF_CATALOG_HEADER, _GETTER_DIFF_CATALOG_SEPARATOR])
+    candidates = _catalog_only_properties(_wrapper_class_index(root), wrapper_class, catalog)
+    if candidates:
+        lines.extend(f"| `{member}` | `{derived}` | catalog-only |" for member, derived in candidates)
+    else:
+        lines.append(f"| {_GETTER_DIFF_MISSING} | {_GETTER_DIFF_MISSING} | {_GETTER_DIFF_MISSING} |")
+    return "\n".join(lines) + "\n"
+
+
+def _getter_catalog_diff_counts(text: str) -> Dict[str, int]:
+    counts = {status: 0 for status in _GETTER_DIFF_STATUSES}
+    for line in text.splitlines():
+        cells = _split_table_row(line)
+        if cells is None or cells[-1] not in counts:
+            continue
+        if len(cells) == 5 or (len(cells) == 3 and cells[-1] == "catalog-only"):
+            counts[cells[-1]] += 1
+    return counts
+
+
+def _rewrite_getter_catalog_diff_summary(path: Path) -> None:
+    text = path.read_text(encoding="utf-8")
+    lines = text.splitlines()
+    start: Optional[int] = None
+    for index, line in enumerate(lines):
+        if line.strip() == "## Summary":
+            start = index
+            break
+    if start is None:
+        return
+    end = len(lines)
+    for index in range(start + 1, len(lines)):
+        if lines[index].startswith("## "):
+            end = index
+            break
+    counts = _getter_catalog_diff_counts(text)
+    summary = ["## Summary", "", "| Status | Count |", "| --- | --- |"]
+    summary.extend(f"| {status} | {counts[status]} |" for status in _GETTER_DIFF_STATUSES)
+    lines = lines[:start] + summary + [""] + lines[end:]
+    path.write_text(re.sub(r"\n{3,}", "\n\n", "\n".join(lines)) + "\n", encoding="utf-8")
+
+
+def upsert_getter_catalog_diff_section(root: Path, interface_name: str, section: str) -> Path:
+    """Insert or replace one interface diff section, then refresh the summary."""
+    path = getter_catalog_diff_path(root)
+    text = path.read_text(encoding="utf-8") if path.is_file() else _GETTER_DIFF_PREAMBLE
+    lines = text.rstrip("\n").splitlines()
+    marker = f"## {interface_name}"
+    start: Optional[int] = None
+    for index, line in enumerate(lines):
+        if line.strip() == marker:
+            start = index
+            break
+    section_lines = section.rstrip("\n").splitlines()
+    if start is None:
+        lines = lines + [""] + section_lines
+    else:
+        end = len(lines)
+        for index in range(start + 1, len(lines)):
+            if lines[index].startswith("## "):
+                end = index
+                break
+        lines = lines[:start] + section_lines + [""] + lines[end:]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(re.sub(r"\n{3,}", "\n\n", "\n".join(lines)) + "\n", encoding="utf-8")
+    _rewrite_getter_catalog_diff_summary(path)
+    return path
+
+
+def write_getter_catalog_diff(root: Path, interface_name: str, report_path: Path) -> Path:
+    """Regenerate one interface's getter-vs-catalog diff section."""
+    simple_name, _package = split_interface_name(interface_name)
+    wrapper_class, source_path = parse_report_target(report_path.read_text(encoding="utf-8"))
+    wrapper_path, _canonical = _canonical_import(root, source_path)
+    if not wrapper_path.is_file():
+        raise FileNotFoundError(f"Wrapper source does not exist: {wrapper_path}")
+    authority = json.loads((root / "docs" / "reports" / "pywin32_authority.json").read_text(encoding="utf-8"))
+    catalog = authority.get("catalog", {}).get(simple_name, {})
+    if not isinstance(catalog, dict) or not catalog:
+        raise ValueError(f"pywin32 catalog has no entry for {simple_name}")
+    section = render_getter_catalog_diff_section(root, simple_name, wrapper_class, wrapper_path.read_text(encoding="utf-8"), catalog)
+    return upsert_getter_catalog_diff_section(root, simple_name, section)
+
+
+_NOT_IMPLEMENTED_LEDGER_RELATIVE = Path("docs") / "reports" / "sync-todo" / "index.md"
+_NOT_IMPLEMENTED_LEDGER_HEADING = "## NotImplementedError stubs"
+_NOT_IMPLEMENTED_BASES = {"not-exposed", "java-doc-unimplemented", "runtime-stub"}
+_ISO_DATE_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+_COM_REFERENCE_PATTERN = re.compile(r"::(\w+)\(")
+
+
+def _raises_not_implemented(node: ast.AST) -> bool:
+    """Return whether an AST node raises ``NotImplementedError`` directly."""
+    return isinstance(node, ast.Raise) and isinstance(node.exc, ast.Call) and isinstance(node.exc.func, ast.Name) and node.exc.func.id == "NotImplementedError"
+
+
+def _collect_not_implemented_stubs(wrapper_source: str) -> List[Tuple[str, str, str, str]]:
+    """Return (Python member, COM member, docstring, class name) for every stub.
+
+    The COM member comes from the docstring's ``Reference:
+    com.telelogic...IRPX::member(...)`` line. Without that line a stub has no
+    JavaDoc evidence and fails Step 8.
+    """
+    stubs: List[Tuple[str, str, str, str]] = []
+    tree = ast.parse(wrapper_source)
+    for class_node in (node for node in ast.walk(tree) if isinstance(node, ast.ClassDef)):
+        for function in class_node.body:
+            if not isinstance(function, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                continue
+            if not any(_raises_not_implemented(candidate) for candidate in ast.walk(function)):
+                continue
+            docstring = ast.get_docstring(function) or ""
+            reference = _COM_REFERENCE_PATTERN.search(docstring)
+            stubs.append((function.name, reference.group(1) if reference else "", docstring, class_node.name))
+    return stubs
+
+
+def _split_table_row(line: str) -> Optional[List[str]]:
+    stripped = line.strip()
+    if not stripped.startswith("|"):
+        return None
+    return [cell.strip() for cell in stripped.strip("|").split("|")]
+
+
+def _accessor_property_names(member: str) -> List[str]:
+    """Return a member plus the pywin32 property name of a get/set accessor."""
+    names = [member]
+    if len(member) > 3 and member[:3].lower() in {"get", "set"} and member[3].isupper():
+        names.append(member[3].lower() + member[4:])
+    return names
+
+
+def _parse_not_implemented_ledger(root: Path, interface_name: str) -> Tuple[Dict[str, Tuple[str, str, str, str, str]], List[str]]:
+    """Return this interface's ledger rows keyed by Python member and parse issues."""
+    path = root / _NOT_IMPLEMENTED_LEDGER_RELATIVE
+    if not path.is_file():
+        return {}, [f"NotImplementedError evidence ledger not found: {path}"]
+    lines = path.read_text(encoding="utf-8").splitlines()
+    start: Optional[int] = None
+    for index, line in enumerate(lines):
+        if line.strip() == _NOT_IMPLEMENTED_LEDGER_HEADING:
+            start = index + 1
+            break
+    if start is None:
+        return {}, [f"{path} has no '{_NOT_IMPLEMENTED_LEDGER_HEADING}' section"]
+    rows: Dict[str, Tuple[str, str, str, str, str]] = {}
+    for line in lines[start:]:
+        if line.startswith("## "):
+            break
+        cells = _split_table_row(line)
+        if cells is None or len(cells) < 6:
+            continue
+        member = cells[1].strip("`").strip()
+        if cells[0].strip("`").strip() != interface_name or not member or member == "Python member" or set(cells[0]) <= {"-", ":", " "}:
+            continue
+        rows[member] = (member, cells[2].strip("`").strip(), cells[3].strip().lower(), cells[4].strip(), cells[5].strip())
+    return rows, []
+
+
+def _test_asserts_not_implemented(path: Path, member: str) -> bool:
+    """Return whether a test function asserts this stub raises NotImplementedError."""
+    try:
+        source = path.read_text(encoding="utf-8")
+        tree = ast.parse(source)
+    except (OSError, SyntaxError, UnicodeDecodeError):
+        return False
+    for function in (node for node in ast.walk(tree) if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))):
+        segment = ast.get_source_segment(source, function) or ""
+        if member in segment and "NotImplementedError" in segment and "raises" in segment:
+            return True
+    return False
+
+
+def verify_not_implemented_evidence(root: Path, interface_name: str, wrapper_source: str, unit_test_path: Optional[Path], integration_test_path: Optional[Path]) -> List[str]:
+    """Check every NotImplementedError stub against its ledger evidence row.
+
+    SKILL section 4 permits a stub only in one of three evidence states:
+    ``not-exposed`` (the Java member is absent from the pywin32 catalog and is
+    listed in ``documented_unavailable``), ``java-doc-unimplemented`` (JavaDoc
+    itself declares the member unimplemented), or ``runtime-stub`` (pywin32
+    exposes the member but the documented call is proven ineffective and the
+    user approved the deviation with a date). ``docs/reports/sync-todo/index.md``
+    records one row per stub; a missing row, a stale row, a basis inconsistent
+    with the catalog, a runtime stub without an approval date, or a stub that
+    neither mirrored test asserts fails Step 8.
+    """
+    stubs = _collect_not_implemented_stubs(wrapper_source)
+    ledger_rows, parse_issues = _parse_not_implemented_ledger(root, interface_name)
+    if not stubs:
+        return [f"NotImplementedError evidence ledger row for {interface_name}.{member} is stale: the wrapper no longer raises NotImplementedError" for member in sorted(ledger_rows)]
+    if parse_issues:
+        return parse_issues
+
+    catalog_path = root / "docs" / "reports" / "pywin32_authority.json"
+    authority: object = json.loads(catalog_path.read_text(encoding="utf-8")) if catalog_path.is_file() else {}
+    catalog: object = authority.get("catalog", {}).get(interface_name, {}) if isinstance(authority, dict) else {}
+    unavailable: object = authority.get("documented_unavailable", {}).get(interface_name, []) if isinstance(authority, dict) else {}
+    catalog_names = {str(name).lower(): str(name) for name in catalog} if isinstance(catalog, dict) else {}
+    unavailable_names = {str(name).lower() for name in unavailable} if isinstance(unavailable, list) else set()
+
+    issues: List[str] = []
+    stub_members = {member for member, _, _, _ in stubs}
+    for member in sorted(set(ledger_rows) - stub_members):
+        issues.append(f"NotImplementedError evidence ledger row for {interface_name}.{member} is stale: the wrapper no longer raises NotImplementedError")
+
+    for member, reference, docstring, _class_name in stubs:
+        row = ledger_rows.get(member)
+        if row is None:
+            issues.append(f"{interface_name}.{member} raises NotImplementedError without an evidence row in {root / _NOT_IMPLEMENTED_LEDGER_RELATIVE}")
+            continue
+        _recorded, recorded_com, basis, evidence, approved = row
+        if not reference:
+            issues.append(f"{interface_name}.{member} stub docstring has no 'Reference: com.telelogic...::{member}(...)' line, so its JavaDoc member cannot be verified")
+        elif recorded_com.lower() not in {name.lower() for name in _accessor_property_names(reference)}:
+            issues.append(f"{interface_name}.{member} ledger records COM member '{recorded_com}' but its JavaDoc Reference names '{reference}'")
+        if basis not in _NOT_IMPLEMENTED_BASES:
+            issues.append(f"{interface_name}.{member} ledger basis '{basis}' is unknown (expected one of {', '.join(sorted(_NOT_IMPLEMENTED_BASES))})")
+            continue
+        if evidence in {"", "—", "-"}:
+            issues.append(f"{interface_name}.{member} ledger has no evidence text")
+        candidates = {name.lower() for name in _accessor_property_names(recorded_com or reference)}
+        exposed = sorted(catalog_names[name] for name in candidates if name in catalog_names)
+        exact_exposed = bool(reference) and reference.lower() in catalog_names
+        if basis == "not-exposed":
+            if reference and reference.lower() not in unavailable_names:
+                issues.append(f"{interface_name}.{member} is recorded 'not-exposed' but '{reference}' is not listed in documented_unavailable")
+            if exact_exposed:
+                issues.append(f"{interface_name}.{member} is recorded 'not-exposed' but the catalog exposes '{catalog_names[reference.lower()]}'")
+        elif basis == "runtime-stub":
+            if reference and reference.lower() in unavailable_names:
+                issues.append(f"{interface_name}.{member} is recorded 'runtime-stub' but '{reference}' is listed in documented_unavailable")
+            if not exposed:
+                issues.append(f"{interface_name}.{member} is recorded 'runtime-stub' but the catalog exposes no member among {', '.join(sorted(candidates))}")
+            if not _ISO_DATE_PATTERN.match(approved):
+                issues.append(f"{interface_name}.{member} runtime stub has no user approval date in the ledger (expected YYYY-MM-DD, found '{approved}')")
+            if "pywin32" not in docstring.lower() and "catalog" not in docstring.lower():
+                issues.append(f"{interface_name}.{member} runtime stub docstring does not cite the pywin32 catalog entry")
+        else:
+            if "not implemented" not in docstring.lower():
+                issues.append(f"{interface_name}.{member} is recorded 'java-doc-unimplemented' but its docstring does not quote the JavaDoc's 'not implemented' statement")
+            if not exposed:
+                issues.append(f"{interface_name}.{member} is recorded 'java-doc-unimplemented' but the catalog exposes no member among {', '.join(sorted(candidates))}")
+        for label, test_path in (("unit", unit_test_path), ("integration", integration_test_path)):
+            if test_path is None or not _test_asserts_not_implemented(test_path, member):
+                issues.append(f"{interface_name}.{member} stub is not asserted as pytest.raises(NotImplementedError) in the {label} test file")
+    return issues
+
+
+def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path, strict_getters: bool = False, inherited_notes: Optional[List[str]] = None, strict_inherited: bool = False) -> List[str]:
     """Check package placement, requirement entry, and RST coverage against a validator report."""
     issues: List[str] = []
     try:
@@ -512,6 +1290,7 @@ def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) ->
         # Step 3/4 enforcement: every wrapper COM binding must exist in the
         # pywin32 catalog with the correct method/property shape.
         issues.extend(verify_wrapper_bindings(root, simple_name, absolute_wrapper.read_text(encoding="utf-8")))
+    wrapper_source = absolute_wrapper.read_text(encoding="utf-8") if absolute_wrapper.is_file() else ""
 
     class_stem = absolute_wrapper.stem
     java_snake = _java_interface_snake(simple_name)
@@ -528,7 +1307,9 @@ def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) ->
 
     # Unit and integration tests mirror the wrapper's package and must exercise the class.
     model_segment = Path("models") / Path(*rel_parent.parts[1:]) if is_model_wrapper else Path()
-    owned_properties = _owned_property_names(absolute_wrapper.read_text(encoding="utf-8")) if absolute_wrapper.is_file() else set()
+    owned_properties = _owned_property_names(wrapper_source) if wrapper_source else set()
+    test_paths: Dict[str, Path] = {}
+    blockers = _parse_blocker_members(root, simple_name)
     for label, test_base in (("Unit", "unit"), ("Integration", "integration")):
         test_dir = root / "tests" / test_base / model_segment
         test_path = first_existing(test_dir, "test_{stem}.py")
@@ -537,11 +1318,19 @@ def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) ->
         elif wrapper_class not in test_path.read_text(encoding="utf-8"):
             issues.append(f"{label} test file does not exercise {wrapper_class}: {test_path}")
         else:
+            test_paths[label] = test_path
             issues.extend(verify_no_skip_or_xfail(test_path, allow_reasoned_skip=label == "Integration"))
             if label == "Integration":
                 issues.extend(verify_integration_exception_catches(test_path.read_text(encoding="utf-8")))
                 issues.extend(verify_no_empty_finally(test_path))
-                issues.extend(verify_getter_assertions(test_path, owned_properties))
+                issues.extend(verify_getter_assertions(test_path, owned_properties, blockers))
+                issues.extend(verify_getter_matrix(root, simple_name, owned_properties, test_path, strict=strict_getters, blocked=blockers))
+                notes = collect_inherited_assertion_notes(root, wrapper_source, wrapper_class, test_path)
+                if strict_inherited:
+                    issues.extend(notes)
+                elif inherited_notes is not None:
+                    inherited_notes.extend(notes)
+    issues.extend(verify_not_implemented_evidence(root, simple_name, wrapper_source, test_paths.get("Unit"), test_paths.get("Integration")))
     requirements_path = first_existing(root / "docs" / "requirements" / package_dir, "{stem}.md")
     if requirements_path is None:
         issues.append(f"Class requirement document not found: {root / 'docs' / 'requirements' / package_dir / f'{class_stem}.md'}")
@@ -573,7 +1362,6 @@ def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path) ->
     # The RST page is a JavaDoc-style API reference of the Python wrapper: it
     # must document every public member. Deviations live in the generated
     # report, not here.
-    wrapper_source = absolute_wrapper.read_text(encoding="utf-8") if absolute_wrapper.is_file() else ""
     public_members = parse_wrapper_public_members(wrapper_source, wrapper_class)
     undocumented = [name for name in public_members if not re.search(rf"\b{re.escape(name)}\b", rst_section)]
     if undocumented:

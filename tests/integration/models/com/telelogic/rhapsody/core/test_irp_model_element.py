@@ -5,7 +5,6 @@ These tests require a running Rhapsody instance with an open project.
 
 import uuid
 from typing import Iterator, Optional
-from unittest.mock import patch
 
 import pytest
 
@@ -17,7 +16,6 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPacka
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_stereotype import IRPStereotype
-from rhapsody_cli.models.core import ComHelper
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -61,7 +59,9 @@ class TestRPModelElementIntegration:
     def test_get_guid(self, test_project: IRPProject) -> None:
         guid = test_project.guid
         assert isinstance(guid, str)
-        assert len(guid) > 0
+        # Live COM returns the value as "GUID <hex-uuid>", not a bare UUID string.
+        parsed = uuid.UUID(guid.split()[-1])
+        assert str(parsed) in guid
 
 
 @pytest.mark.integration
@@ -162,6 +162,7 @@ class TestRPCollectionMutationMethodsIntegration:
         return pkg
 
     def test_to_list_returns_python_list_of_items(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
+        """JavaDoc IRPCollection.toList exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
         pkg = self._create_package(test_project, self._unique("ToListPkg"))
         try:
             cls1 = pkg.add_class(self._unique("ToListCls1"))
@@ -391,10 +392,12 @@ class TestRPModelElementDependenciesIntegration:
         pkg_name = self._unique("AssocClsPkg")
         pkg = self._create_package(test_project, pkg_name)
         try:
-            assoc_classes = pkg.association_classes
-            assert isinstance(assoc_classes, IRPCollection)
-            # smoke test: no associations created, but confirm the COM call returns a valid IRPCollection
-            assert isinstance(assoc_classes.count, int)
+            source = pkg.add_class(self._unique("AssocSource"))
+            target = pkg.add_class(self._unique("AssocTarget"))
+            end1 = source.add_relation_to(target, "targets", "Association", "1", "sources", "Association", "1", "")
+            end2 = IRPRelation(end1._com).get_inverse()
+            association_class = source.add_association(end1, end2, self._unique("AssocCls"))
+            assert association_class in list(source.association_classes)
         finally:
             pkg.delete_from_project()
 
@@ -405,10 +408,10 @@ class TestRPModelElementDependenciesIntegration:
             source = pkg.add_class(self._unique("Source"))
             target = pkg.add_class(self._unique("Target"))
             dependency = source.add_dependency_to(target)
-            references = target.references
-            assert isinstance(references, IRPCollection)
-            assert isinstance(references.count, int)
-            assert references.count >= 0
+            references = list(target.references)
+            # JavaDoc does not say whether the returned elements are the dependency or its
+            # client; either proves the getter resolves the incoming relationship.
+            assert dependency in references or source in references
             source.delete_dependency(dependency)
         finally:
             pkg.delete_from_project()
@@ -670,7 +673,7 @@ class TestRPModelElementDescriptionDisplayNameIntegration:
             pkg.delete_from_project()
 
     def test_set_and_get_description_html(self, test_project: IRPProject) -> None:
-        """Test that setDescriptionHTML raises NotImplementedError (documented as unimplemented)."""
+        """JavaDoc declares setDescriptionHTML but says "Not implemented - should not be used"; pywin32 exposes only the descriptionHTML property, so the wrapper raises instead of writing."""
         pkg = self._create_package(test_project, self._unique("HtmlDescPkg"))
         try:
             cls = pkg.add_class(self._unique("HtmlDescCls"))
@@ -680,9 +683,12 @@ class TestRPModelElementDescriptionDisplayNameIntegration:
             with pytest.raises(NotImplementedError, match="setDescriptionHTML is documented as"):
                 cls.set_description_html(html)
 
-            # getDescriptionHTML should work normally
+            # getDescriptionHTML should work normally; set description through
+            # the writable property and assert the HTML getter reflects it.
+            cls.description = "A test description"
             retrieved_html = cls.description_html
             assert isinstance(retrieved_html, str)
+            assert "A test description" in retrieved_html
         finally:
             pkg.delete_from_project()
 
@@ -1057,6 +1063,9 @@ class TestRPModelElementCloningTemplatesIntegration:
             assert instance.become_template_instantiation_of(template) is None  # type: ignore[func-returns-value]
             assert instance.ti is not None
             assert instance.ti.meta_class == "TemplateInstantiation"
+            assert instance.of_template is not None
+            assert instance.of_template.name == template.name
+            assert "T" in [parameter.name for parameter in template.template_parameters]
         finally:
             pkg.delete_from_project()
 
@@ -1187,6 +1196,7 @@ class TestRPModelElementRedefinesConstraintsIntegration:
             pkg.delete_from_project()
 
     def test_get_constraints_by_him_is_not_implemented(self, test_project: IRPProject) -> None:
+        """User-approved runtime stub: the catalog exposes constraintsByHim, but live probing returned no result and JavaDoc marks it internal-only (Group-core-1 ledger, 2026-11-24)."""
         pkg = self._create_package(test_project, self._unique("ConstrHimPkg"))
         try:
             cls = pkg.add_class(self._unique("ConstrHimCls"))
@@ -1211,20 +1221,29 @@ class TestRPModelElementOslcRemoteIntegration:
         assert isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_create_oslc_link_raises_not_implemented(self, test_project: IRPProject) -> None:
-        with pytest.raises(NotImplementedError):
-            test_project.create_oslc_link("someType", "http://example.com")
-
-    def test_delete_oslc_link_raises_not_implemented(self, test_project: IRPProject) -> None:
-        with pytest.raises(NotImplementedError):
-            test_project.delete_oslc_link("someType", "http://example.com")
-
     def test_get_hyper_links_is_not_implemented(self, test_project: IRPProject) -> None:
+        """User-approved runtime stub: the catalog exposes hyperLinks, but the documented creation APIs faulted and no retrievable hyperlink was produced (Group-core-1 ledger, 2026-11-24)."""
         pkg = self._create_package(test_project, self._unique("HyperLinkPkg"))
         try:
             cls = pkg.add_class(self._unique("HyperLinkCls"))
             with pytest.raises(NotImplementedError, match="hyper_links"):
                 _ = cls.hyper_links
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_oslc_links_returns_empty_collection_for_plain_class(self, test_project: IRPProject) -> None:
+        """Exercise the live getOSLCLinks binding and assert its documented empty result.
+
+        This is COM execution evidence only, not populated-getter closure: creating an OSLC link
+        needs an OSLC-enabled remote server and the documented createOSLCLink call faults E_FAIL
+        in this build (SWR_ELEM_00033). The populated retrieval row stays an open blocker.
+        """
+        pkg = self._create_package(test_project, self._unique("OslcLinksPkg"))
+        try:
+            cls = pkg.add_class(self._unique("OslcLinksCls"))
+            links = cls.get_oslc_links()
+            assert isinstance(links, IRPCollection)
+            assert len(links) == 0
         finally:
             pkg.delete_from_project()
 
@@ -1249,6 +1268,7 @@ class TestRPModelElementOslcRemoteIntegration:
             pkg.delete_from_project()
 
     def test_get_rmm_url_returns_empty_string(self, test_project: IRPProject) -> None:
+        """JavaDoc IRPModelElement.getRmmUrl exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
@@ -1300,11 +1320,14 @@ class TestRPModelElementMetadataIntegration:
             cls = pkg.add_class(self._unique("BinIdCls"))
             binary_id = cls.binary_id
             assert isinstance(binary_id, bytes)
-            assert len(binary_id) > 0
+            # Live COM returns 16 bytes of GUID data plus 4 trailing bytes.
+            assert len(binary_id) >= 16
+            assert binary_id == cls.binary_id
+            assert binary_id != test_project.binary_id
 
             guid = cls.guid
             assert isinstance(guid, str)
-            assert len(guid) > 0
+            assert uuid.UUID(guid.split()[-1])
         finally:
             pkg.delete_from_project()
 
@@ -1383,6 +1406,8 @@ class TestRPModelElementMetadataIntegration:
             pkg.delete_from_project()
 
     def test_get_user_defined_meta_class(self, test_project: IRPProject) -> None:
+        """Open blocker: JavaDoc defines this as the New Term name, but the COM surface exposes no
+        API to define a New Term, so only the type of the default value is observable."""
         pkg = self._create_package(test_project, self._unique("DocPkg"))
         cls = pkg.add_class(self._unique("DocCls"))
         try:
@@ -1475,6 +1500,17 @@ class TestRPModelElementDiagnosticsUiIntegration:
         finally:
             pkg.delete_from_project()
 
+    def test_get_annotations_returns_annotation_created_on_element(self, test_project: IRPProject) -> None:
+        pkg = self._create_package(test_project, self._unique("AnnPopPkg"))
+        try:
+            cls = pkg.add_class(self._unique("AnnPopCls"))
+            annotation_name = self._unique("Annotation")
+            cls.add_new_aggr("Annotation", annotation_name)
+
+            assert annotation_name in [annotation.name for annotation in cls.annotations]
+        finally:
+            pkg.delete_from_project()
+
     def test_get_controlled_files_empty(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("CtrlPkg"))
         try:
@@ -1522,36 +1558,12 @@ class TestRPModelElementDiagnosticsUiIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_high_light_element_binding(self, test_project: IRPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("HLPkg"))
-        try:
-            cls = pkg.add_class(self._unique("HLCls"))
-            # A live call opens a modal GUI window that blocks the automation
-            # session; assert the COM binding shape instead.
-            with patch.object(ComHelper, "call_com") as com_call:
-                assert cls.high_light_element() is None  # type: ignore[func-returns-value]
-                com_call.assert_called_once()
-        finally:
-            pkg.delete_from_project()
-
     def test_locate_in_browser_returns_int(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("LocPkg"))
         try:
             cls = pkg.add_class(self._unique("LocCls"))
             result = cls.locate_in_browser()
             assert isinstance(result, int)
-        finally:
-            pkg.delete_from_project()
-
-    def test_open_features_dialog_binding(self, test_project: IRPProject) -> None:
-        pkg = self._create_package(test_project, self._unique("FeatPkg"))
-        try:
-            cls = pkg.add_class(self._unique("FeatCls"))
-            # A live call opens a modal "Features" window that blocks later
-            # project operations; assert the COM binding shape instead.
-            with patch.object(ComHelper, "call_com") as com_call:
-                assert cls.open_features_dialog(0) is None  # type: ignore[func-returns-value]
-                com_call.assert_called_once()
         finally:
             pkg.delete_from_project()
 

@@ -24,11 +24,31 @@ members (`body`, `isAbstract`, `isStatic`, `isVirtual`, `returns`, `flowchart`,
 `get_com_property`/`set_com_property`; the two JavaDoc method-shaped members
 (`getReturnTypeDeclaration`/`setReturnTypeDeclaration`, `getImplementationSignature`)
 use `call_com`.
-`update_contained_diagrams_on_server()` calls the Java-shaped member directly — it
-is absent from the committed catalog and is recorded as a `PYWIN32_MEMBER_MISSING`
-blocker in the API report. The module uses `from __future__ import annotations` with
-unquoted type references and local imports for names used only in `cast()`.
+`update_contained_diagrams_on_server()` keeps the Java signature but raises
+`NotImplementedError` before any COM dispatch because `updateContainedDiagramsOnServer`
+is absent from the pywin32 catalog; the report records it as `UNAVAILABLE_DOCUMENTED`
+in Expected Binding Differences, and both the fake-COM unit test and the mirrored
+integration test assert the stub without calling COM. The module uses
+`from __future__ import annotations` with unquoted type references and local imports
+for names used only in `cast()`.
 **Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_operation.py:IRPOperation
 (class renamed from `RPOperation`; §2 canonical package move completed; 25 legacy
 dual-binding call sites migrated; 25 property-shaped members converted to `@property`)
 **Last Changed:** 2026-11-24
+
+## SWR_ELEM_00026: IRPOperation initializer setter live-fixture blocker
+
+**ID:** SWR_ELEM_00026
+**Title:** initializer setter has no live integration proof
+**Status:** Blocked
+**Priority:** Low
+**Description:**
+JavaDoc documents `setInitializer` as constructor-only ("For constructors, used
+to specify code for the initializer of the operation"). Setting `initializer` on
+an ordinary operation makes this Rhapsody build throw a COM exception; the
+former mocked call-shape assertion could not prove live behaviour (SKILL §5), so
+it was removed and the row recorded as blocked. The binding keeps full fake-COM
+unit coverage. Live verification needs a real constructor fixture that accepts
+the write, after which the row can be closed.
+**Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_operation.py:IRPOperation.initializer
+**Last Changed:** 2026-11-25

@@ -54,10 +54,10 @@ class IRPModelElement(ComHelper):
     # [x] become_template_instantiation_of   [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] change_to                        [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] clone                           [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] create_oslc_link                  [x] impl  [x] docstring  [x] unit test  [x] integration test  (not_implemented_error)
+    # [x] create_oslc_link                  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] delete_dependency                [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] delete_from_project               [x] impl  [x] docstring  [x] unit test  [x] integration test
-    # [x] delete_oslc_link                  [x] impl  [x] docstring  [x] unit test  [x] integration test  (not_implemented_error)
+    # [x] delete_oslc_link                  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] error_message                    [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] find_elements_by_full_name          [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] find_nested_element               [x] impl  [x] docstring  [x] unit test  [x] integration test
@@ -97,6 +97,7 @@ class IRPModelElement(ComHelper):
     # [x] get_nested_elements_recursive      [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_new_term_stereotype            [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_of_template                   [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] get_oslc_links                    [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_overlay_icon_file_name          [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_overridden_properties         [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_overridden_properties_by_pattern [x] impl  [x] docstring  [x] unit test  [x] integration test
@@ -477,18 +478,21 @@ class IRPModelElement(ComHelper):
     def create_oslc_link(self, type: str, purl: str) -> None:
         """Creates an OSLC link between the element and the element represented by the specified URL.
 
-        Args:
-            type: The type of OSLC link to create.
-            purl: The URL of the target element.
+        Links to ETM test cases and EWM work items are created on the relevant
+        remote server and therefore require a login before new links can be
+        created. Call ``IRPPackage.login_to_remote_artifact_server`` first to
+        avoid Rhapsody opening its login window.
 
-        Raises:
-            NotImplementedError: Rhapsody2.Application.1 does not expose
-                createOSLCLink; the method is defined for Java API parity only.
+        Args:
+            type: One of the OSLC link types defined in
+                ``IRPModelElement.OSLCLink.Types``.
+            purl: The URL of the target element. It should not include the
+                ``context`` parameter.
 
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::createOSLCLink(java.lang.String type, java.lang.String purl)
         """
-        raise NotImplementedError("Rhapsody2.Application.1 does not expose createOSLCLink; method is defined for Java API parity only.")
+        self.call_com(lambda: self._com.createOSLCLink(type, purl))
 
     def delete_dependency(self, dependency: IRPDependency) -> None:
         """Deletes the specified dependency from the model.
@@ -513,17 +517,16 @@ class IRPModelElement(ComHelper):
         """Deletes the specified OSLC link from the model.
 
         Args:
-            type: The type of OSLC link to delete.
-            purl: The URL of the target element.
-
-        Raises:
-            NotImplementedError: Rhapsody2.Application.1 does not expose
-                deleteOSLCLink; the method is defined for Java API parity only.
+            type: The link type of the OSLC link to delete; one of the types
+                defined in ``IRPModelElement.OSLCLink.Types``, or ``"*"`` for
+                all link types.
+            purl: The URL of the link's target element, or ``"*"`` to delete
+                all links of the specified type.
 
         Reference:
             com.telelogic.rhapsody.core.IRPModelElement::deleteOSLCLink(java.lang.String type, java.lang.String purl)
         """
-        raise NotImplementedError("Rhapsody2.Application.1 does not expose deleteOSLCLink; method is defined for Java API parity only.")
+        self.call_com(lambda: self._com.deleteOSLCLink(type, purl))
 
     def error_message(self) -> str:
         """Returns the error message for the last method called.
@@ -659,7 +662,10 @@ class IRPModelElement(ComHelper):
         """Returns all of the element's constraints (for internal use only).
 
         This getter is intentionally unavailable because the Java API documents
-        it as internal-only and no supported live retrieval setup is known.
+        it as internal-only and no supported live retrieval setup is known. The
+        pywin32 catalog still exposes ``constraintsByHim`` (property), so the
+        user explicitly approved this runtime stub on 2026-11-24 (recorded in
+        ``docs/reports/sync-todo/index.md``).
 
         Raises:
             NotImplementedError: Always raised because the runtime behavior is unsupported.
@@ -858,7 +864,10 @@ class IRPModelElement(ComHelper):
         """Returns a collection of all the hyperlinks associated with the element.
 
         Runtime retrieval is intentionally unavailable because the documented
-        live setup APIs have not produced a retrievable hyperlink.
+        live setup APIs have not produced a retrievable hyperlink. The pywin32
+        catalog still exposes ``hyperLinks`` (property), so the user explicitly
+        approved this runtime stub on 2026-11-24 (recorded in
+        ``docs/reports/sync-todo/index.md``).
 
         Raises:
             NotImplementedError: Always raised because live retrieval is unsupported.
@@ -1078,6 +1087,20 @@ class IRPModelElement(ComHelper):
             com.telelogic.rhapsody.core.IRPModelElement::setOfTemplate(com.telelogic.rhapsody.core.IRPModelElement ofTemplate)
         """
         ComHelper.set_com_property(self._com, "ofTemplate", of_template._com)
+
+    def get_oslc_links(self) -> IRPCollection:
+        """Returns a collection of all the element's OSLC links.
+
+        Each item in the returned collection is a string in the format
+        ``"Type=<<link type>>\\nURL=<<linked item URL>>"``.
+
+        Returns:
+            An ``IRPCollection`` of the element's OSLC links.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPModelElement::getOSLCLinks()
+        """
+        return IRPCollection(ComHelper.call_com(lambda: self._com.getOSLCLinks()))
 
     def get_overlay_icon_file_name(self) -> str:
         """Returns the full path of the graphic file used as an overlay on this specific model element.

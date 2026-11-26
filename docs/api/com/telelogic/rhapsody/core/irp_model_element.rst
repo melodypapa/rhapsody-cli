@@ -155,6 +155,8 @@ Methods
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_new_term_stereotype
 
+.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_oslc_links
+
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_overlay_icon_file_name
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element.IRPModelElement.get_overridden_properties

@@ -9,6 +9,7 @@ to build the fixture.
 import uuid
 
 import pytest
+from win32com.client import CastTo
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPRequirement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
@@ -46,7 +47,9 @@ class TestRPRequirementIntegration:
         pkg_name = self._unique("ReqPkg")
         req_name = self._unique("MyRequirement")
         pkg = self._create_package(test_project, pkg_name)
-        req = pkg.add_new_aggr("Requirement", req_name)
+        # add_new_aggr hands back an IRPModelElement COM interface; QueryInterface
+        # to IRPRequirement so the owned requirementID property is reachable.
+        req = IRPRequirement(CastTo(pkg.add_new_aggr("Requirement", req_name)._com, "IRPRequirement"))
         assert isinstance(req, IRPRequirement)
         try:
             assert isinstance(req.get_requirement_id(), str)

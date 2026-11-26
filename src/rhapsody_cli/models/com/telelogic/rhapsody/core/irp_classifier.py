@@ -75,10 +75,6 @@ class IRPClassifier(IRPUnit):
     # [inherited] irp_unit / irp_model_element methods (get_name, set_name, get_owner, get_guid,
     #              addDependency, addStereotype, getStereotypes, getNestedElements, save, load, etc.)
     # No deprecated IRPClassifier methods in deprecated-list.html.
-    # [x] add_port (convenience method, not part of irp_classifier's Java API -
-    #     ports are created generically via addNewAggr("Port", name); this
-    #     wraps that call for ergonomics)  [x] impl  [x] docstring  [x] unit test  [x] integration test
-
     def add_attribute(self, name: str) -> IRPAttribute:
         """Adds a new attribute to the classifier.
 
@@ -813,22 +809,6 @@ class IRPClassifier(IRPUnit):
             com.telelogic.rhapsody.core.IRPClassifier::getPorts()
         """
         return IRPCollection(self.get_com_property(self._com, "ports"))
-
-    def add_port(self, name: str) -> IRPModelElement:
-        """Adds a new port to this classifier.
-
-        Convenience method: the Rhapsody Java API has no dedicated
-        ``addPort`` factory method — ports are created generically via
-        ``addNewAggr("Port", name)``. This method encapsulates that call so
-        callers don't need to know the metaclass-string incantation.
-
-        Args:
-            name: The name to use for the new port.
-
-        Returns:
-            The wrapped ``IRPPort`` created.
-        """
-        return cast(IRPModelElement, self.wrap(self.call_com(lambda: self._com.addNewAggr("Port", name))))
 
     @property
     def relations(self) -> IRPCollection:

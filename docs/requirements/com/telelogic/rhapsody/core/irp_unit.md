@@ -30,9 +30,10 @@ property-shaped members (`CMHeader`, `currentDirectory`, `filename`, `includeInN
 `isStub`, `structureDiagrams`) are exposed as Python `@property` accessors (with a
 setter for the writable members) read/written via `get_com_property`/`set_com_property`.
 The two collection getters wrap the result in `IRPCollection`. `get_unit_path` is a
-documented-unavailable `NotImplementedError` stub: the catalog exposes only `setUnitPath`
-(the getter `getUnitPath` is an `ACCESSOR_ALIAS_MISMATCH` row in the API report), so the
-wrapper raises instead of probing pending Windows typelib evidence. The module uses
+documented-unavailable `NotImplementedError` stub: the catalog exposes only `setUnitPath`,
+and a live probe on 2026-11-25 against a fresh hidden-UI Rhapsody instance found no
+`getUnitPath`-like COM member on a real package (`dir()` listed only `setUnitPath` among
+path/unit members), so the wrapper raises before COM dispatch rather than probing. The module uses
 `from __future__ import annotations` with unquoted type references; names used only in
 `cast()` are imported locally inside the method to avoid circular imports.
 **Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_unit.py:IRPUnit
@@ -40,4 +41,24 @@ wrapper raises instead of probing pending Windows typelib evidence. The module u
 the class locally inside `get_save_unit()` before `cast()`, so no import cycle is created;
 quoted type annotations are unnecessary because `core.py` uses
 `from __future__ import annotations`)
-**Last Changed:** 2026-11-24
+
+## SWR_CORE_00012: IRPUnit path/getter live evidence
+
+**ID:** SWR_CORE_00012
+**Title:** getUnitPath absence confirmed live; collection getters have populated fixtures
+**Status:** Implemented
+**Priority:** Low
+**Description:**
+A live probe on 2026-11-25 against a fresh hidden-UI Rhapsody instance listed the
+COM path/unit members on a real package: `getFullPathName`, `getFullPathNameIn`,
+`getNestedSaveUnits`, `getNestedSaveUnitsCount`, `getSaveUnit`, `isReferenceUnit`,
+`isSeparateSaveUnit`, `setSeparateSaveUnit` and `setUnitPath`. No `getUnitPath`-like
+getter exists, confirming the `documented_unavailable` decision behind the
+`NotImplementedError` stub.
+
+Populated getter fixtures were proven live too: `add_new_aggr("StructureDiagram", name)`
+on a class makes the diagram appear in `structure_diagrams`, and a nested package with
+`set_separate_save_unit(1)` plus `save()` appears in `get_nested_save_units()`. The
+integration tests assert those identities rather than empty-state/count-only results.
+**Implementation:** tests/integration/models/com/telelogic/rhapsody/core/test_irp_unit.py
+**Last Changed:** 2026-11-25

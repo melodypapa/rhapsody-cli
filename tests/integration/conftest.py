@@ -7,13 +7,11 @@ import time
 from datetime import datetime
 from pathlib import Path
 from typing import Generator, Optional
-from unittest.mock import patch
 
 import pytest
 from pytest import Config, FixtureRequest
 
 from rhapsody_cli import RhapsodyApplication
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 
 # Add unit directory to Python path so imports from unit tests work
@@ -182,77 +180,3 @@ def test_project(rhapsody_app: RhapsodyApplication, _test_project_directory: Pat
 
     project.allow_auto_save(1)
     return project
-
-
-@pytest.fixture(scope="function")
-def test_stereotypes(test_project: IRPProject) -> None:
-    """Set up test stereotypes with tag definitions for integration tests.
-
-    This fixture creates a stereotype with tag definitions that are required
-    for various stereotype-related tests. It runs once per test session.
-
-    The fixture will skip tests that require stereotypes if the setup fails,
-    allowing the test suite to continue gracefully.
-
-    Note: The test_project fixture already has auto-save enabled, so changes
-    are automatically persisted.
-    """
-    try:
-        # Create a stereotype with tag definition for testing
-        stereo = test_project.add_stereotype("TestStereotype", "Class")
-        if stereo is not None:
-            # Save the project to persist the stereotype setup
-            test_project.save(with_subs=1)
-    except Exception as e:
-        # If stereotype setup fails, tests that require it will be skipped
-        print(f"Warning: Could not set up test stereotypes: {e}")
-
-
-@pytest.fixture(scope="function")
-def second_test_project(rhapsody_app: RhapsodyApplication, request: FixtureRequest) -> Generator[IRPProject, None, None]:
-    """Function-scoped second test project for cross-project testing.
-
-    This fixture creates a temporary second project for testing cross-project
-    operations like copy, move, and reference functionality.
-
-    The project is created with auto-save enabled to ensure automatic persistence
-    during cleanup operations without explicit save calls.
-
-    The project is automatically cleaned up after each test using the safe
-    cleanup logic to avoid file lock issues.
-
-    Args:
-        rhapsody_app: The Rhapsody application instance
-        request: pytest request object for accessing test configuration
-
-    Returns:
-        IRPProject: A temporary second test project
-    """
-    import tempfile
-
-    # Create a temporary directory for the second project
-    with tempfile.TemporaryDirectory() as temp_dir:
-        project_path = Path(temp_dir) / "SecondTestProject"
-        project_path.mkdir(parents=True, exist_ok=True)
-
-        # Create the second test project
-        second_project = rhapsody_app.create_new_project(str(project_path), "SecondTestProject")
-        if second_project is None:
-            raise RuntimeError("Rhapsody did not report an active project after project creation")
-
-        try:
-            # Enable auto-save on the project at creation to ensure automatic persistence
-            second_project.allow_auto_save(1)
-
-            yield second_project
-
-        finally:
-            # Clean up the second project
-            try:
-                # Live close() raises a modal "Projects can only be removed from
-                # project lists" dialog; assert the COM binding instead.
-                with patch.object(IRPModelElement, "call_com") as com_call:
-                    second_project.close()
-                    com_call.assert_called_once()
-            except Exception:
-                pass  # Don't let cleanup failures break tests

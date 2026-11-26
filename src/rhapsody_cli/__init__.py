@@ -13,6 +13,10 @@ from rhapsody_cli.application import RhapsodyApplication
 from rhapsody_cli.exceptions import RhapsodyConnectionError, RhapsodyRuntimeException
 from rhapsody_cli.models import IRPCollection, IRPModelElement, IRPUnit
 
+# Register every core wrapper so standalone CLI processes resolve elements to
+# their domain-specific classes instead of plain IRPModelElement.
+models.register_all_wrappers()
+
 __all__ = [
     "IRPCollection",
     "IRPModelElement",

@@ -1,10 +1,11 @@
 """Tests for the project-local Rhapsody sync helpers."""
 
 import importlib.util
+import json
 import sys
 from pathlib import Path
 from types import ModuleType
-from typing import Optional
+from typing import Optional, Tuple
 
 import pytest
 
@@ -820,6 +821,85 @@ def test_getter_assertion_check_accepts_membership_assertion(tmp_path: Path) -> 
     assert tools.verify_getter_assertions(test_file, {"packages"}) == []
 
 
+def test_inherited_assertion_scan_flags_base_only_assertion(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    models_dir = tmp_path / "src" / "rhapsody_cli" / "models" / "com" / "telelogic" / "rhapsody" / "core"
+    models_dir.mkdir(parents=True)
+    (models_dir / "base_thing.py").write_text("class BaseThing:\n    @property\n    def name(self) -> str:\n        return ''\n", encoding="utf-8")
+    wrapper_source = "class RPThing(BaseThing):\n    @property\n    def own_value(self) -> int:\n        return 0\n"
+    test_file = _write_test_file(tmp_path, "def test_add(thing) -> None:\n    assert thing.name == 'x'\n")
+
+    notes = tools.collect_inherited_assertion_notes(tmp_path, wrapper_source, "RPThing", test_file)
+
+    assert len(notes) == 1
+    assert "name" in notes[0]
+
+
+def test_inherited_assertion_scan_ignores_own_member_assertion(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    models_dir = tmp_path / "src" / "rhapsody_cli" / "models" / "com" / "telelogic" / "rhapsody" / "core"
+    models_dir.mkdir(parents=True)
+    (models_dir / "base_thing.py").write_text("class BaseThing:\n    @property\n    def name(self) -> str:\n        return ''\n", encoding="utf-8")
+    wrapper_source = "class RPThing(BaseThing):\n    @property\n    def own_value(self) -> int:\n        return 0\n"
+    test_file = _write_test_file(tmp_path, "def test_own(thing) -> None:\n    assert thing.own_value == 1\n")
+
+    assert tools.collect_inherited_assertion_notes(tmp_path, wrapper_source, "RPThing", test_file) == []
+
+
+def test_getter_assertion_check_flags_empty_only_getter_test(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    test_file = _write_test_file(
+        tmp_path,
+        "def test_get_source_artifacts_empty(classifier) -> None:\n    assert classifier.source_artifacts == []\n",
+    )
+
+    issues = tools.verify_getter_assertions(test_file, {"source_artifacts"})
+
+    assert len(issues) == 1
+    assert "test_get_source_artifacts_empty" in issues[0]
+
+
+def test_getter_assertion_check_flags_get_prefixed_non_none_test(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    test_file = _write_test_file(
+        tmp_path,
+        "def test_get_packages(project) -> None:\n    assert project.packages is not None\n",
+    )
+
+    issues = tools.verify_getter_assertions(test_file, {"packages"})
+
+    assert len(issues) == 1
+    assert "test_get_packages" in issues[0]
+
+
+def test_getter_assertion_check_accepts_empty_state_with_populated_sibling(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    test_file = _write_test_file(
+        tmp_path,
+        "def test_packages(project) -> None:\n"
+        "    created = project.add_package('p')\n"
+        "    assert created in list(project.packages)\n"
+        "\n"
+        "def test_packages_empty(project) -> None:\n"
+        "    assert project.packages == []\n",
+    )
+
+    assert tools.verify_getter_assertions(test_file, {"packages"}) == []
+
+
+def test_getter_assertion_check_flags_truthiness_only(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    test_file = _write_test_file(
+        tmp_path,
+        "def test_packages(project) -> None:\n    assert not project.packages\n",
+    )
+
+    issues = tools.verify_getter_assertions(test_file, {"packages"})
+
+    assert len(issues) == 1
+    assert "test_packages" in issues[0]
+
+
 def test_getter_assertion_check_ignores_non_getter_tests(tmp_path: Path) -> None:
     tools = _load_sync_tools()
     test_file = _write_test_file(
@@ -828,3 +908,508 @@ def test_getter_assertion_check_ignores_non_getter_tests(tmp_path: Path) -> None
     )
 
     assert tools.verify_getter_assertions(test_file, {"packages"}) == []
+
+
+_MATRIX_TEST_BODY = "def test_get_declaration(type_element) -> None:\n    type_element.declaration = 'int x'\n    assert type_element.declaration == 'int x'\n"
+
+
+def _write_matrix_project(root: Path, body: str = _MATRIX_TEST_BODY) -> Path:
+    test_dir = root / "tests" / "integration" / "models" / Path(*_REPORT_PACKAGE_PARTS)
+    test_dir.mkdir(parents=True)
+    test_path = test_dir / "test_irp_type.py"
+    test_path.write_text(body, encoding="utf-8")
+    return test_path
+
+
+def test_getter_matrix_flags_missing_file(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    test_path = _write_matrix_project(root)
+
+    issues = tools.verify_getter_matrix(root, "IRPType", {"declaration"}, test_path)
+
+    assert len(issues) == 1
+    assert "Getter fixture matrix not found" in issues[0]
+
+
+def test_getter_matrix_flags_missing_interface_section(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    test_path = _write_matrix_project(root)
+    matrix = tools.getter_matrix_path(root)
+    matrix.parent.mkdir(parents=True)
+    matrix.write_text("# Getter fixture matrix\n\n## IRPOther\n\n", encoding="utf-8")
+
+    issues = tools.verify_getter_matrix(root, "IRPType", {"declaration"}, test_path)
+
+    assert len(issues) == 1
+    assert "no '## IRPType' section" in issues[0]
+
+
+def test_getter_matrix_flags_missing_property_row(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    test_path = _write_matrix_project(root)
+    tools.upsert_getter_matrix_section(root, "IRPType", tools.render_getter_matrix_section(root, "IRPType", {"declaration"}, test_path))
+
+    issues = tools.verify_getter_matrix(root, "IRPType", {"declaration", "kind"}, test_path)
+
+    assert any("kind" in issue and "missing a row" in issue for issue in issues)
+
+
+def test_getter_matrix_flags_stale_row_for_removed_property(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    test_path = _write_matrix_project(root)
+    tools.upsert_getter_matrix_section(root, "IRPType", tools.render_getter_matrix_section(root, "IRPType", {"declaration", "kind"}, test_path))
+
+    issues = tools.verify_getter_matrix(root, "IRPType", {"declaration"}, test_path)
+
+    assert any("kind" in issue and "no longer exposes" in issue for issue in issues)
+
+
+def test_getter_matrix_accepts_a_generated_section(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    test_path = _write_matrix_project(root)
+    section = tools.render_getter_matrix_section(root, "IRPType", {"declaration"}, test_path)
+    tools.upsert_getter_matrix_section(root, "IRPType", section)
+
+    assert tools.verify_getter_matrix(root, "IRPType", {"declaration"}, test_path) == []
+
+
+_WEAK_MATRIX_TEST_BODY = "def test_declaration(type_element) -> None:\n    assert isinstance(type_element.declaration, str)\n"
+
+
+def test_getter_matrix_strict_flags_weak_row_without_blocker(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    test_path = _write_matrix_project(root, _WEAK_MATRIX_TEST_BODY)
+    tools.upsert_getter_matrix_section(root, "IRPType", tools.render_getter_matrix_section(root, "IRPType", {"declaration"}, test_path))
+
+    assert tools.verify_getter_matrix(root, "IRPType", {"declaration"}, test_path) == []
+    issues = tools.verify_getter_matrix(root, "IRPType", {"declaration"}, test_path, strict=True)
+
+    assert any("declaration" in issue and "not recorded as a blocker" in issue for issue in issues)
+
+
+def test_getter_matrix_strict_accepts_weak_row_with_blocker(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    test_path = _write_matrix_project(root, _WEAK_MATRIX_TEST_BODY)
+    tools.upsert_getter_matrix_section(root, "IRPType", tools.render_getter_matrix_section(root, "IRPType", {"declaration"}, test_path))
+
+    assert tools.verify_getter_matrix(root, "IRPType", {"declaration"}, test_path, strict=True, blocked={"declaration"}) == []
+
+
+def test_parse_blocker_members_reads_only_the_requested_interface(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    index = tools.getter_matrix_path(root).parent / "index.md"
+    index.parent.mkdir(parents=True)
+    index.write_text(
+        "## P0 integration-test blockers\n\n" "| Interface | Member(s) | Blocker |\n| --- | --- | --- |\n" "| IRPType | `declaration` (`getDeclaration`) | x |\n" "| IRPOther | `declaration` | x |\n",
+        encoding="utf-8",
+    )
+
+    assert tools._parse_blocker_members(root, "IRPType") == {"declaration", "getDeclaration"}
+    assert tools._parse_blocker_members(root, "IRPOther") == {"declaration"}
+
+
+def test_getter_assertions_skips_blocked_property(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    test_path = _write_matrix_project(root, _WEAK_MATRIX_TEST_BODY)
+
+    assert any("declaration" in issue for issue in tools.verify_getter_assertions(test_path, {"declaration"}))
+    assert tools.verify_getter_assertions(test_path, {"declaration"}, blocked={"declaration"}) == []
+
+
+def test_getter_matrix_flags_dangling_test_reference(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    test_path = _write_matrix_project(root)
+    matrix = tools.getter_matrix_path(root)
+    matrix.parent.mkdir(parents=True)
+    matrix.write_text(
+        "# Getter fixture matrix\n\n"
+        "## IRPType\n\n"
+        "| Java getter / Python member | Integration test | Assertion | Status |\n"
+        "| --- | --- | --- | --- |\n"
+        f"| `declaration` | `{test_path.relative_to(root).as_posix()}::test_gone` | identity/value | OK |\n",
+        encoding="utf-8",
+    )
+
+    issues = tools.verify_getter_matrix(root, "IRPType", {"declaration"}, test_path)
+
+    assert any("test_gone" in issue and "missing test" in issue for issue in issues)
+
+
+def test_getter_matrix_flags_inconsistent_status(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    test_path = _write_matrix_project(root)
+    matrix = tools.getter_matrix_path(root)
+    matrix.parent.mkdir(parents=True)
+    matrix.write_text(
+        "# Getter fixture matrix\n\n" "## IRPType\n\n" "| Java getter / Python member | Integration test | Assertion | Status |\n" "| --- | --- | --- | --- |\n" "| `declaration` | — | none | OK |\n",
+        encoding="utf-8",
+    )
+
+    issues = tools.verify_getter_matrix(root, "IRPType", {"declaration"}, test_path)
+
+    assert any("declaration" in issue and "expected 'MISSING'" in issue for issue in issues)
+
+
+def test_getter_matrix_skips_interface_without_properties(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    test_path = _write_matrix_project(root)
+
+    assert tools.verify_getter_matrix(root, "IRPType", set(), test_path) == []
+
+
+def test_getter_matrix_upsert_preserves_other_sections(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    test_path = _write_matrix_project(root)
+    tools.upsert_getter_matrix_section(root, "IRPType", tools.render_getter_matrix_section(root, "IRPType", {"declaration"}, test_path))
+    tools.upsert_getter_matrix_section(root, "IRPOther", "## IRPOther\n\n| Java getter / Python member | Integration test | Assertion | Status |\n| --- | --- | --- | --- |\n")
+    tools.upsert_getter_matrix_section(root, "IRPType", tools.render_getter_matrix_section(root, "IRPType", {"declaration"}, test_path))
+
+    text = tools.getter_matrix_path(root).read_text(encoding="utf-8")
+
+    assert "## IRPOther" in text
+    assert text.count("## IRPType") == 1
+
+
+_NOT_EXPOSED_WRAPPER = (
+    "class IRPThing:\n"
+    "    def get_thing(self) -> str:\n"
+    '        """Return the thing.\n\n'
+    "        Raises:\n"
+    "            NotImplementedError: pywin32 does not expose ``getThing``.\n\n"
+    "        Reference:\n"
+    "            com.telelogic.rhapsody.core.IRPThing::getThing()\n"
+    '        """\n'
+    '        raise NotImplementedError("getThing is not exposed in the Rhapsody COM automation type library.")\n'
+)
+
+_RUNTIME_STUB_WRAPPER = (
+    "class IRPThing:\n"
+    "    @property\n"
+    "    def thing(self) -> str:\n"
+    '        """Return the thing.\n\n'
+    "        pywin32 catalog entry: ``thing`` (property). Live evidence: the documented\n"
+    "        read returns no usable value, so the wrapper raises before COM dispatch.\n\n"
+    "        Raises:\n"
+    "            NotImplementedError: Always raised because the live call is ineffective.\n\n"
+    "        Reference:\n"
+    "            com.telelogic.rhapsody.core.IRPThing::getThing()\n"
+    '        """\n'
+    '        raise NotImplementedError("thing is ineffective")\n'
+)
+
+_JAVA_DOC_WRAPPER = (
+    "class IRPThing:\n"
+    "    def set_description_html(self, value: str) -> None:\n"
+    '        """Set the HTML description.\n\n'
+    '        Note: the Java API documents this method as "Not implemented - should not be used."\n\n'
+    "        Raises:\n"
+    "            NotImplementedError: Always raised; Rhapsody does not implement it.\n\n"
+    "        Reference:\n"
+    "            com.telelogic.rhapsody.core.IRPThing::setDescriptionHTML(java.lang.String value)\n"
+    '        """\n'
+    '        raise NotImplementedError("setDescriptionHTML is not implemented")\n'
+)
+
+
+def _write_stub_ledger(root: Path, rows: str) -> Path:
+    ledger = root / "docs" / "reports" / "sync-todo" / "index.md"
+    ledger.parent.mkdir(parents=True)
+    ledger.write_text(
+        "# Sync todo index\n\n" "## NotImplementedError stubs\n\n" "| Interface | Python member | COM member | Basis | Evidence | Approved |\n" "| --- | --- | --- | --- | --- | --- |\n" + rows,
+        encoding="utf-8",
+    )
+    return ledger
+
+
+def _write_stub_authority(root: Path, catalog: str, unavailable: str = "{}") -> None:
+    reports = root / "docs" / "reports"
+    reports.mkdir(parents=True, exist_ok=True)
+    (reports / "pywin32_authority.json").write_text(
+        '{"catalog": ' + catalog + ', "documented_unavailable": ' + unavailable + "}",
+        encoding="utf-8",
+    )
+
+
+def _write_stub_tests(root: Path, expression: str) -> Tuple[Path, Path]:
+    body = "import pytest\n\n\ndef test_stub() -> None:\n" f"    with pytest.raises(NotImplementedError):\n        {expression}\n"
+    paths = []
+    for layer in ("unit", "integration"):
+        path = root / "tests" / layer / "test_irp_thing.py"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(body, encoding="utf-8")
+        paths.append(path)
+    return paths[0], paths[1]
+
+
+def test_stub_evidence_flags_missing_ledger(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    _write_stub_authority(root, '{"IRPThing": {}}', '{"IRPThing": ["getThing"]}')
+    unit, integration = _write_stub_tests(root, "wrapper.get_thing()")
+
+    issues = tools.verify_not_implemented_evidence(root, "IRPThing", _NOT_EXPOSED_WRAPPER, unit, integration)
+
+    assert any("NotImplementedError" in issue and "ledger" in issue.lower() for issue in issues)
+
+
+def test_stub_evidence_accepts_documented_unavailable_stub(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    _write_stub_authority(root, '{"IRPThing": {}}', '{"IRPThing": ["getThing"]}')
+    _write_stub_ledger(root, "| IRPThing | `get_thing` | `getThing` | not-exposed | `getThing` is absent from the catalog and listed in `documented_unavailable`. | — |\n")
+    unit, integration = _write_stub_tests(root, "wrapper.get_thing()")
+
+    assert tools.verify_not_implemented_evidence(root, "IRPThing", _NOT_EXPOSED_WRAPPER, unit, integration) == []
+
+
+def test_stub_evidence_flags_runtime_stub_without_approval(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    _write_stub_authority(root, '{"IRPThing": {"thing": "property"}}')
+    _write_stub_ledger(root, "| IRPThing | `thing` | `thing` | runtime-stub | pywin32 exposes `thing`; live read returns no usable value. | — |\n")
+    unit, integration = _write_stub_tests(root, "wrapper.thing")
+
+    issues = tools.verify_not_implemented_evidence(root, "IRPThing", _RUNTIME_STUB_WRAPPER, unit, integration)
+
+    assert any("approval" in issue.lower() and "thing" in issue for issue in issues)
+
+
+def test_stub_evidence_accepts_approved_runtime_stub(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    _write_stub_authority(root, '{"IRPThing": {"thing": "property"}}')
+    _write_stub_ledger(root, "| IRPThing | `thing` | `thing` | runtime-stub | pywin32 exposes `thing`; live read returns no usable value. | 2026-11-25 |\n")
+    unit, integration = _write_stub_tests(root, "wrapper.thing")
+
+    assert tools.verify_not_implemented_evidence(root, "IRPThing", _RUNTIME_STUB_WRAPPER, unit, integration) == []
+
+
+def test_stub_evidence_accepts_java_doc_unimplemented_stub(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    _write_stub_authority(root, '{"IRPThing": {"descriptionHTML": "property"}}')
+    _write_stub_ledger(root, '| IRPThing | `set_description_html` | `descriptionHTML` | java-doc-unimplemented | JavaDoc: "Not implemented - should not be used." | — |\n')
+    unit, integration = _write_stub_tests(root, "wrapper.set_description_html('x')")
+
+    assert tools.verify_not_implemented_evidence(root, "IRPThing", _JAVA_DOC_WRAPPER, unit, integration) == []
+
+
+def test_stub_evidence_flags_not_exposed_basis_when_catalog_exposes_member(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    _write_stub_authority(root, '{"IRPThing": {"getThing": "method"}}', '{"IRPThing": ["getThing"]}')
+    _write_stub_ledger(root, "| IRPThing | `get_thing` | `getThing` | not-exposed | Absent from the catalog. | — |\n")
+    unit, integration = _write_stub_tests(root, "wrapper.get_thing()")
+
+    issues = tools.verify_not_implemented_evidence(root, "IRPThing", _NOT_EXPOSED_WRAPPER, unit, integration)
+
+    assert any("getThing" in issue and "catalog" in issue for issue in issues)
+
+
+def test_stub_evidence_flags_stub_without_javadoc_reference(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    _write_stub_authority(root, '{"IRPThing": {}}', '{"IRPThing": ["getThing"]}')
+    _write_stub_ledger(root, "| IRPThing | `get_thing` | `getThing` | not-exposed | Absent from the catalog. | — |\n")
+    unit, integration = _write_stub_tests(root, "wrapper.get_thing()")
+    wrapper = _NOT_EXPOSED_WRAPPER.replace("com.telelogic.rhapsody.core.IRPThing::getThing()", "")
+
+    issues = tools.verify_not_implemented_evidence(root, "IRPThing", wrapper, unit, integration)
+
+    assert any("Reference" in issue and "get_thing" in issue for issue in issues)
+
+
+def test_stub_evidence_flags_missing_test_assertion(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    _write_stub_authority(root, '{"IRPThing": {}}', '{"IRPThing": ["getThing"]}')
+    _write_stub_ledger(root, "| IRPThing | `get_thing` | `getThing` | not-exposed | Absent from the catalog. | — |\n")
+    unit, integration = _write_stub_tests(root, "wrapper.get_thing()")
+    integration.write_text("def test_stub() -> None:\n    assert True\n", encoding="utf-8")
+
+    issues = tools.verify_not_implemented_evidence(root, "IRPThing", _NOT_EXPOSED_WRAPPER, unit, integration)
+
+    assert any("integration" in issue.lower() and "get_thing" in issue for issue in issues)
+
+
+def test_stub_evidence_flags_stale_ledger_row(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    _write_stub_authority(root, '{"IRPThing": {}}')
+    _write_stub_ledger(root, "| IRPThing | `get_thing` | `getThing` | not-exposed | Absent from the catalog. | — |\n")
+    unit, integration = _write_stub_tests(root, "wrapper.get_thing()")
+
+    issues = tools.verify_not_implemented_evidence(root, "IRPThing", "class IRPThing:\n    pass\n", unit, integration)
+
+    assert any("stale" in issue.lower() and "get_thing" in issue for issue in issues)
+
+
+def test_stub_evidence_flags_com_member_mismatch(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    _write_stub_authority(root, '{"IRPThing": {}}', '{"IRPThing": ["getThing"]}')
+    _write_stub_ledger(root, "| IRPThing | `get_thing` | `otherThing` | not-exposed | Absent from the catalog. | — |\n")
+    unit, integration = _write_stub_tests(root, "wrapper.get_thing()")
+
+    issues = tools.verify_not_implemented_evidence(root, "IRPThing", _NOT_EXPOSED_WRAPPER, unit, integration)
+
+    assert any("otherThing" in issue and "getThing" in issue for issue in issues)
+
+
+_GETTER_DIFF_WRAPPER = (
+    "class IRPThing:\n"
+    "    @property\n"
+    "    def name(self) -> str:\n"
+    '        return str(self.get_com_property(self._com, "name"))\n\n'
+    "    @property\n"
+    "    def ghost(self) -> str:\n"
+    '        return str(self.get_com_property(self._com, "ghostValue"))\n\n'
+    "    @property\n"
+    "    def wrong_shape(self) -> str:\n"
+    "        return str(self.call_com(lambda: self._com.name()))\n\n"
+    "    @property\n"
+    "    def local(self) -> int:\n"
+    "        return 1\n\n"
+    "    @property\n"
+    "    def stub(self) -> str:\n"
+    '        raise NotImplementedError("not exposed")\n\n'
+    "    def get_name(self) -> str:\n"
+    '        return str(self.get_com_property(self._com, "name"))\n'
+)
+
+_GETTER_DIFF_CATALOG = {"name": "property", "unmappedThing": "property"}
+
+
+def _write_getter_diff_fixture(root: Path, wrapper_source: str = _GETTER_DIFF_WRAPPER) -> Path:
+    package = root / "src" / "rhapsody_cli" / "models" / Path(*_REPORT_PACKAGE_PARTS)
+    package.mkdir(parents=True)
+    wrapper = package / "model_thing.py"
+    wrapper.write_text(wrapper_source, encoding="utf-8")
+    reports = root / "docs" / "reports"
+    reports.mkdir(parents=True, exist_ok=True)
+    (reports / "pywin32_authority.json").write_text(json.dumps({"catalog": {"IRPThing": _GETTER_DIFF_CATALOG}}), encoding="utf-8")
+    return wrapper
+
+
+def _getter_diff_report(root: Path, wrapper: Path) -> Path:
+    report = root / "docs" / "reports" / Path(*_REPORT_PACKAGE_PARTS) / "IRPThing_api_report.md"
+    report.parent.mkdir(parents=True, exist_ok=True)
+    report.write_text(f"- Target wrapper: `IRPThing` (`{wrapper.relative_to(root).as_posix()}`)\n", encoding="utf-8")
+    return report
+
+
+def test_getter_catalog_diff_classifies_each_binding(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    _write_getter_diff_fixture(root)
+
+    section = tools.render_getter_catalog_diff_section(root, "IRPThing", "IRPThing", _GETTER_DIFF_WRAPPER, _GETTER_DIFF_CATALOG)
+
+    assert "| `name` | `name` | property | property | match |" in section
+    assert "| `ghost` | `ghostValue` | property | — | catalog-missing |" in section
+    assert "| `wrong_shape` | `name` | method | property | shape-mismatch |" in section
+    assert "| `local` | — | — | — | no-binding |" in section
+    assert "| `stub` | — | — | — | stub |" in section
+    assert "`get_name`" not in section
+
+
+def test_getter_catalog_diff_lists_unmapped_catalog_properties(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    _write_getter_diff_fixture(root)
+
+    section = tools.render_getter_catalog_diff_section(root, "IRPThing", "IRPThing", _GETTER_DIFF_WRAPPER, _GETTER_DIFF_CATALOG)
+
+    assert "| `unmappedThing` | `unmapped_thing` | catalog-only |" in section
+    assert "unmapped_thing` | catalog-only |" in section
+
+
+def test_catalog_only_properties_honours_documented_name_alias(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    wrapper = root / "src" / "rhapsody_cli" / "models" / "irp_operation.py"
+    wrapper.parent.mkdir(parents=True)
+    wrapper.write_text("class IRPOperation:\n    @property\n    def returns(self): return 1\n", encoding="utf-8")
+
+    index = tools._wrapper_class_index(root)
+    candidates = tools._catalog_only_properties(index, "IRPOperation", {"returnType": "property", "otherThing": "property"})
+
+    assert candidates == [("otherThing", "other_thing")]
+
+
+def test_catalog_only_properties_skip_documented_not_applicable_members(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    wrapper = root / "src" / "rhapsody_cli" / "models" / "irp_argument.py"
+    wrapper.parent.mkdir(parents=True)
+    wrapper.write_text("class IRPArgument:\n    pass\n", encoding="utf-8")
+
+    index = tools._wrapper_class_index(root)
+    catalog = {"declaration": "property", "unmappedThing": "property"}
+    assert tools._catalog_only_properties(index, "IRPArgument", catalog) == [("unmappedThing", "unmapped_thing")]
+
+
+def test_getter_catalog_diff_credits_inherited_property(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    wrapper = (
+        "class BaseThing:\n"
+        "    @property\n"
+        "    def unmapped_thing(self) -> str:\n"
+        '        return str(self.get_com_property(self._com, "unmappedThing"))\n\n'
+        "class IRPThing(BaseThing):\n"
+        "    @property\n"
+        "    def name(self) -> str:\n"
+        '        return str(self.get_com_property(self._com, "name"))\n'
+    )
+    _write_getter_diff_fixture(root, wrapper)
+
+    section = tools.render_getter_catalog_diff_section(root, "IRPThing", "IRPThing", wrapper, _GETTER_DIFF_CATALOG)
+
+    assert "| `unmappedThing` | `unmapped_thing` | catalog-only |" not in section
+
+
+def test_write_getter_catalog_diff_writes_summary_and_section(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    wrapper = _write_getter_diff_fixture(root)
+    report = _getter_diff_report(root, wrapper)
+
+    path = tools.write_getter_catalog_diff(root, "IRPThing", report)
+    text = path.read_text(encoding="utf-8")
+
+    assert "## Summary" in text
+    assert "| match | 1 |" in text
+    assert "| catalog-missing | 1 |" in text
+    assert "| shape-mismatch | 1 |" in text
+    assert "| no-binding | 1 |" in text
+    assert "| stub | 1 |" in text
+    assert "| catalog-only | 1 |" in text
+    assert text.count("## IRPThing") == 1
+
+
+def test_write_getter_catalog_diff_replaces_existing_section(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    wrapper = _write_getter_diff_fixture(root)
+    report = _getter_diff_report(root, wrapper)
+
+    tools.write_getter_catalog_diff(root, "IRPThing", report)
+    second = tools.write_getter_catalog_diff(root, "IRPThing", report)
+
+    text = second.read_text(encoding="utf-8")
+    assert text.count("## IRPThing") == 1
+    assert text.count("| `name` | `name` | property | property | match |") == 1

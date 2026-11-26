@@ -3,15 +3,14 @@
 ## Summary
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `IRPClassifier` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_classifier.py`)
-- Members: Python `47`, Java `46`, pywin32 `47`
-- Deviation items: `1` (actionable `1`, expected binding differences `0`, wrapper backlog `0`)
+- Members: Python `46`, Java `46`, pywin32 `46`
+- Deviation items: `0` (actionable `0`, expected binding differences `0`, wrapper backlog `0`)
 - Status legend: `MATCH` verified binding · `UNAVAILABLE_DOCUMENTED` pywin32 lacks the member (NotImplementedError stub) · `ALIAS_DOCUMENTED` documented alias · actionable rows are named by code in `Comparison details`
 
 ## Comparison details
 
 | Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |
 | --- | --- | --- | --- | --- |
-| add_port() -> addNewAggr | — | addNewAggr (method) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
 
 ## Expected Binding Differences
 
@@ -83,9 +82,4 @@
 </details>
 
 ## AI Fix Guidance
-
-### JAVA_DOC_MISSING (1 finding)
-- **Target:** `IRPClassifier` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_classifier.py`
-- **Affected call(s):** add_port() -> addNewAggr
-- **Recommended change:** Confirm this COM member is a supported extension and document its status.
-- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
+No deviations require changes.

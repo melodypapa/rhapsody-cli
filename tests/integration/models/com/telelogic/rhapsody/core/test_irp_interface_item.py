@@ -12,7 +12,7 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProje
 
 
 @pytest.mark.integration
-class TestRPInterfaceItemIntegration:
+class TestIRPInterfaceItemIntegration:
     """Integration tests for IRPInterfaceItem (via IRPOperation) with real Rhapsody COM API."""
 
     @staticmethod
@@ -38,7 +38,7 @@ class TestRPInterfaceItemIntegration:
             assert argument is not None
             assert argument in list(operation.arguments)
         finally:
-            test_class.delete_from_project()
+            pkg.delete_from_project()
 
     def test_add_argument_before_position(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("ArgPosPkg")
@@ -51,14 +51,13 @@ class TestRPInterfaceItemIntegration:
         test_class = pkg.add_class(class_name)
         try:
             operation = test_class.add_operation(op_name)
-            arg1 = operation.add_argument(arg1_name)
-            operation.add_argument(arg3_name)
-            arg2 = operation.add_argument_before_position(arg2_name, 1)
-            arg3 = next(a for a in operation.arguments if a != arg1 and a != arg2)
+            first_argument = operation.add_argument(arg1_name)
+            third_argument = operation.add_argument(arg3_name)
+            inserted_argument = operation.add_argument_before_position(arg2_name, 1)
             args = list(operation.arguments)
-            assert arg1 in args and arg2 in args and arg3 in args
+            assert args == [inserted_argument, first_argument, third_argument]
         finally:
-            test_class.delete_from_project()
+            pkg.delete_from_project()
 
     def test_signature_methods(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("SigPkg")
@@ -68,32 +67,40 @@ class TestRPInterfaceItemIntegration:
         test_class = pkg.add_class(class_name)
         try:
             operation = test_class.add_operation(op_name)
-            operation.add_argument("x")
+            argument_name = self._unique("sigArg")
+            operation.add_argument(argument_name)
             sig = operation.signature
-            assert "x" in sig
+            assert sig == f"{op_name}(int {argument_name})"
             no_names = operation.get_signature_no_arg_names()
-            assert "x" not in no_names
+            assert no_names == f"{op_name}(int)"
             no_types = operation.get_signature_no_arg_types()
-            assert "x" in no_types
+            assert no_types == f"{op_name}({argument_name})"
         finally:
-            test_class.delete_from_project()
+            pkg.delete_from_project()
 
     def test_match_on_signature(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("MatchPkg")
         class_name = self._unique("MatchCls")
-        op1_name = self._unique("matchA")
-        op2_name = self._unique("matchB")
-        op3_name = self._unique("noMatch")
+        matching_class_name = self._unique("MatchingCls")
+        nonmatching_class_name = self._unique("NonmatchingCls")
+        op_name = self._unique("matchOp")
         pkg = self._create_package(test_project, pkg_name)
         test_class = pkg.add_class(class_name)
+        matching_class = pkg.add_class(matching_class_name)
+        nonmatching_class = pkg.add_class(nonmatching_class_name)
         try:
-            op1 = test_class.add_operation(op1_name)
-            op2 = test_class.add_operation(op2_name)
-            op3 = test_class.add_operation(op3_name)
-            op1.add_argument("x")
-            op2.add_argument("x")
-            op3.add_argument("y")
-            assert isinstance(op1.match_on_signature(op2), bool)
-            assert isinstance(op1.match_on_signature(op3), bool)
+            op1 = test_class.add_operation(op_name)
+            op2 = matching_class.add_operation(op_name)
+            op3 = nonmatching_class.add_operation(op_name)
+            # JavaDoc compares operation signatures. Separate classes permit
+            # authentic equal signatures without creating a duplicate in one class.
+            match_arg = self._unique("MatchArg")
+            other_arg = self._unique("OtherArg")
+            op1.add_argument(match_arg)
+            op2.add_argument(match_arg)
+            nonmatching_argument = op3.add_argument(other_arg)
+            nonmatching_argument.set_declaration("char")
+            assert op1.match_on_signature(op2) is True
+            assert op1.match_on_signature(op3) is False
         finally:
-            test_class.delete_from_project()
+            pkg.delete_from_project()

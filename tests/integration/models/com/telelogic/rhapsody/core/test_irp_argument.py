@@ -1,12 +1,10 @@
 """Integration tests for IRPArgument with live Rhapsody COM API."""
 
 import uuid
-from unittest.mock import patch
 
 import pytest
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument import IRPArgument
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 
@@ -25,17 +23,15 @@ class TestIRPArgumentIntegration:
         assert pkg is not None and isinstance(pkg, IRPPackage)
         return pkg
 
-    def test_argument_direction_roundtrip(self, test_project: IRPProject) -> None:
+    def test_argument_direction_is_readable(self, test_project: IRPProject) -> None:
+        """The argumentDirection property is readable on a real argument; the
+        setter faults in this Rhapsody build and is recorded as a blocker."""
         pkg = self._create_package(test_project, self._unique("ArgDirPkg"))
         test_class = pkg.add_class(self._unique("ArgDirCls"))
         try:
             op = test_class.add_operation(self._unique("dirOp"))
-            argument = op.add_argument(self._unique("arg"))
+            argument = op.add_argument(self._unique("Argument"))
             assert isinstance(argument, IRPArgument)
-            original = argument.argument_direction
-            assert isinstance(original, str)
-            with patch.object(IRPModelElement, "set_com_property") as setter:
-                argument.argument_direction = "out"
-                setter.assert_called_once_with(argument._com, "argumentDirection", "out")
+            assert argument.argument_direction in {"In", "Out", "InOut"}
         finally:
             test_class.delete_from_project()

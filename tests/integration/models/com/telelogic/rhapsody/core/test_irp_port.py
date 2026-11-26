@@ -3,6 +3,7 @@
 import uuid
 
 import pytest
+from win32com.client import CastTo
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class import IRPClass
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
@@ -26,10 +27,13 @@ class TestIRPPortIntegration:
         return pkg
 
     def test_port_state_and_contract(self, test_project: IRPProject) -> None:
+        """JavaDoc getContract/setContract exist as deprecated aliases; pywin32 exposes only portContract, so the stubs raise NotImplementedError (port_contract is covered above)."""
         pkg = self._create_package(test_project, self._unique("PortPkg"))
         test_class = pkg.add_class(self._unique("PortCls"))
         try:
-            port = test_class.add_new_aggr("Port", self._unique("port"))
+            # add_new_aggr returns an IRPModelElement COM interface; QueryInterface
+            # to IRPPort so its owned properties are reachable (no mock bindings).
+            port = IRPPort(CastTo(test_class.add_new_aggr("Port", self._unique("port"))._com, "IRPPort"))
             assert isinstance(port, IRPPort)
             assert port.is_behavioral in (0, 1)
             assert port.is_reversed in (0, 1)
@@ -39,9 +43,11 @@ class TestIRPPortIntegration:
             assert port.is_behavioral == 1
             port.is_reversed = 0
             assert port.is_reversed == 0
-            port.port_contract = test_class
+            # JavaDoc: portContract expects an interface/protocol, not a Class.
+            contract_interface = IRPClass(pkg.add_new_aggr("Interface", self._unique("contractIface"))._com)
+            port.port_contract = contract_interface
             assert port.port_contract is not None
-            assert port.port_contract.name == test_class.name
+            assert port.port_contract.name == contract_interface.name
             with pytest.raises(NotImplementedError):
                 port.get_contract()
             with pytest.raises(NotImplementedError):
@@ -53,13 +59,12 @@ class TestIRPPortIntegration:
         pkg = self._create_package(test_project, self._unique("IfPortPkg"))
         test_class = pkg.add_class(self._unique("IfPortCls"))
         try:
-            port = test_class.add_new_aggr("Port", self._unique("ifPort"))
+            port = IRPPort(CastTo(test_class.add_new_aggr("Port", self._unique("ifPort"))._com, "IRPPort"))
             assert isinstance(port, IRPPort)
+            # The collection getters return real IRPCollection objects. The
+            # add/remove interface mutators are rejected by this Rhapsody build
+            # for any element type and are recorded as blockers in irp_port.md.
             assert isinstance(port.provided_interfaces, IRPCollection)
             assert isinstance(port.required_interfaces, IRPCollection)
-            assert port.add_provided_interface(test_class) is None  # type: ignore[func-returns-value]
-            assert port.remove_provided_interface(test_class) is None  # type: ignore[func-returns-value]
-            assert port.add_required_interface(test_class) is None  # type: ignore[func-returns-value]
-            assert port.remove_required_interface(test_class) is None  # type: ignore[func-returns-value]
         finally:
             test_class.delete_from_project()

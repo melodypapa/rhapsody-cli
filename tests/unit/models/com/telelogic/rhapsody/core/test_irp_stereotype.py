@@ -1,6 +1,4 @@
-"""Tests for rhapsody_cli.models.com.telelogic.rhapsody.core.IRPStereotype."""
-
-import pytest
+"""Fake-COM tests for the JavaDoc-owned IRPStereotype API."""
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPStereotype
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
@@ -10,10 +8,10 @@ from tests.unit.models.fakes import make_fake_element
 
 def test_stereotype_is_a_classifier() -> None:
     fake = make_fake_element("Stereotype", properties={"name": "MyStereo"})
-    stereo = IRPStereotype(fake)
+    stereotype = IRPStereotype(fake)
 
-    assert isinstance(stereo, IRPClassifier)
-    assert stereo.name == "MyStereo"
+    assert isinstance(stereotype, IRPClassifier)
+    assert stereotype.name == "MyStereo"
 
 
 def test_stereotype_is_registered_for_meta_class_stereotype() -> None:
@@ -24,13 +22,43 @@ def test_stereotype_is_registered_for_meta_class_stereotype() -> None:
     assert isinstance(wrapped, IRPStereotype)
 
 
-def test_stereotype_set_is_new_term_raises_not_implemented() -> None:
-    """IRPStereotype.set_is_new_term raises NotImplementedError: setIsNewTerm is not exposed
-    in the Rhapsody COM automation type library (get_is_new_term is)."""
+def test_add_meta_class_calls_catalogued_method() -> None:
     fake = make_fake_element("Stereotype")
-    stereo = IRPStereotype(fake)
+    stereotype = IRPStereotype(fake)
 
-    with pytest.raises(NotImplementedError):
-        stereo.set_is_new_term(1)
+    stereotype.add_meta_class("Class")
 
-    fake.setIsNewTerm.assert_not_called()
+    fake.addMetaClass.assert_called_once_with("Class")
+
+
+def test_icon_property_reads_catalogued_com_property() -> None:
+    fake = make_fake_element("Stereotype", properties={"icon": "C:/Rhapsody/icons/stereotype.ico"})
+
+    assert IRPStereotype(fake).icon == "C:/Rhapsody/icons/stereotype.ico"
+
+
+def test_is_new_term_property_reads_and_writes_catalogued_com_property() -> None:
+    fake = make_fake_element("Stereotype", properties={"isNewTerm": 0})
+    stereotype = IRPStereotype(fake)
+
+    assert stereotype.is_new_term == 0
+
+    stereotype.is_new_term = 1
+
+    assert fake.isNewTerm == 1
+    assert stereotype.is_new_term == 1
+
+
+def test_of_meta_class_property_reads_catalogued_com_property() -> None:
+    fake = make_fake_element("Stereotype", properties={"ofMetaClass": "Package,Class"})
+
+    assert IRPStereotype(fake).of_meta_class == "Package,Class"
+
+
+def test_remove_meta_class_calls_catalogued_method() -> None:
+    fake = make_fake_element("Stereotype")
+    stereotype = IRPStereotype(fake)
+
+    stereotype.remove_meta_class("Class")
+
+    fake.removeMetaClass.assert_called_once_with("Class")
