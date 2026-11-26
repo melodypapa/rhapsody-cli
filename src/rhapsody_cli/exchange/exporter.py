@@ -158,7 +158,7 @@ class RhapsodyExporter(RhapsodyModelHelper):
 
     def _export_dependency(self, dep: IRPModelElement) -> Dict[str, object]:
         spec: Dict[str, object] = {"name": dep.name, "type": "Dependency"}
-        target = self._safe_get(dep, "get_depends_on")
+        target = self._safe_prop(dep, "depends_on")
         target_name = self._classifier_name(target)
         if target_name:
             spec["depends_on"] = target_name
@@ -180,27 +180,27 @@ class RhapsodyExporter(RhapsodyModelHelper):
 
     def _export_relation(self, rel: IRPModelElement) -> Dict[str, object]:
         spec: Dict[str, object] = {"name": rel.name, "type": "Relation"}
-        relation_type = self._safe_get(rel, "get_relation_type")
+        relation_type = self._safe_prop(rel, "relation_type")
         if relation_type:
             spec["relation_type"] = relation_type
-        source = self._safe_get(rel, "get_of_class")
+        source = self._safe_prop(rel, "of_class")
         source_name = self._classifier_name(source)
         if source_name:
             spec["from"] = source_name
-        target = self._safe_get(rel, "get_other_class")
+        target = self._safe_prop(rel, "other_class")
         target_name = self._classifier_name(target)
         if target_name:
             spec["to"] = target_name
-        multiplicity = self._safe_get(rel, "get_multiplicity")
+        multiplicity = self._safe_prop(rel, "multiplicity")
         if multiplicity:
             spec["multiplicity"] = multiplicity
-        is_navigable = self._safe_get(rel, "get_is_navigable")
+        is_navigable = self._safe_prop(rel, "is_navigable")
         if is_navigable is not None:
             spec["is_navigable"] = bool(is_navigable)
-        role = self._safe_get(rel, "get_relation_role_name")
+        role = self._safe_prop(rel, "relation_role_name")
         if role:
             spec["role"] = role
-        visibility = self._safe_get(rel, "get_visibility")
+        visibility = self._safe_prop(rel, "visibility")
         if visibility:
             spec["visibility"] = visibility
         return spec
@@ -319,6 +319,15 @@ class RhapsodyExporter(RhapsodyModelHelper):
         try:
             value = getattr(element, member_name)
             return value() if callable(value) else value  # type: ignore[no-any-return]
+        except Exception:
+            return None
+
+    def _safe_prop(self, element: IRPModelElement, prop_name: str) -> Optional[object]:
+        """Read a Python property without calling it (wrapper objects are not callable)."""
+        if not hasattr(element, prop_name):
+            return None
+        try:
+            return getattr(element, prop_name)  # type: ignore[no-any-return]
         except Exception:
             return None
 
