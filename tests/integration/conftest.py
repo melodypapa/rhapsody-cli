@@ -102,11 +102,14 @@ def rhapsody_app(rhapsody_instance: Optional[RhapsodyApplication], request: Fixt
 
 
 @pytest.fixture(scope="session", autouse=True)
-def rhapsody_session(rhapsody_app: RhapsodyApplication) -> Generator[RhapsodyApplication, None, None]:
+def rhapsody_session(rhapsody_app: Optional[RhapsodyApplication]) -> Generator[Optional[RhapsodyApplication], None, None]:
     """Connect once for entire test session, disconnect at end.
 
     Creates a session file that persists across all integration tests,
     improving performance by avoiding repeated connect/disconnect cycles.
+    The file is only written when a Rhapsody instance was actually obtained;
+    a ``connected: true`` record with no live instance would mislead CLI
+    commands that discover the app through the session file.
 
     A new Rhapsody instance is launched with the GUI visible by default to ensure
     proper rendering and display of model elements. Non-visual runs can use the
@@ -116,27 +119,29 @@ def rhapsody_session(rhapsody_app: RhapsodyApplication) -> Generator[RhapsodyApp
     long timeout (30 minutes) to accommodate slow test runs.
 
     Yields:
-        RhapsodyApplication: The connected application instance.
+        The connected application instance, or ``None`` when unavailable.
     """
     from rhapsody_cli.session import Session, SessionManager
 
     session_manager = SessionManager()
 
-    # Create session file with long timeout for integration tests
-    now = datetime.now()
-    session: Session = {
-        "connected": True,
-        "instance_type": "launched",  # We're launching a new instance
-        "connected_at": now.isoformat(),
-        "last_activity": now.isoformat(),
-        "timeout_minutes": 30,  # Long timeout for test session
-    }
-    session_manager.save(session)
+    if rhapsody_app is not None:
+        # Create session file with long timeout for integration tests
+        now = datetime.now()
+        session: Session = {
+            "connected": True,
+            "instance_type": "launched",  # We're launching a new instance
+            "connected_at": now.isoformat(),
+            "last_activity": now.isoformat(),
+            "timeout_minutes": 30,  # Long timeout for test session
+        }
+        session_manager.save(session)
 
     yield rhapsody_app
 
     # Cleanup: clear session file at end
-    session_manager.clear()
+    if rhapsody_app is not None:
+        session_manager.clear()
 
 
 @pytest.fixture(scope="session", autouse=True)

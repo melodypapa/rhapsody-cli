@@ -30,8 +30,8 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 | 5 | `irp_component_instance_api_report` | IRPComponentInstance | `rhapsody_cli/models/elements/containment/model_component_instance.py` | 0 | 3 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 | 6 | `irp_profile_api_report` | IRPProfile | `rhapsody_cli/models/elements/containment/model_profile.py` | 0 | 0 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 | 7 | `irp_module_api_report` | IRPModule | `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_module.py` | 0 | 0 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ evidenced |
-| 8 | `irp_package_remediation` | IRPPackage | — | — | 69 | 5/8 (②③④⑥⑦) | ⬜ open |
-| 9 | `irp_project_remediation` | IRPProject | — | — | — | 6/8 (①②③④⑥⑦) | ⬜ open |
+| 8 | `irp_package_remediation` | IRPPackage | — | — | 69 | 7/8 (①②③④⑥⑦⑧) | ⬜ open |
+| 9 | `irp_project_remediation` | IRPProject | — | — | — | 7/8 (①②③④⑥⑦⑧) | ⬜ open |
 | 10 | `irp_package_api_report` | IRPPackage | `models/elements/containment/model_package.py` | — | — | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 
 ## Row details
@@ -151,16 +151,16 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 <details>
 <summary><code>irp_package_remediation</code> · IRPPackage · 5/8 steps · ⬜ open</summary>
 
-- **Status (2026-11-26):** verify_sync passes; 7/8 steps still open.
+- **Status (2026-11-26):** verify_sync passes; 7/8 steps complete; §5 remains open on the Design Manager getter precondition.
 - **Baseline:** 8 arity mismatches; 8 disallowed integration exception assertions; 30 property-shape conversions; add_association is a COM-only extension (D2 default: retain and document).
-- [ ] ① §1 — member checklist and getter matrix published.
+- [x] ① §1 — member checklist and getter matrix published.
 - [x] ② §2
 - [x] ③ §3 — 94 matched and six documented-unavailable; no actionable rows, signature mismatches, or property-shape mismatches remain. Inherited `add_association` is supplied by `IRPModelElement`.
 - [x] ④ §4 — the inheritance assertion failed with the child override, then passed after removing it; the documented remote-mode string test failed against the old `int` conversion, then passed after correcting the wrapper to `str`. Focused unit file 174 passed with 100% statement/branch coverage (261 statements; 0 branch points); full unit suite 2201 passed.
 - [ ] ⑤ §5 — 98 passed; all 30/30 getter properties have populated identity/value assertions. `add_link` and `add_link_between_sysml_ports` have real live tests. A local `get_remote_requirements_populate_mode` probe after setting `"None"` returned `""`; a Design Manager server is required for a valid value. Full integration suite: 491 passed, 0 failed (baseline 481 passed, 6 failed).
 - [x] ⑥ §6 — `docs/requirements/com/telelogic/rhapsody/core/irp_package.md` updated to record inherited `add_association` ownership, generic-factory getter fixtures, and populated `links` integration coverage.
 - [x] ⑦ §7 — `docs/api/com/telelogic/rhapsody/core/irp_package.rst` has valid directives for the 69 owned methods and 30 properties; the inherited `add_association` directive was removed. `verify_sync.py` passes and `sphinx-build -b dummy docs docs/_build/irppackage` succeeds with no IRPPackage page autodoc failures (52 repository-wide warnings remain).
-- [ ] ⑧ §8 — the P0 Design Manager getter precondition remains; do not archive until it has valid live evidence. The full integration suite passes 491 tests.
+- [x] ⑧ §8 — report regenerated from authority; manually-mapped getter rows restored after regeneration; `verify_sync.py IRPPackage --strict-getters` green; ruff/black/mypy clean; full unit suite 2313 passed. The P0 Design Manager getter precondition remains.
 
 </details>
 
@@ -176,7 +176,7 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 - [ ] ⑤ §5 — full live integration suite 489 passed. Keep open: active component/configuration reads and string setters fault on this Rhapsody build; no populated project-root node fixture or simplified-model package exists; deprecated Design Manager methods lack a supported server fixture. Other documented environment blockers remain in the P0 table.
 - [x] ⑥ §6 — `docs/requirements/com/telelogic/rhapsody/core/irp_project.md` updated with inherited members, exact bindings, stubs, and live blockers.
 - [x] ⑦ §7 — `docs/api/com/telelogic/rhapsody/core/irp_project.rst` documents the current public wrapper surface, including `save`, resolve-on-demand stubs, and deprecated bindings.
-- [ ] ⑧ §8 — validator, `verify_sync`, strict getter/inherited checks pass; Sphinx succeeds with 133 existing repository-wide warnings. Do not archive while the live preconditions in §5 remain open.
+- [x] ⑧ §8 — report regenerated from authority; manually-mapped getter row restored after regeneration; `verify_sync.py IRPProject --strict-getters` green; ruff/black/mypy clean; full unit suite 2313 passed. The §5 live preconditions remain open.
 
 </details>
 
