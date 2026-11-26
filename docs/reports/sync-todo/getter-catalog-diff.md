@@ -14,7 +14,7 @@ review rather than a failure.
 
 | Status | Count |
 | --- | --- |
-| match | 184 |
+| match | 189 |
 | catalog-missing | 0 |
 | shape-mismatch | 0 |
 | no-binding | 0 |
@@ -486,6 +486,22 @@ review rather than a failure.
 | Python getter | COM member | Binding shape | Catalog shape | Status |
 | --- | --- | --- | --- | --- |
 | `duration_time` | `durationTime` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPStatechart
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `graphical_elements` | `graphicalElements` | property | property | match |
+| `is_main_behavior` | `isMainBehavior` | property | property | match |
+| `is_overridden` | `isOverridden` | property | property | match |
+| `its_class` | `itsClass` | property | property | match |
+| `root_state` | `rootState` | property | property | match |
 
 ### Catalog properties with no matching Python property
 
