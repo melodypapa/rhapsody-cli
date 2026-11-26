@@ -1,5 +1,4 @@
 Elements
-========
 
 .. automodule:: rhapsody_cli.models.elements
    :members:
@@ -47,13 +46,17 @@ Java Package API Reference
 .. toctree::
    :maxdepth: 1
 
+   com/telelogic/rhapsody/core/irp_accept_time_event
+   com/telelogic/rhapsody/core/irp_action
    com/telelogic/rhapsody/core/irp_actor
    com/telelogic/rhapsody/core/irp_application
-   com/telelogic/rhapsody/core/irp_association_class
    com/telelogic/rhapsody/core/irp_argument
+   com/telelogic/rhapsody/core/irp_association_class
    com/telelogic/rhapsody/core/irp_attribute
+   com/telelogic/rhapsody/core/irp_call_operation
    com/telelogic/rhapsody/core/irp_class
    com/telelogic/rhapsody/core/irp_classifier
+   com/telelogic/rhapsody/core/irp_collection
    com/telelogic/rhapsody/core/irp_dependency
    com/telelogic/rhapsody/core/irp_instance
    com/telelogic/rhapsody/core/irp_interface_item
@@ -66,7 +69,7 @@ Java Package API Reference
    com/telelogic/rhapsody/core/irp_relation
    com/telelogic/rhapsody/core/irp_statechart
    com/telelogic/rhapsody/core/irp_stereotype
+   com/telelogic/rhapsody/core/irp_swimlane
    com/telelogic/rhapsody/core/irp_type
-   com/telelogic/rhapsody/core/irp_use_case
-   com/telelogic/rhapsody/core/irp_collection
    com/telelogic/rhapsody/core/irp_unit
+   com/telelogic/rhapsody/core/irp_use_case

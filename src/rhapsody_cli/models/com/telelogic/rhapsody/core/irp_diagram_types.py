@@ -7,8 +7,8 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagrams import IRPDiag
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlowchart
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collaboration import IRPCollaboration
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flowchart import IRPFlowchart
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphElement, IRPGraphNode
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statechart import IRPStatechart
 

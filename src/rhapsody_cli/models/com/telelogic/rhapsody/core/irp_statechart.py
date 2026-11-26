@@ -10,7 +10,8 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_ide import IRPAXViewCtr
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions import IRPAcceptEventAction, IRPAcceptTimeEvent
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_accept_time_event import IRPAcceptTimeEvent
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions import IRPAcceptEventAction
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types import IRPStatechartDiagram
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphEdge, IRPGraphElement, IRPGraphNode

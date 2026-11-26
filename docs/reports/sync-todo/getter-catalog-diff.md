@@ -14,7 +14,7 @@ review rather than a failure.
 
 | Status | Count |
 | --- | --- |
-| match | 156 |
+| match | 184 |
 | catalog-missing | 0 |
 | shape-mismatch | 0 |
 | no-binding | 0 |
@@ -348,6 +348,144 @@ review rather than a failure.
 | `entry_points` | `entryPoints` | property | property | match |
 | `describing_diagrams` | `describingDiagrams` | property | property | match |
 | `is_behavior_overriden` | `isBehaviorOverriden` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPFlow
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `conveyed` | `conveyed` | property | property | match |
+| `direction` | `direction` | property | property | match |
+| `end1` | `end1` | property | property | match |
+| `end1_port` | `end1Port` | property | property | match |
+| `end1_sys_ml_port` | `end1SysMLPort` | property | property | match |
+| `end2` | `end2` | property | property | match |
+| `end2_port` | `end2Port` | property | property | match |
+| `end2_sys_ml_port` | `end2SysMLPort` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPFlowchart
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `is_analysis_only` | `isAnalysisOnly` | property | property | match |
+| `its_owner` | `itsOwner` | property | property | match |
+| `swimlanes` | `swimlanes` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPSwimlane
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `contents` | `contents` | property | property | match |
+| `represents` | `represents` | property | property | match |
+| `swimlanes` | `swimlanes` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPAction
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `body` | `body` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPSendAction
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `arg_vals` | `argVals` | property | property | match |
+| `event` | `event` | property | property | match |
+| `invoked_operation` | `invokedOperation` | property | property | match |
+| `target` | `target` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPFlowItem
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `represented` | `represented` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPObjectNode
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `in_state` | `inState` | property | property | match |
+| `in_state_list` | `inStateList` | property | property | match |
+| `represents` | `represents` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPCallOperation
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `operation` | `operation` | property | property | match |
+| `target` | `target` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPContextSpecification
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `multiplicities` | `multiplicities` | property | property | match |
+| `value` | `value` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPAcceptTimeEvent
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `duration_time` | `durationTime` | property | property | match |
 
 ### Catalog properties with no matching Python property
 

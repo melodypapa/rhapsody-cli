@@ -25,8 +25,10 @@ if TYPE_CHECKING:
         IRPTimingDiagram,
         IRPUseCaseDiagram,
     )
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlow, IRPFlowchart, IRPFlowItem
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actor import IRPActor
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flow import IRPFlow
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flow_item import IRPFlowItem
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flowchart import IRPFlowchart
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPLink
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_instance import IRPInstance
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
@@ -217,7 +219,7 @@ class IRPPackage(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addFlowItems(java.lang.String name)
         """
-        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlowItem
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flow_item import IRPFlowItem
 
         return cast(IRPFlowItem, self.wrap(self.call_com(lambda: self._com.addFlowItems(name))))
 
@@ -233,7 +235,7 @@ class IRPPackage(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addFlows(java.lang.String name)
         """
-        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlow
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flow import IRPFlow
 
         return cast(IRPFlow, self.wrap(self.call_com(lambda: self._com.addFlows(name))))
 
@@ -308,7 +310,7 @@ class IRPPackage(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::addActivityDiagram()
         """
-        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlowchart
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flowchart import IRPFlowchart
 
         return cast(IRPFlowchart, self.wrap(self.call_com(lambda: self._com.addActivityDiagram())))
 

@@ -301,3 +301,81 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | --- | --- | --- | --- |
 | `dependent` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_dependency.py::test_dependent` | identity/value | OK |
 | `depends_on` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_dependency.py::test_depends_on` | identity/value | OK |
+
+## IRPFlow
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `conveyed` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_conveyed` | identity/value | OK |
+| `direction` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_direction` | identity/value | OK |
+| `end1` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_end1` | identity/value | OK |
+| `end1_port` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_end1_port` | identity/value | OK |
+| `end1_sys_ml_port` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_end1_sys_ml_port` | identity/value | OK |
+| `end2` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_end2` | identity/value | OK |
+| `end2_port` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_end2_port` | identity/value | OK |
+| `end2_sys_ml_port` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_end2_sys_ml_port` | identity/value | OK |
+
+## IRPFlowchart
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `is_analysis_only` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flowchart.py::test_is_analysis_only` | identity/value | OK |
+| `its_owner` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flowchart.py::test_its_owner` | identity/value | OK |
+| `swimlanes` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flowchart.py::test_swimlanes` | identity/value | OK |
+
+## IRPSwimlane
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `contents` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_swimlane.py::test_contents` | identity/value | OK |
+| `represents` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_swimlane.py::test_represents` | identity/value | OK |
+| `swimlanes` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_swimlane.py::test_swimlanes` | identity/value | OK |
+
+## IRPAction
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `body` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_action.py::test_body` | identity/value | OK |
+
+## IRPSendAction
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `arg_vals` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_send_action.py::test_arg_vals` | identity/value | OK |
+| `event` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_send_action.py::test_event` | identity/value | OK |
+| `invoked_operation` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_send_action.py::test_invoked_operation` | identity/value | OK |
+| `target` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_send_action.py::test_target` | identity/value | OK |
+
+## IRPFlowItem
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `represented` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow_item.py::test_represented` | identity/value | OK |
+
+## IRPObjectNode
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `in_state` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_object_node.py::test_in_state` | identity/value | OK |
+| `in_state_list` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_object_node.py::test_in_state_list` | identity/value | OK |
+| `represents` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_object_node.py::test_represents` | identity/value | OK |
+
+## IRPCallOperation
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `operation` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_call_operation.py::test_operation` | identity/value | OK |
+| `target` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_call_operation.py::test_target` | identity/value | OK |
+
+## IRPContextSpecification
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `multiplicities` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_context_specification.py::test_multiplicities` | identity/value | OK |
+| `value` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_context_specification.py::test_value` | identity/value | OK |
+
+## IRPAcceptTimeEvent
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `duration_time` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_accept_time_event.py::test_duration_time` | identity/value | OK |
