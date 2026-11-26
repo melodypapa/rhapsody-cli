@@ -5117,9 +5117,6 @@
     ],
     "IRPClass": [
       "addEventReceptionWithEvent",
-      "createOSLCLink",
-      "deleteOSLCLink",
-      "getOSLCLinks",
       "getRmmUrl",
       "getUnitPath",
       "setDescriptionHTML",

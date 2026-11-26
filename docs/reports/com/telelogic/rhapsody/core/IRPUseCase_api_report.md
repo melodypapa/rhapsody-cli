@@ -11,7 +11,19 @@
 
 | Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |
 | --- | --- | --- | --- | --- |
-| — | — | — | PASS | No change needed. |
+
+## Expected Binding Differences
+
+| Python model wrapper | Java API | pywin32 | Status | Recommended change |
+| --- | --- | --- | --- | --- |
+| add_event_reception_with_event() (no static COM member) | addEventReceptionWithEvent (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| update_contained_diagrams_on_server() (no static COM member) | updateContainedDiagramsOnServer (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+
+## Wrapper Backlog
+
+| Python model wrapper | Java API | pywin32 | Status | Recommended change |
+| --- | --- | --- | --- | --- |
+| — | — | — | — | — |
 
 <details>
 <summary>Correct items (12) — bindings verified against pywin32</summary>
@@ -26,12 +38,12 @@
 | delete_describing_diagram() -> deleteDescribingDiagram | deleteDescribingDiagram (method) | deleteDescribingDiagram (method) | MATCH | — |
 | delete_entry_point() -> deleteEntryPoint | deleteEntryPoint (method) | deleteEntryPoint (method) | MATCH | — |
 | delete_extension_point() -> deleteExtensionPoint | deleteExtensionPoint (method) | deleteExtensionPoint (method) | MATCH | — |
-| get_describing_diagram() -> getDescribingDiagram | getDescribingDiagram (method) | getDescribingDiagram (method) | MATCH | — |
 | describing_diagrams (property) -> describingDiagrams | getDescribingDiagrams (method) | describingDiagrams (property) | MATCH | — |
 | entry_points (property) -> entryPoints | getEntryPoints (method) | entryPoints (property) | MATCH | — |
 | extension_points (property) -> extensionPoints | getExtensionPoints (method) | extensionPoints (property) | MATCH | — |
 | find_entry_point() -> findEntryPoint | findEntryPoint (method) | findEntryPoint (method) | MATCH | — |
 | find_extension_point() -> findExtensionPoint | findExtensionPoint (method) | findExtensionPoint (method) | MATCH | — |
+| get_describing_diagram() -> getDescribingDiagram | getDescribingDiagram (method) | getDescribingDiagram (method) | MATCH | — |
 | is_behavior_overriden (property) -> isBehaviorOverriden; set_is_behavior_overriden() (no static COM member) | getIsBehaviorOverriden (method); setIsBehaviorOverriden (method) | isBehaviorOverriden (property) | MATCH | — |
 
 </details>
