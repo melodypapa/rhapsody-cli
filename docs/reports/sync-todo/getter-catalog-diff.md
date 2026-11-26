@@ -14,7 +14,7 @@ review rather than a failure.
 
 | Status | Count |
 | --- | --- |
-| match | 200 |
+| match | 201 |
 | catalog-missing | 0 |
 | shape-mismatch | 0 |
 | no-binding | 0 |
@@ -557,6 +557,18 @@ review rather than a failure.
 | Python getter | COM member | Binding shape | Catalog shape | Status |
 | --- | --- | --- | --- | --- |
 | `value` | `value` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPConstraint
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `constraints_by_me` | `constraintsByMe` | property | property | match |
 
 ### Catalog properties with no matching Python property
 

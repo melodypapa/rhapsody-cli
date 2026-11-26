@@ -41,6 +41,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_component import IRPComponent
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_component_instance import IRPComponentInstance
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_configuration import IRPConfiguration
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_constraint import IRPConstraint
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_dependency import IRPDependency
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types import (
         IRPActivityDiagram,
@@ -106,7 +107,7 @@ if TYPE_CHECKING:
         IRPTransition,
         IRPTrigger,
     )
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_misc import IRPComment, IRPConstraint
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_misc import IRPComment
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_module import IRPModule
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_node import IRPNode
@@ -162,7 +163,7 @@ _EXPORT_MODULES = {
     "IRPConditionMark": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics",
     "IRPConfiguration": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_configuration",
     "IRPConnector": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics",
-    "IRPConstraint": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_misc",
+    "IRPConstraint": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_constraint",
     "IRPContextSpecification": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_context_specification",
     "IRPControlledFile": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_files",
     "IRPDependency": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_dependency",

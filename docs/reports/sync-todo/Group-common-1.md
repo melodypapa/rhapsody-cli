@@ -82,18 +82,18 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 </details>
 
 <details>
-<summary><code>irp_constraint_api_report</code> · IRPConstraint · 1/8 steps · ⬜ open</summary>
+<summary><code>irp_constraint_api_report</code> · IRPConstraint · 7/8 steps · ⬜ open</summary>
 
-- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
-- **Note:** usage 9 src / 8 test refs, 1 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
-- [ ] ① §1
-- [x] ② §2
-- [ ] ③ §3
-- [ ] ④ §4
-- [ ] ⑤ §5
-- [ ] ⑥ §6
-- [ ] ⑦ §7
-- [ ] ⑧ §8
+- **Status (2026-11-27):** verify_sync passes; 7/8 steps complete. §5 stays open on the populated-getter blocker.
+- **Note:** usage 9 src / 8 test refs, 1 owned member. Split `IRPConstraint` into `irp_constraint.py`; `IRPComment` stays in `irp_misc.py`. JavaDoc `getConstraintsByMe` maps to the read-only pywin32 `constraintsByMe` property.
+- [x] ① §1
+- [x] ② §2 — canonical module `irp_constraint.py`; exports and direct imports updated
+- [x] ③ §3 — 0 actionable deviations after binding migration
+- [x] ④ §4 — 2 fake-COM unit tests, 100% statements/branches
+- [ ] ⑤ §5 — 1 integration test asserts the documented empty state; populated `constraints_by_me` fixture blocked (no documented API attaches an affected element), recorded as P0 in `index.md`
+- [x] ⑥ §6 — `docs/requirements/com/telelogic/rhapsody/core/irp_constraint.md`
+- [x] ⑦ §7 — `docs/api/com/telelogic/rhapsody/core/irp_constraint.rst` + toctree entry
+- [x] ⑧ §8 — validator 0 deviations; verify_sync + --strict-getters green; unit suite 2195 passed; skill harness 90 passed; mypy/ruff/black clean
 
 </details>
 
