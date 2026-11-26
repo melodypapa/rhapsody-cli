@@ -47,6 +47,7 @@ Java Package API Reference
 .. toctree::
    :maxdepth: 1
 
+   com/telelogic/rhapsody/core/irp_accept_time_event
    com/telelogic/rhapsody/core/irp_action
    com/telelogic/rhapsody/core/irp_actor
    com/telelogic/rhapsody/core/irp_application

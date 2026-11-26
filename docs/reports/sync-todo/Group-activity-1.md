@@ -1,6 +1,6 @@
 # Sync todo — `activity` (group 1 of 2)
 
-**10 classes** · ✅ 9 archived · ⬜ 1 open
+**10 classes** · ✅ 10 archived · ⬜ 0 open
 
 One row per sync run. A step is ticked only when its evidence lands; a row is archived only after all eight steps pass. Binding rule: one pywin32-exposed COM member per call — `call_com(lambda: self._com.Name(...))` for methods, `get_com_property` / `set_com_property` for properties; catalog-absent sites are blockers, never blind migrations. Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/`, mirrored tests under `tests/{unit,integration}/models/com/telelogic/rhapsody/core/`.
 
@@ -32,7 +32,7 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 | 7 | `irp_object_node_api_report` | IRPObjectNode | `rhapsody_cli/models/elements/activity/model_activity.py` | 3 | 7 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 | 8 | `irp_call_operation_api_report` | IRPCallOperation | `rhapsody_cli/models/elements/activity/model_actions.py` | 4 | 4 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 | 9 | `irp_context_specification_api_report` | IRPContextSpecification | `rhapsody_cli/models/elements/activity/model_actions.py` | 2 | 4 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
-| 10 | `irp_accept_time_event_api_report` | IRPAcceptTimeEvent | `rhapsody_cli/models/elements/activity/model_actions.py` | 2 | 2 | 1/8 (②) | ⬜ open |
+| 10 | `irp_accept_time_event_api_report` | IRPAcceptTimeEvent | `rhapsody_cli/models/elements/activity/model_actions.py` | 2 | 2 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 
 ## Row details
 
@@ -181,17 +181,17 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 </details>
 
 <details>
-<summary><code>irp_accept_time_event_api_report</code> · IRPAcceptTimeEvent · 1/8 steps · ⬜ open</summary>
+<summary><code>irp_accept_time_event_api_report</code> · IRPAcceptTimeEvent · 8/8 steps · ✅ archived</summary>
 
-- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
-- **Note:** usage 13 src / 6 test refs, 2 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
-- [ ] ① §1
-- [x] ② §2
-- [ ] ③ §3
-- [ ] ④ §4
-- [ ] ⑤ §5
-- [ ] ⑥ §6
-- [ ] ⑦ §7
-- [ ] ⑧ §8
+- **Status (2026-11-26):** verify_sync passes; all steps archived.
+- **Note:** usage 13 src / 6 test refs, 2 owned members. Split `IRPAcceptTimeEvent` into `irp_accept_time_event.py`; siblings stay in `irp_actions.py`. The JavaDoc duration pair maps to the pywin32 `durationTime` property.
+- [x] ① §1
+- [x] ② §2 — canonical module `irp_accept_time_event.py`; exports and direct imports updated
+- [x] ③ §3 — 0 actionable deviations after binding migration
+- [x] ④ §4 — 3 fake-COM unit tests, 100% statements/branches
+- [x] ⑤ §5 — 1 integration test with a real Accept Time Event; macOS = collection-only
+- [x] ⑥ §6 — `docs/requirements/com/telelogic/rhapsody/core/irp_accept_time_event.md`
+- [x] ⑦ §7 — `docs/api/com/telelogic/rhapsody/core/irp_accept_time_event.rst` + toctree entry
+- [x] ⑧ §8 — validator 0 deviations; verify_sync + --strict-getters green; full unit suite 2191 passed; ruff/black clean
 
 </details>

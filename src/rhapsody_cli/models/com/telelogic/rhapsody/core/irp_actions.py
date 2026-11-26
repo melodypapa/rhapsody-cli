@@ -44,40 +44,6 @@ class IRPAcceptEventAction(IRPState):
         self._set_method_or_property(self._com, "setEvent", "event", event._com)
 
 
-class IRPAcceptTimeEvent(IRPState):
-    """Wraps ``IRPAcceptTimeEvent``: represents Accept Time Event elements in activity diagrams and statecharts."""
-
-    # IRPAcceptTimeEvent method parity checklist:
-    # [x] get_duration_time              [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_duration_time              [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [inherited] irp_model_element methods (covered by rp_model_element checklist)
-    # [inherited] irp_state methods (covered by rp_state checklist)
-    # [inherited] irp_state_vertex methods (covered by rp_state_vertex checklist)
-    # No deprecated IRPAcceptTimeEvent methods.
-
-    def get_duration_time(self) -> str:
-        """Returns the duration that was specified for this element.
-
-        Returns:
-            The duration that was specified for this element.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPAcceptTimeEvent::getDurationTime()
-        """
-        return str(self._get_method_or_property(self._com, "getDurationTime", "durationTime"))
-
-    def set_duration_time(self, duration_time: str) -> None:
-        """Specifies the duration that should be used for this element.
-
-        Args:
-            duration_time: The duration that should be used for this element.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPAcceptTimeEvent::setDurationTime(java.lang.String durationTime)
-        """
-        self._set_method_or_property(self._com, "setDurationTime", "durationTime", duration_time)
-
-
 class IRPActionBlock(IRPMessage):
     """Wraps ``IRPActionBlock``: represents action blocks in sequence diagrams."""
 
@@ -91,5 +57,4 @@ class IRPActionBlock(IRPMessage):
 
 # Register wrappers for Rhapsody meta classes
 IRPModelElement.register_wrapper("AcceptEventAction", IRPAcceptEventAction)
-IRPModelElement.register_wrapper("AcceptTimeEvent", IRPAcceptTimeEvent)
 IRPModelElement.register_wrapper("ActionBlock", IRPActionBlock)

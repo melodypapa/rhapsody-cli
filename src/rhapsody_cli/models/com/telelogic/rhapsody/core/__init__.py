@@ -10,7 +10,6 @@ from typing import TYPE_CHECKING, cast
 if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions import (
         IRPAcceptEventAction,
-        IRPAcceptTimeEvent,
         IRPActionBlock,
     )
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actor import IRPActor
@@ -133,7 +132,7 @@ _EXPORT_MODULES = {
     "AddToModelMode": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_unit",
     "IRPAXViewCtrl": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_ide",
     "IRPAcceptEventAction": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions",
-    "IRPAcceptTimeEvent": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions",
+    "IRPAcceptTimeEvent": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_accept_time_event",
     "IRPAction": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_action",
     "IRPActionBlock": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions",
     "IRPActivityDiagram": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types",

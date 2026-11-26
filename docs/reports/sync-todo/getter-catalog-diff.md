@@ -14,7 +14,7 @@ review rather than a failure.
 
 | Status | Count |
 | --- | --- |
-| match | 186 |
+| match | 187 |
 | catalog-missing | 0 |
 | shape-mismatch | 0 |
 | no-binding | 0 |
@@ -477,6 +477,18 @@ review rather than a failure.
 | --- | --- | --- | --- | --- |
 | `multiplicities` | `multiplicities` | property | property | match |
 | `value` | `value` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPAcceptTimeEvent
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `duration_time` | `durationTime` | property | property | match |
 
 ### Catalog properties with no matching Python property
 

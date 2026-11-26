@@ -10,7 +10,8 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statechart import IRPSt
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statemachine import IRPState
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions import IRPAcceptEventAction, IRPAcceptTimeEvent
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_accept_time_event import IRPAcceptTimeEvent
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions import IRPAcceptEventAction
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_call_operation import IRPCallOperation
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types import IRPActivityDiagram
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPPin
@@ -143,7 +144,7 @@ class IRPFlowchart(IRPStatechart):
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::addAcceptTimeEvent(java.lang.String name, com.telelogic.rhapsody.core.IRPState parent)
         """
-        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions import IRPAcceptTimeEvent
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_accept_time_event import IRPAcceptTimeEvent
 
         return cast(IRPAcceptTimeEvent, self.wrap(self.call_com(lambda: self._com.addAcceptTimeEvent(name, parent._com))))
 

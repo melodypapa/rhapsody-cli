@@ -346,3 +346,9 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | --- | --- | --- | --- |
 | `multiplicities` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_context_specification.py::test_multiplicities` | identity/value | OK |
 | `value` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_context_specification.py::test_value` | identity/value | OK |
+
+## IRPAcceptTimeEvent
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `duration_time` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_accept_time_event.py::test_duration_time` | identity/value | OK |
