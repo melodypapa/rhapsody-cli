@@ -433,3 +433,9 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | `statechart_implementation` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_statechart_implementation` | identity/value | OK |
 | `time_model` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_time_model` | identity/value | OK |
 
+## IRPNode
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `component_instances` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_node.py::test_component_instances` | identity/value | OK |
+| `cpu_type` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_node.py::test_cpu_type` | identity/value | OK |

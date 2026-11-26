@@ -26,7 +26,7 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 | 1 | `irp_component_api_report` | IRPComponent | `elements/containment/model_component.py` | 17 | 43 | 7/8 (①②③④⑥⑦⑧) | ⬜ open |
 | 2 | `irp_collaboration_api_report` | IRPCollaboration | `elements/containment/model_collaboration.py` | 1 | 39 | 7/8 (①②③④⑥⑦⑧) | ⬜ open |
 | 3 | `irp_configuration_api_report` | IRPConfiguration | `rhapsody_cli/models/elements/containment/model_configuration.py` | 23 | 46 | 7/8 (①②③④⑥⑦⑧) | ⬜ open |
-| 4 | `irp_node_api_report` | IRPNode | `rhapsody_cli/models/elements/containment/model_node.py` | 2 | 6 | 1/8 (②) | ⬜ open |
+| 4 | `irp_node_api_report` | IRPNode | `rhapsody_cli/models/elements/containment/model_node.py` | 2 | 6 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 | 5 | `irp_component_instance_api_report` | IRPComponentInstance | `rhapsody_cli/models/elements/containment/model_component_instance.py` | 0 | 3 | 1/8 (②) | ⬜ open |
 | 6 | `irp_profile_api_report` | IRPProfile | `rhapsody_cli/models/elements/containment/model_profile.py` | 0 | 0 | 1/8 (②) | ⬜ open |
 | 7 | `irp_module_api_report` | IRPModule | `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_module.py` | 0 | 0 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ evidenced |
@@ -85,18 +85,18 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 </details>
 
 <details>
-<summary><code>irp_node_api_report</code> · IRPNode · 1/8 steps · ⬜ open</summary>
+<summary><code>irp_node_api_report</code> · IRPNode · 8/8 steps · ✅ archived</summary>
 
-- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
-- **Note:** usage 30 src / 13 test refs, 6 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
-- [ ] ① §1
-- [x] ② §2
-- [ ] ③ §3
-- [ ] ④ §4
-- [ ] ⑤ §5
-- [ ] ⑥ §6
-- [ ] ⑦ §7
-- [ ] ⑧ §8
+- **Status (2026-11-27):** verify_sync passes; all steps archived.
+- **Note:** usage 30 src / 13 test refs, 6 owned members. Two accessor pairs mapped to pywin32 properties; component-instance methods stay method-shaped.
+- [x] ① §1
+- [x] ② §2 — canonical wrapper unchanged; tests/exports verified.
+- [x] ③ §3 — report regenerated from authority: 0 actionable deviations.
+- [x] ④ §4 — 8 fake-COM unit tests, 100% statements/branches; full unit suite 2314 passed.
+- [x] ⑤ §5 — 3 integration tests with real nodes and component instances; macOS = collection-only.
+- [x] ⑥ §6 — `docs/requirements/com/telelogic/rhapsody/core/irp_node.md`.
+- [x] ⑦ §7 — `docs/api/com/telelogic/rhapsody/core/irp_node.rst` + toctree entry.
+- [x] ⑧ §8 — validator 0 actionable; verify_sync + --strict-getters green; ruff/black/mypy clean.
 
 </details>
 

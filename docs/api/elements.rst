@@ -65,6 +65,7 @@ Java Package API Reference
    com/telelogic/rhapsody/core/irp_interface_item
    com/telelogic/rhapsody/core/irp_model_element
    com/telelogic/rhapsody/core/irp_module
+   com/telelogic/rhapsody/core/irp_node
    com/telelogic/rhapsody/core/irp_operation
    com/telelogic/rhapsody/core/irp_package
    com/telelogic/rhapsody/core/irp_port

@@ -14,12 +14,12 @@ review rather than a failure.
 
 | Status | Count |
 | --- | --- |
-| match | 230 |
+| match | 232 |
 | catalog-missing | 0 |
 | shape-mismatch | 0 |
 | no-binding | 0 |
 | stub | 2 |
-| catalog-only | 1 |
+| catalog-only | 2 |
 
 ## IRPApplication
 
@@ -594,3 +594,15 @@ review rather than a failure.
 | --- | --- | --- |
 | — | — | — |
 
+## IRPNode
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `cpu_type` | `CPUtype` | property | property | match |
+| `component_instances` | `componentInstances` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| `CPUtype` | `cp_utype` | catalog-only |
