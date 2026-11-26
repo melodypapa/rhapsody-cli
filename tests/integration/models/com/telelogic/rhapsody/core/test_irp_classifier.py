@@ -51,13 +51,17 @@ class TestIRPClassifierIntegration:
         class_name = self._unique("IfCls")
         op_name = self._unique("myOp")
         pkg = self._create_package(test_project, pkg_name)
-        classifier: IRPClassifier = pkg.add_class(class_name)
+        classifier = pkg.add_class(class_name)
         try:
             op = classifier.add_operation(op_name)
             assert op is not None
             found = classifier.find_interface_item(f"{op_name}()")
             assert found is not None
             assert found == op
+            triggered_operation = classifier.add_triggered_operation(self._unique("TriggeredOp"))
+            found_trigger = classifier.find_trigger(triggered_operation.name)
+            assert found_trigger is not None
+            assert found_trigger == triggered_operation
             assert classifier.find_trigger(self._unique("NoSuchTrigger")) is None
         finally:
             pkg.delete_from_project()
