@@ -208,12 +208,12 @@ class RhapsodyImporter(RhapsodyModelHelper):
 
     def _apply_dependency_extras(self, dependency: IRPModelElement, spec: Dict[str, object], parent: IRPModelElement) -> None:
         """Apply Dependency-specific fields: source (parent) and target (depends_on)."""
-        dependency.set_dependent(parent)  # type: ignore[attr-defined]
+        dependency.dependent = parent  # type: ignore[attr-defined]
         if "depends_on" in spec:
             depends_on = cast(str, spec["depends_on"])
             target = self.resolve_classifier(depends_on)
             if target is not None:
-                dependency.set_depends_on(target)  # type: ignore[attr-defined]
+                dependency.depends_on = target  # type: ignore[attr-defined]
             else:
                 logger.warning(
                     "Cannot resolve depends_on '%s' for dependency '%s'",
@@ -254,12 +254,12 @@ class RhapsodyImporter(RhapsodyModelHelper):
                 source = parent
         else:
             source = parent
-        relation.set_of_class(source)  # type: ignore[attr-defined]
+        relation.of_class = source  # type: ignore[attr-defined]
         if "to" in spec:
             to_name = cast(str, spec["to"])
             target = self.resolve_classifier(to_name)
             if target is not None:
-                relation.set_other_class(target)  # type: ignore[attr-defined]
+                relation.other_class = target  # type: ignore[attr-defined]
             else:
                 logger.warning(
                     "Cannot resolve to '%s' for relation '%s'",
@@ -267,13 +267,13 @@ class RhapsodyImporter(RhapsodyModelHelper):
                     relation.name,
                 )
         if "relation_type" in spec:
-            relation.set_relation_type(cast(str, spec["relation_type"]))  # type: ignore[attr-defined]
+            relation.relation_type = cast(str, spec["relation_type"])  # type: ignore[attr-defined]
         if "multiplicity" in spec:
-            relation.set_multiplicity(cast(str, spec["multiplicity"]))  # type: ignore[attr-defined]
+            relation.multiplicity = cast(str, spec["multiplicity"])  # type: ignore[attr-defined]
         if "is_navigable" in spec:
-            relation.set_is_navigable(cast(bool, spec["is_navigable"]))  # type: ignore[attr-defined]
+            relation.is_navigable = cast(bool, spec["is_navigable"])  # type: ignore[attr-defined]
         if "role" in spec:
-            relation.set_relation_role_name(cast(str, spec["role"]))  # type: ignore[attr-defined]
+            relation.relation_role_name = cast(str, spec["role"])  # type: ignore[attr-defined]
         if "visibility" in spec:
             relation.set_visibility(cast(str, spec["visibility"]))  # type: ignore[attr-defined]
 

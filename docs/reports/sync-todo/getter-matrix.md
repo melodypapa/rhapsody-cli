@@ -279,3 +279,27 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |
+## IRPRelation
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `inverse` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_relation.py::test_inverse` | identity/value | OK |
+| `is_navigable` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_relation.py::test_is_navigable` | identity/value | OK |
+| `is_symmetric` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_relation.py::test_is_symmetric` | identity/value | OK |
+| `multiplicity` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_relation.py::test_multiplicity` | identity/value | OK |
+| `object_as_object_type` | — | none | MISSING |
+| `of_class` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_relation.py::test_of_class` | identity/value | OK |
+| `other_class` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_relation.py::test_other_class` | identity/value | OK |
+| `qualifier` | — | none | MISSING |
+| `relation_label` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_relation.py::test_relation_label` | identity/value | OK |
+| `relation_link_name` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_relation.py::test_relation_link_name` | identity/value | OK |
+| `relation_role_name` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_relation.py::test_relation_role_name` | identity/value | OK |
+| `relation_type` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_relation.py::test_relation_type` | identity/value | OK |
+| `visibility` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_relation.py::test_visibility` | identity/value | OK |
+
+## IRPDependency
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `dependent` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_dependency.py::test_dependent` | identity/value | OK |
+| `depends_on` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_dependency.py::test_depends_on` | identity/value | OK |

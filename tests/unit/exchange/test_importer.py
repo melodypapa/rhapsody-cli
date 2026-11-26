@@ -359,8 +359,8 @@ class TestApplyDependencyExtras:
 
         importer._apply_dependency_extras(dependency, {"depends_on": "OtherClass"}, parent)
 
-        dependency.set_dependent.assert_called_once_with(parent)
-        dependency.set_depends_on.assert_called_once_with(target)
+        assert dependency.dependent is parent
+        assert dependency.depends_on is target
 
     def test_warns_when_depends_on_unresolvable(self) -> None:
         project = MagicMock()
@@ -371,11 +371,14 @@ class TestApplyDependencyExtras:
         parent = MagicMock()
         parent.name = "MyClass"
 
+        sentinel = object()
+        dependency.depends_on = sentinel
+
         importer._apply_dependency_extras(dependency, {"depends_on": "Missing"}, parent)
 
-        dependency.set_depends_on.assert_not_called()
-        # set_dependent still called (source is always the parent)
-        dependency.set_dependent.assert_called_once_with(parent)
+        assert dependency.depends_on is sentinel
+        # dependent is still set (source is always the parent)
+        assert dependency.dependent is parent
 
 
 class TestApplyGeneralizationExtras:
@@ -431,12 +434,12 @@ class TestApplyRelationExtras:
             parent,
         )
 
-        relation.set_of_class.assert_called_once_with(parent)
-        relation.set_other_class.assert_called_once_with(target)
-        relation.set_relation_type.assert_called_once_with("Association")
-        relation.set_multiplicity.assert_called_once_with("0..*")
-        relation.set_is_navigable.assert_called_once_with(True)
-        relation.set_relation_role_name.assert_called_once_with("items")
+        assert relation.of_class == parent
+        assert relation.other_class == target
+        assert relation.relation_type == "Association"
+        assert relation.multiplicity == "0..*"
+        assert relation.is_navigable is True
+        assert relation.relation_role_name == "items"
         relation.set_visibility.assert_called_once_with("public")
 
     def test_uses_from_override_when_provided(self) -> None:
@@ -458,7 +461,7 @@ class TestApplyRelationExtras:
             parent,
         )
 
-        relation.set_of_class.assert_called_once_with(source)
+        assert relation.of_class == source
 
     def test_falls_back_to_parent_when_from_unresolvable(self) -> None:
         target = MagicMock()
@@ -477,7 +480,7 @@ class TestApplyRelationExtras:
             parent,
         )
 
-        relation.set_of_class.assert_called_once_with(parent)
+        assert relation.of_class == parent
 
 
 class TestApplyPortExtras:
