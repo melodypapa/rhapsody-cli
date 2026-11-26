@@ -14,7 +14,7 @@ review rather than a failure.
 
 | Status | Count |
 | --- | --- |
-| match | 232 |
+| match | 234 |
 | catalog-missing | 0 |
 | shape-mismatch | 0 |
 | no-binding | 0 |
@@ -606,3 +606,16 @@ review rather than a failure.
 | Catalog property | Derived Python name | Status |
 | --- | --- | --- |
 | `CPUtype` | `cp_utype` | catalog-only |
+
+## IRPComponentInstance
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `component_type` | `componentType` | property | property | match |
+| `node` | `node` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |

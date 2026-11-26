@@ -439,3 +439,10 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | --- | --- | --- | --- |
 | `component_instances` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_node.py::test_component_instances` | identity/value | OK |
 | `cpu_type` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_node.py::test_cpu_type` | identity/value | OK |
+
+## IRPComponentInstance
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `component_type` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component_instance.py::test_component_type` | identity/value | OK |
+| `node` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component_instance.py::test_node` | identity/value | OK |
