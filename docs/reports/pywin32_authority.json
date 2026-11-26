@@ -5126,6 +5126,11 @@
     "IRPCollection": [
       "toList"
     ],
+    "IRPComponent": [
+      "getPath",
+      "setPath",
+      "updateContainedDiagramsOnServer"
+    ],
     "IRPDependency": [
       "isNeedToMigrate",
       "setLinkType"

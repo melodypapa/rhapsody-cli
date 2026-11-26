@@ -23,7 +23,7 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 
 | # | Class | Interface | Legacy source | Sites | Owned | Steps | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | `irp_component_api_report` | IRPComponent | `elements/containment/model_component.py` | 17 | 43 | 1/8 (②) | ⬜ open |
+| 1 | `irp_component_api_report` | IRPComponent | `elements/containment/model_component.py` | 17 | 43 | 7/8 (①②③④⑥⑦⑧) | ⬜ open |
 | 2 | `irp_collaboration_api_report` | IRPCollaboration | `elements/containment/model_collaboration.py` | 1 | 39 | 1/8 (②) | ⬜ open |
 | 3 | `irp_configuration_api_report` | IRPConfiguration | `rhapsody_cli/models/elements/containment/model_configuration.py` | 23 | 46 | 1/8 (②) | ⬜ open |
 | 4 | `irp_node_api_report` | IRPNode | `rhapsody_cli/models/elements/containment/model_node.py` | 2 | 6 | 1/8 (②) | ⬜ open |
@@ -37,18 +37,18 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 ## Row details
 
 <details>
-<summary><code>irp_component_api_report</code> · IRPComponent · 1/8 steps · ⬜ open</summary>
+<summary><code>irp_component_api_report</code> · IRPComponent · 7/8 steps · ⬜ open</summary>
 
-- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
-- **Note:** core structural element (118 src / 29 test, 43 owned methods). Extends the synced `IRPUnit`, so this is a leaf-style migration with no base-class dependency.
-- [ ] ① §1
-- [x] ② §2
-- [ ] ③ §3
-- [ ] ④ §4
-- [ ] ⑤ §5
-- [ ] ⑥ §6
-- [ ] ⑦ §7
-- [ ] ⑧ §8
+- **Status (2026-11-27):** verify_sync passes; 7/8 steps complete. §5 stays open on two populated-getter blockers.
+- **Note:** core structural element (118 src / 29 test, 43 JavaDoc members). Wrapper stays canonical; 12 accessor pairs migrated to COM properties, three JavaDoc-only members become documented `NotImplementedError` stubs.
+- [x] ① §1 — 43 owned members reconciled; 12 getter-matrix rows covered (10 populated, 2 blocked).
+- [x] ② §2 — canonical wrapper/tests/exports verified; no module move required.
+- [x] ③ §3 — report regenerated from authority: 0 actionable deviations, 2 expected binding differences; `get_path`, `set_path`, `update_contained_diagrams_on_server` recorded in the stub ledger.
+- [x] ④ §4 — 42 fake-COM unit tests, 100% statements/branches (110 statements, 0 branches); full unit suite 2231 passed.
+- [ ] ⑤ §5 — 13 integration tests with real components/configurations/files/scope elements; `panel_diagrams` and `variation_points` have no documented child-attachment API (P0 blockers in `index.md`); live execution is Windows-only.
+- [x] ⑥ §6 — `docs/requirements/com/telelogic/rhapsody/core/irp_component.md`.
+- [x] ⑦ §7 — `docs/api/com/telelogic/rhapsody/core/irp_component.rst` documents all 37 public members; toctree entry added.
+- [x] ⑧ §8 — validator 0 actionable; `verify_sync.py IRPComponent --strict-getters` green; skill harness 90 passed; integration collection 13 tests; ruff/black/mypy clean.
 
 </details>
 

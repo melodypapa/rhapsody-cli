@@ -240,6 +240,9 @@ layers. A row whose member no longer raises is stale and fails Step 8.
 | --- | --- | --- | --- | --- | --- |
 | IRPActor | `add_event_reception_with_event` | `addEventReceptionWithEvent` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPActor | `update_contained_diagrams_on_server` | `updateContainedDiagramsOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPComponent | `get_path` | `getPath` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPComponent | `set_path` | `setPath` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPComponent | `update_contained_diagrams_on_server` | `updateContainedDiagramsOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPClass | `is_abstract` | `isAbstract` | not-exposed | The setter's `setIsAbstract` is absent from the catalog and listed in `documented_unavailable`; the `isAbstract` property accepts the write but never persists it (observed live). | — |
 | IRPClass | `add_event_reception_with_event` | `addEventReceptionWithEvent` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPClass | `update_contained_diagrams_on_server` | `updateContainedDiagramsOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
@@ -307,6 +310,8 @@ wrapper-signature fix before its getter/member row can close.
 | IRPProject | `move_to_design_manager`, `move_to_design_manager_after_login` | Both JavaDoc methods are deprecated because Design Manager support was removed in Rhapsody 8.4; no supported Design Manager server is available for authentic live execution. Keep the exact catalog bindings and leave live verification open. |
 | IRPClass | `is_abstract`, `is_active`, `is_behavior_overriden` | Documented pywin32 aliases; getters are readable but no populated live fixture exists (setters are read-only or JavaDoc-unimplemented). |
 | IRPPort | `is_behavioral`, `is_reversed`, `port_contract`, `provided_interfaces`, `required_interfaces` | Port relation/end properties have no live factory; recovered via catalog-only triage but no populated fixture. |
+| IRPComponent | `panel_diagrams` | No documented API attaches a panel diagram to a component; only the empty collection is observable. |
+| IRPComponent | `variation_points` | No documented API creates a variation point on a component; only the empty collection is observable. |
 | IRPProject | `nodes` | `nodes` is inherited from `IRPPackage`; the project root rejects both `addNode(name)` and `addNewAggr("Node", name)`, and a nested-package node is not returned by `project.nodes`. No populated project-root fixture is available. |
 | IRPUseCase | `is_behavior_overriden` | Runtime stub (user approved 2026-11-25): setter faults live; see the NotImplementedError evidence ledger. |
 

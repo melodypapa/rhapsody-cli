@@ -14,7 +14,7 @@ review rather than a failure.
 
 | Status | Count |
 | --- | --- |
-| match | 192 |
+| match | 204 |
 | catalog-missing | 0 |
 | shape-mismatch | 0 |
 | no-binding | 0 |
@@ -516,6 +516,29 @@ review rather than a failure.
 | `icon` | `icon` | property | property | match |
 | `is_new_term` | `isNewTerm` | property | property | match |
 | `of_meta_class` | `ofMetaClass` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPComponent
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `additional_sources` | `additionalSources` | property | property | match |
+| `build_type` | `buildType` | property | property | match |
+| `configurations` | `configurations` | property | property | match |
+| `files` | `files` | property | property | match |
+| `include_path` | `includePath` | property | property | match |
+| `libraries` | `libraries` | property | property | match |
+| `nested_components` | `nestedComponents` | property | property | match |
+| `panel_diagrams` | `panelDiagrams` | property | property | match |
+| `scope_by_selected_elements` | `scopeBySelectedElements` | property | property | match |
+| `scope_elements` | `scopeElements` | property | property | match |
+| `standard_headers` | `standardHeaders` | property | property | match |
+| `variation_points` | `variationPoints` | property | property | match |
 
 ### Catalog properties with no matching Python property
 

@@ -379,3 +379,20 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |
 | `duration_time` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_accept_time_event.py::test_duration_time` | identity/value | OK |
+
+## IRPComponent
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `additional_sources` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_additional_sources` | identity/value | OK |
+| `build_type` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_build_type` | identity/value | OK |
+| `configurations` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_configurations` | identity/value | OK |
+| `files` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_files` | identity/value | OK |
+| `include_path` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_include_path` | identity/value | OK |
+| `libraries` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_libraries` | identity/value | OK |
+| `nested_components` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_nested_components` | identity/value | OK |
+| `panel_diagrams` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_panel_diagrams_empty_state` | weak | WEAK |
+| `scope_by_selected_elements` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_scope_by_selected_elements` | identity/value | OK |
+| `scope_elements` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_scope_elements` | identity/value | OK |
+| `standard_headers` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_standard_headers` | identity/value | OK |
+| `variation_points` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_variation_points_empty_state` | weak | WEAK |
