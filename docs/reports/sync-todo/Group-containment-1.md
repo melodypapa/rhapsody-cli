@@ -28,7 +28,7 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 | 3 | `irp_configuration_api_report` | IRPConfiguration | `rhapsody_cli/models/elements/containment/model_configuration.py` | 23 | 46 | 7/8 (①②③④⑥⑦⑧) | ⬜ open |
 | 4 | `irp_node_api_report` | IRPNode | `rhapsody_cli/models/elements/containment/model_node.py` | 2 | 6 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 | 5 | `irp_component_instance_api_report` | IRPComponentInstance | `rhapsody_cli/models/elements/containment/model_component_instance.py` | 0 | 3 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
-| 6 | `irp_profile_api_report` | IRPProfile | `rhapsody_cli/models/elements/containment/model_profile.py` | 0 | 0 | 1/8 (②) | ⬜ open |
+| 6 | `irp_profile_api_report` | IRPProfile | `rhapsody_cli/models/elements/containment/model_profile.py` | 0 | 0 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 | 7 | `irp_module_api_report` | IRPModule | `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_module.py` | 0 | 0 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ evidenced |
 | 8 | `irp_package_remediation` | IRPPackage | — | — | 69 | 5/8 (②③④⑥⑦) | ⬜ open |
 | 9 | `irp_project_remediation` | IRPProject | — | — | — | 6/8 (①②③④⑥⑦) | ⬜ open |
@@ -117,18 +117,18 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 </details>
 
 <details>
-<summary><code>irp_profile_api_report</code> · IRPProfile · 1/8 steps · ⬜ open</summary>
+<summary><code>irp_profile_api_report</code> · IRPProfile · 8/8 steps · ✅ archived</summary>
 
-- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
-- **Note:** usage 12 src / 8 test refs, 0 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
-- [ ] ① §1
-- [x] ② §2
-- [ ] ③ §3
-- [ ] ④ §4
-- [ ] ⑤ §5
-- [ ] ⑥ §6
-- [ ] ⑦ §7
-- [ ] ⑧ §8
+- **Status (2026-11-27):** verify_sync passes; all steps archived.
+- **Note:** usage 12 src / 8 test refs, 0 owned members. Inheritance-only wrapper extending IRPPackage.
+- [x] ① §1
+- [x] ② §2 — canonical wrapper/tests/exports verified; `from __future__` header added.
+- [x] ③ §3 — no owned JavaDoc members or catalog members; 0 actionable deviations.
+- [x] ④ §4 — existing fake-COM registration tests pass; full unit suite 2313 passed.
+- [x] ⑤ §5 — 1 integration test creating a real profile via `IRPProject.add_profile`; macOS = collection-only.
+- [x] ⑥ §6 — `docs/requirements/com/telelogic/rhapsody/core/irp_profile.md`.
+- [x] ⑦ §7 — `docs/api/com/telelogic/rhapsody/core/irp_profile.rst` + toctree entry.
+- [x] ⑧ §8 — validator 0 actionable; verify_sync + --strict-getters green; ruff/black/mypy clean.
 
 </details>
 

@@ -1,5 +1,7 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPProfile``."""
 
+from __future__ import annotations
+
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 
