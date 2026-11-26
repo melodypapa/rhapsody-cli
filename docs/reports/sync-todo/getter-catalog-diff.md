@@ -14,7 +14,7 @@ review rather than a failure.
 
 | Status | Count |
 | --- | --- |
-| match | 182 |
+| match | 184 |
 | catalog-missing | 0 |
 | shape-mismatch | 0 |
 | no-binding | 0 |
@@ -451,6 +451,19 @@ review rather than a failure.
 | `in_state` | `inState` | property | property | match |
 | `in_state_list` | `inStateList` | property | property | match |
 | `represents` | `represents` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPCallOperation
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `operation` | `operation` | property | property | match |
+| `target` | `target` | property | property | match |
 
 ### Catalog properties with no matching Python property
 

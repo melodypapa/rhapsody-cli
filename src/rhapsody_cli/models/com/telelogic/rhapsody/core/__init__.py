@@ -12,7 +12,6 @@ if TYPE_CHECKING:
         IRPAcceptEventAction,
         IRPAcceptTimeEvent,
         IRPActionBlock,
-        IRPCallOperation,
         IRPContextSpecification,
     )
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actor import IRPActor
@@ -147,7 +146,7 @@ _EXPORT_MODULES = {
     "IRPAssociationRole": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_association_role",
     "IRPAttribute": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute",
     "IRPBaseExternalCodeGeneratorTool": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_codegen",
-    "IRPCallOperation": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions",
+    "IRPCallOperation": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_call_operation",
     "IRPClass": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class",
     "IRPClassifier": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier",
     "IRPClassifierRole": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_other_model",

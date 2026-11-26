@@ -10,8 +10,6 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_values import IRPValueS
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interactions import IRPEvent
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import IRPInterfaceItem
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
 
 
 class IRPAcceptEventAction(IRPState):
@@ -93,64 +91,6 @@ class IRPActionBlock(IRPMessage):
     pass
 
 
-class IRPCallOperation(IRPState):
-    """Wraps ``IRPCallOperation``: represents call operation elements in activity diagrams."""
-
-    # IRPCallOperation method parity checklist:
-    # [x] get_operation                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_target                    [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_operation                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_target                    [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [inherited] irp_model_element methods (covered by rp_model_element checklist)
-    # [inherited] irp_state methods (covered by rp_state checklist)
-    # [inherited] irp_state_vertex methods (covered by rp_state_vertex checklist)
-    # No deprecated IRPCallOperation methods.
-
-    def get_operation(self) -> "IRPInterfaceItem":
-        """Returns the operation specified for this call operation element.
-
-        Returns:
-            The operation specified for this call operation element.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPCallOperation::getOperation()
-        """
-        return cast("IRPInterfaceItem", self.wrap(self._get_method_or_property(self._com, "getOperation", "operation")))
-
-    def get_target(self) -> "IRPRelation":
-        """Returns the target specified for this call operation element.
-
-        Returns:
-            The target specified for this call operation element.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPCallOperation::getTarget()
-        """
-        return cast("IRPRelation", self.wrap(self._get_method_or_property(self._com, "getTarget", "target")))
-
-    def set_operation(self, operation: "IRPInterfaceItem") -> None:
-        """Specifies the operation to use for this call operation element.
-
-        Args:
-            operation: The operation to use for this call operation element.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPCallOperation::setOperation(com.telelogic.rhapsody.core.IRPInterfaceItem operation)
-        """
-        self._set_method_or_property(self._com, "setOperation", "operation", operation._com)
-
-    def set_target(self, target: "IRPRelation") -> None:
-        """Specifies the target to use for this call operation element.
-
-        Args:
-            target: The target to use for this call operation element.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPCallOperation::setTarget(com.telelogic.rhapsody.core.IRPRelation target)
-        """
-        self._set_method_or_property(self._com, "setTarget", "target", target._com)
-
-
 class IRPContextSpecification(IRPValueSpecification):
     """Wraps ``IRPContextSpecification``: represents the exact context of an object in a hierarchy.
 
@@ -219,5 +159,4 @@ class IRPContextSpecification(IRPValueSpecification):
 IRPModelElement.register_wrapper("AcceptEventAction", IRPAcceptEventAction)
 IRPModelElement.register_wrapper("AcceptTimeEvent", IRPAcceptTimeEvent)
 IRPModelElement.register_wrapper("ActionBlock", IRPActionBlock)
-IRPModelElement.register_wrapper("CallOperation", IRPCallOperation)
 IRPModelElement.register_wrapper("ContextSpecification", IRPContextSpecification)

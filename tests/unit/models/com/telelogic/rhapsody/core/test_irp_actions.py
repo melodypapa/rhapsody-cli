@@ -6,7 +6,6 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions import (
     IRPAcceptEventAction,
     IRPAcceptTimeEvent,
     IRPActionBlock,
-    IRPCallOperation,
     IRPContextSpecification,
 )
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
@@ -15,8 +14,6 @@ from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interactions import IRPEvent
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import IRPInterfaceItem
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
 
 
 class TestRPAcceptEventAction:
@@ -82,49 +79,6 @@ class TestRPActionBlock:
         fake = make_fake_element("ActionBlock", properties={"name": "AB1"})
         wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, IRPActionBlock)
-
-
-class TestRPCallOperation:
-    def test_is_state(self) -> None:
-        fake = make_fake_element("CallOperation", properties={"name": "CO1"})
-        co = IRPCallOperation(fake)
-        assert isinstance(co, IRPModelElement)
-        assert co.name == "CO1"
-
-    def test_get_operation_wraps_result(self) -> None:
-        fake = make_fake_element("CallOperation")
-        op = make_fake_element("Operation", properties={"name": "myOp"})
-        fake.getOperation.return_value = op
-        co = IRPCallOperation(fake)
-        result = co.get_operation()
-        assert result.name == "myOp"
-
-    def test_get_target_wraps_result(self) -> None:
-        fake = make_fake_element("CallOperation")
-        target = make_fake_element("Relation", properties={"name": "myTarget"})
-        fake.getTarget.return_value = target
-        co = IRPCallOperation(fake)
-        result = co.get_target()
-        assert result.name == "myTarget"
-
-    def test_set_operation_delegates(self) -> None:
-        fake = make_fake_element("CallOperation")
-        op = make_fake_element("Operation", properties={"name": "myOp"})
-        co = IRPCallOperation(fake)
-        co.set_operation(cast("IRPInterfaceItem", IRPModelElement.wrap(op)))
-        fake.setOperation.assert_called_once_with(op)
-
-    def test_set_target_delegates(self) -> None:
-        fake = make_fake_element("CallOperation")
-        target = make_fake_element("Relation", properties={"name": "myTarget"})
-        co = IRPCallOperation(fake)
-        co.set_target(cast("IRPRelation", IRPModelElement.wrap(target)))
-        fake.setTarget.assert_called_once_with(target)
-
-    def test_is_registered(self) -> None:
-        fake = make_fake_element("CallOperation", properties={"name": "CO1"})
-        wrapped = IRPModelElement.wrap(fake)
-        assert isinstance(wrapped, IRPCallOperation)
 
 
 class TestRPContextSpecification:

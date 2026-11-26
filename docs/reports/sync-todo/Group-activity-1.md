@@ -1,6 +1,6 @@
 # Sync todo — `activity` (group 1 of 2)
 
-**10 classes** · ✅ 7 archived · ⬜ 3 open
+**10 classes** · ✅ 8 archived · ⬜ 2 open
 
 One row per sync run. A step is ticked only when its evidence lands; a row is archived only after all eight steps pass. Binding rule: one pywin32-exposed COM member per call — `call_com(lambda: self._com.Name(...))` for methods, `get_com_property` / `set_com_property` for properties; catalog-absent sites are blockers, never blind migrations. Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/`, mirrored tests under `tests/{unit,integration}/models/com/telelogic/rhapsody/core/`.
 
@@ -30,7 +30,7 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 | 5 | `irp_send_action_api_report` | IRPSendAction | `rhapsody_cli/models/elements/activity/model_actions.py` | 7 | 8 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 | 6 | `irp_flow_item_api_report` | IRPFlowItem | `rhapsody_cli/models/elements/activity/model_activity.py` | 0 | 3 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 | 7 | `irp_object_node_api_report` | IRPObjectNode | `rhapsody_cli/models/elements/activity/model_activity.py` | 3 | 7 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
-| 8 | `irp_call_operation_api_report` | IRPCallOperation | `rhapsody_cli/models/elements/activity/model_actions.py` | 4 | 4 | 1/8 (②) | ⬜ open |
+| 8 | `irp_call_operation_api_report` | IRPCallOperation | `rhapsody_cli/models/elements/activity/model_actions.py` | 4 | 4 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 | 9 | `irp_context_specification_api_report` | IRPContextSpecification | `rhapsody_cli/models/elements/activity/model_actions.py` | 2 | 4 | 1/8 (②) | ⬜ open |
 | 10 | `irp_accept_time_event_api_report` | IRPAcceptTimeEvent | `rhapsody_cli/models/elements/activity/model_actions.py` | 2 | 2 | 1/8 (②) | ⬜ open |
 
@@ -149,18 +149,18 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 </details>
 
 <details>
-<summary><code>irp_call_operation_api_report</code> · IRPCallOperation · 1/8 steps · ⬜ open</summary>
+<summary><code>irp_call_operation_api_report</code> · IRPCallOperation · 8/8 steps · ✅ archived</summary>
 
-- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
-- **Note:** usage 15 src / 8 test refs, 4 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
-- [ ] ① §1
-- [x] ② §2
-- [ ] ③ §3
-- [ ] ④ §4
-- [ ] ⑤ §5
-- [ ] ⑥ §6
-- [ ] ⑦ §7
-- [ ] ⑧ §8
+- **Status (2026-11-26):** verify_sync passes; all steps archived.
+- **Note:** usage 15 src / 8 test refs, 4 owned members. Split `IRPCallOperation` into `irp_call_operation.py`; siblings stay in `irp_actions.py`. Both JavaDoc accessor pairs map to read/write pywin32 properties.
+- [x] ① §1
+- [x] ② §2 — canonical module `irp_call_operation.py`; exports and direct imports updated
+- [x] ③ §3 — 0 actionable deviations after binding migration
+- [x] ④ §4 — 5 fake-COM unit tests, 100% statements/branches
+- [x] ⑤ §5 — 2 integration tests with real operation and relation fixtures; macOS = collection-only
+- [x] ⑥ §6 — `docs/requirements/com/telelogic/rhapsody/core/irp_call_operation.md`
+- [x] ⑦ §7 — `docs/api/com/telelogic/rhapsody/core/irp_call_operation.rst` + toctree entry
+- [x] ⑧ §8 — validator 0 deviations; verify_sync + --strict-getters green; full unit suite 2193 passed; ruff/black clean
 
 </details>
 
