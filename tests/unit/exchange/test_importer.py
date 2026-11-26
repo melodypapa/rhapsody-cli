@@ -431,12 +431,12 @@ class TestApplyRelationExtras:
             parent,
         )
 
-        relation.set_of_class.assert_called_once_with(parent)
-        relation.set_other_class.assert_called_once_with(target)
-        relation.set_relation_type.assert_called_once_with("Association")
-        relation.set_multiplicity.assert_called_once_with("0..*")
-        relation.set_is_navigable.assert_called_once_with(True)
-        relation.set_relation_role_name.assert_called_once_with("items")
+        assert relation.of_class == parent
+        assert relation.other_class == target
+        assert relation.relation_type == "Association"
+        assert relation.multiplicity == "0..*"
+        assert relation.is_navigable is True
+        assert relation.relation_role_name == "items"
         relation.set_visibility.assert_called_once_with("public")
 
     def test_uses_from_override_when_provided(self) -> None:
@@ -458,7 +458,7 @@ class TestApplyRelationExtras:
             parent,
         )
 
-        relation.set_of_class.assert_called_once_with(source)
+        assert relation.of_class == source
 
     def test_falls_back_to_parent_when_from_unresolvable(self) -> None:
         target = MagicMock()
@@ -477,7 +477,7 @@ class TestApplyRelationExtras:
             parent,
         )
 
-        relation.set_of_class.assert_called_once_with(parent)
+        assert relation.of_class == parent
 
 
 class TestApplyPortExtras:

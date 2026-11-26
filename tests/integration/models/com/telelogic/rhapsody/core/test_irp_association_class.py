@@ -41,9 +41,10 @@ class TestRPAssociationClassIntegration:
             class_b = pkg.add_class(self._unique("AssocClsB"))
             # add_relation_to reports meta_class "AssociationEnd", so wrap()
             # returns IRPModelElement. Bind the relation interface explicitly:
-            # get_inverse() belongs to IRPRelation, not IRPModelElement.
+            # inverse belongs to IRPRelation, not IRPModelElement.
             end1 = IRPRelation(class_a.add_relation_to(class_b, "", "Association", "1", "", "Association", "1", "")._com)
-            end2 = end1.get_inverse()
+            end2 = end1.inverse
+            assert end2 is not None
 
             assoc = IRPAssociationClass(pkg.add_association(end1, end2, self._unique("AssocClass"))._com)
 
