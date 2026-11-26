@@ -2,10 +2,10 @@
 
 from typing import TYPE_CHECKING, cast
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_action import IRPAction
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions import (
     IRPAcceptEventAction,
     IRPAcceptTimeEvent,
-    IRPAction,
     IRPActionBlock,
     IRPCallOperation,
     IRPContextSpecification,
@@ -71,30 +71,6 @@ class TestRPAcceptTimeEvent:
         fake = make_fake_element("AcceptTimeEvent", properties={"name": "ATE1"})
         wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, IRPAcceptTimeEvent)
-
-
-class TestRPAction:
-    def test_is_model_element(self) -> None:
-        fake = make_fake_element("Action", properties={"name": "Act1"})
-        act = IRPAction(fake)
-        assert isinstance(act, IRPModelElement)
-        assert act.name == "Act1"
-
-    def test_get_body_returns_string(self) -> None:
-        fake = make_fake_element("Action", getBody="doSomething()")
-        act = IRPAction(fake)
-        assert act.get_body() == "doSomething()"
-
-    def test_set_body_delegates(self) -> None:
-        fake = make_fake_element("Action")
-        act = IRPAction(fake)
-        act.set_body("doOther()")
-        fake.setBody.assert_called_once_with("doOther()")
-
-    def test_is_registered(self) -> None:
-        fake = make_fake_element("Action", properties={"name": "Act1"})
-        wrapped = IRPModelElement.wrap(fake)
-        assert isinstance(wrapped, IRPAction)
 
 
 class TestRPActionBlock:

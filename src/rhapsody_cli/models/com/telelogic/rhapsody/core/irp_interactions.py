@@ -8,7 +8,7 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import I
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions import IRPAction
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_action import IRPAction
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_association_role import (
         IRPAssociationRole,
     )

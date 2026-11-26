@@ -6,7 +6,8 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCo
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions import IRPAction, IRPSendAction
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_action import IRPAction
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions import IRPSendAction
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPConnector
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interactions import IRPTransition
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import IRPInterfaceItem

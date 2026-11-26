@@ -2,6 +2,7 @@
 
 from typing import TYPE_CHECKING, Optional, cast
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_action import IRPAction
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interactions import IRPMessage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
@@ -80,38 +81,6 @@ class IRPAcceptTimeEvent(IRPState):
             com.telelogic.rhapsody.core.IRPAcceptTimeEvent::setDurationTime(java.lang.String durationTime)
         """
         self._set_method_or_property(self._com, "setDurationTime", "durationTime", duration_time)
-
-
-class IRPAction(IRPModelElement):
-    """Wraps ``IRPAction``: represents the action defined for a transition in a statechart."""
-
-    # IRPAction method parity checklist:
-    # [x] get_body                      [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_body                      [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [inherited] irp_model_element methods (covered by rp_model_element checklist)
-    # No deprecated IRPAction methods.
-
-    def get_body(self) -> str:
-        """Gets the code defined as the action for the transition.
-
-        Returns:
-            The code defined as the action for the transition.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPAction::getBody()
-        """
-        return str(self._get_method_or_property(self._com, "getBody", "body"))
-
-    def set_body(self, body: str) -> None:
-        """Specifies the code that serves as the action for the transition.
-
-        Args:
-            body: The code that should be used as the action for the transition.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPAction::setBody(java.lang.String body)
-        """
-        self._set_method_or_property(self._com, "setBody", "body", body)
 
 
 class IRPActionBlock(IRPMessage):
@@ -361,7 +330,6 @@ class IRPSendAction(IRPAction):
 # Register wrappers for Rhapsody meta classes
 IRPModelElement.register_wrapper("AcceptEventAction", IRPAcceptEventAction)
 IRPModelElement.register_wrapper("AcceptTimeEvent", IRPAcceptTimeEvent)
-IRPModelElement.register_wrapper("Action", IRPAction)
 IRPModelElement.register_wrapper("ActionBlock", IRPActionBlock)
 IRPModelElement.register_wrapper("CallOperation", IRPCallOperation)
 IRPModelElement.register_wrapper("ContextSpecification", IRPContextSpecification)

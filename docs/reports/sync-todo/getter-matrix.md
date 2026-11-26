@@ -303,3 +303,9 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | `contents` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_swimlane.py::test_contents` | weak | WEAK |
 | `represents` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_swimlane.py::test_represents` | identity/value | OK |
 | `swimlanes` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_swimlane.py::test_swimlanes` | identity/value | OK |
+
+## IRPAction
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `body` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_action.py::test_body` | identity/value | OK |
