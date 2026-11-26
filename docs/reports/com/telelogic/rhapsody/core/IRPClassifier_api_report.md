@@ -11,18 +11,7 @@
 
 | Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |
 | --- | --- | --- | --- | --- |
-
-## Expected Binding Differences
-
-| Python model wrapper | Java API | pywin32 | Status | Recommended change |
-| --- | --- | --- | --- | --- |
-| — | — | — | — | — |
-
-## Wrapper Backlog
-
-| Python model wrapper | Java API | pywin32 | Status | Recommended change |
-| --- | --- | --- | --- | --- |
-| — | — | — | — | — |
+| — | — | — | PASS | No change needed. |
 
 <details>
 <summary>Correct items (46) — bindings verified against pywin32</summary>
@@ -45,6 +34,7 @@
 | add_unidirectional_relation() -> addUnidirectionalRelation | addUnidirectionalRelation (method) | addUnidirectionalRelation (method) | MATCH | — |
 | add_unidirectional_relation_to() -> addUnidirectionalRelationTo | addUnidirectionalRelationTo (method) | addUnidirectionalRelationTo (method) | MATCH | — |
 | attributes (property) -> attributes | getAttributes (method) | attributes (property) | MATCH | — |
+| get_attributes_including_bases() -> getAttributesIncludingBases | getAttributesIncludingBases (method) | getAttributesIncludingBases (method) | MATCH | — |
 | base_classifiers (property) -> baseClassifiers | getBaseClassifiers (method) | baseClassifiers (property) | MATCH | — |
 | behavioral_diagrams (property) -> behavioralDiagrams | getBehavioralDiagrams (method) | behavioralDiagrams (property) | MATCH | — |
 | delete_attribute() -> deleteAttribute | deleteAttribute (method) | deleteAttribute (method) | MATCH | — |
@@ -66,15 +56,14 @@
 | flow_items (property) -> flowItems | getFlowItems (method) | flowItems (property) | MATCH | — |
 | flows (property) -> flows | getFlows (method) | flows (property) | MATCH | — |
 | generalizations (property) -> generalizations | getGeneralizations (method) | generalizations (property) | MATCH | — |
-| get_attributes_including_bases() -> getAttributesIncludingBases | getAttributesIncludingBases (method) | getAttributesIncludingBases (method) | MATCH | — |
-| get_interface_items_including_bases() -> getInterfaceItemsIncludingBases | getInterfaceItemsIncludingBases (method) | getInterfaceItemsIncludingBases (method) | MATCH | — |
-| get_relations_including_bases() -> getRelationsIncludingBases | getRelationsIncludingBases (method) | getRelationsIncludingBases (method) | MATCH | — |
 | interface_items (property) -> interfaceItems | getInterfaceItems (method) | interfaceItems (property) | MATCH | — |
+| get_interface_items_including_bases() -> getInterfaceItemsIncludingBases | getInterfaceItemsIncludingBases (method) | getInterfaceItemsIncludingBases (method) | MATCH | — |
 | links (property) -> links | getLinks (method) | links (property) | MATCH | — |
 | nested_classifiers (property) -> nestedClassifiers | getNestedClassifiers (method) | nestedClassifiers (property) | MATCH | — |
 | operations (property) -> operations | getOperations (method) | operations (property) | MATCH | — |
 | ports (property) -> ports | getPorts (method) | ports (property) | MATCH | — |
 | relations (property) -> relations | getRelations (method) | relations (property) | MATCH | — |
+| get_relations_including_bases() -> getRelationsIncludingBases | getRelationsIncludingBases (method) | getRelationsIncludingBases (method) | MATCH | — |
 | sequence_diagrams (property) -> sequenceDiagrams | getSequenceDiagrams (method) | sequenceDiagrams (property) | MATCH | — |
 | source_artifacts (property) -> sourceArtifacts | getSourceArtifacts (method) | sourceArtifacts (property) | MATCH | — |
 | statechart (property) -> statechart | getStatechart (method) | statechart (property) | MATCH | — |

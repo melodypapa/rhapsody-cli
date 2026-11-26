@@ -4,7 +4,7 @@
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `IRPProject` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`)
 - Members: Python `72`, Java `72`, pywin32 `72`
-- Deviation items: `17` (actionable `12`, expected binding differences `5`, wrapper backlog `0`)
+- Deviation items: `20` (actionable `12`, expected binding differences `8`, wrapper backlog `0`)
 - Status legend: `MATCH` verified binding · `UNAVAILABLE_DOCUMENTED` pywin32 lacks the member (NotImplementedError stub) · `ALIAS_DOCUMENTED` documented alias · actionable rows are named by code in `Comparison details`
 
 ## Comparison details
@@ -24,24 +24,8 @@
 | set_active_configuration() -> setActiveConfiguration | — | setActiveConfiguration (method) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
 | set_wait_dialog_watchdog_value() -> setWaitDialogWatchdogValue | — | setWaitDialogWatchdogValue (method) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['int'] but pywin32 declares ['str']. Match the documented COM parameter types. |
 
-## Expected Binding Differences
-
-| Python model wrapper | Java API | pywin32 | Status | Recommended change |
-| --- | --- | --- | --- | --- |
-| enable_rhapsody_model_manager() (no static COM member) | enableRhapsodyModelManager (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
-| set_global_configuration() (no static COM member) | setGlobalConfiguration (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
-| — | isResolveOnDemand (method) | — | JAVA_ONLY_MEMBER | Verify the Java documentation against the installed COM type library. |
-| migrate_design_manager_links() (no static COM member) | migrateDesignManagerLinks (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
-| — | setResolveOnDemand (method) | — | JAVA_ONLY_MEMBER | Verify the Java documentation against the installed COM type library. |
-
-## Wrapper Backlog
-
-| Python model wrapper | Java API | pywin32 | Status | Recommended change |
-| --- | --- | --- | --- | --- |
-| — | — | — | — | — |
-
 <details>
-<summary>Correct items (60) — bindings verified against pywin32</summary>
+<summary>Correct items (57) — bindings verified against pywin32</summary>
 
 
 ## Correct Items
@@ -50,6 +34,8 @@
 | --- | --- | --- | --- | --- |
 | active_component (property) -> activeComponent; set_active_component() -> setActiveComponent | getActiveComponent (method); setActiveComponent (method) | activeComponent (property); setActiveComponent (method) | MATCH | — |
 | active_configuration (property) -> activeConfiguration; set_active_configuration() -> setActiveConfiguration | getActiveConfiguration (method); setActiveConfiguration (method) | activeConfiguration (property); setActiveConfiguration (method) | MATCH | — |
+| get_active_custom_views_on_browser() -> getActiveCustomViewsOnBrowser | getActiveCustomViewsOnBrowser (method) | getActiveCustomViewsOnBrowser (method) | MATCH | — |
+| get_active_custom_views_on_diagram() -> getActiveCustomViewsOnDiagram | getActiveCustomViewsOnDiagram (method) | getActiveCustomViewsOnDiagram (method) | MATCH | — |
 | add_component() -> addComponent | addComponent (method) | addComponent (method) | MATCH | — |
 | add_custom_view_on_browser() -> addCustomViewOnBrowser | addCustomViewOnBrowser (method) | addCustomViewOnBrowser (method) | MATCH | — |
 | add_custom_view_on_diagram() -> addCustomViewOnDiagram | addCustomViewOnDiagram (method) | addCustomViewOnDiagram (method) | MATCH | — |
@@ -67,6 +53,7 @@
 | clean_unresolved_elements() -> cleanUnresolvedElements | cleanUnresolvedElements (method) | cleanUnresolvedElements (method) | MATCH | — |
 | close() -> close | close (method) | close (method) | MATCH | — |
 | close_csv_file() -> closeCSVFile | closeCSVFile (method) | closeCSVFile (method) | MATCH | — |
+| get_code_generated_files() -> getCodeGeneratedFiles | getCodeGeneratedFiles (method) | getCodeGeneratedFiles (method) | MATCH | — |
 | components (property) -> components | getComponents (method) | components (property) | MATCH | — |
 | default_directory_scheme (property) -> defaultDirectoryScheme | getDefaultDirectoryScheme (method); setDefaultDirectoryScheme (method) | defaultDirectoryScheme (property) | MATCH | — |
 | delete_component() -> deleteComponent | deleteComponent (method) | deleteComponent (method) | MATCH | — |
@@ -76,38 +63,32 @@
 | find_element_by_file_name() -> findElementByFileName | findElementByFileName (method) | findElementByFileName (method) | MATCH | — |
 | find_element_by_guid() -> findElementByGUID | findElementByGUID (method) | findElementByGUID (method) | MATCH | — |
 | find_elements_with_oslc_link() -> findElementsWithOSLCLink | findElementsWithOSLCLink (method) | findElementsWithOSLCLink (method) | MATCH | — |
-| gateway_export_to_xml() -> GatewayExportToXML | gatewayExportToXML (method) | GatewayExportToXML (method) | MATCH | — |
-| gateway_export_to_xml2() -> GatewayExportToXML2 | gatewayExportToXML2 (method) | GatewayExportToXML2 (method) | MATCH | — |
-| generate_report() -> GenerateReport | generateReport (method) | GenerateReport (method) | MATCH | — |
-| get_active_custom_views_on_browser() -> getActiveCustomViewsOnBrowser | getActiveCustomViewsOnBrowser (method) | getActiveCustomViewsOnBrowser (method) | MATCH | — |
-| get_active_custom_views_on_diagram() -> getActiveCustomViewsOnDiagram | getActiveCustomViewsOnDiagram (method) | getActiveCustomViewsOnDiagram (method) | MATCH | — |
-| get_code_generated_files() -> getCodeGeneratedFiles | getCodeGeneratedFiles (method) | getCodeGeneratedFiles (method) | MATCH | — |
-| get_new_collaboration() -> getNewCollaboration | getNewCollaboration (method) | getNewCollaboration (method) | MATCH | — |
-| get_new_progress_bar() -> getNewProgressBar | getNewProgressBar (method) | getNewProgressBar (method) | MATCH | — |
-| get_notify_plugin_on_elements_changed() -> getNotifyPluginOnElementsChanged; set_notify_plugin_on_elements_changed() -> setNotifyPluginOnElementsChanged | getNotifyPluginOnElementsChanged (method); setNotifyPluginOnElementsChanged (method) | getNotifyPluginOnElementsChanged (method); setNotifyPluginOnElementsChanged (method) | MATCH | — |
-| get_remote_resource_packages() -> getRemoteResourcePackages | getRemoteResourcePackages (method) | getRemoteResourcePackages (method) | MATCH | — |
-| get_requirements_by_id() -> getRequirementsByID | getRequirementsByID (method) | getRequirementsByID (method) | MATCH | — |
-| get_roundtrip_shadow_model() -> getRoundtripShadowModel | getRoundtripShadowModel (method) | getRoundtripShadowModel (method) | MATCH | — |
 | highlight_from_code() -> highlightFromCode | highlightFromCode (method) | highlightFromCode (method) | MATCH | — |
 | import_package_from_rose() -> importPackageFromRose | importPackageFromRose (method) | importPackageFromRose (method) | MATCH | — |
 | import_project_from_rose() -> importProjectFromRose | importProjectFromRose (method) | importProjectFromRose (method) | MATCH | — |
 | is_actively_managed() -> isActivelyManaged | isActivelyManaged (method) | isActivelyManaged (method) | MATCH | — |
 | is_modified_recursive() -> isModifiedRecursive | isModifiedRecursive (method) | isModifiedRecursive (method) | MATCH | — |
 | locate_in_ide() -> locateInIDE | locateInIDE (method) | locateInIDE (method) | MATCH | — |
+| get_new_collaboration() -> getNewCollaboration | getNewCollaboration (method) | getNewCollaboration (method) | MATCH | — |
+| get_new_progress_bar() -> getNewProgressBar | getNewProgressBar (method) | getNewProgressBar (method) | MATCH | — |
+| get_notify_plugin_on_elements_changed() -> getNotifyPluginOnElementsChanged; set_notify_plugin_on_elements_changed() -> setNotifyPluginOnElementsChanged | getNotifyPluginOnElementsChanged (method); setNotifyPluginOnElementsChanged (method) | getNotifyPluginOnElementsChanged (method); setNotifyPluginOnElementsChanged (method) | MATCH | — |
+| set_object_explicit() -> setObjectExplicit | setObjectExplicit (method) | setObjectExplicit (method) | MATCH | — |
+| set_object_implicit() -> setObjectImplicit | setObjectImplicit (method) | setObjectImplicit (method) | MATCH | — |
 | open_csv_file() -> openCSVFile | openCSVFile (method) | openCSVFile (method) | MATCH | — |
 | profiles (property) -> profiles | getProfiles (method) | profiles (property) | MATCH | — |
 | recalculate_events_base_ids() -> recalculateEventsBaseIds | recalculateEventsBaseIds (method) | recalculateEventsBaseIds (method) | MATCH | — |
 | reload_csv_file() -> reloadCSVFile | reloadCSVFile (method) | reloadCSVFile (method) | MATCH | — |
+| get_remote_resource_packages() -> getRemoteResourcePackages | getRemoteResourcePackages (method) | getRemoteResourcePackages (method) | MATCH | — |
 | remove() -> remove | remove (method) | remove (method) | MATCH | — |
 | remove_custom_view_on_browser() -> removeCustomViewOnBrowser | removeCustomViewOnBrowser (method) | removeCustomViewOnBrowser (method) | MATCH | — |
 | remove_custom_view_on_diagram() -> removeCustomViewOnDiagram | removeCustomViewOnDiagram (method) | removeCustomViewOnDiagram (method) | MATCH | — |
+| get_requirements_by_id() -> getRequirementsByID | getRequirementsByID (method) | getRequirementsByID (method) | MATCH | — |
+| get_roundtrip_shadow_model() -> getRoundtripShadowModel | getRoundtripShadowModel (method) | getRoundtripShadowModel (method) | MATCH | — |
 | save_as() -> saveAs | saveAs (method) | saveAs (method) | MATCH | — |
 | save_as_prev_version() -> saveAsPrevVersion | saveAsPrevVersion (method) | saveAsPrevVersion (method) | MATCH | — |
-| set_object_explicit() -> setObjectExplicit | setObjectExplicit (method) | setObjectExplicit (method) | MATCH | — |
-| set_object_implicit() -> setObjectImplicit | setObjectImplicit (method) | setObjectImplicit (method) | MATCH | — |
-| set_wait_dialog_watchdog_value() -> setWaitDialogWatchdogValue | setWaitDialogWatchdogValue (method) | setWaitDialogWatchdogValue (method) | MATCH | — |
 | start_transaction_of_no_cg_interest() -> startTransactionOfNoCGInterest | startTransactionOfNoCGInterest (method) | startTransactionOfNoCGInterest (method) | MATCH | — |
 | use_unique_stereotype_and_ref_cache (property) -> UseUniqueStereotypeAndRefCache | setUseUniqueStereotypeAndRefCache (method) | UseUniqueStereotypeAndRefCache (property) | MATCH | — |
+| set_wait_dialog_watchdog_value() -> setWaitDialogWatchdogValue | setWaitDialogWatchdogValue (method) | setWaitDialogWatchdogValue (method) | MATCH | — |
 
 </details>
 
