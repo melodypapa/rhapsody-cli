@@ -11,18 +11,7 @@
 
 | Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |
 | --- | --- | --- | --- | --- |
-
-## Expected Binding Differences
-
-| Python model wrapper | Java API | pywin32 | Status | Recommended change |
-| --- | --- | --- | --- | --- |
-| — | — | — | — | — |
-
-## Wrapper Backlog
-
-| Python model wrapper | Java API | pywin32 | Status | Recommended change |
-| --- | --- | --- | --- | --- |
-| — | — | — | — | — |
+| — | — | — | PASS | No change needed. |
 
 <details>
 <summary>Correct items (7) — bindings verified against pywin32</summary>
@@ -35,10 +24,10 @@
 | add_argument() -> addArgument | addArgument (method) | addArgument (method) | MATCH | — |
 | add_argument_before_position() -> addArgumentBeforePosition | addArgumentBeforePosition (method) | addArgumentBeforePosition (method) | MATCH | — |
 | arguments (property) -> arguments | getArguments (method) | arguments (property) | MATCH | — |
-| get_signature_no_arg_names() -> getSignatureNoArgNames | getSignatureNoArgNames (method) | getSignatureNoArgNames (method) | MATCH | — |
-| get_signature_no_arg_types() -> getSignatureNoArgTypes | getSignatureNoArgTypes (method) | getSignatureNoArgTypes (method) | MATCH | — |
 | match_on_signature() -> matchOnSignature | matchOnSignature (method) | matchOnSignature (method) | MATCH | — |
 | signature (property) -> signature | getSignature (method) | signature (property) | MATCH | — |
+| get_signature_no_arg_names() -> getSignatureNoArgNames | getSignatureNoArgNames (method) | getSignatureNoArgNames (method) | MATCH | — |
+| get_signature_no_arg_types() -> getSignatureNoArgTypes | getSignatureNoArgTypes (method) | getSignatureNoArgTypes (method) | MATCH | — |
 
 </details>
 

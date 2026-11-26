@@ -11,19 +11,7 @@
 
 | Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |
 | --- | --- | --- | --- | --- |
-
-## Expected Binding Differences
-
-| Python model wrapper | Java API | pywin32 | Status | Recommended change |
-| --- | --- | --- | --- | --- |
-| get_all_nested_elements() (no static COM member) | getAllNestedElements (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
-| update_contained_diagrams_on_server() (no static COM member) | updateContainedDiagramsOnServer (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
-
-## Wrapper Backlog
-
-| Python model wrapper | Java API | pywin32 | Status | Recommended change |
-| --- | --- | --- | --- | --- |
-| — | — | — | — | — |
+| — | — | — | PASS | No change needed. |
 
 <details>
 <summary>Correct items (9) — bindings verified against pywin32</summary>
@@ -35,13 +23,13 @@
 | --- | --- | --- | --- | --- |
 | add_relation_to_the_whole() -> addRelationToTheWhole | addRelationToTheWhole (method) | addRelationToTheWhole (method) | MATCH | — |
 | get_attribute_value() -> getAttributeValue; set_attribute_value() -> setAttributeValue | getAttributeValue (method); setAttributeValue (method) | getAttributeValue (method); setAttributeValue (method) | MATCH | — |
-| get_in_links() -> getInLinks | getInLinks (method) | getInLinks (method) | MATCH | — |
-| get_list_of_initializer_arguments() -> getListOfInitializerArguments | getListOfInitializerArguments (method) | getListOfInitializerArguments (method) | MATCH | — |
-| get_out_links() -> getOutLinks | getOutLinks (method) | getOutLinks (method) | MATCH | — |
-| instantiated_by (property) -> instantiatedBy | getInstantiatedBy (method); setInstantiatedBy (method) | instantiatedBy (property) | MATCH | — |
 | set_explicit() -> setExplicit | setExplicit (method) | setExplicit (method) | MATCH | — |
 | set_implicit() -> setImplicit | setImplicit (method) | setImplicit (method) | MATCH | — |
+| get_in_links() -> getInLinks | getInLinks (method) | getInLinks (method) | MATCH | — |
 | set_initializer_argument_value() -> setInitializerArgumentValue | setInitializerArgumentValue (method) | setInitializerArgumentValue (method) | MATCH | — |
+| instantiated_by (property) -> instantiatedBy | getInstantiatedBy (method); setInstantiatedBy (method) | instantiatedBy (property) | MATCH | — |
+| get_list_of_initializer_arguments() -> getListOfInitializerArguments | getListOfInitializerArguments (method) | getListOfInitializerArguments (method) | MATCH | — |
+| get_out_links() -> getOutLinks | getOutLinks (method) | getOutLinks (method) | MATCH | — |
 
 </details>
 

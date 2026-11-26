@@ -11,23 +11,7 @@
 
 | Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |
 | --- | --- | --- | --- | --- |
-
-## Expected Binding Differences
-
-| Python model wrapper | Java API | pywin32 | Status | Recommended change |
-| --- | --- | --- | --- | --- |
-| add_instance_specification() (no static COM member) | addInstanceSpecification (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
-| login_to_remote_artifact_server() (no static COM member) | loginToRemoteArtifactServer (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
-| get_root_instance_specifications() (no static COM member) | getRootInstanceSpecifications (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
-| update_contained_diagrams_on_server() (no static COM member) | updateContainedDiagramsOnServer (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
-| update_contained_matrices_on_server() (no static COM member) | updateContainedMatricesOnServer (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
-| update_contained_tables_on_server() (no static COM member) | updateContainedTablesOnServer (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
-
-## Wrapper Backlog
-
-| Python model wrapper | Java API | pywin32 | Status | Recommended change |
-| --- | --- | --- | --- | --- |
-| — | — | — | — | — |
+| — | — | — | PASS | No change needed. |
 
 <details>
 <summary>Correct items (92) — bindings verified against pywin32</summary>
@@ -64,6 +48,7 @@
 | add_type() -> addType | addType (method) | addType (method) | MATCH | — |
 | add_use_case() -> addUseCase | addUseCase (method) | addUseCase (method) | MATCH | — |
 | add_use_case_diagram() -> addUseCaseDiagram | addUseCaseDiagram (method) | addUseCaseDiagram (method) | MATCH | — |
+| get_all_nested_elements() -> getAllNestedElements | getAllNestedElements (method) | getAllNestedElements (method) | MATCH | — |
 | behavioral_diagrams (property) -> behavioralDiagrams | getBehavioralDiagrams (method) | behavioralDiagrams (property) | MATCH | — |
 | classes (property) -> classes | getClasses (method) | classes (property) | MATCH | — |
 | collaboration_diagrams (property) -> collaborationDiagrams | getCollaborationDiagrams (method) | collaborationDiagrams (property) | MATCH | — |
@@ -104,15 +89,13 @@
 | find_use_case() -> findUseCase | findUseCase (method) | findUseCase (method) | MATCH | — |
 | flow_items (property) -> flowItems | getFlowItems (method) | flowItems (property) | MATCH | — |
 | flows (property) -> flows | getFlows (method) | flows (property) | MATCH | — |
-| get_all_nested_elements() -> getAllNestedElements | getAllNestedElements (method) | getAllNestedElements (method) | MATCH | — |
-| get_namespace() -> getNamespace | getNamespace (method) | getNamespace (method) | MATCH | — |
-| get_remote_requirements_populate_mode() -> getRemoteRequirementsPopulateMode; set_remote_requirements_populate_mode() -> setRemoteRequirementsPopulateMode | getRemoteRequirementsPopulateMode (method); setRemoteRequirementsPopulateMode (method) | getRemoteRequirementsPopulateMode (method); setRemoteRequirementsPopulateMode (method) | MATCH | — |
 | global_functions (property) -> globalFunctions | getGlobalFunctions (method) | globalFunctions (property) | MATCH | — |
 | global_objects (property) -> globalObjects | getGlobalObjects (method) | globalObjects (property) | MATCH | — |
 | global_variables (property) -> globalVariables | getGlobalVariables (method) | globalVariables (property) | MATCH | — |
 | instance_specifications (property) -> instanceSpecifications | getInstanceSpecifications (method) | instanceSpecifications (property) | MATCH | — |
 | links (property) -> links | getLinks (method) | links (property) | MATCH | — |
 | modules (property) -> modules | getModules (method) | modules (property) | MATCH | — |
+| get_namespace() -> getNamespace | getNamespace (method) | getNamespace (method) | MATCH | — |
 | nested_classifiers (property) -> nestedClassifiers | getNestedClassifiers (method) | nestedClassifiers (property) | MATCH | — |
 | nested_components (property) -> nestedComponents | getNestedComponents (method) | nestedComponents (property) | MATCH | — |
 | nodes (property) -> nodes | getNodes (method) | nodes (property) | MATCH | — |
@@ -121,6 +104,7 @@
 | panel_diagrams (property) -> panelDiagrams | getPanelDiagrams (method) | panelDiagrams (property) | MATCH | — |
 | populate_remote_requirements() -> populateRemoteRequirements | populateRemoteRequirements (method) | populateRemoteRequirements (method) | MATCH | — |
 | re_calculate_events_base_id() -> reCalculateEventsBaseId | reCalculateEventsBaseId (method) | reCalculateEventsBaseId (method) | MATCH | — |
+| get_remote_requirements_populate_mode() -> getRemoteRequirementsPopulateMode; set_remote_requirements_populate_mode() -> setRemoteRequirementsPopulateMode | getRemoteRequirementsPopulateMode (method); setRemoteRequirementsPopulateMode (method) | getRemoteRequirementsPopulateMode (method); setRemoteRequirementsPopulateMode (method) | MATCH | — |
 | saved_in_seperate_directory (property) -> savedInSeperateDirectory | getSavedInSeperateDirectory (method); setSavedInSeperateDirectory (method) | savedInSeperateDirectory (property) | MATCH | — |
 | sequence_diagrams (property) -> sequenceDiagrams | getSequenceDiagrams (method) | sequenceDiagrams (property) | MATCH | — |
 | source_artifacts (property) -> sourceArtifacts | getSourceArtifacts (method) | sourceArtifacts (property) | MATCH | — |
