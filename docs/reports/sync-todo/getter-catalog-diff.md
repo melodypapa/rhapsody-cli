@@ -14,7 +14,7 @@ review rather than a failure.
 
 | Status | Count |
 | --- | --- |
-| match | 195 |
+| match | 199 |
 | catalog-missing | 0 |
 | shape-mismatch | 0 |
 | no-binding | 0 |
@@ -530,6 +530,21 @@ review rather than a failure.
 | `is_reversed` | `isReversed` | property | property | match |
 | `port_direction` | `portDirection` | property | property | match |
 | `type` | `type` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPClassifierRole
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `formal_classifier` | `formalClassifier` | property | property | match |
+| `formal_instance` | `formalInstance` | property | property | match |
+| `referenced_sequence_diagram` | `referencedSequenceDiagram` | property | property | match |
+| `role_type` | `roleType` | property | property | match |
 
 ### Catalog properties with no matching Python property
 

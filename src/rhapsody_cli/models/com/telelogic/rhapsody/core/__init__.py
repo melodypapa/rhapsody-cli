@@ -20,6 +20,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute import IRPAttribute
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class import IRPClass
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier_role import IRPClassifierRole
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_codegen import (
         IRPBaseExternalCodeGeneratorTool,
         IRPCodeGenerator,
@@ -109,7 +110,6 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_module import IRPModule
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_node import IRPNode
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_other_model import IRPClassifierRole
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port import IRPPort
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_profile import IRPProfile
@@ -148,7 +148,7 @@ _EXPORT_MODULES = {
     "IRPCallOperation": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_call_operation",
     "IRPClass": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class",
     "IRPClassifier": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier",
-    "IRPClassifierRole": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_other_model",
+    "IRPClassifierRole": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier_role",
     "IRPCodeGenSimplifiersRegistry": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_codegen",
     "IRPCodeGenerator": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_codegen",
     "IRPCollaboration": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collaboration",

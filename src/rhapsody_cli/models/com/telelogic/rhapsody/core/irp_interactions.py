@@ -12,10 +12,8 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_association_role import (
         IRPAssociationRole,
     )
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier_role import IRPClassifierRole
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types import IRPSequenceDiagram
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_other_model import (
-        IRPClassifierRole,
-    )
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port import IRPPort
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statechart import IRPStatechart
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statemachine import IRPState, IRPStateVertex
