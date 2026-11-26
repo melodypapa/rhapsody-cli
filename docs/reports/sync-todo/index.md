@@ -236,6 +236,8 @@ layers. A row whose member no longer raises is stale and fails Step 8.
 | IRPUseCase | `update_contained_diagrams_on_server` | `updateContainedDiagramsOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPInstance | `get_all_nested_elements` | `getAllNestedElements` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPInstance | `update_contained_diagrams_on_server` | `updateContainedDiagramsOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPDependency | `is_need_to_migrate` | `isNeedToMigrate` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPDependency | `set_link_type` | `setLinkType` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 
 `IRPCollection.add_graphical_item` had a `not-exposed` row here until 2026-11-25, when a live
 probe proved the pywin32 `addGraphicalElementItem` alias works with a real `IRPGraphElement`

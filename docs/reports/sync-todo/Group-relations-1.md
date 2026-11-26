@@ -38,17 +38,17 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [x] Step 6 — §6 SWR update: `docs/requirements/com/telelogic/rhapsody/core/irp_relation.md` holds SWR_ELEM_00039 (new; the legacy monolith had no RPRelation entry).
   - [x] Step 7 — §7 RST update: `docs/api/com/telelogic/rhapsody/core/irp_relation.rst` documents all 22 public members; toctree entry added.
   - [ ] Step 8 — §8 validation: validator 0 actionable, `verify_sync.py IRPRelation` passes (non-strict), skill harness 85 passed, unit suite 2196 passed, mypy/ruff/black clean. Open: `--strict-getters` fails on the two blocked getters above; full Windows integration suite not re-run after the final edits.
-- [ ] irp_dependency_api_report (IRPDependency · RPDependency · rhapsody_cli/models/elements/relations/model_dependency.py · 2 legacy sites)
-  - Main status (2026-11-26): not synced: no committed API report on main; verify_sync fails.
-  - Note: usage 33 src / 13 test refs, 7 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
-  - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
-  - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Step 3 — §3 compare evidence: regenerate report + catalog entry; reconcile owned members; one pywin32 member per call; catalog-absent sites = blockers
-  - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy sites; full unit suite green
-  - [ ] Step 5 — §5 integration tests: mirrored path, assert only owned methods; live run on Windows
-  - [ ] Step 6 — §6 SWR update: per-class requirement document `irp_dependency.md` (move entry out of the legacy monolith)
-  - [ ] Step 7 — §7 RST update: `irp_dependency.rst` (anchor + deviation list-table) and toctree entry
-  - [ ] Step 8 — §8 verify and report: validator + `verify_sync.py` + skill tests + both full suites + ruff/black/mypy
+- [x] irp_dependency_api_report (IRPDependency · `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_dependency.py` · Java package `com.telelogic.rhapsody.core`)
+  - Main status (2026-11-26): verify_sync passes; validator 0 actionable (2 documented-unavailable stubs); all steps evidenced below.
+  - Note: typelib catalog merged for IRPDependency only. `dependent` and `depends_on` are read/write properties (`dependent`, `dependsOn`); `is_need_to_migrate` and `set_link_type` are JavaDoc-only `NotImplementedError` stubs (absent from pywin32). Exchange exporter/importer and their tests use the properties.
+  - [x] Step 1 — §1 sync TODO: 7-member JavaDoc inventory and property-shape checklist recorded in the wrapper and the report.
+  - [x] Step 2 — §2 resolve target: canonical wrapper and mirrored unit/integration tests confirmed; report Java package line present; RST toctree entry added; no shim.
+  - [x] Step 3 — §3 compare evidence: validator 0 actionable (was 4: two accessor properties and two stubs now documented); `set_owner_without_changing_dependent` MATCH.
+  - [x] Step 4 — §4 unit tests (TDD): 9 tests failed first, then passed; `test_irp_dependency.py` 12 passed; `irp_dependency.py` 20 statements / 2 branches, 100.00%; exchange unit tests 113 passed.
+  - [x] Step 5 — §5 integration tests: `test_irp_dependency.py` 7 live tests pass: populated `dependent` (A) and `depends_on` (B) from a real `add_dependency_to`, setter replacements, owner move, and two live `NotImplementedError` stub assertions.
+  - [x] Step 6 — §6 SWR update: `docs/requirements/com/telelogic/rhapsody/core/irp_dependency.md` holds SWR_ELEM_00040 (new; the legacy monolith had no RPDependency entry).
+  - [x] Step 7 — §7 RST update: `docs/api/com/telelogic/rhapsody/core/irp_dependency.rst` documents all 5 public members; toctree entry added.
+  - [x] Step 8 — §8 validation: validator 0 actionable; `verify_sync.py IRPDependency` passes (strict getters: both getters populated); stub evidence rows in `index.md`; skill harness 85 passed; full unit suite 2206 passed; mypy/ruff/black clean on `src/` and `tests/`.
 - [ ] irp_generalization_api_report (IRPGeneralization · RPGeneralization · rhapsody_cli/models/elements/relations/model_generalization.py · 5 legacy sites)
   - Main status (2026-11-26): not synced: no committed API report on main; verify_sync fails.
   - Note: usage 24 src / 8 test refs, 10 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
