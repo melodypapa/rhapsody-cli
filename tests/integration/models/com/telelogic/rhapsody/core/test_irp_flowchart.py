@@ -4,7 +4,9 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions import IRPAcceptEventAction, IRPAcceptTimeEvent, IRPCallOperation
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_accept_time_event import IRPAcceptTimeEvent
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions import IRPAcceptEventAction
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_call_operation import IRPCallOperation
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types import IRPActivityDiagram
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flowchart import IRPFlowchart
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPPin
