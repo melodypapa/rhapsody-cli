@@ -13,9 +13,9 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCo
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlowItem
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute import IRPAttribute
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flow import IRPFlow
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flow_item import IRPFlowItem
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flowchart import IRPFlowchart
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_generalization import IRPGeneralization
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import IRPInterfaceItem
@@ -182,7 +182,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::addFlowItems(java.lang.String name)
         """
-        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlowItem
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flow_item import IRPFlowItem
 
         return cast(IRPFlowItem, self.wrap(self.call_com(lambda: self._com.addFlowItems(name))))
 

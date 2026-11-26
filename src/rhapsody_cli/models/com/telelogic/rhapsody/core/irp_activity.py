@@ -2,56 +2,9 @@
 
 from typing import Optional
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statemachine import IRPState
-
-
-class IRPFlowItem(IRPClassifier):
-    """Wraps ``IRPFlowItem``: represents item flows in Rhapsody models."""
-
-    # IRPFlowItem method parity checklist:
-    # [x] add_represented               [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_represented               [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] remove_represented            [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [inherited] irp_classifier methods (covered by rp_classifier checklist)
-    # [inherited] irp_model_element methods (covered by rp_model_element checklist)
-    # [inherited] irp_unit methods (covered by rp_unit checklist)
-    # No deprecated IRPFlowItem methods.
-
-    def add_represented(self, p_element: "IRPModelElement") -> None:
-        """Adds an element to the collection of information elements that are represented by the item flow.
-
-        Args:
-            p_element: The element to add to the collection.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPFlowItem::addRepresented(com.telelogic.rhapsody.core.IRPModelElement pElement)
-        """
-        self.call_com(lambda: self._com.addRepresented(p_element._com))
-
-    def get_represented(self) -> "IRPCollection":
-        """Returns a collection of all the information elements that are represented by the item flow.
-
-        Returns:
-            IRPCollection: All the information elements that are represented by the item flow.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPFlowItem::getRepresented()
-        """
-        return IRPCollection(self.call_com(lambda: self._com.getRepresented()))
-
-    def remove_represented(self, p_element: "IRPModelElement") -> None:
-        """Removes the specified element from the collection of information elements that are represented by the item flow.
-
-        Args:
-            p_element: The element that should be removed from the collection.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPFlowItem::removeRepresented(com.telelogic.rhapsody.core.IRPModelElement pElement)
-        """
-        self.call_com(lambda: self._com.removeRepresented(p_element._com))
 
 
 class IRPObjectNode(IRPState):
@@ -151,5 +104,4 @@ class IRPObjectNode(IRPState):
 
 
 # Register wrappers for meta classes
-IRPModelElement.register_wrapper("FlowItem", IRPFlowItem)
 IRPModelElement.register_wrapper("ObjectNode", IRPObjectNode)

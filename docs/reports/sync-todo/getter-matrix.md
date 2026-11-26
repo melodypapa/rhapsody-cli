@@ -318,3 +318,9 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | `event` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_send_action.py::test_event` | identity/value | OK |
 | `invoked_operation` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_send_action.py::test_invoked_operation` | identity/value | OK |
 | `target` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_send_action.py::test_target` | identity/value | OK |
+
+## IRPFlowItem
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `represented` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow_item.py::test_represented` | identity/value | OK |

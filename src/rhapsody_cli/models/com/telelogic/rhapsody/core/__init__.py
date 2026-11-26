@@ -15,7 +15,7 @@ if TYPE_CHECKING:
         IRPCallOperation,
         IRPContextSpecification,
     )
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlowItem, IRPObjectNode
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPObjectNode
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actor import IRPActor
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_application import IRPApplication
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument import IRPArgument
@@ -62,6 +62,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_exception import IRPException
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_files import IRPASCIIFile, IRPControlledFile, IRPFile, IRPFileFragment
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flow import IRPFlow
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flow_item import IRPFlowItem
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flowchart import IRPFlowchart
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_generalization import IRPGeneralization
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import (
@@ -184,7 +185,7 @@ _EXPORT_MODULES = {
     "IRPFile": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_files",
     "IRPFileFragment": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_files",
     "IRPFlow": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flow",
-    "IRPFlowItem": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity",
+    "IRPFlowItem": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flow_item",
     "IRPFlowchart": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flowchart",
     "IRPGeneralization": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_generalization",
     "IRPGraphEdge": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics",

@@ -14,7 +14,7 @@ review rather than a failure.
 
 | Status | Count |
 | --- | --- |
-| match | 178 |
+| match | 179 |
 | catalog-missing | 0 |
 | shape-mismatch | 0 |
 | no-binding | 0 |
@@ -425,6 +425,18 @@ review rather than a failure.
 | `event` | `event` | property | property | match |
 | `invoked_operation` | `invokedOperation` | property | property | match |
 | `target` | `target` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPFlowItem
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `represented` | `represented` | property | property | match |
 
 ### Catalog properties with no matching Python property
 
