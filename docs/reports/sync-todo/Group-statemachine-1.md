@@ -1,40 +1,61 @@
-# Sync todo: `statemachine` — `Group-statemachine-1.md`
+# Sync todo — `statemachine` (group 1 of 1)
 
-Category: legacy module subpackage `statemachine` · 2 classes · group 1 of 1 for this category.
+**2 classes** · ✅ 0 archived · ⬜ 2 open
 
-Rows were regrouped from the former numbered batch files by legacy module subpackage (the domain folder in each row's path); classes without a legacy path were mapped from their legacy class names.
+One row per sync run. A step is ticked only when its evidence lands; a row is archived only after all eight steps pass. Binding rule: one pywin32-exposed COM member per call — `call_com(lambda: self._com.Name(...))` for methods, `get_com_property` / `set_com_property` for properties; catalog-absent sites are blockers, never blind migrations. Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/`, mirrored tests under `tests/{unit,integration}/models/com/telelogic/rhapsody/core/`.
 
-Steps = SKILL.md §1–§8, enumerated per row: ① §1 sync TODO · ② §2 resolve target · ③ §3 compare
-evidence · ④ §4 unit tests (TDD) · ⑤ §5 integration tests · ⑥ §6 SWR update · ⑦ §7 RST update ·
-⑧ §8 verify and report. Per-row binding rules: one pywin32-exposed COM member per call —
-`call_com(lambda: self._com.Name(...))` for method-shaped members,
-`get_com_property` / `set_com_property` for property-shaped members; catalog-absent sites are
-blockers, never blind migrations.
+## Step legend
 
-Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with mirrored
-`tests/{unit,integration}/models/com/telelogic/rhapsody/core/test_<snake>.py`.
+| Step | Meaning |
+| --- | --- |
+| ① §1 | publish the per-run checklist with a subtask per target-owned JavaDoc member |
+| ② §2 | resolve the wrapper, inheritance, exports, and tests; move to the canonical package |
+| ③ §3 | reconcile every owned member against JavaDoc, pywin32, and the Python wrapper |
+| ④ §4 | failing fake-COM unit tests first, then migrate the legacy sites |
+| ⑤ §5 | integration coverage on the mirrored path; live run on Windows |
+| ⑥ §6 | update the per-class requirement document |
+| ⑦ §7 | update the per-class RST page and its toctree entry |
+| ⑧ §8 | run the validator, `verify_sync.py`, skill tests, both suites, and the quality gate |
 
-## Rows
+`[x] §2` on every row records the 2026-11-24 bulk package move; other steps show their evidence inline when it differs from the legend.
 
-- [ ] irp_state_api_report (IRPState · RPState · elements/statemachine/model_statemachine.py · 28 legacy sites)
-  - Main status (2026-11-26): not synced: no committed API report on main; verify_sync fails.
-  - Note: highest-use unsynced wrapper (234 src / 99 test references, 48 owned methods). Depends on `RPStateVertex` (stays in the legacy module); inherited members wait for a future base row. Sync after the catalog/report prerequisite above.
-  - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
-  - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Step 3 — §3 compare evidence: regenerate the committed report + catalog entry; reconcile every owned member; one pywin32 member per call; catalog-absent sites = blockers
-  - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy helper sites in own methods; full unit suite green
-  - [ ] Step 5 — §5 integration tests: add/update integration coverage for owned behavior in the mirrored test path; Windows = live run
-  - [ ] Step 6 — §6 SWR update: per-class requirement document `docs/requirements/com/telelogic/rhapsody/core/irp_state.md` (move entry out of the legacy monolith)
-  - [ ] Step 7 — §7 RST update: `docs/api/com/telelogic/rhapsody/core/irp_state.rst` (anchor + deviation list-table) and toctree entry
-  - [ ] Step 8 — §8 verify and report: `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit and integration suites (new no-regression rule) + ruff/black/mypy; render the sync-report checklist
-- [ ] irp_state_vertex_api_report (IRPStateVertex · RPStateVertex · rhapsody_cli/models/elements/statemachine/model_statemachine.py · 3 legacy sites)
-  - Main status (2026-11-26): not synced: no committed API report on main; verify_sync fails.
-  - Note: usage 29 src / 18 test refs, 7 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
-  - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
-  - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Step 3 — §3 compare evidence: regenerate report + catalog entry; reconcile owned members; one pywin32 member per call; catalog-absent sites = blockers
-  - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy sites; full unit suite green
-  - [ ] Step 5 — §5 integration tests: mirrored path, assert only owned methods; live run on Windows
-  - [ ] Step 6 — §6 SWR update: per-class requirement document `irp_state_vertex.md` (move entry out of the legacy monolith)
-  - [ ] Step 7 — §7 RST update: `irp_state_vertex.rst` (anchor + deviation list-table) and toctree entry
-  - [ ] Step 8 — §8 verify and report: validator + `verify_sync.py` + skill tests + both full suites + ruff/black/mypy
+## At a glance
+
+| # | Class | Interface | Legacy source | Sites | Owned | Steps | Status |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | `irp_state_api_report` | IRPState | `elements/statemachine/model_statemachine.py` | 28 | 48 | 1/8 (②) | ⬜ open |
+| 2 | `irp_state_vertex_api_report` | IRPStateVertex | `rhapsody_cli/models/elements/statemachine/model_statemachine.py` | 3 | 7 | 1/8 (②) | ⬜ open |
+
+## Row details
+
+<details>
+<summary><code>irp_state_api_report</code> · IRPState · 1/8 steps · ⬜ open</summary>
+
+- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Note:** highest-use unsynced wrapper (234 src / 99 test references, 48 owned methods). Depends on `RPStateVertex` (stays in the legacy module); inherited members wait for a future base row. Sync after the catalog/report prerequisite above.
+- [ ] ① §1
+- [x] ② §2
+- [ ] ③ §3 — regenerate the committed report + catalog entry; reconcile every owned member; one pywin32 member per call; catalog-absent sites = blockers
+- [ ] ④ §4
+- [ ] ⑤ §5 — add/update integration coverage for owned behavior in the mirrored test path; Windows = live run
+- [ ] ⑥ §6
+- [ ] ⑦ §7 — `docs/api/com/telelogic/rhapsody/core/irp_state.rst` (anchor + deviation list-table) and toctree entry
+- [ ] ⑧ §8 — `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit and integration suites (new no-regression rule) + ruff/black/mypy; render the sync-report checklist
+
+</details>
+
+<details>
+<summary><code>irp_state_vertex_api_report</code> · IRPStateVertex · 1/8 steps · ⬜ open</summary>
+
+- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Note:** usage 29 src / 18 test refs, 7 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
+- [ ] ① §1
+- [x] ② §2
+- [ ] ③ §3
+- [ ] ④ §4
+- [ ] ⑤ §5
+- [ ] ⑥ §6
+- [ ] ⑦ §7
+- [ ] ⑧ §8
+
+</details>

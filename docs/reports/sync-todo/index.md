@@ -1,38 +1,32 @@
 # Sync todo index — `docs/reports` interface sync (pywin32-direct bindings)
 
-Execution ledger for the 16 committed interface reports under `docs/reports/<java.package.path>/`
-(`*_api_report.md`; the authority catalog remains at `docs/reports/pywin32_authority.json`) and their wrappers. One row = one report = one rhapsody-sync run; every row's steps enumerate
-the rules and steps of [`.agents/skills/rhapsody-sync/SKILL.md`](../../.agents/skills/rhapsody-sync/SKILL.md)
-(§1–§8). Runs tick a step the moment it passes; a row is archived only when all eight steps pass
-and the run's commit exists.
+Execution ledger for the 19 committed interface reports under `docs/reports/<java.package.path>/` (`*_api_report.md`; the authority catalog lives at `docs/reports/pywin32_authority.json`) and their wrappers. One row = one report = one rhapsody-sync run, enumerating the steps of [`.agents/skills/rhapsody-sync/SKILL.md`](../../.agents/skills/rhapsody-sync/SKILL.md) (§1–§8).
 
-## Bulk Java-package move (2026-11-24)
+## At a glance
 
-All 113 legacy `RP*` wrapper classes in `models/elements/<domain>/` and `models/support/` were
-moved to the canonical Java package path `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` as
-`irp_<x>.py` modules, renamed to their Java interface names (`RPState` → `IRPState`), with unit and
-integration tests mirrored under `tests/{unit,integration}/models/com/telelogic/rhapsody/core/`,
-all imports rewritten, canonical lazy exports rebuilt, and no compatibility shim left behind.
-§2 (package move) is therefore ticked on the migrated rows below. §3–§8 remain open where no
-committed API report / catalog entry exists (the Windows regeneration blocker); 2157 unit tests
-pass, ruff and black are clean, and all 479 integration tests collect.
+| Metric | Value |
+| --- | --- |
+| Interfaces with a committed API report | 19 |
+| Group files | 24 |
+| Rows tracked | 146 |
+| Rows archived | 21 (19 unique + 2 preserved duplicate remediation rows) |
+| Rows open | 125 |
+| Step checks ticked | 337 / 1168 |
+| NotImplementedError evidence rows | 30 |
+| P0 blocker rows | 22 (10 interfaces) |
+| `verify_sync.py` sweep | 19 / 19 interfaces pass |
 
-## Integration-test compliance pass (2026-11-24)
+## Contents
 
-All mirrored model-wrapper integration tests under `tests/integration/models/**` were audited
-against SKILL §5/§8: no non-`NotImplementedError` exception assertions, no `except` handlers or
-skip/xfail markers in test bodies, no `assert True`, no literal dummy inputs, and no empty
-`finally` cleanup. Fixes: `test_delete_type` now asserts the deleted type is absent instead of
-`assert True`; six `IRPType` setter cases now assert real round-trips with authentic values
-(`"Enumeration"`, `"int x"`, `"0..1"`, flag `1`); literal `"x"` lookups in `IRPUseCase`/`IRPInterfaceItem`
-cases use per-run unique keys; `IRPProject` file-based cases use real on-disk paths (`__file__`,
-`tmp_path`) instead of fabricated `"arg"` strings; the project-switch case calls `save_all()`
-before `open_project()` and deletes its created package. `verify_sync.py` passes for all 16
-interfaces; 472 integration tests collect (live Rhapsody unavailable on macOS). Open blockers:
-`cg_simplified_model_package` has no live populated fixture, and Gateway export / ReporterPLUS
-generation require external tools — recorded on the respective rows.
+1. [Layout and group files](#layout-and-group-files)
+2. [Resume rule](#resume-rule)
+3. [Standing decisions](#standing-decisions)
+4. [History](#history)
+5. [NotImplementedError stubs](#notimplementederror-stubs) — machine-read by `verify_sync.py`
+6. [P0 integration-test blockers](#p0-integration-test-blockers-2026-11-24) — machine-read by `verify_sync.py`
+7. [Evidence notes](#evidence-notes)
 
-## Layout (2026-11-24)
+## Layout and group files
 
 Group files are organized **by category**, where the category is the legacy module subpackage in
 each row's path (`elements/<subpackage>/`, `models/support/`, `models/core.py`, `application.py`).
@@ -67,43 +61,25 @@ were mapped to their legacy category by class name. All 146 tracked rows are pre
 | [Group-values-1.md](Group-values-1.md) | `values` | 5 | ⬜ 5 open |
 | [Group-variables-1.md](Group-variables-1.md) | `variables` | 8 | ⬜ 6 open · ✅ 2 archived |
 
-Progress: **19/146 rows tracked as archived** (128 wrapper classes + 1 application layer + the completed remediation rows + duplicate remediation rows preserved as in the source ledger).
-As of 2026-11-25 the `application` row in [Group-application-1.md](Group-application-1.md) and
-all seven `core` rows in [Group-core-1.md](Group-core-1.md) are archived; the queued unsynced
-classes are in the remaining files, ordered by importance within each category. Commits
-`6cbebc3` (sync), `1778607` (test-rule compliance), `5175b93` (COM hardening), `2a6334c`…`3479937`
-(Windows closeout: real-COM outcome enforcement, report regeneration) and the review-fix commit
-(this one) carry the batch.
+### Progress
 
-Report/status refresh (2026-11-22, after the second review-fix pass on top of the Windows
-closeout): unit suite **1947 passed**, integration + system suites **504 collected** (live
-re-run pending on Windows), skill self-tests **22 passed**; ruff/black/mypy clean; an AST
-cross-check proves zero catalog-absent COM members and zero legacy probe call sites across the
-16 canonical wrappers, and `verify_sync.py` passes for **all 13 interfaces**. All 15
-synced wrappers reach 100% statement/branch coverage independently at both unit and integration
-layers, with zero skip/xfail markers.
-
-`close_all_projects()` and `get_rhapsody_dir()` were removed from `RhapsodyApplication` in the
-review-fix pass: both were `PYTHON_ONLY_MEMBER` conveniences whose COM members do not exist
-(the Windows-authored integration tests had pinned their `AttributeError` as the live outcome,
-and the teardown call only "succeeded" because it swallowed that error with a printed warning).
-The integration teardown now closes each open project through the catalog-exposed
-`IRPProject.close()` member; `connect`/`disconnect` remain as documented python-only facade
-helpers (live callers throughout the codebase, so their removal stays blocked per the standing
-decision).
+- Progress: **19 unique rows archived / 146** (21 including the two preserved duplicate remediation rows).
+- As of 2026-11-25 the `application` row in [Group-application-1.md](Group-application-1.md) and all seven `core` rows in [Group-core-1.md](Group-core-1.md) are archived.
+- The queued unsynced classes sit in the remaining files, ordered by importance within each category.
+- Commits `6cbebc3` (sync), `1778607` (test-rule compliance), `5175b93` (COM hardening), `2a6334c`…`3479937` (Windows closeout: real-COM outcome enforcement, report regeneration) and the review-fix commit carry the batch.
 
 ## Resume rule
 
-The IRPApplication Step 8 row and the `core` remediation rows are complete. Next take the
-remaining current-rule remediation rows in their category files (`containment`, `classifiers`,
-`relations`, `common`, `variables`), then the queued rows in the category files (once their
-Windows-side Step 1/3 report regeneration unblocks them). Execute one rhapsody-sync run for that
-interface following SKILL.md §1–§8 exactly as enumerated in the row's steps; tick a step when
-its evidence lands (never batch-tick at the end); mark the row archived in place only after its
-commit exists and no step is open. Do not re-derive scope or decisions already recorded in the
-row's Notes.
+1. The `IRPApplication` Step 8 row and the `core` remediation rows are complete.
+2. Next take the remaining current-rule remediation rows in their category files (`containment`, `classifiers`, `relations`, `common`, `variables`).
+3. Then take the queued rows in the category files once their Windows-side Step 1/3 report regeneration unblocks them.
+4. Execute one rhapsody-sync run for that interface following SKILL.md §1–§8 exactly as enumerated in the row's steps.
+5. Tick a step when its evidence lands — never batch-tick at the end.
+6. Mark the row archived in place only after its commit exists and no step is open.
+7. Do not re-derive scope or decisions already recorded in the row's Notes.
 
 ## Standing decisions
+
 - **Binding rule (SKILL §3):** every wrapper member calls exactly one pywin32-exposed COM
   member from `pywin32_authority.json` — method-shaped via
   `call_com(lambda: self._com.Name(...))`, property-shaped via `get_com_property` /
@@ -164,7 +140,56 @@ row's Notes.
   `models/support/` location before any move.
 - **Termination (pending):** IRPApplication Step 8 and the `core` remediation rows are archived; the remaining remediation rows in other category files are still open. After all of them archive, remove the deprecated `_get_method_or_property` / `_set_method_or_property` definitions from `ComHelper` in `src/rhapsody_cli/models/core.py`, drop legacy notes from `AGENTS.md`, `docs/CODE_GUIDELINES.md`, and the sync skill, and confirm `grep -rn "_method_or_property" src/ --include='*.py'` finds no definitions or call sites.
 
-## Getter-assertion checker tightening (2026-11-25)
+## History
+
+### 2026-11-24 — Bulk Java-package move
+
+All 113 legacy `RP*` wrapper classes in `models/elements/<domain>/` and `models/support/` were
+moved to the canonical Java package path `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` as
+`irp_<x>.py` modules, renamed to their Java interface names (`RPState` → `IRPState`), with unit and
+integration tests mirrored under `tests/{unit,integration}/models/com/telelogic/rhapsody/core/`,
+all imports rewritten, canonical lazy exports rebuilt, and no compatibility shim left behind.
+§2 (package move) is therefore ticked on the migrated rows below. §3–§8 remain open where no
+committed API report / catalog entry exists (the Windows regeneration blocker); 2157 unit tests
+pass, ruff and black are clean, and all 479 integration tests collect.
+
+### 2026-11-24 — Integration-test compliance pass
+
+All mirrored model-wrapper integration tests under `tests/integration/models/**` were audited
+against SKILL §5/§8: no non-`NotImplementedError` exception assertions, no `except` handlers or
+skip/xfail markers in test bodies, no `assert True`, no literal dummy inputs, and no empty
+`finally` cleanup. Fixes: `test_delete_type` now asserts the deleted type is absent instead of
+`assert True`; six `IRPType` setter cases now assert real round-trips with authentic values
+(`"Enumeration"`, `"int x"`, `"0..1"`, flag `1`); literal `"x"` lookups in `IRPUseCase`/`IRPInterfaceItem`
+cases use per-run unique keys; `IRPProject` file-based cases use real on-disk paths (`__file__`,
+`tmp_path`) instead of fabricated `"arg"` strings; the project-switch case calls `save_all()`
+before `open_project()` and deletes its created package. `verify_sync.py` passes for all 16
+interfaces; 472 integration tests collect (live Rhapsody unavailable on macOS). Open blockers:
+`cg_simplified_model_package` has no live populated fixture, and Gateway export / ReporterPLUS
+generation require external tools — recorded on the respective rows.
+
+### 2026-11-22 — Report/status refresh and review-fix pass
+
+Figures below are as of that date and are kept for the decision record.
+
+Report/status refresh (2026-11-22, after the second review-fix pass on top of the Windows
+closeout): unit suite **1947 passed**, integration + system suites **504 collected** (live
+re-run pending on Windows), skill self-tests **22 passed**; ruff/black/mypy clean; an AST
+cross-check proves zero catalog-absent COM members and zero legacy probe call sites across the
+16 canonical wrappers, and `verify_sync.py` passes for **all 13 interfaces**. All 15
+synced wrappers reach 100% statement/branch coverage independently at both unit and integration
+layers, with zero skip/xfail markers.
+
+`close_all_projects()` and `get_rhapsody_dir()` were removed from `RhapsodyApplication` in the
+review-fix pass: both were `PYTHON_ONLY_MEMBER` conveniences whose COM members do not exist
+(the Windows-authored integration tests had pinned their `AttributeError` as the live outcome,
+and the teardown call only "succeeded" because it swallowed that error with a printed warning).
+The integration teardown now closes each open project through the catalog-exposed
+`IRPProject.close()` member; `connect`/`disconnect` remain as documented python-only facade
+helpers (live callers throughout the codebase, so their removal stays blocked per the standing
+decision).
+
+### 2026-11-25 — Getter-assertion checker tightening
 
 `verify_sync.py` now groups `test_<property>`, `test_get_<property>`, and their `_empty`/`_empty_state`
 variants under the same property and fails Step 8 unless at least one test in the group asserts
@@ -187,6 +212,13 @@ exists. Regenerate a section with `verify_sync.py <INTERFACE> --write-getter-mat
 records 58 `OK`, 4 `WEAK`, and 99 `MISSING` rows; `MISSING` marks getters whose test is not
 discoverable by the `test_<property>`/`test_get_<property>` convention (for example `ports` is covered
 by `test_add_port_and_get_ports`) and must be pointed at the real test by hand.
+
+### 2026-11-26 — Getter matrix and stub evidence completed
+
+- Added the Getter fixture matrix sections for `IRPActor` (1 row, OK), `IRPStatechart` (5 rows, OK), and `IRPStereotype` (2 OK, `icon` MISSING) with `verify_sync.py <INTERFACE> --write-getter-matrix`.
+- Added four `not-exposed` stub evidence rows (`IRPActor.addEventReceptionWithEvent`, `updateContainedDiagramsOnServer`; `IRPStatechart.addNewAcceptEventAction`, `addNewAcceptTimeEvent`) after confirming each member is absent from the catalog, listed in `documented_unavailable`, and asserted in both mirrored test layers.
+- Recorded `IRPStereotype.icon` as a P0 blocker: no documented API attaches or edits a stereotype icon.
+- Result: all 19 interfaces pass the default sweep, and `IRPActor`, `IRPStatechart`, `IRPStereotype` also pass `--strict-getters`.
 
 ## NotImplementedError stubs
 
@@ -272,6 +304,8 @@ wrapper-signature fix before its getter/member row can close.
 | IRPPort | `is_behavioral`, `is_reversed`, `port_contract`, `provided_interfaces`, `required_interfaces` | Port relation/end properties have no live factory; recovered via catalog-only triage but no populated fixture. |
 | IRPProject | `nodes` | The project root rejects both `addNode(name)` and `addNewAggr("Node", name)`; a node created in a nested package is not returned by `project.nodes`. The live test now records the fresh-project empty state; a populated project-level node fixture remains unavailable. |
 | IRPUseCase | `is_behavior_overriden` | Runtime stub (user approved 2026-11-25): setter faults live; see the NotImplementedError evidence ledger. |
+
+## Evidence notes
 
 **Fresh live evidence (2026-11-25, hidden-UI Rhapsody):** three of the original four WEAK getter
 rows were closed by attaching children with the documented generic factory

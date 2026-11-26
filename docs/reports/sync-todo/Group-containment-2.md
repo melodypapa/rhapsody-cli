@@ -1,29 +1,44 @@
-# Sync todo: `containment` — `Group-containment-2.md`
+# Sync todo — `containment` (group 2 of 2)
 
-Category: legacy module subpackage `containment` · 1 classes · group 2 of 2 for this category.
+**1 classes** · ✅ 1 archived · ⬜ 0 open
 
-Rows were regrouped from the former numbered batch files by legacy module subpackage (the domain folder in each row's path); classes without a legacy path were mapped from their legacy class names.
+One row per sync run. A step is ticked only when its evidence lands; a row is archived only after all eight steps pass. Binding rule: one pywin32-exposed COM member per call — `call_com(lambda: self._com.Name(...))` for methods, `get_com_property` / `set_com_property` for properties; catalog-absent sites are blockers, never blind migrations. Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/`, mirrored tests under `tests/{unit,integration}/models/com/telelogic/rhapsody/core/`.
 
-Steps = SKILL.md §1–§8, enumerated per row: ① §1 sync TODO · ② §2 resolve target · ③ §3 compare
-evidence · ④ §4 unit tests (TDD) · ⑤ §5 integration tests · ⑥ §6 SWR update · ⑦ §7 RST update ·
-⑧ §8 verify and report. Per-row binding rules: one pywin32-exposed COM member per call —
-`call_com(lambda: self._com.Name(...))` for method-shaped members,
-`get_com_property` / `set_com_property` for property-shaped members; catalog-absent sites are
-blockers, never blind migrations.
+## Step legend
 
-Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with mirrored
-`tests/{unit,integration}/models/com/telelogic/rhapsody/core/test_<snake>.py`.
+| Step | Meaning |
+| --- | --- |
+| ① §1 | publish the per-run checklist with a subtask per target-owned JavaDoc member |
+| ② §2 | resolve the wrapper, inheritance, exports, and tests; move to the canonical package |
+| ③ §3 | reconcile every owned member against JavaDoc, pywin32, and the Python wrapper |
+| ④ §4 | failing fake-COM unit tests first, then migrate the legacy sites |
+| ⑤ §5 | integration coverage on the mirrored path; live run on Windows |
+| ⑥ §6 | update the per-class requirement document |
+| ⑦ §7 | update the per-class RST page and its toctree entry |
+| ⑧ §8 | run the validator, `verify_sync.py`, skill tests, both suites, and the quality gate |
 
-## Rows
+`[x] §2` on every row records the 2026-11-24 bulk package move; other steps show their evidence inline when it differs from the legend.
 
-- [x] irp_project_api_report (IRPProject · IRPProject · models/elements/containment/model_project.py · 24 sites)
-  - Main status (2026-11-26): verify_sync passes; all steps archived. Duplicate row for IRPProject also in Group-containment-1.md.
-  - Note: 12 method-shaped (`setWaitDialogWatchdogValue`, `isActivelyManaged`, `getRoundtripShadowModel`, ...); `setGlobalConfiguration`/`setUseUniqueStereotypeAndRefCache` absent from every catalog: blocker unless Windows typelib regen resolves it.
-  - [x] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
-  - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/`
-  - [x] Step 3 — §3 compare evidence: baseline `validate_interface.py IRPProject --source authority`; reconcile every owned member; one pywin32 member per call; catalog-absent sites = blockers
-  - [x] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy helper sites in own methods; full unit suite green
-  - [x] Step 5 — §5 integration tests: add/update integration coverage for owned behavior (mirrored test path); Windows = live run, macOS = collection-only noted
-  - [x] Step 6 — §6 SWR update: class requirement document `docs/requirements/com/telelogic/rhapsody/core/<snake_case>.md` (moved out of the legacy monolith)
-  - [x] Step 7 — §7 RST update: class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPProject:` + deviation list-table)
-  - [x] Step 8 — §8 verify and report: `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
+## At a glance
+
+| # | Class | Interface | Legacy source | Sites | Owned | Steps | Status |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | `irp_project_api_report` | IRPProject | `models/elements/containment/model_project.py` | — | — | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
+
+## Row details
+
+<details>
+<summary><code>irp_project_api_report</code> · IRPProject · 8/8 steps · ✅ archived</summary>
+
+- **Status (2026-11-26):** verify_sync passes; all steps archived. Duplicate row for IRPProject also in Group-containment-1.md.
+- **Note:** 12 method-shaped (`setWaitDialogWatchdogValue`, `isActivelyManaged`, `getRoundtripShadowModel`, ...); `setGlobalConfiguration`/`setUseUniqueStereotypeAndRefCache` absent from every catalog: blocker unless Windows typelib regen resolves it.
+- [x] ① §1
+- [x] ② §2
+- [x] ③ §3 — baseline `validate_interface.py IRPProject --source authority`; reconcile every owned member; one pywin32 member per call; catalog-absent sites = blockers
+- [x] ④ §4
+- [x] ⑤ §5 — add/update integration coverage for owned behavior (mirrored test path); Windows = live run, macOS = collection-only noted
+- [x] ⑥ §6
+- [x] ⑦ §7 — class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPProject:` + deviation list-table)
+- [x] ⑧ §8 — `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
+
+</details>
