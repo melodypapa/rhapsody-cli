@@ -2,9 +2,12 @@
 
 from typing import cast
 
+import pytest
+
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPInstance, IRPRelation
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
@@ -16,16 +19,14 @@ def test_instance_is_a_relation() -> None:
     assert instance.name == "driver1"
 
 
-def test_instance_get_all_nested_elements_returns_collection() -> None:
+def test_instance_get_all_nested_elements_is_documented_unavailable() -> None:
     fake = make_fake_element("Instance")
-    nested = make_fake_element("Attribute", properties={"name": "speed"})
-    fake.getAllNestedElements.return_value = make_fake_collection([nested])
     instance = IRPInstance(fake)
 
-    nested_elements = instance.get_all_nested_elements()
+    with pytest.raises(NotImplementedError):
+        instance.get_all_nested_elements()
 
-    assert len(nested_elements) == 1
-    assert nested_elements[0].name == "speed"
+    fake.getAllNestedElements.assert_not_called()
 
 
 def test_instance_get_attribute_value_delegates_to_com() -> None:
@@ -106,12 +107,12 @@ def test_instance_add_relation_to_the_whole_wraps_result() -> None:
 
 
 def test_instance_get_instantiated_by_wraps_result() -> None:
-    fake = make_fake_element("Instance")
     op = make_fake_element("Operation", properties={"name": "create"})
-    fake.getInstantiatedBy.return_value = op
+    fake = make_fake_element("Instance", properties={"instantiatedBy": op})
     instance = IRPInstance(fake)
 
-    result = instance.get_instantiated_by()
+    result = instance.instantiated_by
+
     assert result.name == "create"
 
 
@@ -155,20 +156,22 @@ def test_instance_set_initializer_argument_value_delegates_to_com() -> None:
     fake.setInitializerArgumentValue.assert_called_once_with("x", "42")
 
 
-def test_instance_set_instantiated_by_unwraps_arg() -> None:
+def test_instance_set_instantiated_by_writes_com_property() -> None:
     fake = make_fake_element("Instance")
     op = make_fake_element("Operation", properties={"name": "create"})
     instance = IRPInstance(fake)
 
-    instance.set_instantiated_by(cast(IRPModelElement, IRPModelElement.wrap(op)))
+    instance.instantiated_by = cast(IRPOperation, IRPModelElement.wrap(op))
 
-    fake.setInstantiatedBy.assert_called_once_with(op)
+    assert fake.instantiatedBy is op
+    fake.setInstantiatedBy.assert_not_called()
 
 
-def test_instance_update_contained_diagrams_on_server_delegates_to_com() -> None:
-    fake = make_fake_element("Instance", updateContainedDiagramsOnServer=2)
+def test_instance_update_contained_diagrams_on_server_is_documented_unavailable() -> None:
+    fake = make_fake_element("Instance")
     instance = IRPInstance(fake)
 
-    assert instance.update_contained_diagrams_on_server(1) == 2
+    with pytest.raises(NotImplementedError):
+        instance.update_contained_diagrams_on_server(1)
 
-    fake.updateContainedDiagramsOnServer.assert_called_once_with(1)
+    fake.updateContainedDiagramsOnServer.assert_not_called()

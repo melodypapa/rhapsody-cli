@@ -234,6 +234,8 @@ layers. A row whose member no longer raises is stale and fails Step 8.
 | IRPUseCase | `add_event_reception_with_event` | `addEventReceptionWithEvent` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPUseCase | `set_is_behavior_overriden` | `isBehaviorOverriden` | runtime-stub | `setIsBehaviorOverriden` is absent from the catalog; the `isBehaviorOverriden` property is readable, but writes do not work for use cases (the IRPActor/IRPClass setters do); observed live; user approved on 2026-11-25. | 2026-11-25 |
 | IRPUseCase | `update_contained_diagrams_on_server` | `updateContainedDiagramsOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPInstance | `get_all_nested_elements` | `getAllNestedElements` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPInstance | `update_contained_diagrams_on_server` | `updateContainedDiagramsOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 
 `IRPCollection.add_graphical_item` had a `not-exposed` row here until 2026-11-25, when a live
 probe proved the pywin32 `addGraphicalElementItem` alias works with a real `IRPGraphElement`
