@@ -17,7 +17,8 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core import (
 )
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_misc import IRPComment, IRPConstraint, IRPEnumerationLiteral
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_enumeration_literal import IRPEnumerationLiteral
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_misc import IRPComment, IRPConstraint
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -198,10 +199,10 @@ def test_all_new_wrappers_exist() -> None:
         IRPStereotype,
         IRPTag,
     )
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_enumeration_literal import IRPEnumerationLiteral
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_misc import (
         IRPComment,
         IRPConstraint,
-        IRPEnumerationLiteral,
     )
 
     # All imports should succeed

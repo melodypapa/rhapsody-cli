@@ -1,6 +1,6 @@
 # Sync todo — `common` (group 1 of 1)
 
-**7 classes** · ✅ 3 archived · ⬜ 4 open
+**7 classes** · ✅ 4 archived · ⬜ 3 open
 
 One row per sync run. A step is ticked only when its evidence lands; a row is archived only after all eight steps pass. Binding rule: one pywin32-exposed COM member per call — `call_com(lambda: self._com.Name(...))` for methods, `get_com_property` / `set_com_property` for properties; catalog-absent sites are blockers, never blind migrations. Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/`, mirrored tests under `tests/{unit,integration}/models/com/telelogic/rhapsody/core/`.
 
@@ -25,7 +25,7 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | `irp_sys_ml_port_api_report` | IRPSysMLPort | `rhapsody_cli/models/elements/common/model_other_model.py` | 3 | 7 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 | 2 | `irp_classifier_role_api_report` | IRPClassifierRole | `rhapsody_cli/models/elements/common/model_other_model.py` | 1 | 8 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
-| 3 | `irp_enumeration_literal_api_report` | IRPEnumerationLiteral | `rhapsody_cli/models/elements/common/model_misc.py` | 1 | 2 | 1/8 (②) | ⬜ open |
+| 3 | `irp_enumeration_literal_api_report` | IRPEnumerationLiteral | `rhapsody_cli/models/elements/common/model_misc.py` | 1 | 2 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 | 4 | `irp_constraint_api_report` | IRPConstraint | `rhapsody_cli/models/elements/common/model_misc.py` | 1 | 1 | 1/8 (②) | ⬜ open |
 | 5 | `irp_comment_api_report` | IRPComment | `rhapsody_cli/models/elements/common/model_misc.py` | 0 | 0 | 1/8 (②) | ⬜ open |
 | 6 | `irp_type_remediation` | IRPType | — | — | — | 1/8 (②) | ⬜ open |
@@ -66,18 +66,18 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 </details>
 
 <details>
-<summary><code>irp_enumeration_literal_api_report</code> · IRPEnumerationLiteral · 1/8 steps · ⬜ open</summary>
+<summary><code>irp_enumeration_literal_api_report</code> · IRPEnumerationLiteral · 8/8 steps · ✅ archived</summary>
 
-- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
-- **Note:** usage 21 src / 11 test refs, 2 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
-- [ ] ① §1
-- [x] ② §2
-- [ ] ③ §3
-- [ ] ④ §4
-- [ ] ⑤ §5
-- [ ] ⑥ §6
-- [ ] ⑦ §7
-- [ ] ⑧ §8
+- **Status (2026-11-27):** verify_sync passes; all steps archived.
+- **Note:** usage 21 src / 11 test refs, 2 owned members. Split `IRPEnumerationLiteral` into `irp_enumeration_literal.py`; siblings stay in `irp_misc.py`. The JavaDoc `getValue`/`setValue` pair maps to the pywin32 `value` property.
+- [x] ① §1
+- [x] ② §2 — canonical module `irp_enumeration_literal.py`; exports and direct imports updated
+- [x] ③ §3 — 0 actionable deviations after binding migration
+- [x] ④ §4 — 3 fake-COM unit tests, 100% statements/branches
+- [x] ⑤ §5 — 1 integration test with a real enumeration literal; macOS = collection-only
+- [x] ⑥ §6 — `docs/requirements/com/telelogic/rhapsody/core/irp_enumeration_literal.md`
+- [x] ⑦ §7 — `docs/api/com/telelogic/rhapsody/core/irp_enumeration_literal.rst` + toctree entry
+- [x] ⑧ §8 — validator 0 deviations; verify_sync + --strict-getters green; unit suite 2196 passed; skill harness 90 passed; mypy/ruff/black clean
 
 </details>
 

@@ -56,6 +56,7 @@ if TYPE_CHECKING:
         IRPUseCaseDiagram,
     )
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagrams import IRPDiagram
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_enumeration_literal import IRPEnumerationLiteral
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_exception import IRPException
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_files import IRPASCIIFile, IRPControlledFile, IRPFile, IRPFileFragment
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flow import IRPFlow
@@ -105,7 +106,7 @@ if TYPE_CHECKING:
         IRPTransition,
         IRPTrigger,
     )
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_misc import IRPComment, IRPConstraint, IRPEnumerationLiteral
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_misc import IRPComment, IRPConstraint
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_module import IRPModule
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_node import IRPNode
@@ -169,7 +170,7 @@ _EXPORT_MODULES = {
     "IRPDestructionEvent": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interactions",
     "IRPDiagSynthAPI": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_codegen",
     "IRPDiagram": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagrams",
-    "IRPEnumerationLiteral": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_misc",
+    "IRPEnumerationLiteral": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_enumeration_literal",
     "IRPEvent": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interactions",
     "IRPEventReception": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interactions",
     "IRPException": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_exception",

@@ -4,26 +4,9 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCo
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_misc import (
     IRPComment,
     IRPConstraint,
-    IRPEnumerationLiteral,
 )
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
-
-
-def test_enumeration_literal_is_a_model_element() -> None:
-    fake = make_fake_element("EnumerationLiteral", properties={"name": "LITERAL1"})
-    literal = IRPEnumerationLiteral(fake)
-
-    assert isinstance(literal, IRPModelElement)
-    assert literal.name == "LITERAL1"
-
-
-def test_enumeration_literal_is_registered() -> None:
-    fake = make_fake_element("EnumerationLiteral", properties={"name": "LITERAL1"})
-
-    wrapped = IRPModelElement.wrap(fake)
-
-    assert isinstance(wrapped, IRPEnumerationLiteral)
 
 
 def test_comment_is_a_model_element() -> None:
@@ -56,21 +39,6 @@ def test_constraint_is_registered() -> None:
     wrapped = IRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, IRPConstraint)
-
-
-def test_enumeration_literal_get_value_returns_str() -> None:
-    fake = make_fake_element("EnumerationLiteral")
-    fake.getValue.return_value = "42"
-    literal = IRPEnumerationLiteral(fake)
-    assert literal.get_value() == "42"
-
-
-def test_enumeration_literal_set_value_delegates() -> None:
-    fake = make_fake_element("EnumerationLiteral")
-    fake.setValue.return_value = None
-    literal = IRPEnumerationLiteral(fake)
-    literal.set_value("99")
-    fake.setValue.assert_called_once_with("99")
 
 
 def test_constraint_get_constraints_by_me_returns_collection() -> None:

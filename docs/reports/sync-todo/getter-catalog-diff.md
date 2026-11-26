@@ -14,7 +14,7 @@ review rather than a failure.
 
 | Status | Count |
 | --- | --- |
-| match | 199 |
+| match | 200 |
 | catalog-missing | 0 |
 | shape-mismatch | 0 |
 | no-binding | 0 |
@@ -545,6 +545,18 @@ review rather than a failure.
 | `formal_instance` | `formalInstance` | property | property | match |
 | `referenced_sequence_diagram` | `referencedSequenceDiagram` | property | property | match |
 | `role_type` | `roleType` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPEnumerationLiteral
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `value` | `value` | property | property | match |
 
 ### Catalog properties with no matching Python property
 
