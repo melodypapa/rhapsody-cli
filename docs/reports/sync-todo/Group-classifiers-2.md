@@ -17,6 +17,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
 ## Rows
 
 - [x] irp_interface_item_remediation - IRPInterfaceItem
+  - Main status (2026-11-26): verify_sync passes; all steps archived.
   - Baseline: JavaDoc and report declare `com.telelogic.rhapsody.core`; seven owned members, zero validator deviations. Existing canonical wrapper/tests/exports verified.
   - [x] Section 1: member checklist published; both getter matrix rows include fixture, relationship, identity/value assertion, test, and package cleanup.
   - [x] Section 2: canonical wrapper, mirrored tests, imports/exports, and registration verified; report package agrees with JavaDoc.
@@ -28,6 +29,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [x] Section 8: report regenerated; `validate_interface.py`, `verify_sync.py`, and `--strict-getters` pass; sync self-tests 83 passed; `ruff`, `black`, and `mypy` clean; baseline → final counts: unit 2,171 → 2,172 passed, integration 449 → 449 passed. Integration exception-catch list: none. Commit is recorded by the commit that archives this row.
   - Members: `addArgument(String)` matched; `addArgumentBeforePosition(String, int)` matched with documented 1-based → COM 0-based conversion; `getArguments()` → `arguments` matched/property; `getSignature()` → `signature` matched/property; `getSignatureNoArgNames()` matched; `getSignatureNoArgTypes()` matched; `matchOnSignature(IRPInterfaceItem)` matched.
 - [x] irp_classifier_api_report (IRPClassifier · IRPClassifier · models/elements/classifiers/model_classifier.py · 20 sites)
+  - Main status (2026-11-26): verify_sync passes; all steps archived. Duplicate row for IRPClassifier also in Group-classifiers-1.md.
   - Note: 3 method-shaped (`getAttributesIncludingBases`, `getInterfaceItemsIncludingBases`, `getRelationsIncludingBases`), rest property-shaped.
   - [x] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
   - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/`
@@ -38,6 +40,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [x] Step 7 — §7 RST update: class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPClassifier:` + deviation list-table)
   - [x] Step 8 — §8 verify and report: `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
 - [x] irp_operation_api_report (IRPOperation · IRPOperation · models/elements/classifiers/model_operation.py · 25 sites)
+  - Main status (2026-11-26): verify_sync passes; all steps archived. Duplicate row for IRPOperation also in Group-classifiers-1.md.
   - Note: 3 method-shaped (`setReturnTypeDeclaration`, `getReturnTypeDeclaration`, `getImplementationSignature`); `isAbstract`/`isStatic`/`isVirtual` are IRPOperation **properties** (arg2 wins — unlike IRPClass's method-exposed `getIsFinal`); `operation_action.py` facade stays untouched.
   - [x] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
   - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/`
@@ -48,6 +51,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [x] Step 7 — §7 RST update: class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPOperation:` + deviation list-table)
   - [x] Step 8 — §8 verify and report: `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
 - [x] irp_association_class_api_report (IRPAssociationClass · IRPAssociationClass · models/elements/classifiers/model_association_class.py · 3 sites)
+  - Main status (2026-11-26): verify_sync passes; all steps archived. Duplicate row for IRPAssociationClass also in Group-classifiers-1.md.
   - Note: integration-test ownership rules apply — assert only `get_end1`/`get_end2`/`get_is_class`/`set_is_class`.
   - [x] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
   - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/`
@@ -58,6 +62,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [x] Step 7 — §7 RST update: class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPAssociationClass:` + deviation list-table)
   - [x] Step 8 — §8 verify and report: `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
 - [x] irp_interface_item_api_report (IRPInterfaceItem · IRPInterfaceItem · models/elements/classifiers/model_interface_item.py · 4 sites)
+  - Main status (2026-11-26): verify_sync passes; all steps archived.
   - Note: 2 method-shaped (`getSignatureNoArgNames`, `getSignatureNoArgTypes`).
   - [x] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
   - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/`
@@ -68,6 +73,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [x] Step 7 — §7 RST update: class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPInterfaceItem:` + deviation list-table)
   - [x] Step 8 — §8 verify and report: `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
 - [x] irp_usecase_api_report (IRPUseCase · IRPUseCase · models/elements/classifiers/model_usecase.py · 4 sites)
+  - Main status (2026-11-26): verify_sync passes; all steps archived. Duplicate row for IRPUseCase also in Group-classifiers-1.md.
   - Note: RPExtensionPoint lives in the same module with 0 legacy sites.
   - [x] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
   - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/`

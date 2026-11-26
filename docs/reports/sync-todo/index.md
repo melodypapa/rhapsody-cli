@@ -45,8 +45,8 @@ were mapped to their legacy category by class name. All 146 tracked rows are pre
 | [Group-activity-1.md](Group-activity-1.md) | `activity` | 10 | ⬜ 10 open |
 | [Group-activity-2.md](Group-activity-2.md) | `activity` | 2 | ⬜ 2 open |
 | [Group-application-1.md](Group-application-1.md) | `application` | 1 | ✅ all archived |
-| [Group-classifiers-1.md](Group-classifiers-1.md) | `classifiers` | 10 | ⬜ 10 open |
-| [Group-classifiers-2.md](Group-classifiers-2.md) | `classifiers` | 6 | ⬜ 1 open · ✅ 5 archived |
+| [Group-classifiers-1.md](Group-classifiers-1.md) | `classifiers` | 10 | ⬜ 9 open · ✅ 1 archived |
+| [Group-classifiers-2.md](Group-classifiers-2.md) | `classifiers` | 6 | ✅ all archived |
 | [Group-common-1.md](Group-common-1.md) | `common` | 7 | ⬜ 6 open · ✅ 1 archived |
 | [Group-containment-1.md](Group-containment-1.md) | `containment` | 10 | ⬜ 9 open · ✅ 1 archived |
 | [Group-containment-2.md](Group-containment-2.md) | `containment` | 1 | ✅ all archived |
@@ -171,9 +171,10 @@ variants under the same property and fails Step 8 unless at least one test in th
 identity/value (a weak empty-state test is accepted only beside a populated sibling). This makes the
 previously unscanned `test_get_*` tests visible. `IRPType`'s four getters and `IRPModelElement`'s
 `association_classes`, `references`, `guid`, and `binary_id` were fixed with JavaDoc-backed populated
-fixtures. `IRPClassifier` (three rows above) and `IRPModelElement.user_defined_meta_class` remain open
-getter blockers, so Step 8 reports getter failures for those two interfaces until a Windows + Rhapsody
-run settles the fixtures.
+fixtures. IRPClassifier's populated fixtures for `source_artifacts`, `sequence_diagrams`, and `links`
+were verified live on 2026-11-26 via the documented inherited `add_new_aggr` factory, closing its three
+getter blockers. `IRPModelElement.user_defined_meta_class` remains an open getter blocker until a
+Windows + Rhapsody run settles its fixture.
 
 The same pass replaced 21 `assert pkg.add_* (...) is not None` factory checks in `test_irp_package.py`
 and the `add_package`/`add_component`/`add_profile` checks in `test_irp_project.py` with name-identity
