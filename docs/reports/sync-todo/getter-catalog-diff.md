@@ -14,12 +14,12 @@ review rather than a failure.
 
 | Status | Count |
 | --- | --- |
-| match | 187 |
+| match | 184 |
 | catalog-missing | 0 |
 | shape-mismatch | 0 |
 | no-binding | 0 |
 | stub | 2 |
-| catalog-only | 0 |
+| catalog-only | 1 |
 
 ## IRPApplication
 
@@ -288,22 +288,19 @@ review rather than a failure.
 
 | Python getter | COM member | Binding shape | Catalog shape | Status |
 | --- | --- | --- | --- | --- |
-| `packages` | `packages` | property | property | match |
 | `components` | `components` | property | property | match |
-| `nodes` | `nodes` | property | property | match |
 | `active_configuration` | `activeConfiguration` | property | property | match |
 | `active_component` | `activeComponent` | property | property | match |
 | `all_stereotypes` | `allStereotypes` | property | property | match |
 | `profiles` | `profiles` | property | property | match |
 | `cg_simplified_model_package` | `cgSimplifiedModelPackage` | property | property | match |
 | `default_directory_scheme` | `defaultDirectoryScheme` | property | property | match |
-| `use_unique_stereotype_and_ref_cache` | `UseUniqueStereotypeAndRefCache` | property | property | match |
 
 ### Catalog properties with no matching Python property
 
 | Catalog property | Derived Python name | Status |
 | --- | --- | --- |
-| — | — | — |
+| `UseUniqueStereotypeAndRefCache` | `use_unique_stereotype_and_ref_cache` | catalog-only |
 
 ## IRPType
 

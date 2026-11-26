@@ -1,5 +1,4 @@
 Elements
-========
 
 .. automodule:: rhapsody_cli.models.elements
    :members:
@@ -51,29 +50,26 @@ Java Package API Reference
    com/telelogic/rhapsody/core/irp_action
    com/telelogic/rhapsody/core/irp_actor
    com/telelogic/rhapsody/core/irp_application
-   com/telelogic/rhapsody/core/irp_association_class
    com/telelogic/rhapsody/core/irp_argument
+   com/telelogic/rhapsody/core/irp_association_class
    com/telelogic/rhapsody/core/irp_attribute
    com/telelogic/rhapsody/core/irp_call_operation
    com/telelogic/rhapsody/core/irp_class
    com/telelogic/rhapsody/core/irp_classifier
-   com/telelogic/rhapsody/core/irp_context_specification
-   com/telelogic/rhapsody/core/irp_flow
-   com/telelogic/rhapsody/core/irp_flow_item
-   com/telelogic/rhapsody/core/irp_flowchart
+   com/telelogic/rhapsody/core/irp_collection
+   com/telelogic/rhapsody/core/irp_dependency
    com/telelogic/rhapsody/core/irp_instance
    com/telelogic/rhapsody/core/irp_interface_item
    com/telelogic/rhapsody/core/irp_model_element
-   com/telelogic/rhapsody/core/irp_object_node
+   com/telelogic/rhapsody/core/irp_module
    com/telelogic/rhapsody/core/irp_operation
    com/telelogic/rhapsody/core/irp_package
    com/telelogic/rhapsody/core/irp_port
    com/telelogic/rhapsody/core/irp_project
-   com/telelogic/rhapsody/core/irp_send_action
+   com/telelogic/rhapsody/core/irp_relation
    com/telelogic/rhapsody/core/irp_statechart
    com/telelogic/rhapsody/core/irp_stereotype
    com/telelogic/rhapsody/core/irp_swimlane
    com/telelogic/rhapsody/core/irp_type
-   com/telelogic/rhapsody/core/irp_use_case
-   com/telelogic/rhapsody/core/irp_collection
    com/telelogic/rhapsody/core/irp_unit
+   com/telelogic/rhapsody/core/irp_use_case

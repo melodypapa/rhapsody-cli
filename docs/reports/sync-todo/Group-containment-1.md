@@ -29,9 +29,9 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 | 4 | `irp_node_api_report` | IRPNode | `rhapsody_cli/models/elements/containment/model_node.py` | 2 | 6 | 1/8 (②) | ⬜ open |
 | 5 | `irp_component_instance_api_report` | IRPComponentInstance | `rhapsody_cli/models/elements/containment/model_component_instance.py` | 0 | 3 | 1/8 (②) | ⬜ open |
 | 6 | `irp_profile_api_report` | IRPProfile | `rhapsody_cli/models/elements/containment/model_profile.py` | 0 | 0 | 1/8 (②) | ⬜ open |
-| 7 | `irp_module_api_report` | IRPModule | `rhapsody_cli/models/elements/containment/model_module.py` | 0 | 0 | 1/8 (②) | ⬜ open |
+| 7 | `irp_module_api_report` | IRPModule | `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_module.py` | 0 | 0 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ evidenced |
 | 8 | `irp_package_remediation` | IRPPackage | — | — | 69 | 5/8 (②③④⑥⑦) | ⬜ open |
-| 9 | `irp_project_remediation` | IRPProject | — | — | — | 1/8 (②) | ⬜ open |
+| 9 | `irp_project_remediation` | IRPProject | — | — | — | 6/8 (①②③④⑥⑦) | ⬜ open |
 | 10 | `irp_package_api_report` | IRPPackage | `models/elements/containment/model_package.py` | — | — | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 
 ## Row details
@@ -133,18 +133,18 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 </details>
 
 <details>
-<summary><code>irp_module_api_report</code> · IRPModule · 1/8 steps · ⬜ open</summary>
+<summary><code>irp_module_api_report</code> · IRPModule · 8/8 steps evidenced · ✅ evidenced</summary>
 
-- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Status (2026-11-26):** verify_sync passes; validator 0 actionable. IRPModule declares no own members (extends IRPInstance); its only owned behavior, live registration via `IRPPackage.add_module`, is covered by `tests/integration/models/com/telelogic/rhapsody/core/test_irp_module.py`.
 - **Note:** usage 8 src / 8 test refs, 0 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
-- [ ] ① §1
-- [x] ② §2
-- [ ] ③ §3
-- [ ] ④ §4
-- [ ] ⑤ §5
-- [ ] ⑥ §6
-- [ ] ⑦ §7
-- [ ] ⑧ §8
+- [x] ① §1 — no own members; inherited members owned by IRPInstance/IRPRelation/IRPUnit/IRPModelElement.
+- [x] ② §2 — canonical package, mirrored unit/integration tests, RST toctree entry; `from __future__` header added.
+- [x] ③ §3 — typelib catalog entry merged (inherited surface only); validator 0 actionable.
+- [x] ④ §4 — unit `test_irp_module.py` 2 passed, `irp_module.py` 6 statements / 0 branches, 100.00%.
+- [x] ⑤ §5 — live `add_module` integration test passes (1 passed).
+- [x] ⑥ §6 — `docs/requirements/com/telelogic/rhapsody/core/irp_module.md` holds SWR_ELEM_00041.
+- [x] ⑦ §7 — `docs/api/com/telelogic/rhapsody/core/irp_module.rst` added to the toctree.
+- [x] ⑧ §8 — `verify_sync.py IRPModule` and `--strict-getters` pass; skill harness 90 passed; unit suite 2201 passed; ruff/black/mypy clean.
 
 </details>
 
@@ -165,18 +165,18 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 </details>
 
 <details>
-<summary><code>irp_project_remediation</code> · IRPProject · 1/8 steps · ⬜ open</summary>
+<summary><code>irp_project_remediation</code> · IRPProject · 6/8 steps · ⬜ open</summary>
 
-- **Status (2026-11-26):** verify_sync passes; 7/8 steps still open. Duplicate row for IRPProject also in Group-containment-2.md.
-- **Baseline:** 21 arity mismatches; 24 disallowed integration exception assertions; 9 read-only and 1 writable property-shape conversions; 7 COM-only extensions (D2 default: retain and document).
-- [ ] ① §1 — member checklist and getter matrix published.
-- [x] ② §2
-- [ ] ③ §3 — all 21 signatures, 9 read properties plus the writable property, and 7 extension dispositions reconciled.
-- [ ] ④ §4 — fake-COM tests first; full unit suite green; irp_project.py at 100% statements/branches.
-- [ ] ⑤ §5 — project getters establish live project state and assert returned identity/value; all 24 exception sites resolved or blocked.
-- [ ] ⑥ §6 — irp_project.md checked/updated.
-- [ ] ⑦ §7 — irp_project.rst checked/updated for every public member.
-- [ ] ⑧ §8 — generated report, verify_sync, gates, live counts, and blockers recorded.
+- **Status (2026-11-26):** validator reports zero actionable deviations; five JavaDoc-only pywin32-absent methods are documented stubs. Keep open for live preconditions listed below.
+- **Baseline:** 2201 unit tests and 493 live integration tests passed before this sync; the validator had 12 actionable deviations.
+- [x] ① §1 — direct JavaDoc inventory and owned getter matrix are recorded in the API report and getter matrix; inherited package members are not child-owned.
+- [x] ② §2 — canonical wrapper/test/doc paths and `IRPPackage` inheritance verified.
+- [x] ③ §3 — all 72 Java members reconciled; zero actionable deviations; exact signatures corrected and six duplicate package-member overrides removed.
+- [x] ④ §4 — focused fake-COM suite passed; `irp_project.py` coverage is 100% (162 statements, 116 branches); full unit suite 2204 passed.
+- [ ] ⑤ §5 — full live integration suite 489 passed. Keep open: active component/configuration reads and string setters fault on this Rhapsody build; no populated project-root node fixture or simplified-model package exists; deprecated Design Manager methods lack a supported server fixture. Other documented environment blockers remain in the P0 table.
+- [x] ⑥ §6 — `docs/requirements/com/telelogic/rhapsody/core/irp_project.md` updated with inherited members, exact bindings, stubs, and live blockers.
+- [x] ⑦ §7 — `docs/api/com/telelogic/rhapsody/core/irp_project.rst` documents the current public wrapper surface, including `save`, resolve-on-demand stubs, and deprecated bindings.
+- [ ] ⑧ §8 — validator, `verify_sync`, strict getter/inherited checks pass; Sphinx succeeds with 133 existing repository-wide warnings. Do not archive while the live preconditions in §5 remain open.
 
 </details>
 
