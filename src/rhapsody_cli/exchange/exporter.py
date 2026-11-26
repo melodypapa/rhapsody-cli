@@ -158,7 +158,7 @@ class RhapsodyExporter(RhapsodyModelHelper):
 
     def _export_dependency(self, dep: IRPModelElement) -> Dict[str, object]:
         spec: Dict[str, object] = {"name": dep.name, "type": "Dependency"}
-        target = self._safe_get(dep, "get_depends_on")
+        target = self._safe_prop(dep, "depends_on")
         target_name = self._classifier_name(target)
         if target_name:
             spec["depends_on"] = target_name

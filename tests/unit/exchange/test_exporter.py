@@ -399,7 +399,7 @@ class TestExportDependency:
         dep = MagicMock()
         dep.meta_class = "Dependency"
         dep.name = "dep1"
-        dep.get_depends_on.return_value = target
+        dep.depends_on = target
         dep.stereotypes = []
         dep.all_tags = []
         exporter = _make_exporter()
@@ -414,7 +414,7 @@ class TestExportDependency:
         dep = MagicMock()
         dep.meta_class = "Dependency"
         dep.name = "dep1"
-        dep.get_depends_on.return_value = None
+        dep.depends_on = None
         dep.stereotypes = []
         dep.all_tags = []
         exporter = _make_exporter()

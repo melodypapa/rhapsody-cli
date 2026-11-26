@@ -359,8 +359,8 @@ class TestApplyDependencyExtras:
 
         importer._apply_dependency_extras(dependency, {"depends_on": "OtherClass"}, parent)
 
-        dependency.set_dependent.assert_called_once_with(parent)
-        dependency.set_depends_on.assert_called_once_with(target)
+        assert dependency.dependent is parent
+        assert dependency.depends_on is target
 
     def test_warns_when_depends_on_unresolvable(self) -> None:
         project = MagicMock()
@@ -371,11 +371,14 @@ class TestApplyDependencyExtras:
         parent = MagicMock()
         parent.name = "MyClass"
 
+        sentinel = object()
+        dependency.depends_on = sentinel
+
         importer._apply_dependency_extras(dependency, {"depends_on": "Missing"}, parent)
 
-        dependency.set_depends_on.assert_not_called()
-        # set_dependent still called (source is always the parent)
-        dependency.set_dependent.assert_called_once_with(parent)
+        assert dependency.depends_on is sentinel
+        # dependent is still set (source is always the parent)
+        assert dependency.dependent is parent
 
 
 class TestApplyGeneralizationExtras:

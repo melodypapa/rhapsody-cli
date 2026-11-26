@@ -208,12 +208,12 @@ class RhapsodyImporter(RhapsodyModelHelper):
 
     def _apply_dependency_extras(self, dependency: IRPModelElement, spec: Dict[str, object], parent: IRPModelElement) -> None:
         """Apply Dependency-specific fields: source (parent) and target (depends_on)."""
-        dependency.set_dependent(parent)  # type: ignore[attr-defined]
+        dependency.dependent = parent  # type: ignore[attr-defined]
         if "depends_on" in spec:
             depends_on = cast(str, spec["depends_on"])
             target = self.resolve_classifier(depends_on)
             if target is not None:
-                dependency.set_depends_on(target)  # type: ignore[attr-defined]
+                dependency.depends_on = target  # type: ignore[attr-defined]
             else:
                 logger.warning(
                     "Cannot resolve depends_on '%s' for dependency '%s'",
