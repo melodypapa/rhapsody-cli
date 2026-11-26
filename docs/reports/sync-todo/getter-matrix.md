@@ -293,3 +293,9 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | `relation_type` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_relation.py::test_relation_type` | identity/value | OK |
 | `visibility` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_relation.py::test_visibility` | identity/value | OK |
 
+## IRPDependency
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `dependent` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_dependency.py::test_dependent` | identity/value | OK |
+| `depends_on` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_dependency.py::test_depends_on` | identity/value | OK |
