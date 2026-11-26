@@ -74,7 +74,7 @@ class IRPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::addTextBox(java.lang.String text, int xPosition, int yPosition, int nWidth, int nHeight)
         """
-        return cast("IRPGraphElement", self.wrap(self.call_com(lambda: self._com.addTextBox(text, x_position, y_position, width, height))))
+        return cast("IRPGraphElement", self.wrap(self.call_com(lambda: self._com.AddTextBox(text, x_position, y_position, width, height))))
 
     def get_custom_views(self) -> IRPCollection:
         """Gets the custom views that were applied to this diagram view.

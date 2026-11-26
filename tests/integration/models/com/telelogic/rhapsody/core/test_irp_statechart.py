@@ -48,7 +48,7 @@ class TestIRPStatechartIntegration:
 
             shape = statechart.add_free_shape_by_type("Polygon", x_points, y_points)
 
-            assert shape._com in list(statechart.graphical_elements)
+            assert shape in list(statechart.graphical_elements)
         finally:
             package.delete_from_project()
 
@@ -64,7 +64,7 @@ class TestIRPStatechartIntegration:
 
             image = statechart.add_image(str(image_path), 20, 20, 40, 40)
 
-            assert image._com in list(statechart.graphical_elements)
+            assert image in list(statechart.graphical_elements)
         finally:
             package.delete_from_project()
 
@@ -81,7 +81,7 @@ class TestIRPStatechartIntegration:
 
             edge = statechart.add_new_edge_for_element(transition, source_node, 60, 40, target_node, 240, 40)
 
-            assert edge._com in list(statechart.graphical_elements)
+            assert edge in list(statechart.graphical_elements)
         finally:
             package.delete_from_project()
 
@@ -90,7 +90,7 @@ class TestIRPStatechartIntegration:
         try:
             node = statechart.add_new_node_by_type("Note", 20, 20, 80, 50)
 
-            assert node._com in list(statechart.graphical_elements)
+            assert node in list(statechart.graphical_elements)
             assert statechart.get_elements_in_diagram().count > 0
         finally:
             package.delete_from_project()
@@ -104,7 +104,7 @@ class TestIRPStatechartIntegration:
 
             node = statechart.add_new_node_for_element(created_state, 20, 20, 80, 50)
 
-            assert node._com in list(statechart.graphical_elements)
+            assert node in list(statechart.graphical_elements)
             assert created_state in list(statechart.get_elements_in_diagram())
         finally:
             package.delete_from_project()
@@ -114,7 +114,7 @@ class TestIRPStatechartIntegration:
         try:
             text_box = statechart.add_text_box("Statechart integration note", 20, 20, 180, 60)
 
-            assert text_box._com in list(statechart.graphical_elements)
+            assert text_box in list(statechart.graphical_elements)
         finally:
             package.delete_from_project()
 
@@ -220,7 +220,7 @@ class TestIRPStatechartIntegration:
         try:
             node = statechart.add_new_node_by_type("Note", 20, 20, 80, 50)
 
-            assert node._com in list(statechart.graphical_elements)
+            assert node in list(statechart.graphical_elements)
         finally:
             package.delete_from_project()
 
