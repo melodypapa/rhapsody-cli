@@ -17,7 +17,7 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProje
 
 
 @pytest.mark.integration
-class TestRPAttributeIntegration:
+class TestIRPAttributeIntegration:
     """Integration tests for IRPAttribute with real Rhapsody COM API."""
 
     @staticmethod

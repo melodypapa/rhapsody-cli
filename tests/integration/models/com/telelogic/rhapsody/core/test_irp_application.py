@@ -96,6 +96,8 @@ class TestIRPApplicationIntegration:
         active = rhapsody_app.active_project()
         assert active == created
         created.delete_from_project()
+        # The deletion itself dirties the model; save again before the switch.
+        rhapsody_app.save_all()
         reopened = rhapsody_app.open_project(str(TEST_PROJECT_DIR / "TestProject.rpyx"))
         assert reopened == rhapsody_app.active_project()
         assert reopened.name == TEST_PROJECT_NAME
@@ -225,6 +227,8 @@ class TestIRPApplicationIntegration:
         assert rhapsody_app.add_selected_to_favorites() is None  # type: ignore[func-returns-value]
 
     def test_allow_browser_refresh(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
+        # allowBrowserRefresh exposes no getter, so the flag cannot be restored;
+        # session-scoped side effects are accepted for these toggle-only members.
         assert rhapsody_app.allow_browser_refresh(0) is None  # type: ignore[func-returns-value]
 
     def test_allow_ge_refresh(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
@@ -245,7 +249,11 @@ class TestIRPApplicationIntegration:
         assert isinstance(result, int)
 
     def test_set_application_status(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
-        assert rhapsody_app.set_application_status(0) is None  # type: ignore[func-returns-value]
+        original_status = rhapsody_app.get_application_status()
+        try:
+            assert rhapsody_app.set_application_status(0) is None  # type: ignore[func-returns-value]
+        finally:
+            rhapsody_app.set_application_status(original_status)
 
     def test_apply_new_terms_profile(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
         assert rhapsody_app.apply_new_terms_profile("0") is None  # type: ignore[func-returns-value]
@@ -303,7 +311,11 @@ class TestIRPApplicationIntegration:
         assert isinstance(result, int)
 
     def test_set_helper_status(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
-        assert rhapsody_app.set_helper_status("0", 0) is None  # type: ignore[func-returns-value]
+        original_status = rhapsody_app.get_helper_status("0")
+        try:
+            assert rhapsody_app.set_helper_status("0", 0) is None  # type: ignore[func-returns-value]
+        finally:
+            rhapsody_app.set_helper_status("0", original_status)
 
     def test_get_list_of_factory_properties(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
         result = rhapsody_app.get_list_of_factory_properties()

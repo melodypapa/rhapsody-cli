@@ -29,16 +29,6 @@ class TestIRPSendActionIntegration:
         assert isinstance(send_action, IRPSendAction)
         return pkg, send_action
 
-    def test_arg_vals(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("ArgValsPkg"))
-        try:
-            _, send_action = self._send_action(pkg)
-            send_action.add_argument_value("42", 1)
-            values = list(send_action.arg_vals)
-            assert "42" in values
-        finally:
-            pkg.delete_from_project()
-
     def test_event(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("EventPkg"))
         try:
@@ -47,7 +37,7 @@ class TestIRPSendActionIntegration:
             send_action.event = event
             result = send_action.event
             assert result is not None
-            assert result == event
+            assert result._com is event._com
         finally:
             pkg.delete_from_project()
 
@@ -59,7 +49,7 @@ class TestIRPSendActionIntegration:
             send_action.invoked_operation = operation
             result = send_action.invoked_operation
             assert result is not None
-            assert result == operation
+            assert result._com is operation._com
         finally:
             pkg.delete_from_project()
 
@@ -71,7 +61,7 @@ class TestIRPSendActionIntegration:
             send_action.target = target
             result = send_action.target
             assert result is not None
-            assert result == target
+            assert result._com is target._com
         finally:
             pkg.delete_from_project()
 

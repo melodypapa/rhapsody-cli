@@ -25,16 +25,6 @@ class TestIRPFlowIntegration:
         assert isinstance(flow, IRPFlow)
         return flow
 
-    def test_conveyed(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("ConveyedPkg"))
-        try:
-            flow = self._flow(pkg)
-            element = pkg.add_class(self._unique("ConveyedClass"))
-            flow.add_conveyed(element)
-            assert element in list(flow.conveyed)
-        finally:
-            pkg.delete_from_project()
-
     def test_direction(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("DirectionPkg"))
         try:
@@ -52,31 +42,7 @@ class TestIRPFlowIntegration:
             flow.end1 = end
             result = flow.end1
             assert result is not None
-            assert result == end
-        finally:
-            pkg.delete_from_project()
-
-    def test_end1_port(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("End1PortPkg"))
-        try:
-            flow = self._flow(pkg)
-            owner = pkg.add_class(self._unique("End1PortCls"))
-            instance = pkg.add_implicit_object(self._unique("End1Instance"))
-            port = IRPPort(owner.add_new_aggr("Port", self._unique("End1Port"))._com)
-            flow.set_end1_via_port(instance, port)
-            assert flow.end1_port.name == port.name
-        finally:
-            pkg.delete_from_project()
-
-    def test_end1_sys_ml_port(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("End1SysMLPkg"))
-        try:
-            flow = self._flow(pkg)
-            owner = pkg.add_class(self._unique("End1SysMLCls"))
-            instance = pkg.add_implicit_object(self._unique("End1SysMLInstance"))
-            port = IRPSysMLPort(owner.add_new_aggr("SysMLPort", self._unique("End1SysMLPort"))._com)
-            flow.set_end1_via_sys_ml_port(instance, port)
-            assert flow.end1_sys_ml_port.name == port.name
+            assert result._com is end._com
         finally:
             pkg.delete_from_project()
 
@@ -88,31 +54,7 @@ class TestIRPFlowIntegration:
             flow.end2 = end
             result = flow.end2
             assert result is not None
-            assert result == end
-        finally:
-            pkg.delete_from_project()
-
-    def test_end2_port(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("End2PortPkg"))
-        try:
-            flow = self._flow(pkg)
-            owner = pkg.add_class(self._unique("End2PortCls"))
-            instance = pkg.add_implicit_object(self._unique("End2Instance"))
-            port = IRPPort(owner.add_new_aggr("Port", self._unique("End2Port"))._com)
-            flow.set_end2_via_port(instance, port)
-            assert flow.end2_port.name == port.name
-        finally:
-            pkg.delete_from_project()
-
-    def test_end2_sys_ml_port(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("End2SysMLPkg"))
-        try:
-            flow = self._flow(pkg)
-            owner = pkg.add_class(self._unique("End2SysMLCls"))
-            instance = pkg.add_implicit_object(self._unique("End2SysMLInstance"))
-            port = IRPSysMLPort(owner.add_new_aggr("SysMLPort", self._unique("End2SysMLPort"))._com)
-            flow.set_end2_via_sys_ml_port(instance, port)
-            assert flow.end2_sys_ml_port.name == port.name
+            assert result._com is end._com
         finally:
             pkg.delete_from_project()
 

@@ -1,4 +1,4 @@
-"""Integration tests for IRPProject and IRPPackage with live Rhapsody COM API.
+"""Integration tests for IRPProject with live Rhapsody COM API.
 
 These tests require a running Rhapsody instance with an open project.
 """
@@ -16,7 +16,7 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProje
 
 
 @pytest.mark.integration
-class TestRPProjectIntegration:
+class TestIRPProjectIntegration:
     """Integration tests for IRPProject with real Rhapsody COM API."""
 
     @staticmethod
@@ -40,14 +40,12 @@ class TestRPProjectIntegration:
         assert test_project.save() is None  # type: ignore[func-returns-value]
 
     def test_use_unique_stereotype_and_ref_cache_setter_returns_none(self, test_project: IRPProject) -> None:
-        descriptor = vars(IRPProject)["use_unique_stereotype_and_ref_cache"]
-        assert isinstance(descriptor, property)
-        setter = descriptor.fset
-        assert setter is not None
+        original = test_project.use_unique_stereotype_and_ref_cache
         try:
-            assert setter(test_project, 1) is None
+            test_project.use_unique_stereotype_and_ref_cache = 1
+            assert test_project.use_unique_stereotype_and_ref_cache == 1
         finally:
-            assert setter(test_project, 0) is None
+            test_project.use_unique_stereotype_and_ref_cache = original
 
     def test_all_stereotypes(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("StereoPkg"))
@@ -108,7 +106,14 @@ class TestIRPProjectGenerated:
                 pkg.delete_from_project()
 
     def test_find_component(self, test_project: IRPProject) -> None:
-        assert test_project.find_component(self._unique("missing")) is None
+        created = test_project.add_component(self._unique("FindableComp"))
+        try:
+            found = test_project.find_component(created.name)
+            assert found is not None
+            assert found == created
+            assert test_project.find_component(self._unique("missing")) is None
+        finally:
+            created.delete_from_project()
 
     def test_components(self, test_project: IRPProject) -> None:
         created = test_project.add_component(self._unique("GetterComp"))
@@ -118,7 +123,15 @@ class TestIRPProjectGenerated:
             created.delete_from_project()
 
     def test_find_element_by_guid(self, test_project: IRPProject) -> None:
-        assert test_project.find_element_by_guid(self._unique("missing")) is None
+        pkg = test_project.add_package(self._unique("GuidPkg"))
+        try:
+            created = pkg.add_class(self._unique("GuidCls"))
+            found = test_project.find_element_by_guid(created.guid)
+            assert found is not None
+            assert found == created
+            assert test_project.find_element_by_guid(self._unique("missing")) is None
+        finally:
+            pkg.delete_from_project()
 
     def test_add_component(self, test_project: IRPProject) -> None:
         pkg = None

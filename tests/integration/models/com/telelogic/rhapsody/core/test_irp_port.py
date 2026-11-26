@@ -3,7 +3,6 @@
 import uuid
 
 import pytest
-from win32com.client import CastTo
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class import IRPClass
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
@@ -31,9 +30,10 @@ class TestIRPPortIntegration:
         pkg = self._create_package(test_project, self._unique("PortPkg"))
         test_class = pkg.add_class(self._unique("PortCls"))
         try:
-            # add_new_aggr returns an IRPModelElement COM interface; QueryInterface
-            # to IRPPort so its owned properties are reachable (no mock bindings).
-            port = IRPPort(CastTo(test_class.add_new_aggr("Port", self._unique("port"))._com, "IRPPort"))
+            # The wrapper resolves member names via dynamic dispatch, so the
+            # IRPModelElement-typed dispatch from add_new_aggr is wrapped
+            # directly (no CastTo needed; see test_irp_flow.py for the same pattern).
+            port = IRPPort(test_class.add_new_aggr("Port", self._unique("port"))._com)
             assert isinstance(port, IRPPort)
             assert port.is_behavioral in (0, 1)
             assert port.is_reversed in (0, 1)
@@ -59,7 +59,7 @@ class TestIRPPortIntegration:
         pkg = self._create_package(test_project, self._unique("IfPortPkg"))
         test_class = pkg.add_class(self._unique("IfPortCls"))
         try:
-            port = IRPPort(CastTo(test_class.add_new_aggr("Port", self._unique("ifPort"))._com, "IRPPort"))
+            port = IRPPort(test_class.add_new_aggr("Port", self._unique("ifPort"))._com)
             assert isinstance(port, IRPPort)
             # The collection getters return real IRPCollection objects. The
             # add/remove interface mutators are rejected by this Rhapsody build

@@ -45,8 +45,7 @@ class TestIRPClassIntegration:
             generalizations_after = list(child.generalizations)
             assert not any(gen.get_base_class() == parent for gen in generalizations_after)
         finally:
-            child.delete_from_project()
-            parent.delete_from_project()
+            pkg.delete_from_project()
 
     def test_constructor_destructor(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("CtorPkg")
@@ -62,7 +61,7 @@ class TestIRPClassIntegration:
             assert ctor in operations
             assert dtor in operations
         finally:
-            test_class.delete_from_project()
+            pkg.delete_from_project()
 
     def test_set_is_abstract_raises_not_implemented(self, test_project: IRPProject) -> None:
         """IRPClass.set_is_abstract is marked unimplemented: Rhapsody2.Application.1's automation
@@ -81,7 +80,7 @@ class TestIRPClassIntegration:
             with pytest.raises(NotImplementedError):
                 test_class.is_abstract = True
         finally:
-            test_class.delete_from_project()
+            pkg.delete_from_project()
 
     def test_type_management(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("TypePkg")
@@ -94,7 +93,7 @@ class TestIRPClassIntegration:
             assert isinstance(added_type, IRPType)
             added_type.delete_from_project()
         finally:
-            test_class.delete_from_project()
+            pkg.delete_from_project()
 
     def test_add_and_delete_reception(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("RecPkg")
@@ -111,7 +110,7 @@ class TestIRPClassIntegration:
             items_after = [i.name for i in test_class.interface_items]
             assert reception_name not in items_after
         finally:
-            test_class.delete_from_project()
+            pkg.delete_from_project()
 
     def test_add_event_reception(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("EvRecPkg")
@@ -125,7 +124,7 @@ class TestIRPClassIntegration:
             assert isinstance(reception, IRPEventReception)
             assert reception in list(test_class.interface_items)
         finally:
-            test_class.delete_from_project()
+            pkg.delete_from_project()
 
     def test_add_event_reception_with_event(self, test_project: IRPProject) -> None:
         """JavaDoc IRPClass.addEventReceptionWithEvent exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
@@ -142,7 +141,7 @@ class TestIRPClassIntegration:
             with pytest.raises(NotImplementedError, match="addEventReceptionWithEvent is not exposed in the Rhapsody COM"):
                 test_class.add_event_reception_with_event(reception_name, cast(IRPEvent, event))
         finally:
-            test_class.delete_from_project()
+            pkg.delete_from_project()
 
     def test_update_contained_diagrams_on_server_raises_not_implemented(self, test_project: IRPProject) -> None:
         """JavaDoc IRPClass.updateContainedDiagramsOnServer exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
@@ -152,7 +151,7 @@ class TestIRPClassIntegration:
             with pytest.raises(NotImplementedError):
                 test_class.update_contained_diagrams_on_server(1)
         finally:
-            test_class.delete_from_project()
+            pkg.delete_from_project()
 
     def test_add_triggered_operation(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("TrigPkg")
@@ -167,7 +166,7 @@ class TestIRPClassIntegration:
             operations = list(test_class.operations)
             assert triggered_op in operations
         finally:
-            test_class.delete_from_project()
+            pkg.delete_from_project()
 
     def test_delete_nested_class(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("DelClsPkg")
@@ -200,7 +199,7 @@ class TestIRPClassIntegration:
             operations_after = list(test_class.operations)
             assert ctor not in operations_after
         finally:
-            test_class.delete_from_project()
+            pkg.delete_from_project()
 
     def test_delete_destructor(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("DelDtorPkg")
@@ -216,7 +215,7 @@ class TestIRPClassIntegration:
             operations_after = list(test_class.operations)
             assert dtor not in operations_after
         finally:
-            test_class.delete_from_project()
+            pkg.delete_from_project()
 
     def test_delete_event_reception(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("DelEvPkg")
@@ -233,7 +232,7 @@ class TestIRPClassIntegration:
             items_after = [i.name for i in test_class.interface_items]
             assert reception_name not in items_after
         finally:
-            test_class.delete_from_project()
+            pkg.delete_from_project()
 
     def test_delete_type(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("DelTypePkg")
@@ -248,7 +247,7 @@ class TestIRPClassIntegration:
             test_class.delete_type(type_name)
             assert test_class.find_nested_classifier(type_name) is None
         finally:
-            test_class.delete_from_project()
+            pkg.delete_from_project()
 
     def test_active_flag_roundtrip(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("ActPkg")
@@ -262,7 +261,7 @@ class TestIRPClassIntegration:
             test_class.is_active = 0
             assert test_class.is_active == 0
         finally:
-            test_class.delete_from_project()
+            pkg.delete_from_project()
 
     def test_behavior_overriden_roundtrip(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("BehOvPkg")
@@ -276,7 +275,7 @@ class TestIRPClassIntegration:
             test_class.is_behavior_overriden = 0
             assert test_class.is_behavior_overriden == 0
         finally:
-            test_class.delete_from_project()
+            pkg.delete_from_project()
 
     def test_is_composite_readonly(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("CompPkg")
@@ -286,7 +285,7 @@ class TestIRPClassIntegration:
         try:
             assert test_class.is_composite in (0, 1)
         finally:
-            test_class.delete_from_project()
+            pkg.delete_from_project()
 
     def test_is_reactive_readonly(self, test_project: IRPProject) -> None:
         pkg_name = self._unique("ReactPkg")
@@ -296,13 +295,17 @@ class TestIRPClassIntegration:
         try:
             assert test_class.is_reactive in (0, 1)
         finally:
-            test_class.delete_from_project()
+            pkg.delete_from_project()
 
     def test_is_final_roundtrip(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("FinalPkg"))
         cls = pkg.add_class(self._unique("FinalCls"))
         try:
-            assert isinstance(cls.get_is_final(), int)
+            original = cls.get_is_final()
+            assert isinstance(original, int)
             assert cls.set_is_final(1) is None  # type: ignore[func-returns-value]
+            assert cls.get_is_final() == 1
+            cls.set_is_final(original)
+            assert cls.get_is_final() == original
         finally:
             cls.delete_from_project()

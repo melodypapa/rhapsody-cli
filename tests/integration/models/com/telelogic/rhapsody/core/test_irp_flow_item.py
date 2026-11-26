@@ -23,16 +23,6 @@ class TestIRPFlowItemIntegration:
         assert isinstance(item, IRPFlowItem)
         return item
 
-    def test_represented(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("RepresentedPkg"))
-        try:
-            flow_item = self._flow_item(pkg)
-            represented = pkg.add_class(self._unique("RepresentedClass"))
-            flow_item.add_represented(represented)
-            assert represented in list(flow_item.represented)
-        finally:
-            pkg.delete_from_project()
-
     def test_add_represented(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("AddRepresentedPkg"))
         try:

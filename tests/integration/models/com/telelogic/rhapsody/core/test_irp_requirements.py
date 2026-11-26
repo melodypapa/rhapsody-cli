@@ -9,7 +9,6 @@ to build the fixture.
 import uuid
 
 import pytest
-from win32com.client import CastTo
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPRequirement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
@@ -17,7 +16,7 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProje
 
 
 @pytest.mark.integration
-class TestRPRequirementIntegration:
+class TestIRPRequirementIntegration:
     """Integration tests for IRPRequirement with real Rhapsody COM API."""
 
     @staticmethod
@@ -47,9 +46,9 @@ class TestRPRequirementIntegration:
         pkg_name = self._unique("ReqPkg")
         req_name = self._unique("MyRequirement")
         pkg = self._create_package(test_project, pkg_name)
-        # add_new_aggr hands back an IRPModelElement COM interface; QueryInterface
-        # to IRPRequirement so the owned requirementID property is reachable.
-        req = IRPRequirement(CastTo(pkg.add_new_aggr("Requirement", req_name)._com, "IRPRequirement"))
+        # The wrapper resolves member names via dynamic dispatch, so the
+        # IRPModelElement-typed dispatch from add_new_aggr is wrapped directly.
+        req = IRPRequirement(pkg.add_new_aggr("Requirement", req_name)._com)
         assert isinstance(req, IRPRequirement)
         try:
             assert isinstance(req.get_requirement_id(), str)

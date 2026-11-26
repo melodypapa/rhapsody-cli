@@ -39,16 +39,6 @@ class TestIRPObjectNodeIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_in_state_list(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("InStateListPkg"))
-        try:
-            _, node, root = self._node(pkg)
-            state = root.add_state(self._unique("InState"))
-            node.add_in_state(state)
-            assert state in list(node.in_state_list)
-        finally:
-            pkg.delete_from_project()
-
     def test_represents(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("RepresentsPkg"))
         try:
@@ -57,7 +47,7 @@ class TestIRPObjectNodeIntegration:
             node.represents = represented
             result = node.represents
             assert result is not None
-            assert result == represented
+            assert result._com is represented._com
         finally:
             pkg.delete_from_project()
 

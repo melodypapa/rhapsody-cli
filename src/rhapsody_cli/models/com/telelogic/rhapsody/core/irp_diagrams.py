@@ -14,39 +14,39 @@ class IRPDiagram(IRPUnit):
     """Wraps ``IRPDiagram``: represents a diagram in the model."""
 
     # IRPDiagram method parity checklist:
-    # [ ] add_free_shape_by_type  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] add_image  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] add_new_edge_by_type  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] add_new_edge_for_element  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] add_new_node_by_type  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] add_new_node_for_element  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] add_free_shape_by_type  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] add_image  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] add_new_edge_by_type  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] add_new_edge_for_element  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] add_new_node_by_type  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] add_new_node_for_element  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] add_text_box  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] create_diagram_view  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] get_custom_views  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] get_diagram_view_of  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_diagram_views  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] is_diagram_view  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] open_diagram_view  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] rearrange_ports  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] set_custom_views  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] update_view_on_server  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] create_diagram_view  [x] stub  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_custom_views  [x] stub  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_diagram_view_of  [x] stub  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_diagram_views  [x] stub  [x] docstring  [x] unit test  [ ] integration test
+    # [x] is_diagram_view  [x] stub  [x] docstring  [x] unit test  [ ] integration test
+    # [x] open_diagram_view  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] rearrange_ports  [x] stub  [x] docstring  [x] unit test  [ ] integration test
+    # [x] set_custom_views  [x] stub  [x] docstring  [x] unit test  [ ] integration test
+    # [x] update_view_on_server  [x] stub  [x] docstring  [x] unit test  [ ] integration test
     # [x] close_diagram  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] complete_relations  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] complete_relations  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] get_corresponding_graphic_elements  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] get_elements_in_diagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_graphical_elements  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_last_visualization_modified_time  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_picture  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_picture_as  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_picture_as_divided_metafiles  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_picture_ex  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_pictures_with_image_map  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] is_open  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] is_show_diagram_frame  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] open_diagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] populate_diagram  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] remove_graph_elements  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] set_show_diagram_frame  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
+    # [x] get_elements_in_diagram  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] graphical_elements  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_last_visualization_modified_time  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_picture  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_picture_as  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_picture_as_divided_metafiles  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_picture_ex  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_pictures_with_image_map  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] is_open  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] is_show_diagram_frame  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] open_diagram  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] populate_diagram  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] remove_graph_elements  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] set_show_diagram_frame  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [inherited] irp_unit / irp_model_element methods (covered by rp_unit / rp_model_element checklists)
     # No deprecated IRPDiagram methods.
 
@@ -72,7 +72,7 @@ class IRPDiagram(IRPUnit):
             The wrapped text box element created.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPDiagram::addTextBox(java.lang.String text, int xPosition, int yPosition, int nWidth, int nHeight)
+            com.telelogic.rhapsody.core.IRPDiagram::AddTextBox(java.lang.String text, int xPosition, int yPosition, int nWidth, int nHeight)
         """
         return cast("IRPGraphElement", self.wrap(self.call_com(lambda: self._com.AddTextBox(text, x_position, y_position, width, height))))
 
@@ -83,12 +83,13 @@ class IRPDiagram(IRPUnit):
             An ``IRPCollection`` of custom view elements.
 
         Raises:
-            RhapsodyRuntimeException: if the custom views cannot be retrieved.
+            NotImplementedError: ``getCustomViews`` is absent from the
+                registered pywin32 interface.
 
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::getCustomViews()
         """
-        return IRPCollection(self._get_method_or_property(self._com, "getCustomViews", "customViews"))
+        raise NotImplementedError("getCustomViews is not exposed by the registered pywin32 interface.")
 
     def get_corresponding_graphic_elements(self, model_element: IRPModelElement) -> IRPCollection:
         """Returns the graphical elements that represent the specified model element.
@@ -139,9 +140,9 @@ class IRPDiagram(IRPUnit):
             The wrapped graph element created.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPDiagram::addImage(java.lang.String imagePath, int x, int y, int width, int height)
+            com.telelogic.rhapsody.core.IRPDiagram::AddImage(java.lang.String imagePath, int x, int y, int width, int height)
         """
-        return cast("IRPGraphElement", self.wrap(self.call_com(lambda: self._com.addImage(image_path, x, y, width, height))))
+        return cast("IRPGraphElement", self.wrap(self.call_com(lambda: self._com.AddImage(image_path, x, y, width, height))))
 
     def add_new_edge_by_type(self, type_: str, source: "IRPGraphElement", target: "IRPGraphElement") -> "IRPGraphElement":
         """Adds a new edge to the diagram by type.
@@ -155,9 +156,9 @@ class IRPDiagram(IRPUnit):
             The wrapped graph element created.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPDiagram::addNewEdgeByType(java.lang.String type, com.telelogic.rhapsody.core.IRPGraphElement source, com.telelogic.rhapsody.core.IRPGraphElement target)
+            com.telelogic.rhapsody.core.IRPDiagram::AddNewEdgeByType(java.lang.String type, com.telelogic.rhapsody.core.IRPGraphElement source, com.telelogic.rhapsody.core.IRPGraphElement target)
         """
-        return cast("IRPGraphElement", self.wrap(self.call_com(lambda: self._com.addNewEdgeByType(type_, source._com, target._com))))
+        return cast("IRPGraphElement", self.wrap(self.call_com(lambda: self._com.AddNewEdgeByType(type_, source._com, target._com))))
 
     def add_new_edge_for_element(self, element: IRPModelElement) -> "IRPGraphElement":
         """Adds a new edge for the specified element.
@@ -169,9 +170,9 @@ class IRPDiagram(IRPUnit):
             The wrapped graph element created.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPDiagram::addNewEdgeForElement(com.telelogic.rhapsody.core.IRPModelElement element)
+            com.telelogic.rhapsody.core.IRPDiagram::AddNewEdgeForElement(com.telelogic.rhapsody.core.IRPModelElement element)
         """
-        return cast("IRPGraphElement", self.wrap(self.call_com(lambda: self._com.addNewEdgeForElement(element._com))))
+        return cast("IRPGraphElement", self.wrap(self.call_com(lambda: self._com.AddNewEdgeForElement(element._com))))
 
     def add_new_node_by_type(self, type_: str, x: int, y: int, width: int, height: int) -> "IRPGraphElement":
         """Adds a new node to the diagram by type.
@@ -187,9 +188,9 @@ class IRPDiagram(IRPUnit):
             The wrapped graph element created.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPDiagram::addNewNodeByType(java.lang.String type, int x, int y, int width, int height)
+            com.telelogic.rhapsody.core.IRPDiagram::AddNewNodeByType(java.lang.String type, int x, int y, int width, int height)
         """
-        return cast("IRPGraphElement", self.wrap(self.call_com(lambda: self._com.addNewNodeByType(type_, x, y, width, height))))
+        return cast("IRPGraphElement", self.wrap(self.call_com(lambda: self._com.AddNewNodeByType(type_, x, y, width, height))))
 
     def add_new_node_for_element(self, element: IRPModelElement, x: int, y: int, width: int, height: int) -> "IRPGraphElement":
         """Adds a new node for the specified element.
@@ -205,9 +206,9 @@ class IRPDiagram(IRPUnit):
             The wrapped graph element created.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPDiagram::addNewNodeForElement(com.telelogic.rhapsody.core.IRPModelElement element, int x, int y, int width, int height)
+            com.telelogic.rhapsody.core.IRPDiagram::AddNewNodeForElement(com.telelogic.rhapsody.core.IRPModelElement element, int x, int y, int width, int height)
         """
-        return cast("IRPGraphElement", self.wrap(self.call_com(lambda: self._com.addNewNodeForElement(element._com, x, y, width, height))))
+        return cast("IRPGraphElement", self.wrap(self.call_com(lambda: self._com.AddNewNodeForElement(element._com, x, y, width, height))))
 
     def create_diagram_view(self, name: str) -> "IRPGraphElement":
         """Creates a diagram view with the specified name.
@@ -218,10 +219,14 @@ class IRPDiagram(IRPUnit):
         Returns:
             The wrapped graph element created.
 
+        Raises:
+            NotImplementedError: ``createDiagramView`` is absent from the
+                registered pywin32 interface.
+
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::createDiagramView(java.lang.String name)
         """
-        return cast("IRPGraphElement", self.wrap(self.call_com(lambda: self._com.createDiagramView(name))))
+        raise NotImplementedError("createDiagramView is not exposed by the registered pywin32 interface.")
 
     def get_diagram_view_of(self, name: str) -> Optional["IRPGraphElement"]:
         """Returns the diagram view with the specified name.
@@ -232,11 +237,14 @@ class IRPDiagram(IRPUnit):
         Returns:
             The wrapped graph element, or None if not found.
 
+        Raises:
+            NotImplementedError: ``getDiagramViewOf`` is absent from the
+                registered pywin32 interface.
+
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::getDiagramViewOf(java.lang.String name)
         """
-        result = self.call_com(lambda: self._com.getDiagramViewOf(name))
-        return cast("IRPGraphElement", self.wrap(result)) if result else None
+        raise NotImplementedError("getDiagramViewOf is not exposed by the registered pywin32 interface.")
 
     def get_diagram_views(self) -> IRPCollection:
         """Returns the diagram views for this diagram.
@@ -244,10 +252,14 @@ class IRPDiagram(IRPUnit):
         Returns:
             An ``IRPCollection`` of diagram views.
 
+        Raises:
+            NotImplementedError: ``getDiagramViews`` is absent from the
+                registered pywin32 interface.
+
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::getDiagramViews()
         """
-        return IRPCollection(self.call_com(lambda: self._com.getDiagramViews()))
+        raise NotImplementedError("getDiagramViews is not exposed by the registered pywin32 interface.")
 
     def is_diagram_view(self) -> int:
         """Checks if this is a diagram view.
@@ -255,10 +267,14 @@ class IRPDiagram(IRPUnit):
         Returns:
             1 if this is a diagram view, 0 otherwise.
 
+        Raises:
+            NotImplementedError: ``isDiagramView`` is absent from the
+                registered pywin32 interface.
+
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::isDiagramView()
         """
-        return int(self.call_com(lambda: self._com.isDiagramView()))
+        raise NotImplementedError("isDiagramView is not exposed by the registered pywin32 interface.")
 
     def open_diagram_view(self, name: str) -> None:
         """Opens the diagram view with the specified name.
@@ -274,10 +290,14 @@ class IRPDiagram(IRPUnit):
     def rearrange_ports(self) -> None:
         """Rearranges the ports on the diagram.
 
+        Raises:
+            NotImplementedError: ``rearrangePorts`` is absent from the
+                registered pywin32 interface.
+
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::rearrangePorts()
         """
-        self.call_com(lambda: self._com.rearrangePorts())
+        raise NotImplementedError("rearrangePorts is not exposed by the registered pywin32 interface.")
 
     def set_custom_views(self, views: IRPCollection) -> None:
         """Sets the custom views for this diagram.
@@ -285,18 +305,26 @@ class IRPDiagram(IRPUnit):
         Args:
             views: The collection of custom views.
 
+        Raises:
+            NotImplementedError: ``setCustomViews`` is absent from the
+                registered pywin32 interface.
+
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::setCustomViews(com.telelogic.rhapsody.core.IRPCollection views)
         """
-        self.call_com(lambda: self._com.setCustomViews(views._com))
+        raise NotImplementedError("setCustomViews is not exposed by the registered pywin32 interface.")
 
     def update_view_on_server(self) -> None:
         """Updates the view on the server.
 
+        Raises:
+            NotImplementedError: ``updateViewOnServer`` is absent from the
+                registered pywin32 interface.
+
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::updateViewOnServer()
         """
-        self.call_com(lambda: self._com.updateViewOnServer())
+        raise NotImplementedError("updateViewOnServer is not exposed by the registered pywin32 interface.")
 
     def complete_relations(self) -> None:
         """Completes the relations in the diagram.
@@ -317,16 +345,17 @@ class IRPDiagram(IRPUnit):
         """
         return IRPCollection(self.call_com(lambda: self._com.getElementsInDiagram()))
 
-    def get_graphical_elements(self) -> IRPCollection:
+    @property
+    def graphical_elements(self) -> IRPCollection:
         """Returns the graphical elements in this diagram.
 
         Returns:
             An ``IRPCollection`` of graphical elements.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPDiagram::getGraphicalElements()
+            com.telelogic.rhapsody.core.IRPDiagram::graphicalElements (property)
         """
-        return IRPCollection(self.call_com(lambda: self._com.getGraphicalElements()))
+        return IRPCollection(self.get_com_property(self._com, "graphicalElements"))
 
     def get_last_visualization_modified_time(self) -> str:
         """Returns the last visualization modified time.
@@ -337,7 +366,7 @@ class IRPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::getLastVisualizationModifiedTime()
         """
-        return str(self._get_method_or_property(self._com, "getLastVisualizationModifiedTime", "lastVisualizationModifiedTime"))
+        return str(self.call_com(lambda: self._com.getLastVisualizationModifiedTime()))
 
     def get_picture(self) -> "IRPGraphElement":
         """Returns the picture for this diagram.
