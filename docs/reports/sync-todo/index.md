@@ -45,8 +45,8 @@ were mapped to their legacy category by class name. All 146 tracked rows are pre
 | [Group-activity-1.md](Group-activity-1.md) | `activity` | 10 | ⬜ 10 open |
 | [Group-activity-2.md](Group-activity-2.md) | `activity` | 2 | ⬜ 2 open |
 | [Group-application-1.md](Group-application-1.md) | `application` | 1 | ✅ all archived |
-| [Group-classifiers-1.md](Group-classifiers-1.md) | `classifiers` | 10 | ⬜ 10 open |
-| [Group-classifiers-2.md](Group-classifiers-2.md) | `classifiers` | 6 | ⬜ 1 open · ✅ 5 archived |
+| [Group-classifiers-1.md](Group-classifiers-1.md) | `classifiers` | 10 | ⬜ 9 open · ✅ 1 archived |
+| [Group-classifiers-2.md](Group-classifiers-2.md) | `classifiers` | 6 | ✅ all archived |
 | [Group-common-1.md](Group-common-1.md) | `common` | 7 | ⬜ 6 open · ✅ 1 archived |
 | [Group-containment-1.md](Group-containment-1.md) | `containment` | 10 | ⬜ 9 open · ✅ 1 archived |
 | [Group-containment-2.md](Group-containment-2.md) | `containment` | 1 | ✅ all archived |
