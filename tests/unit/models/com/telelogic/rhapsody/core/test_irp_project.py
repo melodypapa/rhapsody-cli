@@ -678,6 +678,14 @@ def test_project_set_object_implicit_delegates_to_com() -> None:
     fake.setObjectImplicit.assert_called_once_with(obj_fake)
 
 
+def test_project_use_unique_stereotype_and_ref_cache_is_write_only() -> None:
+    descriptor = vars(IRPProject)["use_unique_stereotype_and_ref_cache"]
+
+    assert isinstance(descriptor, property)
+    assert descriptor.fget is None
+    assert descriptor.fset is not None
+
+
 def test_project_use_unique_stereotype_and_ref_cache_writes_com_property() -> None:
     fake = make_fake_element("Project")
     project = IRPProject(fake)

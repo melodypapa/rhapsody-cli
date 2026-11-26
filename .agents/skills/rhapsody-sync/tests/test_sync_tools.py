@@ -53,13 +53,7 @@ def _write_fixture_project(root: Path, rst_deviations: str, with_tests: bool = T
     (root / "docs" / "reports" / "pywin32_authority.json").write_text('{"catalog": {"IRPThing": {}}}', encoding="utf-8")
     (java_dir / "IRPThing.html").write_text("<html>IRPThing</html>", encoding="utf-8")
     (wrapper_dir / "model_thing.py").write_text(
-        "class RPThing:\n"
-        "    def get_value(self) -> int:\n"
-        "        return 0\n\n"
-        "    def add_example(self, name: str) -> None:\n"
-        "        pass\n\n"
-        "    def _helper(self) -> None:\n"
-        "        pass\n",
+        "class RPThing:\n    def get_value(self) -> int:\n        return 0\n\n    def add_example(self, name: str) -> None:\n        pass\n\n    def _helper(self) -> None:\n        pass\n",
         encoding="utf-8",
     )
     (root / "docs" / "requirements" / Path(*package_parts)).mkdir(parents=True)
@@ -325,13 +319,7 @@ def _write_application_fixture(root: Path) -> Path:
     app_dir = root / "src" / "rhapsody_cli"
     app_dir.mkdir(parents=True)
     (app_dir / "application.py").write_text(
-        "class RhapsodyApplication:\n"
-        "    def get_build_no(self) -> str:\n"
-        '        return ""\n\n'
-        "    def connect(self) -> None:\n"
-        "        pass\n\n"
-        "    def _attach(self) -> None:\n"
-        "        pass\n",
+        'class RhapsodyApplication:\n    def get_build_no(self) -> str:\n        return ""\n\n    def connect(self) -> None:\n        pass\n\n    def _attach(self) -> None:\n        pass\n',
         encoding="utf-8",
     )
     for layer in ("unit", "integration"):
@@ -411,6 +399,18 @@ class IRPType:
 """
     issues = tools.verify_wrapper_bindings(tmp_path, "IRPType", wrapper)
     assert any("getThing" in issue and "absent" in issue.lower() for issue in issues)
+
+
+def test_binding_check_reports_invalid_authority_json(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    reports = tmp_path / "docs" / "reports"
+    reports.mkdir(parents=True)
+    (reports / "pywin32_authority.json").write_text("{", encoding="utf-8")
+
+    issues = tools.verify_wrapper_bindings(tmp_path, "IRPType", "class IRPType:\n    pass\n")
+
+    assert len(issues) == 1
+    assert "could not read pywin32 authority catalog" in issues[0].lower()
 
 
 def test_binding_check_flags_wrong_shape(tmp_path: Path) -> None:
@@ -573,8 +573,8 @@ def test_signature_arity_mismatch_detected(tmp_path: Path) -> None:
     import importlib.util
 
     spec = importlib.util.spec_from_file_location("valmod", SYNC_TOOLS_PATH.parents[4] / "scripts" / "validate_model_api.py")
+    assert spec is not None and spec.loader is not None
     val = importlib.util.module_from_spec(spec)
-    assert spec.loader
     spec.loader.exec_module(val)
     signatures = {"FindThing": {"count": 2, "names": ["a", "b"], "types": ["str", "str"], "codes": [8, 8]}}
     arities = {"FindThing": [1]}
@@ -586,8 +586,8 @@ def test_signature_type_mismatch_detected(tmp_path: Path) -> None:
     import importlib.util
 
     spec = importlib.util.spec_from_file_location("valmod2", SYNC_TOOLS_PATH.parents[4] / "scripts" / "validate_model_api.py")
+    assert spec is not None and spec.loader is not None
     val = importlib.util.module_from_spec(spec)
-    assert spec.loader
     spec.loader.exec_module(val)
     signatures = {"SetThing": {"count": 1, "names": ["v"], "types": ["str"], "codes": [8]}}
     arities = {"SetThing": [1]}
@@ -661,7 +661,7 @@ def test_skip_marker_check_flags_pytest_mark_skip_in_unit_test(tmp_path: Path) -
     tools = _load_sync_tools()
     test_file = _write_test_file(
         tmp_path,
-        "import pytest\n\n\n" '@pytest.mark.skip(reason="live precondition unavailable")\n' "def test_thing() -> None:\n" "    assert True\n",
+        'import pytest\n\n\n@pytest.mark.skip(reason="live precondition unavailable")\ndef test_thing() -> None:\n    assert True\n',
     )
 
     issues = tools.verify_no_skip_or_xfail(test_file)
@@ -675,7 +675,7 @@ def test_skip_marker_check_allows_reasoned_skip_for_integration(tmp_path: Path) 
     tools = _load_sync_tools()
     test_file = _write_test_file(
         tmp_path,
-        "import pytest\n\n\n" '@pytest.mark.skip(reason="live precondition unavailable")\n' "def test_thing() -> None:\n" "    assert True\n",
+        'import pytest\n\n\n@pytest.mark.skip(reason="live precondition unavailable")\ndef test_thing() -> None:\n    assert True\n',
     )
 
     assert tools.verify_no_skip_or_xfail(test_file, allow_reasoned_skip=True) == []
@@ -685,7 +685,7 @@ def test_skip_marker_check_flags_reasoned_skip_without_reason(tmp_path: Path) ->
     tools = _load_sync_tools()
     test_file = _write_test_file(
         tmp_path,
-        "import pytest\n\n\n" "@pytest.mark.skip\n" "def test_thing() -> None:\n" "    assert True\n",
+        "import pytest\n\n\n@pytest.mark.skip\ndef test_thing() -> None:\n    assert True\n",
     )
 
     issues = tools.verify_no_skip_or_xfail(test_file, allow_reasoned_skip=True)
@@ -699,7 +699,7 @@ def test_skip_marker_check_flags_pytest_mark_xfail(tmp_path: Path) -> None:
     tools = _load_sync_tools()
     test_file = _write_test_file(
         tmp_path,
-        "import pytest\n\n\n" "@pytest.mark.xfail\n" "def test_thing() -> None:\n" "    assert True\n",
+        "import pytest\n\n\n@pytest.mark.xfail\ndef test_thing() -> None:\n    assert True\n",
     )
 
     issues = tools.verify_no_skip_or_xfail(test_file)
@@ -746,7 +746,7 @@ def test_skip_and_empty_finally_checks_accept_normal_test_file(tmp_path: Path) -
     tools = _load_sync_tools()
     test_file = _write_test_file(
         tmp_path,
-        "import pytest\n\n\n" "def test_thing() -> None:\n" "    with pytest.raises(NotImplementedError):\n" "        raise NotImplementedError\n",
+        "import pytest\n\n\ndef test_thing() -> None:\n    with pytest.raises(NotImplementedError):\n        raise NotImplementedError\n",
     )
 
     assert tools.verify_no_skip_or_xfail(test_file) == []
@@ -759,7 +759,7 @@ def test_verifier_flags_skip_marker_and_empty_finally_in_mirrored_integration_te
     report = _write_report(root)
     integration_test = root / "tests" / "integration" / "models" / Path(*_REPORT_PACKAGE_PARTS) / "test_model_thing.py"
     integration_test.write_text(
-        "import pytest\n\nRPThing\n\n\n" "@pytest.mark.xfail\n" "def test_thing() -> None:\n" "    try:\n" "        assert True\n" "    finally:\n" "        pass\n",
+        "import pytest\n\nRPThing\n\n\n@pytest.mark.xfail\ndef test_thing() -> None:\n    try:\n        assert True\n    finally:\n        pass\n",
         encoding="utf-8",
     )
 
@@ -775,7 +775,7 @@ def test_verifier_applies_skip_checks_to_unit_test_files(tmp_path: Path) -> None
     report = _write_report(root)
     unit_test = root / "tests" / "unit" / "models" / Path(*_REPORT_PACKAGE_PARTS) / "test_model_thing.py"
     unit_test.write_text(
-        "import pytest\n\nRPThing\n\n\n" "@pytest.mark.skip\n" "def test_thing() -> None:\n" "    try:\n" "        assert True\n" "    finally:\n" "        pass\n",
+        "import pytest\n\nRPThing\n\n\n@pytest.mark.skip\ndef test_thing() -> None:\n    try:\n        assert True\n    finally:\n        pass\n",
         encoding="utf-8",
     )
 
@@ -1008,7 +1008,7 @@ def test_parse_blocker_members_reads_only_the_requested_interface(tmp_path: Path
     index = tools.getter_matrix_path(root).parent / "index.md"
     index.parent.mkdir(parents=True)
     index.write_text(
-        "## P0 integration-test blockers\n\n" "| Interface | Member(s) | Blocker |\n| --- | --- | --- |\n" "| IRPType | `declaration` (`getDeclaration`) | x |\n" "| IRPOther | `declaration` | x |\n",
+        "## P0 integration-test blockers\n\n| Interface | Member(s) | Blocker |\n| --- | --- | --- |\n| IRPType | `declaration` (`getDeclaration`) | x |\n| IRPOther | `declaration` | x |\n",
         encoding="utf-8",
     )
 
@@ -1052,7 +1052,7 @@ def test_getter_matrix_flags_inconsistent_status(tmp_path: Path) -> None:
     matrix = tools.getter_matrix_path(root)
     matrix.parent.mkdir(parents=True)
     matrix.write_text(
-        "# Getter fixture matrix\n\n" "## IRPType\n\n" "| Java getter / Python member | Integration test | Assertion | Status |\n" "| --- | --- | --- | --- |\n" "| `declaration` | — | none | OK |\n",
+        "# Getter fixture matrix\n\n## IRPType\n\n| Java getter / Python member | Integration test | Assertion | Status |\n| --- | --- | --- | --- |\n| `declaration` | — | none | OK |\n",
         encoding="utf-8",
     )
 
@@ -1128,7 +1128,7 @@ def _write_stub_ledger(root: Path, rows: str) -> Path:
     ledger = root / "docs" / "reports" / "sync-todo" / "index.md"
     ledger.parent.mkdir(parents=True)
     ledger.write_text(
-        "# Sync todo index\n\n" "## NotImplementedError stubs\n\n" "| Interface | Python member | COM member | Basis | Evidence | Approved |\n" "| --- | --- | --- | --- | --- | --- |\n" + rows,
+        "# Sync todo index\n\n## NotImplementedError stubs\n\n| Interface | Python member | COM member | Basis | Evidence | Approved |\n| --- | --- | --- | --- | --- | --- |\n" + rows,
         encoding="utf-8",
     )
     return ledger
@@ -1144,7 +1144,7 @@ def _write_stub_authority(root: Path, catalog: str, unavailable: str = "{}") -> 
 
 
 def _write_stub_tests(root: Path, expression: str) -> Tuple[Path, Path]:
-    body = "import pytest\n\n\ndef test_stub() -> None:\n" f"    with pytest.raises(NotImplementedError):\n        {expression}\n"
+    body = f"import pytest\n\n\ndef test_stub() -> None:\n    with pytest.raises(NotImplementedError):\n        {expression}\n"
     paths = []
     for layer in ("unit", "integration"):
         path = root / "tests" / layer / "test_irp_thing.py"
@@ -1152,6 +1152,19 @@ def _write_stub_tests(root: Path, expression: str) -> Tuple[Path, Path]:
         path.write_text(body, encoding="utf-8")
         paths.append(path)
     return paths[0], paths[1]
+
+
+def test_stub_evidence_reports_invalid_authority_json(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    _write_stub_authority(root, '{"IRPThing": {}}', '{"IRPThing": ["getThing"]}')
+    _write_stub_ledger(root, "| IRPThing | `get_thing` | `getThing` | not-exposed | `getThing` is absent from the catalog. | — |\n")
+    unit, integration = _write_stub_tests(root, "wrapper.get_thing()")
+    (root / "docs" / "reports" / "pywin32_authority.json").write_text("{", encoding="utf-8")
+
+    issues = tools.verify_not_implemented_evidence(root, "IRPThing", _NOT_EXPOSED_WRAPPER, unit, integration)
+
+    assert any("could not read pywin32 authority catalog" in issue.lower() for issue in issues)
 
 
 def test_stub_evidence_flags_missing_ledger(tmp_path: Path) -> None:
@@ -1382,6 +1395,17 @@ def test_getter_catalog_diff_credits_inherited_property(tmp_path: Path) -> None:
     assert "| `unmappedThing` | `unmapped_thing` | catalog-only |" not in section
 
 
+def test_write_getter_catalog_diff_reports_invalid_authority_json(tmp_path: Path) -> None:
+    tools = _load_sync_tools()
+    root = tmp_path / "repo"
+    wrapper = _write_getter_diff_fixture(root)
+    report = _getter_diff_report(root, wrapper)
+    (root / "docs" / "reports" / "pywin32_authority.json").write_text("{", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="Could not read pywin32 authority catalog"):
+        tools.write_getter_catalog_diff(root, "IRPThing", report)
+
+
 def test_write_getter_catalog_diff_writes_summary_and_section(tmp_path: Path) -> None:
     tools = _load_sync_tools()
     root = tmp_path / "repo"
@@ -1413,3 +1437,30 @@ def test_write_getter_catalog_diff_replaces_existing_section(tmp_path: Path) -> 
     text = second.read_text(encoding="utf-8")
     assert text.count("## IRPThing") == 1
     assert text.count("| `name` | `name` | property | property | match |") == 1
+
+
+def test_pywin32_exposed_members_require_direct_or_inherited_implementation() -> None:
+    skill_text = (SKILL_ROOT / "SKILL.md").read_text(encoding="utf-8")
+
+    assert "must be implemented in the target wrapper or inherited from a base wrapper" in skill_text
+    assert "do not create a duplicate child override" in skill_text
+    assert "`documented_intentionally_unsupported` is a legacy catalog field and must not be added or used to waive a pywin32-exposed member in a new sync." in skill_text
+
+
+def test_getter_inventory_excludes_write_only_property_setters() -> None:
+    tools = _load_sync_tools()
+    wrapper_source = (
+        "class IRPThing:\n"
+        "    _write_only = property(None)\n"
+        "    @_write_only.setter\n"
+        "    def write_only(self, value: int) -> None:\n"
+        "        pass\n"
+        "    @property\n"
+        "    def readable(self) -> int:\n"
+        "        return 1\n"
+        "    @readable.setter\n"
+        "    def readable(self, value: int) -> None:\n"
+        "        pass\n"
+    )
+
+    assert tools._owned_property_names(wrapper_source) == {"readable"}

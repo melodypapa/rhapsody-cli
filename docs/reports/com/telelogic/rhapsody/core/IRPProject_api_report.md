@@ -4,7 +4,7 @@
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `IRPProject` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`)
 - Members: Python `72`, Java `72`, pywin32 `72`
-- Deviation items: `18` (actionable `13`, expected binding differences `5`, wrapper backlog `0`)
+- Deviation items: `17` (actionable `12`, expected binding differences `5`, wrapper backlog `0`)
 - Status legend: `MATCH` verified binding · `UNAVAILABLE_DOCUMENTED` pywin32 lacks the member (NotImplementedError stub) · `ALIAS_DOCUMENTED` documented alias · actionable rows are named by code in `Comparison details`
 
 ## Comparison details
@@ -20,7 +20,6 @@
 | nodes (property) -> nodes | — | nodes (property) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
 | packages (property) -> packages | — | packages (property) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
 | — | save (method) | save (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper, or record the Java member in documented_intentionally_unsupported with a rationale. |
-| find_element_by_binary_id() -> findElementByBinaryID | — | findElementByBinaryID (method) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['str'] but pywin32 declares ['object']. Match the documented COM parameter types. |
 | set_active_component() -> setActiveComponent | — | setActiveComponent (method) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
 | set_active_configuration() -> setActiveConfiguration | — | setActiveConfiguration (method) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
 | set_wait_dialog_watchdog_value() -> setWaitDialogWatchdogValue | — | setWaitDialogWatchdogValue (method) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['int'] but pywin32 declares ['str']. Match the documented COM parameter types. |
@@ -126,10 +125,9 @@
 - **Recommended change:** Implement the Python wrapper, or record the Java member in documented_intentionally_unsupported with a rationale.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
 
-### SIGNATURE_TYPE_MISMATCH (4 findings)
+### SIGNATURE_TYPE_MISMATCH (3 findings)
 - **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
-- **Affected call(s):** find_element_by_binary_id() -> findElementByBinaryID; set_active_component() -> setActiveComponent; set_active_configuration() -> setActiveConfiguration; set_wait_dialog_watchdog_value() -> setWaitDialogWatchdogValue
-- **Recommended change:** Wrapper passes types ['str'] but pywin32 declares ['object']. Match the documented COM parameter types.
+- **Affected call(s):** set_active_component() -> setActiveComponent; set_active_configuration() -> setActiveConfiguration; set_wait_dialog_watchdog_value() -> setWaitDialogWatchdogValue
 - **Recommended change:** Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types.
 - **Recommended change:** Wrapper passes types ['int'] but pywin32 declares ['str']. Match the documented COM parameter types.
 - **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.

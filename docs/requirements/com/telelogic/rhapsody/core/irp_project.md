@@ -26,7 +26,10 @@ Catalog-backed members call exactly one pywin32 member from
 `active_component`, `active_configuration`, `all_stereotypes`,
 `cg_simplified_model_package`, `components`, `default_directory_scheme`, `nodes`,
 `packages`, `profiles`, and `use_unique_stereotype_and_ref_cache` are exposed as
-Python `@property` accessors. `active_component`/`active_configuration` keep
+Python `@property` accessors. The unique-stereotype cache property is write-only:
+JavaDoc declares only its setter and the registered pywin32 interface exposes only
+`prop_map_put`, so integration exercises the setter rather than calling a nonexistent getter.
+`active_component`/`active_configuration` keep
 method-shaped `set_active_component`/`set_active_configuration` setters because
 pywin32 exposes those as methods. `set_global_configuration` is a catalog blocker
 whose legacy dual-binding site is left unchanged. Several members (`add_actor`,
@@ -55,7 +58,7 @@ the 21 members that previously took fewer arguments: `find_element_by_file_name`
 **Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py:IRPProject
 (class renamed from `RPProject`; §2 canonical package move completed; 22 legacy
 call sites migrated; 2 catalog-absent sites left unchanged)
-**Last Changed:** 2026-11-25
+**Last Changed:** 2026-11-26
 
 ## SWR_ELEM_00022: IRPProject lifecycle methods live-fixture blocker
 

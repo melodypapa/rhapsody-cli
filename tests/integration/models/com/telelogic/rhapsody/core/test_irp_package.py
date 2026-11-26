@@ -4,11 +4,11 @@ import uuid
 
 import pytest
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_association_class import IRPAssociationClass
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_instance import IRPInstance
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_other_model import IRPSysMLPort
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
 
 
 @pytest.mark.integration
@@ -29,7 +29,7 @@ class TestIRPPackageIntegration:
         try:
             created_name = self._unique("AddClass")
             created = pkg.add_class(created_name)
-            assert created.name == created_name
+            assert created in list(pkg.classes)
         finally:
             pkg.delete_from_project()
 
@@ -38,7 +38,7 @@ class TestIRPPackageIntegration:
         try:
             created_name = self._unique("AddNestedPackage")
             created = pkg.add_nested_package(created_name)
-            assert created.name == created_name
+            assert created in list(pkg.packages)
         finally:
             pkg.delete_from_project()
 
@@ -47,7 +47,7 @@ class TestIRPPackageIntegration:
         try:
             created_name = self._unique("AddActor")
             created = pkg.add_actor(created_name)
-            assert created.name == created_name
+            assert created in list(pkg.actors)
         finally:
             pkg.delete_from_project()
 
@@ -56,7 +56,7 @@ class TestIRPPackageIntegration:
         try:
             created_name = self._unique("AddGlobalFunction")
             created = pkg.add_global_function(created_name)
-            assert created.name == created_name
+            assert created in list(pkg.global_functions)
         finally:
             pkg.delete_from_project()
 
@@ -65,7 +65,7 @@ class TestIRPPackageIntegration:
         try:
             created_name = self._unique("AddFlowItems")
             created = pkg.add_flow_items(created_name)
-            assert created.name == created_name
+            assert created in list(pkg.flow_items)
         finally:
             pkg.delete_from_project()
 
@@ -74,7 +74,7 @@ class TestIRPPackageIntegration:
         try:
             created_name = self._unique("AddFlows")
             created = pkg.add_flows(created_name)
-            assert created.name == created_name
+            assert created in list(pkg.flows)
         finally:
             pkg.delete_from_project()
 
@@ -119,7 +119,7 @@ class TestIRPPackageIntegration:
         try:
             created_name = self._unique("AddUseCase")
             created = pkg.add_use_case(created_name)
-            assert created.name == created_name
+            assert created in list(pkg.use_cases)
         finally:
             pkg.delete_from_project()
 
@@ -136,7 +136,7 @@ class TestIRPPackageIntegration:
         try:
             created_name = self._unique("AddSequenceDiagram")
             created = pkg.add_sequence_diagram(created_name)
-            assert created.name == created_name
+            assert created in list(pkg.sequence_diagrams)
         finally:
             pkg.delete_from_project()
 
@@ -145,7 +145,7 @@ class TestIRPPackageIntegration:
         try:
             created_name = self._unique("AddUseCaseDiagram")
             created = pkg.add_use_case_diagram(created_name)
-            assert created.name == created_name
+            assert created in list(pkg.use_case_diagrams)
         finally:
             pkg.delete_from_project()
 
@@ -154,7 +154,7 @@ class TestIRPPackageIntegration:
         try:
             created_name = self._unique("AddCollaborationDiagram")
             created = pkg.add_collaboration_diagram(created_name)
-            assert created.name == created_name
+            assert created in list(pkg.collaboration_diagrams)
         finally:
             pkg.delete_from_project()
 
@@ -163,7 +163,7 @@ class TestIRPPackageIntegration:
         try:
             created_name = self._unique("AddComponentDiagram")
             created = pkg.add_component_diagram(created_name)
-            assert created.name == created_name
+            assert created in list(pkg.component_diagrams)
         finally:
             pkg.delete_from_project()
 
@@ -172,7 +172,7 @@ class TestIRPPackageIntegration:
         try:
             created_name = self._unique("AddDeploymentDiagram")
             created = pkg.add_deployment_diagram(created_name)
-            assert created.name == created_name
+            assert created in list(pkg.deployment_diagrams)
         finally:
             pkg.delete_from_project()
 
@@ -181,7 +181,7 @@ class TestIRPPackageIntegration:
         try:
             created_name = self._unique("AddObjectModelDiagram")
             created = pkg.add_object_model_diagram(created_name)
-            assert created.name == created_name
+            assert created in list(pkg.object_model_diagrams)
         finally:
             pkg.delete_from_project()
 
@@ -198,7 +198,7 @@ class TestIRPPackageIntegration:
         try:
             created_name = self._unique("AddTimingDiagram")
             created = pkg.add_timing_diagram(created_name)
-            assert created.name == created_name
+            assert created in list(pkg.timing_diagrams)
         finally:
             pkg.delete_from_project()
 
@@ -207,7 +207,7 @@ class TestIRPPackageIntegration:
         try:
             created_name = self._unique("AddPanelDiagram")
             created = pkg.add_panel_diagram(created_name)
-            assert created.name == created_name
+            assert created in list(pkg.panel_diagrams)
         finally:
             pkg.delete_from_project()
 
@@ -465,28 +465,12 @@ class TestIRPPackageIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_add_association_with_real_relation_ends(self, test_project: IRPProject) -> None:
-        pkg = self._pkg(test_project)
-        try:
-            class_a = pkg.add_class(self._unique("AssocClassA"))
-            class_b = pkg.add_class(self._unique("AssocClassB"))
-            relation_name = self._unique("AssocRelation")
-            end1 = class_a.add_relation_to(class_b, self._unique("roleA"), "Association", "1", self._unique("roleB"), "Association", "1", relation_name)
-            end2 = IRPRelation(end1._com).get_inverse()
-            association_name = self._unique("PackageAssociation")
-
-            association = pkg.add_association(end1, end2, association_name)
-
-            assert isinstance(association, IRPAssociationClass)
-        finally:
-            pkg.delete_from_project()
-
     def test_add_event(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
             created_name = self._unique("AddEvent")
             created = pkg.add_event(created_name)
-            assert created.name == created_name
+            assert created in list(pkg.events)
         finally:
             pkg.delete_from_project()
 
@@ -538,7 +522,7 @@ class TestIRPPackageIntegration:
         try:
             created_name = self._unique("AddNode")
             created = pkg.add_node(created_name)
-            assert created.name == created_name
+            assert created in list(pkg.nodes)
         finally:
             pkg.delete_from_project()
 
@@ -576,7 +560,7 @@ class TestIRPPackageIntegration:
         try:
             created_name = self._unique("AddModule")
             created = pkg.add_module(created_name)
-            assert created.name == created_name
+            assert created in list(pkg.modules)
         finally:
             pkg.delete_from_project()
 
@@ -594,7 +578,7 @@ class TestIRPPackageIntegration:
         try:
             created_name = self._unique("AddType")
             created = pkg.add_type(created_name)
-            assert created.name == created_name
+            assert created in list(pkg.types)
         finally:
             pkg.delete_from_project()
 
@@ -698,7 +682,7 @@ class TestIRPPackageIntegration:
         try:
             created_name = self._unique("AddGlobalVariable")
             created = pkg.add_global_variable(created_name)
-            assert created.name == created_name
+            assert created in list(pkg.global_variables)
         finally:
             pkg.delete_from_project()
 
@@ -733,6 +717,77 @@ class TestIRPPackageIntegration:
             created_class = pkg.add_class(self._unique("CollectionNestedClassifier"))
 
             assert created_class in list(pkg.nested_classifiers)
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_links_returns_link_created_with_add_link(self, test_project: IRPProject) -> None:
+        pkg = self._pkg(test_project)
+        try:
+            from_class = pkg.add_class(self._unique("LinkFromClass"))
+            to_class = pkg.add_class(self._unique("LinkToClass"))
+            association = from_class.add_relation_to(to_class, self._unique("FromRole"), "Association", "1", self._unique("ToRole"), "Association", "1", self._unique("LinkAssociation"))
+            from_object = pkg.add_global_object(self._unique("LinkFromObject"), from_class.name, pkg.name)
+            to_object = pkg.add_global_object(self._unique("LinkToObject"), to_class.name, pkg.name)
+            from_part = IRPInstance(from_object._com)
+            to_part = IRPInstance(to_object._com)
+
+            created_link = pkg.add_link(from_part, to_part, association, None, None)
+
+            assert created_link in list(pkg.links)
+        finally:
+            pkg.delete_from_project()
+
+    def test_add_link_between_sysml_ports_returns_link_in_package(self, test_project: IRPProject) -> None:
+        pkg = self._pkg(test_project)
+        try:
+            from_class = pkg.add_class(self._unique("SysMLLinkFromClass"))
+            to_class = pkg.add_class(self._unique("SysMLLinkToClass"))
+            from_object = pkg.add_global_object(self._unique("SysMLLinkFromObject"), from_class.name, pkg.name)
+            to_object = pkg.add_global_object(self._unique("SysMLLinkToObject"), to_class.name, pkg.name)
+            from_part = IRPInstance(from_object._com)
+            to_part = IRPInstance(to_object._com)
+            from_port = IRPSysMLPort(from_class.add_new_aggr("SysMLPort", self._unique("SysMLFromPort"))._com)
+            to_port = IRPSysMLPort(to_class.add_new_aggr("SysMLPort", self._unique("SysMLToPort"))._com)
+
+            created_link = pkg.add_link_between_sysml_ports(from_part, to_part, None, from_port, to_port)
+
+            assert created_link in list(pkg.links)
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_user_defined_stereotypes_returns_stereotype_created_with_generic_factory(self, test_project: IRPProject) -> None:
+        pkg = self._pkg(test_project)
+        try:
+            created_stereotype = pkg.add_new_aggr("Stereotype", self._unique("UserDefinedStereotype"))
+
+            assert created_stereotype in list(pkg.user_defined_stereotypes)
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_source_artifacts_returns_file_created_with_generic_factory(self, test_project: IRPProject) -> None:
+        pkg = self._pkg(test_project)
+        try:
+            created_file = pkg.add_new_aggr("File", self._unique("SourceArtifact"))
+
+            assert created_file in list(pkg.source_artifacts)
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_nested_components_returns_component_created_with_generic_factory(self, test_project: IRPProject) -> None:
+        pkg = self._pkg(test_project)
+        try:
+            created_component = pkg.add_new_aggr("Component", self._unique("NestedComponent"))
+
+            assert created_component in list(pkg.nested_components)
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_instance_specifications_returns_created_instance_specification(self, test_project: IRPProject) -> None:
+        pkg = self._pkg(test_project)
+        try:
+            created_instance = pkg.add_new_aggr("InstanceSpecification", self._unique("InstanceSpecification"))
+
+            assert created_instance in list(pkg.instance_specifications)
         finally:
             pkg.delete_from_project()
 
@@ -828,7 +883,7 @@ class TestIRPPackageIntegration:
         try:
             created_name = self._unique("AddImplicitObject")
             created = pkg.add_implicit_object(created_name)
-            assert created.name == created_name
+            assert created in list(pkg.get_all_nested_elements())
         finally:
             pkg.delete_from_project()
 

@@ -3,15 +3,14 @@
 ## Summary
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `IRPPackage` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`)
-- Members: Python `100`, Java `100`, pywin32 `94`
-- Deviation items: `7` (actionable `1`, expected binding differences `6`, wrapper backlog `0`)
+- Members: Python `99`, Java `100`, pywin32 `93`
+- Deviation items: `6` (actionable `0`, expected binding differences `6`, wrapper backlog `0`)
 - Status legend: `MATCH` verified binding · `UNAVAILABLE_DOCUMENTED` pywin32 lacks the member (NotImplementedError stub) · `ALIAS_DOCUMENTED` documented alias · actionable rows are named by code in `Comparison details`
 
 ## Comparison details
 
 | Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |
 | --- | --- | --- | --- | --- |
-| add_association() -> addAssociation | — | addAssociation (method) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
 
 ## Expected Binding Differences
 
@@ -134,9 +133,4 @@
 </details>
 
 ## AI Fix Guidance
-
-### JAVA_DOC_MISSING (1 finding)
-- **Target:** `IRPPackage` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_package.py`
-- **Affected call(s):** add_association() -> addAssociation
-- **Recommended change:** Confirm this COM member is a supported extension and document its status.
-- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
+No deviations require changes.
