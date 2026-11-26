@@ -24,7 +24,7 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 | # | Class | Interface | Legacy source | Sites | Owned | Steps | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | `irp_component_api_report` | IRPComponent | `elements/containment/model_component.py` | 17 | 43 | 7/8 (①②③④⑥⑦⑧) | ⬜ open |
-| 2 | `irp_collaboration_api_report` | IRPCollaboration | `elements/containment/model_collaboration.py` | 1 | 39 | 1/8 (②) | ⬜ open |
+| 2 | `irp_collaboration_api_report` | IRPCollaboration | `elements/containment/model_collaboration.py` | 1 | 39 | 7/8 (①②③④⑥⑦⑧) | ⬜ open |
 | 3 | `irp_configuration_api_report` | IRPConfiguration | `rhapsody_cli/models/elements/containment/model_configuration.py` | 23 | 46 | 1/8 (②) | ⬜ open |
 | 4 | `irp_node_api_report` | IRPNode | `rhapsody_cli/models/elements/containment/model_node.py` | 2 | 6 | 1/8 (②) | ⬜ open |
 | 5 | `irp_component_instance_api_report` | IRPComponentInstance | `rhapsody_cli/models/elements/containment/model_component_instance.py` | 0 | 3 | 1/8 (②) | ⬜ open |
@@ -53,18 +53,18 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 </details>
 
 <details>
-<summary><code>irp_collaboration_api_report</code> · IRPCollaboration · 1/8 steps · ⬜ open</summary>
+<summary><code>irp_collaboration_api_report</code> · IRPCollaboration · 7/8 steps · ⬜ open</summary>
 
-- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
-- **Note:** common containment wrapper (77 src / 11 test, 39 owned methods). Extends the synced `IRPUnit`; low legacy-site count but high structural use closes the group.
-- [ ] ① §1
-- [x] ② §2
-- [ ] ③ §3
-- [ ] ④ §4
-- [ ] ⑤ §5
-- [ ] ⑥ §6
-- [ ] ⑦ §7
-- [ ] ⑧ §8
+- **Status (2026-11-27):** verify_sync passes; 7/8 steps complete. §5 stays open on read-only getter blockers.
+- **Note:** common containment wrapper (77 src / 11 test, 39 owned members). Ten JavaDoc getters map to pywin32 properties; the rest stay method-shaped.
+- [x] ① §1 — 39 owned members reconciled; 10 getter-matrix rows (1 populated, 9 blocked).
+- [x] ② §2 — canonical wrapper/tests/exports verified; no module move required.
+- [x] ③ §3 — report regenerated from authority: 0 actionable deviations.
+- [x] ④ §4 — 43 fake-COM unit tests, 100% statements/branches (104 statements, 6 branches); full unit suite 2277 passed.
+- [ ] ⑤ §5 — 10 integration tests with a real collaboration; `messages` populated via `add_message`, nine read-only getters blocked by absent population APIs (P0 in `index.md`); live execution is Windows-only.
+- [x] ⑥ §6 — `docs/requirements/com/telelogic/rhapsody/core/irp_collaboration.md`.
+- [x] ⑦ §7 — `docs/api/com/telelogic/rhapsody/core/irp_collaboration.rst` documents all 39 public members; toctree entry added.
+- [x] ⑧ §8 — validator 0 actionable; `verify_sync.py IRPCollaboration --strict-getters` green; ruff/black/mypy clean.
 
 </details>
 

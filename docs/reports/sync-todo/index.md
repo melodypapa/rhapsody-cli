@@ -312,6 +312,15 @@ wrapper-signature fix before its getter/member row can close.
 | IRPPort | `is_behavioral`, `is_reversed`, `port_contract`, `provided_interfaces`, `required_interfaces` | Port relation/end properties have no live factory; recovered via catalog-only triage but no populated fixture. |
 | IRPComponent | `panel_diagrams` | No documented API attaches a panel diagram to a component; only the empty collection is observable. |
 | IRPComponent | `variation_points` | No documented API creates a variation point on a component; only the empty collection is observable. |
+| IRPCollaboration | `activation_condition` | No documented API populates this read-only property on a fresh collaboration; only the documented empty/default state is observable. |
+| IRPCollaboration | `activation_mode` | No documented API populates this read-only property on a fresh collaboration; only the documented empty/default state is observable. |
+| IRPCollaboration | `associations` | No documented API populates this read-only property on a fresh collaboration; only the documented empty/default state is observable. |
+| IRPCollaboration | `classifier` | No documented API populates this read-only property on a fresh collaboration; only the documented empty/default state is observable. |
+| IRPCollaboration | `execution_occurrences` | No documented API populates this read-only property on a fresh collaboration; only the documented empty/default state is observable. |
+| IRPCollaboration | `interaction_occurrences` | No documented API populates this read-only property on a fresh collaboration; only the documented empty/default state is observable. |
+| IRPCollaboration | `interaction_operators` | No documented API populates this read-only property on a fresh collaboration; only the documented empty/default state is observable. |
+| IRPCollaboration | `message_points` | No documented API populates this read-only property on a fresh collaboration; only the documented empty/default state is observable. |
+| IRPCollaboration | `mode` | No documented API populates this read-only property on a fresh collaboration; only the documented empty/default state is observable. |
 | IRPProject | `nodes` | `nodes` is inherited from `IRPPackage`; the project root rejects both `addNode(name)` and `addNewAggr("Node", name)`, and a nested-package node is not returned by `project.nodes`. No populated project-root fixture is available. |
 | IRPUseCase | `is_behavior_overriden` | Runtime stub (user approved 2026-11-25): setter faults live; see the NotImplementedError evidence ledger. |
 

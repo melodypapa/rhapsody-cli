@@ -57,6 +57,7 @@ Java Package API Reference
    com/telelogic/rhapsody/core/irp_class
    com/telelogic/rhapsody/core/irp_classifier
    com/telelogic/rhapsody/core/irp_collection
+   com/telelogic/rhapsody/core/irp_collaboration
    com/telelogic/rhapsody/core/irp_component
    com/telelogic/rhapsody/core/irp_dependency
    com/telelogic/rhapsody/core/irp_instance

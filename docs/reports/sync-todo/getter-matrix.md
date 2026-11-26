@@ -396,3 +396,18 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | `scope_elements` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_scope_elements` | identity/value | OK |
 | `standard_headers` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_standard_headers` | identity/value | OK |
 | `variation_points` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_variation_points_empty_state` | weak | WEAK |
+
+## IRPCollaboration
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `activation_condition` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_collaboration.py::test_activation_condition` | identity/value | OK |
+| `activation_mode` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_collaboration.py::test_activation_mode` | identity/value | OK |
+| `associations` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_collaboration.py::test_associations` | weak | WEAK |
+| `classifier` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_collaboration.py::test_classifier` | identity/value | OK |
+| `execution_occurrences` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_collaboration.py::test_execution_occurrences` | weak | WEAK |
+| `interaction_occurrences` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_collaboration.py::test_interaction_occurrences` | weak | WEAK |
+| `interaction_operators` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_collaboration.py::test_interaction_operators` | weak | WEAK |
+| `message_points` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_collaboration.py::test_message_points` | weak | WEAK |
+| `messages` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_collaboration.py::test_messages` | identity/value | OK |
+| `mode` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_collaboration.py::test_mode` | identity/value | OK |

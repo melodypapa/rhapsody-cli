@@ -14,7 +14,7 @@ review rather than a failure.
 
 | Status | Count |
 | --- | --- |
-| match | 204 |
+| match | 214 |
 | catalog-missing | 0 |
 | shape-mismatch | 0 |
 | no-binding | 0 |
@@ -539,6 +539,27 @@ review rather than a failure.
 | `scope_elements` | `scopeElements` | property | property | match |
 | `standard_headers` | `standardHeaders` | property | property | match |
 | `variation_points` | `variationPoints` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPCollaboration
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `activation_condition` | `activationCondition` | property | property | match |
+| `activation_mode` | `activationMode` | property | property | match |
+| `associations` | `associations` | property | property | match |
+| `classifier` | `classifier` | property | property | match |
+| `execution_occurrences` | `executionOccurrences` | property | property | match |
+| `interaction_occurrences` | `interactionOccurrences` | property | property | match |
+| `interaction_operators` | `interactionOperators` | property | property | match |
+| `message_points` | `messagePoints` | property | property | match |
+| `messages` | `messages` | property | property | match |
+| `mode` | `mode` | property | property | match |
 
 ### Catalog properties with no matching Python property
 
