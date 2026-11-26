@@ -11,7 +11,18 @@
 
 | Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |
 | --- | --- | --- | --- | --- |
-| — | — | — | PASS | No change needed. |
+
+## Expected Binding Differences
+
+| Python model wrapper | Java API | pywin32 | Status | Recommended change |
+| --- | --- | --- | --- | --- |
+| update_contained_diagrams_on_server() (no static COM member) | updateContainedDiagramsOnServer (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+
+## Wrapper Backlog
+
+| Python model wrapper | Java API | pywin32 | Status | Recommended change |
+| --- | --- | --- | --- | --- |
+| — | — | — | — | — |
 
 <details>
 <summary>Correct items (20) — bindings verified against pywin32</summary>
@@ -27,6 +38,7 @@
 | delete_flowchart() -> deleteFlowchart | deleteFlowchart (method) | deleteFlowchart (method) | MATCH | — |
 | flowchart (property) -> flowchart | getFlowchart (method); setFlowchart (method) | flowchart (property) | MATCH | — |
 | get_implementation_signature() -> getImplementationSignature | getImplementationSignature (method) | getImplementationSignature (method) | MATCH | — |
+| get_return_type_declaration() -> getReturnTypeDeclaration; set_return_type_declaration() -> setReturnTypeDeclaration | getReturnTypeDeclaration (method); setReturnTypeDeclaration (method) | getReturnTypeDeclaration (method); setReturnTypeDeclaration (method) | MATCH | — |
 | initializer (property) -> initializer | getInitializer (method); setInitializer (method) | initializer (property) | MATCH | — |
 | is_abstract (property) -> isAbstract | getIsAbstract (method); setIsAbstract (method) | isAbstract (property) | MATCH | — |
 | is_cg_derived (property) -> isCgDerived | getIsCgDerived (method) | isCgDerived (property) | MATCH | — |
@@ -38,7 +50,6 @@
 | is_static (property) -> isStatic | getIsStatic (method); setIsStatic (method) | isStatic (property) | MATCH | — |
 | is_trigger (property) -> isTrigger | getIsTrigger (method) | isTrigger (property) | MATCH | — |
 | is_virtual (property) -> isVirtual | getIsVirtual (method); setIsVirtual (method) | isVirtual (property) | MATCH | — |
-| get_return_type_declaration() -> getReturnTypeDeclaration; set_return_type_declaration() -> setReturnTypeDeclaration | getReturnTypeDeclaration (method); setReturnTypeDeclaration (method) | getReturnTypeDeclaration (method); setReturnTypeDeclaration (method) | MATCH | — |
 | returns (property) -> returns | getReturns (method); setReturns (method) | returns (property) | MATCH | — |
 | visibility (property) -> visibility | getVisibility (method); setVisibility (method) | visibility (property) | MATCH | — |
 

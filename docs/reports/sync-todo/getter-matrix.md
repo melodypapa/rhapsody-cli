@@ -52,7 +52,7 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |
-| `is_abstract` | — | none | MISSING |
+| `is_abstract` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_operation.py::test_abstract_roundtrip` | identity/value | OK |
 | `is_active` | — | none | MISSING |
 | `is_behavior_overriden` | — | none | MISSING |
 | `is_composite` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_class.py::test_is_composite_readonly` | identity/value | OK |
