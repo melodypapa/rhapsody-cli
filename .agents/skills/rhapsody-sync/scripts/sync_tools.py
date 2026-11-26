@@ -841,6 +841,102 @@ def _mro_property_names(index: Dict[str, List[Tuple[Set[str], List[str]]]], clas
     return names
 
 
+def _model_class_members(root: Path) -> Dict[str, List[Tuple[Set[str], Set[str], List[str]]]]:
+    """Index every model class as (methods, properties, base names)."""
+    index: Dict[str, List[Tuple[Set[str], Set[str], List[str]]]] = {}
+    models_root = root / "src" / "rhapsody_cli" / "models"
+    for path in models_root.rglob("*.py"):
+        try:
+            tree = ast.parse(path.read_text(encoding="utf-8"))
+        except (OSError, SyntaxError, UnicodeDecodeError):
+            continue
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.ClassDef):
+                continue
+            methods = {item.name for item in node.body if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))}
+            properties: Set[str] = set()
+            for item in node.body:
+                if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    decorators = {getattr(decorator, "id", None) or getattr(decorator, "attr", None) for decorator in item.decorator_list}
+                    if decorators & _PROPERTY_DECORATORS:
+                        properties.add(item.name)
+            bases = [name for name in (_base_class_name(base) for base in node.bases) if name]
+            index.setdefault(node.name, []).append((methods, properties, bases))
+    return index
+
+
+def _mro_members(index: Dict[str, List[Tuple[Set[str], Set[str], List[str]]]], class_name: str, seen: Optional[Set[str]] = None) -> Tuple[Set[str], Set[str]]:
+    """Return the union of methods and properties declared on a class and its bases."""
+    seen = seen if seen is not None else set()
+    if class_name in seen:
+        return set(), set()
+    seen.add(class_name)
+    methods: Set[str] = set()
+    properties: Set[str] = set()
+    for own_methods, own_properties, bases in index.get(class_name, []):
+        methods |= own_methods
+        properties |= own_properties
+        for base in bases:
+            base_methods, base_properties = _mro_members(index, base, seen)
+            methods |= base_methods
+            properties |= base_properties
+    return methods, properties
+
+
+def _own_members(wrapper_source: str, wrapper_class: str) -> Tuple[Set[str], Set[str]]:
+    """Return the public methods and properties declared directly on the wrapper class."""
+    tree = ast.parse(wrapper_source)
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ClassDef) and node.name == wrapper_class:
+            methods = {item.name for item in node.body if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))}
+            properties: Set[str] = set()
+            for item in node.body:
+                if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    decorators = {getattr(decorator, "id", None) or getattr(decorator, "attr", None) for decorator in item.decorator_list}
+                    if decorators & _PROPERTY_DECORATORS:
+                        properties.add(item.name)
+            return methods, properties
+    return set(), set()
+
+
+def collect_inherited_assertion_notes(root: Path, wrapper_source: str, wrapper_class: str, test_path: Path) -> List[str]:
+    """Return assertions whose only referenced wrapper member is inherited.
+
+    AGENTS.md scopes each mirrored integration file to the wrapper class's own
+    members: parent members may build the fixture but must not be the subject
+    of an assertion. This scan is advisory unless the caller promotes it.
+    """
+    own_methods, own_properties = _own_members(wrapper_source, wrapper_class)
+    index = _model_class_members(root)
+    for node in ast.walk(ast.parse(wrapper_source)):
+        if isinstance(node, ast.ClassDef) and node.name == wrapper_class:
+            methods = {item.name for item in node.body if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))}
+            properties: Set[str] = set()
+            for item in node.body:
+                if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    decorators = {getattr(decorator, "id", None) or getattr(decorator, "attr", None) for decorator in item.decorator_list}
+                    if decorators & _PROPERTY_DECORATORS:
+                        properties.add(item.name)
+            bases = [name for name in (_base_class_name(base) for base in node.bases) if name]
+            index[wrapper_class] = [(methods, properties, bases)]
+            break
+    all_methods, all_properties = _mro_members(index, wrapper_class)
+    base_only = (all_methods | all_properties) - (own_methods | own_properties)
+    if not base_only:
+        return []
+    notes: List[str] = []
+    tree = ast.parse(test_path.read_text(encoding="utf-8"))
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Assert):
+            continue
+        attributes = {child.attr for child in ast.walk(node) if isinstance(child, ast.Attribute)}
+        inherited = attributes & base_only
+        own = attributes & (own_methods | own_properties)
+        if inherited and not own:
+            notes.append(f"{test_path.name}:{node.lineno} asserts inherited member(s) only: {', '.join(sorted(inherited))}; assert an own member instead (AGENTS.md integration scope)")
+    return notes
+
+
 # Documented naming drift: catalog property name -> actual Python property name.
 # These are deliberately not "catalog-only" gaps because the wrapper exposes the
 # value under a different snake_case name.
@@ -1146,7 +1242,7 @@ def verify_not_implemented_evidence(root: Path, interface_name: str, wrapper_sou
     return issues
 
 
-def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path, strict_getters: bool = False) -> List[str]:
+def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path, strict_getters: bool = False, inherited_notes: Optional[List[str]] = None, strict_inherited: bool = False) -> List[str]:
     """Check package placement, requirement entry, and RST coverage against a validator report."""
     issues: List[str] = []
     try:
@@ -1229,6 +1325,11 @@ def verify_sync_artifacts(root: Path, interface_name: str, report_path: Path, st
                 issues.extend(verify_no_empty_finally(test_path))
                 issues.extend(verify_getter_assertions(test_path, owned_properties, blockers))
                 issues.extend(verify_getter_matrix(root, simple_name, owned_properties, test_path, strict=strict_getters, blocked=blockers))
+                notes = collect_inherited_assertion_notes(root, wrapper_source, wrapper_class, test_path)
+                if strict_inherited:
+                    issues.extend(notes)
+                elif inherited_notes is not None:
+                    inherited_notes.extend(notes)
     issues.extend(verify_not_implemented_evidence(root, simple_name, wrapper_source, test_paths.get("Unit"), test_paths.get("Integration")))
     requirements_path = first_existing(root / "docs" / "requirements" / package_dir, "{stem}.md")
     if requirements_path is None:
