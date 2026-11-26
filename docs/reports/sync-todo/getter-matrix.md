@@ -411,3 +411,25 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | `message_points` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_collaboration.py::test_message_points` | weak | WEAK |
 | `messages` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_collaboration.py::test_messages` | identity/value | OK |
 | `mode` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_collaboration.py::test_mode` | identity/value | OK |
+
+## IRPConfiguration
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `additional_sources` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_additional_sources` | identity/value | OK |
+| `all_elements_in_instrumentation_scope` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_all_elements_in_instrumentation_scope` | weak | WEAK |
+| `build_set` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_build_set` | identity/value | OK |
+| `compiler_switches` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_compiler_switches` | identity/value | OK |
+| `generate_code_for_actors` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_generate_code_for_actors` | identity/value | OK |
+| `include_path` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_include_path` | identity/value | OK |
+| `initial_instances` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_initial_instances` | weak | WEAK |
+| `initialization_code` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_initialization_code` | identity/value | OK |
+| `instrumentation_scope` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_instrumentation_scope` | weak | WEAK |
+| `instrumentation_type` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_instrumentation_type` | identity/value | OK |
+| `libraries` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_libraries` | identity/value | OK |
+| `link_switches` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_link_switches` | identity/value | OK |
+| `scope_type` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_scope_type` | identity/value | OK |
+| `standard_headers` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_standard_headers` | identity/value | OK |
+| `statechart_implementation` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_statechart_implementation` | identity/value | OK |
+| `time_model` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_time_model` | identity/value | OK |
+

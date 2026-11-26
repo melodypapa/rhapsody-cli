@@ -8,7 +8,7 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProje
 
 
 @pytest.mark.integration
-class TestRPGeneralizationIntegration:
+class TestIRPGeneralizationIntegration:
     """Integration tests for IRPGeneralization with live Rhapsody COM API."""
 
     @staticmethod
@@ -36,5 +36,4 @@ class TestRPGeneralizationIntegration:
             assert gen.meta_class == "Generalization"
             assert gen.get_base_class() == parent
         finally:
-            child.delete_from_project()
-            parent.delete_from_project()
+            pkg.delete_from_project()

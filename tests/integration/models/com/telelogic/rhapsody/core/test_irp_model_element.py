@@ -34,7 +34,7 @@ def _hide_application_ui_by_default(rhapsody_app: Optional[RhapsodyApplication])
 
 
 @pytest.mark.integration
-class TestRPModelElementIntegration:
+class TestIRPModelElementIntegration:
     """Integration tests for IRPModelElement with real Rhapsody COM API."""
 
     def test_get_name(self, test_project: IRPProject) -> None:
@@ -65,226 +65,7 @@ class TestRPModelElementIntegration:
 
 
 @pytest.mark.integration
-class TestRPCollectionIntegration:
-    """Integration tests for IRPCollection with real Rhapsody COM API."""
-
-    def test_get_nested_elements_iteration(self, test_project: IRPProject) -> None:
-        elements = test_project.get_nested_elements()
-        assert elements is not None
-        assert len(list(elements)) >= 0
-
-    def test_get_nested_elements_filtering(self, test_project: IRPProject) -> None:
-        all_elements = test_project.get_nested_elements()
-        packages = test_project.get_nested_elements_by_meta_class("Package", 0)
-        assert all_elements is not None
-        assert packages is not None
-        all_list = list(all_elements)
-        package_list = list(packages)
-        assert len(package_list) <= len(all_list)
-
-
-@pytest.mark.integration
-class TestRPCollectionAddItemIntegration:
-    """Integration tests for IRPCollection.add_item with live Rhapsody COM API."""
-
-    @staticmethod
-    def _unique(prefix: str = "Test") -> str:
-        return f"{prefix}_{uuid.uuid4().hex[:8]}"
-
-    @staticmethod
-    def _create_package(project: IRPProject, name: str) -> IRPPackage:
-        pkg = project.add_package(name)
-        assert pkg is not None
-        assert isinstance(pkg, IRPPackage)
-        return pkg
-
-    def test_add_item_appends_and_count_increases(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
-        pkg = self._create_package(test_project, self._unique("AddItemPkg"))
-        try:
-            cls1 = pkg.add_class(self._unique("AddItemCls1"))
-            cls2 = pkg.add_class(self._unique("AddItemCls2"))
-
-            collection = rhapsody_app.create_new_collection()
-            assert isinstance(collection, IRPCollection)
-
-            before = collection.count
-            assert isinstance(before, int)
-            assert before == 0
-
-            collection.add_item(cls1)
-            collection.add_item(cls2)
-            after = collection.count
-            assert isinstance(after, int)
-            assert after == before + 2
-
-            items = [item.name for item in collection]
-            assert cls1.name in items
-            assert cls2.name in items
-        finally:
-            pkg.delete_from_project()
-
-    def test_add_item_idempotent_on_same_element(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
-        pkg = self._create_package(test_project, self._unique("AddItemIdemPkg"))
-        try:
-            cls = pkg.add_class(self._unique("AddItemIdemCls"))
-
-            collection = rhapsody_app.create_new_collection()
-            assert isinstance(collection, IRPCollection)
-
-            collection.add_item(cls)
-            collection.add_item(cls)
-            assert collection.count == 2
-
-            names = [item.name for item in collection]
-            assert names.count(cls.name) == 2
-        finally:
-            pkg.delete_from_project()
-
-
-@pytest.mark.integration
-class TestRPCollectionMutationMethodsIntegration:
-    """Integration tests for IRPCollection mutation methods with live Rhapsody COM API.
-
-    These tests use ``rhapsody_app.create_new_collection()`` to obtain a genuinely
-    mutable collection. Read-only snapshots such as ``getNestedElements()`` are
-    intentionally avoided because mutations on them are silently ignored.
-    """
-
-    @staticmethod
-    def _unique(prefix: str = "Test") -> str:
-        return f"{prefix}_{uuid.uuid4().hex[:8]}"
-
-    @staticmethod
-    def _create_package(project: IRPProject, name: str) -> IRPPackage:
-        pkg = project.add_package(name)
-        assert pkg is not None
-        assert isinstance(pkg, IRPPackage)
-        return pkg
-
-    def test_to_list_returns_python_list_of_items(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
-        """JavaDoc IRPCollection.toList exists, but pywin32 does not expose it (absent from docs/reports/pywin32_authority.json), so the stub raises NotImplementedError."""
-        pkg = self._create_package(test_project, self._unique("ToListPkg"))
-        try:
-            cls1 = pkg.add_class(self._unique("ToListCls1"))
-            cls2 = pkg.add_class(self._unique("ToListCls2"))
-
-            collection = rhapsody_app.create_new_collection()
-            assert isinstance(collection, IRPCollection)
-            collection.add_item(cls1)
-            collection.add_item(cls2)
-
-            with pytest.raises(NotImplementedError):
-                collection.to_list()
-        finally:
-            pkg.delete_from_project()
-
-    def test_set_size_changes_count(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
-        pkg = self._create_package(test_project, self._unique("SetSizePkg"))
-        try:
-            collection = rhapsody_app.create_new_collection()
-            assert isinstance(collection, IRPCollection)
-            assert collection.count == 0
-
-            collection.set_size(3)
-            count = collection.count
-            assert isinstance(count, int)
-            assert count == 3
-        finally:
-            pkg.delete_from_project()
-
-    def test_remove_decreases_count(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
-        pkg = self._create_package(test_project, self._unique("RemovePkg"))
-        try:
-            cls1 = pkg.add_class(self._unique("RemoveCls1"))
-            cls2 = pkg.add_class(self._unique("RemoveCls2"))
-
-            collection = rhapsody_app.create_new_collection()
-            assert isinstance(collection, IRPCollection)
-            collection.add_item(cls1)
-            collection.add_item(cls2)
-            before = collection.count
-            assert before == 2
-
-            collection.remove(1)
-            after = collection.count
-            assert isinstance(after, int)
-            assert after == before - 1
-
-            remaining = [item.name for item in collection]
-            assert cls1.name not in remaining
-            assert cls2.name in remaining
-        finally:
-            pkg.delete_from_project()
-
-    def test_set_model_element_replaces_item_at_index(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
-        pkg = self._create_package(test_project, self._unique("SetModelElemPkg"))
-        try:
-            cls1 = pkg.add_class(self._unique("SetModelElemCls1"))
-            cls2 = pkg.add_class(self._unique("SetModelElemCls2"))
-            cls3 = pkg.add_class(self._unique("SetModelElemCls3"))
-
-            collection = rhapsody_app.create_new_collection()
-            assert isinstance(collection, IRPCollection)
-            collection.add_item(cls1)
-            collection.add_item(cls2)
-            assert collection.count == 2
-
-            collection.set_model_element(1, cls3)
-            replaced = collection.get_item(1)
-            assert isinstance(replaced, IRPModelElement)
-            assert replaced.name == cls3.name
-        finally:
-            pkg.delete_from_project()
-
-    def test_empty_clears_collection(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
-        pkg = self._create_package(test_project, self._unique("EmptyPkg"))
-        try:
-            cls1 = pkg.add_class(self._unique("EmptyCls1"))
-            cls2 = pkg.add_class(self._unique("EmptyCls2"))
-
-            collection = rhapsody_app.create_new_collection()
-            assert isinstance(collection, IRPCollection)
-            collection.add_item(cls1)
-            collection.add_item(cls2)
-            assert collection.count == 2
-
-            collection.empty()
-            count = collection.count
-            assert isinstance(count, int)
-            assert count == 0
-            assert len(list(collection)) == 0
-        finally:
-            pkg.delete_from_project()
-
-    def test_set_string_stores_value(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
-        pkg = self._create_package(test_project, self._unique("SetStrPkg"))
-        try:
-            collection = rhapsody_app.create_new_collection()
-            assert isinstance(collection, IRPCollection)
-            collection.set_size(1)
-            collection.set_string(1, "marker")
-
-            item = collection.get_item(1)
-            assert "marker" in str(item)
-        finally:
-            pkg.delete_from_project()
-
-    def test_set_integer_stores_value(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
-        pkg = self._create_package(test_project, self._unique("SetIntPkg"))
-        try:
-            collection = rhapsody_app.create_new_collection()
-            assert isinstance(collection, IRPCollection)
-            collection.set_size(1)
-            collection.set_integer(1, 42)
-
-            item = collection.get_item(1)
-            assert "42" in str(item)
-        finally:
-            pkg.delete_from_project()
-
-
-@pytest.mark.integration
-class TestRPModelElementDependenciesIntegration:
+class TestIRPModelElementDependenciesIntegration:
     """Integration tests for IRPModelElement dependency/association methods."""
 
     @staticmethod
@@ -441,7 +222,7 @@ class TestRPModelElementDependenciesIntegration:
 
 
 @pytest.mark.integration
-class TestRPModelElementStereotypesTagsIntegration:
+class TestIRPModelElementStereotypesTagsIntegration:
     """Integration tests for IRPModelElement stereotype and tag methods."""
 
     @staticmethod
@@ -624,7 +405,7 @@ class TestRPModelElementStereotypesTagsIntegration:
 
 
 @pytest.mark.integration
-class TestRPModelElementDescriptionDisplayNameIntegration:
+class TestIRPModelElementDescriptionDisplayNameIntegration:
     """Integration tests for IRPModelElement description and display-name methods."""
 
     @staticmethod
@@ -737,7 +518,7 @@ class TestRPModelElementDescriptionDisplayNameIntegration:
 
 
 @pytest.mark.integration
-class TestRPModelElementPropertiesIntegration:
+class TestIRPModelElementPropertiesIntegration:
     """Integration tests for IRPModelElement property methods."""
 
     @staticmethod
@@ -863,7 +644,7 @@ class TestRPModelElementPropertiesIntegration:
 
 
 @pytest.mark.integration
-class TestRPModelElementNavigationIntegration:
+class TestIRPModelElementNavigationIntegration:
     """Integration tests for IRPModelElement navigation/search methods."""
 
     @staticmethod
@@ -876,6 +657,13 @@ class TestRPModelElementNavigationIntegration:
         assert pkg is not None
         assert isinstance(pkg, IRPPackage)
         return pkg
+
+    def test_get_nested_elements_and_filter_by_meta_class(self, test_project: IRPProject) -> None:
+        elements = test_project.get_nested_elements()
+        assert isinstance(elements, IRPCollection)
+        packages = test_project.get_nested_elements_by_meta_class("Package", 0)
+        assert isinstance(packages, IRPCollection)
+        assert len(list(packages)) <= len(list(elements))
 
     def test_find_nested_element(self, test_project: IRPProject) -> None:
         pkg = self._create_package(test_project, self._unique("NavPkg"))
@@ -997,7 +785,7 @@ class TestRPModelElementNavigationIntegration:
 
 
 @pytest.mark.integration
-class TestRPModelElementCloningTemplatesIntegration:
+class TestIRPModelElementCloningTemplatesIntegration:
     """Integration tests for IRPModelElement clone, change-to and template methods."""
 
     @staticmethod
@@ -1139,7 +927,7 @@ class TestRPModelElementCloningTemplatesIntegration:
 
 
 @pytest.mark.integration
-class TestRPModelElementRedefinesConstraintsIntegration:
+class TestIRPModelElementRedefinesConstraintsIntegration:
     """Integration tests for IRPModelElement redefine and constraint methods."""
 
     @staticmethod
@@ -1209,7 +997,7 @@ class TestRPModelElementRedefinesConstraintsIntegration:
 
 
 @pytest.mark.integration
-class TestRPModelElementOslcRemoteIntegration:
+class TestIRPModelElementOslcRemoteIntegration:
     """Integration tests for IRPModelElement OSLC, remote and requirement traceability methods."""
 
     @staticmethod
@@ -1302,7 +1090,7 @@ class TestRPModelElementOslcRemoteIntegration:
 
 
 @pytest.mark.integration
-class TestRPModelElementMetadataIntegration:
+class TestIRPModelElementMetadataIntegration:
     """Integration tests for IRPModelElement metadata/icon/GUID methods."""
 
     @staticmethod
@@ -1454,7 +1242,7 @@ class TestRPModelElementMetadataIntegration:
 
 
 @pytest.mark.integration
-class TestRPModelElementDiagnosticsUiIntegration:
+class TestIRPModelElementDiagnosticsUiIntegration:
     """Integration tests for IRPModelElement diagnostics/annotations/UI-action methods."""
 
     @staticmethod

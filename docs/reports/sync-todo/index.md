@@ -243,6 +243,8 @@ layers. A row whose member no longer raises is stale and fails Step 8.
 | IRPComponent | `get_path` | `getPath` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPComponent | `set_path` | `setPath` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPComponent | `update_contained_diagrams_on_server` | `updateContainedDiagramsOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPConfiguration | `get_path` | `getPath` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPConfiguration | `set_path` | `setPath` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPClass | `is_abstract` | `isAbstract` | not-exposed | The setter's `setIsAbstract` is absent from the catalog and listed in `documented_unavailable`; the `isAbstract` property accepts the write but never persists it (observed live). | — |
 | IRPClass | `add_event_reception_with_event` | `addEventReceptionWithEvent` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPClass | `update_contained_diagrams_on_server` | `updateContainedDiagramsOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
@@ -321,6 +323,22 @@ wrapper-signature fix before its getter/member row can close.
 | IRPCollaboration | `interaction_operators` | No documented API populates this read-only property on a fresh collaboration; only the documented empty/default state is observable. |
 | IRPCollaboration | `message_points` | No documented API populates this read-only property on a fresh collaboration; only the documented empty/default state is observable. |
 | IRPCollaboration | `mode` | No documented API populates this read-only property on a fresh collaboration; only the documented empty/default state is observable. |
+| IRPConfiguration | `additional_sources` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `all_elements_in_instrumentation_scope` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `build_set` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `compiler_switches` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `generate_code_for_actors` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `include_path` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `initial_instances` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `initialization_code` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `instrumentation_scope` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `instrumentation_type` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `libraries` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `link_switches` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `scope_type` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `standard_headers` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `statechart_implementation` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `time_model` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
 | IRPProject | `nodes` | `nodes` is inherited from `IRPPackage`; the project root rejects both `addNode(name)` and `addNewAggr("Node", name)`, and a nested-package node is not returned by `project.nodes`. No populated project-root fixture is available. |
 | IRPUseCase | `is_behavior_overriden` | Runtime stub (user approved 2026-11-25): setter faults live; see the NotImplementedError evidence ledger. |
 

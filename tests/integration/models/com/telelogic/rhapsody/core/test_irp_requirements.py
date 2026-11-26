@@ -16,7 +16,7 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProje
 
 
 @pytest.mark.integration
-class TestRPRequirementIntegration:
+class TestIRPRequirementIntegration:
     """Integration tests for IRPRequirement with real Rhapsody COM API."""
 
     @staticmethod

@@ -5131,6 +5131,10 @@
       "setPath",
       "updateContainedDiagramsOnServer"
     ],
+    "IRPConfiguration": [
+      "getPath",
+      "setPath"
+    ],
     "IRPDependency": [
       "isNeedToMigrate",
       "setLinkType"

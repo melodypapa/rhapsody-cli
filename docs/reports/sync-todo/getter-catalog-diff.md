@@ -14,7 +14,7 @@ review rather than a failure.
 
 | Status | Count |
 | --- | --- |
-| match | 214 |
+| match | 230 |
 | catalog-missing | 0 |
 | shape-mismatch | 0 |
 | no-binding | 0 |
@@ -566,3 +566,31 @@ review rather than a failure.
 | Catalog property | Derived Python name | Status |
 | --- | --- | --- |
 | — | — | — |
+
+## IRPConfiguration
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `additional_sources` | `additionalSources` | property | property | match |
+| `all_elements_in_instrumentation_scope` | `allElementsInInstrumentationScope` | property | property | match |
+| `build_set` | `buildSet` | property | property | match |
+| `compiler_switches` | `compilerSwitches` | property | property | match |
+| `generate_code_for_actors` | `generateCodeForActors` | property | property | match |
+| `include_path` | `includePath` | property | property | match |
+| `initial_instances` | `initialInstances` | property | property | match |
+| `initialization_code` | `initializationCode` | property | property | match |
+| `instrumentation_scope` | `instrumentationScope` | property | property | match |
+| `instrumentation_type` | `instrumentationType` | property | property | match |
+| `libraries` | `libraries` | property | property | match |
+| `link_switches` | `linkSwitches` | property | property | match |
+| `scope_type` | `scopeType` | property | property | match |
+| `standard_headers` | `standardHeaders` | property | property | match |
+| `statechart_implementation` | `statechartImplementation` | property | property | match |
+| `time_model` | `timeModel` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+

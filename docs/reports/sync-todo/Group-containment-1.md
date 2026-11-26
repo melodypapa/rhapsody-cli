@@ -25,7 +25,7 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | `irp_component_api_report` | IRPComponent | `elements/containment/model_component.py` | 17 | 43 | 7/8 (①②③④⑥⑦⑧) | ⬜ open |
 | 2 | `irp_collaboration_api_report` | IRPCollaboration | `elements/containment/model_collaboration.py` | 1 | 39 | 7/8 (①②③④⑥⑦⑧) | ⬜ open |
-| 3 | `irp_configuration_api_report` | IRPConfiguration | `rhapsody_cli/models/elements/containment/model_configuration.py` | 23 | 46 | 1/8 (②) | ⬜ open |
+| 3 | `irp_configuration_api_report` | IRPConfiguration | `rhapsody_cli/models/elements/containment/model_configuration.py` | 23 | 46 | 7/8 (①②③④⑥⑦⑧) | ⬜ open |
 | 4 | `irp_node_api_report` | IRPNode | `rhapsody_cli/models/elements/containment/model_node.py` | 2 | 6 | 1/8 (②) | ⬜ open |
 | 5 | `irp_component_instance_api_report` | IRPComponentInstance | `rhapsody_cli/models/elements/containment/model_component_instance.py` | 0 | 3 | 1/8 (②) | ⬜ open |
 | 6 | `irp_profile_api_report` | IRPProfile | `rhapsody_cli/models/elements/containment/model_profile.py` | 0 | 0 | 1/8 (②) | ⬜ open |
@@ -69,18 +69,18 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 </details>
 
 <details>
-<summary><code>irp_configuration_api_report</code> · IRPConfiguration · 1/8 steps · ⬜ open</summary>
+<summary><code>irp_configuration_api_report</code> · IRPConfiguration · 7/8 steps · ⬜ open</summary>
 
-- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
-- **Note:** usage 73 src / 16 test refs, 46 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
-- [ ] ① §1
-- [x] ② §2
-- [ ] ③ §3
-- [ ] ④ §4
-- [ ] ⑤ §5
-- [ ] ⑥ §6
-- [ ] ⑦ §7
-- [ ] ⑧ §8
+- **Status (2026-11-27):** verify_sync passes; 7/8 steps complete. §5 stays open on read-only getter blockers.
+- **Note:** usage 73 src / 16 test refs, 46 owned members. Sixteen accessor pairs mapped to COM properties; `get_path`/`set_path` are documented unavailable stubs.
+- [x] ① §1 — 46 owned members reconciled; 16 getter-matrix rows (all empty/default with blockers).
+- [x] ② §2 — canonical wrapper/tests/exports verified; no module move required.
+- [x] ③ §3 — report regenerated from authority: 0 actionable deviations; path stubs recorded in the ledger.
+- [x] ④ §4 — 48 fake-COM unit tests, 100% statements/branches (129 statements, 0 branches); full unit suite 2315 passed.
+- [ ] ⑤ §5 — 17 integration tests with a real configuration; populated fixtures for read-only getters blocked by absent APIs (P0 in `index.md`); live execution is Windows-only.
+- [x] ⑥ §6 — `docs/requirements/com/telelogic/rhapsody/core/irp_configuration.md`.
+- [x] ⑦ §7 — `docs/api/com/telelogic/rhapsody/core/irp_configuration.rst` documents all 33 public members; toctree entry added.
+- [x] ⑧ §8 — validator 0 actionable; `verify_sync.py IRPConfiguration --strict-getters` green; skill harness 90 passed; ruff/black/mypy clean.
 
 </details>
 

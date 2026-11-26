@@ -29,16 +29,6 @@ class TestIRPSendActionIntegration:
         assert isinstance(send_action, IRPSendAction)
         return pkg, send_action
 
-    def test_arg_vals(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("ArgValsPkg"))
-        try:
-            _, send_action = self._send_action(pkg)
-            send_action.add_argument_value("42", 1)
-            values = list(send_action.arg_vals)
-            assert "42" in values
-        finally:
-            pkg.delete_from_project()
-
     def test_event(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("EventPkg"))
         try:

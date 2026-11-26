@@ -447,6 +447,10 @@ class TestIRPPackageIntegration:
     def test_find_class(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
+            created = pkg.add_class(self._unique("FindableClass"))
+            found = pkg.find_class(created.name)
+            assert found is not None
+            assert found == created
             assert pkg.find_class(self._unique("missing_arg")) is None
         finally:
             pkg.delete_from_project()
@@ -454,6 +458,10 @@ class TestIRPPackageIntegration:
     def test_find_actor(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
+            created = pkg.add_actor(self._unique("FindableActor"))
+            found = pkg.find_actor(created.name)
+            assert found is not None
+            assert found == created
             assert pkg.find_actor(self._unique("missing_arg")) is None
         finally:
             pkg.delete_from_project()
@@ -461,6 +469,10 @@ class TestIRPPackageIntegration:
     def test_find_use_case(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
+            created = pkg.add_use_case(self._unique("FindableUseCase"))
+            found = pkg.find_use_case(created.name)
+            assert found is not None
+            assert found == created
             assert pkg.find_use_case(self._unique("missing_arg")) is None
         finally:
             pkg.delete_from_project()
@@ -504,6 +516,10 @@ class TestIRPPackageIntegration:
     def test_find_event(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
+            created = pkg.add_event(self._unique("FindableEvent"))
+            found = pkg.find_event(created.name)
+            assert found is not None
+            assert found == created
             assert pkg.find_event(self._unique("missing_arg")) is None
         finally:
             pkg.delete_from_project()
@@ -538,6 +554,10 @@ class TestIRPPackageIntegration:
     def test_find_node(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
+            created = pkg.add_node(self._unique("FindableNode"))
+            found = pkg.find_node(created.name)
+            assert found is not None
+            assert found == created
             assert pkg.find_node(self._unique("missing_arg")) is None
         finally:
             pkg.delete_from_project()
@@ -594,6 +614,10 @@ class TestIRPPackageIntegration:
     def test_find_type(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
+            created = pkg.add_type(self._unique("FindableType"))
+            found = pkg.find_type(created.name)
+            assert found is not None
+            assert found == created
             assert pkg.find_type(self._unique("missing_arg")) is None
         finally:
             pkg.delete_from_project()
@@ -610,6 +634,10 @@ class TestIRPPackageIntegration:
     def test_find_global_function(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
+            created = pkg.add_global_function(self._unique("FindableGlobalFunction"))
+            found = pkg.find_global_function(created.name)
+            assert found is not None
+            assert found == created
             assert pkg.find_global_function(self._unique("missing_arg")) is None
         finally:
             pkg.delete_from_project()
@@ -659,6 +687,12 @@ class TestIRPPackageIntegration:
     def test_find_global_object(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
+            created_class = pkg.add_class(self._unique("FindableGlobalClass"))
+            object_name = self._unique("FindableGlobalObject")
+            created = pkg.add_global_object(object_name, created_class.name, pkg.name)
+            found = pkg.find_global_object(object_name)
+            assert found is not None
+            assert found == created
             assert pkg.find_global_object(self._unique("missing_arg")) is None
         finally:
             pkg.delete_from_project()
@@ -698,6 +732,10 @@ class TestIRPPackageIntegration:
     def test_find_global_variable(self, test_project: IRPProject) -> None:
         pkg = self._pkg(test_project)
         try:
+            created = pkg.add_global_variable(self._unique("FindableGlobalVariable"))
+            found = pkg.find_global_variable(created.name)
+            assert found is not None
+            assert found == created
             assert pkg.find_global_variable(self._unique("missing_arg")) is None
         finally:
             pkg.delete_from_project()

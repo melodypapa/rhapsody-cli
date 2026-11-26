@@ -1,4 +1,9 @@
-"""Integration tests for IRPType with live Rhapsody COM API."""
+"""Integration tests for IRPType with live Rhapsody COM API.
+
+The 20+ ``is_*`` predicates are asserted over a single fixture (one
+package/class/type roundtrip) instead of one roundtrip each; the enumeration
+case additionally pins the two predicates whose meaning is unambiguous.
+"""
 
 import uuid
 
@@ -28,11 +33,19 @@ class TestIRPTypeIntegration:
         assert isinstance(type_element, IRPType)
         return type_element, cls, pkg
 
-    def test_get_declaration(self, test_project: IRPProject) -> None:
+    def test_declaration_roundtrip(self, test_project: IRPProject) -> None:
         type_element, _cls, pkg = self._create_type(test_project)
         try:
             type_element.declaration = "int x"
             assert type_element.declaration == "int x"
+        finally:
+            pkg.delete_from_project()
+
+    def test_kind_roundtrip(self, test_project: IRPProject) -> None:
+        type_element, _cls, pkg = self._create_type(test_project)
+        try:
+            type_element.kind = "Enumeration"
+            assert type_element.kind == "Enumeration"
         finally:
             pkg.delete_from_project()
 
@@ -46,51 +59,49 @@ class TestIRPTypeIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_get_is_predefined(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("TypePkg"))
-        ti = IRPType(pkg.add_type(self._unique("Type"))._com)
+    def test_is_predicates_and_flags_read_as_ints_on_plain_type(self, test_project: IRPProject) -> None:
+        """Every is_*/typedef flag resolves through the live COM binding and
+        returns an int-typed value; semantic pins live in the enumeration test."""
+        type_element, _cls, pkg = self._create_type(test_project)
         try:
-            assert ti.is_predefined in (0, 1)
+            for predicate in (
+                type_element.is_array,
+                type_element.is_enum,
+                type_element.is_equal_to,
+                type_element.is_implicit,
+                type_element.is_kind_enumeration,
+                type_element.is_kind_language,
+                type_element.is_kind_struct,
+                type_element.is_kind_typedef,
+                type_element.is_kind_union,
+                type_element.is_pointer,
+                type_element.is_pointer_to_pointer,
+                type_element.is_reference,
+                type_element.is_reference_to_pointer,
+                type_element.is_struct,
+                type_element.is_template,
+                type_element.is_union,
+            ):
+                assert predicate() in (0, 1)
+            for flag in (
+                type_element.is_predefined,
+                type_element.is_typedef,
+                type_element.is_typedef_constant,
+                type_element.is_typedef_ordered,
+                type_element.is_typedef_reference,
+            ):
+                assert flag in (0, 1)
         finally:
             pkg.delete_from_project()
 
-    def test_get_is_typedef(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("TypePkg"))
-        ti = IRPType(pkg.add_type(self._unique("Type"))._com)
-        try:
-            assert ti.is_typedef in (0, 1)
-        finally:
-            pkg.delete_from_project()
-
-    def test_get_is_typedef_constant(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("TypePkg"))
-        ti = IRPType(pkg.add_type(self._unique("Type"))._com)
-        try:
-            assert ti.is_typedef_constant in (0, 1)
-        finally:
-            pkg.delete_from_project()
-
-    def test_get_is_typedef_ordered(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("TypePkg"))
-        ti = IRPType(pkg.add_type(self._unique("Type"))._com)
-        try:
-            assert ti.is_typedef_ordered in (0, 1)
-        finally:
-            pkg.delete_from_project()
-
-    def test_get_is_typedef_reference(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("TypePkg"))
-        ti = IRPType(pkg.add_type(self._unique("Type"))._com)
-        try:
-            assert ti.is_typedef_reference in (0, 1)
-        finally:
-            pkg.delete_from_project()
-
-    def test_get_kind(self, test_project: IRPProject) -> None:
+    def test_is_enum_flags_follow_kind(self, test_project: IRPProject) -> None:
+        """An Enumeration-kind type must report the enum predicates as set —
+        the two is_* predicates whose live semantics are unambiguous."""
         type_element, _cls, pkg = self._create_type(test_project)
         try:
             type_element.kind = "Enumeration"
-            assert type_element.kind == "Enumeration"
+            assert type_element.is_enum() == 1
+            assert type_element.is_kind_enumeration() == 1
         finally:
             pkg.delete_from_project()
 
@@ -110,133 +121,5 @@ class TestIRPTypeIntegration:
             # blocker (index.md) and the getter asserts the observed default.
             value = type_element.typedef_multiplicity
             assert value in {"1", "0..1"}
-        finally:
-            pkg.delete_from_project()
-
-    def test_is_array(self, test_project: IRPProject) -> None:
-        type_element, _cls, pkg = self._create_type(test_project)
-        try:
-            assert type_element.is_array() in (0, 1)
-        finally:
-            pkg.delete_from_project()
-
-    def test_is_enum(self, test_project: IRPProject) -> None:
-        type_element, _cls, pkg = self._create_type(test_project)
-        try:
-            assert type_element.is_enum() in (0, 1)
-        finally:
-            pkg.delete_from_project()
-
-    def test_is_equal_to(self, test_project: IRPProject) -> None:
-        type_element, _cls, pkg = self._create_type(test_project)
-        try:
-            assert type_element.is_equal_to() in (0, 1)
-        finally:
-            pkg.delete_from_project()
-
-    def test_is_implicit(self, test_project: IRPProject) -> None:
-        type_element, _cls, pkg = self._create_type(test_project)
-        try:
-            assert type_element.is_implicit() in (0, 1)
-        finally:
-            pkg.delete_from_project()
-
-    def test_is_kind_enumeration(self, test_project: IRPProject) -> None:
-        type_element, _cls, pkg = self._create_type(test_project)
-        try:
-            assert type_element.is_kind_enumeration() in (0, 1)
-        finally:
-            pkg.delete_from_project()
-
-    def test_is_kind_language(self, test_project: IRPProject) -> None:
-        type_element, _cls, pkg = self._create_type(test_project)
-        try:
-            assert type_element.is_kind_language() in (0, 1)
-        finally:
-            pkg.delete_from_project()
-
-    def test_is_kind_struct(self, test_project: IRPProject) -> None:
-        type_element, _cls, pkg = self._create_type(test_project)
-        try:
-            assert type_element.is_kind_struct() in (0, 1)
-        finally:
-            pkg.delete_from_project()
-
-    def test_is_kind_typedef(self, test_project: IRPProject) -> None:
-        type_element, _cls, pkg = self._create_type(test_project)
-        try:
-            assert type_element.is_kind_typedef() in (0, 1)
-        finally:
-            pkg.delete_from_project()
-
-    def test_is_kind_union(self, test_project: IRPProject) -> None:
-        type_element, _cls, pkg = self._create_type(test_project)
-        try:
-            assert type_element.is_kind_union() in (0, 1)
-        finally:
-            pkg.delete_from_project()
-
-    def test_is_pointer(self, test_project: IRPProject) -> None:
-        type_element, _cls, pkg = self._create_type(test_project)
-        try:
-            assert type_element.is_pointer() in (0, 1)
-        finally:
-            pkg.delete_from_project()
-
-    def test_is_pointer_to_pointer(self, test_project: IRPProject) -> None:
-        type_element, _cls, pkg = self._create_type(test_project)
-        try:
-            assert type_element.is_pointer_to_pointer() in (0, 1)
-        finally:
-            pkg.delete_from_project()
-
-    def test_is_reference(self, test_project: IRPProject) -> None:
-        type_element, _cls, pkg = self._create_type(test_project)
-        try:
-            assert type_element.is_reference() in (0, 1)
-        finally:
-            pkg.delete_from_project()
-
-    def test_is_reference_to_pointer(self, test_project: IRPProject) -> None:
-        type_element, _cls, pkg = self._create_type(test_project)
-        try:
-            assert type_element.is_reference_to_pointer() in (0, 1)
-        finally:
-            pkg.delete_from_project()
-
-    def test_is_struct(self, test_project: IRPProject) -> None:
-        type_element, _cls, pkg = self._create_type(test_project)
-        try:
-            assert type_element.is_struct() in (0, 1)
-        finally:
-            pkg.delete_from_project()
-
-    def test_is_template(self, test_project: IRPProject) -> None:
-        type_element, _cls, pkg = self._create_type(test_project)
-        try:
-            assert type_element.is_template() in (0, 1)
-        finally:
-            pkg.delete_from_project()
-
-    def test_is_union(self, test_project: IRPProject) -> None:
-        type_element, _cls, pkg = self._create_type(test_project)
-        try:
-            assert type_element.is_union() in (0, 1)
-        finally:
-            pkg.delete_from_project()
-
-    def test_set_declaration(self, test_project: IRPProject) -> None:
-        type_element, _cls, pkg = self._create_type(test_project)
-        try:
-            type_element.declaration = "int x"
-            assert type_element.declaration == "int x"
-        finally:
-            pkg.delete_from_project()
-
-    def test_set_kind(self, test_project: IRPProject) -> None:
-        type_element, _cls, pkg = self._create_type(test_project)
-        try:
-            type_element.kind = "Enumeration"
-            assert type_element.kind == "Enumeration"
         finally:
             pkg.delete_from_project()

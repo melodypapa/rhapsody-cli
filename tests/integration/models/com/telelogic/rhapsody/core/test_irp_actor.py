@@ -33,7 +33,7 @@ class TestIRPActorIntegration:
             actor.is_behavior_overriden = False
             assert actor.is_behavior_overriden is False
         finally:
-            actor.delete_from_project()
+            pkg.delete_from_project()
 
     def test_update_contained_diagrams_on_server_is_documented_unavailable(self, test_project: IRPProject) -> None:
         """JavaDoc declares updateContainedDiagramsOnServer(int), but the registered IRPActor typelib/catalog expose no member; the stub raises before dispatch."""
@@ -43,7 +43,7 @@ class TestIRPActorIntegration:
             with pytest.raises(NotImplementedError):
                 actor.update_contained_diagrams_on_server(0)
         finally:
-            actor.delete_from_project()
+            pkg.delete_from_project()
 
     def test_add_event_reception_with_event(self, test_project: IRPProject) -> None:
         """JavaDoc defines addEventReceptionWithEvent(name, event), but the IRPActor typelib/catalog expose no member; the stub raises before dispatch."""
@@ -60,4 +60,4 @@ class TestIRPActorIntegration:
             with pytest.raises(NotImplementedError, match="addEventReceptionWithEvent is not exposed by the registered pywin32 interface"):
                 actor.add_event_reception_with_event(reception_name, cast(IRPEvent, event))
         finally:
-            actor.delete_from_project()
+            pkg.delete_from_project()

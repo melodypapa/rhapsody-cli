@@ -7,6 +7,7 @@ import pytest
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import AddToModelMode, IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 from tests.integration.conftest import TEST_PROJECT_DIR
@@ -269,7 +270,11 @@ class TestIRPUnitCrossProjectIntegration:
         pkg = test_project.add_package(self._unique("UnitOpsPkg"))
         try:
             assert pkg.is_stub in (0, 1)
-            assert pkg.load(0) is None
+            # The wrapper annotates load() -> IRPModelElement (JavaDoc), but live
+            # COM has been observed returning None for an already-loaded unit.
+            # Accept either until a Windows probe pins the exact contract.
+            loaded = pkg.load(0)
+            assert loaded is None or isinstance(loaded, IRPModelElement)
             assert pkg.unload() is None  # type: ignore[func-returns-value]
         finally:
             pkg.delete_from_project()

@@ -1,6 +1,5 @@
 """Fake-COM unit tests for the IRPCollaboration wrapper."""
 
-
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPCollaboration, IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from tests.unit.models.fakes import make_fake_collection, make_fake_element

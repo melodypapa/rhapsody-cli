@@ -1,16 +1,26 @@
+"""Integration tests for IRPInstance's own members with a live instance.
+
+``add_new_aggr`` is an IRPModelElement method used only to build the fixture;
+every assertion below targets an IRPInstance-owned member. ``add_link``-based
+fixtures live in test_irp_package.py; here the link is asserted through the
+instance-side ``get_in_links``/``get_out_links`` members.
+"""
+
 import uuid
 
 import pytest
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPInstance
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPInstance, IRPRelation
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class import IRPClass
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 
 
 @pytest.mark.integration
 class TestIRPInstanceIntegration:
-    """Integration tests for IRPInstance's own documented-unavailable stubs with a live instance."""
+    """Integration tests for IRPInstance's own members with a live instance."""
 
     @staticmethod
     def _unique(prefix: str = "Test") -> str:
@@ -36,5 +46,75 @@ class TestIRPInstanceIntegration:
         try:
             with pytest.raises(NotImplementedError):
                 instance.update_contained_diagrams_on_server(1)
+        finally:
+            pkg.delete_from_project()
+
+    def test_attribute_value_roundtrip(self, test_project: IRPProject) -> None:
+        pkg, cls, instance = self._create_instance(test_project, self._unique("AttrValPkg"), self._unique("AttrValCls"), self._unique("AttrValInst"))
+        try:
+            attribute_name = self._unique("count")
+            cls.add_attribute(attribute_name)
+
+            instance.set_attribute_value(attribute_name, "42")
+
+            assert instance.get_attribute_value(attribute_name) == "42"
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_in_links_and_get_out_links(self, test_project: IRPProject) -> None:
+        pkg = test_project.add_package(self._unique("InstLinksPkg"))
+        try:
+            from_class = pkg.add_class(self._unique("LinkFrom"))
+            to_class = pkg.add_class(self._unique("LinkTo"))
+            association = from_class.add_relation_to(to_class, "from", "Association", "1", "to", "Association", "1", "")
+            from_part = IRPInstance(from_class.add_new_aggr("Instance", self._unique("FromPart"))._com)
+            to_part = IRPInstance(to_class.add_new_aggr("Instance", self._unique("ToPart"))._com)
+            link = pkg.add_link(from_part, to_part, association, None, None)
+
+            out_links = from_part.get_out_links()
+            in_links = to_part.get_in_links()
+            assert isinstance(out_links, IRPCollection)
+            assert isinstance(in_links, IRPCollection)
+            assert link in list(out_links)
+            assert link in list(in_links)
+        finally:
+            pkg.delete_from_project()
+
+    def test_add_relation_to_the_whole(self, test_project: IRPProject) -> None:
+        pkg, _cls, instance = self._create_instance(test_project, self._unique("WholePkg"), self._unique("WholeCls"), self._unique("WholeInst"))
+        try:
+            relation = instance.add_relation_to_the_whole(self._unique("WholeRel"))
+            assert isinstance(relation, IRPRelation)
+        finally:
+            pkg.delete_from_project()
+
+    def test_instantiated_by_roundtrip(self, test_project: IRPProject) -> None:
+        pkg, cls, instance = self._create_instance(test_project, self._unique("InstByPkg"), self._unique("InstByCls"), self._unique("InstByInst"))
+        try:
+            operation = cls.add_operation(self._unique("factoryOp"))
+            assert isinstance(operation, IRPOperation)
+
+            instance.instantiated_by = operation
+
+            result = instance.instantiated_by
+            assert result is not None
+            assert result._com is operation._com
+        finally:
+            pkg.delete_from_project()
+
+    def test_get_list_of_initializer_arguments(self, test_project: IRPProject) -> None:
+        pkg, _cls, instance = self._create_instance(test_project, self._unique("InitArgsPkg"), self._unique("InitArgsCls"), self._unique("InitArgsInst"))
+        try:
+            arguments = instance.get_list_of_initializer_arguments()
+            assert isinstance(arguments, IRPCollection)
+            assert len(list(arguments)) == 0
+        finally:
+            pkg.delete_from_project()
+
+    def test_set_explicit_and_set_implicit(self, test_project: IRPProject) -> None:
+        pkg, _cls, instance = self._create_instance(test_project, self._unique("ExplicitPkg"), self._unique("ExplicitCls"), self._unique("ExplicitInst"))
+        try:
+            assert instance.set_explicit() is None  # type: ignore[func-returns-value]
+            assert instance.set_implicit() is None  # type: ignore[func-returns-value]
         finally:
             pkg.delete_from_project()
