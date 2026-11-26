@@ -2,14 +2,12 @@
 
 from typing import TYPE_CHECKING, cast
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_action import IRPAction
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions import (
     IRPAcceptEventAction,
     IRPAcceptTimeEvent,
     IRPActionBlock,
     IRPCallOperation,
     IRPContextSpecification,
-    IRPSendAction,
 )
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
@@ -170,75 +168,3 @@ class TestRPContextSpecification:
         fake = make_fake_element("ContextSpecification", properties={"name": "CS1"})
         wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, IRPContextSpecification)
-
-
-class TestRPSendAction:
-    def test_is_action(self) -> None:
-        fake = make_fake_element("SendAction", properties={"name": "SA1"})
-        sa = IRPSendAction(fake)
-        assert isinstance(sa, IRPAction)
-        assert sa.name == "SA1"
-
-    def test_add_argument_value_delegates(self) -> None:
-        fake = make_fake_element("SendAction")
-        sa = IRPSendAction(fake)
-        sa.add_argument_value("value1", 1)
-        fake.addArgumentValue.assert_called_once_with("value1", 1)
-
-    def test_get_arg_vals_returns_collection(self) -> None:
-        fake = make_fake_element("SendAction")
-        fake.getArgVals.return_value = make_fake_collection(["arg1", "arg2"])
-        sa = IRPSendAction(fake)
-        result = sa.get_arg_vals()
-        assert isinstance(result, IRPCollection)
-        assert len(result) == 2
-
-    def test_get_event_wraps_result(self) -> None:
-        fake = make_fake_element("SendAction")
-        event = make_fake_element("Event", properties={"name": "MyEvent"})
-        fake.getEvent.return_value = event
-        sa = IRPSendAction(fake)
-        result = sa.get_event()
-        assert result.name == "MyEvent"
-
-    def test_get_invoked_operation_wraps_result(self) -> None:
-        fake = make_fake_element("SendAction")
-        op = make_fake_element("Operation", properties={"name": "myOp"})
-        fake.getInvokedOperation.return_value = op
-        sa = IRPSendAction(fake)
-        result = sa.get_invoked_operation()
-        assert result.name == "myOp"
-
-    def test_get_target_wraps_result(self) -> None:
-        fake = make_fake_element("SendAction")
-        target = make_fake_element("Class", properties={"name": "MyClass"})
-        fake.getTarget.return_value = target
-        sa = IRPSendAction(fake)
-        result = sa.get_target()
-        assert cast(IRPModelElement, result).name == "MyClass"
-
-    def test_set_event_delegates(self) -> None:
-        fake = make_fake_element("SendAction")
-        event = make_fake_element("Event", properties={"name": "MyEvent"})
-        sa = IRPSendAction(fake)
-        sa.set_event(cast("IRPEvent", IRPModelElement.wrap(event)))
-        fake.setEvent.assert_called_once_with(event)
-
-    def test_set_invoked_operation_delegates(self) -> None:
-        fake = make_fake_element("SendAction")
-        op = make_fake_element("Operation", properties={"name": "myOp"})
-        sa = IRPSendAction(fake)
-        sa.set_invoked_operation(cast("IRPInterfaceItem", IRPModelElement.wrap(op)))
-        fake.setInvokedOperation.assert_called_once_with(op)
-
-    def test_set_target_delegates(self) -> None:
-        fake = make_fake_element("SendAction")
-        target = make_fake_element("Class", properties={"name": "MyClass"})
-        sa = IRPSendAction(fake)
-        sa.set_target(cast(IRPModelElement, IRPModelElement.wrap(target)))
-        fake.setTarget.assert_called_once_with(target)
-
-    def test_is_registered(self) -> None:
-        fake = make_fake_element("SendAction", properties={"name": "SA1"})
-        wrapped = IRPModelElement.wrap(fake)
-        assert isinstance(wrapped, IRPSendAction)

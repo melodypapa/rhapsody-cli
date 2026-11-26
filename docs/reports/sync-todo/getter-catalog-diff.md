@@ -14,7 +14,7 @@ review rather than a failure.
 
 | Status | Count |
 | --- | --- |
-| match | 174 |
+| match | 178 |
 | catalog-missing | 0 |
 | shape-mismatch | 0 |
 | no-binding | 0 |
@@ -410,6 +410,21 @@ review rather than a failure.
 | Python getter | COM member | Binding shape | Catalog shape | Status |
 | --- | --- | --- | --- | --- |
 | `body` | `body` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPSendAction
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `arg_vals` | `argVals` | property | property | match |
+| `event` | `event` | property | property | match |
+| `invoked_operation` | `invokedOperation` | property | property | match |
+| `target` | `target` | property | property | match |
 
 ### Catalog properties with no matching Python property
 

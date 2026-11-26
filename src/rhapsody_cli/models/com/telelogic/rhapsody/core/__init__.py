@@ -14,7 +14,6 @@ if TYPE_CHECKING:
         IRPActionBlock,
         IRPCallOperation,
         IRPContextSpecification,
-        IRPSendAction,
     )
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlowItem, IRPObjectNode
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actor import IRPActor
@@ -234,7 +233,7 @@ _EXPORT_MODULES = {
     "IRPSearchQuery": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_codegen",
     "IRPSearchResult": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_codegen",
     "IRPSelection": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_ide",
-    "IRPSendAction": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions",
+    "IRPSendAction": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_send_action",
     "IRPSequenceDiagram": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types",
     "IRPState": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statemachine",
     "IRPStateVertex": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statemachine",
