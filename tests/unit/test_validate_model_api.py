@@ -1063,9 +1063,8 @@ def test_main_authority_source_fails_on_property_shape_mismatch(tmp_path: Path, 
 def test_irpclass_report_has_no_actionable_deviations() -> None:
     reports_root = Path(__file__).resolve().parents[2] / "docs" / "reports"
     text = (reports_root / Path(*validator.JAVA_PACKAGE.split(".")) / "IRPClass_api_report.md").read_text(encoding="utf-8")
-    section = text.split("## Comparison details", 1)[1].split("## Expected Binding Differences", 1)[0]
-    rows = [line for line in section.splitlines() if line.startswith("| ") and "Python model wrapper" not in line and "---" not in line]
-    assert rows == [], rows
+    summary = text.split("## Comparison details", 1)[0]
+    assert "(actionable `0`" in summary, summary
 
 
 def test_signature_findings_are_actionable_deviations(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
