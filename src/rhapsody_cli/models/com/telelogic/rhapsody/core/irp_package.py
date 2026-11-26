@@ -32,9 +32,9 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPLink
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_instance import IRPInstance
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_other_model import IRPSysMLPort
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statechart import IRPStatechart
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_sysml_port import IRPSysMLPort
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_use_case import IRPUseCase
 
 

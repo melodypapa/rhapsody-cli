@@ -1,87 +1,77 @@
-"""Tests for rhapsody_cli.models.com.telelogic.rhapsody.core.irp_other_model.IRPSysMLPort."""
+"""Tests for the IRPSysMLPort wrapper in the canonical ``com.telelogic.rhapsody.core`` package."""
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPSysMLPort
+from typing import cast
+
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPLink
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_instance import IRPInstance
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_sysml_port import IRPSysMLPort
 from tests.unit.models.fakes import make_fake_element
 
 
-class TestRPSysMLPort:
-    def test_is_model_element(self) -> None:
-        fake = make_fake_element("SysMLPort", properties={"name": "P1"})
-        port = IRPSysMLPort(fake)
-        assert isinstance(port, IRPModelElement)
-        assert port.name == "P1"
+def test_is_registered_for_meta_class_sys_ml_port() -> None:
+    fake = make_fake_element("SysMLPort", properties={"name": "P1"})
+    wrapped = IRPModelElement.wrap(fake)
+    assert isinstance(wrapped, IRPSysMLPort)
+    assert wrapped.name == "P1"
 
-    def test_is_registered(self) -> None:
-        fake = make_fake_element("SysMLPort", properties={"name": "P1"})
-        wrapped = IRPModelElement.wrap(fake)
-        assert isinstance(wrapped, IRPSysMLPort)
 
-    def test_get_is_reversed_returns_int(self) -> None:
-        # Pattern G — boolean check returning int
-        fake = make_fake_element("SysMLPort", getIsReversed=True)
-        port = IRPSysMLPort(fake)
-        assert port.get_is_reversed() == 1
+def test_is_reversed_returns_int() -> None:
+    fake = make_fake_element("SysMLPort", properties={"isReversed": 1})
+    assert IRPSysMLPort(fake).is_reversed == 1
 
-    def test_get_port_direction_returns_string(self) -> None:
-        # Pattern A
-        fake = make_fake_element("SysMLPort", getPortDirection="InOut")
-        port = IRPSysMLPort(fake)
-        assert port.get_port_direction() == "InOut"
 
-    def test_get_type_wraps_result(self) -> None:
-        # Pattern B
-        fake = make_fake_element("SysMLPort")
-        t = make_fake_element("Class", properties={"name": "T1"})
-        fake.getType.return_value = t
-        port = IRPSysMLPort(fake)
-        wrapped = port.get_type()
-        assert wrapped.name == "T1"
+def test_is_reversed_setter() -> None:
+    fake = make_fake_element("SysMLPort")
+    IRPSysMLPort(fake).is_reversed = 1
+    assert fake.isReversed == 1
 
-    def test_set_is_reversed_delegates(self) -> None:
-        # Pattern D — single-arg setter (int arg)
-        fake = make_fake_element("SysMLPort")
-        port = IRPSysMLPort(fake)
-        port.set_is_reversed(1)
-        fake.setIsReversed.assert_called_once_with(1)
 
-    def test_set_port_direction_delegates(self) -> None:
-        # Pattern D — single-arg setter (str arg)
-        fake = make_fake_element("SysMLPort")
-        port = IRPSysMLPort(fake)
-        port.set_port_direction("Out")
-        fake.setPortDirection.assert_called_once_with("Out")
+def test_port_direction_returns_string() -> None:
+    fake = make_fake_element("SysMLPort", properties={"portDirection": "InOut"})
+    assert IRPSysMLPort(fake).port_direction == "InOut"
 
-    def test_set_type_delegates(self) -> None:
-        # Pattern F — multi-arg void method (single IRPClassifier arg)
-        fake = make_fake_element("SysMLPort")
-        t = make_fake_element("Class", properties={"name": "T1"})
-        fake.setType.return_value = None
-        port = IRPSysMLPort(fake)
-        port.set_type(IRPClassifier(t))
-        fake.setType.assert_called_once_with(t)
 
-    def test_add_link_delegates_and_wraps(self) -> None:
-        # Pattern E — multi-arg method returning wrapped element
-        from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPInstance, IRPRelation
-        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
+def test_port_direction_setter() -> None:
+    fake = make_fake_element("SysMLPort")
+    IRPSysMLPort(fake).port_direction = "Out"
+    assert fake.portDirection == "Out"
 
-        fake = make_fake_element("SysMLPort")
-        from_part = make_fake_element("Instance", properties={"name": "From"})
-        to_part = make_fake_element("Instance", properties={"name": "To"})
-        assoc = make_fake_element("Relation", properties={"name": "R"})
-        to_port = make_fake_element("SysMLPort", properties={"name": "ToPort"})
-        new_owner = make_fake_element("Package", properties={"name": "Pkg"})
-        link = make_fake_element("Link", properties={"name": "L1"})
-        fake.addLink.return_value = link
-        port = IRPSysMLPort(fake)
-        wrapped = port.add_link(
-            IRPInstance(from_part),
-            IRPInstance(to_part),
-            IRPRelation(assoc),
-            IRPSysMLPort(to_port),
-            IRPPackage(new_owner),
-        )
-        assert wrapped.name == "L1"
-        fake.addLink.assert_called_once_with(from_part, to_part, assoc, to_port, new_owner)
+
+def test_type_wraps_result() -> None:
+    type_ = make_fake_element("Class", properties={"name": "T1"})
+    fake = make_fake_element("SysMLPort", properties={"type": type_})
+    result = IRPSysMLPort(fake).type
+    assert result is not None
+    assert result.name == "T1"
+
+
+def test_type_setter() -> None:
+    fake = make_fake_element("SysMLPort")
+    type_ = make_fake_element("Class", properties={"name": "T1"})
+    IRPSysMLPort(fake).type = cast(IRPClassifier, IRPModelElement.wrap(type_))
+    assert fake.type is type_
+
+
+def test_add_link_delegates_and_wraps() -> None:
+    fake = make_fake_element("SysMLPort")
+    from_part = make_fake_element("Instance", properties={"name": "From"})
+    to_part = make_fake_element("Instance", properties={"name": "To"})
+    assoc = make_fake_element("Relation", properties={"name": "R"})
+    to_port = make_fake_element("SysMLPort", properties={"name": "ToPort"})
+    new_owner = make_fake_element("Package", properties={"name": "Pkg"})
+    link = make_fake_element("Link", properties={"name": "L1"})
+    fake.addLink.return_value = link
+    wrapped = IRPSysMLPort(fake).add_link(
+        IRPInstance(from_part),
+        IRPInstance(to_part),
+        IRPRelation(assoc),
+        IRPSysMLPort(to_port),
+        IRPPackage(new_owner),
+    )
+    assert isinstance(wrapped, IRPLink)
+    assert wrapped.name == "L1"
+    fake.addLink.assert_called_once_with(from_part, to_part, assoc, to_port, new_owner)

@@ -13,7 +13,7 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCo
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_misc import IRPEnumerationLiteral
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_enumeration_literal import IRPEnumerationLiteral
 
 
 class IRPType(IRPClassifier):
@@ -68,7 +68,7 @@ class IRPType(IRPClassifier):
         Reference:
             com.telelogic.rhapsody.core.IRPType::addEnumerationLiteral(java.lang.String name)
         """
-        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_misc import IRPEnumerationLiteral
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_enumeration_literal import IRPEnumerationLiteral
 
         return cast(IRPEnumerationLiteral, self.wrap(self.call_com(lambda: self._com.addEnumerationLiteral(name))))
 
