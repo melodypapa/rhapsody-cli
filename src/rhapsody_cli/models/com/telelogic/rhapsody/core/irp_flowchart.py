@@ -11,9 +11,9 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statemachine import IRP
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions import IRPAcceptEventAction, IRPAcceptTimeEvent, IRPCallOperation
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPObjectNode
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types import IRPActivityDiagram
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPPin
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_object_node import IRPObjectNode
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_swimlane import IRPSwimlane
 
@@ -210,7 +210,7 @@ class IRPFlowchart(IRPStatechart):
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::addObjectNode(java.lang.String name, com.telelogic.rhapsody.core.IRPState parent)
         """
-        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPObjectNode
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_object_node import IRPObjectNode
 
         return cast(IRPObjectNode, self.wrap(self.call_com(lambda: self._com.addObjectNode(name, parent._com))))
 

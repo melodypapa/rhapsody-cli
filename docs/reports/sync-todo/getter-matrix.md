@@ -324,3 +324,11 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |
 | `represented` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow_item.py::test_represented` | identity/value | OK |
+
+## IRPObjectNode
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `in_state` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_object_node.py::test_in_state` | identity/value | OK |
+| `in_state_list` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_object_node.py::test_in_state_list` | identity/value | OK |
+| `represents` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_object_node.py::test_represents` | identity/value | OK |

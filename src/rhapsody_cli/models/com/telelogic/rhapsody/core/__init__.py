@@ -15,7 +15,6 @@ if TYPE_CHECKING:
         IRPCallOperation,
         IRPContextSpecification,
     )
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPObjectNode
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actor import IRPActor
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_application import IRPApplication
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument import IRPArgument
@@ -216,7 +215,7 @@ _EXPORT_MODULES = {
     "IRPModule": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_module",
     "IRPNode": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_node",
     "IRPObjectModelDiagram": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types",
-    "IRPObjectNode": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity",
+    "IRPObjectNode": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_object_node",
     "IRPOperation": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation",
     "IRPPackage": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package",
     "IRPPanelDiagram": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types",
