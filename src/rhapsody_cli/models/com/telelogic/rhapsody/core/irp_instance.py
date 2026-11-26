@@ -1,5 +1,7 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPInstance``."""
 
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
@@ -13,20 +15,19 @@ if TYPE_CHECKING:
 class IRPInstance(IRPRelation):
     """Wraps ``IRPInstance``: represents an instance in the model."""
 
-    # IRPInstance method parity checklist:
-    # [x] add_relation_to_the_whole        [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_all_nested_elements         [x] impl  [x] docstring  [x] unit test  [ ] integration test   (already implemented)
-    # [x] get_attribute_value            [x] impl  [x] docstring  [x] unit test  [ ] integration test   (already implemented)
-    # [x] get_in_links                   [x] impl  [x] docstring  [x] unit test  [ ] integration test   (already implemented)
-    # [x] get_instantiated_by            [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_list_of_initializer_arguments [x] impl [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_out_links                  [x] impl  [x] docstring  [x] unit test  [ ] integration test   (already implemented)
-    # [x] set_attribute_value            [x] impl  [x] docstring  [x] unit test  [ ] integration test   (already implemented)
-    # [x] set_explicit                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_implicit                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_initializer_argument_value  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_instantiated_by            [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] update_contained_diagrams_on_server [x] impl [x] docstring [x] unit test  [ ] integration test
+    # IRPInstance method parity checklist (typelib authority 2026-11-26):
+    # [x] add_relation_to_the_whole        method            [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_all_nested_elements          JavaDoc-only      NotImplementedError stub (documented_unavailable)  [x] unit test  [ ] integration test
+    # [x] get_attribute_value              method            [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] set_attribute_value              method            [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_in_links                     method            [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_out_links                    method            [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] instantiated_by                  property (get/set) [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_list_of_initializer_arguments method           [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] set_explicit                     method            [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] set_implicit                     method            [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] set_initializer_argument_value   method            [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] update_contained_diagrams_on_server JavaDoc-only   NotImplementedError stub (documented_unavailable)  [x] unit test  [ ] integration test
     # No deprecated methods in IRPInstance.
 
     def get_all_nested_elements(self) -> IRPCollection:
@@ -36,16 +37,13 @@ class IRPInstance(IRPRelation):
         method, because the latter does not return a complete list in the case
         of implicit objects.
 
-        Returns:
-            An ``IRPCollection`` of nested model elements.
-
         Raises:
-            RhapsodyRuntimeException: if the nested elements cannot be retrieved.
+            NotImplementedError: The Java API method is not exposed by pywin32.
 
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::getAllNestedElements()
         """
-        return IRPCollection(self._get_method_or_property(self._com, "getAllNestedElements", "allNestedElements"))
+        raise NotImplementedError("getAllNestedElements is not exposed in the Rhapsody COM automation type library.")
 
     def get_attribute_value(self, attribute_name: str) -> str:
         """Gets the value of an attribute on the instance.
@@ -91,7 +89,7 @@ class IRPInstance(IRPRelation):
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::getInLinks()
         """
-        return IRPCollection(self._get_method_or_property(self._com, "getInLinks", "inLinks"))
+        return IRPCollection(self.call_com(lambda: self._com.getInLinks()))
 
     def get_out_links(self) -> IRPCollection:
         """Returns all outgoing links from this instance.
@@ -105,9 +103,9 @@ class IRPInstance(IRPRelation):
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::getOutLinks()
         """
-        return IRPCollection(self._get_method_or_property(self._com, "getOutLinks", "outLinks"))
+        return IRPCollection(self.call_com(lambda: self._com.getOutLinks()))
 
-    def add_relation_to_the_whole(self, rel_name: str) -> "IRPRelation":
+    def add_relation_to_the_whole(self, rel_name: str) -> IRPRelation:
         """Adds a relation to the whole for this instance.
 
         Args:
@@ -122,13 +120,11 @@ class IRPInstance(IRPRelation):
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::addRelationToTheWhole(java.lang.String relName)
         """
-        return cast("IRPRelation", self.wrap(self.call_com(lambda: self._com.addRelationToTheWhole(rel_name))))
+        return cast(IRPRelation, self.wrap(self.call_com(lambda: self._com.addRelationToTheWhole(rel_name))))
 
-    def get_instantiated_by(self) -> "IRPOperation":
-        """Returns the operation that instantiates this instance.
-
-        Returns:
-            The wrapped ``IRPOperation`` that instantiates this instance.
+    @property
+    def instantiated_by(self) -> IRPOperation:
+        """The operation that instantiates this instance (``getInstantiatedBy`` / ``setInstantiatedBy``).
 
         Raises:
             RhapsodyRuntimeException: if the instantiating operation cannot be retrieved.
@@ -136,7 +132,24 @@ class IRPInstance(IRPRelation):
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::getInstantiatedBy()
         """
-        return cast("IRPOperation", self.wrap(self._get_method_or_property(self._com, "getInstantiatedBy", "instantiatedBy")))
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
+
+        return cast(IRPOperation, self.wrap(self.get_com_property(self._com, "instantiatedBy")))
+
+    @instantiated_by.setter
+    def instantiated_by(self, instantiated_by: IRPOperation) -> None:
+        """Sets the operation that instantiates this instance.
+
+        Args:
+            instantiated_by: The operation (``IRPOperation``) that instantiates this instance.
+
+        Raises:
+            RhapsodyRuntimeException: if the instantiating operation cannot be set.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPInstance::setInstantiatedBy(com.telelogic.rhapsody.core.IRPOperation instantiatedBy)
+        """
+        self.set_com_property(self._com, "instantiatedBy", instantiated_by._com)
 
     def get_list_of_initializer_arguments(self) -> IRPCollection:
         """Returns the list of initializer arguments for this instance.
@@ -150,7 +163,7 @@ class IRPInstance(IRPRelation):
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::getListOfInitializerArguments()
         """
-        return IRPCollection(self._get_method_or_property(self._com, "getListOfInitializerArguments", "listOfInitializerArguments"))
+        return IRPCollection(self.call_com(lambda: self._com.getListOfInitializerArguments()))
 
     def set_explicit(self) -> None:
         """Sets the instance to be explicit.
@@ -189,20 +202,6 @@ class IRPInstance(IRPRelation):
         """
         self.call_com(lambda: self._com.setInitializerArgumentValue(arg_name, arg_value))
 
-    def set_instantiated_by(self, instantiated_by: IRPModelElement) -> None:
-        """Sets the operation that instantiates this instance.
-
-        Args:
-            instantiated_by: The operation (``IRPOperation``) that instantiates this instance.
-
-        Raises:
-            RhapsodyRuntimeException: if the instantiating operation cannot be set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPInstance::setInstantiatedBy(com.telelogic.rhapsody.core.IRPOperation instantiatedBy)
-        """
-        self._set_method_or_property(self._com, "setInstantiatedBy", "instantiatedBy", instantiated_by._com)
-
     def update_contained_diagrams_on_server(self, enforce_update: int) -> int:
         """Updates the views on the Rhapsody Model Manager server for all diagrams.
 
@@ -210,16 +209,13 @@ class IRPInstance(IRPRelation):
             enforce_update: ``0`` to update only if changes were made,
                 ``1`` to update regardless.
 
-        Returns:
-            The number of views updated, ``0`` if no update needed, ``-1`` on failure.
-
         Raises:
-            RhapsodyRuntimeException: if the server update fails.
+            NotImplementedError: The Java API method is not exposed by pywin32.
 
         Reference:
             com.telelogic.rhapsody.core.IRPInstance::updateContainedDiagramsOnServer(int enforceUpdate)
         """
-        return int(self.call_com(lambda: self._com.updateContainedDiagramsOnServer(enforce_update)))
+        raise NotImplementedError("updateContainedDiagramsOnServer is not exposed in the Rhapsody COM automation type library.")
 
 
 IRPModelElement.register_wrapper("Instance", IRPInstance)

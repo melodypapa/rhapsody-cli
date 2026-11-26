@@ -16,17 +16,17 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
 
 ## Rows
 
-- [ ] irp_instance_api_report (IRPInstance · RPInstance · elements/relations/model_instance.py · 6 legacy sites)
-  - Main status (2026-11-26): not synced: no committed API report on main; verify_sync fails.
-  - Note: base of parts/ports (118 src / 69 test). Inherits `RPRelation` — finish row 4 first, then treat inherited members as setup only per the integration ownership rule.
-  - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
-  - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Step 3 — §3 compare evidence: regenerate report + catalog entry; reconcile owned members; one pywin32 member per call; catalog-absent sites = blockers
-  - [ ] Step 4 — §4 unit tests (TDD): failing fake-COM tests first, then migrate legacy sites; full unit suite green
-  - [ ] Step 5 — §5 integration tests: mirrored path, assert only owned methods; live run on Windows
-  - [ ] Step 6 — §6 SWR update: per-class requirement document `irp_instance.md`
-  - [ ] Step 7 — §7 RST update: `irp_instance.rst` (anchor + deviation list-table) and toctree entry
-  - [ ] Step 8 — §8 verify and report: validator + `verify_sync.py` + skill tests + both full suites + gate
+- [ ] irp_instance_api_report (IRPInstance · `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_instance.py` · Java package `com.telelogic.rhapsody.core`)
+  - Main status (2026-11-26): verify_sync passes; validator 0 actionable (2 documented-unavailable stubs); Step 5 and Step 8 open (see below).
+  - Note: the wrapper moved to the canonical package. The typelib catalog is merged for IRPInstance; `instantiated_by` is now a property (get/set) backed by `instantiatedBy`; `get_all_nested_elements` and `update_contained_diagrams_on_server` are documented-unavailable stubs.
+  - [x] Step 1 — §1 sync TODO: 13-member JavaDoc inventory published in the wrapper checklist and the report.
+  - [x] Step 2 — §2 resolve target: canonical wrapper and mirrored unit test confirmed; report Java package line present; no compatibility shim.
+  - [x] Step 3 — §3 compare evidence: typelib catalog merged for IRPInstance only; validator 0 actionable; 12 Python members vs 13 Java members (2 stubs documented unavailable).
+  - [x] Step 4 — §4 unit tests (TDD): 4 new tests failed first (red), then passed; `test_irp_instance.py` 16 passed, `irp_instance.py` 35 statements / 18 branches, 100.00%; full unit suite 2201 passed; ruff/black/mypy clean.
+  - [ ] Step 5 — §5 integration tests: `test_irp_instance.py` has 2 live stub tests (`pytest.raises(NotImplementedError)`), both passing. Open blocker: no documented creation path for an `IRPInstance` is exposed by the registered typelib. `IRPPackage.addInstanceSpecification` is JavaDoc-only (pywin32 stub raises NotImplementedError), no catalog member adds an instance, and `add_new_aggr("Instance", …)` is not a valid creation route. The test project contains no instances, so the populated checks for `instantiated_by`, `get_attribute_value`/`set_attribute_value`, links, initializer arguments, and `add_relation_to_the_whole` cannot be built authentically. A second blocker is a design choice: objects returned to the wrapper expose the generic `IRPModelElement` interface, and `win32com.client.CastTo(obj, "IRPInstance")` reaches the instance members (probe-verified). Checked `docs/java_api/rational_rhapsody_api_getting_started.pdf`: its only object-creation sample is `IRPConfiguration.addInitialInstance(class)`. Probe-verified live: the call succeeds, but `initialInstances` returns the class itself (metaClass `Class`), not an IRPInstance, so this route does not create an IRPInstance either.
+  - [x] Step 6 — §6 SWR update: `docs/requirements/com/telelogic/rhapsody/core/irp_instance.md` holds SWR_ELEM_00009 (moved from the legacy monolith, which no longer contains it).
+  - [x] Step 7 — §7 RST update: `docs/api/com/telelogic/rhapsody/core/irp_instance.rst` documents all 12 public members; toctree entry added in `docs/api/elements.rst`.
+  - [ ] Step 8 — §8 validation: `validate_interface.py`, `verify_sync.py`, skill harness (85 passed), unit suite (2201 passed), ruff/black/mypy and Sphinx (exit 0) pass. Open: `verify_sync.py --strict-getters` fails on `instantiated_by` (MISSING populated test) until Step 5 is resolved; full Windows integration run not repeated.
 - [ ] irp_relation_api_report (IRPRelation · RPRelation · elements/relations/model_relation.py · 27 legacy sites)
   - Main status (2026-11-26): not synced: no committed API report on main; verify_sync fails.
   - Note: foundational relation type (108 src / 47 test, 31 owned methods). Do this before IRPInstance; 27 legacy sites make it the highest cleanup value in this group.
