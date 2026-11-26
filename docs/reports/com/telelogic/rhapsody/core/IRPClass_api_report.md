@@ -11,7 +11,19 @@
 
 | Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |
 | --- | --- | --- | --- | --- |
-| — | — | — | PASS | No change needed. |
+
+## Expected Binding Differences
+
+| Python model wrapper | Java API | pywin32 | Status | Recommended change |
+| --- | --- | --- | --- | --- |
+| add_event_reception_with_event() (no static COM member) | addEventReceptionWithEvent (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| update_contained_diagrams_on_server() (no static COM member) | updateContainedDiagramsOnServer (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+
+## Wrapper Backlog
+
+| Python model wrapper | Java API | pywin32 | Status | Recommended change |
+| --- | --- | --- | --- | --- |
+| — | — | — | — | — |
 
 <details>
 <summary>Correct items (23) — bindings verified against pywin32</summary>
@@ -38,11 +50,11 @@
 | delete_reception() -> deleteReception | deleteReception (method) | deleteReception (method) | MATCH | — |
 | delete_superclass() -> deleteSuperclass | deleteSuperclass (method) | deleteSuperclass (method) | MATCH | — |
 | delete_type() -> deleteType | deleteType (method) | deleteType (method) | MATCH | — |
+| get_is_final() -> getIsFinal; set_is_final() -> setIsFinal | getIsFinal (method); setIsFinal (method) | getIsFinal (method); setIsFinal (method) | MATCH | — |
 | is_abstract (property) -> isAbstract | getIsAbstract (method); setIsAbstract (method) | isAbstract (property) | MATCH | — |
 | is_active (property) -> isActive | getIsActive (method); setIsActive (method) | isActive (property) | MATCH | — |
 | is_behavior_overriden (property) -> isBehaviorOverriden | getIsBehaviorOverriden (method); setIsBehaviorOverriden (method) | isBehaviorOverriden (property) | MATCH | — |
 | is_composite (property) -> isComposite | getIsComposite (method) | isComposite (property) | MATCH | — |
-| get_is_final() -> getIsFinal; set_is_final() -> setIsFinal | getIsFinal (method); setIsFinal (method) | getIsFinal (method); setIsFinal (method) | MATCH | — |
 | is_reactive (property) -> isReactive | getIsReactive (method) | isReactive (property) | MATCH | — |
 
 </details>
