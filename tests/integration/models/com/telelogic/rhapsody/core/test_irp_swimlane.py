@@ -5,6 +5,7 @@ import uuid
 import pytest
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flowchart import IRPFlowchart
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPConnector
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_swimlane import IRPSwimlane
@@ -29,11 +30,15 @@ class TestIRPSwimlaneIntegration:
     def test_contents(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("ContentsPkg"))
         try:
-            _, _, lane = self._lane(pkg)
-            # No documented API in this interface set places an element inside a
-            # swimlane; the fresh lane's contents are the observable state.
-            # Tracked as a P0 blocker in docs/reports/sync-todo/index.md.
-            assert len(lane.contents) == 0
+            _, activity, lane = self._lane(pkg)
+            root = activity.root_state
+            assert root is not None
+            state = root.add_state(self._unique("ConnectorOwner"))
+            connector = state.add_connector("Condition")
+            assert isinstance(connector, IRPConnector)
+            # JavaDoc IRPConnector.setItsSwimlane places the connector in the lane.
+            connector.set_its_swimlane(lane)
+            assert connector in list(lane.contents)
         finally:
             pkg.delete_from_project()
 

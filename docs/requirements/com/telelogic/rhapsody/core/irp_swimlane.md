@@ -23,9 +23,9 @@ Unit tests in the mirrored unit path use only fake COM objects and give 100%
 statement/branch coverage of the wrapper. Integration tests in the mirrored
 integration path create real activities and nested lanes, assert populated
 getter values by identity/membership, and delete the owning package during
-cleanup. The `contents` getter has no documented API that places an element
-inside a lane; its fresh-lane empty state is the only observable result and is
-recorded as a P0 blocker in `docs/reports/sync-todo/index.md`. Live assertions
-are CI-only on Windows and are unverified in offline runs.
+cleanup. The `contents` fixture uses the JavaDoc-documented
+`IRPConnector.setItsSwimlane` placement API: it creates a real condition
+connector on a state and assigns it to the lane before asserting membership.
+Live assertions are CI-only on Windows and are unverified in offline runs.
 **Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_swimlane.py:IRPSwimlane
 **Last Changed:** 2026-11-26

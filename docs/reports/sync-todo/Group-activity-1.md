@@ -71,7 +71,7 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 <details>
 <summary><code>irp_swimlane_api_report</code> · IRPSwimlane · 8/8 steps · ✅ archived</summary>
 
-- **Status (2026-11-26):** verify_sync passes; all steps archived. `contents` getter recorded as a P0 live blocker (no documented API populates a lane's contents).
+- **Status (2026-11-26):** verify_sync passes; all steps archived. `contents` blocker resolved: `IRPConnector.setItsSwimlane` places a real connector in the lane.
 - **Note:** usage 29 src / 12 test refs, 5 owned members. Split `IRPSwimlane` into `irp_swimlane.py`; siblings stay in `irp_activity.py` for their own rows. Three accessors are COM properties; `add_swimlane` uses `call_com`.
 - [x] ① §1
 - [x] ② §2 — canonical module `irp_swimlane.py`; exports and direct imports updated
