@@ -47,7 +47,7 @@ class TestIRPSendActionIntegration:
             send_action.event = event
             result = send_action.event
             assert result is not None
-            assert result._com is event._com
+            assert result == event
         finally:
             pkg.delete_from_project()
 
@@ -59,7 +59,7 @@ class TestIRPSendActionIntegration:
             send_action.invoked_operation = operation
             result = send_action.invoked_operation
             assert result is not None
-            assert result._com is operation._com
+            assert result == operation
         finally:
             pkg.delete_from_project()
 
@@ -71,7 +71,7 @@ class TestIRPSendActionIntegration:
             send_action.target = target
             result = send_action.target
             assert result is not None
-            assert result._com is target._com
+            assert result == target
         finally:
             pkg.delete_from_project()
 
