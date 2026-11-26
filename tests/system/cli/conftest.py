@@ -20,7 +20,7 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IR
 from rhapsody_cli.session import SessionManager
 
 
-def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
+def _run_cli(*args: str) -> "subprocess.CompletedProcess[str]":
     """Run the CLI as a subprocess.
 
     Args:
