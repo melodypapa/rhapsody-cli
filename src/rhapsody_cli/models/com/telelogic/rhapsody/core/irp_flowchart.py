@@ -82,7 +82,9 @@ class IRPFlowchart(IRPStatechart):
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::getItsOwner()
         """
-        return self.wrap(self.get_com_property(self._com, "itsOwner"))
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
+
+        return cast(IRPOperation, self.wrap(self.get_com_property(self._com, "itsOwner")))
 
     @its_owner.setter
     def its_owner(self, its_owner: IRPOperation) -> None:
