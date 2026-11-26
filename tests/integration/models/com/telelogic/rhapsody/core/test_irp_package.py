@@ -472,7 +472,8 @@ class TestIRPPackageIntegration:
             class_b = pkg.add_class(self._unique("AssocClassB"))
             relation_name = self._unique("AssocRelation")
             end1 = class_a.add_relation_to(class_b, self._unique("roleA"), "Association", "1", self._unique("roleB"), "Association", "1", relation_name)
-            end2 = IRPRelation(end1._com).get_inverse()
+            end2 = IRPRelation(end1._com).inverse
+            assert end2 is not None
             association_name = self._unique("PackageAssociation")
 
             association = pkg.add_association(end1, end2, association_name)
