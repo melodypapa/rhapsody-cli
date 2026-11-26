@@ -17,7 +17,7 @@ if TYPE_CHECKING:
         IRPContextSpecification,
         IRPSendAction,
     )
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlowItem, IRPObjectNode, IRPSwimlane
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlowItem, IRPObjectNode
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actor import IRPActor
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_application import IRPApplication
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument import IRPArgument
@@ -124,6 +124,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statechart import IRPStatechart
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statemachine import IRPState, IRPStateVertex
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_stereotype import IRPStereotype
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_swimlane import IRPSwimlane
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_templates import IRPTemplateInstantiation, IRPTemplateInstantiationParameter, IRPTemplateParameter
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type import IRPType
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_unit import AddToModelMode, IRPUnit
@@ -242,7 +243,7 @@ _EXPORT_MODULES = {
     "IRPStatechartDiagram": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types",
     "IRPStereotype": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_stereotype",
     "IRPStructureDiagram": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types",
-    "IRPSwimlane": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity",
+    "IRPSwimlane": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_swimlane",
     "IRPSysMLPort": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_other_model",
     "IRPTableLayout": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics",
     "IRPTableView": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics",

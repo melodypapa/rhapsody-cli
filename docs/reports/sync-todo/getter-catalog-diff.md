@@ -14,7 +14,7 @@ review rather than a failure.
 
 | Status | Count |
 | --- | --- |
-| match | 170 |
+| match | 173 |
 | catalog-missing | 0 |
 | shape-mismatch | 0 |
 | no-binding | 0 |
@@ -383,6 +383,20 @@ review rather than a failure.
 | --- | --- | --- | --- | --- |
 | `is_analysis_only` | `isAnalysisOnly` | property | property | match |
 | `its_owner` | `itsOwner` | property | property | match |
+| `swimlanes` | `swimlanes` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPSwimlane
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `contents` | `contents` | property | property | match |
+| `represents` | `represents` | property | property | match |
 | `swimlanes` | `swimlanes` | property | property | match |
 
 ### Catalog properties with no matching Python property

@@ -1,6 +1,6 @@
 # Sync todo — `activity` (group 1 of 2)
 
-**10 classes** · ✅ 2 archived · ⬜ 8 open
+**10 classes** · ✅ 3 archived · ⬜ 7 open
 
 One row per sync run. A step is ticked only when its evidence lands; a row is archived only after all eight steps pass. Binding rule: one pywin32-exposed COM member per call — `call_com(lambda: self._com.Name(...))` for methods, `get_com_property` / `set_com_property` for properties; catalog-absent sites are blockers, never blind migrations. Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/`, mirrored tests under `tests/{unit,integration}/models/com/telelogic/rhapsody/core/`.
 
@@ -25,7 +25,7 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | `irp_flow_api_report` | IRPFlow | `elements/activity/model_activity.py` | 4 | — | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 | 2 | `irp_flowchart_api_report` | IRPFlowchart | `rhapsody_cli/models/elements/activity/model_activity.py` | 2 | 14 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
-| 3 | `irp_swimlane_api_report` | IRPSwimlane | `rhapsody_cli/models/elements/activity/model_activity.py` | 1 | 5 | 1/8 (②) | ⬜ open |
+| 3 | `irp_swimlane_api_report` | IRPSwimlane | `rhapsody_cli/models/elements/activity/model_activity.py` | 1 | 5 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 | 4 | `irp_action_api_report` | IRPAction | `rhapsody_cli/models/elements/activity/model_actions.py` | 2 | 2 | 1/8 (②) | ⬜ open |
 | 5 | `irp_send_action_api_report` | IRPSendAction | `rhapsody_cli/models/elements/activity/model_actions.py` | 7 | 8 | 1/8 (②) | ⬜ open |
 | 6 | `irp_flow_item_api_report` | IRPFlowItem | `rhapsody_cli/models/elements/activity/model_activity.py` | 0 | 3 | 1/8 (②) | ⬜ open |
@@ -69,18 +69,18 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 </details>
 
 <details>
-<summary><code>irp_swimlane_api_report</code> · IRPSwimlane · 1/8 steps · ⬜ open</summary>
+<summary><code>irp_swimlane_api_report</code> · IRPSwimlane · 8/8 steps · ✅ archived</summary>
 
-- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
-- **Note:** usage 29 src / 12 test refs, 5 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
-- [ ] ① §1
-- [x] ② §2
-- [ ] ③ §3
-- [ ] ④ §4
-- [ ] ⑤ §5
-- [ ] ⑥ §6
-- [ ] ⑦ §7
-- [ ] ⑧ §8
+- **Status (2026-11-26):** verify_sync passes; all steps archived. `contents` getter recorded as a P0 live blocker (no documented API populates a lane's contents).
+- **Note:** usage 29 src / 12 test refs, 5 owned members. Split `IRPSwimlane` into `irp_swimlane.py`; siblings stay in `irp_activity.py` for their own rows. Three accessors are COM properties; `add_swimlane` uses `call_com`.
+- [x] ① §1
+- [x] ② §2 — canonical module `irp_swimlane.py`; exports and direct imports updated
+- [x] ③ §3 — 0 actionable deviations after binding migration
+- [x] ④ §4 — 6 fake-COM unit tests, 100% statements/branches
+- [x] ⑤ §5 — 4 integration tests; `contents` blocked, other getters populated; macOS = collection-only
+- [x] ⑥ §6 — `docs/requirements/com/telelogic/rhapsody/core/irp_swimlane.md`
+- [x] ⑦ §7 — `docs/api/com/telelogic/rhapsody/core/irp_swimlane.rst` + toctree entry
+- [x] ⑧ §8 — validator 0 deviations; verify_sync + --strict-getters green; full unit suite 2198 passed; ruff/black clean
 
 </details>
 

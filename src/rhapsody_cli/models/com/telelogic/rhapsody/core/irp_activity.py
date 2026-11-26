@@ -1,6 +1,6 @@
 """Activity model-element wrappers (auto-generated stubs)."""
 
-from typing import Optional, cast
+from typing import Optional
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
@@ -150,87 +150,6 @@ class IRPObjectNode(IRPState):
         self._set_method_or_property(self._com, "setRepresents", "represents", represents._com)
 
 
-class IRPSwimlane(IRPModelElement):
-    """Wraps ``IRPSwimlane``: represents swimlanes in an activity diagram."""
-
-    # IRPSwimlane method parity checklist:
-    # [x] add_swimlane                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_contents                  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_represents                [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_swimlanes                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_represents                [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [inherited] irp_model_element methods (covered by rp_model_element checklist)
-    # No deprecated IRPSwimlane methods.
-
-    def add_swimlane(self, name: str) -> "IRPSwimlane":
-        """For internal use only.
-
-        Args:
-            name: The name to use for the new swimlane.
-
-        Returns:
-            IRPSwimlane: The swimlane that was created.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPSwimlane::addSwimlane(java.lang.String name)
-        """
-        return cast("IRPSwimlane", self.wrap(self.call_com(lambda: self._com.addSwimlane(name))))
-
-    def get_contents(self) -> "IRPCollection":
-        """Returns a collection of the elements contained in the swimlane.
-
-        Returns:
-            IRPCollection: The elements contained in the swimlane.
-
-        Raises:
-            RhapsodyRuntimeException: If the operation fails.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPSwimlane::getContents()
-        """
-        return IRPCollection(self.call_com(lambda: self._com.getContents()))
-
-    def get_represents(self) -> "Optional[IRPModelElement]":
-        """Returns the model element that the swimlane represents.
-
-        Returns:
-            The model element that the swimlane represents, or None if not set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPSwimlane::getRepresents()
-        """
-        return self.wrap(self.call_com(lambda: self._com.getRepresents()))
-
-    def get_swimlanes(self) -> "IRPCollection":
-        """Returns a collection of the swimlanes that are nested under this swimlane.
-
-        Returns:
-            IRPCollection: The swimlanes nested under this swimlane.
-
-        Raises:
-            RhapsodyRuntimeException: If the operation fails.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPSwimlane::getSwimlanes()
-        """
-        return IRPCollection(self.call_com(lambda: self._com.getSwimlanes()))
-
-    def set_represents(self, represents: "IRPModelElement") -> None:
-        """Specifies the model element that the swimlane is to represent.
-
-        Args:
-            represents: The model element that the swimlane is to represent.
-
-        Raises:
-            RhapsodyRuntimeException: If the operation fails.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPSwimlane::setRepresents(com.telelogic.rhapsody.core.IRPModelElement represents)
-        """
-        self._set_method_or_property(self._com, "setRepresents", "represents", represents._com)
-
-
 # Register wrappers for meta classes
 IRPModelElement.register_wrapper("FlowItem", IRPFlowItem)
 IRPModelElement.register_wrapper("ObjectNode", IRPObjectNode)
-IRPModelElement.register_wrapper("Swimlane", IRPSwimlane)

@@ -302,6 +302,7 @@ wrapper-signature fix before its getter/member row can close.
 | IRPProject | `is_modified_recursive` | Needs a controlled modify/save transition on the session-shared project. |
 | IRPClass | `is_abstract`, `is_active`, `is_behavior_overriden` | Documented pywin32 aliases; getters are readable but no populated live fixture exists (setters are read-only or JavaDoc-unimplemented). |
 | IRPPort | `is_behavioral`, `is_reversed`, `port_contract`, `provided_interfaces`, `required_interfaces` | Port relation/end properties have no live factory; recovered via catalog-only triage but no populated fixture. |
+| IRPSwimlane | `contents` | No documented API in IRPSwimlane places an element inside a lane; the fresh lane returns an empty collection, so no populated live fixture exists. |
 | IRPProject | `nodes` | The project root rejects both `addNode(name)` and `addNewAggr("Node", name)`; a node created in a nested package is not returned by `project.nodes`. The live test now records the fresh-project empty state; a populated project-level node fixture remains unavailable. |
 | IRPUseCase | `is_behavior_overriden` | Runtime stub (user approved 2026-11-25): setter faults live; see the NotImplementedError evidence ledger. |
 

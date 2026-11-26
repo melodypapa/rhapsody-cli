@@ -9,7 +9,6 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IR
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statemachine import IRPStateVertex
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPSwimlane
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagrams import IRPDiagram
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flow import IRPFlow
@@ -26,6 +25,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port import IRPPort
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statemachine import IRPState
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_swimlane import IRPSwimlane
 
 
 class IRPConditionMark(IRPMessage):

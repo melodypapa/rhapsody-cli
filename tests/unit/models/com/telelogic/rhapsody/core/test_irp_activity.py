@@ -5,7 +5,6 @@ from typing import cast
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import (
     IRPFlowItem,
     IRPObjectNode,
-    IRPSwimlane,
 )
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
@@ -115,62 +114,3 @@ class TestRPObjectNode:
         fake = make_fake_element("ObjectNode", properties={"name": "MyObjectNode"})
         wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, IRPObjectNode)
-
-
-class TestRPSwimlane:
-    """Tests for IRPSwimlane (5 methods - note: addSwimlane + getSwimlanes = 5 total)."""
-
-    def test_is_model_element(self) -> None:
-        fake = make_fake_element("Swimlane", properties={"name": "MySwimlane"})
-        swimlane = IRPSwimlane(fake)
-        assert isinstance(swimlane, IRPModelElement)
-        assert swimlane.name == "MySwimlane"
-
-    def test_add_swimlane_wraps_result(self) -> None:
-        fake = make_fake_element("Swimlane")
-        nested = make_fake_element("Swimlane", properties={"name": "NestedLane"})
-        fake.addSwimlane.return_value = nested
-        swimlane = IRPSwimlane(fake)
-        result = swimlane.add_swimlane("NestedLane")
-        assert result.name == "NestedLane"
-        fake.addSwimlane.assert_called_once_with("NestedLane")
-
-    def test_get_contents_returns_collection(self) -> None:
-        fake = make_fake_element("Swimlane")
-        item1 = make_fake_element("State", properties={"name": "Content1"})
-        item2 = make_fake_element("State", properties={"name": "Content2"})
-        fake.getContents.return_value = make_fake_collection([item1, item2])
-        swimlane = IRPSwimlane(fake)
-        result = swimlane.get_contents()
-        assert isinstance(result, IRPCollection)
-        assert len(result) == 2
-
-    def test_get_represents_wraps_result(self) -> None:
-        fake = make_fake_element("Swimlane")
-        represents = make_fake_element("Class", properties={"name": "MyClass"})
-        fake.getRepresents.return_value = represents
-        swimlane = IRPSwimlane(fake)
-        result = swimlane.get_represents()
-        assert cast(IRPModelElement, result).name == "MyClass"
-
-    def test_get_swimlanes_returns_collection(self) -> None:
-        fake = make_fake_element("Swimlane")
-        lane1 = make_fake_element("Swimlane", properties={"name": "NestedLane1"})
-        lane2 = make_fake_element("Swimlane", properties={"name": "NestedLane2"})
-        fake.getSwimlanes.return_value = make_fake_collection([lane1, lane2])
-        swimlane = IRPSwimlane(fake)
-        result = swimlane.get_swimlanes()
-        assert isinstance(result, IRPCollection)
-        assert len(result) == 2
-
-    def test_set_represents_delegates(self) -> None:
-        fake = make_fake_element("Swimlane")
-        represents = make_fake_element("Class", properties={"name": "MyClass"})
-        swimlane = IRPSwimlane(fake)
-        swimlane.set_represents(cast(IRPModelElement, IRPModelElement.wrap(represents)))
-        fake.setRepresents.assert_called_once_with(represents)
-
-    def test_is_registered_for_meta_class_swimlane(self) -> None:
-        fake = make_fake_element("Swimlane", properties={"name": "MySwimlane"})
-        wrapped = IRPModelElement.wrap(fake)
-        assert isinstance(wrapped, IRPSwimlane)
