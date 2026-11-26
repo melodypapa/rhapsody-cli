@@ -17,6 +17,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
 ## Rows
 
 - [ ] irp_external_check_registry_api_report (IRPExternalCheckRegistry · RPExternalCheckRegistry · rhapsody_cli/models/support/model_codegen.py · 0 legacy sites)
+  - Main status (2026-11-26): not synced: no committed API report on main; verify_sync fails.
   - Note: usage 13 src / 6 test refs, 2 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
   - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
   - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
@@ -27,6 +28,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [ ] Step 7 — §7 RST update: `irp_external_check_registry.rst` (anchor + deviation list-table) and toctree entry
   - [ ] Step 8 — §8 verify and report: validator + `verify_sync.py` + skill tests + both full suites + ruff/black/mypy
 - [ ] irp_code_gen_simplifiers_registry_api_report (IRPCodeGenSimplifiersRegistry · RPCodeGenSimplifiersRegistry · rhapsody_cli/models/support/model_codegen.py · 0 legacy sites)
+  - Main status (2026-11-26): not synced: no committed API report on main; verify_sync fails.
   - Note: usage 12 src / 5 test refs, 1 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
   - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
   - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
@@ -37,6 +39,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [ ] Step 7 — §7 RST update: `irp_code_gen_simplifiers_registry.rst` (anchor + deviation list-table) and toctree entry
   - [ ] Step 8 — §8 verify and report: validator + `verify_sync.py` + skill tests + both full suites + ruff/black/mypy
 - [ ] irp_search_result_api_report (IRPSearchResult · RPSearchResult · rhapsody_cli/models/support/model_codegen.py · 3 legacy sites)
+  - Main status (2026-11-26): not synced: no committed API report on main; verify_sync fails.
   - Note: usage 8 src / 6 test refs, 4 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
   - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
   - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
@@ -47,6 +50,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [ ] Step 7 — §7 RST update: `irp_search_result.rst` (anchor + deviation list-table) and toctree entry
   - [ ] Step 8 — §8 verify and report: validator + `verify_sync.py` + skill tests + both full suites + ruff/black/mypy
 - [ ] irp_progress_bar_api_report (IRPProgressBar · RPProgressBar · rhapsody_cli/models/support/model_ide.py · 0 legacy sites)
+  - Main status (2026-11-26): not synced: no committed API report on main; verify_sync fails.
   - Note: usage 11 src / 4 test refs, 2 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
   - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
   - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
@@ -57,6 +61,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [ ] Step 7 — §7 RST update: `irp_progress_bar.rst` (anchor + deviation list-table) and toctree entry
   - [ ] Step 8 — §8 verify and report: validator + `verify_sync.py` + skill tests + both full suites + ruff/black/mypy
 - [ ] ir_pow_text_listener_api_report (IRPowTextListener · RPowTextListener · rhapsody_cli/models/support/model_ide.py · 1 legacy sites)
+  - Main status (2026-11-26): not synced: no committed API report on main; verify_sync fails.
   - Note: usage 9 src / 5 test refs, 2 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
   - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
   - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
@@ -67,6 +72,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [ ] Step 7 — §7 RST update: `ir_pow_text_listener.rst` (anchor + deviation list-table) and toctree entry
   - [ ] Step 8 — §8 verify and report: validator + `verify_sync.py` + skill tests + both full suites + ruff/black/mypy
 - [ ] ir_pow_list_listener_api_report (IRPowListListener · RPowListListener · rhapsody_cli/models/support/model_ide.py · 1 legacy sites)
+  - Main status (2026-11-26): not synced: no committed API report on main; verify_sync fails.
   - Note: usage 9 src / 5 test refs, 2 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
   - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
   - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
@@ -77,6 +83,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [ ] Step 7 — §7 RST update: `ir_pow_list_listener.rst` (anchor + deviation list-table) and toctree entry
   - [ ] Step 8 — §8 verify and report: validator + `verify_sync.py` + skill tests + both full suites + ruff/black/mypy
 - [ ] irp_rhapsody_server_api_report (IRPRhapsodyServer · RPRhapsodyServer · rhapsody_cli/models/support/model_codegen.py · 0 legacy sites)
+  - Main status (2026-11-26): not synced: no committed API report on main; verify_sync fails.
   - Note: usage 8 src / 6 test refs, 4 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
   - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
   - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
@@ -87,6 +94,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [ ] Step 7 — §7 RST update: `irp_rhapsody_server.rst` (anchor + deviation list-table) and toctree entry
   - [ ] Step 8 — §8 verify and report: validator + `verify_sync.py` + skill tests + both full suites + ruff/black/mypy
 - [ ] irp_base_external_code_generator_tool_api_report (IRPBaseExternalCodeGeneratorTool · RPBaseExternalCodeGeneratorTool · rhapsody_cli/models/support/model_codegen.py · 0 legacy sites)
+  - Main status (2026-11-26): not synced: no committed API report on main; verify_sync fails.
   - Note: usage 9 src / 5 test refs, 3 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
   - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
   - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
@@ -97,6 +105,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [ ] Step 7 — §7 RST update: `irp_base_external_code_generator_tool.rst` (anchor + deviation list-table) and toctree entry
   - [ ] Step 8 — §8 verify and report: validator + `verify_sync.py` + skill tests + both full suites + ruff/black/mypy
 - [ ] irp_controlled_file_api_report (IRPControlledFile · RPControlledFile · rhapsody_cli/models/support/model_files.py · 2 legacy sites)
+  - Main status (2026-11-26): not synced: no committed API report on main; verify_sync fails.
   - Note: usage 7 src / 5 test refs, 3 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
   - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
   - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
@@ -107,6 +116,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [ ] Step 7 — §7 RST update: `irp_controlled_file.rst` (anchor + deviation list-table) and toctree entry
   - [ ] Step 8 — §8 verify and report: validator + `verify_sync.py` + skill tests + both full suites + ruff/black/mypy
 - [ ] irp_external_roundtrip_invoker_api_report (IRPExternalRoundtripInvoker · RPExternalRoundtripInvoker · rhapsody_cli/models/support/model_codegen.py · 0 legacy sites)
+  - Main status (2026-11-26): not synced: no committed API report on main; verify_sync fails.
   - Note: usage 11 src / 2 test refs, 0 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
   - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
   - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.

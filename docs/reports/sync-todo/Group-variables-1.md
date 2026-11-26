@@ -17,6 +17,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
 ## Rows
 
 - [ ] irp_tag_api_report (IRPTag · RPTag · rhapsody_cli/models/elements/variables/model_variables.py · 8 legacy sites)
+  - Main status (2026-11-26): not synced: no committed API report on main; verify_sync fails.
   - Note: usage 37 src / 29 test refs, 8 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
   - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
   - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
@@ -27,6 +28,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [ ] Step 7 — §7 RST update: `irp_tag.rst` (anchor + deviation list-table) and toctree entry
   - [ ] Step 8 — §8 verify and report: validator + `verify_sync.py` + skill tests + both full suites + ruff/black/mypy
 - [ ] irp_variable_api_report (IRPVariable · RPVariable · rhapsody_cli/models/elements/variables/model_variables.py · 8 legacy sites)
+  - Main status (2026-11-26): not synced: no committed API report on main; verify_sync fails.
   - Note: usage 30 src / 20 test refs, 10 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
   - [ ] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
   - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/` Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
@@ -37,6 +39,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [ ] Step 7 — §7 RST update: `irp_variable.rst` (anchor + deviation list-table) and toctree entry
   - [ ] Step 8 — §8 verify and report: validator + `verify_sync.py` + skill tests + both full suites + ruff/black/mypy
 - [ ] irp_argument_remediation - IRPArgument
+  - Main status (2026-11-26): verify_sync passes; 7/8 steps still open.
   - Baseline: argumentDirection is a COM property but is exposed by Java-style get_argument_direction()/set_argument_direction() methods; verify_sync.py otherwise passes.
   - [ ] Section 1 member checklist and populated getter fixture matrix row published.
   - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
@@ -47,6 +50,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [ ] Section 7 irp_argument.rst checked/updated for every public member.
   - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded.
 - [ ] irp_attribute_remediation - IRPAttribute
+  - Main status (2026-11-26): verify_sync passes; 7/8 steps still open.
   - Baseline: 6 COM properties are exposed through Java-style getter/setter methods; verify_sync.py otherwise passes.
   - [ ] Section 1 member checklist and six populated getter fixture matrix rows published.
   - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
@@ -57,6 +61,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [ ] Section 7 irp_attribute.rst checked/updated for every public member.
   - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded.
 - [ ] irp_argument_remediation - IRPArgument
+  - Main status (2026-11-26): verify_sync passes; 7/8 steps still open.
   - Baseline: argumentDirection is a COM property but is exposed by Java-style get_argument_direction()/set_argument_direction() methods; verify_sync.py otherwise passes.
   - [ ] Section 1 member checklist and populated getter fixture matrix row published.
   - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
@@ -67,6 +72,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [ ] Section 7 irp_argument.rst checked/updated for every public member.
   - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded.
 - [ ] irp_attribute_remediation - IRPAttribute
+  - Main status (2026-11-26): verify_sync passes; 7/8 steps still open.
   - Baseline: 6 COM properties are exposed through Java-style getter/setter methods; verify_sync.py otherwise passes.
   - [ ] Section 1 member checklist and six populated getter fixture matrix rows published.
   - [x] Section 2 canonical wrapper, tests, and exports verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
@@ -77,6 +83,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [ ] Section 7 irp_attribute.rst checked/updated for every public member.
   - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded.
 - [x] irp_attribute_api_report (IRPAttribute · IRPAttribute · models/elements/variables/model_variables.py · within shared 14)
+  - Main status (2026-11-26): verify_sync passes; all steps archived.
   - Note: shares the 14 covered sites with IRPArgument in the same module; `multiplicity`/`declaration`/`defaultValue` properties per catalog.
   - [x] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
   - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/`
@@ -87,6 +94,7 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [x] Step 7 — §7 RST update: class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPAttribute:` + deviation list-table)
   - [x] Step 8 — §8 verify and report: `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
 - [x] irp_argument_api_report (IRPArgument · IRPArgument · models/elements/variables/model_variables.py · within shared 14)
+  - Main status (2026-11-26): verify_sync passes; all steps archived.
   - Note: shares the 14 covered sites with IRPAttribute in the same module.
   - [x] Step 1 — §1 sync TODO: publish the per-run checklist with a subtask per target-owned JavaDoc member before any edit
   - [x] Step 2 — §2 resolve target: locate wrapper/inheritance/exports/tests; move wrapper + tests to canonical `models/com/telelogic/rhapsody/core/`
