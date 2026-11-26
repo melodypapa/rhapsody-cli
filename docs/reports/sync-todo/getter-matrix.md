@@ -268,3 +268,9 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | `icon` | — | none | MISSING |
 | `is_new_term` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_stereotype.py::test_is_new_term` | identity/value | OK |
 | `of_meta_class` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_stereotype.py::test_of_meta_class` | identity/value | OK |
+
+## IRPInstance
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `instantiated_by` | — | none | MISSING |

@@ -25,24 +25,6 @@ methods: `closeDiagram()`, `addTextBox(text, x_position, y_position, width, heig
 
 ---
 
-## SWR_ELEM_00009: RPInstance Wrapper
-
-**ID:** SWR_ELEM_00009
-**Title:** RPInstance wraps IRPInstance, an instance/object in the Rhapsody model
-**Status:** Implemented
-**Priority:** Medium
-**Description:**
-`RPInstance` shall extend `RPRelation` to wrap `IRPInstance`, matching the Java API
-inheritance where `IRPInstance` extends `IRPRelation`. It shall expose Java-mirrored
-methods: `getAllNestedElements()` (returns `IRPCollection`), `getAttributeValue(attribute_name)`
-(returns str), `setAttributeValue(attribute_name, attribute_value)` (str args),
-`getInLinks()` (returns `IRPCollection`), and `getOutLinks()` (returns `IRPCollection`).
-The wrapper shall register itself for the meta class `"Instance"`.
-**Implementation:** src/rhapsody_cli/models/elements/relations.py:RPInstance
-**Last Changed:** 2026-07-07
-
----
-
 ## SWR_ELEM_00010: RPRequirement Wrapper
 
 **ID:** SWR_ELEM_00010
