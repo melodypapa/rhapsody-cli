@@ -275,6 +275,10 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | --- | --- | --- | --- |
 | `instantiated_by` | — | none | MISSING |
 
+## IRPModule
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
 ## IRPRelation
 
 | Java getter / Python member | Integration test | Assertion | Status |
