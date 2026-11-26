@@ -12,9 +12,9 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import I
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlowchart
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument import IRPArgument
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flowchart import IRPFlowchart
 
 
 class IRPOperation(IRPInterfaceItem):
@@ -228,7 +228,7 @@ class IRPOperation(IRPInterfaceItem):
         Reference:
             com.telelogic.rhapsody.core.IRPOperation::getFlowchart()
         """
-        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlowchart
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flowchart import IRPFlowchart
 
         return cast(IRPFlowchart, self.wrap(self.get_com_property(self._com, "flowchart")))
 

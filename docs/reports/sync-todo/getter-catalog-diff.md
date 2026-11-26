@@ -14,7 +14,7 @@ review rather than a failure.
 
 | Status | Count |
 | --- | --- |
-| match | 167 |
+| match | 170 |
 | catalog-missing | 0 |
 | shape-mismatch | 0 |
 | no-binding | 0 |
@@ -370,6 +370,20 @@ review rather than a failure.
 | `end2` | `end2` | property | property | match |
 | `end2_port` | `end2Port` | property | property | match |
 | `end2_sys_ml_port` | `end2SysMLPort` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPFlowchart
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `is_analysis_only` | `isAnalysisOnly` | property | property | match |
+| `its_owner` | `itsOwner` | property | property | match |
+| `swimlanes` | `swimlanes` | property | property | match |
 
 ### Catalog properties with no matching Python property
 

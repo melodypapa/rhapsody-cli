@@ -13,9 +13,10 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCo
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlowchart, IRPFlowItem
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlowItem
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute import IRPAttribute
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flow import IRPFlow
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flowchart import IRPFlowchart
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_generalization import IRPGeneralization
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import IRPInterfaceItem
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
@@ -165,7 +166,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::addActivityDiagram()
         """
-        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlowchart
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flowchart import IRPFlowchart
 
         return cast(IRPFlowchart, self.wrap(self.call_com(lambda: self._com.addActivityDiagram())))
 
@@ -653,7 +654,7 @@ class IRPClassifier(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPClassifier::getActivityDiagram()
         """
-        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlowchart
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flowchart import IRPFlowchart
 
         return cast(IRPFlowchart, self.wrap(self.get_com_property(self._com, "activityDiagram")))
 

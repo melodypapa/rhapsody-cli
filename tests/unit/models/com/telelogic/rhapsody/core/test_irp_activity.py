@@ -1,21 +1,16 @@
 """Tests for rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity flowchart classes."""
 
-from typing import TYPE_CHECKING, cast
+from typing import cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import (
-    IRPFlowchart,
     IRPFlowItem,
     IRPObjectNode,
     IRPSwimlane,
 )
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statechart import IRPStatechart
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statemachine import IRPState
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
-
-if TYPE_CHECKING:
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
 
 
 class TestRPFlowItem:
@@ -55,143 +50,6 @@ class TestRPFlowItem:
         fake = make_fake_element("FlowItem", properties={"name": "MyFlowItem"})
         wrapped = IRPModelElement.wrap(fake)
         assert isinstance(wrapped, IRPFlowItem)
-
-
-class TestRPFlowchart:
-    """Tests for IRPFlowchart (15 methods)."""
-
-    def test_is_statechart(self) -> None:
-        fake = make_fake_element("Flowchart", properties={"name": "MyActivity"})
-        flowchart = IRPFlowchart(fake)
-        assert isinstance(flowchart, IRPStatechart)
-        assert flowchart.name == "MyActivity"
-
-    def test_add_accept_event_action_wraps_result(self) -> None:
-        fake = make_fake_element("Flowchart")
-        parent = make_fake_element("State", properties={"name": "RootState"})
-        aea = make_fake_element("AcceptEventAction", properties={"name": "AEA1"})
-        fake.addAcceptEventAction.return_value = aea
-        flowchart = IRPFlowchart(fake)
-        result = flowchart.add_accept_event_action("AEA1", IRPState(parent))
-        assert result.name == "AEA1"
-        fake.addAcceptEventAction.assert_called_once_with("AEA1", parent)
-
-    def test_add_accept_time_event_wraps_result(self) -> None:
-        fake = make_fake_element("Flowchart")
-        parent = make_fake_element("State", properties={"name": "RootState"})
-        ate = make_fake_element("AcceptTimeEvent", properties={"name": "ATE1"})
-        fake.addAcceptTimeEvent.return_value = ate
-        flowchart = IRPFlowchart(fake)
-        result = flowchart.add_accept_time_event("ATE1", IRPState(parent))
-        assert result.name == "ATE1"
-        fake.addAcceptTimeEvent.assert_called_once_with("ATE1", parent)
-
-    def test_add_activity_parameter_wraps_result(self) -> None:
-        fake = make_fake_element("Flowchart")
-        pin = make_fake_element("Pin", properties={"name": "Param1"})
-        fake.addActivityParameter.return_value = pin
-        flowchart = IRPFlowchart(fake)
-        result = flowchart.add_activity_parameter("Param1")
-        assert result.name == "Param1"
-        fake.addActivityParameter.assert_called_once_with("Param1")
-
-    def test_add_call_behavior_wraps_result(self) -> None:
-        fake = make_fake_element("Flowchart")
-        referenced = make_fake_element("Flowchart", properties={"name": "ReferencedActivity"})
-        state = make_fake_element("State", properties={"name": "CallBehaviorState"})
-        fake.addCallBehavior.return_value = state
-        flowchart = IRPFlowchart(fake)
-        result = flowchart.add_call_behavior(cast(IRPModelElement, IRPModelElement.wrap(referenced)))
-        assert result.name == "CallBehaviorState"
-        fake.addCallBehavior.assert_called_once_with(referenced)
-
-    def test_add_call_operation_wraps_result(self) -> None:
-        fake = make_fake_element("Flowchart")
-        parent = make_fake_element("State", properties={"name": "RootState"})
-        co = make_fake_element("CallOperation", properties={"name": "CO1"})
-        fake.addCallOperation.return_value = co
-        flowchart = IRPFlowchart(fake)
-        result = flowchart.add_call_operation("CO1", IRPState(parent))
-        assert result.name == "CO1"
-        fake.addCallOperation.assert_called_once_with("CO1", parent)
-
-    def test_add_object_node_wraps_result(self) -> None:
-        fake = make_fake_element("Flowchart")
-        parent = make_fake_element("State", properties={"name": "RootState"})
-        node = make_fake_element("ObjectNode", properties={"name": "ObjectNode1"})
-        fake.addObjectNode.return_value = node
-        flowchart = IRPFlowchart(fake)
-        result = flowchart.add_object_node("ObjectNode1", IRPState(parent))
-        assert result.name == "ObjectNode1"
-        fake.addObjectNode.assert_called_once_with("ObjectNode1", parent)
-
-    def test_add_reference_activity_wraps_result(self) -> None:
-        fake = make_fake_element("Flowchart")
-        referenced = make_fake_element("Flowchart", properties={"name": "ReferencedActivity"})
-        state = make_fake_element("State", properties={"name": "RefActivityState"})
-        fake.addReferenceActivity.return_value = state
-        flowchart = IRPFlowchart(fake)
-        result = flowchart.add_reference_activity(cast(IRPModelElement, IRPModelElement.wrap(referenced)))
-        assert result.name == "RefActivityState"
-        fake.addReferenceActivity.assert_called_once_with(referenced)
-
-    def test_add_swimlane_wraps_result(self) -> None:
-        fake = make_fake_element("Flowchart")
-        swimlane = make_fake_element("Swimlane", properties={"name": "Lane1"})
-        fake.addSwimlane.return_value = swimlane
-        flowchart = IRPFlowchart(fake)
-        result = flowchart.add_swimlane("Lane1")
-        assert result.name == "Lane1"
-        fake.addSwimlane.assert_called_once_with("Lane1")
-
-    def test_get_flowchart_diagram_wraps_result(self) -> None:
-        fake = make_fake_element("Flowchart")
-        diagram = make_fake_element("ActivityDiagram", properties={"name": "ActivityDiagram1"})
-        fake.getFlowchartDiagram.return_value = diagram
-        flowchart = IRPFlowchart(fake)
-        result = flowchart.get_flowchart_diagram()
-        assert result.name == "ActivityDiagram1"
-
-    def test_get_is_analysis_only_returns_int(self) -> None:
-        fake = make_fake_element("Flowchart", getIsAnalysisOnly=1)
-        flowchart = IRPFlowchart(fake)
-        assert flowchart.get_is_analysis_only() == 1
-
-    def test_get_its_owner_wraps_result(self) -> None:
-        fake = make_fake_element("Flowchart")
-        owner = make_fake_element("Operation", properties={"name": "myOperation"})
-        fake.getItsOwner.return_value = owner
-        flowchart = IRPFlowchart(fake)
-        result = flowchart.get_its_owner()
-        assert result.name == "myOperation"
-
-    def test_get_swimlanes_returns_collection(self) -> None:
-        fake = make_fake_element("Flowchart")
-        lane1 = make_fake_element("Swimlane", properties={"name": "Lane1"})
-        lane2 = make_fake_element("Swimlane", properties={"name": "Lane2"})
-        fake.getSwimlanes.return_value = make_fake_collection([lane1, lane2])
-        flowchart = IRPFlowchart(fake)
-        result = flowchart.get_swimlanes()
-        assert isinstance(result, IRPCollection)
-        assert len(result) == 2
-
-    def test_set_is_analysis_only_delegates(self) -> None:
-        fake = make_fake_element("Flowchart")
-        flowchart = IRPFlowchart(fake)
-        flowchart.set_is_analysis_only(1)
-        fake.setIsAnalysisOnly.assert_called_once_with(1)
-
-    def test_set_its_owner_delegates(self) -> None:
-        fake = make_fake_element("Flowchart")
-        owner = make_fake_element("Operation", properties={"name": "myOperation"})
-        flowchart = IRPFlowchart(fake)
-        flowchart.set_its_owner(cast("IRPOperation", IRPModelElement.wrap(owner)))
-        fake.setItsOwner.assert_called_once_with(owner)
-
-    def test_is_registered_for_meta_class_flowchart(self) -> None:
-        fake = make_fake_element("Flowchart", properties={"name": "MyActivity"})
-        wrapped = IRPModelElement.wrap(fake)
-        assert isinstance(wrapped, IRPFlowchart)
 
 
 class TestRPObjectNode:

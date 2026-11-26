@@ -287,3 +287,11 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | `end2` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_end2` | identity/value | OK |
 | `end2_port` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_end2_port` | identity/value | OK |
 | `end2_sys_ml_port` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_end2_sys_ml_port` | identity/value | OK |
+
+## IRPFlowchart
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `is_analysis_only` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flowchart.py::test_is_analysis_only` | identity/value | OK |
+| `its_owner` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flowchart.py::test_its_owner` | identity/value | OK |
+| `swimlanes` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flowchart.py::test_swimlanes` | identity/value | OK |

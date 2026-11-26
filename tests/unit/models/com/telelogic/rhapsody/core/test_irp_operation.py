@@ -2,8 +2,8 @@
 
 import pytest
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_activity import IRPFlowchart
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument import IRPArgument
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flowchart import IRPFlowchart
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import IRPInterfaceItem
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
