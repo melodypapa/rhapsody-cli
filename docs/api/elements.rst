@@ -58,6 +58,7 @@ Java Package API Reference
    com/telelogic/rhapsody/core/irp_classifier
    com/telelogic/rhapsody/core/irp_classifier_role
    com/telelogic/rhapsody/core/irp_collection
+   com/telelogic/rhapsody/core/irp_comment
    com/telelogic/rhapsody/core/irp_constraint
    com/telelogic/rhapsody/core/irp_dependency
    com/telelogic/rhapsody/core/irp_enumeration_literal

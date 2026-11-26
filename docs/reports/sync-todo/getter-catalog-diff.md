@@ -575,3 +575,14 @@ review rather than a failure.
 | Catalog property | Derived Python name | Status |
 | --- | --- | --- |
 | — | — | — |
+
+## IRPComment
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |

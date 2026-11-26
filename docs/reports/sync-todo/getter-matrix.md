@@ -408,3 +408,8 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |
 | `constraints_by_me` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_constraint.py::test_constraints_by_me_empty_state` | weak | WEAK |
+
+## IRPComment
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |

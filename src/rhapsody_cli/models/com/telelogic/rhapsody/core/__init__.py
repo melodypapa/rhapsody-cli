@@ -38,6 +38,7 @@ if TYPE_CHECKING:
     )
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collaboration import IRPCollaboration
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_comment import IRPComment
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_component import IRPComponent
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_component_instance import IRPComponentInstance
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_configuration import IRPConfiguration
@@ -107,7 +108,6 @@ if TYPE_CHECKING:
         IRPTransition,
         IRPTrigger,
     )
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_misc import IRPComment
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_module import IRPModule
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_node import IRPNode
@@ -156,7 +156,7 @@ _EXPORT_MODULES = {
     "IRPCollaboration": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collaboration",
     "IRPCollaborationDiagram": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types",
     "IRPCollection": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection",
-    "IRPComment": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_misc",
+    "IRPComment": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_comment",
     "IRPComponent": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_component",
     "IRPComponentDiagram": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types",
     "IRPComponentInstance": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_component_instance",
