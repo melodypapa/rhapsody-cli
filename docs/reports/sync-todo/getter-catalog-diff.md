@@ -14,7 +14,7 @@ review rather than a failure.
 
 | Status | Count |
 | --- | --- |
-| match | 189 |
+| match | 192 |
 | catalog-missing | 0 |
 | shape-mismatch | 0 |
 | no-binding | 0 |
@@ -502,6 +502,20 @@ review rather than a failure.
 | `is_overridden` | `isOverridden` | property | property | match |
 | `its_class` | `itsClass` | property | property | match |
 | `root_state` | `rootState` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPStereotype
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `icon` | `icon` | property | property | match |
+| `is_new_term` | `isNewTerm` | property | property | match |
+| `of_meta_class` | `ofMetaClass` | property | property | match |
 
 ### Catalog properties with no matching Python property
 
