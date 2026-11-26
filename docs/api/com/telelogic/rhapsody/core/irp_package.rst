@@ -3,25 +3,25 @@
 IRPPackage
 ==========
 
-The IRPPackage interface represents a package that contains model elements.
+The IRPPackage interface represents packages in Rhapsody models.
 
 - **Java interface:** IRPPackage
 - **Java package:** com.telelogic.rhapsody.core
-- **JavaDoc description:** The IRPPackage interface represents a model package containing classes, actors, and other elements.
+- **JavaDoc description:** The IRPPackage interface represents packages in Rhapsody models.
 - **Python wrapper:** IRPPackage
 - **Python import:** ``from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPPackage``
-- **Canonical module:** ``rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package`` (the
+- **Canonical module:** ``rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package``
 
 API reference
 -------------
 
 Wraps ``IRPPackage``: represents a package that contains model elements.
 
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.actors
+
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.add_activity_diagram
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.add_actor
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.add_association
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.add_class
 
@@ -65,8 +65,6 @@ Wraps ``IRPPackage``: represents a package that contains model elements.
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.add_statechart
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.add_statechart_diagram
-
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.add_timing_diagram
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.add_type
@@ -76,6 +74,8 @@ Wraps ``IRPPackage``: represents a package that contains model elements.
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.add_use_case_diagram
 
 .. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.behavioral_diagrams
+
+.. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.classes
 
 .. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.collaboration_diagrams
 
@@ -153,73 +153,13 @@ Wraps ``IRPPackage``: represents a package that contains model elements.
 
 .. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.flows
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_actors
-
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_all_nested_elements
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_behavioral_diagrams
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_classes
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_collaboration_diagrams
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_component_diagrams
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_deployment_diagrams
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_events
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_events_base_id
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_flow_items
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_flows
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_global_functions
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_global_objects
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_global_variables
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_instance_specifications
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_links
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_modules
-
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_namespace
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_nested_classifiers
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_nested_components
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_nested_packages
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_nodes
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_object_model_diagrams
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_panel_diagrams
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_remote_requirements_populate_mode
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_root_instance_specifications
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_saved_in_separate_directory
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_sequence_diagrams
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_source_artifacts
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_timing_diagrams
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_types
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_use_case_diagrams
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_use_cases
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.get_user_defined_stereotypes
 
 .. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.global_functions
 
@@ -251,15 +191,11 @@ Wraps ``IRPPackage``: represents a package that contains model elements.
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.re_calculate_events_base_id
 
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.recalculate_events_base_id
-
 .. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.saved_in_seperate_directory
 
 .. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.sequence_diagrams
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.set_remote_requirements_populate_mode
-
-.. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.set_saved_in_separate_directory
 
 .. autoproperty:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package.IRPPackage.source_artifacts
 

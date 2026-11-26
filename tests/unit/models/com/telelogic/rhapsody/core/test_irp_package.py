@@ -272,18 +272,8 @@ def test_package_find_class_delegates_to_com() -> None:
     assert result.name == "MyClass"
 
 
-def test_package_add_association_delegates_to_com() -> None:
-    fake = make_fake_element("Package")
-    end1 = IRPRelation(make_fake_element("Relation", properties={"name": "end1"}))
-    end2 = IRPRelation(make_fake_element("Relation", properties={"name": "end2"}))
-    association = make_fake_element("Relation", properties={"name": "assoc1"})
-    fake.addAssociation.return_value = association
-    package = IRPPackage(fake)
-
-    result = package.add_association(end1, end2, "assoc1")
-
-    fake.addAssociation.assert_called_once_with(end1._com, end2._com, "assoc1")
-    assert result.name == "assoc1"
+def test_package_inherits_add_association_from_model_element() -> None:
+    assert IRPPackage.add_association is IRPModelElement.add_association
 
 
 def test_package_add_global_object_passes_all_catalog_arguments() -> None:
@@ -388,13 +378,14 @@ def test_package_get_flows_returns_collection() -> None:
 
 
 # --- Remote Requirements Methods (Task 3) Tests ---
-def test_package_get_remote_requirements_populate_mode_returns_int() -> None:
+def test_package_get_remote_requirements_populate_mode_returns_documented_string() -> None:
     fake = make_fake_element("Package")
-    fake.getRemoteRequirementsPopulateMode.return_value = 1
+    fake.getRemoteRequirementsPopulateMode.return_value = "None"
     package = IRPPackage(fake)
 
     result = package.get_remote_requirements_populate_mode()
-    assert result == 1
+    expected_mode: object = "None"
+    assert result == expected_mode
 
 
 def test_package_get_root_instance_specifications_raises_not_implemented() -> None:
@@ -863,18 +854,6 @@ def test_generated_find_use_case() -> None:
     fake = make_fake_element("Package")
     fake.findUseCase.return_value = make_fake_element("Class", properties={"name": "x"})
     result = IRPPackage(fake).find_use_case("x")
-    assert result is not None
-
-
-def test_generated_add_association() -> None:
-    fake = make_fake_element("Package")
-    fake.addAssociation.return_value = make_fake_element("Relation", properties={"name": "Association"})
-    end1 = IRPRelation(make_fake_element("Relation", properties={"name": "End1"}))
-    end2 = IRPRelation(make_fake_element("Relation", properties={"name": "End2"}))
-
-    result = IRPPackage(fake).add_association(end1, end2, "Association")
-
-    fake.addAssociation.assert_called_once_with(end1._com, end2._com, "Association")
     assert result is not None
 
 

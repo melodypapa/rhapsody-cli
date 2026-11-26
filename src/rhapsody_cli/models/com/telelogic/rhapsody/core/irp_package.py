@@ -750,28 +750,6 @@ class IRPPackage(IRPUnit):
 
         return cast(IRPUseCase, self.wrap(self.call_com(lambda: self._com.findUseCase(name))))
 
-    # --- Association methods ---
-    def add_association(self, end1: IRPModelElement, end2: IRPModelElement, name: str) -> IRPRelation:  # type: ignore[override]
-        """Adds an association using the COM-only package extension.
-
-        Args:
-            end1: The first relation end.
-            end2: The second relation end.
-            name: The name of the association.
-
-        Returns:
-            The wrapped relation created by Rhapsody.
-
-        Note:
-            This COM extension is absent from the IRPPackage JavaDoc.
-
-        Reference:
-            pywin32 IRPPackage.addAssociation(end1, end2, name)
-        """
-        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
-
-        return cast(IRPRelation, self.wrap(self.call_com(lambda: self._com.addAssociation(end1._com, end2._com, name))))
-
     # --- Event methods ---
     def add_event(self, name: str) -> IRPModelElement:
         """Adds a new event to the package.
@@ -1279,16 +1257,16 @@ class IRPPackage(IRPUnit):
         return IRPCollection(self.call_com(lambda: self._com.findUsage(element._com)))
 
     # --- Remote Requirements Methods (Task 3) ---
-    def get_remote_requirements_populate_mode(self) -> int:
+    def get_remote_requirements_populate_mode(self) -> str:
         """Returns the remote requirements populate mode for this package.
 
         Returns:
-            The populate mode as an integer.
+            The populate mode, one of ``"All"``, ``"Linked"``, or ``"None"``.
 
         Reference:
             com.telelogic.rhapsody.core.IRPPackage::getRemoteRequirementsPopulateMode()
         """
-        return int(self.call_com(lambda: self._com.getRemoteRequirementsPopulateMode()))
+        return str(self.call_com(lambda: self._com.getRemoteRequirementsPopulateMode()))
 
     def get_root_instance_specifications(self) -> IRPCollection:
         """Return root instance specifications in this package.

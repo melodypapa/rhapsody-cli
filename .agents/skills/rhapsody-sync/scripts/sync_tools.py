@@ -251,7 +251,10 @@ def verify_wrapper_bindings(root: Path, interface_name: str, wrapper_source: str
     catalog_path = root / "docs" / "reports" / "pywin32_authority.json"
     if not catalog_path.is_file():
         return [f"pywin32 authority catalog not found: {catalog_path}"]
-    authority_data = json.loads(catalog_path.read_text(encoding="utf-8"))
+    try:
+        authority_data = json.loads(catalog_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        return [f"Could not read pywin32 authority catalog {catalog_path}: {exc}"]
     entries = authority_data.get("catalog", {}).get(interface_name)
     if entries is None:
         return [f"pywin32 catalog has no entry for {interface_name}"]
@@ -276,7 +279,9 @@ def verify_wrapper_bindings(root: Path, interface_name: str, wrapper_source: str
         if shape != "method":
             return
         signature = lowered_signatures.get(member.lower())
-        count_val = signature.get("count") if isinstance(signature, dict) else None
+        if not isinstance(signature, dict):
+            return
+        count_val = signature.get("count")
         if not isinstance(count_val, int):
             return
         required_val = signature.get("required")
@@ -420,10 +425,13 @@ def verify_no_empty_finally(path: Path) -> List[str]:
 
 
 def _owned_property_names(wrapper_source: str) -> Set[str]:
+    """Return readable owned properties; setter-only COM properties are not getters."""
     tree = ast.parse(wrapper_source)
     names: Set[str] = set()
     for node in ast.walk(tree):
-        if _is_python_property_accessor(node):
+        if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            continue
+        if any(isinstance(decorator, ast.Name) and decorator.id == "property" for decorator in node.decorator_list):
             names.add(node.name)
     return names
 
@@ -1070,7 +1078,11 @@ def write_getter_catalog_diff(root: Path, interface_name: str, report_path: Path
     wrapper_path, _canonical = _canonical_import(root, source_path)
     if not wrapper_path.is_file():
         raise FileNotFoundError(f"Wrapper source does not exist: {wrapper_path}")
-    authority = json.loads((root / "docs" / "reports" / "pywin32_authority.json").read_text(encoding="utf-8"))
+    catalog_path = root / "docs" / "reports" / "pywin32_authority.json"
+    try:
+        authority = json.loads(catalog_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise ValueError(f"Could not read pywin32 authority catalog {catalog_path}: {exc}") from exc
     catalog = authority.get("catalog", {}).get(simple_name, {})
     if not isinstance(catalog, dict) or not catalog:
         raise ValueError(f"pywin32 catalog has no entry for {simple_name}")
@@ -1188,7 +1200,10 @@ def verify_not_implemented_evidence(root: Path, interface_name: str, wrapper_sou
         return parse_issues
 
     catalog_path = root / "docs" / "reports" / "pywin32_authority.json"
-    authority: object = json.loads(catalog_path.read_text(encoding="utf-8")) if catalog_path.is_file() else {}
+    try:
+        authority: object = json.loads(catalog_path.read_text(encoding="utf-8")) if catalog_path.is_file() else {}
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        return [f"Could not read pywin32 authority catalog {catalog_path}: {exc}"]
     catalog: object = authority.get("catalog", {}).get(interface_name, {}) if isinstance(authority, dict) else {}
     unavailable: object = authority.get("documented_unavailable", {}).get(interface_name, []) if isinstance(authority, dict) else {}
     catalog_names = {str(name).lower(): str(name) for name in catalog} if isinstance(catalog, dict) else {}

@@ -1019,19 +1019,12 @@ class IRPProject(IRPPackage):
         """
         self.call_com(lambda: self._com.setObjectImplicit(obj._com))
 
-    @property
-    def use_unique_stereotype_and_ref_cache(self) -> int:
-        """Returns whether a unique stereotype and reference cache is used.
+    _use_unique_stereotype_and_ref_cache = property(
+        None,
+        doc="Sets whether to use the unique stereotype and reference cache; the pywin32 property is write-only.",
+    )
 
-        Returns:
-            ``1`` if the unique cache is used, ``0`` otherwise.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPProject::setUseUniqueStereotypeAndRefCache(int enabled)
-        """
-        return int(self.get_com_property(self._com, "UseUniqueStereotypeAndRefCache"))
-
-    @use_unique_stereotype_and_ref_cache.setter
+    @_use_unique_stereotype_and_ref_cache.setter
     def use_unique_stereotype_and_ref_cache(self, enabled: int) -> None:
         """Sets whether to use a unique stereotype and reference cache.
 

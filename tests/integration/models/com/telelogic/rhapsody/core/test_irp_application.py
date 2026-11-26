@@ -78,9 +78,11 @@ class TestIRPApplicationIntegration:
         assert rhapsody_app.is_hidden_ui is True
 
     def test_open_project_returns_the_real_project(self, rhapsody_app: IRPApplication, test_project: IRPProject) -> None:
+        rhapsody_app.save_all()
         opened = rhapsody_app.open_project(str(TEST_PROJECT_DIR / "TestProject.rpyx"))
 
-        assert opened == test_project
+        assert opened == rhapsody_app.active_project()
+        assert opened.name == TEST_PROJECT_NAME
 
     def test_create_new_project_returns_the_created_project(self, rhapsody_app: IRPApplication, tmp_path: Path, test_project: IRPProject) -> None:
         project_dir = tmp_path / "NewProj"
@@ -95,7 +97,8 @@ class TestIRPApplicationIntegration:
         assert active == created
         created.delete_from_project()
         reopened = rhapsody_app.open_project(str(TEST_PROJECT_DIR / "TestProject.rpyx"))
-        assert reopened == test_project
+        assert reopened == rhapsody_app.active_project()
+        assert reopened.name == TEST_PROJECT_NAME
 
     def test_projects_collection_contains_the_test_project(self, rhapsody_app: IRPApplication, test_project: IRPProject) -> None:
         projects = rhapsody_app.projects

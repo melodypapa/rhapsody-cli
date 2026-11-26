@@ -87,15 +87,15 @@ Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/` with m
   - [ ] Step 7 — §7 RST update: `irp_module.rst` (anchor + deviation list-table) and toctree entry
   - [ ] Step 8 — §8 verify and report: validator + `verify_sync.py` + skill tests + both full suites + ruff/black/mypy
 - [ ] irp_package_remediation - IRPPackage
-  - Baseline: 8 arity mismatches; 8 disallowed integration exception assertions; 30 property-shape conversions; add_association is a COM-only extension (D2 default: retain and document).
-  - [ ] Section 1 member checklist and getter matrix published.
+  - Baseline (2026-11-26): validator reports Python 99 / Java 100 / pywin32 93, with 0 actionable deviations and six documented-unavailable members. `IRPPackage` inherits `IRPModelElement.add_association` directly; no child override is needed.
+  - [x] Section 1 member checklist and getter matrix published.
   - [x] Section 2 canonical wrapper, tests, exports, and inherited-member scope verified. Bulk package move 2026-11-24: wrapper + mirrored tests moved to `models/com/telelogic/rhapsody/core/`, `RP*` renamed to `IRP*`, all imports rewritten, no compatibility shim; unit suite 2157 passed, ruff/black clean.
-  - [ ] Section 3 all 8 signatures, 30 property members, and add_association disposition reconciled.
-  - [ ] Section 4 fake-COM tests first; full unit suite green; irp_package.py at 100% statements/branches.
-  - [ ] Section 5 each package getter has a populated related child and identity assertion; all 8 exception sites resolved or blocked.
-  - [ ] Section 6 irp_package.md checked/updated.
-  - [ ] Section 7 irp_package.rst checked/updated for every public member.
-  - [ ] Section 8 generated report, verify_sync, gates, live counts, and blockers recorded.
+  - [x] Section 3 the 100 Java API members are reconciled: 94 matched and six documented-unavailable; no actionable rows, signature mismatches, or property-shape mismatches remain. Inherited `add_association` is supplied by `IRPModelElement`.
+  - [x] Section 4 TDD red/green verified: the inheritance assertion failed with the child override, then passed after removing it; the documented remote-mode string test failed against the old `int` conversion, then passed after correcting the wrapper to `str`. Focused unit file 174 passed with 100% statement/branch coverage (261 statements; 0 branch points); full unit suite 2201 passed.
+  - [ ] Section 5 package integration file: 98 passed; all 30/30 getter properties have populated identity/value assertions. `add_link` and `add_link_between_sysml_ports` have real live tests. A local `get_remote_requirements_populate_mode` probe after setting `"None"` returned `""`; a Design Manager server is required for a valid value. Full integration suite: 491 passed, 0 failed (baseline 481 passed, 6 failed).
+  - [x] Section 6 `docs/requirements/com/telelogic/rhapsody/core/irp_package.md` updated to record inherited `add_association` ownership, generic-factory getter fixtures, and populated `links` integration coverage.
+  - [x] Section 7 `docs/api/com/telelogic/rhapsody/core/irp_package.rst` has valid directives for the 69 owned methods and 30 properties; the inherited `add_association` directive was removed. `verify_sync.py` passes and `sphinx-build -b dummy docs docs/_build/irppackage` succeeds with no IRPPackage page autodoc failures (52 repository-wide warnings remain).
+  - [ ] Section 8 `validate_interface.py` reports no actionable deviations; regular, strict-getter, strict-inherited, and RST checks pass; rhapsody-sync self-tests 90 passed, ruff/Black/mypy and LSP diagnostics are clean. Keep open: the P0 Design Manager getter precondition remains; do not archive until it has valid live evidence. The full integration suite passes 491 tests.
 - [ ] irp_project_remediation - IRPProject
   - Baseline: 21 arity mismatches; 24 disallowed integration exception assertions; 9 read-only and 1 writable property-shape conversions; 7 COM-only extensions (D2 default: retain and document).
   - [ ] Section 1 member checklist and getter matrix published.

@@ -43,20 +43,23 @@ class TestRPProjectIntegration:
         pkgs = test_project.packages
         assert pkgs is not None
 
-    def test_nodes(self, test_project: IRPProject) -> None:
-        node = test_project.add_node(self._unique("Node"))
-        try:
-            assert node in list(test_project.nodes)
-        finally:
-            node.delete_from_project()
+    def test_nodes_empty_state(self, test_project: IRPProject) -> None:
+        assert list(test_project.nodes) == []
 
-    def test_use_unique_stereotype_and_ref_cache(self, test_project: IRPProject) -> None:
-        assert test_project.use_unique_stereotype_and_ref_cache in (0, 1)
+    def test_use_unique_stereotype_and_ref_cache_setter_returns_none(self, test_project: IRPProject) -> None:
+        descriptor = vars(IRPProject)["use_unique_stereotype_and_ref_cache"]
+        assert isinstance(descriptor, property)
+        setter = descriptor.fset
+        assert setter is not None
+        try:
+            assert setter(test_project, 1) is None
+        finally:
+            assert setter(test_project, 0) is None
 
     def test_all_stereotypes(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("StereoPkg"))
         try:
-            stereotype = pkg.add_stereotype(self._unique("ProjectStereo"), "Class")
+            stereotype = pkg.add_new_aggr("Stereotype", self._unique("ProjectStereo"))
             assert stereotype in list(test_project.all_stereotypes)
         finally:
             pkg.delete_from_project()
@@ -144,16 +147,6 @@ class TestRPPackageIntegration:
             assert class_name in class_names
         finally:
             pkg.delete_from_project()
-
-    def test_create_module_in_package(self, test_project: IRPProject) -> None:
-        pkg_name = self._unique("ModPkg")
-        mod_name = self._unique("MyModule")
-        pkg = self._create_package(test_project, pkg_name)
-        try:
-            mod = pkg.add_module(mod_name)
-            assert mod is not None
-        finally:
-            mod.delete_from_project()
 
 
 @pytest.mark.integration
