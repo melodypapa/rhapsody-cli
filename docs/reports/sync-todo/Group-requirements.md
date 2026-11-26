@@ -1,6 +1,6 @@
-# Sync todo — `containment` (group 2 of 2)
+# Sync todo — `requirements`
 
-**1 classes** · ✅ 1 archived · ⬜ 0 open
+**2 classes** · ✅ 0 archived · ⬜ 2 open
 
 One row per sync run. A step is ticked only when its evidence lands; a row is archived only after all eight steps pass. Binding rule: one pywin32-exposed COM member per call — `call_com(lambda: self._com.Name(...))` for methods, `get_com_property` / `set_com_property` for properties; catalog-absent sites are blockers, never blind migrations. Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/`, mirrored tests under `tests/{unit,integration}/models/com/telelogic/rhapsody/core/`.
 
@@ -23,22 +23,39 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 
 | # | Class | Interface | Legacy source | Sites | Owned | Steps | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | `irp_project_api_report` | IRPProject | `models/elements/containment/model_project.py` | — | — | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
+| 1 | `irp_annotation_api_report` | IRPAnnotation | `rhapsody_cli/models/elements/requirements/model_requirements.py` | 8 | 10 | 1/8 (②) | ⬜ open |
+| 2 | `irp_requirement_api_report` | IRPRequirement | `rhapsody_cli/models/elements/requirements/model_requirements.py` | 2 | 2 | 1/8 (②) | ⬜ open |
 
 ## Row details
 
 <details>
-<summary><code>irp_project_api_report</code> · IRPProject · 8/8 steps · ✅ archived</summary>
+<summary><code>irp_annotation_api_report</code> · IRPAnnotation · 1/8 steps · ⬜ open</summary>
 
-- **Status (2026-11-26):** verify_sync passes; all steps archived. Duplicate row for IRPProject also in Group-containment-1.md.
-- **Note:** 12 method-shaped (`setWaitDialogWatchdogValue`, `isActivelyManaged`, `getRoundtripShadowModel`, ...); `setGlobalConfiguration`/`setUseUniqueStereotypeAndRefCache` absent from every catalog: blocker unless Windows typelib regen resolves it.
-- [x] ① §1
+- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Note:** usage 20 src / 15 test refs, 10 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
+- [ ] ① §1
 - [x] ② §2
-- [x] ③ §3 — baseline `validate_interface.py IRPProject --source authority`; reconcile every owned member; one pywin32 member per call; catalog-absent sites = blockers
-- [x] ④ §4
-- [x] ⑤ §5 — add/update integration coverage for owned behavior (mirrored test path); Windows = live run, macOS = collection-only noted
-- [x] ⑥ §6
-- [x] ⑦ §7 — class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPProject:` + deviation list-table)
-- [x] ⑧ §8 — `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
+- [ ] ③ §3
+- [ ] ④ §4
+- [ ] ⑤ §5
+- [ ] ⑥ §6
+- [ ] ⑦ §7
+- [ ] ⑧ §8
+
+</details>
+
+<details>
+<summary><code>irp_requirement_api_report</code> · IRPRequirement · 1/8 steps · ⬜ open</summary>
+
+- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Note:** usage 11 src / 7 test refs, 2 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
+- [ ] ① §1
+- [x] ② §2
+- [ ] ③ §3
+- [ ] ④ §4
+- [ ] ⑤ §5
+- [ ] ⑥ §6
+- [ ] ⑦ §7
+- [ ] ⑧ §8
 
 </details>

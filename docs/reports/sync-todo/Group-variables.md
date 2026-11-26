@@ -1,4 +1,4 @@
-# Sync todo — `variables` (group 1 of 1)
+# Sync todo — `variables`
 
 **8 classes** · ✅ 2 archived · ⬜ 6 open
 

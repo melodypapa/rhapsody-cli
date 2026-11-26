@@ -1,8 +1,10 @@
-# Sync todo — `diagrams` (group 1 of 2)
+# Sync todo — `diagrams`
 
-**10 classes** · ✅ 0 archived · ⬜ 10 open
+**12 classes** · ✅ 0 archived · ⬜ 12 open
 
 One row per sync run. A step is ticked only when its evidence lands; a row is archived only after all eight steps pass. Binding rule: one pywin32-exposed COM member per call — `call_com(lambda: self._com.Name(...))` for methods, `get_com_property` / `set_com_property` for properties; catalog-absent sites are blockers, never blind migrations. Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/`, mirrored tests under `tests/{unit,integration}/models/com/telelogic/rhapsody/core/`.
+
+Merged from `Group-diagrams-1.md`, `Group-diagrams-2.md`; the per-row content is unchanged.
 
 ## Step legend
 
@@ -33,6 +35,8 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 | 8 | `irp_object_model_diagram_api_report` | IRPObjectModelDiagram | `rhapsody_cli/models/elements/diagrams/model_diagram_types.py` | 0 | 0 | 1/8 (②) | ⬜ open |
 | 9 | `irp_deployment_diagram_api_report` | IRPDeploymentDiagram | `rhapsody_cli/models/elements/diagrams/model_diagram_types.py` | 0 | 0 | 1/8 (②) | ⬜ open |
 | 10 | `irp_component_diagram_api_report` | IRPComponentDiagram | `rhapsody_cli/models/elements/diagrams/model_diagram_types.py` | 0 | 0 | 1/8 (②) | ⬜ open |
+| 11 | `irp_panel_diagram_api_report` | IRPPanelDiagram | `rhapsody_cli/models/elements/diagrams/model_diagram_types.py` | 0 | 0 | 1/8 (②) | ⬜ open |
+| 12 | `irp_structure_diagram_api_report` | IRPStructureDiagram | `rhapsody_cli/models/elements/diagrams/model_diagram_types.py` | 0 | 0 | 1/8 (②) | ⬜ open |
 
 ## Row details
 
@@ -185,6 +189,38 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 
 - **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
 - **Note:** usage 14 src / 0 test refs, 0 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
+- [ ] ① §1
+- [x] ② §2
+- [ ] ③ §3
+- [ ] ④ §4
+- [ ] ⑤ §5
+- [ ] ⑥ §6
+- [ ] ⑦ §7
+- [ ] ⑧ §8
+
+</details>
+
+<details>
+<summary><code>irp_panel_diagram_api_report</code> · IRPPanelDiagram · 1/8 steps · ⬜ open</summary>
+
+- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Note:** usage 9 src / 0 test refs, 0 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
+- [ ] ① §1
+- [x] ② §2
+- [ ] ③ §3
+- [ ] ④ §4
+- [ ] ⑤ §5
+- [ ] ⑥ §6
+- [ ] ⑦ §7
+- [ ] ⑧ §8
+
+</details>
+
+<details>
+<summary><code>irp_structure_diagram_api_report</code> · IRPStructureDiagram · 1/8 steps · ⬜ open</summary>
+
+- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Note:** usage 7 src / 0 test refs, 0 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
 - [ ] ① §1
 - [x] ② §2
 - [ ] ③ §3

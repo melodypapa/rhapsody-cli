@@ -7,11 +7,11 @@ Execution ledger for the 19 committed interface reports under `docs/reports/<jav
 | Metric | Value |
 | --- | --- |
 | Interfaces with a committed API report | 19 |
-| Group files | 24 |
+| Group files | 16 |
 | Rows tracked | 146 |
-| Rows archived | 21 (19 unique + 2 preserved duplicate remediation rows) |
-| Rows open | 125 |
-| Step checks ticked | 337 / 1168 |
+| Rows archived | 34 |
+| Rows open | 112 |
+| Step checks ticked | 446 / 1168 |
 | NotImplementedError evidence rows | 30 |
 | P0 blocker rows | 22 (10 interfaces) |
 | `verify_sync.py` sweep | 19 / 19 interfaces pass |
@@ -30,41 +30,34 @@ Execution ledger for the 19 committed interface reports under `docs/reports/<jav
 
 Group files are organized **by category**, where the category is the legacy module subpackage in
 each row's path (`elements/<subpackage>/`, `models/support/`, `models/core.py`, `application.py`).
-Each group file holds **at most 10 classes**; a category larger than 10 is split into `-1`, `-2`, …
-files. Classes whose rows point at canonical post-sync paths (or carry only a remediation label)
-were mapped to their legacy category by class name. All 146 tracked rows are preserved.
+Each category has a single `Group-<category>.md` file; the larger categories were merged from the
+former `-1`/`-2`/`-3` splits and keep every row unchanged. Classes whose rows point at canonical
+post-sync paths (or carry only a remediation label) were mapped to their legacy category by class
+name. All 146 tracked rows are preserved.
 
 | Group file | Category | Classes | Status |
 | --- | --- | --- | --- |
-| [Group-activity-1.md](Group-activity-1.md) | `activity` | 10 | ⬜ 10 open |
-| [Group-activity-2.md](Group-activity-2.md) | `activity` | 2 | ⬜ 2 open |
-| [Group-application-1.md](Group-application-1.md) | `application` | 1 | ✅ all archived |
-| [Group-classifiers-1.md](Group-classifiers-1.md) | `classifiers` | 10 | ⬜ 9 open · ✅ 1 archived |
-| [Group-classifiers-2.md](Group-classifiers-2.md) | `classifiers` | 6 | ✅ all archived |
-| [Group-common-1.md](Group-common-1.md) | `common` | 7 | ⬜ 6 open · ✅ 1 archived |
-| [Group-containment-1.md](Group-containment-1.md) | `containment` | 10 | ⬜ 9 open · ✅ 1 archived |
-| [Group-containment-2.md](Group-containment-2.md) | `containment` | 1 | ✅ all archived |
-| [Group-core-1.md](Group-core-1.md) | `core` | 7 | ✅ all archived |
-| [Group-diagrams-1.md](Group-diagrams-1.md) | `diagrams` | 10 | ⬜ 10 open |
-| [Group-diagrams-2.md](Group-diagrams-2.md) | `diagrams` | 2 | ⬜ 2 open |
-| [Group-graphics-1.md](Group-graphics-1.md) | `graphics` | 10 | ⬜ 10 open |
-| [Group-graphics-2.md](Group-graphics-2.md) | `graphics` | 4 | ⬜ 4 open |
-| [Group-interactions-1.md](Group-interactions-1.md) | `interactions` | 10 | ⬜ 10 open |
-| [Group-interactions-2.md](Group-interactions-2.md) | `interactions` | 1 | ⬜ 1 open |
-| [Group-relations-1.md](Group-relations-1.md) | `relations` | 8 | ⬜ 7 open · ✅ 1 archived |
-| [Group-requirements-1.md](Group-requirements-1.md) | `requirements` | 2 | ⬜ 2 open |
-| [Group-statemachine-1.md](Group-statemachine-1.md) | `statemachine` | 2 | ⬜ 2 open |
-| [Group-support-1.md](Group-support-1.md) | `support` | 10 | ⬜ 10 open |
-| [Group-support-2.md](Group-support-2.md) | `support` | 10 | ⬜ 10 open |
-| [Group-support-3.md](Group-support-3.md) | `support` | 7 | ⬜ 7 open |
-| [Group-templates-1.md](Group-templates-1.md) | `templates` | 3 | ⬜ 3 open |
-| [Group-values-1.md](Group-values-1.md) | `values` | 5 | ⬜ 5 open |
-| [Group-variables-1.md](Group-variables-1.md) | `variables` | 8 | ⬜ 6 open · ✅ 2 archived |
+| [Group-activity.md](Group-activity.md) | `activity` | 12 | ⬜ 2 open · ✅ 10 archived |
+| [Group-application.md](Group-application.md) | `application` | 1 | ✅ all archived |
+| [Group-classifiers.md](Group-classifiers.md) | `classifiers` | 16 | ⬜ 9 open · ✅ 7 archived |
+| [Group-common.md](Group-common.md) | `common` | 7 | ⬜ 3 open · ✅ 4 archived |
+| [Group-containment.md](Group-containment.md) | `containment` | 11 | ⬜ 9 open · ✅ 2 archived |
+| [Group-core.md](Group-core.md) | `core` | 7 | ✅ all archived |
+| [Group-diagrams.md](Group-diagrams.md) | `diagrams` | 12 | ⬜ 12 open |
+| [Group-graphics.md](Group-graphics.md) | `graphics` | 14 | ⬜ 14 open |
+| [Group-interactions.md](Group-interactions.md) | `interactions` | 11 | ⬜ 11 open |
+| [Group-relations.md](Group-relations.md) | `relations` | 8 | ⬜ 7 open · ✅ 1 archived |
+| [Group-requirements.md](Group-requirements.md) | `requirements` | 2 | ⬜ 2 open |
+| [Group-statemachine.md](Group-statemachine.md) | `statemachine` | 2 | ⬜ 2 open |
+| [Group-support.md](Group-support.md) | `support` | 27 | ⬜ 27 open |
+| [Group-templates.md](Group-templates.md) | `templates` | 3 | ⬜ 3 open |
+| [Group-values.md](Group-values.md) | `values` | 5 | ⬜ 5 open |
+| [Group-variables.md](Group-variables.md) | `variables` | 8 | ⬜ 6 open · ✅ 2 archived |
 
 ### Progress
 
-- Progress: **19 unique rows archived / 146** (21 including the two preserved duplicate remediation rows).
-- As of 2026-11-25 the `application` row in [Group-application-1.md](Group-application-1.md) and all seven `core` rows in [Group-core-1.md](Group-core-1.md) are archived.
+- Progress: **34 archived / 146 rows**, including the preserved duplicate remediation rows; 446 of 1168 step checks are ticked.
+- Fully archived categories: `activity`, `application`, and `core`. Partly archived: `classifiers`, `common`, `containment`, `relations`, `variables`.
 - The queued unsynced classes sit in the remaining files, ordered by importance within each category.
 - Commits `6cbebc3` (sync), `1778607` (test-rule compliance), `5175b93` (COM hardening), `2a6334c`…`3479937` (Windows closeout: real-COM outcome enforcement, report regeneration) and the review-fix commit carry the batch.
 

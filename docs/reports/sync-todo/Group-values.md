@@ -1,4 +1,4 @@
-# Sync todo — `values` (group 1 of 1)
+# Sync todo — `values`
 
 **5 classes** · ✅ 0 archived · ⬜ 5 open
 

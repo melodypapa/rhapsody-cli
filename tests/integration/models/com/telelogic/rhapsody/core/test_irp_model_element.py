@@ -1198,7 +1198,7 @@ class TestRPModelElementRedefinesConstraintsIntegration:
             pkg.delete_from_project()
 
     def test_get_constraints_by_him_is_not_implemented(self, test_project: IRPProject) -> None:
-        """User-approved runtime stub: the catalog exposes constraintsByHim, but live probing returned no result and JavaDoc marks it internal-only (Group-core-1 ledger, 2026-11-24)."""
+        """User-approved runtime stub: the catalog exposes constraintsByHim, but live probing returned no result and JavaDoc marks it internal-only (Group-core ledger, 2026-11-24)."""
         pkg = self._create_package(test_project, self._unique("ConstrHimPkg"))
         try:
             cls = pkg.add_class(self._unique("ConstrHimCls"))
@@ -1224,7 +1224,7 @@ class TestRPModelElementOslcRemoteIntegration:
         return pkg
 
     def test_get_hyper_links_is_not_implemented(self, test_project: IRPProject) -> None:
-        """User-approved runtime stub: the catalog exposes hyperLinks, but the documented creation APIs faulted and no retrievable hyperlink was produced (Group-core-1 ledger, 2026-11-24)."""
+        """User-approved runtime stub: the catalog exposes hyperLinks, but the documented creation APIs faulted and no retrievable hyperlink was produced (Group-core ledger, 2026-11-24)."""
         pkg = self._create_package(test_project, self._unique("HyperLinkPkg"))
         try:
             cls = pkg.add_class(self._unique("HyperLinkCls"))

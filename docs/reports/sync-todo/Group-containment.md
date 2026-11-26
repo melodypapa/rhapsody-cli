@@ -1,8 +1,10 @@
-# Sync todo — `containment` (group 1 of 2)
+# Sync todo — `containment`
 
-**10 classes** · ✅ 1 archived · ⬜ 9 open
+**11 classes** · ✅ 2 archived · ⬜ 9 open
 
 One row per sync run. A step is ticked only when its evidence lands; a row is archived only after all eight steps pass. Binding rule: one pywin32-exposed COM member per call — `call_com(lambda: self._com.Name(...))` for methods, `get_com_property` / `set_com_property` for properties; catalog-absent sites are blockers, never blind migrations. Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/`, mirrored tests under `tests/{unit,integration}/models/com/telelogic/rhapsody/core/`.
+
+Merged from `Group-containment-1.md`, `Group-containment-2.md`; the per-row content is unchanged.
 
 ## Step legend
 
@@ -33,6 +35,7 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 | 8 | `irp_package_remediation` | IRPPackage | — | — | 69 | 5/8 (②③④⑥⑦) | ⬜ open |
 | 9 | `irp_project_remediation` | IRPProject | — | — | — | 6/8 (①②③④⑥⑦) | ⬜ open |
 | 10 | `irp_package_api_report` | IRPPackage | `models/elements/containment/model_package.py` | — | — | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
+| 11 | `irp_project_api_report` | IRPProject | `models/elements/containment/model_project.py` | — | — | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 
 ## Row details
 
@@ -192,6 +195,22 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 - [x] ⑤ §5 — add/update integration coverage for owned behavior (mirrored test path); Windows = live run, macOS = collection-only noted
 - [x] ⑥ §6
 - [x] ⑦ §7 — class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPPackage:` + deviation list-table)
+- [x] ⑧ §8 — `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
+
+</details>
+
+<details>
+<summary><code>irp_project_api_report</code> · IRPProject · 8/8 steps · ✅ archived</summary>
+
+- **Status (2026-11-26):** verify_sync passes; all steps archived. Duplicate remediation row for IRPProject preserved in this file.
+- **Note:** 12 method-shaped (`setWaitDialogWatchdogValue`, `isActivelyManaged`, `getRoundtripShadowModel`, ...); `setGlobalConfiguration`/`setUseUniqueStereotypeAndRefCache` absent from every catalog: blocker unless Windows typelib regen resolves it.
+- [x] ① §1
+- [x] ② §2
+- [x] ③ §3 — baseline `validate_interface.py IRPProject --source authority`; reconcile every owned member; one pywin32 member per call; catalog-absent sites = blockers
+- [x] ④ §4
+- [x] ⑤ §5 — add/update integration coverage for owned behavior (mirrored test path); Windows = live run, macOS = collection-only noted
+- [x] ⑥ §6
+- [x] ⑦ §7 — class RST page `docs/api/com/telelogic/rhapsody/core/<snake_case>.rst` (anchor `.. _rhapsody-java-interface-IRPProject:` + deviation list-table)
 - [x] ⑧ §8 — `validate_interface.py` + `verify_sync.py` + skill self-tests + full unit suite + ruff/black/mypy (Windows: live integration); render the sync-report checklist
 
 </details>

@@ -1,8 +1,10 @@
-# Sync todo — `graphics` (group 1 of 2)
+# Sync todo — `graphics`
 
-**10 classes** · ✅ 0 archived · ⬜ 10 open
+**14 classes** · ✅ 0 archived · ⬜ 14 open
 
 One row per sync run. A step is ticked only when its evidence lands; a row is archived only after all eight steps pass. Binding rule: one pywin32-exposed COM member per call — `call_com(lambda: self._com.Name(...))` for methods, `get_com_property` / `set_com_property` for properties; catalog-absent sites are blockers, never blind migrations. Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/`, mirrored tests under `tests/{unit,integration}/models/com/telelogic/rhapsody/core/`.
+
+Merged from `Group-graphics-1.md`, `Group-graphics-2.md`; the per-row content is unchanged.
 
 ## Step legend
 
@@ -33,6 +35,10 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 | 8 | `irp_matrix_layout_api_report` | IRPMatrixLayout | `rhapsody_cli/models/elements/graphics/model_graphics.py` | 0 | 14 | 1/8 (②) | ⬜ open |
 | 9 | `irp_graph_edge_api_report` | IRPGraphEdge | `rhapsody_cli/models/elements/graphics/model_graphics.py` | 0 | 5 | 1/8 (②) | ⬜ open |
 | 10 | `irp_image_map_api_report` | IRPImageMap | `rhapsody_cli/models/elements/graphics/model_graphics.py` | 5 | 7 | 1/8 (②) | ⬜ open |
+| 11 | `irp_pin_api_report` | IRPPin | `rhapsody_cli/models/elements/graphics/model_graphics.py` | 4 | 6 | 1/8 (②) | ⬜ open |
+| 12 | `irp_graphical_property_api_report` | IRPGraphicalProperty | `rhapsody_cli/models/elements/graphics/model_graphics.py` | 2 | 3 | 1/8 (②) | ⬜ open |
+| 13 | `irp_message_point_api_report` | IRPMessagePoint | `rhapsody_cli/models/elements/graphics/model_graphics.py` | 1 | 5 | 1/8 (②) | ⬜ open |
+| 14 | `irp_condition_mark_api_report` | IRPConditionMark | `rhapsody_cli/models/elements/graphics/model_graphics.py` | 0 | 0 | 1/8 (②) | ⬜ open |
 
 ## Row details
 
@@ -185,6 +191,70 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 
 - **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
 - **Note:** usage 18 src / 6 test refs, 7 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
+- [ ] ① §1
+- [x] ② §2
+- [ ] ③ §3
+- [ ] ④ §4
+- [ ] ⑤ §5
+- [ ] ⑥ §6
+- [ ] ⑦ §7
+- [ ] ⑧ §8
+
+</details>
+
+<details>
+<summary><code>irp_pin_api_report</code> · IRPPin · 1/8 steps · ⬜ open</summary>
+
+- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Note:** usage 17 src / 7 test refs, 6 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
+- [ ] ① §1
+- [x] ② §2
+- [ ] ③ §3
+- [ ] ④ §4
+- [ ] ⑤ §5
+- [ ] ⑥ §6
+- [ ] ⑦ §7
+- [ ] ⑧ §8
+
+</details>
+
+<details>
+<summary><code>irp_graphical_property_api_report</code> · IRPGraphicalProperty · 1/8 steps · ⬜ open</summary>
+
+- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Note:** usage 14 src / 5 test refs, 3 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
+- [ ] ① §1
+- [x] ② §2
+- [ ] ③ §3
+- [ ] ④ §4
+- [ ] ⑤ §5
+- [ ] ⑥ §6
+- [ ] ⑦ §7
+- [ ] ⑧ §8
+
+</details>
+
+<details>
+<summary><code>irp_message_point_api_report</code> · IRPMessagePoint · 1/8 steps · ⬜ open</summary>
+
+- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Note:** usage 13 src / 5 test refs, 5 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
+- [ ] ① §1
+- [x] ② §2
+- [ ] ③ §3
+- [ ] ④ §4
+- [ ] ⑤ §5
+- [ ] ⑥ §6
+- [ ] ⑦ §7
+- [ ] ⑧ §8
+
+</details>
+
+<details>
+<summary><code>irp_condition_mark_api_report</code> · IRPConditionMark · 1/8 steps · ⬜ open</summary>
+
+- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Note:** usage 11 src / 4 test refs, 0 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
 - [ ] ① §1
 - [x] ② §2
 - [ ] ③ §3

@@ -1,4 +1,4 @@
-# Sync todo — `statemachine` (group 1 of 1)
+# Sync todo — `statemachine`
 
 **2 classes** · ✅ 0 archived · ⬜ 2 open
 
