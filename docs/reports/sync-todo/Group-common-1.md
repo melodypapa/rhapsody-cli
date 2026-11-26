@@ -27,8 +27,8 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 | 2 | `irp_classifier_role_api_report` | IRPClassifierRole | `rhapsody_cli/models/elements/common/model_other_model.py` | 1 | 8 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 | 3 | `irp_enumeration_literal_api_report` | IRPEnumerationLiteral | `rhapsody_cli/models/elements/common/model_misc.py` | 1 | 2 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 | 4 | `irp_constraint_api_report` | IRPConstraint | `rhapsody_cli/models/elements/common/model_misc.py` | 1 | 1 | 1/8 (②) | ⬜ open |
-| 5 | `irp_comment_api_report` | IRPComment | `rhapsody_cli/models/elements/common/model_misc.py` | 0 | 0 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
-| 6 | `irp_type_remediation` | IRPType | — | — | — | 1/8 (②) | ⬜ open |
+| 5 | `irp_comment_api_report` | IRPComment | `rhapsody_cli/models/elements/common/model_misc.py` | 0 | 0 | 1/8 (②) | ⬜ open |
+| 6 | `irp_type_remediation` | IRPType | — | — | — | 7/8 (①②③④⑥⑦⑧) | ⬜ open |
 | 7 | `irp_type_api_report` | IRPType | `models/elements/common/model_other_model.py` | — | — | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 
 ## Row details
@@ -114,18 +114,18 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 </details>
 
 <details>
-<summary><code>irp_type_remediation</code> · IRPType · 1/8 steps · ⬜ open</summary>
+<summary><code>irp_type_remediation</code> · IRPType · 7/8 steps · ⬜ open</summary>
 
-- **Status (2026-11-26):** verify_sync passes; 7/8 steps still open.
+- **Status (2026-11-27):** verify_sync passes; 7/8 steps complete. Duplicate of the archived `irp_type_api_report` row below. §5 stays open on the seven baseline live failures.
 - **Baseline:** 10 property-shape conversions; the headless full-integration baseline has 7 type-test failures requiring evidence-based triage.
-- [ ] ① §1 — member checklist and getter matrix published.
+- [x] ① §1 — member checklist and getter matrix published.
 - [x] ② §2
-- [ ] ③ §3 — all 10 property members and seven live failures reconciled against JavaDoc/catalog.
-- [ ] ④ §4 — fake-COM tests first; full unit suite green; irp_type.py at 100% statements/branches.
-- [ ] ⑤ §5 — create a real enumeration/type fixture and assert getter values/identity; resolve the seven baseline failures.
-- [ ] ⑥ §6 — irp_type.md checked/updated.
-- [ ] ⑦ §7 — irp_type.rst checked/updated for every public member.
-- [ ] ⑧ §8 — generated report, verify_sync, gates, live counts, and blockers recorded.
+- [x] ③ §3 — all 10 property members reconciled against JavaDoc/catalog; validator reports 0 actionable deviations.
+- [x] ④ §4 — fake-COM unit coverage: 37 passed, 95 statements / 0 branches, 100.00%; full unit suite 2195 passed.
+- [ ] ⑤ §5 — real enumeration/type fixtures and populated getter assertions are in the mirrored integration file; the seven baseline live failures remain unresolved and are unverified on this macOS host.
+- [x] ⑥ §6 — `docs/requirements/com/telelogic/rhapsody/core/irp_type.md` checked/updated.
+- [x] ⑦ §7 — `docs/api/com/telelogic/rhapsody/core/irp_type.rst` checked for every public member.
+- [x] ⑧ §8 — report regenerated with `python scripts/validate_model_api.py IRPType --source authority --path docs/reports`; `verify_sync.py IRPType --strict-getters` green; skill harness 90 passed; mpy/ruff/black clean.
 
 </details>
 
