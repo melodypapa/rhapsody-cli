@@ -274,3 +274,16 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |
 | `instantiated_by` | — | none | MISSING |
+
+## IRPFlow
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `conveyed` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_conveyed` | identity/value | OK |
+| `direction` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_direction` | identity/value | OK |
+| `end1` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_end1` | identity/value | OK |
+| `end1_port` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_end1_port` | identity/value | OK |
+| `end1_sys_ml_port` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_end1_sys_ml_port` | identity/value | OK |
+| `end2` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_end2` | identity/value | OK |
+| `end2_port` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_end2_port` | identity/value | OK |
+| `end2_sys_ml_port` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_end2_sys_ml_port` | identity/value | OK |

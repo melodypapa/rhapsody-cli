@@ -14,7 +14,7 @@ review rather than a failure.
 
 | Status | Count |
 | --- | --- |
-| match | 159 |
+| match | 167 |
 | catalog-missing | 0 |
 | shape-mismatch | 0 |
 | no-binding | 0 |
@@ -351,6 +351,25 @@ review rather than a failure.
 | `entry_points` | `entryPoints` | property | property | match |
 | `describing_diagrams` | `describingDiagrams` | property | property | match |
 | `is_behavior_overriden` | `isBehaviorOverriden` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPFlow
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `conveyed` | `conveyed` | property | property | match |
+| `direction` | `direction` | property | property | match |
+| `end1` | `end1` | property | property | match |
+| `end1_port` | `end1Port` | property | property | match |
+| `end1_sys_ml_port` | `end1SysMLPort` | property | property | match |
+| `end2` | `end2` | property | property | match |
+| `end2_port` | `end2Port` | property | property | match |
+| `end2_sys_ml_port` | `end2SysMLPort` | property | property | match |
 
 ### Catalog properties with no matching Python property
 
