@@ -171,9 +171,10 @@ variants under the same property and fails Step 8 unless at least one test in th
 identity/value (a weak empty-state test is accepted only beside a populated sibling). This makes the
 previously unscanned `test_get_*` tests visible. `IRPType`'s four getters and `IRPModelElement`'s
 `association_classes`, `references`, `guid`, and `binary_id` were fixed with JavaDoc-backed populated
-fixtures. `IRPClassifier` (three rows above) and `IRPModelElement.user_defined_meta_class` remain open
-getter blockers, so Step 8 reports getter failures for those two interfaces until a Windows + Rhapsody
-run settles the fixtures.
+fixtures. IRPClassifier's populated fixtures for `source_artifacts`, `sequence_diagrams`, and `links`
+were verified live on 2026-11-26 via the documented inherited `add_new_aggr` factory, closing its three
+getter blockers. `IRPModelElement.user_defined_meta_class` remains an open getter blocker until a
+Windows + Rhapsody run settles its fixture.
 
 The same pass replaced 21 `assert pkg.add_* (...) is not None` factory checks in `test_irp_package.py`
 and the `add_package`/`add_component`/`add_profile` checks in `test_irp_project.py` with name-identity
