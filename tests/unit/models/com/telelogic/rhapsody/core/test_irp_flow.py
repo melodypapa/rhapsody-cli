@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING, cast
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flow import IRPFlow
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_other_model import IRPSysMLPort
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port import IRPPort
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_sysml_port import IRPSysMLPort
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 if TYPE_CHECKING:

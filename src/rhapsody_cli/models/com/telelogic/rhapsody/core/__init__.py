@@ -20,6 +20,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute import IRPAttribute
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class import IRPClass
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier_role import IRPClassifierRole
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_codegen import (
         IRPBaseExternalCodeGeneratorTool,
         IRPCodeGenerator,
@@ -37,9 +38,11 @@ if TYPE_CHECKING:
     )
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collaboration import IRPCollaboration
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_comment import IRPComment
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_component import IRPComponent
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_component_instance import IRPComponentInstance
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_configuration import IRPConfiguration
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_constraint import IRPConstraint
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_dependency import IRPDependency
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types import (
         IRPActivityDiagram,
@@ -55,6 +58,7 @@ if TYPE_CHECKING:
         IRPUseCaseDiagram,
     )
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagrams import IRPDiagram
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_enumeration_literal import IRPEnumerationLiteral
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_exception import IRPException
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_files import IRPASCIIFile, IRPControlledFile, IRPFile, IRPFileFragment
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flow import IRPFlow
@@ -104,12 +108,10 @@ if TYPE_CHECKING:
         IRPTransition,
         IRPTrigger,
     )
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_misc import IRPComment, IRPConstraint, IRPEnumerationLiteral
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_module import IRPModule
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_node import IRPNode
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_other_model import IRPClassifierRole, IRPSysMLPort
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port import IRPPort
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_profile import IRPProfile
@@ -120,6 +122,7 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statemachine import IRPState, IRPStateVertex
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_stereotype import IRPStereotype
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_swimlane import IRPSwimlane
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_sysml_port import IRPSysMLPort
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_templates import IRPTemplateInstantiation, IRPTemplateInstantiationParameter, IRPTemplateParameter
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_type import IRPType
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_unit import AddToModelMode, IRPUnit
@@ -147,20 +150,20 @@ _EXPORT_MODULES = {
     "IRPCallOperation": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_call_operation",
     "IRPClass": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_class",
     "IRPClassifier": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier",
-    "IRPClassifierRole": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_other_model",
+    "IRPClassifierRole": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier_role",
     "IRPCodeGenSimplifiersRegistry": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_codegen",
     "IRPCodeGenerator": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_codegen",
     "IRPCollaboration": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collaboration",
     "IRPCollaborationDiagram": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types",
     "IRPCollection": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection",
-    "IRPComment": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_misc",
+    "IRPComment": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_comment",
     "IRPComponent": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_component",
     "IRPComponentDiagram": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types",
     "IRPComponentInstance": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_component_instance",
     "IRPConditionMark": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics",
     "IRPConfiguration": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_configuration",
     "IRPConnector": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics",
-    "IRPConstraint": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_misc",
+    "IRPConstraint": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_constraint",
     "IRPContextSpecification": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_context_specification",
     "IRPControlledFile": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_files",
     "IRPDependency": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_dependency",
@@ -168,7 +171,7 @@ _EXPORT_MODULES = {
     "IRPDestructionEvent": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interactions",
     "IRPDiagSynthAPI": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_codegen",
     "IRPDiagram": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagrams",
-    "IRPEnumerationLiteral": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_misc",
+    "IRPEnumerationLiteral": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_enumeration_literal",
     "IRPEvent": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interactions",
     "IRPEventReception": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interactions",
     "IRPException": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_exception",
@@ -239,7 +242,7 @@ _EXPORT_MODULES = {
     "IRPStereotype": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_stereotype",
     "IRPStructureDiagram": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types",
     "IRPSwimlane": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_swimlane",
-    "IRPSysMLPort": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_other_model",
+    "IRPSysMLPort": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_sysml_port",
     "IRPTableLayout": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics",
     "IRPTableView": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics",
     "IRPTag": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_variables",

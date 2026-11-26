@@ -10,6 +10,7 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statemachine import IRP
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier_role import IRPClassifierRole
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagrams import IRPDiagram
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flow import IRPFlow
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_instance import IRPInstance
@@ -18,14 +19,11 @@ if TYPE_CHECKING:
         IRPInteractionOperator,
         IRPTransition,
     )
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_other_model import (
-        IRPClassifierRole,
-        IRPSysMLPort,
-    )
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port import IRPPort
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statemachine import IRPState
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_swimlane import IRPSwimlane
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_sysml_port import IRPSysMLPort
 
 
 class IRPConditionMark(IRPMessage):
