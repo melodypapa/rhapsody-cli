@@ -4222,8 +4222,10 @@
     ],
     "IRPProject": [
       "enableRhapsodyModelManager",
+      "isResolveOnDemand",
       "migrateDesignManagerLinks",
-      "setGlobalConfiguration"
+      "setGlobalConfiguration",
+      "setResolveOnDemand"
     ],
     "IRPStatechart": [
       "addNewAcceptEventAction",

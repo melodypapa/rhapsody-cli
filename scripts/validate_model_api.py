@@ -18,7 +18,7 @@ JAVA_PACKAGE = "com.telelogic.rhapsody.core"
 _HELPER_NAMES = {"_get_method_or_property", "_set_method_or_property", "get_com_property", "set_com_property"}
 _REFERENCE_MEMBER_PATTERN = re.compile(r"::([A-Za-z_$][A-Za-z0-9_$]*)\s*\(")
 Rows = List[Tuple[str, str, str, str, str]]
-_AUTHORITY_INFO_STATUSES = {"JAVA_ONLY_MEMBER", "PYTHON_ONLY_MEMBER"}
+_AUTHORITY_INFO_STATUSES = {"JAVA_ONLY_MEMBER", "PYTHON_ONLY_MEMBER", "INHERITED_MEMBER"}
 _DERIVED_ACCESSOR_STATUSES = {"ACCESSOR_ALIAS_MISMATCH", "METHOD_PROPERTY_MISMATCH"}
 _UNAVAILABLE_RESOLVED_STATUSES = {"PYWIN32_MEMBER_MISSING", "JAVA_ONLY_MEMBER", "MISSING_PYTHON_WRAPPER", "PYWIN32_ONLY_MEMBER"}
 _DOCUMENTED_ALIAS_RECOMMENDATION = "Documented decision: keep the current binding; no change."
@@ -229,7 +229,7 @@ def collect_python_members(interface_name: str, models_root: Path, include_bases
     visited: Set[str] = set()
     seen_methods: Set[str] = set()
 
-    def visit(class_name: str) -> None:
+    def visit(class_name: str, inherited_from: Optional[str] = None) -> None:
         if class_name in visited:
             return
         visited.add(class_name)
@@ -245,6 +245,8 @@ def collect_python_members(interface_name: str, models_root: Path, include_bases
                 continue
             property_accessor = _is_python_property_accessor(method)
             wrapper_label = f"{method.name} (property)" if property_accessor else f"{method.name}()"
+            if inherited_from is not None:
+                wrapper_label = f"{wrapper_label} (inherited from {inherited_from})"
             com_members = _get_method_com_members(method)
             if com_members:
                 for member_name in com_members:
@@ -257,8 +259,8 @@ def collect_python_members(interface_name: str, models_root: Path, include_bases
         if include_bases:
             for base in class_node.bases:
                 base_name = _class_base_name(base)
-                if base_name and base_name.startswith("RP"):
-                    visit(base_name)
+                if base_name and base_name.startswith(("IRP", "RP")):
+                    visit(base_name, inherited_from=base_name)
 
     visit(target_class)
     return members
@@ -371,29 +373,62 @@ def collect_registered_pywin32_signatures(interface_name: str) -> Dict[str, Dict
         raise RuntimeError(f"Could not capture pywin32 signatures for {interface_name}: {exc}") from exc
 
 
-def collect_wrapper_call_arities(interface_name: str, models_root: Path) -> Dict[str, List[int]]:
-    """Return {COM member name: [arg counts]} for every call_com(lambda: self._com.Name(...)) in the wrapper."""
+def _collect_wrapper_class_hierarchy(interface_name: str, models_root: Path) -> List[Tuple[str, ast.ClassDef]]:
+    """Return the wrapper class followed by its statically discoverable IRP/RP bases."""
     _validate_interface_name(interface_name)
-    candidates = _wrapper_class_candidates(interface_name)
-    source_paths = sorted(models_root.rglob("*.py"))
-    result: Dict[str, List[int]] = {}
-    for source_path in source_paths:
-        if not source_path.is_file():
-            continue
+    if not models_root.is_dir():
+        raise FileNotFoundError(f"Python model directory not found: {models_root}")
+
+    classes: Dict[str, ast.ClassDef] = {}
+    for source_path in sorted(models_root.rglob("*.py")):
         try:
             tree = ast.parse(source_path.read_text(encoding="utf-8"), filename=str(source_path))
-        except (OSError, SyntaxError):
-            continue
-        target = next((c for c in tree.body if isinstance(c, ast.ClassDef) and c.name in candidates), None)
-        if target is None:
-            continue
-        for node in ast.walk(target):
-            if not (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) and node.func.attr == "call_com" and node.args):
+        except (OSError, SyntaxError) as exc:
+            raise ValueError(f"Could not parse model module {source_path}: {exc}") from exc
+        for node in tree.body:
+            if isinstance(node, ast.ClassDef) and node.name.startswith(("IRP", "RP")):
+                classes.setdefault(node.name, node)
+
+    target_class = next((candidate for candidate in _wrapper_class_candidates(interface_name) if candidate in classes), "")
+    if not target_class:
+        raise ValueError(f"None of the Python wrappers {_wrapper_class_candidates(interface_name)} for {interface_name} was found under {models_root}")
+
+    hierarchy: List[Tuple[str, ast.ClassDef]] = []
+    visited: Set[str] = set()
+
+    def visit(class_name: str) -> None:
+        if class_name in visited:
+            return
+        visited.add(class_name)
+        class_node = classes.get(class_name)
+        if class_node is None:
+            return
+        hierarchy.append((class_name, class_node))
+        for base in class_node.bases:
+            base_name = _class_base_name(base)
+            if base_name and base_name.startswith(("IRP", "RP")):
+                visit(base_name)
+
+    visit(target_class)
+    return hierarchy
+
+
+def collect_wrapper_call_arities(interface_name: str, models_root: Path) -> Dict[str, List[int]]:
+    """Return COM call argument counts from the target wrapper and its bases."""
+    result: Dict[str, List[int]] = {}
+    seen_methods: Set[str] = set()
+    for _class_name, class_node in _collect_wrapper_class_hierarchy(interface_name, models_root):
+        for method in class_node.body:
+            if not isinstance(method, ast.FunctionDef) or method.name in seen_methods:
                 continue
-            lam = node.args[0]
-            if isinstance(lam, ast.Lambda) and isinstance(lam.body, ast.Call) and isinstance(lam.body.func, ast.Attribute):
-                if isinstance(lam.body.func.value, ast.Attribute) and lam.body.func.value.attr == "_com":
-                    result.setdefault(lam.body.func.attr, []).append(len(lam.body.args))
+            seen_methods.add(method.name)
+            for node in ast.walk(method):
+                if not (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) and node.func.attr == "call_com" and node.args):
+                    continue
+                lam = node.args[0]
+                if isinstance(lam, ast.Lambda) and isinstance(lam.body, ast.Call) and isinstance(lam.body.func, ast.Attribute):
+                    if isinstance(lam.body.func.value, ast.Attribute) and lam.body.func.value.attr == "_com":
+                        result.setdefault(lam.body.func.attr, []).append(len(lam.body.args))
     return result
 
 
@@ -407,7 +442,9 @@ def _annotation_text(node: ast.expr) -> str:
         slice_node = node.slice
         index_type = getattr(ast, "Index", None)
         if index_type is not None and isinstance(slice_node, index_type):
-            slice_node = slice_node.value
+            index_value = getattr(slice_node, "value", None)
+            if isinstance(index_value, ast.expr):
+                slice_node = index_value
         if isinstance(slice_node, ast.Tuple):
             inner = ", ".join(_annotation_text(item) for item in slice_node.elts)
         else:
@@ -428,22 +465,13 @@ def collect_wrapper_arg_types(interface_name: str, models_root: Path) -> Dict[st
     (str/int/bool/com/object). This avoids inferring "object" from variables.
     """
     _validate_interface_name(interface_name)
-    candidates = _wrapper_class_candidates(interface_name)
-    source_paths = sorted(models_root.rglob("*.py"))
     result: Dict[str, List[str]] = {}
-    for source_path in source_paths:
-        if not source_path.is_file():
-            continue
-        try:
-            tree = ast.parse(source_path.read_text(encoding="utf-8"), filename=str(source_path))
-        except (OSError, SyntaxError):
-            continue
-        target = next((c for c in tree.body if isinstance(c, ast.ClassDef) and c.name in candidates), None)
-        if target is None:
-            continue
-        for method in target.body:
-            if not isinstance(method, ast.FunctionDef):
+    seen_methods: Set[str] = set()
+    for _class_name, class_node in _collect_wrapper_class_hierarchy(interface_name, models_root):
+        for method in class_node.body:
+            if not isinstance(method, ast.FunctionDef) or method.name in seen_methods:
                 continue
+            seen_methods.add(method.name)
             # find COM members called in this method
             called: Set[str] = set()
             for node in ast.walk(method):
@@ -559,6 +587,15 @@ def _classify_deviation(
     pywin32_property_names = {name for name, kind in pywin32_members.items() if "property" in kind}
     statuses: List[str] = []
 
+    wrapper_names = {_python_wrapper_name(label) for label in python_labels}
+    expected_member_names = pywin32_property_names if python_property_names and pywin32_property_names else java_member_names or pywin32_names
+    expected_wrapper_names = {_camel_to_snake(name) for name in expected_member_names}
+    inherited_labels = bool(python_labels) and all(" (inherited from " in label for label in python_labels)
+    inherited_binding_matches = (
+        bool(python_com_names) and python_com_names.issubset(pywin32_names) and expected_wrapper_names.issubset(wrapper_names) and python_property_names == pywin32_property_names
+    )
+    inherited_binding = inherited_labels and inherited_binding_matches
+
     if not python_labels:
         if java_member_names and pywin32_names:
             statuses.append("MISSING_PYTHON_WRAPPER")
@@ -567,12 +604,13 @@ def _classify_deviation(
         elif pywin32_names:
             statuses.append("PYWIN32_ONLY_MEMBER")
     elif not java_member_names:
-        statuses.append("JAVA_DOC_MISSING" if pywin32_names else "PYTHON_ONLY_MEMBER")
+        if inherited_binding:
+            statuses.append("INHERITED_MEMBER")
+        else:
+            statuses.append("JAVA_DOC_MISSING" if pywin32_names else "PYTHON_ONLY_MEMBER")
     elif not pywin32_names:
         statuses.append("PYWIN32_MEMBER_MISSING")
 
-    wrapper_names = {_python_wrapper_name(label) for label in python_labels}
-    expected_wrapper_names = {_camel_to_snake(name) for name in pywin32_property_names} if python_property_names and pywin32_property_names else {_camel_to_snake(name) for name in java_member_names}
     property_accessor_family = bool(pywin32_property_names) and expected_wrapper_names.issubset(python_property_names) and _java_accessors_match_properties(java_member_names, pywin32_property_names)
     if python_labels and java_member_names and not expected_wrapper_names.issubset(wrapper_names):
         statuses.append("PYTHON_METHOD_NAME_MISMATCH")
@@ -598,6 +636,8 @@ def _classify_deviation(
         recommendation = "Use a member exposed by the registered type library or verify the Rhapsody version."
     elif "JAVA_DOC_MISSING" in statuses:
         recommendation = "Confirm this COM member is a supported extension and document its status."
+    elif "INHERITED_MEMBER" in statuses:
+        recommendation = "Inherited implementation from the base wrapper calls the exposed COM member."
     elif "COM_MEMBER_NOT_EXPOSED" in statuses and property_names:
         missing_calls = sorted(python_com_names - pywin32_names)
         missing_call_text = " and ".join(missing_calls)
@@ -1060,7 +1100,6 @@ def main(argv: Optional[List[str]] = None) -> int:
         wrapper_class, wrapper_source = resolve_python_wrapper(args.java_interface, models_root)
         java_members = collect_java_members(args.java_interface, docs_root, include_superinterfaces=False)
         java_signatures = collect_java_signatures(args.java_interface, docs_root, include_superinterfaces=False)
-        python_members = collect_python_members(args.java_interface, models_root, include_bases=False)
         if args.source == "authority":
             pywin32_members = authority["catalog"].get(args.java_interface)
             if pywin32_members is None:
@@ -1072,6 +1111,7 @@ def main(argv: Optional[List[str]] = None) -> int:
                 pywin32_signatures = collect_registered_pywin32_signatures(args.java_interface)
             except Exception:
                 pywin32_signatures = {}
+        python_members = collect_python_members(args.java_interface, models_root, include_bases=False)
         wrapper_arities = collect_wrapper_call_arities(args.java_interface, models_root)
         wrapper_arg_types = collect_wrapper_arg_types(args.java_interface, models_root)
         owned_families = {_canonical_member_name(name) for name in python_members} | {_canonical_member_name(name) for name in java_members}

@@ -11,21 +11,25 @@
 
 | Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |
 | --- | --- | --- | --- | --- |
-| add_actor() -> addActor | — | addActor (method) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
-| add_class() -> addClass | — | addClass (method) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
-| add_node() -> addNode | — | addNode (method) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
-| find_node() -> findNode | — | findNode (method) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
-| — | moveToDesignManager (method) | moveToDesignManager (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper, or record the Java member in documented_intentionally_unsupported with a rationale. |
-| — | moveToDesignManagerAfterLogin (method) | moveToDesignManagerAfterLogin (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper, or record the Java member in documented_intentionally_unsupported with a rationale. |
-| nodes (property) -> nodes | — | nodes (property) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
-| packages (property) -> packages | — | packages (property) | JAVA_DOC_MISSING | Confirm this COM member is a supported extension and document its status. |
-| — | save (method) | save (method) | MISSING_PYTHON_WRAPPER | Implement the Python wrapper, or record the Java member in documented_intentionally_unsupported with a rationale. |
-| set_active_component() -> setActiveComponent | — | setActiveComponent (method) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
-| set_active_configuration() -> setActiveConfiguration | — | setActiveConfiguration (method) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types. |
-| set_wait_dialog_watchdog_value() -> setWaitDialogWatchdogValue | — | setWaitDialogWatchdogValue (method) | SIGNATURE_TYPE_MISMATCH | Wrapper passes types ['int'] but pywin32 declares ['str']. Match the documented COM parameter types. |
+
+## Expected Binding Differences
+
+| Python model wrapper | Java API | pywin32 | Status | Recommended change |
+| --- | --- | --- | --- | --- |
+| enable_rhapsody_model_manager() (no static COM member) | enableRhapsodyModelManager (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| set_global_configuration() (no static COM member) | setGlobalConfiguration (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| is_resolve_on_demand() (no static COM member) | isResolveOnDemand (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| migrate_design_manager_links() (no static COM member) | migrateDesignManagerLinks (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+| set_resolve_on_demand() (no static COM member) | setResolveOnDemand (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+
+## Wrapper Backlog
+
+| Python model wrapper | Java API | pywin32 | Status | Recommended change |
+| --- | --- | --- | --- | --- |
+| — | — | — | — | — |
 
 <details>
-<summary>Correct items (57) — bindings verified against pywin32</summary>
+<summary>Correct items (63) — bindings verified against pywin32</summary>
 
 
 ## Correct Items
@@ -69,11 +73,8 @@
 | is_actively_managed() -> isActivelyManaged | isActivelyManaged (method) | isActivelyManaged (method) | MATCH | — |
 | is_modified_recursive() -> isModifiedRecursive | isModifiedRecursive (method) | isModifiedRecursive (method) | MATCH | — |
 | locate_in_ide() -> locateInIDE | locateInIDE (method) | locateInIDE (method) | MATCH | — |
-| get_new_collaboration() -> getNewCollaboration | getNewCollaboration (method) | getNewCollaboration (method) | MATCH | — |
-| get_new_progress_bar() -> getNewProgressBar | getNewProgressBar (method) | getNewProgressBar (method) | MATCH | — |
-| get_notify_plugin_on_elements_changed() -> getNotifyPluginOnElementsChanged; set_notify_plugin_on_elements_changed() -> setNotifyPluginOnElementsChanged | getNotifyPluginOnElementsChanged (method); setNotifyPluginOnElementsChanged (method) | getNotifyPluginOnElementsChanged (method); setNotifyPluginOnElementsChanged (method) | MATCH | — |
-| set_object_explicit() -> setObjectExplicit | setObjectExplicit (method) | setObjectExplicit (method) | MATCH | — |
-| set_object_implicit() -> setObjectImplicit | setObjectImplicit (method) | setObjectImplicit (method) | MATCH | — |
+| move_to_design_manager() -> moveToDesignManager | moveToDesignManager (method) | moveToDesignManager (method) | MATCH | — |
+| move_to_design_manager_after_login() -> moveToDesignManagerAfterLogin | moveToDesignManagerAfterLogin (method) | moveToDesignManagerAfterLogin (method) | MATCH | — |
 | open_csv_file() -> openCSVFile | openCSVFile (method) | openCSVFile (method) | MATCH | — |
 | profiles (property) -> profiles | getProfiles (method) | profiles (property) | MATCH | — |
 | recalculate_events_base_ids() -> recalculateEventsBaseIds | recalculateEventsBaseIds (method) | recalculateEventsBaseIds (method) | MATCH | — |
@@ -82,8 +83,7 @@
 | remove() -> remove | remove (method) | remove (method) | MATCH | — |
 | remove_custom_view_on_browser() -> removeCustomViewOnBrowser | removeCustomViewOnBrowser (method) | removeCustomViewOnBrowser (method) | MATCH | — |
 | remove_custom_view_on_diagram() -> removeCustomViewOnDiagram | removeCustomViewOnDiagram (method) | removeCustomViewOnDiagram (method) | MATCH | — |
-| get_requirements_by_id() -> getRequirementsByID | getRequirementsByID (method) | getRequirementsByID (method) | MATCH | — |
-| get_roundtrip_shadow_model() -> getRoundtripShadowModel | getRoundtripShadowModel (method) | getRoundtripShadowModel (method) | MATCH | — |
+| save() -> save | save (method) | save (method) | MATCH | — |
 | save_as() -> saveAs | saveAs (method) | saveAs (method) | MATCH | — |
 | save_as_prev_version() -> saveAsPrevVersion | saveAsPrevVersion (method) | saveAsPrevVersion (method) | MATCH | — |
 | start_transaction_of_no_cg_interest() -> startTransactionOfNoCGInterest | startTransactionOfNoCGInterest (method) | startTransactionOfNoCGInterest (method) | MATCH | — |
@@ -93,22 +93,4 @@
 </details>
 
 ## AI Fix Guidance
-
-### JAVA_DOC_MISSING (6 findings)
-- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
-- **Affected call(s):** add_actor() -> addActor; add_class() -> addClass; add_node() -> addNode; find_node() -> findNode; nodes (property) -> nodes; packages (property) -> packages
-- **Recommended change:** Confirm this COM member is a supported extension and document its status.
-- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
-
-### MISSING_PYTHON_WRAPPER (3 findings)
-- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
-- **Affected call(s):** —; —; —
-- **Recommended change:** Implement the Python wrapper, or record the Java member in documented_intentionally_unsupported with a rationale.
-- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
-
-### SIGNATURE_TYPE_MISMATCH (3 findings)
-- **Target:** `IRPProject` in `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`
-- **Affected call(s):** set_active_component() -> setActiveComponent; set_active_configuration() -> setActiveConfiguration; set_wait_dialog_watchdog_value() -> setWaitDialogWatchdogValue
-- **Recommended change:** Wrapper passes types ['com'] but pywin32 declares ['str']. Match the documented COM parameter types.
-- **Recommended change:** Wrapper passes types ['int'] but pywin32 declares ['str']. Match the documented COM parameter types.
-- **Test action:** Add or update a unit test with a fake COM object that verifies the selected member/property and returned value.
+No deviations require changes.

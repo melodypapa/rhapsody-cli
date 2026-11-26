@@ -259,7 +259,9 @@ layers. A row whose member no longer raises is stale and fails Step 8.
 | IRPPort | `set_contract` | `setContract` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPProject | `enable_rhapsody_model_manager` | `enableRhapsodyModelManager` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPProject | `migrate_design_manager_links` | `migrateDesignManagerLinks` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPProject | `is_resolve_on_demand` | `isResolveOnDemand` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPProject | `set_global_configuration` | `setGlobalConfiguration` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPProject | `set_resolve_on_demand` | `setResolveOnDemand` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPStatechart | `add_new_accept_event_action` | `addNewAcceptEventAction` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPStatechart | `add_new_accept_time_event` | `addNewAcceptTimeEvent` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPUnit | `get_unit_path` | `getUnitPath` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
@@ -297,14 +299,15 @@ wrapper-signature fix before its getter/member row can close.
 | IRPUseCase | `entry_points` | No documented add API in the COM surface; only an empty-state result is observable. |
 | IRPStereotype | `icon` | No documented API attaches or edits a stereotype icon; the getter returns the image path declared by the stereotype definition file, so no populated live fixture exists. |
 | IRPProject | `get_code_generated_files` | Requires a real code-generation run; no safe fixture in the shared project. |
-| IRPProject | `get_active_custom_views_on_browser` | No API creates a browser-level custom view; the empty collection is the only observable state. |
 | IRPProject | `get_remote_resource_packages`, `is_actively_managed` | Require a remote resource/management server. |
-| IRPProject | `active_component`, `active_configuration` | Setting either mutates shared session state; a safe round-trip fixture is not yet available. |
+| IRPProject | `active_component`, `active_configuration`, `set_active_component`, `set_active_configuration` | The wrapper now follows pywin32's string setter signatures. This Rhapsody build still faults on getter/setter calls (HRESULT `0x80040005`/`0x80040006`) even with valid names; no successful live value or safe round-trip is available. |
+| IRPProject | `cg_simplified_model_package` | The live project returns `None`; JavaDoc and COM expose no setter/factory to establish a populated simplified-model package. Keep the empty-state case weak and the getter row open. |
 | IRPApplication | `add_profile_to_model` | Needs a real installed profile name on Windows; `"0"` is an unverified profile index and the model-level addition has no cleanup API. Evidence: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_application.py::test_add_profile_to_model`. |
 | IRPProject | `is_modified_recursive` | Needs a controlled modify/save transition on the session-shared project. |
+| IRPProject | `move_to_design_manager`, `move_to_design_manager_after_login` | Both JavaDoc methods are deprecated because Design Manager support was removed in Rhapsody 8.4; no supported Design Manager server is available for authentic live execution. Keep the exact catalog bindings and leave live verification open. |
 | IRPClass | `is_abstract`, `is_active`, `is_behavior_overriden` | Documented pywin32 aliases; getters are readable but no populated live fixture exists (setters are read-only or JavaDoc-unimplemented). |
 | IRPPort | `is_behavioral`, `is_reversed`, `port_contract`, `provided_interfaces`, `required_interfaces` | Port relation/end properties have no live factory; recovered via catalog-only triage but no populated fixture. |
-| IRPProject | `nodes` | The project root rejects both `addNode(name)` and `addNewAggr("Node", name)`; a node created in a nested package is not returned by `project.nodes`. The live test now records the fresh-project empty state; a populated project-level node fixture remains unavailable. |
+| IRPProject | `nodes` | `nodes` is inherited from `IRPPackage`; the project root rejects both `addNode(name)` and `addNewAggr("Node", name)`, and a nested-package node is not returned by `project.nodes`. No populated project-root fixture is available. |
 | IRPUseCase | `is_behavior_overriden` | Runtime stub (user approved 2026-11-25): setter faults live; see the NotImplementedError evidence ledger. |
 
 ## Evidence notes

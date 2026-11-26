@@ -20,6 +20,11 @@ def test_project_is_a_package() -> None:
     assert project.name == "MyProject"
 
 
+@pytest.mark.parametrize("member_name", ["add_actor", "add_class", "add_node", "find_node", "nodes", "packages"])
+def test_project_inherits_package_member_without_duplicate_override(member_name: str) -> None:
+    assert getattr(IRPProject, member_name) is getattr(IRPPackage, member_name)
+
+
 def test_project_add_package_delegates_to_com() -> None:
     fake = make_fake_element("Project")
     new_pkg = make_fake_element("Package", properties={"name": "NewPkg"})
@@ -62,20 +67,6 @@ def test_project_find_component_wraps_result() -> None:
     assert result.name == "Comp1"
 
 
-def test_project_packages_returns_collection() -> None:
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-
-    fake = make_fake_element("Project")
-    fake.packages = make_fake_collection([make_fake_element("Package", properties={"name": "P1"})])
-    project = IRPProject(fake)
-
-    packages = project.packages
-
-    assert isinstance(packages, IRPCollection)
-    assert len(packages) == 1
-    assert packages[0].name == "P1"
-
-
 def test_project_is_registered_for_meta_class_project() -> None:
 
     fake = make_fake_element("Project", properties={"name": "MyProject"})
@@ -83,30 +74,6 @@ def test_project_is_registered_for_meta_class_project() -> None:
     wrapped = IRPModelElement.wrap(fake)
 
     assert isinstance(wrapped, IRPProject)
-
-
-def test_project_add_class_returns_wrapped_element() -> None:
-    fake = make_fake_element("Project")
-    cls = make_fake_element("Class", properties={"name": "Class1"})
-    fake.addClass.return_value = cls
-    project = IRPProject(fake)
-
-    result = project.add_class("Class1")
-
-    fake.addClass.assert_called_once_with("Class1")
-    assert result.name == "Class1"
-
-
-def test_project_add_actor_returns_wrapped_element() -> None:
-    fake = make_fake_element("Project")
-    actor = make_fake_element("Actor", properties={"name": "Actor1"})
-    fake.addActor.return_value = actor
-    project = IRPProject(fake)
-
-    result = project.add_actor("Actor1")
-
-    fake.addActor.assert_called_once_with("Actor1")
-    assert result.name == "Actor1"
 
 
 def test_project_components_returns_collection() -> None:
@@ -159,43 +126,6 @@ def test_project_delete_component_delegates_to_com() -> None:
     fake.deleteComponent.assert_called_once_with(comp_fake)
 
 
-def test_project_add_node_delegates_to_com() -> None:
-    fake = make_fake_element("Project")
-    node = make_fake_element("Node", properties={"name": "Node1"})
-    fake.addNode.return_value = node
-    project = IRPProject(fake)
-
-    result = project.add_node("Node1")
-
-    fake.addNode.assert_called_once_with("Node1")
-    assert result.name == "Node1"
-
-
-def test_project_nodes_returns_collection() -> None:
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-
-    fake = make_fake_element("Project")
-    node = make_fake_element("Node", properties={"name": "Node1"})
-    fake.nodes = make_fake_collection([node])
-    project = IRPProject(fake)
-
-    result = project.nodes
-
-    assert isinstance(result, IRPCollection)
-
-
-def test_project_find_node_delegates_to_com() -> None:
-    fake = make_fake_element("Project")
-    node = make_fake_element("Node", properties={"name": "Node1"})
-    fake.findNode.return_value = node
-    project = IRPProject(fake)
-
-    result = project.find_node("Node1")
-
-    fake.findNode.assert_called_once_with("Node1")
-    assert result.name == "Node1"
-
-
 def test_project_all_stereotypes_returns_collection() -> None:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
@@ -207,6 +137,30 @@ def test_project_all_stereotypes_returns_collection() -> None:
     result = project.all_stereotypes
 
     assert isinstance(result, IRPCollection)
+
+
+def test_project_save_delegates_to_zero_argument_com_method() -> None:
+    fake = make_fake_element("Project")
+
+    IRPProject(fake).save()
+
+    fake.save.assert_called_once_with()
+
+
+def test_project_move_to_design_manager_delegates_to_com() -> None:
+    fake = make_fake_element("Project")
+
+    IRPProject(fake).move_to_design_manager("user", "password", "https://server", "area", "stream")
+
+    fake.moveToDesignManager.assert_called_once_with("user", "password", "https://server", "area", "stream")
+
+
+def test_project_move_to_design_manager_after_login_delegates_to_com() -> None:
+    fake = make_fake_element("Project")
+
+    IRPProject(fake).move_to_design_manager_after_login("https://server", "area", "stream")
+
+    fake.moveToDesignManagerAfterLogin.assert_called_once_with("https://server", "area", "stream")
 
 
 def test_project_save_as_delegates_to_com() -> None:
@@ -419,6 +373,24 @@ def test_project_apply_roundtrip_diff_merge_delegates_to_com() -> None:
     project.apply_roundtrip_diff_merge(42, IRPModelElement(shadow_fake), IRPCollection(files_fake))
 
     fake.applyRoundtripDiffMerge.assert_called_once_with(42, shadow_fake, files_fake)
+
+
+def test_project_is_resolve_on_demand_raises_not_implemented_without_com_dispatch() -> None:
+    fake = make_fake_element("Project")
+
+    with pytest.raises(NotImplementedError):
+        IRPProject(fake).is_resolve_on_demand()
+
+    fake.isResolveOnDemand.assert_not_called()
+
+
+def test_project_set_resolve_on_demand_raises_not_implemented_without_com_dispatch() -> None:
+    fake = make_fake_element("Project")
+
+    with pytest.raises(NotImplementedError):
+        IRPProject(fake).set_resolve_on_demand(1)
+
+    fake.setResolveOnDemand.assert_not_called()
 
 
 def test_project_enable_rhapsody_model_manager_raises_not_implemented() -> None:
@@ -699,9 +671,15 @@ def test_project_set_wait_dialog_watchdog_value_delegates_to_com() -> None:
     fake = make_fake_element("Project")
     project = IRPProject(fake)
 
-    project.set_wait_dialog_watchdog_value(5000)
+    project.set_wait_dialog_watchdog_value("5000")
 
-    fake.setWaitDialogWatchdogValue.assert_called_once_with(5000)
+    fake.setWaitDialogWatchdogValue.assert_called_once_with("5000")
+
+
+def test_project_set_wait_dialog_watchdog_value_parameter_is_string() -> None:
+    from typing import get_type_hints
+
+    assert get_type_hints(IRPProject.set_wait_dialog_watchdog_value)["value"] is str
 
 
 def test_project_start_transaction_of_no_cg_interest_delegates_to_com() -> None:
@@ -739,26 +717,6 @@ def test_generated_find_component() -> None:
     assert result is not None
 
 
-def test_generated_packages() -> None:
-    fake = make_fake_element("Project", properties={"packages": make_fake_collection([])})
-    result = IRPProject(fake).packages
-    assert result is not None
-
-
-def test_generated_add_class() -> None:
-    fake = make_fake_element("Project")
-    fake.addClass.return_value = make_fake_element("Class", properties={"name": "x"})
-    result = IRPProject(fake).add_class("x")
-    assert result is not None
-
-
-def test_generated_add_actor() -> None:
-    fake = make_fake_element("Project")
-    fake.addActor.return_value = make_fake_element("Class", properties={"name": "x"})
-    result = IRPProject(fake).add_actor("x")
-    assert result is not None
-
-
 def test_generated_components() -> None:
     fake = make_fake_element("Project", properties={"components": make_fake_collection([])})
     result = IRPProject(fake).components
@@ -785,45 +743,24 @@ def test_generated_delete_component() -> None:
     IRPProject(fake).delete_component(make_fake_element("Class", properties={"name": "x"}))
 
 
-def test_generated_add_node() -> None:
-    fake = make_fake_element("Project")
-    fake.addNode.return_value = make_fake_element("Class", properties={"name": "x"})
-    result = IRPProject(fake).add_node("x")
-    assert result is not None
-
-
-def test_generated_nodes() -> None:
-    fake = make_fake_element("Project", properties={"nodes": make_fake_collection([])})
-    result = IRPProject(fake).nodes
-    assert result is not None
-
-
-def test_generated_find_node() -> None:
-    fake = make_fake_element("Project")
-    fake.findNode.return_value = make_fake_element("Class", properties={"name": "x"})
-    result = IRPProject(fake).find_node("x")
-    assert result is not None
-
-
-def test_project_delete_node_passes_name_to_com() -> None:
-    fake = make_fake_element("Project")
-    fake.deleteNode.return_value = None
-
-    IRPProject(fake).delete_node("Node1")
-
-    fake.deleteNode.assert_called_once_with("Node1")
-
-
 def test_generated_active_configuration() -> None:
     fake = make_fake_element("Project", properties={"activeConfiguration": make_fake_collection([])})
     result = IRPProject(fake).active_configuration
     assert result is not None
 
 
-def test_generated_set_active_configuration() -> None:
+def test_generated_set_active_configuration_uses_name_string() -> None:
     fake = make_fake_element("Project")
-    fake.setActiveConfiguration.return_value = None
-    IRPProject(fake).set_active_configuration(make_fake_element("Class", properties={"name": "x"}))
+
+    IRPProject(fake).set_active_configuration("Debug")
+
+    fake.setActiveConfiguration.assert_called_once_with("Debug")
+
+
+def test_set_active_configuration_parameter_is_string() -> None:
+    from typing import get_type_hints
+
+    assert get_type_hints(IRPProject.set_active_configuration)["name"] is str
 
 
 def test_generated_active_component() -> None:
@@ -832,10 +769,18 @@ def test_generated_active_component() -> None:
     assert result is not None
 
 
-def test_generated_set_active_component() -> None:
+def test_generated_set_active_component_uses_name_string() -> None:
     fake = make_fake_element("Project")
-    fake.setActiveComponent.return_value = None
-    IRPProject(fake).set_active_component(make_fake_element("Class", properties={"name": "x"}))
+
+    IRPProject(fake).set_active_component("Application")
+
+    fake.setActiveComponent.assert_called_once_with("Application")
+
+
+def test_set_active_component_parameter_is_string() -> None:
+    from typing import get_type_hints
+
+    assert get_type_hints(IRPProject.set_active_component)["name"] is str
 
 
 def test_generated_all_stereotypes() -> None:
@@ -1194,7 +1139,7 @@ def test_generated_use_unique_stereotype_and_ref_cache() -> None:
 def test_generated_set_wait_dialog_watchdog_value() -> None:
     fake = make_fake_element("Project")
     fake.setWaitDialogWatchdogValue.return_value = None
-    IRPProject(fake).set_wait_dialog_watchdog_value(1)
+    IRPProject(fake).set_wait_dialog_watchdog_value("")
 
 
 def test_generated_start_transaction_of_no_cg_interest() -> None:
