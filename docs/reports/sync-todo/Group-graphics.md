@@ -1,0 +1,267 @@
+# Sync todo — `graphics`
+
+**14 classes** · ✅ 0 archived · ⬜ 14 open
+
+One row per sync run. A step is ticked only when its evidence lands; a row is archived only after all eight steps pass. Binding rule: one pywin32-exposed COM member per call — `call_com(lambda: self._com.Name(...))` for methods, `get_com_property` / `set_com_property` for properties; catalog-absent sites are blockers, never blind migrations. Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/`, mirrored tests under `tests/{unit,integration}/models/com/telelogic/rhapsody/core/`.
+
+Merged from `Group-graphics-1.md`, `Group-graphics-2.md`; the per-row content is unchanged.
+
+## Step legend
+
+| Step | Meaning |
+| --- | --- |
+| ① §1 | publish the per-run checklist with a subtask per target-owned JavaDoc member |
+| ② §2 | resolve the wrapper, inheritance, exports, and tests; move to the canonical package |
+| ③ §3 | reconcile every owned member against JavaDoc, pywin32, and the Python wrapper |
+| ④ §4 | failing fake-COM unit tests first, then migrate the legacy sites |
+| ⑤ §5 | integration coverage on the mirrored path; live run on Windows |
+| ⑥ §6 | update the per-class requirement document |
+| ⑦ §7 | update the per-class RST page and its toctree entry |
+| ⑧ §8 | run the validator, `verify_sync.py`, skill tests, both suites, and the quality gate |
+
+`[x] §2` on every row records the 2026-11-24 bulk package move; other steps show their evidence inline when it differs from the legend.
+
+## At a glance
+
+| # | Class | Interface | Legacy source | Sites | Owned | Steps | Status |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | `irp_table_layout_api_report` | IRPTableLayout | `elements/graphics/model_graphics.py` | 5 | 50 | 1/8 (②) | ⬜ open |
+| 2 | `irp_graph_element_api_report` | IRPGraphElement | `rhapsody_cli/models/elements/graphics/model_graphics.py` | 6 | 22 | 1/8 (②) | ⬜ open |
+| 3 | `irp_link_api_report` | IRPLink | `rhapsody_cli/models/elements/graphics/model_graphics.py` | 8 | 19 | 1/8 (②) | ⬜ open |
+| 4 | `irp_matrix_view_api_report` | IRPMatrixView | `rhapsody_cli/models/elements/graphics/model_graphics.py` | 7 | 19 | 1/8 (②) | ⬜ open |
+| 5 | `irp_table_view_api_report` | IRPTableView | `rhapsody_cli/models/elements/graphics/model_graphics.py` | 7 | 17 | 1/8 (②) | ⬜ open |
+| 6 | `irp_connector_api_report` | IRPConnector | `rhapsody_cli/models/elements/graphics/model_graphics.py` | 1 | 16 | 1/8 (②) | ⬜ open |
+| 7 | `irp_graph_node_api_report` | IRPGraphNode | `rhapsody_cli/models/elements/graphics/model_graphics.py` | 1 | 7 | 1/8 (②) | ⬜ open |
+| 8 | `irp_matrix_layout_api_report` | IRPMatrixLayout | `rhapsody_cli/models/elements/graphics/model_graphics.py` | 0 | 14 | 1/8 (②) | ⬜ open |
+| 9 | `irp_graph_edge_api_report` | IRPGraphEdge | `rhapsody_cli/models/elements/graphics/model_graphics.py` | 0 | 5 | 1/8 (②) | ⬜ open |
+| 10 | `irp_image_map_api_report` | IRPImageMap | `rhapsody_cli/models/elements/graphics/model_graphics.py` | 5 | 7 | 1/8 (②) | ⬜ open |
+| 11 | `irp_pin_api_report` | IRPPin | `rhapsody_cli/models/elements/graphics/model_graphics.py` | 4 | 6 | 1/8 (②) | ⬜ open |
+| 12 | `irp_graphical_property_api_report` | IRPGraphicalProperty | `rhapsody_cli/models/elements/graphics/model_graphics.py` | 2 | 3 | 1/8 (②) | ⬜ open |
+| 13 | `irp_message_point_api_report` | IRPMessagePoint | `rhapsody_cli/models/elements/graphics/model_graphics.py` | 1 | 5 | 1/8 (②) | ⬜ open |
+| 14 | `irp_condition_mark_api_report` | IRPConditionMark | `rhapsody_cli/models/elements/graphics/model_graphics.py` | 0 | 0 | 1/8 (②) | ⬜ open |
+
+## Row details
+
+<details>
+<summary><code>irp_table_layout_api_report</code> · IRPTableLayout · 1/8 steps · ⬜ open</summary>
+
+- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Note:** high-frequency graphics helper (122 src / 14 test, 50 owned methods — the largest surface in this group). Extends the synced `IRPUnit`; migrate only this class out of the shared graphics module.
+- [ ] ① §1
+- [x] ② §2
+- [ ] ③ §3
+- [ ] ④ §4
+- [ ] ⑤ §5
+- [ ] ⑥ §6
+- [ ] ⑦ §7
+- [ ] ⑧ §8
+
+</details>
+
+<details>
+<summary><code>irp_graph_element_api_report</code> · IRPGraphElement · 1/8 steps · ⬜ open</summary>
+
+- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Note:** usage 70 src / 18 test refs, 22 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
+- [ ] ① §1
+- [x] ② §2
+- [ ] ③ §3
+- [ ] ④ §4
+- [ ] ⑤ §5
+- [ ] ⑥ §6
+- [ ] ⑦ §7
+- [ ] ⑧ §8
+
+</details>
+
+<details>
+<summary><code>irp_link_api_report</code> · IRPLink · 1/8 steps · ⬜ open</summary>
+
+- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Note:** usage 49 src / 7 test refs, 19 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
+- [ ] ① §1
+- [x] ② §2
+- [ ] ③ §3
+- [ ] ④ §4
+- [ ] ⑤ §5
+- [ ] ⑥ §6
+- [ ] ⑦ §7
+- [ ] ⑧ §8
+
+</details>
+
+<details>
+<summary><code>irp_matrix_view_api_report</code> · IRPMatrixView · 1/8 steps · ⬜ open</summary>
+
+- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Note:** usage 31 src / 8 test refs, 19 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
+- [ ] ① §1
+- [x] ② §2
+- [ ] ③ §3
+- [ ] ④ §4
+- [ ] ⑤ §5
+- [ ] ⑥ §6
+- [ ] ⑦ §7
+- [ ] ⑧ §8
+
+</details>
+
+<details>
+<summary><code>irp_table_view_api_report</code> · IRPTableView · 1/8 steps · ⬜ open</summary>
+
+- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Note:** usage 29 src / 9 test refs, 17 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
+- [ ] ① §1
+- [x] ② §2
+- [ ] ③ §3
+- [ ] ④ §4
+- [ ] ⑤ §5
+- [ ] ⑥ §6
+- [ ] ⑦ §7
+- [ ] ⑧ §8
+
+</details>
+
+<details>
+<summary><code>irp_connector_api_report</code> · IRPConnector · 1/8 steps · ⬜ open</summary>
+
+- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Note:** usage 29 src / 13 test refs, 16 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
+- [ ] ① §1
+- [x] ② §2
+- [ ] ③ §3
+- [ ] ④ §4
+- [ ] ⑤ §5
+- [ ] ⑥ §6
+- [ ] ⑦ §7
+- [ ] ⑧ §8
+
+</details>
+
+<details>
+<summary><code>irp_graph_node_api_report</code> · IRPGraphNode · 1/8 steps · ⬜ open</summary>
+
+- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Note:** usage 28 src / 9 test refs, 7 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
+- [ ] ① §1
+- [x] ② §2
+- [ ] ③ §3
+- [ ] ④ §4
+- [ ] ⑤ §5
+- [ ] ⑥ §6
+- [ ] ⑦ §7
+- [ ] ⑧ §8
+
+</details>
+
+<details>
+<summary><code>irp_matrix_layout_api_report</code> · IRPMatrixLayout · 1/8 steps · ⬜ open</summary>
+
+- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Note:** usage 29 src / 4 test refs, 14 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
+- [ ] ① §1
+- [x] ② §2
+- [ ] ③ §3
+- [ ] ④ §4
+- [ ] ⑤ §5
+- [ ] ⑥ §6
+- [ ] ⑦ §7
+- [ ] ⑧ §8
+
+</details>
+
+<details>
+<summary><code>irp_graph_edge_api_report</code> · IRPGraphEdge · 1/8 steps · ⬜ open</summary>
+
+- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Note:** usage 23 src / 10 test refs, 5 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
+- [ ] ① §1
+- [x] ② §2
+- [ ] ③ §3
+- [ ] ④ §4
+- [ ] ⑤ §5
+- [ ] ⑥ §6
+- [ ] ⑦ §7
+- [ ] ⑧ §8
+
+</details>
+
+<details>
+<summary><code>irp_image_map_api_report</code> · IRPImageMap · 1/8 steps · ⬜ open</summary>
+
+- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Note:** usage 18 src / 6 test refs, 7 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
+- [ ] ① §1
+- [x] ② §2
+- [ ] ③ §3
+- [ ] ④ §4
+- [ ] ⑤ §5
+- [ ] ⑥ §6
+- [ ] ⑦ §7
+- [ ] ⑧ §8
+
+</details>
+
+<details>
+<summary><code>irp_pin_api_report</code> · IRPPin · 1/8 steps · ⬜ open</summary>
+
+- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Note:** usage 17 src / 7 test refs, 6 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
+- [ ] ① §1
+- [x] ② §2
+- [ ] ③ §3
+- [ ] ④ §4
+- [ ] ⑤ §5
+- [ ] ⑥ §6
+- [ ] ⑦ §7
+- [ ] ⑧ §8
+
+</details>
+
+<details>
+<summary><code>irp_graphical_property_api_report</code> · IRPGraphicalProperty · 1/8 steps · ⬜ open</summary>
+
+- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Note:** usage 14 src / 5 test refs, 3 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
+- [ ] ① §1
+- [x] ② §2
+- [ ] ③ §3
+- [ ] ④ §4
+- [ ] ⑤ §5
+- [ ] ⑥ §6
+- [ ] ⑦ §7
+- [ ] ⑧ §8
+
+</details>
+
+<details>
+<summary><code>irp_message_point_api_report</code> · IRPMessagePoint · 1/8 steps · ⬜ open</summary>
+
+- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Note:** usage 13 src / 5 test refs, 5 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
+- [ ] ① §1
+- [x] ② §2
+- [ ] ③ §3
+- [ ] ④ §4
+- [ ] ⑤ §5
+- [ ] ⑥ §6
+- [ ] ⑦ §7
+- [ ] ⑧ §8
+
+</details>
+
+<details>
+<summary><code>irp_condition_mark_api_report</code> · IRPConditionMark · 1/8 steps · ⬜ open</summary>
+
+- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
+- **Note:** usage 11 src / 4 test refs, 0 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
+- [ ] ① §1
+- [x] ② §2
+- [ ] ③ §3
+- [ ] ④ §4
+- [ ] ⑤ §5
+- [ ] ⑥ §6
+- [ ] ⑦ §7
+- [ ] ⑧ §8
+
+</details>

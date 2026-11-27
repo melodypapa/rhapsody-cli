@@ -37,7 +37,7 @@ class TestIRPCallOperationIntegration:
             call.operation = operation
             result = call.operation
             assert result is not None
-            assert result._com is operation._com
+            assert result == operation
         finally:
             pkg.delete_from_project()
 
@@ -51,6 +51,6 @@ class TestIRPCallOperationIntegration:
             call.target = relation
             result = call.target
             assert result is not None
-            assert result._com is relation._com
+            assert result == relation
         finally:
             pkg.delete_from_project()

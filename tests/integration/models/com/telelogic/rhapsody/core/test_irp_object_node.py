@@ -47,7 +47,7 @@ class TestIRPObjectNodeIntegration:
             node.represents = represented
             result = node.represents
             assert result is not None
-            assert result._com is represented._com
+            assert result == represented
         finally:
             pkg.delete_from_project()
 

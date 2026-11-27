@@ -53,7 +53,7 @@ class TestIRPFlowchartIntegration:
             flowchart.its_owner = owner
             result = flowchart.its_owner
             assert result is not None
-            assert result._com is owner._com
+            assert result == owner
         finally:
             pkg.delete_from_project()
 

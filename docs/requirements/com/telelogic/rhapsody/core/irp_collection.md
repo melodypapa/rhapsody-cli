@@ -47,7 +47,7 @@ kept a `NotImplementedError` stub because that catalog member's arity was unveri
 recorded in `documented_aliases`, and `scripts/validate_model_api.py` canonicalizes the
 pair so the generated report shows MATCH instead of stacked `JAVA_DOC_MISSING` /
 `JAVA_ONLY_MEMBER` findings. The integration fixture obtains the real graph element via
-the pywin32-exposed `AddTextBox` member because the diagram wrapper's lowercase
-`addTextBox` name is not exposed by this type library.
+`IRPDiagram.add_text_box`, whose binding was corrected from the Java-style `addTextBox`
+to the pywin32-exposed `AddTextBox`.
 **Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_collection.py:IRPCollection.add_graphical_item
-**Last Changed:** 2026-11-25
+**Last Changed:** 2026-11-27

@@ -451,3 +451,36 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |
+## IRPSysMLPort
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `is_reversed` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_sysml_port.py::test_is_reversed` | identity/value | OK |
+| `port_direction` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_sysml_port.py::test_port_direction` | identity/value | OK |
+| `type` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_sysml_port.py::test_type` | identity/value | OK |
+
+## IRPClassifierRole
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `formal_classifier` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier_role.py::test_formal_classifier` | identity/value | OK |
+| `formal_instance` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier_role.py::test_formal_instance` | identity/value | OK |
+| `referenced_sequence_diagram` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier_role.py::test_referenced_sequence_diagram` | identity/value | OK |
+| `role_type` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier_role.py::test_role_type` | identity/value | OK |
+
+## IRPEnumerationLiteral
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `value` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_enumeration_literal.py::test_value` | identity/value | OK |
+
+## IRPConstraint
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `constraints_by_me` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_constraint.py::test_constraints_by_me_empty_state` | weak | WEAK |
+
+## IRPComment
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |

@@ -6,9 +6,9 @@ import pytest
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_instance import IRPInstance
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_other_model import IRPSysMLPort
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_sysml_port import IRPSysMLPort
 
 
 @pytest.mark.integration

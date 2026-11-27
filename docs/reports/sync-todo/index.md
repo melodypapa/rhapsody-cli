@@ -15,7 +15,6 @@ Execution ledger for the 19 committed interface reports under `docs/reports/<jav
 | NotImplementedError evidence rows | 30 |
 | P0 blocker rows | 22 (10 interfaces) |
 | `verify_sync.py` sweep | 19 / 19 interfaces pass |
-
 ## Contents
 
 1. [Layout and group files](#layout-and-group-files)
@@ -25,7 +24,6 @@ Execution ledger for the 19 committed interface reports under `docs/reports/<jav
 5. [NotImplementedError stubs](#notimplementederror-stubs) — machine-read by `verify_sync.py`
 6. [P0 integration-test blockers](#p0-integration-test-blockers-2026-11-24) — machine-read by `verify_sync.py`
 7. [Evidence notes](#evidence-notes)
-
 ## Layout and group files
 
 Group files are organized **by category**, where the category is the legacy module subpackage in
@@ -67,7 +65,6 @@ were mapped to their legacy category by class name. All 146 tracked rows are pre
 - As of 2026-11-25 the `application` row in [Group-application-1.md](Group-application-1.md) and all seven `core` rows in [Group-core-1.md](Group-core-1.md) are archived.
 - The queued unsynced classes sit in the remaining files, ordered by importance within each category.
 - Commits `6cbebc3` (sync), `1778607` (test-rule compliance), `5175b93` (COM hardening), `2a6334c`…`3479937` (Windows closeout: real-COM outcome enforcement, report regeneration) and the review-fix commit carry the batch.
-
 ## Resume rule
 
 1. The `IRPApplication` Step 8 row and the `core` remediation rows are complete.
@@ -77,7 +74,6 @@ were mapped to their legacy category by class name. All 146 tracked rows are pre
 5. Tick a step when its evidence lands — never batch-tick at the end.
 6. Mark the row archived in place only after its commit exists and no step is open.
 7. Do not re-derive scope or decisions already recorded in the row's Notes.
-
 ## Standing decisions
 
 - **Binding rule (SKILL §3):** every wrapper member calls exactly one pywin32-exposed COM
@@ -139,7 +135,6 @@ were mapped to their legacy category by class name. All 146 tracked rows are pre
   too; §2 must confirm whether their canonical home is the core package or their current
   `models/support/` location before any move.
 - **Termination (pending):** IRPApplication Step 8 and the `core` remediation rows are archived; the remaining remediation rows in other category files are still open. After all of them archive, remove the deprecated `_get_method_or_property` / `_set_method_or_property` definitions from `ComHelper` in `src/rhapsody_cli/models/core.py`, drop legacy notes from `AGENTS.md`, `docs/CODE_GUIDELINES.md`, and the sync skill, and confirm `grep -rn "_method_or_property" src/ --include='*.py'` finds no definitions or call sites.
-
 ## History
 
 ### 2026-11-24 — Bulk Java-package move
@@ -219,7 +214,6 @@ by `test_add_port_and_get_ports`) and must be pointed at the real test by hand.
 - Added four `not-exposed` stub evidence rows (`IRPActor.addEventReceptionWithEvent`, `updateContainedDiagramsOnServer`; `IRPStatechart.addNewAcceptEventAction`, `addNewAcceptTimeEvent`) after confirming each member is absent from the catalog, listed in `documented_unavailable`, and asserted in both mirrored test layers.
 - Recorded `IRPStereotype.icon` as a P0 blocker: no documented API attaches or edits a stereotype icon.
 - Result: all 19 interfaces pass the default sweep, and `IRPActor`, `IRPStatechart`, `IRPStereotype` also pass `--strict-getters`.
-
 ## NotImplementedError stubs
 
 Added 2026-11-25. `verify_sync.py` reads this table for every interface wrapper and fails Step 8 unless every
@@ -282,7 +276,6 @@ layers. A row whose member no longer raises is stale and fails Step 8.
 probe proved the pywin32 `addGraphicalElementItem` alias works with a real `IRPGraphElement`
 (SWR_ELEM_00036). The wrapper now forwards to that member, so the stub row was removed; a row
 for a member that no longer raises `NotImplementedError` fails Step 8 as stale.
-
 ## P0 integration-test blockers (2026-11-24)
 
 The following integration tests were removed rather than converted into exception assertions or skips
@@ -341,7 +334,7 @@ wrapper-signature fix before its getter/member row can close.
 | IRPConfiguration | `time_model` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
 | IRPProject | `nodes` | `nodes` is inherited from `IRPPackage`; the project root rejects both `addNode(name)` and `addNewAggr("Node", name)`, and a nested-package node is not returned by `project.nodes`. No populated project-root fixture is available. |
 | IRPUseCase | `is_behavior_overriden` | Runtime stub (user approved 2026-11-25): setter faults live; see the NotImplementedError evidence ledger. |
-
+| IRPConstraint | `constraints_by_me` | JavaDoc exposes only getConstraintsByMe; the COM property is read-only and no documented API attaches an affected element, so only the empty collection is observable. |
 ## Evidence notes
 
 **Fresh live evidence (2026-11-25, hidden-UI Rhapsody):** three of the original four WEAK getter
