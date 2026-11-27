@@ -42,7 +42,7 @@ class TestIRPFlowIntegration:
             flow.end1 = end
             result = flow.end1
             assert result is not None
-            assert result._com is end._com
+            assert result == end
         finally:
             pkg.delete_from_project()
 
@@ -54,7 +54,7 @@ class TestIRPFlowIntegration:
             flow.end2 = end
             result = flow.end2
             assert result is not None
-            assert result._com is end._com
+            assert result == end
         finally:
             pkg.delete_from_project()
 

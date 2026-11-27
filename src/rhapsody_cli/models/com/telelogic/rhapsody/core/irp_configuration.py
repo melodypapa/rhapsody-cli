@@ -1,5 +1,7 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPConfiguration``."""
 
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
@@ -64,7 +66,7 @@ class IRPConfiguration(IRPUnit):
     # [inherited] irp_unit / irp_model_element methods (covered by rp_unit / rp_model_element checklists)
     # No deprecated IRPConfiguration methods.
 
-    def add_initial_instance(self, instance: "IRPInstance") -> None:
+    def add_initial_instance(self, instance: IRPInstance) -> None:
         """Adds an initial instance to the configuration.
 
         Args:
@@ -97,7 +99,7 @@ class IRPConfiguration(IRPUnit):
         """
         self.call_com(lambda: self._com.addToInstrumentationScope(element._com))
 
-    def delete_initial_instance(self, instance: "IRPInstance") -> None:
+    def delete_initial_instance(self, instance: IRPInstance) -> None:
         """Deletes an initial instance from the configuration.
 
         Args:
@@ -108,49 +110,77 @@ class IRPConfiguration(IRPUnit):
         """
         self.call_com(lambda: self._com.deleteInitialInstance(instance._com))
 
-    def get_additional_sources(self) -> str:
-        """Returns the additional sources for the configuration.
-
-        Returns:
-            The additional sources string.
+    @property
+    def additional_sources(self) -> str:
+        """COM-backed ``additionalSources`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::getAdditionalSources()
+            com.telelogic.rhapsody.core.IRPConfiguration::get_additional_sources()
         """
-        return str(self._get_method_or_property(self._com, "getAdditionalSources", "additionalSources"))
+        return str(self.get_com_property(self._com, "additionalSources"))
 
-    def get_all_elements_in_instrumentation_scope(self) -> "IRPCollection":
-        """Returns all elements in instrumentation scope.
-
-        Returns:
-            An ``IRPCollection`` of all elements in instrumentation scope.
+    @additional_sources.setter
+    def additional_sources(self, value: str) -> None:
+        """Writes the COM-backed ``additionalSources`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::getAllElementsInInstrumentationScope()
+            com.telelogic.rhapsody.core.IRPConfiguration::setAdditionalSources(value)
         """
-        return IRPCollection(self.call_com(lambda: self._com.getAllElementsInInstrumentationScope()))
+        self.set_com_property(self._com, "additionalSources", value)
 
-    def get_build_set(self) -> str:
-        """Returns the build set for the configuration.
-
-        Returns:
-            The build set string.
+    @property
+    def all_elements_in_instrumentation_scope(self) -> IRPCollection:
+        """COM-backed ``allElementsInInstrumentationScope`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::getBuildSet()
+            com.telelogic.rhapsody.core.IRPConfiguration::get_all_elements_in_instrumentation_scope()
         """
-        return str(self._get_method_or_property(self._com, "getBuildSet", "buildSet"))
+        return IRPCollection(self.get_com_property(self._com, "allElementsInInstrumentationScope"))
 
-    def get_compiler_switches(self) -> str:
-        """Returns the compiler switches for the configuration.
-
-        Returns:
-            The compiler switches string.
+    @all_elements_in_instrumentation_scope.setter
+    def all_elements_in_instrumentation_scope(self, elements: IRPCollection) -> None:
+        """Writes the COM-backed ``allElementsInInstrumentationScope`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::getCompilerSwitches()
+            com.telelogic.rhapsody.core.IRPConfiguration::setAllElementsInInstrumentationScope(elements)
         """
-        return str(self._get_method_or_property(self._com, "getCompilerSwitches", "compilerSwitches"))
+        self.set_com_property(self._com, "allElementsInInstrumentationScope", elements._com)
+
+    @property
+    def build_set(self) -> str:
+        """COM-backed ``buildSet`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPConfiguration::get_build_set()
+        """
+        return str(self.get_com_property(self._com, "buildSet"))
+
+    @build_set.setter
+    def build_set(self, value: str) -> None:
+        """Writes the COM-backed ``buildSet`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPConfiguration::setBuildSet(value)
+        """
+        self.set_com_property(self._com, "buildSet", value)
+
+    @property
+    def compiler_switches(self) -> str:
+        """COM-backed ``compilerSwitches`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPConfiguration::get_compiler_switches()
+        """
+        return str(self.get_com_property(self._com, "compilerSwitches"))
+
+    @compiler_switches.setter
+    def compiler_switches(self, value: str) -> None:
+        """Writes the COM-backed ``compilerSwitches`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPConfiguration::setCompilerSwitches(value)
+        """
+        self.set_com_property(self._com, "compilerSwitches", value)
 
     def get_directory(self) -> str:
         """Returns the directory for the configuration.
@@ -161,7 +191,7 @@ class IRPConfiguration(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPConfiguration::getDirectory()
         """
-        return str(self._get_method_or_property(self._com, "getDirectory", "directory"))
+        return str(self.call_com(lambda: self._com.getDirectory()))
 
     def get_executable_name(self) -> str:
         """Returns the executable name for the configuration.
@@ -172,75 +202,99 @@ class IRPConfiguration(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPConfiguration::getExecutableName()
         """
-        return str(self._get_method_or_property(self._com, "getExecutableName", "executableName"))
+        return str(self.call_com(lambda: self._com.getExecutableName()))
 
-    def get_generate_code_for_actors(self) -> int:
-        """Returns whether to generate code for actors.
-
-        Returns:
-            1 if true, 0 if false.
+    @property
+    def generate_code_for_actors(self) -> int:
+        """COM-backed ``generateCodeForActors`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::getGenerateCodeForActors()
+            com.telelogic.rhapsody.core.IRPConfiguration::get_generate_code_for_actors()
         """
-        return int(self.call_com(lambda: self._com.getGenerateCodeForActors()))
+        return int(self.get_com_property(self._com, "generateCodeForActors"))
 
-    def get_include_path(self) -> str:
-        """Returns the include path for the configuration.
-
-        Returns:
-            The include path string.
+    @generate_code_for_actors.setter
+    def generate_code_for_actors(self, value: int) -> None:
+        """Writes the COM-backed ``generateCodeForActors`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::getIncludePath()
+            com.telelogic.rhapsody.core.IRPConfiguration::setGenerateCodeForActors(value)
         """
-        return str(self._get_method_or_property(self._com, "getIncludePath", "includePath"))
+        self.set_com_property(self._com, "generateCodeForActors", value)
 
-    def get_initial_instances(self) -> "IRPCollection":
-        """Returns all initial instances in the configuration.
-
-        Returns:
-            An ``IRPCollection`` of ``IRPInstance`` objects.
+    @property
+    def include_path(self) -> str:
+        """COM-backed ``includePath`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::getInitialInstances()
+            com.telelogic.rhapsody.core.IRPConfiguration::get_include_path()
         """
-        return IRPCollection(self.call_com(lambda: self._com.getInitialInstances()))
+        return str(self.get_com_property(self._com, "includePath"))
 
-    def get_initialization_code(self) -> str:
-        """Returns the initialization code for the configuration.
-
-        Returns:
-            The initialization code string.
+    @include_path.setter
+    def include_path(self, value: str) -> None:
+        """Writes the COM-backed ``includePath`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::getInitializationCode()
+            com.telelogic.rhapsody.core.IRPConfiguration::setIncludePath(value)
         """
-        return str(self._get_method_or_property(self._com, "getInitializationCode", "initializationCode"))
+        self.set_com_property(self._com, "includePath", value)
 
-    def get_instrumentation_scope(self) -> "IRPCollection":
-        """Returns the instrumentation scope for the configuration.
-
-        Returns:
-            An ``IRPCollection`` of elements in instrumentation scope.
+    @property
+    def initial_instances(self) -> IRPCollection:
+        """COM-backed ``initialInstances`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::getInstrumentationScope()
+            com.telelogic.rhapsody.core.IRPConfiguration::get_initial_instances()
         """
-        return IRPCollection(self.call_com(lambda: self._com.getInstrumentationScope()))
+        return IRPCollection(self.get_com_property(self._com, "initialInstances"))
 
-    def get_instrumentation_type(self) -> int:
-        """Returns the instrumentation type for the configuration.
-
-        Returns:
-            The instrumentation type as an integer.
+    @property
+    def initialization_code(self) -> str:
+        """COM-backed ``initializationCode`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::getInstrumentationType()
+            com.telelogic.rhapsody.core.IRPConfiguration::get_initialization_code()
         """
-        return int(self.call_com(lambda: self._com.getInstrumentationType()))
+        return str(self.get_com_property(self._com, "initializationCode"))
 
-    def get_its_component(self) -> "IRPComponent":
+    @initialization_code.setter
+    def initialization_code(self, value: str) -> None:
+        """Writes the COM-backed ``initializationCode`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPConfiguration::setInitializationCode(value)
+        """
+        self.set_com_property(self._com, "initializationCode", value)
+
+    @property
+    def instrumentation_scope(self) -> IRPCollection:
+        """COM-backed ``instrumentationScope`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPConfiguration::get_instrumentation_scope()
+        """
+        return IRPCollection(self.get_com_property(self._com, "instrumentationScope"))
+
+    @property
+    def instrumentation_type(self) -> int:
+        """COM-backed ``instrumentationType`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPConfiguration::get_instrumentation_type()
+        """
+        return int(self.get_com_property(self._com, "instrumentationType"))
+
+    @instrumentation_type.setter
+    def instrumentation_type(self, value: int) -> None:
+        """Writes the COM-backed ``instrumentationType`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPConfiguration::setInstrumentationType(value)
+        """
+        self.set_com_property(self._com, "instrumentationType", value)
+
+    def get_its_component(self) -> IRPComponent:
         """Returns the component for this configuration.
 
         Returns:
@@ -251,27 +305,41 @@ class IRPConfiguration(IRPUnit):
         """
         return cast("IRPComponent", self.wrap(self.call_com(lambda: self._com.getItsComponent())))
 
-    def get_libraries(self) -> str:
-        """Returns the libraries for the configuration.
-
-        Returns:
-            The libraries string.
+    @property
+    def libraries(self) -> str:
+        """COM-backed ``libraries`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::getLibraries()
+            com.telelogic.rhapsody.core.IRPConfiguration::get_libraries()
         """
-        return str(self._get_method_or_property(self._com, "getLibraries", "libraries"))
+        return str(self.get_com_property(self._com, "libraries"))
 
-    def get_link_switches(self) -> str:
-        """Returns the link switches for the configuration.
-
-        Returns:
-            The link switches string.
+    @libraries.setter
+    def libraries(self, value: str) -> None:
+        """Writes the COM-backed ``libraries`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::getLinkSwitches()
+            com.telelogic.rhapsody.core.IRPConfiguration::setLibraries(value)
         """
-        return str(self._get_method_or_property(self._com, "getLinkSwitches", "linkSwitches"))
+        self.set_com_property(self._com, "libraries", value)
+
+    @property
+    def link_switches(self) -> str:
+        """COM-backed ``linkSwitches`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPConfiguration::get_link_switches()
+        """
+        return str(self.get_com_property(self._com, "linkSwitches"))
+
+    @link_switches.setter
+    def link_switches(self, value: str) -> None:
+        """Writes the COM-backed ``linkSwitches`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPConfiguration::setLinkSwitches(value)
+        """
+        self.set_com_property(self._com, "linkSwitches", value)
 
     def get_main_name(self) -> str:
         """Returns the main name for the configuration.
@@ -282,7 +350,7 @@ class IRPConfiguration(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPConfiguration::getMainName()
         """
-        return str(self._get_method_or_property(self._com, "getMainName", "mainName"))
+        return str(self.call_com(lambda: self._com.getMainName()))
 
     def get_makefile_name(self) -> str:
         """Returns the makefile name for the configuration.
@@ -293,51 +361,77 @@ class IRPConfiguration(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPConfiguration::getMakefileName()
         """
-        return str(self._get_method_or_property(self._com, "getMakefileName", "makefileName"))
+        return str(self.call_com(lambda: self._com.getMakefileName()))
 
     def get_path(self) -> str:
-        """Returns the path for the configuration.
-
-        Returns:
-            The path string.
+        """JavaDoc ``getPath``; absent from pywin32.
 
         Reference:
             com.telelogic.rhapsody.core.IRPConfiguration::getPath()
         """
-        return str(self._get_method_or_property(self._com, "getPath", "path"))
+        raise NotImplementedError("getPath is not exposed by pywin32")
 
-    def get_scope_type(self) -> int:
-        """Returns the scope type for the configuration.
-
-        Returns:
-            The scope type as an integer.
+    def set_path(self, value: str) -> None:
+        """JavaDoc ``setPath``; absent from pywin32.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::getScopeType()
+            com.telelogic.rhapsody.core.IRPConfiguration::setPath(java.lang.String path)
         """
-        return int(self.call_com(lambda: self._com.getScopeType()))
+        raise NotImplementedError("setPath is not exposed by pywin32")
 
-    def get_standard_headers(self) -> str:
-        """Returns the standard headers for the configuration.
-
-        Returns:
-            The standard headers string.
+    @property
+    def scope_type(self) -> int:
+        """COM-backed ``scopeType`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::getStandardHeaders()
+            com.telelogic.rhapsody.core.IRPConfiguration::get_scope_type()
         """
-        return str(self._get_method_or_property(self._com, "getStandardHeaders", "standardHeaders"))
+        return int(self.get_com_property(self._com, "scopeType"))
 
-    def get_statechart_implementation(self) -> int:
-        """Returns the statechart implementation for the configuration.
-
-        Returns:
-            The statechart implementation as an integer.
+    @scope_type.setter
+    def scope_type(self, value: int) -> None:
+        """Writes the COM-backed ``scopeType`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::getStatechartImplementation()
+            com.telelogic.rhapsody.core.IRPConfiguration::setScopeType(value)
         """
-        return int(self.call_com(lambda: self._com.getStatechartImplementation()))
+        self.set_com_property(self._com, "scopeType", value)
+
+    @property
+    def standard_headers(self) -> str:
+        """COM-backed ``standardHeaders`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPConfiguration::get_standard_headers()
+        """
+        return str(self.get_com_property(self._com, "standardHeaders"))
+
+    @standard_headers.setter
+    def standard_headers(self, value: str) -> None:
+        """Writes the COM-backed ``standardHeaders`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPConfiguration::setStandardHeaders(value)
+        """
+        self.set_com_property(self._com, "standardHeaders", value)
+
+    @property
+    def statechart_implementation(self) -> int:
+        """COM-backed ``statechartImplementation`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPConfiguration::get_statechart_implementation()
+        """
+        return int(self.get_com_property(self._com, "statechartImplementation"))
+
+    @statechart_implementation.setter
+    def statechart_implementation(self, value: int) -> None:
+        """Writes the COM-backed ``statechartImplementation`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPConfiguration::setStatechartImplementation(value)
+        """
+        self.set_com_property(self._com, "statechartImplementation", value)
 
     def get_target_name(self) -> str:
         """Returns the target name for the configuration.
@@ -348,18 +442,25 @@ class IRPConfiguration(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPConfiguration::getTargetName()
         """
-        return str(self._get_method_or_property(self._com, "getTargetName", "targetName"))
+        return str(self.call_com(lambda: self._com.getTargetName()))
 
-    def get_time_model(self) -> int:
-        """Returns the time model for the configuration.
-
-        Returns:
-            The time model as an integer.
+    @property
+    def time_model(self) -> int:
+        """COM-backed ``timeModel`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::getTimeModel()
+            com.telelogic.rhapsody.core.IRPConfiguration::get_time_model()
         """
-        return int(self.call_com(lambda: self._com.getTimeModel()))
+        return int(self.get_com_property(self._com, "timeModel"))
+
+    @time_model.setter
+    def time_model(self, value: int) -> None:
+        """Writes the COM-backed ``timeModel`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPConfiguration::setTimeModel(value)
+        """
+        self.set_com_property(self._com, "timeModel", value)
 
     def needs_code_generation(self) -> int:
         """Returns whether code generation is needed.
@@ -394,50 +495,6 @@ class IRPConfiguration(IRPUnit):
         """
         self.call_com(lambda: self._com.removePackageFromInstrumentationScope(package._com))
 
-    def set_additional_sources(self, value: str) -> None:
-        """Sets the additional sources for the configuration.
-
-        Args:
-            value: The additional sources string.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::setAdditionalSources(java.lang.String value)
-        """
-        self._set_method_or_property(self._com, "setAdditionalSources", "additionalSources", value)
-
-    def set_all_elements_in_instrumentation_scope(self, elements: "IRPCollection") -> None:
-        """Sets all elements in instrumentation scope.
-
-        Args:
-            elements: The collection of elements to set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::setAllElementsInInstrumentationScope(IRPCollection elements)
-        """
-        self.call_com(lambda: self._com.setAllElementsInInstrumentationScope(elements._com))
-
-    def set_build_set(self, value: str) -> None:
-        """Sets the build set for the configuration.
-
-        Args:
-            value: The build set string.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::setBuildSet(java.lang.String value)
-        """
-        self._set_method_or_property(self._com, "setBuildSet", "buildSet", value)
-
-    def set_compiler_switches(self, value: str) -> None:
-        """Sets the compiler switches for the configuration.
-
-        Args:
-            value: The compiler switches string.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::setCompilerSwitches(java.lang.String value)
-        """
-        self._set_method_or_property(self._com, "setCompilerSwitches", "compilerSwitches", value)
-
     def set_directory(self, value: str) -> None:
         """Sets the directory for the configuration.
 
@@ -447,53 +504,9 @@ class IRPConfiguration(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPConfiguration::setDirectory(java.lang.String value)
         """
-        self._set_method_or_property(self._com, "setDirectory", "directory", value)
+        self.call_com(lambda: self._com.setDirectory(value))
 
-    def set_generate_code_for_actors(self, value: int) -> None:
-        """Sets whether to generate code for actors.
-
-        Args:
-            value: 1 to generate, 0 to not generate.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::setGenerateCodeForActors(int value)
-        """
-        self.call_com(lambda: self._com.setGenerateCodeForActors(value))
-
-    def set_include_path(self, value: str) -> None:
-        """Sets the include path for the configuration.
-
-        Args:
-            value: The include path string.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::setIncludePath(java.lang.String value)
-        """
-        self._set_method_or_property(self._com, "setIncludePath", "includePath", value)
-
-    def set_initialization_code(self, value: str) -> None:
-        """Sets the initialization code for the configuration.
-
-        Args:
-            value: The initialization code string.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::setInitializationCode(java.lang.String value)
-        """
-        self._set_method_or_property(self._com, "setInitializationCode", "initializationCode", value)
-
-    def set_instrumentation_type(self, value: int) -> None:
-        """Sets the instrumentation type for the configuration.
-
-        Args:
-            value: The instrumentation type as an integer.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::setInstrumentationType(int value)
-        """
-        self.call_com(lambda: self._com.setInstrumentationType(value))
-
-    def set_its_component(self, component: "IRPComponent") -> None:
+    def set_its_component(self, component: IRPComponent) -> None:
         """Sets the component for this configuration.
 
         Args:
@@ -503,72 +516,6 @@ class IRPConfiguration(IRPUnit):
             com.telelogic.rhapsody.core.IRPConfiguration::setItsComponent(IRPComponent component)
         """
         self.call_com(lambda: self._com.setItsComponent(component._com))
-
-    def set_libraries(self, value: str) -> None:
-        """Sets the libraries for the configuration.
-
-        Args:
-            value: The libraries string.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::setLibraries(java.lang.String value)
-        """
-        self._set_method_or_property(self._com, "setLibraries", "libraries", value)
-
-    def set_link_switches(self, value: str) -> None:
-        """Sets the link switches for the configuration.
-
-        Args:
-            value: The link switches string.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::setLinkSwitches(java.lang.String value)
-        """
-        self._set_method_or_property(self._com, "setLinkSwitches", "linkSwitches", value)
-
-    def set_scope_type(self, value: int) -> None:
-        """Sets the scope type for the configuration.
-
-        Args:
-            value: The scope type as an integer.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::setScopeType(int value)
-        """
-        self.call_com(lambda: self._com.setScopeType(value))
-
-    def set_standard_headers(self, value: str) -> None:
-        """Sets the standard headers for the configuration.
-
-        Args:
-            value: The standard headers string.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::setStandardHeaders(java.lang.String value)
-        """
-        self._set_method_or_property(self._com, "setStandardHeaders", "standardHeaders", value)
-
-    def set_statechart_implementation(self, value: int) -> None:
-        """Sets the statechart implementation for the configuration.
-
-        Args:
-            value: The statechart implementation as an integer.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::setStatechartImplementation(int value)
-        """
-        self.call_com(lambda: self._com.setStatechartImplementation(value))
-
-    def set_time_model(self, value: int) -> None:
-        """Sets the time model for the configuration.
-
-        Args:
-            value: The time model as an integer.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPConfiguration::setTimeModel(int value)
-        """
-        self.call_com(lambda: self._com.setTimeModel(value))
 
 
 IRPModelElement.register_wrapper("Configuration", IRPConfiguration)

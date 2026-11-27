@@ -7,15 +7,14 @@ Execution ledger for the 19 committed interface reports under `docs/reports/<jav
 | Metric | Value |
 | --- | --- |
 | Interfaces with a committed API report | 19 |
-| Group files | 16 |
+| Group files | 24 |
 | Rows tracked | 146 |
-| Rows archived | 34 |
-| Rows open | 112 |
-| Step checks ticked | 446 / 1168 |
+| Rows archived | 21 (19 unique + 2 preserved duplicate remediation rows) |
+| Rows open | 125 |
+| Step checks ticked | 337 / 1168 |
 | NotImplementedError evidence rows | 30 |
 | P0 blocker rows | 22 (10 interfaces) |
 | `verify_sync.py` sweep | 19 / 19 interfaces pass |
-
 ## Contents
 
 1. [Layout and group files](#layout-and-group-files)
@@ -25,42 +24,47 @@ Execution ledger for the 19 committed interface reports under `docs/reports/<jav
 5. [NotImplementedError stubs](#notimplementederror-stubs) — machine-read by `verify_sync.py`
 6. [P0 integration-test blockers](#p0-integration-test-blockers-2026-11-24) — machine-read by `verify_sync.py`
 7. [Evidence notes](#evidence-notes)
-
 ## Layout and group files
 
 Group files are organized **by category**, where the category is the legacy module subpackage in
 each row's path (`elements/<subpackage>/`, `models/support/`, `models/core.py`, `application.py`).
-Each category has a single `Group-<category>.md` file; the larger categories were merged from the
-former `-1`/`-2`/`-3` splits and keep every row unchanged. Classes whose rows point at canonical
-post-sync paths (or carry only a remediation label) were mapped to their legacy category by class
-name. All 146 tracked rows are preserved.
+Each group file holds **at most 10 classes**; a category larger than 10 is split into `-1`, `-2`, …
+files. Classes whose rows point at canonical post-sync paths (or carry only a remediation label)
+were mapped to their legacy category by class name. All 146 tracked rows are preserved.
 
 | Group file | Category | Classes | Status |
 | --- | --- | --- | --- |
-| [Group-activity.md](Group-activity.md) | `activity` | 12 | ⬜ 2 open · ✅ 10 archived |
-| [Group-application.md](Group-application.md) | `application` | 1 | ✅ all archived |
-| [Group-classifiers.md](Group-classifiers.md) | `classifiers` | 16 | ⬜ 9 open · ✅ 7 archived |
-| [Group-common.md](Group-common.md) | `common` | 7 | ⬜ 3 open · ✅ 4 archived |
-| [Group-containment.md](Group-containment.md) | `containment` | 11 | ⬜ 9 open · ✅ 2 archived |
-| [Group-core.md](Group-core.md) | `core` | 7 | ✅ all archived |
-| [Group-diagrams.md](Group-diagrams.md) | `diagrams` | 12 | ⬜ 12 open |
-| [Group-graphics.md](Group-graphics.md) | `graphics` | 14 | ⬜ 14 open |
-| [Group-interactions.md](Group-interactions.md) | `interactions` | 11 | ⬜ 11 open |
-| [Group-relations.md](Group-relations.md) | `relations` | 8 | ⬜ 7 open · ✅ 1 archived |
-| [Group-requirements.md](Group-requirements.md) | `requirements` | 2 | ⬜ 2 open |
-| [Group-statemachine.md](Group-statemachine.md) | `statemachine` | 2 | ⬜ 2 open |
-| [Group-support.md](Group-support.md) | `support` | 27 | ⬜ 27 open |
-| [Group-templates.md](Group-templates.md) | `templates` | 3 | ⬜ 3 open |
-| [Group-values.md](Group-values.md) | `values` | 5 | ⬜ 5 open |
-| [Group-variables.md](Group-variables.md) | `variables` | 8 | ⬜ 6 open · ✅ 2 archived |
+| [Group-activity-1.md](Group-activity-1.md) | `activity` | 10 | ⬜ 10 open |
+| [Group-activity-2.md](Group-activity-2.md) | `activity` | 2 | ⬜ 2 open |
+| [Group-application-1.md](Group-application-1.md) | `application` | 1 | ✅ all archived |
+| [Group-classifiers-1.md](Group-classifiers-1.md) | `classifiers` | 10 | ⬜ 9 open · ✅ 1 archived |
+| [Group-classifiers-2.md](Group-classifiers-2.md) | `classifiers` | 6 | ✅ all archived |
+| [Group-common-1.md](Group-common-1.md) | `common` | 7 | ⬜ 6 open · ✅ 1 archived |
+| [Group-containment-1.md](Group-containment-1.md) | `containment` | 10 | ⬜ 9 open · ✅ 1 archived |
+| [Group-containment-2.md](Group-containment-2.md) | `containment` | 1 | ✅ all archived |
+| [Group-core-1.md](Group-core-1.md) | `core` | 7 | ✅ all archived |
+| [Group-diagrams-1.md](Group-diagrams-1.md) | `diagrams` | 10 | ⬜ 10 open |
+| [Group-diagrams-2.md](Group-diagrams-2.md) | `diagrams` | 2 | ⬜ 2 open |
+| [Group-graphics-1.md](Group-graphics-1.md) | `graphics` | 10 | ⬜ 10 open |
+| [Group-graphics-2.md](Group-graphics-2.md) | `graphics` | 4 | ⬜ 4 open |
+| [Group-interactions-1.md](Group-interactions-1.md) | `interactions` | 10 | ⬜ 10 open |
+| [Group-interactions-2.md](Group-interactions-2.md) | `interactions` | 1 | ⬜ 1 open |
+| [Group-relations-1.md](Group-relations-1.md) | `relations` | 8 | ⬜ 7 open · ✅ 1 archived |
+| [Group-requirements-1.md](Group-requirements-1.md) | `requirements` | 2 | ⬜ 2 open |
+| [Group-statemachine-1.md](Group-statemachine-1.md) | `statemachine` | 2 | ⬜ 2 open |
+| [Group-support-1.md](Group-support-1.md) | `support` | 10 | ⬜ 10 open |
+| [Group-support-2.md](Group-support-2.md) | `support` | 10 | ⬜ 10 open |
+| [Group-support-3.md](Group-support-3.md) | `support` | 7 | ⬜ 7 open |
+| [Group-templates-1.md](Group-templates-1.md) | `templates` | 3 | ⬜ 3 open |
+| [Group-values-1.md](Group-values-1.md) | `values` | 5 | ⬜ 5 open |
+| [Group-variables-1.md](Group-variables-1.md) | `variables` | 8 | ⬜ 6 open · ✅ 2 archived |
 
 ### Progress
 
-- Progress: **34 archived / 146 rows**, including the preserved duplicate remediation rows; 446 of 1168 step checks are ticked.
-- Fully archived categories: `activity`, `application`, and `core`. Partly archived: `classifiers`, `common`, `containment`, `relations`, `variables`.
+- Progress: **19 unique rows archived / 146** (21 including the two preserved duplicate remediation rows).
+- As of 2026-11-25 the `application` row in [Group-application-1.md](Group-application-1.md) and all seven `core` rows in [Group-core-1.md](Group-core-1.md) are archived.
 - The queued unsynced classes sit in the remaining files, ordered by importance within each category.
 - Commits `6cbebc3` (sync), `1778607` (test-rule compliance), `5175b93` (COM hardening), `2a6334c`…`3479937` (Windows closeout: real-COM outcome enforcement, report regeneration) and the review-fix commit carry the batch.
-
 ## Resume rule
 
 1. The `IRPApplication` Step 8 row and the `core` remediation rows are complete.
@@ -70,7 +74,6 @@ name. All 146 tracked rows are preserved.
 5. Tick a step when its evidence lands — never batch-tick at the end.
 6. Mark the row archived in place only after its commit exists and no step is open.
 7. Do not re-derive scope or decisions already recorded in the row's Notes.
-
 ## Standing decisions
 
 - **Binding rule (SKILL §3):** every wrapper member calls exactly one pywin32-exposed COM
@@ -132,7 +135,6 @@ name. All 146 tracked rows are preserved.
   too; §2 must confirm whether their canonical home is the core package or their current
   `models/support/` location before any move.
 - **Termination (pending):** IRPApplication Step 8 and the `core` remediation rows are archived; the remaining remediation rows in other category files are still open. After all of them archive, remove the deprecated `_get_method_or_property` / `_set_method_or_property` definitions from `ComHelper` in `src/rhapsody_cli/models/core.py`, drop legacy notes from `AGENTS.md`, `docs/CODE_GUIDELINES.md`, and the sync skill, and confirm `grep -rn "_method_or_property" src/ --include='*.py'` finds no definitions or call sites.
-
 ## History
 
 ### 2026-11-24 — Bulk Java-package move
@@ -212,7 +214,6 @@ by `test_add_port_and_get_ports`) and must be pointed at the real test by hand.
 - Added four `not-exposed` stub evidence rows (`IRPActor.addEventReceptionWithEvent`, `updateContainedDiagramsOnServer`; `IRPStatechart.addNewAcceptEventAction`, `addNewAcceptTimeEvent`) after confirming each member is absent from the catalog, listed in `documented_unavailable`, and asserted in both mirrored test layers.
 - Recorded `IRPStereotype.icon` as a P0 blocker: no documented API attaches or edits a stereotype icon.
 - Result: all 19 interfaces pass the default sweep, and `IRPActor`, `IRPStatechart`, `IRPStereotype` also pass `--strict-getters`.
-
 ## NotImplementedError stubs
 
 Added 2026-11-25. `verify_sync.py` reads this table for every interface wrapper and fails Step 8 unless every
@@ -233,6 +234,11 @@ layers. A row whose member no longer raises is stale and fails Step 8.
 | --- | --- | --- | --- | --- | --- |
 | IRPActor | `add_event_reception_with_event` | `addEventReceptionWithEvent` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPActor | `update_contained_diagrams_on_server` | `updateContainedDiagramsOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPComponent | `get_path` | `getPath` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPComponent | `set_path` | `setPath` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPComponent | `update_contained_diagrams_on_server` | `updateContainedDiagramsOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPConfiguration | `get_path` | `getPath` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
+| IRPConfiguration | `set_path` | `setPath` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPClass | `is_abstract` | `isAbstract` | not-exposed | The setter's `setIsAbstract` is absent from the catalog and listed in `documented_unavailable`; the `isAbstract` property accepts the write but never persists it (observed live). | — |
 | IRPClass | `add_event_reception_with_event` | `addEventReceptionWithEvent` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
 | IRPClass | `update_contained_diagrams_on_server` | `updateContainedDiagramsOnServer` | not-exposed | Absent from the catalog; listed in `documented_unavailable`. | — |
@@ -270,7 +276,6 @@ layers. A row whose member no longer raises is stale and fails Step 8.
 probe proved the pywin32 `addGraphicalElementItem` alias works with a real `IRPGraphElement`
 (SWR_ELEM_00036). The wrapper now forwards to that member, so the stub row was removed; a row
 for a member that no longer raises `NotImplementedError` fails Step 8 as stale.
-
 ## P0 integration-test blockers (2026-11-24)
 
 The following integration tests were removed rather than converted into exception assertions or skips
@@ -300,10 +305,36 @@ wrapper-signature fix before its getter/member row can close.
 | IRPProject | `move_to_design_manager`, `move_to_design_manager_after_login` | Both JavaDoc methods are deprecated because Design Manager support was removed in Rhapsody 8.4; no supported Design Manager server is available for authentic live execution. Keep the exact catalog bindings and leave live verification open. |
 | IRPClass | `is_abstract`, `is_active`, `is_behavior_overriden` | Documented pywin32 aliases; getters are readable but no populated live fixture exists (setters are read-only or JavaDoc-unimplemented). |
 | IRPPort | `is_behavioral`, `is_reversed`, `port_contract`, `provided_interfaces`, `required_interfaces` | Port relation/end properties have no live factory; recovered via catalog-only triage but no populated fixture. |
-| IRPConstraint | `constraints_by_me` | JavaDoc exposes only getConstraintsByMe; the COM property is read-only and no documented API attaches an affected element, so only the empty collection is observable. |
+| IRPComponent | `panel_diagrams` | No documented API attaches a panel diagram to a component; only the empty collection is observable. |
+| IRPComponent | `variation_points` | No documented API creates a variation point on a component; only the empty collection is observable. |
+| IRPCollaboration | `activation_condition` | No documented API populates this read-only property on a fresh collaboration; only the documented empty/default state is observable. |
+| IRPCollaboration | `activation_mode` | No documented API populates this read-only property on a fresh collaboration; only the documented empty/default state is observable. |
+| IRPCollaboration | `associations` | No documented API populates this read-only property on a fresh collaboration; only the documented empty/default state is observable. |
+| IRPCollaboration | `classifier` | No documented API populates this read-only property on a fresh collaboration; only the documented empty/default state is observable. |
+| IRPCollaboration | `execution_occurrences` | No documented API populates this read-only property on a fresh collaboration; only the documented empty/default state is observable. |
+| IRPCollaboration | `interaction_occurrences` | No documented API populates this read-only property on a fresh collaboration; only the documented empty/default state is observable. |
+| IRPCollaboration | `interaction_operators` | No documented API populates this read-only property on a fresh collaboration; only the documented empty/default state is observable. |
+| IRPCollaboration | `message_points` | No documented API populates this read-only property on a fresh collaboration; only the documented empty/default state is observable. |
+| IRPCollaboration | `mode` | No documented API populates this read-only property on a fresh collaboration; only the documented empty/default state is observable. |
+| IRPConfiguration | `additional_sources` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `all_elements_in_instrumentation_scope` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `build_set` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `compiler_switches` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `generate_code_for_actors` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `include_path` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `initial_instances` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `initialization_code` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `instrumentation_scope` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `instrumentation_type` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `libraries` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `link_switches` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `scope_type` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `standard_headers` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `statechart_implementation` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
+| IRPConfiguration | `time_model` | No documented API populates this read-only configuration property on a fresh configuration; only the documented empty/default state is observable. |
 | IRPProject | `nodes` | `nodes` is inherited from `IRPPackage`; the project root rejects both `addNode(name)` and `addNewAggr("Node", name)`, and a nested-package node is not returned by `project.nodes`. No populated project-root fixture is available. |
 | IRPUseCase | `is_behavior_overriden` | Runtime stub (user approved 2026-11-25): setter faults live; see the NotImplementedError evidence ledger. |
-
+| IRPConstraint | `constraints_by_me` | JavaDoc exposes only getConstraintsByMe; the COM property is read-only and no documented API attaches an affected element, so only the empty collection is observable. |
 ## Evidence notes
 
 **Fresh live evidence (2026-11-25, hidden-UI Rhapsody):** three of the original four WEAK getter

@@ -14,12 +14,12 @@ review rather than a failure.
 
 | Status | Count |
 | --- | --- |
-| match | 201 |
+| match | 243 |
 | catalog-missing | 0 |
 | shape-mismatch | 0 |
 | no-binding | 0 |
 | stub | 2 |
-| catalog-only | 1 |
+| catalog-only | 2 |
 
 ## IRPApplication
 
@@ -523,6 +523,113 @@ review rather than a failure.
 | --- | --- | --- |
 | — | — | — |
 
+## IRPComponent
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `additional_sources` | `additionalSources` | property | property | match |
+| `build_type` | `buildType` | property | property | match |
+| `configurations` | `configurations` | property | property | match |
+| `files` | `files` | property | property | match |
+| `include_path` | `includePath` | property | property | match |
+| `libraries` | `libraries` | property | property | match |
+| `nested_components` | `nestedComponents` | property | property | match |
+| `panel_diagrams` | `panelDiagrams` | property | property | match |
+| `scope_by_selected_elements` | `scopeBySelectedElements` | property | property | match |
+| `scope_elements` | `scopeElements` | property | property | match |
+| `standard_headers` | `standardHeaders` | property | property | match |
+| `variation_points` | `variationPoints` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPCollaboration
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `activation_condition` | `activationCondition` | property | property | match |
+| `activation_mode` | `activationMode` | property | property | match |
+| `associations` | `associations` | property | property | match |
+| `classifier` | `classifier` | property | property | match |
+| `execution_occurrences` | `executionOccurrences` | property | property | match |
+| `interaction_occurrences` | `interactionOccurrences` | property | property | match |
+| `interaction_operators` | `interactionOperators` | property | property | match |
+| `message_points` | `messagePoints` | property | property | match |
+| `messages` | `messages` | property | property | match |
+| `mode` | `mode` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPConfiguration
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `additional_sources` | `additionalSources` | property | property | match |
+| `all_elements_in_instrumentation_scope` | `allElementsInInstrumentationScope` | property | property | match |
+| `build_set` | `buildSet` | property | property | match |
+| `compiler_switches` | `compilerSwitches` | property | property | match |
+| `generate_code_for_actors` | `generateCodeForActors` | property | property | match |
+| `include_path` | `includePath` | property | property | match |
+| `initial_instances` | `initialInstances` | property | property | match |
+| `initialization_code` | `initializationCode` | property | property | match |
+| `instrumentation_scope` | `instrumentationScope` | property | property | match |
+| `instrumentation_type` | `instrumentationType` | property | property | match |
+| `libraries` | `libraries` | property | property | match |
+| `link_switches` | `linkSwitches` | property | property | match |
+| `scope_type` | `scopeType` | property | property | match |
+| `standard_headers` | `standardHeaders` | property | property | match |
+| `statechart_implementation` | `statechartImplementation` | property | property | match |
+| `time_model` | `timeModel` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPNode
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `cpu_type` | `CPUtype` | property | property | match |
+| `component_instances` | `componentInstances` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| `CPUtype` | `cp_utype` | catalog-only |
+
+## IRPComponentInstance
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+| `component_type` | `componentType` | property | property | match |
+| `node` | `node` | property | property | match |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
+
+## IRPProfile
+
+| Python getter | COM member | Binding shape | Catalog shape | Status |
+| --- | --- | --- | --- | --- |
+
+### Catalog properties with no matching Python property
+
+| Catalog property | Derived Python name | Status |
+| --- | --- | --- |
+| — | — | — |
 ## IRPSysMLPort
 
 | Python getter | COM member | Binding shape | Catalog shape | Status |
