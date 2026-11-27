@@ -95,4 +95,3 @@ getters exposed by pywin32 as properties are surfaced as ``@property`` members.
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collaboration.IRPCollaboration.get_predecessor
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collaboration.IRPCollaboration.get_successor
-

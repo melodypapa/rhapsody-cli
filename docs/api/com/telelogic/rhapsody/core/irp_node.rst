@@ -1,7 +1,7 @@
 .. _rhapsody-java-interface-IRPNode:
 
 IRPNode
-=======
+========
 
 The IRPNode interface represents a node extending IRPUnit.
 

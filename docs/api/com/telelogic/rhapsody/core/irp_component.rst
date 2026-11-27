@@ -92,4 +92,3 @@ JavaDoc members absent from pywin32 are documented pre-dispatch stubs.
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_component.IRPComponent.set_path
 
 .. automethod:: rhapsody_cli.models.com.telelogic.rhapsody.core.irp_component.IRPComponent.update_contained_diagrams_on_server
-
