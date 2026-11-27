@@ -1,5 +1,7 @@
 """Wraps ``com.telelogic.rhapsody.core.IRPCollaboration``."""
 
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
@@ -58,7 +60,7 @@ class IRPCollaboration(IRPUnit):
     # [inherited] irp_unit / irp_model_element methods (covered by rp_unit / rp_model_element checklists)
     # No deprecated IRPCollaboration methods.
 
-    def add_action_block(self, name: str) -> "IRPUnit":
+    def add_action_block(self, name: str) -> IRPUnit:
         """Adds an action block to the collaboration.
 
         Args:
@@ -72,7 +74,7 @@ class IRPCollaboration(IRPUnit):
         """
         return cast("IRPUnit", self.wrap(self.call_com(lambda: self._com.addActionBlock(name))))
 
-    def add_cancelled_timeout(self, name: str) -> "IRPUnit":
+    def add_cancelled_timeout(self, name: str) -> IRPUnit:
         """Adds a cancelled timeout to the collaboration.
 
         Args:
@@ -86,7 +88,7 @@ class IRPCollaboration(IRPUnit):
         """
         return cast("IRPUnit", self.wrap(self.call_com(lambda: self._com.addCancelledTimeout(name))))
 
-    def add_classifier_role(self, name: str) -> "IRPClassifierRole":
+    def add_classifier_role(self, name: str) -> IRPClassifierRole:
         """Adds a classifier role to the collaboration.
 
         Args:
@@ -100,7 +102,7 @@ class IRPCollaboration(IRPUnit):
         """
         return cast("IRPClassifierRole", self.wrap(self.call_com(lambda: self._com.addClassifierRole(name))))
 
-    def add_classifier_role_by_name(self, name: str) -> "IRPClassifierRole":
+    def add_classifier_role_by_name(self, name: str) -> IRPClassifierRole:
         """Adds a classifier role by name to the collaboration.
 
         Args:
@@ -114,7 +116,7 @@ class IRPCollaboration(IRPUnit):
         """
         return cast("IRPClassifierRole", self.wrap(self.call_com(lambda: self._com.addClassifierRoleByName(name))))
 
-    def add_classifier_role_for_instance(self, instance: IRPUnit) -> "IRPClassifierRole":
+    def add_classifier_role_for_instance(self, instance: IRPUnit) -> IRPClassifierRole:
         """Adds a classifier role for an instance to the collaboration.
 
         Args:
@@ -128,7 +130,7 @@ class IRPCollaboration(IRPUnit):
         """
         return cast("IRPClassifierRole", self.wrap(self.call_com(lambda: self._com.addClassifierRoleForInstance(instance._com))))
 
-    def add_condition_mark(self, name: str) -> "IRPConditionMark":
+    def add_condition_mark(self, name: str) -> IRPConditionMark:
         """Adds a condition mark to the collaboration.
 
         Args:
@@ -142,7 +144,7 @@ class IRPCollaboration(IRPUnit):
         """
         return cast("IRPConditionMark", self.wrap(self.call_com(lambda: self._com.addConditionMark(name))))
 
-    def add_ctor(self, name: str) -> "IRPUnit":
+    def add_ctor(self, name: str) -> IRPUnit:
         """Adds a constructor to the collaboration.
 
         Args:
@@ -156,7 +158,7 @@ class IRPCollaboration(IRPUnit):
         """
         return cast("IRPUnit", self.wrap(self.call_com(lambda: self._com.addCtor(name))))
 
-    def add_data_flow(self, name: str) -> "IRPUnit":
+    def add_data_flow(self, name: str) -> IRPUnit:
         """Adds a data flow to the collaboration.
 
         Args:
@@ -170,7 +172,7 @@ class IRPCollaboration(IRPUnit):
         """
         return cast("IRPUnit", self.wrap(self.call_com(lambda: self._com.addDataFlow(name))))
 
-    def add_destruction_event(self, name: str) -> "IRPUnit":
+    def add_destruction_event(self, name: str) -> IRPUnit:
         """Adds a destruction event to the collaboration.
 
         Args:
@@ -184,7 +186,7 @@ class IRPCollaboration(IRPUnit):
         """
         return cast("IRPUnit", self.wrap(self.call_com(lambda: self._com.addDestructionEvent(name))))
 
-    def add_dtor(self, name: str) -> "IRPUnit":
+    def add_dtor(self, name: str) -> IRPUnit:
         """Adds a destructor to the collaboration.
 
         Args:
@@ -198,7 +200,7 @@ class IRPCollaboration(IRPUnit):
         """
         return cast("IRPUnit", self.wrap(self.call_com(lambda: self._com.addDtor(name))))
 
-    def add_duration_constraint(self, name: str) -> "IRPUnit":
+    def add_duration_constraint(self, name: str) -> IRPUnit:
         """Adds a duration constraint to the collaboration.
 
         Args:
@@ -212,7 +214,7 @@ class IRPCollaboration(IRPUnit):
         """
         return cast("IRPUnit", self.wrap(self.call_com(lambda: self._com.addDurationConstraint(name))))
 
-    def add_duration_observation(self, name: str) -> "IRPUnit":
+    def add_duration_observation(self, name: str) -> IRPUnit:
         """Adds a duration observation to the collaboration.
 
         Args:
@@ -226,7 +228,7 @@ class IRPCollaboration(IRPUnit):
         """
         return cast("IRPUnit", self.wrap(self.call_com(lambda: self._com.addDurationObservation(name))))
 
-    def add_found_message(self, name: str) -> "IRPMessage":
+    def add_found_message(self, name: str) -> IRPMessage:
         """Adds a found message to the collaboration.
 
         Args:
@@ -240,7 +242,7 @@ class IRPCollaboration(IRPUnit):
         """
         return cast("IRPMessage", self.wrap(self.call_com(lambda: self._com.addFoundMessage(name))))
 
-    def add_interaction_occurrence(self, name: str) -> "IRPInteractionOccurrence":
+    def add_interaction_occurrence(self, name: str) -> IRPInteractionOccurrence:
         """Adds an interaction occurrence to the collaboration.
 
         Args:
@@ -254,7 +256,7 @@ class IRPCollaboration(IRPUnit):
         """
         return cast("IRPInteractionOccurrence", self.wrap(self.call_com(lambda: self._com.addInteractionOccurrence(name))))
 
-    def add_interaction_operator(self, name: str) -> "IRPInteractionOperator":
+    def add_interaction_operator(self, name: str) -> IRPInteractionOperator:
         """Adds an interaction operator to the collaboration.
 
         Args:
@@ -268,7 +270,7 @@ class IRPCollaboration(IRPUnit):
         """
         return cast("IRPInteractionOperator", self.wrap(self.call_com(lambda: self._com.addInteractionOperator(name))))
 
-    def add_lost_message(self, name: str) -> "IRPMessage":
+    def add_lost_message(self, name: str) -> IRPMessage:
         """Adds a lost message to the collaboration.
 
         Args:
@@ -282,7 +284,7 @@ class IRPCollaboration(IRPUnit):
         """
         return cast("IRPMessage", self.wrap(self.call_com(lambda: self._com.addLostMessage(name))))
 
-    def add_message(self, name: str) -> "IRPMessage":
+    def add_message(self, name: str) -> IRPMessage:
         """Adds a message to the collaboration.
 
         Args:
@@ -296,7 +298,7 @@ class IRPCollaboration(IRPUnit):
         """
         return cast("IRPMessage", self.wrap(self.call_com(lambda: self._com.addMessage(name))))
 
-    def add_reply_message(self, name: str) -> "IRPMessage":
+    def add_reply_message(self, name: str) -> IRPMessage:
         """Adds a reply message to the collaboration.
 
         Args:
@@ -310,7 +312,7 @@ class IRPCollaboration(IRPUnit):
         """
         return cast("IRPMessage", self.wrap(self.call_com(lambda: self._com.addReplyMessage(name))))
 
-    def add_state_invariant(self, name: str) -> "IRPUnit":
+    def add_state_invariant(self, name: str) -> IRPUnit:
         """Adds a state invariant to the collaboration.
 
         Args:
@@ -324,7 +326,7 @@ class IRPCollaboration(IRPUnit):
         """
         return cast("IRPUnit", self.wrap(self.call_com(lambda: self._com.addStateInvariant(name))))
 
-    def add_system_border(self, name: str) -> "IRPUnit":
+    def add_system_border(self, name: str) -> IRPUnit:
         """Adds a system border to the collaboration.
 
         Args:
@@ -338,7 +340,7 @@ class IRPCollaboration(IRPUnit):
         """
         return cast("IRPUnit", self.wrap(self.call_com(lambda: self._com.addSystemBorder(name))))
 
-    def add_time_constraint(self, name: str) -> "IRPUnit":
+    def add_time_constraint(self, name: str) -> IRPUnit:
         """Adds a time constraint to the collaboration.
 
         Args:
@@ -352,7 +354,7 @@ class IRPCollaboration(IRPUnit):
         """
         return cast("IRPUnit", self.wrap(self.call_com(lambda: self._com.addTimeConstraint(name))))
 
-    def add_time_interval(self, name: str) -> "IRPUnit":
+    def add_time_interval(self, name: str) -> IRPUnit:
         """Adds a time interval to the collaboration.
 
         Args:
@@ -366,7 +368,7 @@ class IRPCollaboration(IRPUnit):
         """
         return cast("IRPUnit", self.wrap(self.call_com(lambda: self._com.addTimeInterval(name))))
 
-    def add_time_observation(self, name: str) -> "IRPUnit":
+    def add_time_observation(self, name: str) -> IRPUnit:
         """Adds a time observation to the collaboration.
 
         Args:
@@ -380,7 +382,7 @@ class IRPCollaboration(IRPUnit):
         """
         return cast("IRPUnit", self.wrap(self.call_com(lambda: self._com.addTimeObservation(name))))
 
-    def add_timeout(self, name: str) -> "IRPUnit":
+    def add_timeout(self, name: str) -> IRPUnit:
         """Adds a timeout to the collaboration.
 
         Args:
@@ -402,29 +404,25 @@ class IRPCollaboration(IRPUnit):
         """
         self.call_com(lambda: self._com.generateSequence())
 
-    def get_activation_condition(self) -> str:
-        """Returns the activation condition of the collaboration.
-
-        Returns:
-            The activation condition string.
+    @property
+    def activation_condition(self) -> str:
+        """COM-backed ``activationCondition`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPCollaboration::getActivationCondition()
+            com.telelogic.rhapsody.core.IRPCollaboration::get_activation_condition()
         """
-        return str(self._get_method_or_property(self._com, "getActivationCondition", "activationCondition"))
+        return str(self.get_com_property(self._com, "activationCondition"))
 
-    def get_activation_mode(self) -> int:
-        """Returns the activation mode of the collaboration.
-
-        Returns:
-            The activation mode as an integer.
+    @property
+    def activation_mode(self) -> int:
+        """COM-backed ``activationMode`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPCollaboration::getActivationMode()
+            com.telelogic.rhapsody.core.IRPCollaboration::get_activation_mode()
         """
-        return int(self.call_com(lambda: self._com.getActivationMode()))
+        return int(self.get_com_property(self._com, "activationMode"))
 
-    def get_activator(self) -> "IRPUnit | None":
+    def get_activator(self) -> IRPUnit | None:
         """Returns the activator of the collaboration.
 
         Returns:
@@ -438,30 +436,23 @@ class IRPCollaboration(IRPUnit):
             return None
         return cast("IRPUnit", self.wrap(result))
 
-    def get_associations(self) -> "IRPCollection":
-        """Returns all associations in the collaboration.
-
-        Returns:
-            An ``IRPCollection`` of ``IRPAssociation`` objects.
+    @property
+    def associations(self) -> IRPCollection:
+        """COM-backed ``associations`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPCollaboration::getAssociations()
+            com.telelogic.rhapsody.core.IRPCollaboration::get_associations()
         """
-        return IRPCollection(self.call_com(lambda: self._com.getAssociations()))
+        return IRPCollection(self.get_com_property(self._com, "associations"))
 
-    def get_classifier(self) -> "IRPUnit | None":
-        """Returns the classifier of the collaboration.
-
-        Returns:
-            The wrapped ``IRPUnit`` classifier if set, ``None`` otherwise.
+    @property
+    def classifier(self) -> IRPUnit | None:
+        """COM-backed ``classifier`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPCollaboration::getClassifier()
+            com.telelogic.rhapsody.core.IRPCollaboration::get_classifier()
         """
-        result = self.call_com(lambda: self._com.getClassifier())
-        if result is None:
-            return None
-        return cast("IRPUnit", self.wrap(result))
+        return cast(IRPUnit, self.wrap(self.get_com_property(self._com, "classifier")))
 
     def get_concurrent_group(self) -> int:
         """Returns the concurrent group of the collaboration.
@@ -474,73 +465,61 @@ class IRPCollaboration(IRPUnit):
         """
         return int(self.call_com(lambda: self._com.getConcurrentGroup()))
 
-    def get_execution_occurrences(self) -> "IRPCollection":
-        """Returns all execution occurrences in the collaboration.
-
-        Returns:
-            An ``IRPCollection`` of ``IRPExecutionOccurrence`` objects.
+    @property
+    def execution_occurrences(self) -> IRPCollection:
+        """COM-backed ``executionOccurrences`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPCollaboration::getExecutionOccurrences()
+            com.telelogic.rhapsody.core.IRPCollaboration::get_execution_occurrences()
         """
-        return IRPCollection(self.call_com(lambda: self._com.getExecutionOccurrences()))
+        return IRPCollection(self.get_com_property(self._com, "executionOccurrences"))
 
-    def get_interaction_occurrences(self) -> "IRPCollection":
-        """Returns all interaction occurrences in the collaboration.
-
-        Returns:
-            An ``IRPCollection`` of ``IRPInteractionOccurrence`` objects.
+    @property
+    def interaction_occurrences(self) -> IRPCollection:
+        """COM-backed ``interactionOccurrences`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPCollaboration::getInteractionOccurrences()
+            com.telelogic.rhapsody.core.IRPCollaboration::get_interaction_occurrences()
         """
-        return IRPCollection(self.call_com(lambda: self._com.getInteractionOccurrences()))
+        return IRPCollection(self.get_com_property(self._com, "interactionOccurrences"))
 
-    def get_interaction_operators(self) -> "IRPCollection":
-        """Returns all interaction operators in the collaboration.
-
-        Returns:
-            An ``IRPCollection`` of ``IRPInteractionOperator`` objects.
+    @property
+    def interaction_operators(self) -> IRPCollection:
+        """COM-backed ``interactionOperators`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPCollaboration::getInteractionOperators()
+            com.telelogic.rhapsody.core.IRPCollaboration::get_interaction_operators()
         """
-        return IRPCollection(self.call_com(lambda: self._com.getInteractionOperators()))
+        return IRPCollection(self.get_com_property(self._com, "interactionOperators"))
 
-    def get_message_points(self) -> "IRPCollection":
-        """Returns all message points in the collaboration.
-
-        Returns:
-            An ``IRPCollection`` of ``IRPMessagePoint`` objects.
+    @property
+    def message_points(self) -> IRPCollection:
+        """COM-backed ``messagePoints`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPCollaboration::getMessagePoints()
+            com.telelogic.rhapsody.core.IRPCollaboration::get_message_points()
         """
-        return IRPCollection(self.call_com(lambda: self._com.getMessagePoints()))
+        return IRPCollection(self.get_com_property(self._com, "messagePoints"))
 
-    def get_messages(self) -> "IRPCollection":
-        """Returns all messages in the collaboration.
-
-        Returns:
-            An ``IRPCollection`` of ``IRPMessage`` objects.
+    @property
+    def messages(self) -> IRPCollection:
+        """COM-backed ``messages`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPCollaboration::getMessages()
+            com.telelogic.rhapsody.core.IRPCollaboration::get_messages()
         """
-        return IRPCollection(self.call_com(lambda: self._com.getMessages()))
+        return IRPCollection(self.get_com_property(self._com, "messages"))
 
-    def get_mode(self) -> int:
-        """Returns the mode of the collaboration.
-
-        Returns:
-            The mode as an integer.
+    @property
+    def mode(self) -> int:
+        """COM-backed ``mode`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPCollaboration::getMode()
+            com.telelogic.rhapsody.core.IRPCollaboration::get_mode()
         """
-        return int(self.call_com(lambda: self._com.getMode()))
+        return int(self.get_com_property(self._com, "mode"))
 
-    def get_predecessor(self) -> "IRPUnit | None":
+    def get_predecessor(self) -> IRPUnit | None:
         """Returns the predecessor of the collaboration.
 
         Returns:
@@ -554,7 +533,7 @@ class IRPCollaboration(IRPUnit):
             return None
         return cast("IRPUnit", self.wrap(result))
 
-    def get_successor(self) -> "IRPUnit | None":
+    def get_successor(self) -> IRPUnit | None:
         """Returns the successor of the collaboration.
 
         Returns:

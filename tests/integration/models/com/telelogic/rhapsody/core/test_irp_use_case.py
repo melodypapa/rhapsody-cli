@@ -20,7 +20,7 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_use_case import IRPUseC
 
 
 @pytest.mark.integration
-class TestRPUseCaseIntegration:
+class TestIRPUseCaseIntegration:
     """Integration tests for IRPUseCase with real Rhapsody COM API."""
 
     @staticmethod
@@ -46,7 +46,7 @@ class TestRPUseCaseIntegration:
             uc.delete_extension_point(ep_name)
             assert ep_name not in [str(e) for e in uc.extension_points]
         finally:
-            uc.delete_from_project()
+            pkg.delete_from_project()
 
     def test_set_is_behavior_overriden_raises_not_implemented(self, test_project: IRPProject) -> None:
         # setIsBehaviorOverriden is not exposed in the COM automation type library for UseCase
@@ -61,7 +61,7 @@ class TestRPUseCaseIntegration:
             with pytest.raises(NotImplementedError, match="setIsBehaviorOverriden is not exposed"):
                 uc.set_is_behavior_overriden(1)
         finally:
-            uc.delete_from_project()
+            pkg.delete_from_project()
 
 
 @pytest.mark.integration
@@ -106,42 +106,20 @@ class TestIRPUseCaseGenerated:
         finally:
             pkg.delete_from_project()
 
-    def test_add_extension_point(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("UsePkg"))
-        use_case = pkg.add_use_case(self._unique("UC"))
+    def test_describing_diagram_add_get_delete(self, test_project: IRPProject) -> None:
+        pkg = test_project.add_package(self._unique("DescDiagPkg"))
         try:
-            extension_point_name = self._unique("ExtensionPoint")
-            assert use_case.add_extension_point(extension_point_name) is None  # type: ignore[func-returns-value]
-        finally:
-            pkg.delete_from_project()
+            use_case = pkg.add_use_case(self._unique("DescDiagUC"))
+            diagram = pkg.add_use_case_diagram(self._unique("DescribedDiagram"))
 
-    def test_extension_points(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("UsePkg"))
-        use_case = pkg.add_use_case(self._unique("UC"))
-        extension_point_name = self._unique("ExtensionPoint")
-        try:
-            use_case.add_extension_point(extension_point_name)
-            assert extension_point_name in [str(point) for point in use_case.extension_points]
-        finally:
-            pkg.delete_from_project()
-
-    def test_describing_diagrams(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("UsePkg"))
-        use_case = pkg.add_use_case(self._unique("UC"))
-        try:
-            diagram = pkg.add_use_case_diagram(self._unique("UseCaseDiagram"))
-            use_case.add_describing_diagram(diagram)
-            assert diagram in list(use_case.describing_diagrams)
-        finally:
-            pkg.delete_from_project()
-
-    def test_add_describing_diagram(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("UsePkg"))
-        use_case = pkg.add_use_case(self._unique("UC"))
-        try:
-            diagram = pkg.add_object_model_diagram(self._unique("DescDiagram"))
-            assert diagram is not None
             assert use_case.add_describing_diagram(diagram) is None  # type: ignore[func-returns-value]
+            found = use_case.get_describing_diagram(diagram.name)
+            assert found is not None
+            assert found == diagram
+            assert diagram in list(use_case.describing_diagrams)
+
+            assert use_case.delete_describing_diagram(diagram) is None  # type: ignore[func-returns-value]
+            assert diagram not in list(use_case.describing_diagrams)
         finally:
             pkg.delete_from_project()
 
@@ -161,17 +139,6 @@ class TestIRPUseCaseGenerated:
         finally:
             pkg.delete_from_project()
 
-    def test_delete_describing_diagram(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("UsePkg"))
-        use_case = pkg.add_use_case(self._unique("UC"))
-        try:
-            diagram = pkg.add_object_model_diagram(self._unique("DelDiagram"))
-            assert diagram is not None
-            assert use_case.add_describing_diagram(diagram) is None  # type: ignore[func-returns-value]
-            assert use_case.delete_describing_diagram(diagram) is None  # type: ignore[func-returns-value]
-        finally:
-            pkg.delete_from_project()
-
     def test_delete_entry_point(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("UsePkg"))
         use_case = pkg.add_use_case(self._unique("UC"))
@@ -187,24 +154,6 @@ class TestIRPUseCaseGenerated:
         try:
             missing_extension_point = self._unique("MissingExtensionPoint")
             assert use_case.delete_extension_point(missing_extension_point) is None  # type: ignore[func-returns-value]
-        finally:
-            pkg.delete_from_project()
-
-    def test_get_describing_diagram(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("UsePkg"))
-        use_case = pkg.add_use_case(self._unique("UC"))
-        try:
-            missing_diagram = self._unique("MissingDiagram")
-            assert use_case.get_describing_diagram(missing_diagram) is None
-        finally:
-            pkg.delete_from_project()
-
-    def test_set_is_behavior_overriden(self, test_project: IRPProject) -> None:
-        pkg = test_project.add_package(self._unique("UsePkg"))
-        use_case = pkg.add_use_case(self._unique("UC"))
-        try:
-            with pytest.raises(NotImplementedError):
-                use_case.set_is_behavior_overriden(1)
         finally:
             pkg.delete_from_project()
 

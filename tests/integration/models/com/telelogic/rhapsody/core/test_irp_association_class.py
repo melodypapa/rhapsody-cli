@@ -14,7 +14,7 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRela
 
 
 @pytest.mark.integration
-class TestRPAssociationClassIntegration:
+class TestIRPAssociationClassIntegration:
     """Integration tests for IRPAssociationClass with real Rhapsody COM API."""
 
     @staticmethod

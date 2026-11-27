@@ -1,4 +1,4 @@
-"""Integration tests for IRP_operation with live Rhapsody COM API."""
+"""Integration tests for IRPOperation with live Rhapsody COM API."""
 
 import uuid
 
@@ -9,7 +9,7 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProje
 
 
 @pytest.mark.integration
-class TestRPOperationIntegration:
+class TestIRPOperationIntegration:
     """Integration tests for IRPOperation with live Rhapsody COM API."""
 
     @staticmethod

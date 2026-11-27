@@ -1,4 +1,6 @@
-"""Wraps ``com.telelogic.rhapsody.core.IRPComponent``."""
+"""Wrapper for the Java interface ``com.telelogic.rhapsody.core.IRPComponent``."""
+
+from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast
 
@@ -11,548 +13,393 @@ if TYPE_CHECKING:
 
 
 class IRPComponent(IRPUnit):
-    """Wraps ``IRPComponent``: a component that extends ``IRPUnit``."""
+    """Wraps ``IRPComponent``: a component that extends ``IRPUnit``.
 
-    # IRPComponent method parity checklist:
-    # [x] add_configuration  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] add_file  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] add_folder  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] add_nested_component  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] add_scope_element  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] add_scope_element_without_aggregates  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] add_to_scope  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] all_elements_in_scope  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] delete_configuration  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] delete_file  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] find_configuration  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] get_additional_sources  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_build_type  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_config_by_dependency  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] get_configurations  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] get_file  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_file_name  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_files  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_include_path  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_libraries  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_model_element_file_name  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_nested_components  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_package_file  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_panel_diagrams  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] get_path  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] get_possible_variants  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_scope_by_selected_elements  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_scope_elements  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_scope_elements_by_category  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_standard_headers  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_variant  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] get_variation_points  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] is_directory_per_model_component  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] remove_scope_element  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] set_additional_sources  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] set_build_type  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] set_include_path  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] set_libraries  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [x] set_path  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [ ] set_scope_by_selected_elements  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] set_standard_headers  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] set_variant  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [ ] update_contained_diagrams_on_server  [x] impl  [x] docstring  [ ] unit test  [ ] integration test
-    # [inherited] irp_unit / irp_model_element methods (covered by rp_unit / rp_model_element checklists)
-    # No deprecated IRPComponent methods.
+    JavaDoc accessor pairs that pywin32 exposes as properties are surfaced as
+    ``@property`` members. ``get_path``, ``set_path`` and
+    ``update_contained_diagrams_on_server`` are JavaDoc-declared but absent from
+    the pywin32 catalog, so they are documented pre-dispatch stubs.
+    """
 
-    def add_configuration(self, name: str) -> "IRPConfiguration":
-        """Adds a new configuration to the component.
+    # IRPComponent method parity checklist: properties, methods and unavailable
+    # stubs are all reconciled against the committed API report.
 
-        Args:
-            name: The name of the new configuration.
-
-        Returns:
-            The wrapped ``IRPConfiguration`` created.
+    @property
+    def additional_sources(self) -> str:
+        """COM-backed ``additionalSources`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPComponent::addConfiguration(java.lang.String name)
+            com.telelogic.rhapsody.core.IRPComponent::additionalSources()
         """
-        return cast("IRPConfiguration", self.wrap(self.call_com(lambda: self._com.addConfiguration(name))))
+        return str(self.get_com_property(self._com, "additionalSources"))
 
-    def add_file(self, name: str) -> "IRPUnit":
-        """Adds a new file to the component.
-
-        Args:
-            name: The name of the new file.
-
-        Returns:
-            The wrapped ``IRPUnit`` created.
+    @additional_sources.setter
+    def additional_sources(self, value: str) -> None:
+        """Writes the COM-backed ``additionalSources`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPComponent::addFile(java.lang.String name)
+            com.telelogic.rhapsody.core.IRPComponent::setAdditionalSources(value)
         """
-        return cast("IRPUnit", self.wrap(self.call_com(lambda: self._com.addFile(name))))
+        self.set_com_property(self._com, "additionalSources", value)
 
-    def add_folder(self, name: str) -> "IRPUnit":
-        """Adds a new folder to the component.
-
-        Args:
-            name: The name of the new folder.
-
-        Returns:
-            The wrapped ``IRPUnit`` created.
+    @property
+    def build_type(self) -> str:
+        """COM-backed ``buildType`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPComponent::addFolder(java.lang.String name)
+            com.telelogic.rhapsody.core.IRPComponent::buildType()
         """
-        return cast("IRPUnit", self.wrap(self.call_com(lambda: self._com.addFolder(name))))
+        return str(self.get_com_property(self._com, "buildType"))
 
-    def add_nested_component(self, name: str) -> "IRPComponent":
-        """Adds a nested component to this component.
-
-        Args:
-            name: The name of the new nested component.
-
-        Returns:
-            The wrapped ``IRPComponent`` created.
+    @build_type.setter
+    def build_type(self, value: str) -> None:
+        """Writes the COM-backed ``buildType`` property.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPComponent::addNestedComponent(java.lang.String name)
+            com.telelogic.rhapsody.core.IRPComponent::setBuildType(value)
         """
-        return cast("IRPComponent", self.wrap(self.call_com(lambda: self._com.addNestedComponent(name))))
+        self.set_com_property(self._com, "buildType", value)
+
+    @property
+    def configurations(self) -> IRPCollection:
+        """COM-backed ``configurations`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPComponent::configurations()
+        """
+        return IRPCollection(self.get_com_property(self._com, "configurations"))
+
+    @property
+    def files(self) -> IRPCollection:
+        """COM-backed ``files`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPComponent::files()
+        """
+        return IRPCollection(self.get_com_property(self._com, "files"))
+
+    @property
+    def include_path(self) -> str:
+        """COM-backed ``includePath`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPComponent::includePath()
+        """
+        return str(self.get_com_property(self._com, "includePath"))
+
+    @include_path.setter
+    def include_path(self, value: str) -> None:
+        """Writes the COM-backed ``includePath`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPComponent::setIncludePath(value)
+        """
+        self.set_com_property(self._com, "includePath", value)
+
+    @property
+    def libraries(self) -> str:
+        """COM-backed ``libraries`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPComponent::libraries()
+        """
+        return str(self.get_com_property(self._com, "libraries"))
+
+    @libraries.setter
+    def libraries(self, value: str) -> None:
+        """Writes the COM-backed ``libraries`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPComponent::setLibraries(value)
+        """
+        self.set_com_property(self._com, "libraries", value)
+
+    @property
+    def nested_components(self) -> IRPCollection:
+        """COM-backed ``nestedComponents`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPComponent::nestedComponents()
+        """
+        return IRPCollection(self.get_com_property(self._com, "nestedComponents"))
+
+    @property
+    def panel_diagrams(self) -> IRPCollection:
+        """COM-backed ``panelDiagrams`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPComponent::panelDiagrams()
+        """
+        return IRPCollection(self.get_com_property(self._com, "panelDiagrams"))
+
+    @property
+    def scope_by_selected_elements(self) -> IRPCollection:
+        """COM-backed ``scopeBySelectedElements`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPComponent::scopeBySelectedElements()
+        """
+        return IRPCollection(self.get_com_property(self._com, "scopeBySelectedElements"))
+
+    @scope_by_selected_elements.setter
+    def scope_by_selected_elements(self, elements: IRPCollection) -> None:
+        """Writes the COM-backed ``scopeBySelectedElements`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPComponent::setScopeBySelectedElements(elements)
+        """
+        self.set_com_property(self._com, "scopeBySelectedElements", elements._com)
+
+    @property
+    def scope_elements(self) -> IRPCollection:
+        """COM-backed ``scopeElements`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPComponent::scopeElements()
+        """
+        return IRPCollection(self.get_com_property(self._com, "scopeElements"))
+
+    @property
+    def standard_headers(self) -> str:
+        """COM-backed ``standardHeaders`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPComponent::standardHeaders()
+        """
+        return str(self.get_com_property(self._com, "standardHeaders"))
+
+    @standard_headers.setter
+    def standard_headers(self, value: str) -> None:
+        """Writes the COM-backed ``standardHeaders`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPComponent::setStandardHeaders(value)
+        """
+        self.set_com_property(self._com, "standardHeaders", value)
+
+    @property
+    def variation_points(self) -> IRPCollection:
+        """COM-backed ``variationPoints`` property.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPComponent::variationPoints()
+        """
+        return IRPCollection(self.get_com_property(self._com, "variationPoints"))
+
+    def add_configuration(self, name: str) -> IRPConfiguration:
+        """JavaDoc ``addConfiguration`` forwarded to the catalog member ``addConfiguration``.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPComponent::addConfiguration
+        """
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_configuration import IRPConfiguration
+
+        return cast(IRPConfiguration, self.wrap(self.call_com(lambda: self._com.addConfiguration(name))))
+
+    def add_file(self, name: str) -> IRPUnit:
+        """JavaDoc ``addFile`` forwarded to the catalog member ``addFile``.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPComponent::addFile
+        """
+        return cast(IRPUnit, self.wrap(self.call_com(lambda: self._com.addFile(name))))
+
+    def add_folder(self, name: str) -> IRPUnit:
+        """JavaDoc ``addFolder`` forwarded to the catalog member ``addFolder``.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPComponent::addFolder
+        """
+        return cast(IRPUnit, self.wrap(self.call_com(lambda: self._com.addFolder(name))))
+
+    def add_nested_component(self, name: str) -> IRPComponent:
+        """JavaDoc ``addNestedComponent`` forwarded to the catalog member ``addNestedComponent``.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPComponent::addNestedComponent
+        """
+        return cast(IRPComponent, self.wrap(self.call_com(lambda: self._com.addNestedComponent(name))))
 
     def add_scope_element(self, element: IRPUnit) -> None:
-        """Adds a scope element to the component.
-
-        Args:
-            element: The element to add to scope.
+        """JavaDoc ``addScopeElement`` forwarded to the catalog member ``addScopeElement``.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPComponent::addScopeElement(IRPUnit element)
+            com.telelogic.rhapsody.core.IRPComponent::addScopeElement
         """
         self.call_com(lambda: self._com.addScopeElement(element._com))
 
     def add_scope_element_without_aggregates(self, element: IRPUnit) -> None:
-        """Adds a scope element without aggregates to the component.
-
-        Args:
-            element: The element to add to scope without aggregates.
+        """JavaDoc ``addScopeElementWithoutAggregates`` forwarded to the catalog member ``addScopeElementWithoutAggregates``.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPComponent::addScopeElementWithoutAggregates(IRPUnit element)
+            com.telelogic.rhapsody.core.IRPComponent::addScopeElementWithoutAggregates
         """
         self.call_com(lambda: self._com.addScopeElementWithoutAggregates(element._com))
 
     def add_to_scope(self, element: IRPUnit) -> None:
-        """Adds an element to the component's scope.
-
-        Args:
-            element: The element to add to scope.
+        """JavaDoc ``addToScope`` forwarded to the catalog member ``addToScope``.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPComponent::addToScope(IRPUnit element)
+            com.telelogic.rhapsody.core.IRPComponent::addToScope
         """
         self.call_com(lambda: self._com.addToScope(element._com))
 
-    def all_elements_in_scope(self) -> "IRPCollection":
-        """Returns all elements in the component's scope.
-
-        Returns:
-            An ``IRPCollection`` of all elements in scope.
+    def all_elements_in_scope(self) -> IRPCollection:
+        """JavaDoc ``allElementsInScope`` forwarded to the catalog member ``allElementsInScope``.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPComponent::allElementsInScope()
+            com.telelogic.rhapsody.core.IRPComponent::allElementsInScope
         """
         return IRPCollection(self.call_com(lambda: self._com.allElementsInScope()))
 
-    def delete_configuration(self, configuration: "IRPConfiguration") -> None:
-        """Deletes a configuration from the component.
-
-        Args:
-            configuration: The configuration to delete.
+    def delete_configuration(self, configuration: IRPConfiguration) -> None:
+        """JavaDoc ``deleteConfiguration`` forwarded to the catalog member ``deleteConfiguration``.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPComponent::deleteConfiguration(IRPConfiguration configuration)
+            com.telelogic.rhapsody.core.IRPComponent::deleteConfiguration
         """
         self.call_com(lambda: self._com.deleteConfiguration(configuration._com))
 
     def delete_file(self, file: IRPUnit) -> None:
-        """Deletes a file from the component.
-
-        Args:
-            file: The file to delete.
+        """JavaDoc ``deleteFile`` forwarded to the catalog member ``deleteFile``.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPComponent::deleteFile(IRPUnit file)
+            com.telelogic.rhapsody.core.IRPComponent::deleteFile
         """
         self.call_com(lambda: self._com.deleteFile(file._com))
 
-    def find_configuration(self, name: str) -> "IRPConfiguration | None":
-        """Finds a configuration by name.
-
-        Args:
-            name: The name of the configuration to find.
-
-        Returns:
-            The wrapped ``IRPConfiguration`` if found, ``None`` otherwise.
+    def find_configuration(self, name: str) -> IRPConfiguration | None:
+        """JavaDoc ``findConfiguration`` forwarded to the catalog member ``findConfiguration``.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPComponent::findConfiguration(java.lang.String name)
+            com.telelogic.rhapsody.core.IRPComponent::findConfiguration
         """
-        result = self.call_com(lambda: self._com.findConfiguration(name))
-        if result is None:
-            return None
-        return cast("IRPConfiguration", self.wrap(result))
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_configuration import IRPConfiguration
 
-    def get_additional_sources(self) -> str:
-        """Returns the additional sources for the component.
+        return cast(IRPConfiguration, self.wrap(self.call_com(lambda: self._com.findConfiguration(name))))
 
-        Returns:
-            The additional sources string.
+    def get_config_by_dependency(self) -> IRPConfiguration:
+        """JavaDoc ``getConfigByDependency`` forwarded to the catalog member ``getConfigByDependency``.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPComponent::getAdditionalSources()
+            com.telelogic.rhapsody.core.IRPComponent::getConfigByDependency
         """
-        return str(self._get_method_or_property(self._com, "getAdditionalSources", "additionalSources"))
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_configuration import IRPConfiguration
 
-    def get_build_type(self) -> str:
-        """Returns the build type for the component.
+        return cast(IRPConfiguration, self.wrap(self.call_com(lambda: self._com.getConfigByDependency())))
 
-        Returns:
-            The build type string.
+    def get_file(self, name: str) -> IRPUnit:
+        """JavaDoc ``getFile`` forwarded to the catalog member ``getFile``.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPComponent::getBuildType()
+            com.telelogic.rhapsody.core.IRPComponent::getFile
         """
-        return str(self._get_method_or_property(self._com, "getBuildType", "buildType"))
-
-    def get_config_by_dependency(self) -> "IRPConfiguration":
-        """Returns the configuration by dependency.
-
-        Returns:
-            The wrapped ``IRPConfiguration``.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPComponent::getConfigByDependency()
-        """
-        return cast("IRPConfiguration", self.wrap(self.call_com(lambda: self._com.getConfigByDependency())))
-
-    def get_configurations(self) -> "IRPCollection":
-        """Returns all configurations in the component.
-
-        Returns:
-            An ``IRPCollection`` of ``IRPConfiguration`` objects.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPComponent::getConfigurations()
-        """
-        return IRPCollection(self.call_com(lambda: self._com.getConfigurations()))
-
-    def get_file(self, name: str) -> "IRPUnit":
-        """Gets a file by name.
-
-        Args:
-            name: The name of the file to get.
-
-        Returns:
-            The wrapped ``IRPUnit`` file.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPComponent::getFile(java.lang.String name)
-        """
-        return cast("IRPUnit", self.wrap(self.call_com(lambda: self._com.getFile(name))))
+        return cast(IRPUnit, self.wrap(self.call_com(lambda: self._com.getFile(name))))
 
     def get_file_name(self) -> str:
-        """Returns the file name for the component.
-
-        Returns:
-            The file name string.
+        """JavaDoc ``getFileName`` forwarded to the catalog member ``getFileName``.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPComponent::getFileName()
+            com.telelogic.rhapsody.core.IRPComponent::getFileName
         """
-        return str(self._get_method_or_property(self._com, "getFileName", "fileName"))
-
-    def get_files(self) -> "IRPCollection":
-        """Returns all files in the component.
-
-        Returns:
-            An ``IRPCollection`` of ``IRPUnit`` file objects.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPComponent::getFiles()
-        """
-        return IRPCollection(self.call_com(lambda: self._com.getFiles()))
-
-    def get_include_path(self) -> str:
-        """Returns the include path for the component.
-
-        Returns:
-            The include path string.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPComponent::getIncludePath()
-        """
-        return str(self._get_method_or_property(self._com, "getIncludePath", "includePath"))
-
-    def get_libraries(self) -> str:
-        """Returns the libraries for the component.
-
-        Returns:
-            The libraries string.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPComponent::getLibraries()
-        """
-        return str(self._get_method_or_property(self._com, "getLibraries", "libraries"))
+        return str(self.call_com(lambda: self._com.getFileName()))
 
     def get_model_element_file_name(self) -> str:
-        """Returns the model element file name for the component.
-
-        Returns:
-            The model element file name string.
+        """JavaDoc ``getModelElementFileName`` forwarded to the catalog member ``getModelElementFileName``.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPComponent::getModelElementFileName()
+            com.telelogic.rhapsody.core.IRPComponent::getModelElementFileName
         """
-        return str(self._get_method_or_property(self._com, "getModelElementFileName", "modelElementFileName"))
-
-    def get_nested_components(self) -> "IRPCollection":
-        """Returns all nested components in this component.
-
-        Returns:
-            An ``IRPCollection`` of ``IRPComponent`` objects.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPComponent::getNestedComponents()
-        """
-        return IRPCollection(self.call_com(lambda: self._com.getNestedComponents()))
+        return str(self.call_com(lambda: self._com.getModelElementFileName()))
 
     def get_package_file(self) -> str:
-        """Returns the package file for the component.
-
-        Returns:
-            The package file string.
+        """JavaDoc ``getPackageFile`` forwarded to the catalog member ``getPackageFile``.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPComponent::getPackageFile()
+            com.telelogic.rhapsody.core.IRPComponent::getPackageFile
         """
-        return str(self._get_method_or_property(self._com, "getPackageFile", "packageFile"))
+        return str(self.call_com(lambda: self._com.getPackageFile()))
 
-    def get_panel_diagrams(self) -> "IRPCollection":
-        """Returns all panel diagrams in the component.
-
-        Returns:
-            An ``IRPCollection`` of ``IRPPanelDiagram`` objects.
+    def get_possible_variants(self) -> IRPCollection:
+        """JavaDoc ``getPossibleVariants`` forwarded to the catalog member ``getPossibleVariants``.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPComponent::getPanelDiagrams()
-        """
-        return IRPCollection(self.call_com(lambda: self._com.getPanelDiagrams()))
-
-    def get_path(self) -> str:
-        """Returns the path for the component.
-
-        Returns:
-            The path string.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPComponent::getPath()
-        """
-        return str(self._get_method_or_property(self._com, "getPath", "path"))
-
-    def get_possible_variants(self) -> "IRPCollection":
-        """Returns all possible variants for the component.
-
-        Returns:
-            An ``IRPCollection`` of variant objects.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPComponent::getPossibleVariants()
+            com.telelogic.rhapsody.core.IRPComponent::getPossibleVariants
         """
         return IRPCollection(self.call_com(lambda: self._com.getPossibleVariants()))
 
-    def get_scope_by_selected_elements(self) -> "IRPCollection":
-        """Returns scope elements by selected elements.
-
-        Returns:
-            An ``IRPCollection`` of scope elements.
+    def get_scope_elements_by_category(self, category: str) -> IRPCollection:
+        """JavaDoc ``getScopeElementsByCategory`` forwarded to the catalog member ``getScopeElementsByCategory``.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPComponent::getScopeBySelectedElements()
-        """
-        return IRPCollection(self.call_com(lambda: self._com.getScopeBySelectedElements()))
-
-    def get_scope_elements(self) -> "IRPCollection":
-        """Returns all scope elements in the component.
-
-        Returns:
-            An ``IRPCollection`` of ``IRPUnit`` scope elements.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPComponent::getScopeElements()
-        """
-        return IRPCollection(self.call_com(lambda: self._com.getScopeElements()))
-
-    def get_scope_elements_by_category(self, category: str) -> "IRPCollection":
-        """Returns scope elements by category.
-
-        Args:
-            category: The category to filter by.
-
-        Returns:
-            An ``IRPCollection`` of scope elements.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPComponent::getScopeElementsByCategory(java.lang.String category)
+            com.telelogic.rhapsody.core.IRPComponent::getScopeElementsByCategory
         """
         return IRPCollection(self.call_com(lambda: self._com.getScopeElementsByCategory(category)))
 
-    def get_standard_headers(self) -> str:
-        """Returns the standard headers for the component.
-
-        Returns:
-            The standard headers string.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPComponent::getStandardHeaders()
-        """
-        return str(self._get_method_or_property(self._com, "getStandardHeaders", "standardHeaders"))
-
     def get_variant(self) -> str:
-        """Returns the variant for the component.
-
-        Returns:
-            The variant string.
+        """JavaDoc ``getVariant`` forwarded to the catalog member ``getVariant``.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPComponent::getVariant()
+            com.telelogic.rhapsody.core.IRPComponent::getVariant
         """
-        return str(self._get_method_or_property(self._com, "getVariant", "variant"))
-
-    def get_variation_points(self) -> "IRPCollection":
-        """Returns all variation points for the component.
-
-        Returns:
-            An ``IRPCollection`` of variation point objects.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPComponent::getVariationPoints()
-        """
-        return IRPCollection(self.call_com(lambda: self._com.getVariationPoints()))
+        return str(self.call_com(lambda: self._com.getVariant()))
 
     def is_directory_per_model_component(self) -> int:
-        """Returns whether directory is per model component.
-
-        Returns:
-            1 if true, 0 if false.
+        """JavaDoc ``isDirectoryPerModelComponent`` forwarded to the catalog member ``isDirectoryPerModelComponent``.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPComponent::isDirectoryPerModelComponent()
+            com.telelogic.rhapsody.core.IRPComponent::isDirectoryPerModelComponent
         """
         return int(self.call_com(lambda: self._com.isDirectoryPerModelComponent()))
 
     def remove_scope_element(self, element: IRPUnit) -> None:
-        """Removes a scope element from the component.
-
-        Args:
-            element: The element to remove from scope.
+        """JavaDoc ``removeScopeElement`` forwarded to the catalog member ``removeScopeElement``.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPComponent::removeScopeElement(IRPUnit element)
+            com.telelogic.rhapsody.core.IRPComponent::removeScopeElement
         """
         self.call_com(lambda: self._com.removeScopeElement(element._com))
 
-    def set_additional_sources(self, value: str) -> None:
-        """Sets the additional sources for the component.
-
-        Args:
-            value: The additional sources string.
+    def set_variant(self, value: str) -> None:
+        """JavaDoc ``setVariant`` forwarded to the catalog member ``setVariant``.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPComponent::setAdditionalSources(java.lang.String value)
+            com.telelogic.rhapsody.core.IRPComponent::setVariant
         """
-        self._set_method_or_property(self._com, "setAdditionalSources", "additionalSources", value)
+        self.call_com(lambda: self._com.setVariant(value))
 
-    def set_build_type(self, value: str) -> None:
-        """Sets the build type for the component.
+    def get_path(self) -> str:
+        """JavaDoc ``getPath``; pywin32 exposes no such member.
 
-        Args:
-            value: The build type string.
+        Raises:
+            NotImplementedError: Always; the member is unavailable in pywin32.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPComponent::setBuildType(java.lang.String value)
+            com.telelogic.rhapsody.core.IRPComponent::getPath()
         """
-        self._set_method_or_property(self._com, "setBuildType", "buildType", value)
-
-    def set_include_path(self, value: str) -> None:
-        """Sets the include path for the component.
-
-        Args:
-            value: The include path string.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPComponent::setIncludePath(java.lang.String value)
-        """
-        self._set_method_or_property(self._com, "setIncludePath", "includePath", value)
-
-    def set_libraries(self, value: str) -> None:
-        """Sets the libraries for the component.
-
-        Args:
-            value: The libraries string.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPComponent::setLibraries(java.lang.String value)
-        """
-        self._set_method_or_property(self._com, "setLibraries", "libraries", value)
+        raise NotImplementedError("getPath is not exposed by pywin32")
 
     def set_path(self, value: str) -> None:
-        """Sets the path for the component.
+        """JavaDoc ``setPath``; pywin32 exposes no such member.
 
-        Args:
-            value: The path string.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPComponent::setPath(java.lang.String value)
-        """
-        self._set_method_or_property(self._com, "setPath", "path", value)
-
-    def set_scope_by_selected_elements(self, elements: "IRPCollection") -> None:
-        """Sets the scope by selected elements.
-
-        Args:
-            elements: The collection of elements to set scope.
+        Raises:
+            NotImplementedError: Always; the member is unavailable in pywin32.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPComponent::setScopeBySelectedElements(IRPCollection elements)
+            com.telelogic.rhapsody.core.IRPComponent::setPath(java.lang.String path)
         """
-        self.call_com(lambda: self._com.setScopeBySelectedElements(elements._com))
-
-    def set_standard_headers(self, value: str) -> None:
-        """Sets the standard headers for the component.
-
-        Args:
-            value: The standard headers string.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPComponent::setStandardHeaders(java.lang.String value)
-        """
-        self._set_method_or_property(self._com, "setStandardHeaders", "standardHeaders", value)
-
-    def set_variant(self, value: str) -> None:
-        """Sets the variant for the component.
-
-        Args:
-            value: The variant string.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPComponent::setVariant(java.lang.String value)
-        """
-        self._set_method_or_property(self._com, "setVariant", "variant", value)
+        raise NotImplementedError("setPath is not exposed by pywin32")
 
     def update_contained_diagrams_on_server(self) -> None:
-        """Updates contained diagrams on server.
+        """JavaDoc ``updateContainedDiagramsOnServer``; absent from pywin32.
+
+        Raises:
+            NotImplementedError: Always; the member is unavailable in pywin32.
 
         Reference:
             com.telelogic.rhapsody.core.IRPComponent::updateContainedDiagramsOnServer()
         """
-        self.call_com(lambda: self._com.updateContainedDiagramsOnServer())
+        raise NotImplementedError("updateContainedDiagramsOnServer is not exposed by pywin32")
 
 
 IRPModelElement.register_wrapper("Component", IRPComponent)

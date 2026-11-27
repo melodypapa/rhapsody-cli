@@ -1,4 +1,6 @@
-"""Wraps ``com.telelogic.rhapsody.core.IRPComponentInstance``."""
+"""Wrapper for the Java interface ``com.telelogic.rhapsody.core.IRPComponentInstance``."""
+
+from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast
 
@@ -11,47 +13,47 @@ if TYPE_CHECKING:
 
 
 class IRPComponentInstance(IRPInstance):
-    """Wraps ``IRPComponentInstance``: a component instance that extends ``IRPInstance``."""
+    """Wraps ``IRPComponentInstance``: a component instance extending ``IRPInstance``.
+
+    The JavaDoc accessors are exposed by pywin32 as read/write ``componentType``
+    and read-only ``node`` properties.
+    """
 
     # IRPComponentInstance method parity checklist:
-    # [x] get_component_type  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_node  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_component_type  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [inherited] irp_instance / irp_relation / irp_unit / irp_model_element methods (covered by rp_instance / rp_relation / rp_unit / rp_model_element checklists)
-    # No deprecated IRPComponentInstance methods.
+    # [x] component_type               [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] node                         [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [inherited] irp_instance / irp_relation / irp_unit / irp_model_element methods
 
-    def get_component_type(self) -> "IRPComponent":
+    @property
+    def component_type(self) -> IRPComponent | None:
         """Returns the component type of this instance.
-
-        Returns:
-            The wrapped ``IRPComponent`` type.
 
         Reference:
             com.telelogic.rhapsody.core.IRPComponentInstance::getComponentType()
         """
-        return cast("IRPComponent", self.wrap(self.call_com(lambda: self._com.getComponentType())))
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_component import IRPComponent
 
-    def get_node(self) -> "IRPNode":
-        """Returns the node containing this component instance.
+        return cast(IRPComponent, self.wrap(self.get_com_property(self._com, "componentType")))
 
-        Returns:
-            The wrapped ``IRPNode``.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPComponentInstance::getNode()
-        """
-        return cast("IRPNode", self.wrap(self.call_com(lambda: self._com.getNode())))
-
-    def set_component_type(self, component: "IRPComponent") -> None:
-        """Sets the component type for this instance.
-
-        Args:
-            component: The component to set as type.
+    @component_type.setter
+    def component_type(self, component: IRPComponent) -> None:
+        """Sets the component type of this instance.
 
         Reference:
             com.telelogic.rhapsody.core.IRPComponentInstance::setComponentType(IRPComponent component)
         """
-        self.call_com(lambda: self._com.setComponentType(component._com))
+        self.set_com_property(self._com, "componentType", component._com)
+
+    @property
+    def node(self) -> IRPNode | None:
+        """Returns the node containing this component instance.
+
+        Reference:
+            com.telelogic.rhapsody.core.IRPComponentInstance::getNode()
+        """
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_node import IRPNode
+
+        return cast(IRPNode, self.wrap(self.get_com_property(self._com, "node")))
 
 
 IRPModelElement.register_wrapper("ComponentInstance", IRPComponentInstance)

@@ -153,37 +153,37 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 
 ## IRPPackage
 
-| Java getter / Python member | Integration test | Assertion | Status | Real parent and expected child/value | JavaDoc-verified setup and relationship | Expected returned identity/value | Cleanup |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `actors` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_actors` | identity/value | OK | Fresh test package → created actor | `IRPPackage.addActor(name)` creates and attaches an actor. | `package.actors` contains that created actor. | Delete the test package. |
-| `behavioral_diagrams` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_behavioral_diagrams` | identity/value | OK | Fresh test package → created activity diagram | `IRPPackage.addActivityDiagram()` creates and attaches a behavioral diagram. | `package.behavioral_diagrams` contains that exact diagram. | Delete the test package. |
-| `classes` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_classes` | identity/value | OK | Fresh test package → created class | `IRPPackage.addClass(name)` creates and attaches the class. | `package.classes` contains that created class. | Delete the test package. |
-| `collaboration_diagrams` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_collaboration_diagrams` | identity/value | OK | Fresh test package → created collaboration diagram | `IRPPackage.addCollaborationDiagram(name)` creates and attaches the diagram. | `package.collaboration_diagrams` contains that exact diagram. | Delete the test package. |
-| `component_diagrams` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_component_diagrams` | identity/value | OK | Fresh test package → created component diagram | `IRPPackage.addComponentDiagram(name)` creates and attaches the diagram. | `package.component_diagrams` contains that exact diagram. | Delete the test package. |
-| `deployment_diagrams` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_deployment_diagrams` | identity/value | OK | Fresh test package → created deployment diagram | `IRPPackage.addDeploymentDiagram(name)` creates and attaches the diagram. | `package.deployment_diagrams` contains that exact diagram. | Delete the test package. |
-| `events` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_events` | identity/value | OK | Fresh test package → created event | `IRPPackage.addEvent(name)` creates and attaches the event. | `package.events` contains that created event. | Delete the test package. |
-| `events_base_id` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_events_base_id` | identity/value | OK | Fresh test package with a real event | Create an event with `addEvent`, then call `reCalculateEventsBaseId()` before reading the property. | The returned base ID is the live numeric string documented by this build (`str(int(value))`). | Delete the test package. |
-| `flow_items` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_flow_items` | identity/value | OK | Fresh test package → created flow item | `IRPPackage.addFlowItems(name)` creates and attaches a flow item. | `package.flow_items` contains that exact flow item. | Delete the test package. |
-| `flows` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_flows` | identity/value | OK | Fresh test package → created flow | `IRPPackage.addFlows(name)` creates and attaches a flow. | `package.flows` contains that exact flow. | Delete the test package. |
-| `global_functions` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_global_functions` | identity/value | OK | Fresh test package → created global function | `IRPPackage.addGlobalFunction(name)` creates and attaches the function. | `package.global_functions` contains that exact function. | Delete the test package. |
-| `global_objects` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_global_objects` | identity/value | OK | Fresh test package → real class → created global object | Create a class with `addClass`, then use `addGlobalObject(name, className, packageName)`. | The returned collection contains the object with the created name. | Delete the test package. |
-| `global_variables` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_global_variables` | identity/value | OK | Fresh test package → created global variable | `IRPPackage.addGlobalVariable(name)` creates and attaches a variable. | `package.global_variables` contains that exact variable. | Delete the test package. |
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `actors` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_actors` | identity/value | OK |
+| `behavioral_diagrams` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_behavioral_diagrams` | identity/value | OK |
+| `classes` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_classes` | identity/value | OK |
+| `collaboration_diagrams` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_collaboration_diagrams` | identity/value | OK |
+| `component_diagrams` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_component_diagrams` | identity/value | OK |
+| `deployment_diagrams` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_deployment_diagrams` | identity/value | OK |
+| `events` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_events` | identity/value | OK |
+| `events_base_id` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_events_base_id` | identity/value | OK |
+| `flow_items` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_flow_items` | identity/value | OK |
+| `flows` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_flows` | identity/value | OK |
+| `global_functions` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_global_functions` | identity/value | OK |
+| `global_objects` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_global_objects` | identity/value | OK |
+| `global_variables` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_global_variables` | identity/value | OK |
 | `instance_specifications` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_instance_specifications_returns_created_instance_specification` | identity/value | OK | Fresh test package → created instance specification | Use documented `IRPModelElement.addNewAggr("InstanceSpecification", name)`; the meta-class is registered for `IRPInstanceSpecification` and the live call succeeds. | `package.instance_specifications` contains that created instance specification. | Delete the test package. |
 | `links` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_links_returns_link_created_with_add_link` | identity/value | OK | Fresh test package → two classes, two package-owned objects, and a created link | Create classes with `addClass`, objects with documented `addGlobalObject`, and an association relation with `addRelationTo`; wrap the real object COM references as `IRPInstance`, then call `addLink(fromPart, toPart, assoc, null, null)` because the documented association form requires null ports. | `package.links` contains the exact `IRPLink` returned by `add_link`. | Delete the test package.
-| `modules` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_modules` | identity/value | OK | Fresh test package → created module | `IRPPackage.addModule(name)` creates and attaches the module. | `package.modules` contains that exact module. | Delete the test package. |
-| `nested_classifiers` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_nested_classifiers` | identity/value | OK | Fresh test package → created class | `IRPPackage.addClass(name)` creates and attaches a classifier. | `package.nested_classifiers` contains that created class. | Delete the test package. |
+| `modules` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_modules` | identity/value | OK |
+| `nested_classifiers` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_nested_classifiers` | identity/value | OK |
 | `nested_components` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_nested_components_returns_component_created_with_generic_factory` | identity/value | OK | Fresh test package → created component | Use documented `IRPModelElement.addNewAggr("Component", name)`; `Component` is the registered meta-class and live creation succeeds. | `package.nested_components` contains that exact component. | Delete the test package. |
-| `nodes` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_nodes` | identity/value | OK | Fresh test package → created node | `IRPPackage.addNode(name)` creates and attaches the node. | `package.nodes` contains that exact node. | Delete the test package. |
-| `object_model_diagrams` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_object_model_diagrams` | identity/value | OK | Fresh test package → created object-model diagram | `IRPPackage.addObjectModelDiagram(name)` creates and attaches the diagram. | `package.object_model_diagrams` contains that exact diagram. | Delete the test package. |
+| `nodes` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_nodes` | identity/value | OK |
+| `object_model_diagrams` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_object_model_diagrams` | identity/value | OK |
 | `packages` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_nested_packages` | identity/value | OK | Fresh test package → created nested package | `IRPPackage.addNestedPackage(name)` creates and attaches a package. | `package.packages` contains that exact nested package. | Delete the test package. |
-| `panel_diagrams` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_panel_diagrams` | identity/value | OK | Fresh test package → created panel diagram | `IRPPackage.addPanelDiagram(name)` creates and attaches the diagram. | `package.panel_diagrams` contains that exact diagram. | Delete the test package. |
+| `panel_diagrams` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_panel_diagrams` | identity/value | OK |
 | `saved_in_seperate_directory` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_set_saved_in_separate_directory` | identity/value | OK | Fresh test package → explicitly set scalar flag | Set the writable `savedInSeperateDirectory` COM property to `0`, then read through the package getter. | Returned value is exactly `0`. | Delete the test package. |
-| `sequence_diagrams` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_sequence_diagrams` | identity/value | OK | Fresh test package → created sequence diagram | `IRPPackage.addSequenceDiagram(name)` creates and attaches the diagram. | `package.sequence_diagrams` contains that exact diagram. | Delete the test package. |
+| `sequence_diagrams` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_sequence_diagrams` | identity/value | OK |
 | `source_artifacts` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_source_artifacts_returns_file_created_with_generic_factory` | identity/value | OK | Fresh test package → created file/source artifact | Use documented `IRPModelElement.addNewAggr("File", name)`; the live package creates the child successfully. | `package.source_artifacts` contains that created file. | Delete the test package. |
-| `timing_diagrams` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_timing_diagrams` | identity/value | OK | Fresh test package → created timing diagram | `IRPPackage.addTimingDiagram(name)` creates and attaches the diagram. | `package.timing_diagrams` contains that exact diagram. | Delete the test package. |
-| `types` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_types` | identity/value | OK | Fresh test package → created type | `IRPPackage.addType(name)` creates and attaches the type. | `package.types` contains that exact type. | Delete the test package. |
-| `use_case_diagrams` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_use_case_diagrams` | identity/value | OK | Fresh test package → created use-case diagram | `IRPPackage.addUseCaseDiagram(name)` creates and attaches the diagram. | `package.use_case_diagrams` contains that exact diagram. | Delete the test package. |
-| `use_cases` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_use_cases` | identity/value | OK | Fresh test package → created use case | `IRPPackage.addUseCase(name)` creates and attaches the use case. | `package.use_cases` contains that exact use case. | Delete the test package. |
+| `timing_diagrams` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_timing_diagrams` | identity/value | OK |
+| `types` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_types` | identity/value | OK |
+| `use_case_diagrams` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_use_case_diagrams` | identity/value | OK |
+| `use_cases` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_use_cases` | identity/value | OK |
 | `user_defined_stereotypes` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_package.py::test_get_user_defined_stereotypes_returns_stereotype_created_with_generic_factory` | identity/value | OK | Fresh test package → created user-defined stereotype | Use documented `IRPModelElement.addNewAggr("Stereotype", name)`; JavaDoc includes this package example and the live call succeeds. | `package.user_defined_stereotypes` contains that exact stereotype. | Delete the test package. |
 
 ## IRPPort
@@ -203,7 +203,7 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | `active_component` | — | none | MISSING |
 | `active_configuration` | — | none | MISSING |
 | `all_stereotypes` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_all_stereotypes` | identity/value | OK |
-| `cg_simplified_model_package` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_cg_simplified_model_package` | weak | WEAK |
+| `cg_simplified_model_package` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_cg_simplified_model_package` | identity/value | OK |
 | `components` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_components` | identity/value | OK |
 | `default_directory_scheme` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_default_directory_scheme_roundtrip` | identity/value | OK |
 | `profiles` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_project.py::test_profiles` | identity/value | OK |
@@ -380,6 +380,77 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | --- | --- | --- | --- |
 | `duration_time` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_accept_time_event.py::test_duration_time` | identity/value | OK |
 
+## IRPComponent
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `additional_sources` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_additional_sources` | identity/value | OK |
+| `build_type` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_build_type` | identity/value | OK |
+| `configurations` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_configurations` | identity/value | OK |
+| `files` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_files` | identity/value | OK |
+| `include_path` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_include_path` | identity/value | OK |
+| `libraries` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_libraries` | identity/value | OK |
+| `nested_components` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_nested_components` | identity/value | OK |
+| `panel_diagrams` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_panel_diagrams_empty_state` | weak | WEAK |
+| `scope_by_selected_elements` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_scope_by_selected_elements` | identity/value | OK |
+| `scope_elements` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_scope_elements` | identity/value | OK |
+| `standard_headers` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_standard_headers` | identity/value | OK |
+| `variation_points` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component.py::test_variation_points_empty_state` | weak | WEAK |
+
+## IRPCollaboration
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `activation_condition` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_collaboration.py::test_activation_condition` | identity/value | OK |
+| `activation_mode` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_collaboration.py::test_activation_mode` | identity/value | OK |
+| `associations` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_collaboration.py::test_associations` | weak | WEAK |
+| `classifier` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_collaboration.py::test_classifier` | identity/value | OK |
+| `execution_occurrences` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_collaboration.py::test_execution_occurrences` | weak | WEAK |
+| `interaction_occurrences` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_collaboration.py::test_interaction_occurrences` | weak | WEAK |
+| `interaction_operators` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_collaboration.py::test_interaction_operators` | weak | WEAK |
+| `message_points` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_collaboration.py::test_message_points` | weak | WEAK |
+| `messages` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_collaboration.py::test_messages` | identity/value | OK |
+| `mode` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_collaboration.py::test_mode` | identity/value | OK |
+
+## IRPConfiguration
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `additional_sources` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_additional_sources` | identity/value | OK |
+| `all_elements_in_instrumentation_scope` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_all_elements_in_instrumentation_scope` | weak | WEAK |
+| `build_set` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_build_set` | identity/value | OK |
+| `compiler_switches` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_compiler_switches` | identity/value | OK |
+| `generate_code_for_actors` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_generate_code_for_actors` | identity/value | OK |
+| `include_path` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_include_path` | identity/value | OK |
+| `initial_instances` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_initial_instances` | weak | WEAK |
+| `initialization_code` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_initialization_code` | identity/value | OK |
+| `instrumentation_scope` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_instrumentation_scope` | weak | WEAK |
+| `instrumentation_type` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_instrumentation_type` | identity/value | OK |
+| `libraries` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_libraries` | identity/value | OK |
+| `link_switches` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_link_switches` | identity/value | OK |
+| `scope_type` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_scope_type` | identity/value | OK |
+| `standard_headers` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_standard_headers` | identity/value | OK |
+| `statechart_implementation` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_statechart_implementation` | identity/value | OK |
+| `time_model` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_configuration.py::test_time_model` | identity/value | OK |
+
+## IRPNode
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `component_instances` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_node.py::test_component_instances` | identity/value | OK |
+| `cpu_type` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_node.py::test_cpu_type` | identity/value | OK |
+
+## IRPComponentInstance
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `component_type` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component_instance.py::test_component_type` | identity/value | OK |
+| `node` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_component_instance.py::test_node` | identity/value | OK |
+
+## IRPProfile
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
 ## IRPSysMLPort
 
 | Java getter / Python member | Integration test | Assertion | Status |
