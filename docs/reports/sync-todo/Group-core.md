@@ -1,4 +1,4 @@
-# Sync todo — `core` (group 1 of 1)
+# Sync todo — `core`
 
 **7 classes** · ✅ 7 archived · ⬜ 0 open
 
@@ -117,7 +117,7 @@ Other live blockers remain: `add_remote_dependency_to` needs an external Design 
 <details>
 <summary><code>irp_class_api_report</code> · IRPClass · 8/8 steps · ✅ archived</summary>
 
-- **Status (2026-11-26):** verify_sync passes; all steps archived. Duplicate row for IRPClass also in Group-classifiers-1.md.
+- **Status (2026-11-26):** verify_sync passes; all steps archived. Duplicate row for IRPClass also in Group-classifiers.md.
 - **Note:** pilot run 2026-11-21, commits `7163149` + `b27a8bb`; 7 property-shaped flag sites migrated to `get_com_property`/`set_com_property` (`is_final` was already direct); six flag rows rewritten in `elements.rst`, SWR_ELEM_00004 updated.
 - [x] ① §1 — sync TODO published (per-run checklist rendered live in the run report)
 - [x] ② §2 — target resolved (wrapper canonical; JavaDoc evidence from committed report — live `docs/java_api` absent on macOS)

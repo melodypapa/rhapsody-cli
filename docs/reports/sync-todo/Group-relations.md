@@ -1,4 +1,4 @@
-# Sync todo — `relations` (group 1 of 1)
+# Sync todo — `relations`
 
 **8 classes** · ✅ 1 archived · ⬜ 7 open
 

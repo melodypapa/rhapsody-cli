@@ -1,4 +1,4 @@
-# Sync todo — `application` (group 1 of 1)
+# Sync todo — `application`
 
 **1 classes** · ✅ 1 archived · ⬜ 0 open
 
