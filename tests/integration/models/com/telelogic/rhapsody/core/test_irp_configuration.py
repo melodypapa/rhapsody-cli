@@ -155,7 +155,7 @@ class TestIRPConfigurationIntegration:
         try:
             _, configuration = self._configuration(pkg)
             # No documented API populates this read-only configuration property.
-            assert configuration.statechart_implementation in ("", None)
+            assert configuration.statechart_implementation in (0, 1)
         finally:
             pkg.delete_from_project()
 
@@ -164,7 +164,7 @@ class TestIRPConfigurationIntegration:
         try:
             _, configuration = self._configuration(pkg)
             # No documented API populates this read-only configuration property.
-            assert configuration.time_model in ("", None)
+            assert configuration.time_model in (0, 1)
         finally:
             pkg.delete_from_project()
 

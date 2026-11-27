@@ -50,7 +50,9 @@ def test_find_component_instance_found() -> None:
     fake = make_fake_element("Node")
     instance = make_fake_element("ComponentInstance", properties={"name": "Inst1"})
     fake.findComponentInstance.return_value = instance
-    assert IRPNode(fake).find_component_instance("Inst1").name == "Inst1"
+    found = IRPNode(fake).find_component_instance("Inst1")
+    assert found is not None
+    assert found.name == "Inst1"
 
 
 def test_find_component_instance_missing() -> None:

@@ -28,7 +28,9 @@ def test_associations() -> None:
 
 def test_classifier() -> None:
     fake = make_fake_element("Collaboration", properties={"classifier": make_fake_element("Unit", properties={"name": "R1"})})
-    assert IRPCollaboration(fake).classifier.name == "R1"
+    classifier = IRPCollaboration(fake).classifier
+    assert classifier is not None
+    assert classifier.name == "R1"
 
 
 def test_execution_occurrences() -> None:
@@ -297,6 +299,7 @@ def test_get_activator_value() -> None:
     collab = IRPCollaboration(fake)
     fake.getActivator.return_value = make_fake_element("Unit", properties={"name": "R1"})
     result = collab.get_activator()
+    assert result is not None
     assert result.name == "R1"
 
 
@@ -319,6 +322,7 @@ def test_get_predecessor_value() -> None:
     collab = IRPCollaboration(fake)
     fake.getPredecessor.return_value = make_fake_element("Unit", properties={"name": "R1"})
     result = collab.get_predecessor()
+    assert result is not None
     assert result.name == "R1"
 
 
@@ -334,4 +338,5 @@ def test_get_successor_value() -> None:
     collab = IRPCollaboration(fake)
     fake.getSuccessor.return_value = make_fake_element("Unit", properties={"name": "R1"})
     result = collab.get_successor()
+    assert result is not None
     assert result.name == "R1"

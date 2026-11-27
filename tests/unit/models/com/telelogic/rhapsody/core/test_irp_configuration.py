@@ -2,7 +2,7 @@
 
 import pytest
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPConfiguration, IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPComponent, IRPConfiguration, IRPInstance, IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
@@ -194,7 +194,7 @@ def test_time_model_setter() -> None:
 def test_add_initial_instance() -> None:
     fake = make_fake_element("Configuration")
     coll = IRPConfiguration(fake)
-    instance = IRPUnit(make_fake_element("Unit"))
+    instance = IRPInstance(make_fake_element("Instance"))
     fake.addInitialInstance.return_value = None
     coll.add_initial_instance(instance)
     fake.addInitialInstance.assert_called_once_with(instance._com)
@@ -221,7 +221,7 @@ def test_add_to_instrumentation_scope() -> None:
 def test_delete_initial_instance() -> None:
     fake = make_fake_element("Configuration")
     coll = IRPConfiguration(fake)
-    instance = IRPUnit(make_fake_element("Unit"))
+    instance = IRPInstance(make_fake_element("Instance"))
     fake.deleteInitialInstance.return_value = None
     coll.delete_initial_instance(instance)
     fake.deleteInitialInstance.assert_called_once_with(instance._com)
@@ -306,7 +306,7 @@ def test_set_directory() -> None:
 def test_set_its_component() -> None:
     fake = make_fake_element("Configuration")
     coll = IRPConfiguration(fake)
-    component = IRPUnit(make_fake_element("Unit"))
+    component = IRPComponent(make_fake_element("Component"))
     fake.setItsComponent.return_value = None
     coll.set_its_component(component)
     fake.setItsComponent.assert_called_once_with(component._com)

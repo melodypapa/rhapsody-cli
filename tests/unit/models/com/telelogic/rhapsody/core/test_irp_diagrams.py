@@ -26,6 +26,18 @@ def test_diagram_close_diagram_delegates_to_com() -> None:
     fake.closeDiagram.assert_called_once_with()
 
 
+def test_diagram_get_picture_as_divided_metafiles_passes_first_filename() -> None:
+    fake = make_fake_element("ActivityDiagram")
+    returned_files = make_fake_collection([])
+    fake.getPictureAsDividedMetafiles.return_value = returned_files
+    diagram = IRPDiagram(fake)
+
+    result = diagram.get_picture_as_divided_metafiles("first-page.emf")
+
+    fake.getPictureAsDividedMetafiles.assert_called_once_with("first-page.emf")
+    assert isinstance(result, IRPCollection)
+
+
 def test_diagram_add_text_box_delegates_to_authoritative_add_text_box_member() -> None:
     fake = make_fake_element("ActivityDiagram")
     text_box = make_fake_element("GraphElement", properties={"name": "Note1"})

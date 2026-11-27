@@ -208,6 +208,7 @@ def test_find_configuration_delegates() -> None:
     result_obj = make_fake_element("Configuration", properties={"name": "R1"})
     fake.findConfiguration.return_value = result_obj
     result = component.find_configuration(name)
+    assert result is not None
     assert result.name == "R1"
 
 
@@ -218,6 +219,7 @@ def test_get_config_by_dependency_delegates() -> None:
     result_obj = make_fake_element("Configuration", properties={"name": "R1"})
     fake.getConfigByDependency.return_value = result_obj
     result = component.get_config_by_dependency()
+    assert result is not None
     assert result.name == "R1"
 
 

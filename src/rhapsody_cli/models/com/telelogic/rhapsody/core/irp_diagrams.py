@@ -393,16 +393,20 @@ class IRPDiagram(IRPUnit):
         """
         return cast("IRPGraphElement", self.wrap(self.call_com(lambda: self._com.getPictureAs(format_))))
 
-    def get_picture_as_divided_metafiles(self) -> IRPCollection:
-        """Returns the picture as divided metafiles.
+    def get_picture_as_divided_metafiles(self, first_file_name: str) -> IRPCollection:
+        """Saves the diagram as one or more EMF metafiles.
+
+        Args:
+            first_file_name: The name for the first file. Additional split
+                files use the documented `firstFileNameZ_X_Y` convention.
 
         Returns:
-            An ``IRPCollection`` of graph elements.
+            An ``IRPCollection`` containing the names of the files created.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPDiagram::getPictureAsDividedMetafiles()
+            com.telelogic.rhapsody.core.IRPDiagram::getPictureAsDividedMetafiles(java.lang.String firstFileName)
         """
-        return IRPCollection(self.call_com(lambda: self._com.getPictureAsDividedMetafiles()))
+        return IRPCollection(self.call_com(lambda: self._com.getPictureAsDividedMetafiles(first_file_name)))
 
     def get_picture_ex(self, x: int, y: int, width: int, height: int) -> "IRPGraphElement":
         """Returns a picture for the specified region.

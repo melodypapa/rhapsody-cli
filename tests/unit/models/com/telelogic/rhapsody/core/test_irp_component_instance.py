@@ -15,7 +15,9 @@ def test_component_instance_is_registered() -> None:
 def test_component_type() -> None:
     component = make_fake_element("Component", properties={"name": "Comp1"})
     fake = make_fake_element("ComponentInstance", properties={"componentType": component})
-    assert IRPComponentInstance(fake).component_type.name == "Comp1"
+    component_type = IRPComponentInstance(fake).component_type
+    assert component_type is not None
+    assert component_type.name == "Comp1"
 
 
 def test_component_type_setter() -> None:
@@ -28,4 +30,6 @@ def test_component_type_setter() -> None:
 def test_node() -> None:
     node = make_fake_element("Node", properties={"name": "Node1"})
     fake = make_fake_element("ComponentInstance", properties={"node": node})
-    assert IRPComponentInstance(fake).node.name == "Node1"
+    wrapped_node = IRPComponentInstance(fake).node
+    assert wrapped_node is not None
+    assert wrapped_node.name == "Node1"
