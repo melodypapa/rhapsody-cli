@@ -34,6 +34,13 @@ pytest tests/unit/models/test_core.py # single file
 pytest -k "test_foo"                  # pattern match
 ```
 
+Before pushing, run the whole CI gate locally — including the full-tree `mypy src/ tests/` that CI executes only on its Python 3.8/3.9 jobs (a modern local venv cannot run it; mypy type-checks the installed pytest package under the 3.9 target and crashes). `scripts/ci-local.sh` provisions a real Python 3.9 environment via uv and runs the exact gate:
+
+```bash
+scripts/ci-local.sh              # ruff, black --check, full-tree mypy, unit tests, integration collect-only
+scripts/ci-local.sh --setup-only # provision/check the environment without running the gate
+```
+
 - All unit tests use fakes from `tests/unit/models/fakes.py` (`make_fake_element`, `make_fake_collection`). **Never real COM in tests.**
 - `tests/integration/` and `tests/system/` require Windows + Rhapsody — auto-skipped in CI.
 - See `CLAUDE.md` for full test structure and integration test details.
