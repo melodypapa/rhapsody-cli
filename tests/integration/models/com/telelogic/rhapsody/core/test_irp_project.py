@@ -39,13 +39,10 @@ class TestIRPProjectIntegration:
     def test_save_returns_none(self, test_project: IRPProject) -> None:
         assert test_project.save() is None  # type: ignore[func-returns-value]
 
-    def test_use_unique_stereotype_and_ref_cache_setter_returns_none(self, test_project: IRPProject) -> None:
-        original = test_project.use_unique_stereotype_and_ref_cache
-        try:
-            test_project.use_unique_stereotype_and_ref_cache = 1
-            assert test_project.use_unique_stereotype_and_ref_cache == 1
-        finally:
-            test_project.use_unique_stereotype_and_ref_cache = original
+    def test_use_unique_stereotype_and_ref_cache_write_only_setter(self, test_project: IRPProject) -> None:
+        # The pywin32 property is write-only; this disposable project ends with the cache disabled.
+        test_project.use_unique_stereotype_and_ref_cache = 1
+        test_project.use_unique_stereotype_and_ref_cache = 0
 
     def test_all_stereotypes(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("StereoPkg"))

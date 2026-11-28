@@ -1,6 +1,9 @@
 """Tests for rhapsody_cli.elements.instance.IRPInstance."""
 
+import sys
+from types import ModuleType
 from typing import cast
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -175,3 +178,25 @@ def test_instance_update_contained_diagrams_on_server_is_documented_unavailable(
         instance.update_contained_diagrams_on_server(1)
 
     fake.updateContainedDiagramsOnServer.assert_not_called()
+
+
+def test_instance_constructor_casts_generic_pywin_dispatch_to_instance_interface() -> None:
+    class RawDispatch:
+        pass
+
+    class TypedInstanceDispatch:
+        pass
+
+    raw = RawDispatch()
+    typed = TypedInstanceDispatch()
+    cast_to = Mock(return_value=typed)
+    client_module = ModuleType("win32com.client")
+    client_module.__dict__.update({"CastTo": cast_to, "DispatchBaseClass": RawDispatch})
+    parent_module = ModuleType("win32com")
+    parent_module.__dict__["client"] = client_module
+
+    with patch.dict(sys.modules, {"win32com": parent_module, "win32com.client": client_module}):
+        instance = IRPInstance(raw)
+
+    cast_to.assert_called_once_with(raw, "IRPInstance")
+    assert instance._com is typed

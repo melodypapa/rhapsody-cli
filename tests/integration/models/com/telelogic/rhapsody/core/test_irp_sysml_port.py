@@ -39,6 +39,7 @@ class TestIRPSysMLPortIntegration:
         pkg = test_project.add_package(self._unique("DirectionPkg"))
         try:
             _, port = self._port(pkg)
+            port.type = pkg.add_class(self._unique("PortDirectionType"))
             port.port_direction = "InOut"
             assert port.port_direction == "InOut"
         finally:
@@ -52,7 +53,7 @@ class TestIRPSysMLPortIntegration:
             port.type = type_
             result = port.type
             assert result is not None
-            assert result._com is type_._com
+            assert result == type_
         finally:
             pkg.delete_from_project()
 
@@ -63,10 +64,11 @@ class TestIRPSysMLPortIntegration:
             to_owner = pkg.add_class(self._unique("ToOwner"))
             from_port = IRPSysMLPort(from_owner.add_new_aggr("SysMLPort", self._unique("FromPort"))._com)
             to_port = IRPSysMLPort(to_owner.add_new_aggr("SysMLPort", self._unique("ToPort"))._com)
-            from_part = IRPInstance(from_owner.add_new_aggr("Instance", self._unique("FromPart"))._com)
-            to_part = IRPInstance(to_owner.add_new_aggr("Instance", self._unique("ToPart"))._com)
-            relation = from_owner.add_relation_to(to_owner, "from", "Association", "1", "to", "Association", "1", "")
-            link = from_port.add_link(from_part, to_part, relation, to_port, pkg)
+            from_object = pkg.add_global_object(self._unique("FromPart"), from_owner.name, pkg.name)
+            to_object = pkg.add_global_object(self._unique("ToPart"), to_owner.name, pkg.name)
+            from_part = IRPInstance(from_object._com)
+            to_part = IRPInstance(to_object._com)
+            link = from_port.add_link(from_part, to_part, None, to_port, pkg)
             assert link._com is not None
         finally:
             pkg.delete_from_project()

@@ -5,6 +5,7 @@ import uuid
 import pytest
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collaboration import IRPCollaboration
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types import IRPCollaborationDiagram
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 
@@ -19,7 +20,9 @@ class TestIRPCollaborationIntegration:
 
     @staticmethod
     def _collaboration(pkg: IRPPackage) -> tuple[IRPPackage, IRPCollaboration]:
-        collaboration = pkg.add_collaboration_diagram(f"Collaboration_{uuid.uuid4().hex[:8]}")
+        diagram = pkg.add_collaboration_diagram(f"Collaboration_{uuid.uuid4().hex[:8]}")
+        assert isinstance(diagram, IRPCollaborationDiagram)
+        collaboration = diagram.get_logical_collaboration()
         assert isinstance(collaboration, IRPCollaboration)
         return pkg, collaboration
 
@@ -36,8 +39,7 @@ class TestIRPCollaborationIntegration:
         pkg = test_project.add_package(self._unique("Activation_ModePkg"))
         try:
             _, collaboration = self._collaboration(pkg)
-            # No documented API populates this read-only property on a fresh collaboration.
-            assert collaboration.activation_mode in (0, 1, "", None)
+            assert collaboration.activation_mode == "Invariant"
         finally:
             pkg.delete_from_project()
 
@@ -54,8 +56,10 @@ class TestIRPCollaborationIntegration:
         pkg = test_project.add_package(self._unique("ClassifierPkg"))
         try:
             _, collaboration = self._collaboration(pkg)
-            # No documented API populates this read-only property on a fresh collaboration.
-            assert collaboration.classifier in (0, 1, "", None)
+            classifier = pkg.add_class(self._unique("Classifier"))
+            role = collaboration.add_classifier_role(self._unique("InstanceLine"), classifier)
+
+            assert role in list(collaboration.classifier)
         finally:
             pkg.delete_from_project()
 
@@ -99,7 +103,14 @@ class TestIRPCollaborationIntegration:
         pkg = test_project.add_package(self._unique("MessagesPkg"))
         try:
             _, collaboration = self._collaboration(pkg)
-            message = collaboration.add_message(self._unique("Message"))
+            sender_class = pkg.add_class(self._unique("SenderClass"))
+            receiver_class = pkg.add_class(self._unique("ReceiverClass"))
+            sender = collaboration.add_classifier_role(self._unique("Sender"), sender_class)
+            receiver = collaboration.add_classifier_role(self._unique("Receiver"), receiver_class)
+            operation = sender_class.add_operation(self._unique("MessageOperation"))
+
+            message = collaboration.add_message(operation, "", sender, receiver)
+
             assert message in list(collaboration.messages)
         finally:
             pkg.delete_from_project()
@@ -108,7 +119,6 @@ class TestIRPCollaborationIntegration:
         pkg = test_project.add_package(self._unique("ModePkg"))
         try:
             _, collaboration = self._collaboration(pkg)
-            # No documented API populates this read-only property on a fresh collaboration.
-            assert collaboration.mode in (0, 1, "", None)
+            assert collaboration.mode == "EXISTENTIAL"
         finally:
             pkg.delete_from_project()

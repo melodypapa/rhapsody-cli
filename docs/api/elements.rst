@@ -29,7 +29,7 @@ rhapsody-cli provides wrapper classes for all major Rhapsody element types:
 
 **Other Elements**
 
-* RPRequirement - Requirement element
+* IRPRequirement - Requirement element
 * RPConnector - Connection between elements
 
 All element types inherit from ``IRPModelElement`` and follow the same interface patterns.
@@ -46,8 +46,10 @@ Java Package API Reference
 .. toctree::
    :maxdepth: 1
 
+   com/telelogic/rhapsody/core/irp_accept_event_action
    com/telelogic/rhapsody/core/irp_accept_time_event
    com/telelogic/rhapsody/core/irp_action
+   com/telelogic/rhapsody/core/irp_action_block
    com/telelogic/rhapsody/core/irp_actor
    com/telelogic/rhapsody/core/irp_application
    com/telelogic/rhapsody/core/irp_argument
@@ -77,6 +79,7 @@ Java Package API Reference
    com/telelogic/rhapsody/core/irp_profile
    com/telelogic/rhapsody/core/irp_project
    com/telelogic/rhapsody/core/irp_relation
+   com/telelogic/rhapsody/core/irp_requirement
    com/telelogic/rhapsody/core/irp_statechart
    com/telelogic/rhapsody/core/irp_stereotype
    com/telelogic/rhapsody/core/irp_swimlane

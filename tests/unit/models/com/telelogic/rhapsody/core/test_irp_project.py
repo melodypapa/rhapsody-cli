@@ -1,6 +1,6 @@
 """Tests for rhapsody_cli.elements.project.IRPProject."""
 
-from typing import cast
+from typing import Protocol, cast
 
 import pytest
 
@@ -10,6 +10,12 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IR
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
+
+
+class _ResolveOnDemandProject(Protocol):
+    def is_resolve_on_demand(self) -> int: ...
+
+    def set_resolve_on_demand(self, resolve_on_demand: int) -> None: ...
 
 
 def test_project_is_a_package() -> None:
@@ -377,18 +383,20 @@ def test_project_apply_roundtrip_diff_merge_delegates_to_com() -> None:
 
 def test_project_is_resolve_on_demand_raises_not_implemented_without_com_dispatch() -> None:
     fake = make_fake_element("Project")
+    project = cast(_ResolveOnDemandProject, IRPProject(fake))
 
     with pytest.raises(NotImplementedError):
-        IRPProject(fake).is_resolve_on_demand()
+        project.is_resolve_on_demand()
 
     fake.isResolveOnDemand.assert_not_called()
 
 
 def test_project_set_resolve_on_demand_raises_not_implemented_without_com_dispatch() -> None:
     fake = make_fake_element("Project")
+    project = cast(_ResolveOnDemandProject, IRPProject(fake))
 
     with pytest.raises(NotImplementedError):
-        IRPProject(fake).set_resolve_on_demand(1)
+        project.set_resolve_on_demand(1)
 
     fake.setResolveOnDemand.assert_not_called()
 

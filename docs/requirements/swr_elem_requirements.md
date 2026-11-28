@@ -25,22 +25,6 @@ methods: `closeDiagram()`, `addTextBox(text, x_position, y_position, width, heig
 
 ---
 
-## SWR_ELEM_00010: RPRequirement Wrapper
-
-**ID:** SWR_ELEM_00010
-**Title:** RPRequirement wraps IRPRequirement, a traceable requirement in the model
-**Status:** Implemented
-**Priority:** Medium
-**Description:**
-`RPRequirement` shall extend `IRPUnit` to wrap `IRPRequirement`. It shall expose
-Java-mirrored methods: `getRequirementID()` (returns str) and
-`setRequirementID(requirement_id)` (str). The wrapper shall register itself for the
-meta class `"Requirement"`.
-**Implementation:** src/rhapsody_cli/models/elements/requirements.py:RPRequirement
-**Last Changed:** 2026-07-07
-
----
-
 ## SWR_ELEM_00013: Element Module Registration on Import
 
 **ID:** SWR_ELEM_00013

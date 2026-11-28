@@ -5,6 +5,7 @@ from typing import cast
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPFlow, IRPFlowItem, IRPRelation, IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_attribute import IRPAttribute
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flowchart import IRPFlowchart
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
@@ -95,18 +96,21 @@ def test_classifier_add_activity_diagram_wraps_result() -> None:
     result = classifier.add_activity_diagram()
 
     fake.addActivityDiagram.assert_called_once_with()
+    assert isinstance(result, IRPFlowchart)
+    assert result._com is diagram
     assert result.name == "Act"
 
 
 def test_classifier_add_flow_items_wraps_result() -> None:
     fake = make_fake_element("Class")
-    item = make_fake_element("FlowItem", properties={"name": "flowItem"})
+    item = make_fake_element("ItemFlow", properties={"name": "flowItem"})
     fake.addFlowItems.return_value = item
     classifier = IRPClassifier(fake)
 
     result = classifier.add_flow_items("flowItem")
 
     fake.addFlowItems.assert_called_once_with("flowItem")
+    assert isinstance(result, IRPFlowItem)
     assert result.name == "flowItem"
 
 
@@ -184,7 +188,7 @@ def test_classifier_delete_attribute_delegates_to_com() -> None:
 
 def test_classifier_delete_flow_items_delegates_to_com() -> None:
     fake = make_fake_element("Class")
-    item_fake = make_fake_element("FlowItem", properties={"name": "flowItem"})
+    item_fake = make_fake_element("ItemFlow", properties={"name": "flowItem"})
     classifier = IRPClassifier(fake)
 
     classifier.delete_flow_items(cast(IRPFlowItem, IRPModelElement(item_fake)))
@@ -406,12 +410,13 @@ def test_classifier_get_derived_classifiers_returns_collection() -> None:
 
 def test_classifier_get_flow_items_returns_collection() -> None:
     fake = make_fake_element("Class")
-    fake.flowItems = make_fake_collection([make_fake_element("FlowItem", properties={"name": "flowItem"})])
+    fake.flowItems = make_fake_collection([make_fake_element("ItemFlow", properties={"name": "flowItem"})])
     classifier = IRPClassifier(fake)
 
     result = classifier.flow_items
 
     assert len(result) == 1
+    assert isinstance(result[0], IRPFlowItem)
     assert result[0].name == "flowItem"
 
 

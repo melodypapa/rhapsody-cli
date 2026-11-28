@@ -22,20 +22,20 @@ class IRPFlow(IRPModelElement):
     """
 
     # IRPFlow method parity checklist:
-    # [x] conveyed                     [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] direction                    [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] end1                         [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] end1_port                    [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] end1_sys_ml_port             [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] end2                         [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] end2_port                    [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] end2_sys_ml_port             [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] add_conveyed                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] remove_conveyed              [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_end1_via_port            [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_end1_via_sys_ml_port     [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_end2_via_port            [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_end2_via_sys_ml_port     [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] conveyed                     [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] direction                    [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] end1                         [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] end1_port                    [x] impl  [x] docstring  [x] unit test  [ ] integration test (approved skip; #202)
+    # [x] end1_sys_ml_port             [x] impl  [x] docstring  [x] unit test  [ ] integration test (approved skip; #202)
+    # [x] end2                         [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] end2_port                    [x] impl  [x] docstring  [x] unit test  [ ] integration test (approved skip; #202)
+    # [x] end2_sys_ml_port             [x] impl  [x] docstring  [x] unit test  [ ] integration test (approved skip; #202)
+    # [x] add_conveyed                 [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] remove_conveyed              [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] set_end1_via_port            [x] impl  [x] docstring  [x] unit test  [ ] integration test (approved skip; #202)
+    # [x] set_end1_via_sys_ml_port     [x] impl  [x] docstring  [x] unit test  [ ] integration test (approved skip; #202)
+    # [x] set_end2_via_port            [x] impl  [x] docstring  [x] unit test  [ ] integration test (approved skip; #202)
+    # [x] set_end2_via_sys_ml_port     [x] impl  [x] docstring  [x] unit test  [ ] integration test (approved skip; #202)
     # [inherited] irp_model_element methods (covered by irp_model_element checklist)
 
     @property

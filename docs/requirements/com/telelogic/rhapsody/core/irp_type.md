@@ -35,29 +35,29 @@ legacy module as out of scope)
 **Status:** Blocked
 **Priority:** Low
 **Description:**
-The `typedefBaseType` COM property is readable, but in the local Rhapsody build
-assigning a real classifier through the `IRPType.typedef_base_type` setter does
-not yield a retrievable value. The former integration test asserted a mocked
-`set_com_property` call shape, which proves only the binding and not that the
-setter works against Rhapsody (SKILL §5). That test was removed; the binding keeps
-full fake-COM unit coverage. Live verification needs a Rhapsody build where the
-setter persists the assigned base type, after which the integration row can be
-closed.
+The `typedefBaseType` COM property is catalog-backed and readable/writable, but
+this Rhapsody build rejects writes with COM HRESULT `-2147221498`, including
+package-created `IRPType` base classifiers. The positive getter fixture cannot
+be populated. `test_get_typedef_base_type` is an explicitly user-approved skip;
+the exact property binding remains, and the live blocker is recorded in the P0
+index and issue #202.
 **Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_type.py:IRPType.typedef_base_type
-**Last Changed:** 2026-11-25
+**Last Changed:** 2026-03-19
 
-## SWR_ELEM_00032: IRPType typedef write live-fixture blocker
+## SWR_ELEM_00032: IRPType typedef property writes live blocker
 
 **ID:** SWR_ELEM_00032
-**Title:** typedef property writes and enumeration literals have no live proof
+**Title:** typedef flag and multiplicity setters have no successful live write
 **Status:** Blocked
 **Priority:** Low
 **Description:**
-`isTypedefConstant`/`isTypedefOrdered`/`isTypedefReference`/`typedefMultiplicity`
-writes and `addEnumerationLiteral`/`deleteEnumerationLiteral` are catalog-backed,
-but this Rhapsody build rejects them with HRESULT `0x80040006` on a real type
-element. The integration tests were removed per SKILL §5; the bindings keep full
-fake-COM unit coverage. Live verification needs a build that accepts these
-writes, after which the rows can be closed.
+`isTypedefConstant`, `isTypedefOrdered`, `isTypedefReference`, and
+`typedefMultiplicity` are catalog-backed writable properties, but this
+Rhapsody build returns HRESULT `0x80040006` for writes to real type elements.
+Their integration round-trip nodes are explicitly user-approved skips; the
+exact bindings and fake-COM coverage are retained. `addEnumerationLiteral` and
+`deleteEnumerationLiteral` now pass live integration tests and are no longer
+listed as blockers. The remaining setter deviations are in the P0 index and
+issue #202.
 **Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_type.py:IRPType
-**Last Changed:** 2026-11-25
+**Last Changed:** 2026-03-19

@@ -11,7 +11,18 @@
 
 | Python model wrapper | Java API | pywin32 | Comparison status | Recommended change |
 | --- | --- | --- | --- | --- |
-| — | — | — | PASS | No change needed. |
+
+## Expected Binding Differences
+
+| Python model wrapper | Java API | pywin32 | Status | Recommended change |
+| --- | --- | --- | --- | --- |
+| get_contract() (no static COM member); set_contract() (no static COM member) | getContract (method); setContract (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
+
+## Wrapper Backlog
+
+| Python model wrapper | Java API | pywin32 | Status | Recommended change |
+| --- | --- | --- | --- | --- |
+| — | — | — | — | — |
 
 <details>
 <summary>Correct items (9) — bindings verified against pywin32</summary>

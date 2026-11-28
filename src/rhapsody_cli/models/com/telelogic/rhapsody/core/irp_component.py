@@ -133,22 +133,28 @@ class IRPComponent(IRPUnit):
         return IRPCollection(self.get_com_property(self._com, "panelDiagrams"))
 
     @property
-    def scope_by_selected_elements(self) -> IRPCollection:
-        """COM-backed ``scopeBySelectedElements`` property.
+    def scope_by_selected_elements(self) -> int:
+        """Returns whether the component scope is based on selected elements.
+
+        Returns:
+            ``1`` if scope is defined by selected elements, otherwise ``0``.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPComponent::scopeBySelectedElements()
+            com.telelogic.rhapsody.core.IRPComponent::getScopeBySelectedElements()
         """
-        return IRPCollection(self.get_com_property(self._com, "scopeBySelectedElements"))
+        return int(self.get_com_property(self._com, "scopeBySelectedElements"))
 
     @scope_by_selected_elements.setter
-    def scope_by_selected_elements(self, elements: IRPCollection) -> None:
-        """Writes the COM-backed ``scopeBySelectedElements`` property.
+    def scope_by_selected_elements(self, scope_by_selected_elements: int) -> None:
+        """Specifies whether the component scope is based on selected elements.
+
+        Args:
+            scope_by_selected_elements: ``1`` to scope by selected elements, or ``0`` otherwise.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPComponent::setScopeBySelectedElements(elements)
+            com.telelogic.rhapsody.core.IRPComponent::setScopeBySelectedElements(int scopeBySelectedElements)
         """
-        self.set_com_property(self._com, "scopeBySelectedElements", elements._com)
+        self.set_com_property(self._com, "scopeBySelectedElements", scope_by_selected_elements)
 
     @property
     def scope_elements(self) -> IRPCollection:

@@ -137,11 +137,11 @@ correct instance fixture, after which the rows can be closed.
 JavaDoc declares only `setUseUniqueStereotypeAndRefCache(int)` and pywin32
 exposes `UseUniqueStereotypeAndRefCache` through `prop_map_put`, not
 `prop_map_get`. The Python property therefore has a setter and no getter. The
-live setter is exercised by `test_use_unique_stereotype_and_ref_cache_setter_returns_none`
-and restores the original value after the case; a nonexistent getter is not
-part of the API.
+live setter is exercised by `test_use_unique_stereotype_and_ref_cache_write_only_setter`,
+which writes the documented enabled and disabled flags without reading back a
+nonexistent getter. The disposable integration project ends with caching disabled.
 **Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py:IRPProject.use_unique_stereotype_and_ref_cache
-**Last Changed:** 2026-11-26
+**Last Changed:** 2026-03-19
 
 ## SWR_ELEM_00039: Simplified-model package getter has no populated fixture
 

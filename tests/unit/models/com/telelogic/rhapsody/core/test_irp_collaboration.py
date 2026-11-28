@@ -1,7 +1,14 @@
 """Fake-COM unit tests for the IRPCollaboration wrapper."""
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPCollaboration, IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier_role import IRPClassifierRole
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types import IRPSequenceDiagram
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interactions import IRPMessage
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import IRPInterfaceItem
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
 
@@ -17,8 +24,8 @@ def test_activation_condition() -> None:
 
 
 def test_activation_mode() -> None:
-    fake = make_fake_element("Collaboration", properties={"activationMode": 1})
-    assert IRPCollaboration(fake).activation_mode == 1
+    fake = make_fake_element("Collaboration", properties={"activationMode": "Invariant"})
+    assert IRPCollaboration(fake).activation_mode == "Invariant"
 
 
 def test_associations() -> None:
@@ -27,10 +34,14 @@ def test_associations() -> None:
 
 
 def test_classifier() -> None:
-    fake = make_fake_element("Collaboration", properties={"classifier": make_fake_element("Unit", properties={"name": "R1"})})
+    role = make_fake_element("ClassifierRole", properties={"name": "R1"})
+    classifier_com = make_fake_collection([role])
+    fake = make_fake_element("Collaboration", properties={"classifier": classifier_com})
+
     classifier = IRPCollaboration(fake).classifier
-    assert classifier is not None
-    assert classifier.name == "R1"
+
+    assert isinstance(classifier, IRPCollection)
+    assert classifier._com is classifier_com
 
 
 def test_execution_occurrences() -> None:
@@ -59,8 +70,8 @@ def test_messages() -> None:
 
 
 def test_mode() -> None:
-    fake = make_fake_element("Collaboration", properties={"mode": 1})
-    assert IRPCollaboration(fake).mode == 1
+    fake = make_fake_element("Collaboration", properties={"mode": "EXISTENTIAL"})
+    assert IRPCollaboration(fake).mode == "EXISTENTIAL"
 
 
 def test_add_action_block() -> None:
@@ -84,10 +95,15 @@ def test_add_cancelled_timeout() -> None:
 def test_add_classifier_role() -> None:
     fake = make_fake_element("Collaboration")
     collab = IRPCollaboration(fake)
-    name = "N1"
-    fake.addClassifierRole.return_value = make_fake_element("Unit", properties={"name": "R1"})
-    result = collab.add_classifier_role(name)
-    assert result.name == "R1"
+    classifier = IRPClassifier(make_fake_element("Class", properties={"name": "C1"}))
+    role_com = make_fake_element("ClassifierRole", properties={"name": "R1"})
+    fake.addClassifierRole.return_value = role_com
+
+    result = collab.add_classifier_role("R1", classifier)
+
+    fake.addClassifierRole.assert_called_once_with("R1", classifier._com)
+    assert isinstance(result, IRPClassifierRole)
+    assert result._com is role_com
 
 
 def test_add_classifier_role_by_name() -> None:
@@ -210,10 +226,17 @@ def test_add_lost_message() -> None:
 def test_add_message() -> None:
     fake = make_fake_element("Collaboration")
     collab = IRPCollaboration(fake)
-    name = "N1"
-    fake.addMessage.return_value = make_fake_element("Unit", properties={"name": "R1"})
-    result = collab.add_message(name)
-    assert result.name == "R1"
+    interface_item = IRPInterfaceItem(make_fake_element("Operation", properties={"name": "Call"}))
+    sender = IRPClassifierRole(make_fake_element("ClassifierRole", properties={"name": "Sender"}))
+    receiver = IRPClassifierRole(make_fake_element("ClassifierRole", properties={"name": "Receiver"}))
+    message_com = make_fake_element("Message", properties={"name": "Message1"})
+    fake.addMessage.return_value = message_com
+
+    result = collab.add_message(interface_item, "", sender, receiver)
+
+    fake.addMessage.assert_called_once_with(interface_item._com, "", sender._com, receiver._com)
+    assert isinstance(result, IRPMessage)
+    assert result._com is message_com
 
 
 def test_add_reply_message() -> None:
@@ -279,12 +302,19 @@ def test_add_timeout() -> None:
     assert result.name == "R1"
 
 
-def test_generate_sequence() -> None:
+def test_generate_sequence_wraps_documented_result() -> None:
     fake = make_fake_element("Collaboration")
     collab = IRPCollaboration(fake)
-    fake.generateSequence.return_value = None
-    collab.generate_sequence()
-    fake.generateSequence.assert_called_once_with()
+    package_com = make_fake_element("Package")
+    package = IRPPackage(package_com)
+    sequence_com = make_fake_element("SequenceDiagram", properties={"name": "GeneratedSequence"})
+    fake.generateSequence.return_value = sequence_com
+
+    sequence = collab.generate_sequence("GeneratedSequence", package)
+
+    fake.generateSequence.assert_called_once_with("GeneratedSequence", package_com)
+    assert isinstance(sequence, IRPSequenceDiagram)
+    assert sequence._com is sequence_com
 
 
 def test_get_activator_none() -> None:

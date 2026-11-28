@@ -10,7 +10,11 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IR
 
 if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClassifierRole, IRPConditionMark
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier import IRPClassifier
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types import IRPSequenceDiagram
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interactions import IRPInteractionOccurrence, IRPInteractionOperator, IRPMessage
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import IRPInterfaceItem
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 
 
 class IRPCollaboration(IRPUnit):
@@ -88,19 +92,22 @@ class IRPCollaboration(IRPUnit):
         """
         return cast("IRPUnit", self.wrap(self.call_com(lambda: self._com.addCancelledTimeout(name))))
 
-    def add_classifier_role(self, name: str) -> IRPClassifierRole:
-        """Adds a classifier role to the collaboration.
+    def add_classifier_role(self, name: str, classifier: IRPClassifier) -> IRPClassifierRole:
+        """Adds an instance line based on the specified classifier.
 
         Args:
-            name: The name of the classifier role.
+            name: The name to use for the new instance line.
+            classifier: The class on which the instance line is based.
 
         Returns:
-            The wrapped ``IRPClassifierRole`` created.
+            The new classifier role.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPCollaboration::addClassifierRole(java.lang.String name)
+            com.telelogic.rhapsody.core.IRPCollaboration::addClassifierRole(java.lang.String newVal, com.telelogic.rhapsody.core.IRPClassifier cls)
         """
-        return cast("IRPClassifierRole", self.wrap(self.call_com(lambda: self._com.addClassifierRole(name))))
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_classifier_role import IRPClassifierRole
+
+        return IRPClassifierRole(self.call_com(lambda: self._com.addClassifierRole(name, classifier._com)))
 
     def add_classifier_role_by_name(self, name: str) -> IRPClassifierRole:
         """Adds a classifier role by name to the collaboration.
@@ -284,19 +291,28 @@ class IRPCollaboration(IRPUnit):
         """
         return cast("IRPMessage", self.wrap(self.call_com(lambda: self._com.addLostMessage(name))))
 
-    def add_message(self, name: str) -> IRPMessage:
-        """Adds a message to the collaboration.
+    def add_message(self, inter_item: IRPInterfaceItem, actual_param_list: str, sender: IRPClassifierRole, receiver: IRPClassifierRole) -> IRPMessage:
+        """Adds a message between the specified sequence-diagram roles.
 
         Args:
-            name: The name of the message.
+            inter_item: The operation call represented by the message.
+            actual_param_list: Arguments to pass to the operation, or an empty
+                string when the operation has no arguments.
+            sender: The instance line sending the message.
+            receiver: The instance line receiving the message.
 
         Returns:
-            The wrapped ``IRPMessage`` created.
+            The message added to the diagram.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPCollaboration::addMessage(java.lang.String name)
+            com.telelogic.rhapsody.core.IRPCollaboration::addMessage(
+                com.telelogic.rhapsody.core.IRPInterfaceItem interItem, java.lang.String actualParamList,
+                com.telelogic.rhapsody.core.IRPClassifierRole sender,
+                com.telelogic.rhapsody.core.IRPClassifierRole receiver)
         """
-        return cast("IRPMessage", self.wrap(self.call_com(lambda: self._com.addMessage(name))))
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interactions import IRPMessage
+
+        return IRPMessage(self.call_com(lambda: self._com.addMessage(inter_item._com, actual_param_list, sender._com, receiver._com)))
 
     def add_reply_message(self, name: str) -> IRPMessage:
         """Adds a reply message to the collaboration.
@@ -396,13 +412,22 @@ class IRPCollaboration(IRPUnit):
         """
         return cast("IRPUnit", self.wrap(self.call_com(lambda: self._com.addTimeout(name))))
 
-    def generate_sequence(self) -> None:
-        """Generates sequence diagram from collaboration.
+    def generate_sequence(self, name: str, owner: IRPPackage) -> IRPSequenceDiagram:
+        """Generates a sequence diagram from the collaboration content.
+
+        Args:
+            name: The name to give to the generated diagram.
+            owner: The package to which the generated diagram belongs.
+
+        Returns:
+            The generated sequence diagram.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPCollaboration::generateSequence()
+            com.telelogic.rhapsody.core.IRPCollaboration::generateSequence(java.lang.String newVal, com.telelogic.rhapsody.core.IRPPackage owner)
         """
-        self.call_com(lambda: self._com.generateSequence())
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types import IRPSequenceDiagram
+
+        return IRPSequenceDiagram(self.call_com(lambda: self._com.generateSequence(name, owner._com)))
 
     @property
     def activation_condition(self) -> str:
@@ -414,13 +439,13 @@ class IRPCollaboration(IRPUnit):
         return str(self.get_com_property(self._com, "activationCondition"))
 
     @property
-    def activation_mode(self) -> int:
-        """COM-backed ``activationMode`` property.
+    def activation_mode(self) -> str:
+        """Returns the collaboration's activation mode.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPCollaboration::get_activation_mode()
+            com.telelogic.rhapsody.core.IRPCollaboration::getActivationMode()
         """
-        return int(self.get_com_property(self._com, "activationMode"))
+        return str(self.get_com_property(self._com, "activationMode"))
 
     def get_activator(self) -> IRPUnit | None:
         """Returns the activator of the collaboration.
@@ -446,13 +471,13 @@ class IRPCollaboration(IRPUnit):
         return IRPCollection(self.get_com_property(self._com, "associations"))
 
     @property
-    def classifier(self) -> IRPUnit | None:
-        """COM-backed ``classifier`` property.
+    def classifier(self) -> IRPCollection:
+        """Returns the instance lines in the sequence diagram.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPCollaboration::get_classifier()
+            com.telelogic.rhapsody.core.IRPCollaboration::getClassifier()
         """
-        return cast(IRPUnit, self.wrap(self.get_com_property(self._com, "classifier")))
+        return IRPCollection(self.get_com_property(self._com, "classifier"))
 
     def get_concurrent_group(self) -> int:
         """Returns the concurrent group of the collaboration.
@@ -511,13 +536,13 @@ class IRPCollaboration(IRPUnit):
         return IRPCollection(self.get_com_property(self._com, "messages"))
 
     @property
-    def mode(self) -> int:
-        """COM-backed ``mode`` property.
+    def mode(self) -> str:
+        """Returns the collaboration's mode.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPCollaboration::get_mode()
+            com.telelogic.rhapsody.core.IRPCollaboration::getMode()
         """
-        return int(self.get_com_property(self._com, "mode"))
+        return str(self.get_com_property(self._com, "mode"))
 
     def get_predecessor(self) -> IRPUnit | None:
         """Returns the predecessor of the collaboration.

@@ -47,16 +47,25 @@ class TestIRPObjectNodeIntegration:
             node.represents = represented
             result = node.represents
             assert result is not None
-            assert result._com is represented._com
+            assert result == represented
         finally:
             pkg.delete_from_project()
 
     def test_add_in_state(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("AddInStatePkg"))
         try:
-            _, node, root = self._node(pkg)
+            represented_class = pkg.add_class(self._unique("StatefulClass"))
+            statechart = represented_class.add_statechart()
+            assert statechart is not None
+            statechart.create_graphics()
+            root = statechart.root_state
+            assert isinstance(root, IRPState)
             state = root.add_state(self._unique("AddedState"))
+            _, node, _ = self._node(pkg)
+            node.represents = represented_class
+
             node.add_in_state(state)
+
             assert state in list(node.in_state_list)
         finally:
             pkg.delete_from_project()
@@ -64,10 +73,19 @@ class TestIRPObjectNodeIntegration:
     def test_remove_in_state(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("RemoveInStatePkg"))
         try:
-            _, node, root = self._node(pkg)
+            represented_class = pkg.add_class(self._unique("StatefulClass"))
+            statechart = represented_class.add_statechart()
+            assert statechart is not None
+            statechart.create_graphics()
+            root = statechart.root_state
+            assert isinstance(root, IRPState)
             state = root.add_state(self._unique("RemovedState"))
+            _, node, _ = self._node(pkg)
+            node.represents = represented_class
             node.add_in_state(state)
+
             node.remove_in_state(state)
+
             assert state not in list(node.in_state_list)
         finally:
             pkg.delete_from_project()

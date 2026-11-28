@@ -22,9 +22,12 @@ The canonical module is
 `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_send_action.py`; the
 class was split out of the shared `irp_actions.py` module in its own sync run.
 Unit tests in the mirrored unit path use only fake COM objects and give 100%
-statement/branch coverage of the wrapper. Integration tests in the mirrored
-integration path create a real state's send action and assert populated getter
-values by identity/membership, deleting the owning package during cleanup.
-Live assertions are CI-only on Windows and are unverified in offline runs.
+statement/branch coverage of the wrapper. Integration fixtures create a real
+state, set its type to `EventState`, and retrieve the associated SendAction.
+The focused Windows run has 3 passed and 1 explicitly user-approved skip:
+setting `invokedOperation` with a class-owned operation, real event, and object
+target leaves getter readback `None`. The exact property binding remains; the
+live deviation is recorded in the P0 index and issue #202. This is not a
+live-green claim.
 **Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_send_action.py:IRPSendAction
-**Last Changed:** 2026-11-26
+**Last Changed:** 2026-03-19

@@ -59,9 +59,21 @@ class TestIRPTypeIntegration:
         finally:
             pkg.delete_from_project()
 
+    def test_delete_enumeration_literal(self, test_project: IRPProject) -> None:
+        pkg = test_project.add_package(self._unique("TypePkg"))
+        ti = IRPType(pkg.add_type(self._unique("Type"))._com)
+        try:
+            ti.kind = "Enumeration"
+            literal = ti.add_enumeration_literal("Red")
+
+            ti.delete_enumeration_literal(literal)
+
+            assert literal not in list(ti.enumeration_literals)
+        finally:
+            pkg.delete_from_project()
+
     def test_is_predicates_and_flags_read_as_ints_on_plain_type(self, test_project: IRPProject) -> None:
-        """Every is_*/typedef flag resolves through the live COM binding and
-        returns an int-typed value; semantic pins live in the enumeration test."""
+        """A new type is not predefined; modifier and enum flags start unset."""
         type_element, _cls, pkg = self._create_type(test_project)
         try:
             for predicate in (
@@ -83,43 +95,77 @@ class TestIRPTypeIntegration:
                 type_element.is_union,
             ):
                 assert predicate() in (0, 1)
-            for flag in (
-                type_element.is_predefined,
-                type_element.is_typedef,
-                type_element.is_typedef_constant,
-                type_element.is_typedef_ordered,
-                type_element.is_typedef_reference,
-            ):
-                assert flag in (0, 1)
+            assert type_element.is_predefined == 0
+            assert type_element.is_typedef == 1
+            assert type_element.is_typedef_constant == 0
+            assert type_element.is_typedef_ordered == 0
+            assert type_element.is_typedef_reference == 0
         finally:
             pkg.delete_from_project()
 
-    def test_is_enum_flags_follow_kind(self, test_project: IRPProject) -> None:
-        """An Enumeration-kind type must report the enum predicates as set —
-        the two is_* predicates whose live semantics are unambiguous."""
+    def test_is_enum_is_distinct_from_enumeration_kind(self, test_project: IRPProject) -> None:
+        """isEnum parses Language declarations; Enumeration kind uses isKindEnumeration."""
         type_element, _cls, pkg = self._create_type(test_project)
         try:
             type_element.kind = "Enumeration"
-            assert type_element.is_enum() == 1
+            assert type_element.is_enum() == 0
             assert type_element.is_kind_enumeration() == 1
         finally:
             pkg.delete_from_project()
 
+    @pytest.mark.skip(reason="Approved live blocker (#202): isTypedefConstant setter returns COM HRESULT -2147221498 on a real IRPType.")
+    def test_is_typedef_constant_roundtrip(self, test_project: IRPProject) -> None:
+        type_element, _cls, pkg = self._create_type(test_project)
+        try:
+            type_element.is_typedef_constant = 1
+            assert type_element.is_typedef_constant == 1
+        finally:
+            pkg.delete_from_project()
+
+    @pytest.mark.skip(reason="Approved live blocker (#202): isTypedefOrdered setter returns COM HRESULT -2147221498 on a real IRPType.")
+    def test_is_typedef_ordered_roundtrip(self, test_project: IRPProject) -> None:
+        type_element, _cls, pkg = self._create_type(test_project)
+        try:
+            type_element.is_typedef_ordered = 1
+            assert type_element.is_typedef_ordered == 1
+        finally:
+            pkg.delete_from_project()
+
+    @pytest.mark.skip(reason="Approved live blocker (#202): isTypedefReference setter returns COM HRESULT -2147221498 on a real IRPType.")
+    def test_is_typedef_reference_roundtrip(self, test_project: IRPProject) -> None:
+        type_element, _cls, pkg = self._create_type(test_project)
+        try:
+            type_element.is_typedef_reference = 1
+            assert type_element.is_typedef_reference == 1
+        finally:
+            pkg.delete_from_project()
+
+    @pytest.mark.skip(reason="Approved live blocker (#202): setting typedefBaseType returns COM HRESULT -2147221498 for package-created IRPType classifiers.")
     def test_get_typedef_base_type(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("TypePkg"))
-        ti = IRPType(pkg.add_type(self._unique("Type"))._com)
+        type_element = IRPType(pkg.add_type(self._unique("TypedefType"))._com)
         try:
-            assert ti.typedef_base_type is None
+            base_type = IRPType(pkg.add_type(self._unique("TypedefBase"))._com)
+            type_element.typedef_base_type = base_type
+
+            result = type_element.typedef_base_type
+            assert result is not None
+            assert result == base_type
         finally:
             pkg.delete_from_project()
 
     def test_get_typedef_multiplicity(self, test_project: IRPProject) -> None:
         type_element, _cls, pkg = self._create_type(test_project)
         try:
-            # Live 2026-11-25: typedefMultiplicity is readable but every write
-            # faults with COM HRESULT -2147221498, so the setter is a recorded
-            # blocker (index.md) and the getter asserts the observed default.
-            value = type_element.typedef_multiplicity
-            assert value in {"1", "0..1"}
+            assert type_element.typedef_multiplicity == "1"
+        finally:
+            pkg.delete_from_project()
+
+    @pytest.mark.skip(reason="Approved live blocker (#202): writes to typedefMultiplicity return COM HRESULT -2147221498 for valid values.")
+    def test_set_typedef_multiplicity(self, test_project: IRPProject) -> None:
+        type_element, _cls, pkg = self._create_type(test_project)
+        try:
+            type_element.typedef_multiplicity = "0..1"
+            assert type_element.typedef_multiplicity == "0..1"
         finally:
             pkg.delete_from_project()

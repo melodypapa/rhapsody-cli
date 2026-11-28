@@ -3,7 +3,7 @@
 ## Summary
 - Java package: `com.telelogic.rhapsody.core`
 - Target wrapper: `IRPProject` (`src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_project.py`)
-- Members: Python `71`, Java `70`, pywin32 `66`
+- Members: Python `71`, Java `72`, pywin32 `66`
 - Deviation items: `5` (actionable `0`, expected binding differences `5`, wrapper backlog `0`)
 - Status legend: `MATCH` verified binding · `UNAVAILABLE_DOCUMENTED` pywin32 lacks the member (NotImplementedError stub) · `ALIAS_DOCUMENTED` documented alias · actionable rows are named by code in `Comparison details`
 
@@ -18,9 +18,9 @@
 | --- | --- | --- | --- | --- |
 | enable_rhapsody_model_manager() (no static COM member) | enableRhapsodyModelManager (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
 | set_global_configuration() (no static COM member) | setGlobalConfiguration (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
-| is_resolve_on_demand() (no static COM member) | — | — | PYTHON_ONLY_MEMBER | Keep this as a local facade helper or map it to a documented API member. |
+| is_resolve_on_demand() (no static COM member) | isResolveOnDemand (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
 | migrate_design_manager_links() (no static COM member) | migrateDesignManagerLinks (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
-| set_resolve_on_demand() (no static COM member) | — | — | PYTHON_ONLY_MEMBER | Keep this as a local facade helper or map it to a documented API member. |
+| set_resolve_on_demand() (no static COM member) | setResolveOnDemand (method) | — | UNAVAILABLE_DOCUMENTED | Documented decision: intentionally unsupported; no change. |
 
 ## Wrapper Backlog
 

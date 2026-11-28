@@ -3,7 +3,9 @@
 from typing import TYPE_CHECKING, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types import IRPActivityDiagram
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flowchart import IRPFlowchart
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPPin
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statechart import IRPStatechart
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statemachine import IRPState
@@ -46,6 +48,8 @@ def test_add_activity_parameter_wraps_result() -> None:
     pin = make_fake_element("Pin", properties={"name": "Param1"})
     fake.addActivityParameter.return_value = pin
     result = IRPFlowchart(fake).add_activity_parameter("Param1")
+    assert isinstance(result, IRPPin)
+    assert result._com is pin
     assert result.name == "Param1"
     fake.addActivityParameter.assert_called_once_with("Param1")
 
@@ -53,9 +57,11 @@ def test_add_activity_parameter_wraps_result() -> None:
 def test_add_call_behavior_wraps_result() -> None:
     fake = make_fake_element("Flowchart")
     referenced = make_fake_element("Flowchart", properties={"name": "ReferencedActivity"})
-    state = make_fake_element("State", properties={"name": "CallBehaviorState"})
+    state = make_fake_element("CallBehavior", properties={"name": "CallBehaviorState"})
     fake.addCallBehavior.return_value = state
     result = IRPFlowchart(fake).add_call_behavior(cast(IRPModelElement, IRPModelElement.wrap(referenced)))
+    assert isinstance(result, IRPState)
+    assert result._com is state
     assert result.name == "CallBehaviorState"
     fake.addCallBehavior.assert_called_once_with(referenced)
 
@@ -83,9 +89,11 @@ def test_add_object_node_wraps_result() -> None:
 def test_add_reference_activity_wraps_result() -> None:
     fake = make_fake_element("Flowchart")
     referenced = make_fake_element("Flowchart", properties={"name": "ReferencedActivity"})
-    state = make_fake_element("State", properties={"name": "RefActivityState"})
+    state = make_fake_element("ReferenceActivity", properties={"name": "RefActivityState"})
     fake.addReferenceActivity.return_value = state
     result = IRPFlowchart(fake).add_reference_activity(cast(IRPModelElement, IRPModelElement.wrap(referenced)))
+    assert isinstance(result, IRPState)
+    assert result._com is state
     assert result.name == "RefActivityState"
     fake.addReferenceActivity.assert_called_once_with(referenced)
 
@@ -104,6 +112,8 @@ def test_get_flowchart_diagram_wraps_result() -> None:
     diagram = make_fake_element("ActivityDiagram", properties={"name": "ActivityDiagram1"})
     fake.getFlowchartDiagram.return_value = diagram
     result = IRPFlowchart(fake).get_flowchart_diagram()
+    assert isinstance(result, IRPActivityDiagram)
+    assert result._com is diagram
     assert result.name == "ActivityDiagram1"
 
 

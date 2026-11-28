@@ -10,6 +10,7 @@ import pytest
 from rhapsody_cli import RhapsodyApplication
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPClass, IRPStatechart
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphEdge, IRPGraphElement, IRPGraphNode
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interactions import IRPEvent
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_interface_item import IRPInterfaceItem
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
@@ -46,9 +47,11 @@ class TestIRPStatechartIntegration:
             x_points = self._new_integer_collection(rhapsody_app, (20, 80, 80, 20))
             y_points = self._new_integer_collection(rhapsody_app, (20, 20, 80, 80))
 
+            initial_count = statechart.graphical_elements.count
             shape = statechart.add_free_shape_by_type("Polygon", x_points, y_points)
 
-            assert shape in list(statechart.graphical_elements)
+            assert isinstance(shape, IRPGraphElement)
+            assert statechart.graphical_elements.count == initial_count + 1
         finally:
             package.delete_from_project()
 
@@ -62,9 +65,11 @@ class TestIRPStatechartIntegration:
             dib_header = struct.pack("<IiiHHIIiiII", 40, 1, 1, 1, 24, 0, len(pixel_data), 2835, 2835, 0, 0)
             image_path.write_bytes(bitmap_header + dib_header + pixel_data)
 
+            initial_count = statechart.graphical_elements.count
             image = statechart.add_image(str(image_path), 20, 20, 40, 40)
 
-            assert image in list(statechart.graphical_elements)
+            assert isinstance(image, IRPGraphElement)
+            assert statechart.graphical_elements.count == initial_count + 1
         finally:
             package.delete_from_project()
 
@@ -79,18 +84,22 @@ class TestIRPStatechartIntegration:
             source_node = statechart.add_new_node_for_element(source_state, 20, 20, 80, 50)
             target_node = statechart.add_new_node_for_element(target_state, 200, 20, 80, 50)
 
+            initial_count = statechart.graphical_elements.count
             edge = statechart.add_new_edge_for_element(transition, source_node, 60, 40, target_node, 240, 40)
 
-            assert edge in list(statechart.graphical_elements)
+            assert isinstance(edge, IRPGraphEdge)
+            assert statechart.graphical_elements.count == initial_count + 1
         finally:
             package.delete_from_project()
 
     def test_add_new_node_by_type_and_get_elements_in_diagram(self, test_project: IRPProject) -> None:
         package, _, statechart = self._create_statechart(test_project, "GraphNode")
         try:
+            initial_count = statechart.graphical_elements.count
             node = statechart.add_new_node_by_type("Note", 20, 20, 80, 50)
 
-            assert node in list(statechart.graphical_elements)
+            assert isinstance(node, IRPGraphNode)
+            assert statechart.graphical_elements.count == initial_count + 1
             assert statechart.get_elements_in_diagram().count > 0
         finally:
             package.delete_from_project()
@@ -102,9 +111,11 @@ class TestIRPStatechartIntegration:
             assert root_state is not None
             created_state = root_state.add_state(self._unique("ChildState"))
 
+            initial_count = statechart.graphical_elements.count
             node = statechart.add_new_node_for_element(created_state, 20, 20, 80, 50)
 
-            assert node in list(statechart.graphical_elements)
+            assert isinstance(node, IRPGraphNode)
+            assert statechart.graphical_elements.count == initial_count + 1
             assert created_state in list(statechart.get_elements_in_diagram())
         finally:
             package.delete_from_project()
@@ -112,9 +123,11 @@ class TestIRPStatechartIntegration:
     def test_add_text_box(self, test_project: IRPProject) -> None:
         package, _, statechart = self._create_statechart(test_project, "TextBox")
         try:
+            initial_count = statechart.graphical_elements.count
             text_box = statechart.add_text_box("Statechart integration note", 20, 20, 180, 60)
 
-            assert text_box in list(statechart.graphical_elements)
+            assert isinstance(text_box, IRPGraphElement)
+            assert statechart.graphical_elements.count == initial_count + 1
         finally:
             package.delete_from_project()
 
@@ -218,9 +231,11 @@ class TestIRPStatechartIntegration:
     def test_graphical_elements(self, test_project: IRPProject) -> None:
         package, _, statechart = self._create_statechart(test_project, "GraphicalElements")
         try:
+            initial_count = statechart.graphical_elements.count
             node = statechart.add_new_node_by_type("Note", 20, 20, 80, 50)
 
-            assert node in list(statechart.graphical_elements)
+            assert isinstance(node, IRPGraphNode)
+            assert statechart.graphical_elements.count == initial_count + 1
         finally:
             package.delete_from_project()
 

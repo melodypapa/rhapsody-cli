@@ -4,8 +4,8 @@ import uuid
 
 import pytest
 
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_accept_event_action import IRPAcceptEventAction
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_accept_time_event import IRPAcceptTimeEvent
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions import IRPAcceptEventAction
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_call_operation import IRPCallOperation
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types import IRPActivityDiagram
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flowchart import IRPFlowchart
@@ -84,12 +84,21 @@ class TestIRPFlowchartIntegration:
         finally:
             pkg.delete_from_project()
 
+    @pytest.mark.skip(reason="User-approved live blocker: addActivityParameter returns None instead of IRPPin with an operation argument and flowchart owned by that operation; see issue #202.")
     def test_add_activity_parameter(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("ActivityParamPkg"))
         try:
+            classifier = pkg.add_class(self._unique("ActivityParamOwner"))
+            operation = classifier.add_operation(self._unique("ActivityParamOperation"))
+            parameter_name = self._unique("Param")
+            operation.add_argument(parameter_name)
             flowchart = self._activity(pkg)
-            created = flowchart.add_activity_parameter(self._unique("Param"))
+            flowchart.its_owner = operation
+            activity_diagram = flowchart.get_flowchart_diagram()
+            activity_diagram.open_diagram()
+            created = flowchart.add_activity_parameter(parameter_name)
             assert isinstance(created, IRPPin)
+            activity_diagram.close_diagram()
         finally:
             pkg.delete_from_project()
 

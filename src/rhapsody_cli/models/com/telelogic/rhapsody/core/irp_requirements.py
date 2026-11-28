@@ -1,6 +1,4 @@
-"""Requirement-family wrappers: mirrors IRPAnnotation and IRPRequirement
-from com.telelogic.rhapsody.core.
-"""
+"""Wrapper for the Java ``IRPAnnotation`` interface."""
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
@@ -138,37 +136,4 @@ class IRPAnnotation(IRPUnit):
         self._set_method_or_property(self._com, "setSpecificationRTF", "specificationRTF", specification_rtf)
 
 
-class IRPRequirement(IRPAnnotation):
-    """Wraps ``IRPRequirement``: represents a requirement in the model."""
-
-    # IRPRequirement method parity checklist:
-    # [x] get_requirement_id  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_requirement_id  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [inherited] irp_annotation / irp_unit / irp_model_element methods (covered by rp_annotation / rp_unit / rp_model_element checklists)
-    # No deprecated IRPRequirement methods.
-
-    def get_requirement_id(self) -> str:
-        """Returns the ID that was set for the requirement.
-
-        Returns:
-            The requirement ID string.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPRequirement::getRequirementID()
-        """
-        return str(self._get_method_or_property(self._com, "getRequirementID", "requirementID"))
-
-    def set_requirement_id(self, requirement_id: str) -> None:
-        """Sets the ID for the requirement.
-
-        Args:
-            requirement_id: The new requirement ID to set.
-
-        Reference:
-            com.telelogic.rhapsody.core.IRPRequirement::setRequirementID(java.lang.String requirementID)
-        """
-        self._set_method_or_property(self._com, "setRequirementID", "requirementID", requirement_id)
-
-
 IRPModelElement.register_wrapper("Annotation", IRPAnnotation)
-IRPModelElement.register_wrapper("Requirement", IRPRequirement)

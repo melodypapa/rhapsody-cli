@@ -34,7 +34,7 @@ class TestIRPComponentInstanceIntegration:
             instance.component_type = component
             result = instance.component_type
             assert result is not None
-            assert result._com is component._com
+            assert result == component
         finally:
             pkg.delete_from_project()
 
@@ -44,6 +44,6 @@ class TestIRPComponentInstanceIntegration:
             _, node, instance = self._instance(pkg)
             result = instance.node
             assert result is not None
-            assert result._com is node._com
+            assert result == node
         finally:
             pkg.delete_from_project()

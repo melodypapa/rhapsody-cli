@@ -7,20 +7,20 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCo
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphElement
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphEdge, IRPGraphElement, IRPGraphNode
 
 
 class IRPDiagram(IRPUnit):
     """Wraps ``IRPDiagram``: represents a diagram in the model."""
 
     # IRPDiagram method parity checklist:
-    # [x] add_free_shape_by_type  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] add_image  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] add_free_shape_by_type  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] add_image  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] add_new_edge_by_type  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] add_new_edge_for_element  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] add_new_node_by_type  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] add_new_node_for_element  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] add_text_box  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] add_new_edge_for_element  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] add_new_node_by_type  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] add_new_node_for_element  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] add_text_box  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] create_diagram_view  [x] stub  [x] docstring  [x] unit test  [ ] integration test
     # [x] get_custom_views  [x] stub  [x] docstring  [x] unit test  [ ] integration test
     # [x] get_diagram_view_of  [x] stub  [x] docstring  [x] unit test  [ ] integration test
@@ -30,23 +30,23 @@ class IRPDiagram(IRPUnit):
     # [x] rearrange_ports  [x] stub  [x] docstring  [x] unit test  [ ] integration test
     # [x] set_custom_views  [x] stub  [x] docstring  [x] unit test  [ ] integration test
     # [x] update_view_on_server  [x] stub  [x] docstring  [x] unit test  [ ] integration test
-    # [x] close_diagram  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] complete_relations  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_corresponding_graphic_elements  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_elements_in_diagram  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] graphical_elements  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_last_visualization_modified_time  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] close_diagram  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] complete_relations  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] get_corresponding_graphic_elements  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] get_elements_in_diagram  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] graphical_elements  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] get_last_visualization_modified_time  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] get_picture  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] get_picture_as  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] get_picture_as_divided_metafiles  [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] get_picture_ex  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] get_pictures_with_image_map  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] is_open  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] get_pictures_with_image_map  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] is_open  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [x] is_show_diagram_frame  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] open_diagram  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] populate_diagram  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] remove_graph_elements  [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] set_show_diagram_frame  [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] open_diagram  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] populate_diagram  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] remove_graph_elements  [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] set_show_diagram_frame  [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [inherited] irp_unit / irp_model_element methods (covered by rp_unit / rp_model_element checklists)
     # No deprecated IRPDiagram methods.
 
@@ -74,7 +74,9 @@ class IRPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::AddTextBox(java.lang.String text, int xPosition, int yPosition, int nWidth, int nHeight)
         """
-        return cast("IRPGraphElement", self.wrap(self.call_com(lambda: self._com.AddTextBox(text, x_position, y_position, width, height))))
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphElement
+
+        return IRPGraphElement(self.call_com(lambda: self._com.AddTextBox(text, x_position, y_position, width, height)))
 
     def get_custom_views(self) -> IRPCollection:
         """Gets the custom views that were applied to this diagram view.
@@ -108,23 +110,23 @@ class IRPDiagram(IRPUnit):
         """
         return IRPCollection(self.call_com(lambda: self._com.getCorrespondingGraphicElements(model_element._com)))
 
-    def add_free_shape_by_type(self, type_: str, x: int, y: int, width: int, height: int) -> "IRPGraphElement":
-        """Adds a free shape to the diagram by type.
+    def add_free_shape_by_type(self, type_: str, x_points: IRPCollection, y_points: IRPCollection) -> "IRPGraphElement":
+        """Adds a free shape using its x and y coordinate collections.
 
         Args:
-            type_: The type of free shape to add.
-            x: The X coordinate.
-            y: The Y coordinate.
-            width: The width.
-            height: The height.
+            type_: The shape type, such as ``Polygon`` or ``Rectangle``.
+            x_points: Collection of integer x coordinates.
+            y_points: Collection of integer y coordinates.
 
         Returns:
             The wrapped graph element created.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPDiagram::addFreeShapeByType(java.lang.String type, int x, int y, int width, int height)
+            com.telelogic.rhapsody.core.IRPDiagram::addFreeShapeByType(java.lang.String metaType, com.telelogic.rhapsody.core.IRPCollection xPoints, com.telelogic.rhapsody.core.IRPCollection yPoints)
         """
-        return cast("IRPGraphElement", self.wrap(self.call_com(lambda: self._com.addFreeShapeByType(type_, x, y, width, height))))
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphElement
+
+        return IRPGraphElement(self.call_com(lambda: self._com.AddFreeShapeByType(type_, x_points._com, y_points._com)))
 
     def add_image(self, image_path: str, x: int, y: int, width: int, height: int) -> "IRPGraphElement":
         """Adds an image to the diagram.
@@ -142,39 +144,61 @@ class IRPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::AddImage(java.lang.String imagePath, int x, int y, int width, int height)
         """
-        return cast("IRPGraphElement", self.wrap(self.call_com(lambda: self._com.AddImage(image_path, x, y, width, height))))
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphElement
 
-    def add_new_edge_by_type(self, type_: str, source: "IRPGraphElement", target: "IRPGraphElement") -> "IRPGraphElement":
-        """Adds a new edge to the diagram by type.
+        return IRPGraphElement(self.call_com(lambda: self._com.AddImage(image_path, x, y, width, height)))
+
+    def add_new_edge_by_type(self, type_: str, source: "IRPGraphElement", source_x: int, source_y: int, target: "IRPGraphElement", target_x: int, target_y: int) -> "IRPGraphEdge":
+        """Adds a graphical-only connector between two graph elements.
 
         Args:
-            type_: The type of edge to add.
+            type_: The connector type.
             source: The source graph element.
+            source_x: The source attachment x coordinate.
+            source_y: The source attachment y coordinate.
             target: The target graph element.
+            target_x: The target attachment x coordinate.
+            target_y: The target attachment y coordinate.
 
         Returns:
-            The wrapped graph element created.
+            The wrapped graph edge created.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPDiagram::AddNewEdgeByType(java.lang.String type, com.telelogic.rhapsody.core.IRPGraphElement source, com.telelogic.rhapsody.core.IRPGraphElement target)
+            com.telelogic.rhapsody.core.IRPDiagram::addNewEdgeByType(
+                java.lang.String metaType, com.telelogic.rhapsody.core.IRPGraphElement src,
+                int xSrcPosition, int ySrcPosition, com.telelogic.rhapsody.core.IRPGraphElement trg,
+                int xTrgPosition, int yTrgPosition)
         """
-        return cast("IRPGraphElement", self.wrap(self.call_com(lambda: self._com.AddNewEdgeByType(type_, source._com, target._com))))
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphEdge
 
-    def add_new_edge_for_element(self, element: IRPModelElement) -> "IRPGraphElement":
-        """Adds a new edge for the specified element.
+        return IRPGraphEdge(self.call_com(lambda: self._com.AddNewEdgeByType(type_, source._com, source_x, source_y, target._com, target_x, target_y)))
+
+    def add_new_edge_for_element(self, element: IRPModelElement, source: "IRPGraphNode", source_x: int, source_y: int, target: "IRPGraphNode", target_x: int, target_y: int) -> "IRPGraphEdge":
+        """Adds a connector representation for a model element between two graph nodes.
 
         Args:
-            element: The model element.
+            element: The model element to represent.
+            source: The source graph node.
+            source_x: The source attachment x coordinate.
+            source_y: The source attachment y coordinate.
+            target: The target graph node.
+            target_x: The target attachment x coordinate.
+            target_y: The target attachment y coordinate.
 
         Returns:
-            The wrapped graph element created.
+            The wrapped graph edge created.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPDiagram::AddNewEdgeForElement(com.telelogic.rhapsody.core.IRPModelElement element)
+            com.telelogic.rhapsody.core.IRPDiagram::addNewEdgeForElement(
+                com.telelogic.rhapsody.core.IRPModelElement element, com.telelogic.rhapsody.core.IRPGraphNode src,
+                int xSrcPosition, int ySrcPosition, com.telelogic.rhapsody.core.IRPGraphNode trg,
+                int xTrgPosition, int yTrgPosition)
         """
-        return cast("IRPGraphElement", self.wrap(self.call_com(lambda: self._com.AddNewEdgeForElement(element._com))))
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphEdge
 
-    def add_new_node_by_type(self, type_: str, x: int, y: int, width: int, height: int) -> "IRPGraphElement":
+        return IRPGraphEdge(self.call_com(lambda: self._com.AddNewEdgeForElement(element._com, source._com, source_x, source_y, target._com, target_x, target_y)))
+
+    def add_new_node_by_type(self, type_: str, x: int, y: int, width: int, height: int) -> "IRPGraphNode":
         """Adds a new node to the diagram by type.
 
         Args:
@@ -190,9 +214,11 @@ class IRPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::AddNewNodeByType(java.lang.String type, int x, int y, int width, int height)
         """
-        return cast("IRPGraphElement", self.wrap(self.call_com(lambda: self._com.AddNewNodeByType(type_, x, y, width, height))))
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphNode
 
-    def add_new_node_for_element(self, element: IRPModelElement, x: int, y: int, width: int, height: int) -> "IRPGraphElement":
+        return IRPGraphNode(self.call_com(lambda: self._com.AddNewNodeByType(type_, x, y, width, height)))
+
+    def add_new_node_for_element(self, element: IRPModelElement, x: int, y: int, width: int, height: int) -> "IRPGraphNode":
         """Adds a new node for the specified element.
 
         Args:
@@ -208,7 +234,9 @@ class IRPDiagram(IRPUnit):
         Reference:
             com.telelogic.rhapsody.core.IRPDiagram::AddNewNodeForElement(com.telelogic.rhapsody.core.IRPModelElement element, int x, int y, int width, int height)
         """
-        return cast("IRPGraphElement", self.wrap(self.call_com(lambda: self._com.AddNewNodeForElement(element._com, x, y, width, height))))
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphNode
+
+        return IRPGraphNode(self.call_com(lambda: self._com.AddNewNodeForElement(element._com, x, y, width, height)))
 
     def create_diagram_view(self, name: str) -> "IRPGraphElement":
         """Creates a diagram view with the specified name.
@@ -326,13 +354,18 @@ class IRPDiagram(IRPUnit):
         """
         raise NotImplementedError("updateViewOnServer is not exposed by the registered pywin32 interface.")
 
-    def complete_relations(self) -> None:
-        """Completes the relations in the diagram.
+    def complete_relations(self, graph_elements: IRPCollection, selected_to_all: int) -> None:
+        """Adds connectors for relations between the specified graph elements.
+
+        Args:
+            graph_elements: Graph elements whose relations should be displayed.
+            selected_to_all: Use 0 for relations among the specified elements;
+                use 1 to include their relations to other elements on the diagram.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPDiagram::completeRelations()
+            com.telelogic.rhapsody.core.IRPDiagram::completeRelations(com.telelogic.rhapsody.core.IRPCollection graphElements, int selectedToAll)
         """
-        self.call_com(lambda: self._com.completeRelations())
+        self.call_com(lambda: self._com.completeRelations(graph_elements._com, selected_to_all))
 
     def get_elements_in_diagram(self) -> IRPCollection:
         """Returns the model elements in this diagram.
@@ -450,7 +483,9 @@ class IRPDiagram(IRPUnit):
             com.telelogic.rhapsody.core.IRPDiagram::getPicturesWithImageMap(
                 java.lang.String firstFileName, com.telelogic.rhapsody.core.IRPCollection diagrammap)
         """
-        return IRPCollection(self.call_com(lambda: self._com.getPicturesWithImageMap(first_file_name, diagram_map._com)))
+        result = self.call_com(lambda: self._com.getPicturesWithImageMap(first_file_name, diagram_map._com))
+        file_names, _ = cast(tuple[object, object], result)
+        return IRPCollection(file_names)
 
     def is_open(self) -> int:
         """Checks if the diagram is open.
@@ -482,13 +517,20 @@ class IRPDiagram(IRPUnit):
         """
         self.call_com(lambda: self._com.openDiagram())
 
-    def populate_diagram(self) -> None:
-        """Populates the diagram.
+    def populate_diagram(self, elements_to_populate: IRPCollection, relations_types: IRPCollection, create_content: str) -> None:
+        """Populates the diagram with the specified elements and relation types.
+
+        Args:
+            elements_to_populate: The model elements to add to the diagram.
+            relations_types: Relation-type strings to display, such as ``AllRelations``.
+            create_content: One of ``among``, ``from``, ``to``, or ``fromto``.
 
         Reference:
-            com.telelogic.rhapsody.core.IRPDiagram::populateDiagram()
+            com.telelogic.rhapsody.core.IRPDiagram::populateDiagram(
+                com.telelogic.rhapsody.core.IRPCollection elementsToPopulate,
+                com.telelogic.rhapsody.core.IRPCollection relationsTypes, java.lang.String createContent)
         """
-        self.call_com(lambda: self._com.populateDiagram())
+        self.call_com(lambda: self._com.populateDiagram(elements_to_populate._com, relations_types._com, create_content))
 
     def remove_graph_elements(self, elements: IRPCollection) -> None:
         """Removes the specified graph elements from the diagram.

@@ -49,6 +49,6 @@ class TestIRPNodeIntegration:
             created = node.add_component_instance(self._unique("Instance"))
             found = node.find_component_instance(created.name)
             assert found is not None
-            assert found._com is created._com
+            assert found == created
         finally:
             pkg.delete_from_project()

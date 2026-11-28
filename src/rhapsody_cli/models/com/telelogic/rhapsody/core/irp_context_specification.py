@@ -7,6 +7,17 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IR
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_values import IRPValueSpecification
 
 
+def _cast_context_specification_dispatch(com_obj: object) -> object:
+    """Cast a generic pywin model-element dispatch to IRPContextSpecification."""
+    try:
+        from win32com.client import CastTo, DispatchBaseClass
+    except ImportError:
+        return com_obj
+    if isinstance(com_obj, DispatchBaseClass):
+        return CastTo(com_obj, "IRPContextSpecification")
+    return com_obj
+
+
 class IRPContextSpecification(IRPValueSpecification):
     """Wraps ``IRPContextSpecification``: the exact context of an object.
 
@@ -16,10 +27,13 @@ class IRPContextSpecification(IRPValueSpecification):
     """
 
     # IRPContextSpecification method parity checklist:
-    # [x] multiplicities               [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] value                        [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] multiplicities               [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] value                        [x] impl  [x] docstring  [x] unit test  [x] integration test (populated getter; setter live E_FAIL tracked in #202)
     # [inherited] irp_model_element methods (covered by irp_model_element checklist)
     # [inherited] irp_value_specification methods (covered by irp_value_specification checklist)
+
+    def __init__(self, com_obj: object) -> None:
+        super().__init__(_cast_context_specification_dispatch(com_obj))
 
     @property
     def multiplicities(self) -> IRPCollection:

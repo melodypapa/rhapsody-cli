@@ -2,7 +2,7 @@
 
 **ID:** SWR_ELEM_00039
 **Title:** IRPFlow exposes flow ends, conveyed elements, and direction through the pywin32 contract
-**Status:** Implemented
+**Status:** Implemented with approved live endpoint deviation
 **Priority:** Medium
 **Description:**
 The `IRPFlow` JavaDoc interface represents a flow between two model elements in
@@ -29,7 +29,12 @@ tests in `tests/unit/models/com/telelogic/rhapsody/core/test_irp_flow.py` use
 only fake COM objects and give 100% statement/branch coverage of the wrapper.
 Integration tests in the mirrored path create real Rhapsody flows, classes,
 instances, and ports, assert populated getter values by identity/name, and
-delete the owning package during cleanup. Those live assertions are CI-only
-on Windows and are unverified in offline runs.
+delete the owning package during cleanup. The four `set_end*_via_port` and
+`set_end*_via_sys_ml_port` tests are user-approved skips: the exact documented
+calls return COM error `-2147221494` even with the port and an `Object` created
+by the same class. The live blocker and skipped methods are recorded in
+`docs/reports/sync-todo/index.md` and issue #202; this requirement remains open
+for a valid endpoint fixture.
+
 **Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_flow.py:IRPFlow
-**Last Changed:** 2026-11-26
+**Last Changed:** 2026-03-19
