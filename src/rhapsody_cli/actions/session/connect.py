@@ -1,12 +1,13 @@
+"""ConnectAction — split from session_action.py."""
+
 """Session actions - connect, disconnect, status, version."""
 
 import argparse
 import json
 import logging
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 
-from rhapsody_cli import __version__
 from rhapsody_cli.actions.abstract_action import RootCommandAction
 from rhapsody_cli.application import RhapsodyApplication
 from rhapsody_cli.exceptions import CliExecutionError, RhapsodyConnectionError
@@ -122,119 +123,3 @@ class ConnectAction(RootCommandAction):
 
         # 4. Default
         return 5
-
-
-class DisconnectAction(RootCommandAction):
-    """Action for `rhapsody-cli disconnect` — disconnect from Rhapsody."""
-
-    def __init__(self) -> None:
-        super().__init__(command_id="disconnect")
-
-    def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
-        """Register the 'disconnect' subcommand and its arguments."""
-        parser = sub_parser.add_parser(self.command_id, help="Disconnect from Rhapsody")
-
-    def execute(self, args: argparse.Namespace) -> None:
-        """Disconnect from Rhapsody and clear session."""
-        session_manager = SessionManager()
-        session = session_manager.load()
-
-        if not session:
-            logger.info("Not connected")
-            return
-
-        # If instance was launched, quit Rhapsody
-        if session.get("instance_type") == "launched":
-            try:
-                app = RhapsodyApplication.connect(attach_only=True)
-                app.quit()
-                logger.info("Closed Rhapsody instance")
-            except RhapsodyConnectionError:
-                logger.warning("Could not quit Rhapsody (may already be closed)")
-
-        # Clear session file
-        session_manager.clear()
-        logger.info("Disconnected from Rhapsody")
-
-
-class StatusAction(RootCommandAction):
-    """Action for `rhapsody-cli status` — show connection status."""
-
-    def __init__(self) -> None:
-        super().__init__(command_id="status")
-
-    def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
-        """Register the 'status' subcommand and its arguments."""
-        parser = sub_parser.add_parser(self.command_id, help="Show connection status")
-
-    def execute(self, args: argparse.Namespace) -> None:
-        """Show connection status."""
-        # NOTE: All output below is the command's result data (not status/log
-        # messages), written to stdout via print() so it stays safe for piping.
-        session_manager = SessionManager()
-        session = session_manager.load()
-
-        if not session:
-            print("Not connected")
-            return
-
-        if not session_manager.is_valid(session):
-            print("Session timed out. Please connect again.")
-            return
-
-        # Show connection info
-        print(f"Connected to Rhapsody (instance type: {session['instance_type']})")
-
-        connected_at = datetime.fromisoformat(session["connected_at"])
-        print(f"Connected at: {connected_at.strftime('%Y-%m-%d %H:%M:%S')}")
-
-        last_activity = datetime.fromisoformat(session["last_activity"])
-        print(f"Last activity: {last_activity.strftime('%Y-%m-%d %H:%M:%S')}")
-
-        timeout_minutes = session["timeout_minutes"]
-        if timeout_minutes == 0:
-            print("Timeout: No timeout")
-        else:
-            elapsed = datetime.now() - last_activity
-            remaining = timedelta(minutes=timeout_minutes) - elapsed
-            if remaining.total_seconds() > 0:
-                print(f"Timeout: {remaining.seconds // 60} minutes remaining")
-            else:
-                print("Timeout: Session expired")
-
-        # Show Rhapsody version
-        try:
-            app = RhapsodyApplication.connect(attach_only=True)
-            version = app.version()
-            print(f"Rhapsody version: {version}")
-        except RhapsodyConnectionError:
-            print("Warning: Rhapsody not running")
-
-
-class VersionAction(RootCommandAction):
-    """Action for `rhapsody-cli version` — show CLI version."""
-
-    def __init__(self) -> None:
-        super().__init__(command_id="version")
-
-    def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
-        """Register the 'version' subcommand and its arguments."""
-        parser = sub_parser.add_parser(self.command_id, help="Show CLI version")
-
-    def execute(self, args: argparse.Namespace) -> None:
-        """Show CLI version and optionally Rhapsody version."""
-        # NOTE: Version output is the command's result data, written to stdout
-        # via print() so it stays safe for piping (e.g. `rhapsody-cli version`).
-        print(f"rhapsody-cli version: {__version__}")
-
-        # Try to show Rhapsody version if connected
-        session_manager = SessionManager()
-        session = session_manager.load()
-
-        if session and session_manager.is_valid(session):
-            try:
-                app = RhapsodyApplication.connect(attach_only=True)
-                version = app.version()
-                print(f"Rhapsody version: {version}")
-            except RhapsodyConnectionError:
-                pass  # Not running, that's OK

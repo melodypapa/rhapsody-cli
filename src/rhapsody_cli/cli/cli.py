@@ -5,7 +5,7 @@ import logging
 import sys
 from typing import Dict, Protocol
 
-from rhapsody_cli.actions.session_action import ConnectAction, DisconnectAction, StatusAction, VersionAction
+from rhapsody_cli.actions.session import ConnectAction, DisconnectAction, StatusAction, VersionAction
 from rhapsody_cli.actions.transfer import ExportAction, ImportAction
 from rhapsody_cli.cli.logging_config import CliLoggingConfigurator
 from rhapsody_cli.commands.attribute_command import AttributeCommand
