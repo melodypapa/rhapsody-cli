@@ -7,7 +7,7 @@ import os
 from datetime import datetime, timedelta
 
 from rhapsody_cli import __version__
-from rhapsody_cli.actions.abstract_action import AbstractAction
+from rhapsody_cli.actions.abstract_action import RootCommandAction
 from rhapsody_cli.application import RhapsodyApplication
 from rhapsody_cli.exceptions import CliExecutionError, RhapsodyConnectionError
 from rhapsody_cli.session import Session, SessionManager
@@ -15,7 +15,7 @@ from rhapsody_cli.session import Session, SessionManager
 logger = logging.getLogger(__name__)
 
 
-class ConnectAction(AbstractAction):
+class ConnectAction(RootCommandAction):
     """Action for `rhapsody-cli connect` — connect to Rhapsody.
 
     Creates a session file if connection succeeds. Informs user if already connected.
@@ -125,7 +125,7 @@ class ConnectAction(AbstractAction):
         return 5
 
 
-class DisconnectAction(AbstractAction):
+class DisconnectAction(RootCommandAction):
     """Action for `rhapsody-cli disconnect` — disconnect from Rhapsody."""
 
     def __init__(self) -> None:
@@ -159,7 +159,7 @@ class DisconnectAction(AbstractAction):
         logger.info("Disconnected from Rhapsody")
 
 
-class StatusAction(AbstractAction):
+class StatusAction(RootCommandAction):
     """Action for `rhapsody-cli status` — show connection status."""
 
     def __init__(self) -> None:
@@ -214,7 +214,7 @@ class StatusAction(AbstractAction):
             print("Warning: Rhapsody not running")
 
 
-class VersionAction(AbstractAction):
+class VersionAction(RootCommandAction):
     """Action for `rhapsody-cli version` — show CLI version."""
 
     def __init__(self) -> None:

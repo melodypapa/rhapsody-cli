@@ -1,36 +1,36 @@
-"""Tests for OperationCommand dispatcher.
+"""Tests for OperationCommand dispatcher (register/run contract)."""
 
-UTS_OP_00022: OperationCommand registers all subcommands
-"""
+import argparse
 
 import pytest
 
 from rhapsody_cli.commands.operation_command import OperationCommand
-from rhapsody_cli.exceptions import CliExecutionError
 
 
 class TestOperationCommand:
     """Test OperationCommand dispatcher."""
 
-    def test_command_id_is_operation(self) -> None:
+    def test_command_name_is_operation(self) -> None:
         """Test that command name is 'operation'."""
-        cmd = OperationCommand(["create", "--path", "Sensors/Cls", '{"name":"Test"}'])
-        assert cmd._subcommand == "create"
+        cmd = OperationCommand()
+        assert cmd._command_name() == "operation"
 
-    def test_missing_subcommand_raises_error(self) -> None:
-        """Test that missing subcommand raises error."""
-        with pytest.raises(CliExecutionError):
-            OperationCommand([])
+    def test_missing_subcommand_is_rejected(self) -> None:
+        """Group-level subparsers are required: bare group parse exits 2."""
+        root = argparse.ArgumentParser()
+        subparsers = root.add_subparsers(required=True)
+        cmd = OperationCommand()
+        cmd.register(subparsers)
+        with pytest.raises(SystemExit) as exc_info:
+            root.parse_args(["operation"])
+        assert exc_info.value.code == 2
 
-    def test_registers_all_five_subcommands(self) -> None:
-        """UTS_OP_00022: Test that all 5 subcommands are registered."""
-        cmd = OperationCommand(["create", "--path", "Sensors/Cls", '{"name":"Test"}'])
+    def test_registers_all_5_subcommands(self) -> None:
+        """All 5 subcommands are registered."""
+        cmd = OperationCommand()
         actions = cmd.get_actions()
         command_ids = [a.command_id for a in actions]
 
-        assert "create" in command_ids
-        assert "delete" in command_ids
-        assert "view" in command_ids
-        assert "list" in command_ids
-        assert "update" in command_ids
+        for expected in ["create", "delete", "list", "view", "update"]:
+            assert expected in command_ids
         assert len(actions) == 5

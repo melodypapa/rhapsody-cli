@@ -2,7 +2,7 @@
 
 import argparse
 import logging
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 from rhapsody_cli.actions.abstract_action import AbstractAction
 from rhapsody_cli.exceptions import CliExecutionError
@@ -18,33 +18,9 @@ class AbstractCommand:
     dispatches to the action selected by the parsed namespace (run).
     """
 
-    def __init__(self, args: Optional[List[str]] = None) -> None:
-        """Initialize the group.
-
-        Args:
-            args: Legacy two-tier usage passes raw args for immediate parsing;
-                registry usage constructs without args and defers to register().
-        """
+    def __init__(self) -> None:
+        """Initialize the group with an empty subcommand map (filled by register)."""
         self._sub_commands: Dict[str, AbstractAction] = {}
-        self._parsed_args: Optional[argparse.Namespace] = None
-        self._subcommand: Optional[str] = None
-        if args is not None:
-            self._legacy_parse(args)
-
-    def _legacy_parse(self, args: List[str]) -> None:
-        """Two-tier constructor path (removed when main() moves to the registry)."""
-        name = self._command_name()
-        parser = argparse.ArgumentParser(prog=f"rhapsody-cli {name}")
-        actions = self.get_actions()
-        self._sub_commands = {action.command_id: action for action in actions}
-        sub_parsers = parser.add_subparsers(dest="subcommand")
-        for action in actions:
-            action.init_arguments(sub_parsers)
-        self._parsed_args = parser.parse_args(args)
-        self._subcommand = self._parsed_args.subcommand
-        if not self._subcommand:
-            parser.print_help()
-            raise CliExecutionError(f"Missing subcommand for '{name}'", exit_code=2)
 
     def get_actions(self) -> List[AbstractAction]:
         """Return the list of actions (subcommands) for this command group.
@@ -81,20 +57,6 @@ class AbstractCommand:
             logger.error("Unknown subcommand '%s'", namespace.subcommand)
             raise CliExecutionError(f"Unknown subcommand '{namespace.subcommand}'", exit_code=2)
         action.execute(namespace)
-
-    def execute(self, output_format: str = "table") -> None:
-        """Legacy two-tier dispatch (removed with _legacy_parse).
-
-        Args:
-            output_format: The output format ("table", "json", "csv") to set
-                on the dispatched action before executing it.
-        """
-        action = self._sub_commands.get(self._subcommand) if self._subcommand else None
-        if action is None or self._parsed_args is None:
-            raise CliExecutionError(f"Unknown subcommand '{self._subcommand}'", exit_code=2)
-        if hasattr(action, "output_format"):
-            action.output_format = output_format
-        action.execute(self._parsed_args)
 
     def _command_name(self) -> str:
         """Get the command name (lowercase class name)."""

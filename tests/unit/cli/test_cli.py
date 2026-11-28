@@ -1,30 +1,112 @@
-"""Tests for the top-level CLI dispatcher (rhapsody_cli.cli.cli)."""
+"""Tests for the registry-driven root CLI dispatcher (rhapsody_cli.cli.cli)."""
 
-from typing import List
+import argparse
 from unittest.mock import MagicMock, patch
 
-from rhapsody_cli.cli.cli import main
+import pytest
+
+from rhapsody_cli.cli.cli import build_registry, build_root_parser, main
+from rhapsody_cli.exceptions import CliExecutionError
 
 
-def _run_main(argv: List[str]) -> MagicMock:
-    """Run main() with the given argv (excluding the program name), returning the mocked Command class."""
-    with patch("sys.argv", ["rhapsody-cli"] + argv):
-        with patch("rhapsody_cli.cli.cli.PackageCommand") as mock_command_cls:
-            mock_instance = MagicMock()
-            mock_command_cls.return_value = mock_instance
+def test_registry_covers_all_commands() -> None:
+    commands = build_registry()
+    assert set(commands) == {
+        "connect",
+        "disconnect",
+        "status",
+        "version",
+        "class",
+        "attribute",
+        "operation",
+        "package",
+        "port",
+        "project",
+    }
+
+
+def test_root_parser_registers_every_command() -> None:
+    parser = build_root_parser(build_registry())
+    subparsers = next(a for a in parser._actions if isinstance(a, argparse._SubParsersAction))
+    assert set(subparsers.choices) == set(build_registry())
+
+
+def test_global_format_default_is_table() -> None:
+    parser = build_root_parser(build_registry())
+    namespace = parser.parse_args(["package", "list", "--path", "X"])
+    assert namespace.format == "table"
+    assert namespace.subcommand == "list"
+
+
+def test_unknown_command_exits_2(capsys: pytest.CaptureFixture) -> None:
+    with patch("sys.argv", ["rhapsody-cli", "bogus"]):
+        with pytest.raises(SystemExit) as exc_info:
             main()
-    return mock_instance
+    assert exc_info.value.code == 2
+    assert "invalid choice" in capsys.readouterr().err
 
 
-def test_format_flag_is_parsed_and_passed_to_execute() -> None:
-    """--format json should result in cmd.execute(output_format='json')."""
-    mock_instance = _run_main(["package", "query", "--format", "json"])
+def test_missing_command_exits_2(capsys: pytest.CaptureFixture) -> None:
+    with patch("sys.argv", ["rhapsody-cli"]):
+        with pytest.raises(SystemExit) as exc_info:
+            main()
+    assert exc_info.value.code == 2
+    assert "the following arguments are required: <command>" in capsys.readouterr().err
 
-    mock_instance.execute.assert_called_once_with(output_format="json")
+
+def test_main_runs_selected_entry() -> None:
+    entry = MagicMock()
+    namespace = MagicMock(subcommand="list", verbose=False, entry=entry)
+    with patch("sys.argv", ["rhapsody-cli", "package", "list"]):
+        with patch("rhapsody_cli.cli.cli.build_registry") as mock_registry:
+            with patch("rhapsody_cli.cli.cli.build_root_parser") as mock_build:
+                mock_parser = MagicMock()
+                mock_parser.parse_args.return_value = namespace
+                mock_build.return_value = mock_parser
+                mock_registry.return_value = {"package": entry}
+                with patch("rhapsody_cli.cli.cli.CliLoggingConfigurator") as mock_log:
+                    main()
+    entry.run.assert_called_once_with(namespace)
+    mock_log.return_value.configure.assert_called_once()
 
 
-def test_missing_format_flag_defaults_to_table() -> None:
-    """Without --format, cmd.execute(output_format='table') should be used."""
-    mock_instance = _run_main(["package", "query"])
+def test_main_cli_execution_error_uses_exit_code() -> None:
+    entry = MagicMock()
+    entry.run.side_effect = CliExecutionError("boom", exit_code=3)
+    with patch("sys.argv", ["rhapsody-cli", "package", "list"]):
+        with patch("rhapsody_cli.cli.cli.build_registry", return_value={"package": entry}):
+            with patch("rhapsody_cli.cli.cli.build_root_parser") as mock_build:
+                mock_parser = MagicMock()
+                mock_parser.parse_args.return_value = MagicMock(verbose=False, entry=entry)
+                mock_build.return_value = mock_parser
+                with pytest.raises(SystemExit) as exc_info:
+                    main()
+    assert exc_info.value.code == 3
 
-    mock_instance.execute.assert_called_once_with(output_format="table")
+
+def test_main_keyboard_interrupt_exits_130() -> None:
+    entry = MagicMock()
+    entry.run.side_effect = KeyboardInterrupt
+    with patch("sys.argv", ["rhapsody-cli", "package", "list"]):
+        with patch("rhapsody_cli.cli.cli.build_registry", return_value={"package": entry}):
+            with patch("rhapsody_cli.cli.cli.build_root_parser") as mock_build:
+                mock_parser = MagicMock()
+                mock_parser.parse_args.return_value = MagicMock(verbose=False, entry=entry)
+                mock_build.return_value = mock_parser
+                with pytest.raises(SystemExit) as exc_info:
+                    main()
+    assert exc_info.value.code == 130
+
+
+def test_main_generic_exception_exits_1() -> None:
+    entry = MagicMock()
+    entry.run.side_effect = RuntimeError("kaboom")
+    with patch("sys.argv", ["rhapsody-cli", "package", "list"]):
+        with patch("rhapsody_cli.cli.cli.build_registry", return_value={"package": entry}):
+            with patch("rhapsody_cli.cli.cli.build_root_parser") as mock_build:
+                mock_parser = MagicMock()
+                mock_parser.parse_args.return_value = MagicMock(verbose=False, entry=entry)
+                mock_build.return_value = mock_parser
+                with pytest.raises(SystemExit) as exc_info:
+                    main()
+    assert exc_info.value.code == 1

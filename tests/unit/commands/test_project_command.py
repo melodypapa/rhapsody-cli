@@ -12,21 +12,29 @@ from rhapsody_cli.actions.project_action import (
     ProjectOpenAction,
 )
 from rhapsody_cli.commands.project_command import ProjectCommand
-from rhapsody_cli.exceptions import CliExecutionError
 
 
 class TestProjectCommandDispatch:
-    """Tests for the ProjectCommand group dispatcher."""
+    """Tests for the ProjectCommand group dispatcher (register/run contract)."""
 
-    def test_open_subcommand_dispatches(self) -> None:
-        """Test: 'open' subcommand is parsed correctly."""
-        cmd = ProjectCommand(["open", "MyProject.rpy"])
-        assert cmd._subcommand == "open"
+    def test_open_subcommand_parses(self) -> None:
+        """Test: 'open' subcommand is parsed through the registered group parser."""
+        cmd = ProjectCommand()
+        root = argparse.ArgumentParser()
+        subparsers = root.add_subparsers(required=True)
+        cmd.register(subparsers)
+        namespace = root.parse_args(["project", "open", "MyProject.rpy"])
+        assert namespace.subcommand == "open"
 
     def test_missing_subcommand_exits(self) -> None:
-        """Test: no subcommand raises CliExecutionError."""
-        with pytest.raises(CliExecutionError):
-            ProjectCommand([])
+        """Test: bare group parse exits 2 (required sub-subparsers)."""
+        cmd = ProjectCommand()
+        root = argparse.ArgumentParser()
+        subparsers = root.add_subparsers(required=True)
+        cmd.register(subparsers)
+        with pytest.raises(SystemExit) as exc_info:
+            root.parse_args(["project"])
+        assert exc_info.value.code == 2
 
 
 class TestProjectOpenAction:
@@ -130,7 +138,7 @@ class TestProjectCommandExportImportRegistration:
 
     def test_get_actions_includes_export_action(self) -> None:
         """ProjectCommand.get_actions() must include a ProjectExportAction instance."""
-        cmd = ProjectCommand(["export", "--file", "out.yaml"])
+        cmd = ProjectCommand()
         actions = cmd.get_actions()
         command_ids = [a.command_id for a in actions]
 
@@ -138,7 +146,7 @@ class TestProjectCommandExportImportRegistration:
 
     def test_get_actions_includes_import_action(self) -> None:
         """ProjectCommand.get_actions() must include a ProjectImportAction instance."""
-        cmd = ProjectCommand(["import", "--file", "in.yaml"])
+        cmd = ProjectCommand()
         actions = cmd.get_actions()
         command_ids = [a.command_id for a in actions]
 
@@ -146,7 +154,7 @@ class TestProjectCommandExportImportRegistration:
 
     def test_get_actions_returns_six_actions(self) -> None:
         """ProjectCommand.get_actions() must return exactly 6 actions after adding export/import."""
-        cmd = ProjectCommand(["open", "MyProject.rpy"])
+        cmd = ProjectCommand()
         actions = cmd.get_actions()
 
         assert len(actions) == 6
