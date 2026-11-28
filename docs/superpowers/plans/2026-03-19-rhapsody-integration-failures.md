@@ -164,4 +164,4 @@
 
 - [x] Final gates: Ruff, Black, mypy, and the full unit suite pass (2323 tests); the rhapsody-sync harness passes (90 tests).
 - [x] Fresh full integration suite: 591 passed, 14 approved skips, 0 failed. Issue #202 was updated with the final counts and remaining P0 live blockers.
-- [ ] Review the complete staged/unstaged diff, stage only the intended related files, commit with a `Refs #202` footer (the issue stays open), and push the current authorized branch.
+- [x] Reviewed the staged diff; committed as `3cb8f43` with `Refs #202` and pushed to `origin/fix/irp-accept-event-action-sync`. No PR was requested; issue #202 remains open.
