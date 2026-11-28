@@ -51,3 +51,45 @@ class TestWriteTextFile:
             blocker = tmp_path / "blocker"
             blocker.write_text("i am a file")
             write_text_file(str(blocker / "out.txt"), "x")
+
+
+class TestApplyStereotypes:
+    def test_applies_stereotypes_with_meta_class(self) -> None:
+        from unittest.mock import MagicMock
+
+        from rhapsody_cli.actions.support import apply_stereotypes
+
+        element = MagicMock()
+        apply_stereotypes(element, {"stereotypes": ["S1", "S2"]}, "Package")
+        assert element.add_stereotype.call_args_list[0] == (("S1", "Package"),)
+        assert element.add_stereotype.call_args_list[1] == (("S2", "Package"),)
+
+    def test_no_stereotypes_key_is_noop(self) -> None:
+        from unittest.mock import MagicMock
+
+        from rhapsody_cli.actions.support import apply_stereotypes
+
+        element = MagicMock()
+        apply_stereotypes(element, {}, "Class")
+        element.add_stereotype.assert_not_called()
+
+
+class TestApplyTags:
+    def test_applies_tags_via_set_property_value(self) -> None:
+        from unittest.mock import MagicMock
+
+        from rhapsody_cli.actions.support import apply_tags
+
+        element = MagicMock()
+        apply_tags(element, {"tags": {"k1": "v1", "k2": "v2"}})
+        assert element.set_property_value.call_args_list[0] == (("k1", "v1"),)
+        assert element.set_property_value.call_args_list[1] == (("k2", "v2"),)
+
+    def test_no_tags_key_is_noop(self) -> None:
+        from unittest.mock import MagicMock
+
+        from rhapsody_cli.actions.support import apply_tags
+
+        element = MagicMock()
+        apply_tags(element, {})
+        element.set_property_value.assert_not_called()

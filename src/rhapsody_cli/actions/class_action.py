@@ -23,7 +23,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, cast
 
 from rhapsody_cli.actions.abstract_action import ElementManagementAction, SessionAwareAction
-from rhapsody_cli.actions.support import load_json_data, write_text_file
+from rhapsody_cli.actions.support import apply_stereotypes, load_json_data, write_text_file
 from rhapsody_cli.cli.formatters import OutputFormatter
 from rhapsody_cli.exceptions import CliExecutionError
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
@@ -278,10 +278,8 @@ class ClassCreateAction(AbstractClassAction):
                 cls.set_property_value(key, val)
 
     def _set_stereotypes(self, cls: IRPModelElement, attrs: Dict[str, object]) -> None:
-        """Apply stereotypes."""
-        if "stereotypes" in attrs:
-            for stereotype in cast(List[str], attrs["stereotypes"]):
-                cls.add_stereotype(stereotype, "Class")
+        """Apply stereotypes via the shared applier (see actions.support)."""
+        apply_stereotypes(cls, attrs, "Class")
 
     def _set_operations(self, cls: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Add operations."""

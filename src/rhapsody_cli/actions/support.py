@@ -80,3 +80,36 @@ def write_text_file(file_path: str, content: str) -> None:
             f.write(content)
     except OSError as e:
         raise CliExecutionError(f"Failed to write file '{file_path}': {e}") from e
+
+
+def apply_stereotypes(element: object, attrs: "dict[str, object]", meta_class: str) -> None:
+    """Apply the 'stereotypes' list via element.add_stereotype(name, meta_class).
+
+    Exact semantics of the per-domain copies this consolidates (package and
+    class create/update); the meta-class argument is domain-specific.
+
+    Args:
+        element: The model element receiving the stereotypes.
+        attrs: Attribute mapping possibly containing a 'stereotypes' list.
+        meta_class: The meta-class name passed to add_stereotype (e.g. "Package").
+    """
+    stereotypes = attrs.get("stereotypes")
+    if stereotypes is not None:
+        for stereotype in cast("list[str]", stereotypes):
+            element.add_stereotype(stereotype, meta_class)  # type: ignore[attr-defined]
+
+
+def apply_tags(element: object, attrs: "dict[str, object]") -> None:
+    """Apply the 'tags' mapping via element.set_property_value(key, value).
+
+    Exact semantics of the per-domain copies this consolidates (package and
+    class create/update): tags are implemented as custom property values.
+
+    Args:
+        element: The model element receiving the tags.
+        attrs: Attribute mapping possibly containing a 'tags' mapping.
+    """
+    tags = attrs.get("tags")
+    if tags is not None:
+        for key, val in cast("dict[str, str]", tags).items():
+            element.set_property_value(key, val)  # type: ignore[attr-defined]

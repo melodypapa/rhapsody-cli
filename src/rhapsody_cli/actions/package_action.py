@@ -20,7 +20,7 @@ from pathlib import Path
 from typing import Dict, List, cast
 
 from rhapsody_cli.actions.abstract_action import ElementManagementAction, SessionAwareAction
-from rhapsody_cli.actions.support import load_json_data, write_text_file
+from rhapsody_cli.actions.support import apply_stereotypes, apply_tags, load_json_data, write_text_file
 from rhapsody_cli.cli.formatters import OutputFormatter
 from rhapsody_cli.exceptions import CliExecutionError
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
@@ -279,16 +279,12 @@ class PackageCreateAction(AbstractPackageAction):
                 package.set_property_value(key, val)
 
     def _set_stereotypes(self, package: IRPModelElement, attrs: Dict[str, object]) -> None:
-        """Apply stereotypes."""
-        if "stereotypes" in attrs:
-            for stereotype in cast(List[str], attrs["stereotypes"]):
-                package.add_stereotype(stereotype, "Package")
+        """Apply stereotypes via the shared applier (see actions.support)."""
+        apply_stereotypes(package, attrs, "Package")
 
     def _set_tags(self, package: IRPModelElement, attrs: Dict[str, object]) -> None:
-        """Set tags."""
-        if "tags" in attrs:
-            for key, val in cast(Dict[str, str], attrs["tags"]).items():
-                package.set_property_value(key, val)
+        """Set tags via the shared applier (see actions.support)."""
+        apply_tags(package, attrs)
 
 
 class PackageDeleteAction(AbstractPackageAction):
