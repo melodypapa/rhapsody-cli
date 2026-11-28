@@ -9,15 +9,15 @@ registry and exits with the CLI error funnel.
 """
 
 import json as _json
-from typing import Dict, List
+from typing import Dict, List, Tuple
 from unittest.mock import MagicMock, patch
 
 import pytest
 
-from rhapsody_cli.cli.cli import build_registry, build_root_parser, main
+from rhapsody_cli.cli.cli import CliEntry, build_registry, build_root_parser, main
 from rhapsody_cli.exceptions import CliExecutionError
 
-PARSE_ROUTE_CASES: List[tuple] = [
+PARSE_ROUTE_CASES: List[Tuple[List[str], str]] = [
     (["connect"], "connect"),
     (["disconnect"], "disconnect"),
     (["status"], "status"),
@@ -33,8 +33,8 @@ PARSE_ROUTE_CASES: List[tuple] = [
 
 @pytest.mark.parametrize("argv,command", PARSE_ROUTE_CASES)
 def test_command_parses_and_selects_its_registry_entry(argv: List[str], command: str) -> None:
-    commands: Dict[str, object] = build_registry()
-    parser = build_root_parser(commands)  # type: ignore[arg-type]
+    commands: Dict[str, CliEntry] = build_registry()
+    parser = build_root_parser(commands)
     namespace = parser.parse_args(argv)
     assert namespace.command == command
     assert namespace.entry is commands[command]
