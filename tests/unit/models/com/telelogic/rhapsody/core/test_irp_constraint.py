@@ -2,7 +2,7 @@
 
 import sys
 from types import ModuleType
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -50,3 +50,11 @@ def test_constraints_by_me_casts_generic_pywin_dispatch_to_constraint_interface(
     cast_to.assert_called_once_with(raw, "IRPConstraint")
     assert isinstance(result, IRPCollection)
     assert result._com is typed.constraintsByMe
+
+
+def test_constraints_by_me_keeps_com_object_when_pywin32_is_unavailable() -> None:
+    raw = make_fake_element("Constraint", properties={"constraintsByMe": make_fake_collection([])})
+    with patch.dict(sys.modules, {"win32com.client": None}):
+        result = IRPConstraint(raw).constraints_by_me
+    assert isinstance(result, IRPCollection)
+    assert result._com is raw.constraintsByMe
