@@ -126,6 +126,8 @@ class RhapsodyContextAction(AbstractAction):
         """
         if self.output_format == "json" and not force_table:
             output = OutputFormatter.json_format(data)
+        elif self.output_format == "csv":
+            output = OutputFormatter.csv_format(headers, table_rows)
         else:
             output = OutputFormatter.table(headers, table_rows)
         # NOTE: Result data to stdout (not logger) so it stays safe for piping/redirection.
@@ -196,6 +198,30 @@ class SessionAwareAction(RhapsodyContextAction):
             raise CliExecutionError("Not connected. Run 'rhapsody-cli connect' first.")
 
         session_manager.update_activity(session)
+
+
+class RootCommandAction(AbstractAction):
+    """Base for top-level single commands registered directly in the root registry.
+
+    Implements the CliEntry protocol (register/run) by delegating to the
+    action's own init_arguments/execute.
+    """
+
+    def register(self, subparsers: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
+        """Register this command's subparser in the root parser.
+
+        Args:
+            subparsers: The root parser's subparsers action.
+        """
+        self.init_arguments(subparsers)
+
+    def run(self, namespace: argparse.Namespace) -> None:
+        """Execute this command from the parsed root namespace.
+
+        Args:
+            namespace: The argparse namespace parsed by the root parser.
+        """
+        self.execute(namespace)
 
 
 class ElementManagementAction(RhapsodyContextAction):
