@@ -343,6 +343,7 @@ open until the live behavior is resolved.
 | IRPProject | `nodes` | `nodes` is inherited from `IRPPackage`; the project root rejects both `addNode(name)` and `addNewAggr("Node", name)`, and a nested-package node is not returned by `project.nodes`. No populated project-root fixture is available. |
 | IRPUseCase | `is_behavior_overriden` | Runtime stub (user approved 2026-11-25): setter faults live; see the NotImplementedError evidence ledger. |
 | IRPConstraint | `constraints_by_me` | JavaDoc exposes only getConstraintsByMe; the COM property is read-only and no documented API attaches an affected element, so only the empty collection is observable. |
+| IRPClassifierRole | `referenced_sequence_diagram` | JavaDoc exposes the getter/setter pair, but a real sequence diagram cannot be attached to a classifier role in the live project; only the documented empty state (`None`) is observable. The test `test_referenced_sequence_diagram_unset_returns_none` asserts that empty state; the exact COM binding is retained and the populated getter remains unresolved, tracked in issue #202. |
 ## Evidence notes
 
 **Fresh live evidence (2026-11-25, hidden-UI Rhapsody):** three of the original four WEAK getter

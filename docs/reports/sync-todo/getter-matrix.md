@@ -471,7 +471,7 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | --- | --- | --- | --- |
 | `formal_classifier` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier_role.py::test_formal_classifier` | identity/value | OK |
 | `formal_instance` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier_role.py::test_formal_instance` | identity/value | OK |
-| `referenced_sequence_diagram` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier_role.py::test_referenced_sequence_diagram` | identity/value | OK |
+| `referenced_sequence_diagram` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier_role.py::test_referenced_sequence_diagram_unset_returns_none` | none | MISSING |
 | `role_type` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_classifier_role.py::test_role_type` | identity/value | OK |
 
 ## IRPEnumerationLiteral
@@ -501,4 +501,3 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |
-

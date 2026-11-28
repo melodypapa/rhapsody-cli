@@ -1,6 +1,6 @@
 # Sync todo — `common`
 
-**7 classes** · ✅ 4 archived · ⚠️ 1 complete with deviation · ⬜ 2 open
+**7 classes** · ✅ 4 archived · ⚠️ 2 complete with deviation · ⬜ 1 open
 
 One row per sync run. A step is ticked only when its evidence lands; a row is archived only after all eight steps pass. Binding rule: one pywin32-exposed COM member per call — `call_com(lambda: self._com.Name(...))` for methods, `get_com_property` / `set_com_property` for properties; catalog-absent sites are blockers, never blind migrations. Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/`, mirrored tests under `tests/{unit,integration}/models/com/telelogic/rhapsody/core/`.
 
@@ -24,10 +24,10 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 | # | Class | Interface | Legacy source | Sites | Owned | Steps | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | `irp_sys_ml_port_api_report` | IRPSysMLPort | `rhapsody_cli/models/elements/common/model_other_model.py` | 3 | 7 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
-| 2 | `irp_classifier_role_api_report` | IRPClassifierRole | `rhapsody_cli/models/elements/common/model_other_model.py` | 1 | 8 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
+| 2 | `irp_classifier_role_api_report` | IRPClassifierRole | `rhapsody_cli/models/elements/common/model_other_model.py` | 1 | 8 | 8/8 (①②③④⑤⑥⑦⑧) | ⚠️ complete with deviation |
 | 3 | `irp_enumeration_literal_api_report` | IRPEnumerationLiteral | `rhapsody_cli/models/elements/common/model_misc.py` | 1 | 2 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
-| 4 | `irp_constraint_api_report` | IRPConstraint | `rhapsody_cli/models/elements/common/model_misc.py` | 1 | 1 | 1/8 (②) | ⬜ open |
-| 5 | `irp_comment_api_report` | IRPComment | `rhapsody_cli/models/elements/common/model_misc.py` | 0 | 0 | 1/8 (②) | ⬜ open |
+| 4 | `irp_constraint_api_report` | IRPConstraint | `rhapsody_cli/models/elements/common/model_misc.py` | 1 | 1 | 7/8 (①②③④⑥⑦⑧) | ⬜ open |
+| 5 | `irp_comment_api_report` | IRPComment | `rhapsody_cli/models/elements/common/model_misc.py` | 0 | 0 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 | 6 | `irp_type_remediation` | IRPType | — | — | — | 8/8 (①②③④⑤⑥⑦⑧) | ⚠️ complete with deviation |
 | 7 | `irp_type_api_report` | IRPType | `models/elements/common/model_other_model.py` | — | — | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 
@@ -50,9 +50,9 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 </details>
 
 <details>
-<summary><code>irp_classifier_role_api_report</code> · IRPClassifierRole · 8/8 steps · ✅ archived</summary>
+<summary><code>irp_classifier_role_api_report</code> · IRPClassifierRole · 8/8 steps · ⚠️ complete with deviation</summary>
 
-- **Status (2026-11-27):** verify_sync passes; all steps archived.
+- **Status (2026-11-28):** re-sync found `referenced_sequence_diagram` has only an empty-state live test; the matrix had falsely recorded it as `identity/value`/`OK` on a stale test name. Corrected to `none`/`MISSING` with a P0 ledger row (issue #202). The blocker stays open; this is not a live-green claim for that getter.
 - **Note:** usage 34 src / 13 test refs, 8 owned members. Split `IRPClassifierRole` into `irp_classifier_role.py`; this was the last class in `irp_other_model.py`, so the empty shim was removed. Four JavaDoc accessor pairs map to pywin32 properties; the recursive-roles getter remains a method.
 - [x] ① §1
 - [x] ② §2 — canonical module `irp_classifier_role.py`; exports and direct imports updated
