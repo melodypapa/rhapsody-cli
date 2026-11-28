@@ -1,6 +1,6 @@
 """Diagram-family wrappers: mirrors IRPDiagram from com.telelogic.rhapsody.core."""
 
-from typing import TYPE_CHECKING, Optional, cast
+from typing import TYPE_CHECKING, Optional, Tuple, cast
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
@@ -484,7 +484,7 @@ class IRPDiagram(IRPUnit):
                 java.lang.String firstFileName, com.telelogic.rhapsody.core.IRPCollection diagrammap)
         """
         result = self.call_com(lambda: self._com.getPicturesWithImageMap(first_file_name, diagram_map._com))
-        file_names, _ = cast(tuple[object, object], result)
+        file_names, _ = cast(Tuple[object, object], result)
         return IRPCollection(file_names)
 
     def is_open(self) -> int:
