@@ -11,7 +11,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from rhapsody_cli.actions.abstract_action import ElementManagementAction
-from rhapsody_cli.actions.package_action import (
+from rhapsody_cli.actions.package import (
     AbstractPackageAction,
     PackageCreateAction,
 )
@@ -337,7 +337,7 @@ class TestPackageDeleteAction:
 
     def test_delete_package_success(self) -> None:
         """UTS_PKG_00011: Test successful package deletion."""
-        from rhapsody_cli.actions.package_action import PackageDeleteAction
+        from rhapsody_cli.actions.package import PackageDeleteAction
 
         action = PackageDeleteAction()
         mock_package = MagicMock()
@@ -352,7 +352,7 @@ class TestPackageDeleteAction:
 
     def test_delete_package_handles_error(self) -> None:
         """UTS_PKG_00012: Test error handling during deletion."""
-        from rhapsody_cli.actions.package_action import PackageDeleteAction
+        from rhapsody_cli.actions.package import PackageDeleteAction
 
         action = PackageDeleteAction()
         mock_package = MagicMock()
@@ -378,7 +378,7 @@ class TestPackageViewAction:
 
     def test_view_table_output(self, capsys: Any) -> None:
         """UTS_PKG_00013: Test table format output."""
-        from rhapsody_cli.actions.package_action import PackageViewAction
+        from rhapsody_cli.actions.package import PackageViewAction
 
         action = PackageViewAction()
         mock_package = MagicMock()
@@ -402,7 +402,7 @@ class TestPackageViewAction:
 
     def test_view_json_output_to_file(self, tmp_path: Any) -> None:
         """UTS_PKG_00014: Test JSON output to file."""
-        from rhapsody_cli.actions.package_action import PackageViewAction
+        from rhapsody_cli.actions.package import PackageViewAction
 
         action = PackageViewAction()
         mock_package = MagicMock()
@@ -427,7 +427,7 @@ class TestPackageViewAction:
 
     def test_view_csv_output(self, capsys: Any) -> None:
         """UTS_PKG_00015: Test CSV format output."""
-        from rhapsody_cli.actions.package_action import PackageViewAction
+        from rhapsody_cli.actions.package import PackageViewAction
 
         action = PackageViewAction()
         mock_package = MagicMock()
@@ -463,7 +463,7 @@ class TestPackageListAction:
 
     def test_list_nested_packages(self, capsys: Any) -> None:
         """UTS_PKG_00016: Test listing nested packages."""
-        from rhapsody_cli.actions.package_action import PackageListAction
+        from rhapsody_cli.actions.package import PackageListAction
 
         action = PackageListAction()
         mock_parent = MagicMock()
@@ -487,7 +487,7 @@ class TestPackageListAction:
 
     def test_list_empty_package(self, capsys: Any) -> None:
         """UTS_PKG_00017: Test listing empty package."""
-        from rhapsody_cli.actions.package_action import PackageListAction
+        from rhapsody_cli.actions.package import PackageListAction
 
         action = PackageListAction()
         mock_parent = MagicMock()
@@ -506,7 +506,7 @@ class TestPackageListAction:
 
     def test_list_json_output(self, capsys: Any) -> None:
         """UTS_PKG_00018: Test JSON output format."""
-        from rhapsody_cli.actions.package_action import PackageListAction
+        from rhapsody_cli.actions.package import PackageListAction
 
         action = PackageListAction()
         mock_parent = MagicMock()
@@ -543,7 +543,7 @@ class TestPackageUpdateAction:
 
     def test_update_package_with_path(self) -> None:
         """UTS_PKG_00035: Test updating package via --path."""
-        from rhapsody_cli.actions.package_action import PackageUpdateAction
+        from rhapsody_cli.actions.package import PackageUpdateAction
 
         action = PackageUpdateAction()
         mock_package = MagicMock()
@@ -561,7 +561,7 @@ class TestPackageUpdateAction:
 
     def test_update_package_with_guid(self) -> None:
         """UTS_PKG_00036: Test updating package via --guid with type validation."""
-        from rhapsody_cli.actions.package_action import PackageUpdateAction
+        from rhapsody_cli.actions.package import PackageUpdateAction
 
         action = PackageUpdateAction()
         mock_root = MagicMock()
@@ -583,7 +583,7 @@ class TestPackageUpdateAction:
 
     def test_update_package_guid_wrong_type(self) -> None:
         """UTS_PKG_00037: Test --guid resolving to non-Package raises error."""
-        from rhapsody_cli.actions.package_action import PackageUpdateAction
+        from rhapsody_cli.actions.package import PackageUpdateAction
 
         action = PackageUpdateAction()
         mock_root = MagicMock()
@@ -606,7 +606,7 @@ class TestPackageUpdateAction:
 
     def test_update_package_partial_update(self) -> None:
         """UTS_PKG_00038: Test partial update - only tags field applied."""
-        from rhapsody_cli.actions.package_action import PackageUpdateAction
+        from rhapsody_cli.actions.package import PackageUpdateAction
 
         action = PackageUpdateAction()
         mock_package = MagicMock()
@@ -626,7 +626,7 @@ class TestPackageUpdateAction:
 
     def test_update_package_skips_unknown_fields(self) -> None:
         """UTS_PKG_00039: Test unknown field triggers warning, known field still applied."""
-        from rhapsody_cli.actions.package_action import PackageUpdateAction
+        from rhapsody_cli.actions.package import PackageUpdateAction
 
         action = PackageUpdateAction()
         mock_package = MagicMock()
@@ -647,7 +647,7 @@ class TestPackageUpdateAction:
 
     def test_update_package_from_file(self, tmp_path: Any) -> None:
         """UTS_PKG_00040: Test loading JSON from --input file."""
-        from rhapsody_cli.actions.package_action import PackageUpdateAction
+        from rhapsody_cli.actions.package import PackageUpdateAction
 
         json_file = tmp_path / "update.json"
         json_file.write_text('{"description":"From file"}')
@@ -668,7 +668,7 @@ class TestPackageUpdateAction:
 
     def test_update_package_requires_path_or_guid(self) -> None:
         """UTS_PKG_00041: Test that neither --path nor --guid raises error."""
-        from rhapsody_cli.actions.package_action import PackageUpdateAction
+        from rhapsody_cli.actions.package import PackageUpdateAction
 
         action = PackageUpdateAction()
 
@@ -682,107 +682,3 @@ class TestPackageUpdateAction:
             action.execute(args)
 
         assert "Either --path or --guid is required" in str(exc_info.value)
-
-
-class TestPackageExportAction:
-    """UTS_XCH_00088: package export action writes YAML file."""
-
-    def test_export_writes_yaml_file(self) -> None:
-        from rhapsody_cli.actions.package_action import PackageExportAction
-
-        action = PackageExportAction()
-        fake_app = MagicMock(name="FakeApplication")
-        fake_package = MagicMock(name="FakePackage")
-
-        with patch("rhapsody_cli.actions.package_action.RhapsodyExporter") as mock_exporter_cls:
-            with patch("rhapsody_cli.actions.package_action.RhapsodyYaml") as mock_yaml_cls:
-                mock_exporter = MagicMock()
-                mock_exporter_cls.return_value = mock_exporter
-                mock_exporter.export.return_value = {"version": 1, "project": "P", "rhapsody-model": []}
-
-                args = MagicMock()
-                args.path = "Sensors"
-                args.file = "sensors.yaml"
-                args.verbose = False
-
-                with patch.object(action, "_connect_app", return_value=fake_app), patch.object(action, "_resolve_and_validate_package", return_value=fake_package):
-                    action.execute(args)
-
-                mock_exporter_cls.assert_called_once_with(app=fake_app)
-                mock_exporter.export.assert_called_once_with(fake_package)
-                mock_yaml_cls.return_value.write.assert_called_once_with("sensors.yaml", {"version": 1, "project": "P", "rhapsody-model": []})
-
-    def test_export_raises_on_unresolved_package(self) -> None:
-        from rhapsody_cli.actions.package_action import PackageExportAction
-
-        action = PackageExportAction()
-        fake_app = MagicMock(name="FakeApplication")
-
-        with patch("rhapsody_cli.actions.package_action.RhapsodyExporter"), patch("rhapsody_cli.actions.package_action.RhapsodyYaml"):
-            args = MagicMock()
-            args.path = "Nonexistent"
-            args.file = "out.yaml"
-            args.verbose = False
-
-            with patch.object(action, "_connect_app", return_value=fake_app), patch.object(
-                action,
-                "_resolve_and_validate_package",
-                side_effect=CliExecutionError("package not found"),
-            ):
-                with pytest.raises(CliExecutionError, match="package not found"):
-                    action.execute(args)
-
-
-class TestPackageImportAction:
-    """UTS_XCH_00089: package import action reads YAML and imports into package."""
-
-    def test_import_reads_yaml_and_calls_import_template(self) -> None:
-        from rhapsody_cli.actions.package_action import PackageImportAction
-
-        action = PackageImportAction()
-        fake_app = MagicMock(name="FakeApplication")
-        fake_package = MagicMock(name="FakePackage")
-
-        with patch("rhapsody_cli.actions.package_action.RhapsodyYaml") as mock_yaml_cls:
-            with patch("rhapsody_cli.actions.package_action.RhapsodyImporter") as mock_importer_cls:
-                mock_yaml = MagicMock()
-                mock_yaml_cls.return_value = mock_yaml
-                mock_yaml.read.return_value = {"version": 1, "project": "P", "rhapsody-model": []}
-
-                mock_importer = MagicMock()
-                mock_importer_cls.return_value = mock_importer
-
-                args = MagicMock()
-                args.path = "Sensors"
-                args.file = "sensors.yaml"
-                args.verbose = False
-
-                with patch.object(action, "_connect_app", return_value=fake_app), patch.object(action, "_resolve_and_validate_package", return_value=fake_package):
-                    action.execute(args)
-
-                mock_yaml.read.assert_called_once_with("sensors.yaml")
-                mock_importer_cls.assert_called_once_with(app=fake_app)
-                mock_importer.import_template.assert_called_once_with({"version": 1, "project": "P", "rhapsody-model": []}, fake_package)
-                fake_app.save_all.assert_called_once()
-
-    def test_import_raises_on_yaml_read_failure(self) -> None:
-        from rhapsody_cli.actions.package_action import PackageImportAction
-
-        action = PackageImportAction()
-        fake_app = MagicMock(name="FakeApplication")
-        fake_package = MagicMock(name="FakePackage")
-
-        with patch("rhapsody_cli.actions.package_action.RhapsodyYaml") as mock_yaml_cls:
-            with patch("rhapsody_cli.actions.package_action.RhapsodyImporter"):
-                mock_yaml = MagicMock()
-                mock_yaml_cls.return_value = mock_yaml
-                mock_yaml.read.side_effect = CliExecutionError("file not found")
-
-                args = MagicMock()
-                args.path = "Sensors"
-                args.file = "missing.yaml"
-                args.verbose = False
-
-                with patch.object(action, "_connect_app", return_value=fake_app), patch.object(action, "_resolve_and_validate_package", return_value=fake_package):
-                    with pytest.raises(CliExecutionError, match="file not found"):
-                        action.execute(args)

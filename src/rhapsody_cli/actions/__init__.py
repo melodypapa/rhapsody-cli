@@ -1,7 +1,7 @@
 """Action classes for CLI subcommands (PanGu-style architecture)."""
 
 from rhapsody_cli.actions.abstract_action import AbstractAction
-from rhapsody_cli.actions.project_action import (
+from rhapsody_cli.actions.project import (
     ProjectCloseAction,
     ProjectListAction,
     ProjectNewAction,

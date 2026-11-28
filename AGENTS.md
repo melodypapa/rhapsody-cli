@@ -10,7 +10,7 @@ Pythonic wrapper around the IBM Rhapsody COM API. Python member names use snake_
 |-------|------|---------|
 | Models | `src/rhapsody_cli/models/` | COM wrappers for 97+ element types. `elements/` has 13 domain subpackages (`activity/`, `classifiers/`, `common/`, `containment/`, `diagrams/`, `graphics/`, `interactions/`, `relations/`, `requirements/`, `statemachine/`, `templates/`, `values/`, `variables/`). `support/` wraps codegen/IDE/file APIs. `core.py` = `ComHelper`, `IRPModelElement`, `IRPCollection`, `RPUnit`. |
 | Application | `src/rhapsody_cli/application.py` | `RhapsodyApplication` — attach/launch/connect to Rhapsody. Prog ID: `Rhapsody2.Application.1`. |
-| CLI | `src/rhapsody_cli/cli/` + `commands/` + `actions/` | argparse (stdlib), "PanGu style": `AbstractCommand` → `AbstractAction`. Dispatch: `main()` → `AbstractCommand.execute()` → `AbstractAction.execute()`. **Actual command groups:** `class`, `attribute`, `operation`, `package`, `port`, `project` (not `element`/`io` — older docs are stale). |
+| CLI | `src/rhapsody_cli/cli/` + `commands/` + `actions/` | argparse (stdlib), "PanGu style": registry-driven root parser → `CliEntry.register()/run()` → `AbstractAction.execute()`. **Root commands:** `connect`, `disconnect`, `status`, `version`, `export`, `import`; **groups:** `class`, `attribute`, `operation`, `package`, `port`, `project`. Global flags `--format {table,json,csv}` / `-v` are accepted **before** the command only. Actions live one-per-file under `actions/<domain>/`. |
 
 ## COM Wrapping Rules (critical)
 
@@ -32,6 +32,13 @@ pip install -e ".[dev,cli]"          # full setup (CLI tests need tabulate/rich)
 pytest tests/unit/                    # unit tests only — what CI runs (not `pytest` alone, which also runs integration/system)
 pytest tests/unit/models/test_core.py # single file
 pytest -k "test_foo"                  # pattern match
+```
+
+Before pushing, run the whole CI gate locally — including the full-tree `mypy src/ tests/` that CI executes only on its Python 3.8/3.9 jobs (a modern local venv cannot run it; mypy type-checks the installed pytest package under the 3.9 target and crashes). `scripts/ci-local.sh` provisions a real Python 3.9 environment via uv and runs the exact gate:
+
+```bash
+scripts/ci-local.sh              # ruff, black --check, full-tree mypy, unit tests, integration collect-only
+scripts/ci-local.sh --setup-only # provision/check the environment without running the gate
 ```
 
 - All unit tests use fakes from `tests/unit/models/fakes.py` (`make_fake_element`, `make_fake_collection`). **Never real COM in tests.**
@@ -104,7 +111,7 @@ See [docs/CODE_GUIDELINES.md](docs/CODE_GUIDELINES.md) for detailed coding stand
 
 ## CLI Subcommands
 
-1. Create action class in `src/rhapsody_cli/actions/` inheriting `AbstractAction` (or `RhapsodyContextAction` / `ElementManagementAction`)
-2. Implement `init_arguments(sub_parser)` and `execute(args)`
-3. Register action in the appropriate command group's `get_actions()` method in `src/rhapsody_cli/commands/`
-4. Wire the command group in `src/rhapsody_cli/cli/cli.py::main()`
+1. Create the action class in its own file `src/rhapsody_cli/actions/<domain>/<action>.py`, inheriting `AbstractAction` (or `SessionAwareAction` / `ElementManagementAction` / `RootCommandAction` for root commands)
+2. Implement `init_arguments(sub_parser)` and `execute(args)`; read `args.format` / `args.verbose` from the namespace (they are global flags)
+3. Export it from the domain's `__init__.py` and list it in the group's `get_actions()` in `src/rhapsody_cli/commands/`
+4. For a brand-new ROOT command, make the class a `RootCommandAction` and add it to `build_registry()` in `src/rhapsody_cli/cli/cli.py`

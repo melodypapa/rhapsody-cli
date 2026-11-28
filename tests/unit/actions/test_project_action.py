@@ -8,15 +8,15 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from rhapsody_cli.actions.project_action import ProjectExportAction, ProjectImportAction
+from rhapsody_cli.actions.project import ProjectExportAction, ProjectImportAction
 from rhapsody_cli.exceptions import CliExecutionError
 
 
 class TestProjectExportAction:
     """UTS_XCH_00086: project export action writes YAML file."""
 
-    @patch("rhapsody_cli.actions.project_action.RhapsodyYaml")
-    @patch("rhapsody_cli.actions.project_action.RhapsodyExporter")
+    @patch("rhapsody_cli.actions.project.export.RhapsodyYaml")
+    @patch("rhapsody_cli.actions.project.export.RhapsodyExporter")
     def test_export_writes_yaml_file(self, mock_exporter_cls: MagicMock, mock_yaml_cls: MagicMock) -> None:
         action = ProjectExportAction()
         fake_app = MagicMock(name="FakeApplication")
@@ -39,8 +39,8 @@ class TestProjectExportAction:
         mock_yaml_cls.assert_called_once()
         mock_yaml_cls.return_value.write.assert_called_once_with("output.yaml", {"version": 1, "project": "P", "rhapsody-model": []})
 
-    @patch("rhapsody_cli.actions.project_action.RhapsodyYaml")
-    @patch("rhapsody_cli.actions.project_action.RhapsodyExporter")
+    @patch("rhapsody_cli.actions.project.export.RhapsodyYaml")
+    @patch("rhapsody_cli.actions.project.export.RhapsodyExporter")
     def test_export_raises_on_connection_failure(self, mock_exporter_cls: MagicMock, mock_yaml_cls: MagicMock) -> None:
         action = ProjectExportAction()
 
@@ -56,8 +56,8 @@ class TestProjectExportAction:
 class TestProjectImportAction:
     """UTS_XCH_00087: project import action reads YAML and imports into project."""
 
-    @patch("rhapsody_cli.actions.project_action.RhapsodyImporter")
-    @patch("rhapsody_cli.actions.project_action.RhapsodyYaml")
+    @patch("rhapsody_cli.actions.project.importer.RhapsodyImporter")
+    @patch("rhapsody_cli.actions.project.importer.RhapsodyYaml")
     def test_import_reads_yaml_and_calls_import_template(self, mock_yaml_cls: MagicMock, mock_importer_cls: MagicMock) -> None:
         action = ProjectImportAction()
         fake_app = MagicMock(name="FakeApplication")
@@ -83,8 +83,8 @@ class TestProjectImportAction:
         mock_importer.import_template.assert_called_once_with({"version": 1, "project": "P", "rhapsody-model": []}, fake_project)
         fake_app.save_all.assert_called_once()
 
-    @patch("rhapsody_cli.actions.project_action.RhapsodyImporter")
-    @patch("rhapsody_cli.actions.project_action.RhapsodyYaml")
+    @patch("rhapsody_cli.actions.project.importer.RhapsodyImporter")
+    @patch("rhapsody_cli.actions.project.importer.RhapsodyYaml")
     def test_import_raises_on_yaml_read_failure(self, mock_yaml_cls: MagicMock, mock_importer_cls: MagicMock) -> None:
         action = ProjectImportAction()
         fake_app = MagicMock(name="FakeApplication")

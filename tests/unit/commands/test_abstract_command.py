@@ -1,4 +1,4 @@
-"""Tests for AbstractCommand base class."""
+"""Tests for AbstractCommand base class (register/run contract)."""
 
 import argparse
 from typing import List, Optional
@@ -30,13 +30,21 @@ class FakeAction(AbstractAction):
 class ConcreteCommand(AbstractCommand):
     """Concrete implementation of AbstractCommand for testing."""
 
-    def __init__(self, args: List[str], action: AbstractAction) -> None:
+    def __init__(self, action: AbstractAction) -> None:
+        super().__init__()
         self._action = action
-        super().__init__("concrete", args)
 
     def get_actions(self) -> List[AbstractAction]:
         """Return the single fake action."""
         return [self._action]
+
+
+def _registered_group(action: AbstractAction) -> argparse.ArgumentParser:
+    """Build a root parser with a ConcreteCommand registered under 'concrete'."""
+    root = argparse.ArgumentParser(prog="rhapsody-cli")
+    subparsers = root.add_subparsers(dest="command", required=True)
+    ConcreteCommand(action).register(subparsers)
+    return root
 
 
 class TestAbstractCommand:
@@ -44,77 +52,65 @@ class TestAbstractCommand:
 
     def test_get_actions_not_implemented(self) -> None:
         """Test that get_actions() raises NotImplementedError on base class."""
+        cmd = AbstractCommand()
         with pytest.raises(NotImplementedError):
-            AbstractCommand("abstract", ["subcommand"])
+            cmd.get_actions()
 
-    def test_no_subcommand_exits(self) -> None:
-        """Test that missing subcommand raises CliExecutionError during construction."""
-        action = FakeAction()
-        with pytest.raises(CliExecutionError):
-            ConcreteCommand([], action)
+    def test_missing_subcommand_rejected_by_argparse(self) -> None:
+        """Group sub-subparsers are required: bare group parse exits 2."""
+        root = _registered_group(FakeAction())
+        with pytest.raises(SystemExit) as exc_info:
+            root.parse_args(["concrete"])
+        assert exc_info.value.code == 2
 
-    def test_execute_dispatches_to_action(self) -> None:
-        """Test that execute() dispatches to the matching action."""
+    def test_run_dispatches_to_action(self) -> None:
+        """Test that run() dispatches to the matching action with the namespace."""
         action = FakeAction()
-        cmd = ConcreteCommand(["run", "--name", "hello"], action)
-        cmd.execute()
+        group = ConcreteCommand(action)
+        root = argparse.ArgumentParser(prog="rhapsody-cli")
+        subparsers = root.add_subparsers(dest="command", required=True)
+        group.register(subparsers)
+        namespace = root.parse_args(["concrete", "run", "--name", "hello"])
+        group.run(namespace)
         assert action.executed_with is not None
         assert action.executed_with.name == "hello"
 
+    def test_run_unknown_subcommand_raises_cli_error(self) -> None:
+        """run() with a namespace subcommand no action owns raises CliExecutionError."""
+        group = ConcreteCommand(FakeAction())
+        with pytest.raises(CliExecutionError) as exc_info:
+            group.run(argparse.Namespace(subcommand="bogus"))
+        assert "Unknown subcommand 'bogus'" in str(exc_info.value)
+
     def test_command_name(self) -> None:
         """Test command name derivation from class name."""
-        action = FakeAction()
-        cmd = ConcreteCommand(["run"], action)
+        cmd = ConcreteCommand(FakeAction())
         assert cmd._command_name() == "concrete"
 
 
-class FakeContextAwareAction(AbstractAction):
-    """Fake action that mimics RhapsodyContextAction's output_format attribute."""
+class TestNamespaceFormatPropagation:
+    """The namespace carries the global --format into the dispatched action."""
 
-    def __init__(self) -> None:
-        super().__init__(command_id="run")
-        self.output_format: str = "table"
-        self.executed = False
+    def test_format_reaches_action_via_namespace(self) -> None:
+        action = FakeAction()
+        group = ConcreteCommand(action)
+        root = argparse.ArgumentParser(prog="rhapsody-cli")
+        root.add_argument("--format", choices=["table", "json", "csv"], default="table")
+        subparsers = root.add_subparsers(dest="command", required=True)
+        group.register(subparsers)
+        namespace = root.parse_args(["--format", "json", "concrete", "run"])
+        group.run(namespace)
+        assert action.executed_with is not None
+        assert action.executed_with.format == "json"
 
-    def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
-        """Register the 'run' subcommand."""
-        sub_parser.add_parser("run", help="Run the fake action")
-
-    def execute(self, args: argparse.Namespace) -> None:
-        """Record that execute was called."""
-        self.executed = True
-
-
-class ConcreteContextAwareCommand(AbstractCommand):
-    """Concrete AbstractCommand wrapping a context-aware fake action."""
-
-    def __init__(self, args: List[str], action: AbstractAction) -> None:
-        self._action = action
-        super().__init__("concrete", args)
-
-    def get_actions(self) -> List[AbstractAction]:
-        """Return the single fake action."""
-        return [self._action]
-
-
-class TestAbstractCommandOutputFormat:
-    """Test that execute() threads output_format into the dispatched action."""
-
-    def test_execute_sets_output_format_on_action(self) -> None:
-        """execute(output_format=...) should set it on the action before calling execute()."""
-        action = FakeContextAwareAction()
-        cmd = ConcreteContextAwareCommand(["run"], action)
-
-        cmd.execute(output_format="json")
-
-        assert action.output_format == "json"
-        assert action.executed is True
-
-    def test_execute_defaults_output_format_to_table(self) -> None:
-        """execute() with no output_format kwarg should leave the action's default untouched."""
-        action = FakeContextAwareAction()
-        cmd = ConcreteContextAwareCommand(["run"], action)
-
-        cmd.execute()
-
-        assert action.output_format == "table"
+    def test_format_defaults_to_table(self) -> None:
+        action = FakeAction()
+        group = ConcreteCommand(action)
+        root = argparse.ArgumentParser(prog="rhapsody-cli")
+        root.add_argument("--format", choices=["table", "json", "csv"], default="table")
+        subparsers = root.add_subparsers(dest="command", required=True)
+        group.register(subparsers)
+        namespace = root.parse_args(["concrete", "run"])
+        group.run(namespace)
+        assert action.executed_with is not None
+        assert action.executed_with.format == "table"

@@ -19,7 +19,7 @@ class TestAbstractPortAction:
 
     def test_resolve_classifier_success(self) -> None:
         """Test successful classifier resolution."""
-        from rhapsody_cli.actions.port_action import AbstractPortAction
+        from rhapsody_cli.actions.port import AbstractPortAction
 
         action = AbstractPortAction()
         mock_classifier = MagicMock()
@@ -35,7 +35,7 @@ class TestAbstractPortAction:
 
     def test_resolve_port_success(self) -> None:
         """Test successful port resolution by iterating getPorts() and matching name."""
-        from rhapsody_cli.actions.port_action import AbstractPortAction
+        from rhapsody_cli.actions.port import AbstractPortAction
 
         action = AbstractPortAction()
         mock_classifier = MagicMock()
@@ -52,7 +52,7 @@ class TestAbstractPortAction:
 
     def test_resolve_port_not_found(self) -> None:
         """Test that missing port raises CliExecutionError."""
-        from rhapsody_cli.actions.port_action import AbstractPortAction
+        from rhapsody_cli.actions.port import AbstractPortAction
 
         action = AbstractPortAction()
         mock_classifier = MagicMock()
@@ -69,7 +69,7 @@ class TestAbstractPortAction:
 
     def test_resolve_port_by_guid_success(self) -> None:
         """Test successful port lookup by GUID."""
-        from rhapsody_cli.actions.port_action import AbstractPortAction
+        from rhapsody_cli.actions.port import AbstractPortAction
 
         action = AbstractPortAction()
         mock_port = MagicMock()
@@ -85,7 +85,7 @@ class TestAbstractPortAction:
 
     def test_resolve_port_by_guid_not_found(self) -> None:
         """Test GUID lookup fails when element is None."""
-        from rhapsody_cli.actions.port_action import AbstractPortAction
+        from rhapsody_cli.actions.port import AbstractPortAction
 
         action = AbstractPortAction()
         mock_project = MagicMock()
@@ -99,7 +99,7 @@ class TestAbstractPortAction:
 
     def test_resolve_port_by_guid_wrong_type(self) -> None:
         """Test GUID lookup fails for non-Port element."""
-        from rhapsody_cli.actions.port_action import AbstractPortAction
+        from rhapsody_cli.actions.port import AbstractPortAction
 
         action = AbstractPortAction()
         mock_class = MagicMock()
@@ -128,7 +128,7 @@ class TestPortCreateAction:
 
     def _make_action_with_classifier(self) -> Tuple[Any, Any]:
         """Helper: build action and mock parent classifier."""
-        from rhapsody_cli.actions.port_action import PortCreateAction
+        from rhapsody_cli.actions.port import PortCreateAction
 
         action = PortCreateAction()
         mock_classifier = MagicMock()
@@ -251,7 +251,7 @@ class TestPortDeleteAction:
 
     def test_delete_port_by_path_and_name(self) -> None:
         """UTS_PORT_00007: Test successful port deletion by path + name using deleteFromProject."""
-        from rhapsody_cli.actions.port_action import PortDeleteAction
+        from rhapsody_cli.actions.port import PortDeleteAction
 
         action = PortDeleteAction()
         mock_classifier = MagicMock()
@@ -273,7 +273,7 @@ class TestPortDeleteAction:
 
     def test_delete_port_by_guid(self) -> None:
         """UTS_PORT_00008: Test successful port deletion by GUID."""
-        from rhapsody_cli.actions.port_action import PortDeleteAction
+        from rhapsody_cli.actions.port import PortDeleteAction
 
         action = PortDeleteAction()
         mock_port = MagicMock()
@@ -291,7 +291,7 @@ class TestPortDeleteAction:
 
     def test_delete_port_guid_wrong_type(self) -> None:
         """UTS_PORT_00009: Test that wrong type via --guid raises error."""
-        from rhapsody_cli.actions.port_action import PortDeleteAction
+        from rhapsody_cli.actions.port import PortDeleteAction
 
         action = PortDeleteAction()
         mock_class = MagicMock()
@@ -314,7 +314,7 @@ class TestPortDeleteAction:
 
     def test_delete_requires_path_name_or_guid(self) -> None:
         """UTS_PORT_00010: Test that either --path + --name or --guid is required."""
-        from rhapsody_cli.actions.port_action import PortDeleteAction
+        from rhapsody_cli.actions.port import PortDeleteAction
 
         action = PortDeleteAction()
         args = MagicMock()
@@ -355,7 +355,7 @@ class TestPortViewAction:
 
     def test_view_table_output(self, capsys: Any) -> None:
         """UTS_PORT_00011: Test table format output with 8 fields."""
-        from rhapsody_cli.actions.port_action import PortViewAction
+        from rhapsody_cli.actions.port import PortViewAction
 
         action = PortViewAction()
         mock_port = self._make_mock_port()
@@ -383,7 +383,7 @@ class TestPortViewAction:
         """UTS_PORT_00012: Test JSON output to file with 8 keys."""
         import json as json_module
 
-        from rhapsody_cli.actions.port_action import PortViewAction
+        from rhapsody_cli.actions.port import PortViewAction
 
         action = PortViewAction()
         mock_port = self._make_mock_port()
@@ -414,7 +414,7 @@ class TestPortViewAction:
 
     def test_view_csv_output(self, capsys: Any) -> None:
         """UTS_PORT_00013: Test CSV format output with 8 columns."""
-        from rhapsody_cli.actions.port_action import PortViewAction
+        from rhapsody_cli.actions.port import PortViewAction
 
         action = PortViewAction()
         mock_port = self._make_mock_port()
@@ -440,7 +440,7 @@ class TestPortViewAction:
 
     def test_view_by_guid(self, capsys: Any) -> None:
         """UTS_PORT_00014: Test viewing port by GUID."""
-        from rhapsody_cli.actions.port_action import PortViewAction
+        from rhapsody_cli.actions.port import PortViewAction
 
         action = PortViewAction()
         mock_port = self._make_mock_port()
@@ -468,7 +468,7 @@ class TestPortListAction:
 
     def test_list_ports(self, capsys: Any) -> None:
         """UTS_PORT_00015: Test listing ports on a classifier."""
-        from rhapsody_cli.actions.port_action import PortListAction
+        from rhapsody_cli.actions.port import PortListAction
 
         action = PortListAction()
         mock_classifier = MagicMock()
@@ -492,7 +492,7 @@ class TestPortListAction:
 
     def test_list_empty(self, capsys: Any) -> None:
         """UTS_PORT_00016: Test listing classifier with no ports."""
-        from rhapsody_cli.actions.port_action import PortListAction
+        from rhapsody_cli.actions.port import PortListAction
 
         action = PortListAction()
         mock_classifier = MagicMock()
@@ -512,7 +512,7 @@ class TestPortListAction:
         """UTS_PORT_00017: Test JSON output format."""
         import json as json_module
 
-        from rhapsody_cli.actions.port_action import PortListAction
+        from rhapsody_cli.actions.port import PortListAction
 
         action = PortListAction()
         mock_classifier = MagicMock()
@@ -544,7 +544,7 @@ class TestPortUpdateAction:
 
     def test_update_port_by_path_and_name(self) -> None:
         """UTS_PORT_00018: Test updating port via --path + --name."""
-        from rhapsody_cli.actions.port_action import PortUpdateAction
+        from rhapsody_cli.actions.port import PortUpdateAction
 
         action = PortUpdateAction()
         mock_classifier = MagicMock()
@@ -566,7 +566,7 @@ class TestPortUpdateAction:
 
     def test_update_port_by_guid(self) -> None:
         """UTS_PORT_00019: Test updating port via --guid with type validation."""
-        from rhapsody_cli.actions.port_action import PortUpdateAction
+        from rhapsody_cli.actions.port import PortUpdateAction
 
         action = PortUpdateAction()
         mock_port = MagicMock()
@@ -586,7 +586,7 @@ class TestPortUpdateAction:
 
     def test_update_partial_update(self) -> None:
         """UTS_PORT_00020: Test that partial update only modifies specified fields."""
-        from rhapsody_cli.actions.port_action import PortUpdateAction
+        from rhapsody_cli.actions.port import PortUpdateAction
 
         action = PortUpdateAction()
         mock_classifier = MagicMock()
@@ -611,7 +611,7 @@ class TestPortUpdateAction:
 
     def test_update_skips_unknown_fields(self) -> None:
         """UTS_PORT_00021: Test that unknown fields are skipped with warning."""
-        from rhapsody_cli.actions.port_action import PortUpdateAction
+        from rhapsody_cli.actions.port import PortUpdateAction
 
         action = PortUpdateAction()
         mock_classifier = MagicMock()

@@ -12,10 +12,11 @@ Run:
 
 import json
 import uuid
+from typing import List
 
 import pytest
 
-from rhapsody_cli.commands.package_command import PackageCommand
+from rhapsody_cli.cli.cli import build_registry, build_root_parser
 from rhapsody_cli.exceptions.core import CliExecutionError
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 
@@ -30,6 +31,13 @@ class TestPackageCLIIntegration:
         self.project = test_project
 
     @staticmethod
+    def _run_command(argv: List[str]) -> None:
+        """Run a CLI command end-to-end through the registry root parser."""
+        parser = build_root_parser(build_registry())
+        namespace = parser.parse_args(argv)
+        namespace.entry.run(namespace)
+
+    @staticmethod
     def _generate_unique_name(prefix: str = "TestPkg") -> str:
         """Generate a unique package name using a UUID suffix."""
         return f"{prefix}_{uuid.uuid4().hex[:8]}"
@@ -41,8 +49,7 @@ class TestPackageCLIIntegration:
 
         try:
             # Step 1: Create a package at project root
-            create_cmd = PackageCommand(["create", json.dumps(pkg_data)])
-            create_cmd.execute()
+            self._run_command(["create", json.dumps(pkg_data)])
 
             # Step 2: Verify package exists via model API
             pkg_names = [p.name for p in self.project.packages]
@@ -50,8 +57,7 @@ class TestPackageCLIIntegration:
         finally:
             # Step 3: Delete the package
             try:
-                delete_cmd = PackageCommand(["delete", "--path", pkg_name])
-                delete_cmd.execute()
+                self._run_command(["delete", "--path", pkg_name])
             except Exception as e:
                 print(f"Warning: Could not delete package {pkg_name}: {e}")
 
@@ -66,8 +72,7 @@ class TestPackageCLIIntegration:
 
         try:
             # Step 1: Create a package at project root
-            create_cmd = PackageCommand(["create", json.dumps(pkg_data)])
-            create_cmd.execute()
+            self._run_command(["create", json.dumps(pkg_data)])
 
             # Step 1b: Verify package exists via model API
             pkg_names = [p.name for p in self.project.packages]
@@ -75,18 +80,12 @@ class TestPackageCLIIntegration:
 
             # Step 2: Try to create the same package again
             # Should raise CliExecutionError with user-friendly message
-            duplicate_cmd = PackageCommand(["create", json.dumps(pkg_data)])
-            try:
-                duplicate_cmd.execute()
-                # If we get here, the duplicate check failed
-                raise AssertionError("Duplicate package creation should have failed, but succeeded")
-            except CliExecutionError as e:
-                error_msg = str(e)
-                # Verify the error message is user-friendly and mentions duplicate
-                assert "already exists" in error_msg.lower(), f"Error message should mention 'already exists', got: {error_msg}"
-                # Verify it's NOT the raw COM exception
-                assert "-2147" not in error_msg, f"Error message should not contain raw COM error codes, got: {error_msg}"
-                assert "Exception occurred" not in error_msg, f"Error message should not contain raw COM exception text, got: {error_msg}"
+            with pytest.raises(CliExecutionError, match="already exists") as exc_info:
+                self._run_command(["create", json.dumps(pkg_data)])
+            error_msg = str(exc_info.value)
+            # Verify it's NOT the raw COM exception
+            assert "-2147" not in error_msg, f"Error message should not contain raw COM error codes, got: {error_msg}"
+            assert "Exception occurred" not in error_msg, f"Error message should not contain raw COM exception text, got: {error_msg}"
 
             # Step 2b: Verify there's still exactly one package (duplicate was rejected)
             pkg_names_after = [p.name for p in self.project.packages]
@@ -95,8 +94,7 @@ class TestPackageCLIIntegration:
         finally:
             # Step 3: Clean up
             try:
-                delete_cmd = PackageCommand(["delete", "--path", pkg_name])
-                delete_cmd.execute()
+                self._run_command(["delete", "--path", pkg_name])
             except Exception as e:
                 print(f"Warning: Could not delete package {pkg_name}: {e}")
 
@@ -109,12 +107,10 @@ class TestPackageCLIIntegration:
 
         try:
             # Step 1: Create parent package at project root
-            create_parent_cmd = PackageCommand(["create", json.dumps(parent_pkg_data)])
-            create_parent_cmd.execute()
+            self._run_command(["create", json.dumps(parent_pkg_data)])
 
             # Step 2: Create nested package under parent
-            create_child_cmd = PackageCommand(["create", json.dumps(child_pkg_data), "--path", parent_pkg_name])
-            create_child_cmd.execute()
+            self._run_command(["create", json.dumps(child_pkg_data), "--path", parent_pkg_name])
 
             # Step 3: Verify nested package exists via model API
             pkgs = self.project.packages
@@ -125,14 +121,12 @@ class TestPackageCLIIntegration:
         finally:
             # Step 4: Clean up (delete child first, then parent)
             try:
-                delete_child_cmd = PackageCommand(["delete", "--path", f"{parent_pkg_name}/{child_pkg_name}"])
-                delete_child_cmd.execute()
+                self._run_command(["delete", "--path", f"{parent_pkg_name}/{child_pkg_name}"])
             except Exception as e:
                 print(f"Warning: Could not delete nested package: {e}")
 
             try:
-                delete_parent_cmd = PackageCommand(["delete", "--path", parent_pkg_name])
-                delete_parent_cmd.execute()
+                self._run_command(["delete", "--path", parent_pkg_name])
             except Exception as e:
                 print(f"Warning: Could not delete parent package {parent_pkg_name}: {e}")
 
@@ -148,12 +142,10 @@ class TestPackageCLIIntegration:
 
         try:
             # Step 1: Create parent package at project root
-            create_parent_cmd = PackageCommand(["create", json.dumps(parent_pkg_data)])
-            create_parent_cmd.execute()
+            self._run_command(["create", json.dumps(parent_pkg_data)])
 
             # Step 2: Create first nested package
-            create_child_cmd = PackageCommand(["create", json.dumps(child_pkg_data), "--path", parent_pkg_name])
-            create_child_cmd.execute()
+            self._run_command(["create", json.dumps(child_pkg_data), "--path", parent_pkg_name])
 
             # Step 2b: Verify child exists via model API
             pkgs = self.project.packages
@@ -163,17 +155,11 @@ class TestPackageCLIIntegration:
             assert child_pkg_name in child_names, f"Child package '{child_pkg_name}' should exist under parent"
 
             # Step 3: Try to create duplicate nested package
-            duplicate_child_cmd = PackageCommand(["create", json.dumps(child_pkg_data), "--path", parent_pkg_name])
-            try:
-                duplicate_child_cmd.execute()
-                # If we get here, the duplicate check failed
-                raise AssertionError("Duplicate nested package creation should have failed, but succeeded")
-            except CliExecutionError as e:
-                error_msg = str(e)
-                # Verify the error message mentions duplicate or already exists
-                assert "already exists" in error_msg.lower(), f"Error message should mention 'already exists', got: {error_msg}"
-                # Verify it's NOT the raw COM exception
-                assert "-2147" not in error_msg, f"Error message should not contain raw COM error codes, got: {error_msg}"
+            with pytest.raises(CliExecutionError, match="already exists") as exc_info:
+                self._run_command(["create", json.dumps(child_pkg_data), "--path", parent_pkg_name])
+            error_msg = str(exc_info.value)
+            # Verify it's NOT the raw COM exception
+            assert "-2147" not in error_msg, f"Error message should not contain raw COM error codes, got: {error_msg}"
 
             # Step 3b: Verify there's still exactly one child (duplicate was rejected)
             child_names_after = [c.name for c in parent.packages]
@@ -182,13 +168,11 @@ class TestPackageCLIIntegration:
         finally:
             # Step 4: Clean up
             try:
-                delete_child_cmd = PackageCommand(["delete", "--path", f"{parent_pkg_name}/{child_pkg_name}"])
-                delete_child_cmd.execute()
+                self._run_command(["delete", "--path", f"{parent_pkg_name}/{child_pkg_name}"])
             except Exception as e:
                 print(f"Warning: Could not delete nested package: {e}")
 
             try:
-                delete_parent_cmd = PackageCommand(["delete", "--path", parent_pkg_name])
-                delete_parent_cmd.execute()
+                self._run_command(["delete", "--path", parent_pkg_name])
             except Exception as e:
                 print(f"Warning: Could not delete parent package {parent_pkg_name}: {e}")

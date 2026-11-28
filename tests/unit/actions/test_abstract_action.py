@@ -10,38 +10,14 @@ from unittest.mock import MagicMock, Mock, patch
 import pytest
 
 from rhapsody_cli.actions.abstract_action import (
-    AbstractAction,
     ElementManagementAction,
     RhapsodyContextAction,
+    RootCommandAction,
     SessionAwareAction,
 )
 from rhapsody_cli.cli.path_resolver import PathResolver, PathResolverError
 from rhapsody_cli.exceptions import CliExecutionError, RhapsodyConnectionError
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-
-
-class TestAbstractActionAddVerboseArgument:
-    """Test the shared --verbose/-v flag registration."""
-
-    def test_add_verbose_argument_registers_verbose_flag(self) -> None:
-        """--verbose and -v should both parse as verbose=True."""
-        parser = argparse.ArgumentParser()
-        AbstractAction.add_verbose_argument(parser)
-
-        args_long = parser.parse_args(["--verbose"])
-        args_short = parser.parse_args(["-v"])
-
-        assert args_long.verbose is True
-        assert args_short.verbose is True
-
-    def test_add_verbose_argument_defaults_to_false(self) -> None:
-        """verbose should default to False when the flag is omitted."""
-        parser = argparse.ArgumentParser()
-        AbstractAction.add_verbose_argument(parser)
-
-        args = parser.parse_args([])
-
-        assert args.verbose is False
 
 
 class TestElementManagementActionAddPathArgument:
@@ -461,3 +437,82 @@ class TestSessionAwareAction:
 
         with pytest.raises(CliExecutionError, match="Not connected"):
             action.execute(args)
+
+
+class TestPrintFormattedOutputCsv:
+    """The shared output helper must support csv like the per-file copies do."""
+
+    def _action(self, output_format: str) -> RhapsodyContextAction:
+        action = RhapsodyContextAction(command_id="probe")
+        action.output_format = output_format
+        return action
+
+    def test_csv_renders_headers_and_rows(self, capsys: "pytest.CaptureFixture[str]") -> None:
+        # Exact csv output (csv.writer \r\n terminator) — distinguishes from the
+        # table grid that the pre-csv fallthrough produced.
+        self._action("csv")._print_formatted_output({"a": 1}, ["Name"], [["Alpha"]])
+        assert capsys.readouterr().out == "Name\r\nAlpha\r\n\n"  # print() adds the final newline
+
+    def test_json_still_renders_payload(self, capsys: "pytest.CaptureFixture[str]") -> None:
+        self._action("json")._print_formatted_output({"a": 1}, ["Name"], [["Alpha"]])
+        assert '"a"' in capsys.readouterr().out
+
+    def test_table_renders_rows(self, capsys: "pytest.CaptureFixture[str]") -> None:
+        self._action("table")._print_formatted_output({"a": 1}, ["Name"], [["Alpha"]])
+        assert "Alpha" in capsys.readouterr().out
+
+
+class TestRootCommandAction:
+    """Top-level single commands satisfy the register/run entry protocol."""
+
+    @staticmethod
+    def _probe() -> "RootCommandAction":
+        class ProbeRootAction(RootCommandAction):
+            """Minimal concrete RootCommandAction for protocol testing."""
+
+            def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
+                parser = sub_parser.add_parser(self.command_id, help="probe")
+                parser.add_argument("--x")
+
+            def execute(self, args: argparse.Namespace) -> None:
+                raise AssertionError("execute should only run via run()")
+
+        action = ProbeRootAction(command_id="probe")
+        with patch.object(action, "execute"):
+            return action
+
+    def test_register_creates_subparser(self) -> None:
+        root = argparse.ArgumentParser()
+        subparsers = root.add_subparsers()
+        self._probe().register(subparsers)
+        assert "probe" in subparsers.choices
+
+    def test_run_delegates_to_execute(self) -> None:
+        action = self._probe()
+        args = argparse.Namespace(x=1)
+        with patch.object(action, "execute") as mock_execute:
+            action.run(args)
+        mock_execute.assert_called_once_with(args)
+
+
+class TestRenderOutput:
+    """_render_output returns the formatted string; _print_formatted_output prints it."""
+
+    def _action(self, output_format: str) -> RhapsodyContextAction:
+        action = RhapsodyContextAction(command_id="probe")
+        action.output_format = output_format
+        return action
+
+    def test_render_json_returns_payload_string(self) -> None:
+        assert self._action("json")._render_output({"a": 1}, ["Name"], [["Alpha"]]) == '{\n  "a": 1\n}'
+
+    def test_render_csv_returns_exact_csv(self) -> None:
+        assert self._action("csv")._render_output(["A"], ["Name"], [["Alpha"]]) == "Name\r\nAlpha\r\n"
+
+    def test_render_table_returns_grid(self) -> None:
+        out = self._action("table")._render_output(["A"], ["Name"], [["Alpha"]])
+        assert "Name" in out and "Alpha" in out
+
+    def test_print_formatted_output_uses_render_output(self, capsys: "pytest.CaptureFixture[str]") -> None:
+        self._action("csv")._print_formatted_output(["A"], ["Name"], [["Alpha"]])
+        assert capsys.readouterr().out == "Name\r\nAlpha\r\n\n"
