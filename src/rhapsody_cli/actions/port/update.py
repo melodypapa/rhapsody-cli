@@ -1,9 +1,7 @@
 """PortUpdateAction — split from port_action.py."""
 
 import argparse
-import json
 import logging
-from pathlib import Path
 from typing import Dict, Union, cast
 
 from rhapsody_cli.actions.port.base import AbstractPortAction
@@ -76,28 +74,6 @@ class PortUpdateAction(AbstractPortAction):
         self._set_attributes(classifier, port, data)
 
         self.logger.info("Successfully updated port: %s", port.name)
-
-    def _load_json_data(self, attributes_input: str) -> Dict[str, object]:
-        """Load JSON data from inline string or external file.
-
-        SWR_PORT_00007: External JSON File Support
-        """
-        if attributes_input.startswith("{") or attributes_input.startswith("["):
-            try:
-                return cast(Dict[str, object], json.loads(attributes_input))
-            except json.JSONDecodeError as e:
-                raise CliExecutionError(f"Invalid JSON: {e}") from e
-
-        if not Path(attributes_input).exists():
-            raise CliExecutionError(f"File not found: {attributes_input}")
-
-        try:
-            with open(attributes_input, encoding="utf-8") as f:
-                return cast(Dict[str, object], json.load(f))
-        except json.JSONDecodeError as e:
-            raise CliExecutionError(f"Invalid JSON in file: {e}") from e
-        except OSError as e:
-            raise CliExecutionError(f"Failed to read file: {e}") from e
 
     def _load_json_data(self, attributes_input: str) -> Dict[str, object]:
         """Load JSON data via the shared helper (see actions.support)."""

@@ -1,9 +1,7 @@
 """OperationCreateAction — split from operation_action.py."""
 
 import argparse
-import json
 import logging
-from pathlib import Path
 from typing import Dict, List, Union, cast
 
 from rhapsody_cli.actions.operation.base import AbstractOperationAction
@@ -97,30 +95,6 @@ class OperationCreateAction(AbstractOperationAction):
             raise CliExecutionError(f"Created 0/{total} operations; all failed")
         if errors:
             self.logger.info("Created %d/%d operations with %d error(s)", len(created), total, len(errors))
-
-    def _load_json_data(self, attributes_input: str) -> Union[Dict[str, object], List[Dict[str, object]]]:
-        """Load one operation object or a list of operation objects from JSON.
-
-        SWR_OP_00007: External JSON File Support
-        """
-        if attributes_input.startswith("{") or attributes_input.startswith("["):
-            try:
-                data: object = json.loads(attributes_input)
-                return self._normalize_operation_data(data)
-            except json.JSONDecodeError as e:
-                raise CliExecutionError(f"Invalid JSON: {e}") from e
-
-        if not Path(attributes_input).exists():
-            raise CliExecutionError(f"File not found: {attributes_input}")
-
-        try:
-            with open(attributes_input, encoding="utf-8") as f:
-                file_data: object = json.load(f)
-            return self._normalize_operation_data(file_data)
-        except json.JSONDecodeError as e:
-            raise CliExecutionError(f"Invalid JSON in file: {e}") from e
-        except OSError as e:
-            raise CliExecutionError(f"Failed to read file: {e}") from e
 
     def _load_json_data(self, attributes_input: str) -> Union[Dict[str, object], List[Dict[str, object]]]:
         """Load JSON data via the shared helper, then apply operation-shape normalization."""

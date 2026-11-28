@@ -36,7 +36,8 @@ class AbstractCommand:
             subparsers: The root parser's subparsers action.
         """
         name = self._command_name()
-        parser = subparsers.add_parser(name, help=f"Manage {name}s")
+        help_text = f"Manage {name}es" if name.endswith("s") else f"Manage {name}s"
+        parser = subparsers.add_parser(name, help=help_text)
         actions = self.get_actions()
         self._sub_commands = {action.command_id: action for action in actions}
         sub_parsers = parser.add_subparsers(dest="subcommand", required=True, metavar="<subcommand>")

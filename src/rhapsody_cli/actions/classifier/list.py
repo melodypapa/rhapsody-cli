@@ -60,13 +60,5 @@ class ClassListAction(AbstractClassAction):
         return self._render_output(class_names, ["Name"], [[name] for name in class_names])
 
     def _write_to_file(self, file_path: str, content: str) -> None:
-        """Write content to file."""
-        try:
-            with open(file_path, "w", encoding="utf-8") as f:
-                f.write(content)
-        except OSError as e:
-            raise CliExecutionError(f"Failed to write file '{file_path}': {e}") from e
-
-    def _write_to_file(self, file_path: str, content: str) -> None:
         """Write content via the shared helper (see actions.support)."""
         write_text_file(file_path, content)
