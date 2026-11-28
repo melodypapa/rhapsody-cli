@@ -229,12 +229,19 @@ class TestIRPApplicationIntegration:
         assert rhapsody_app.add_selected_to_favorites() is None  # type: ignore[func-returns-value]
 
     def test_allow_browser_refresh(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
-        # allowBrowserRefresh exposes no getter, so the flag cannot be restored;
-        # session-scoped side effects are accepted for these toggle-only members.
-        assert rhapsody_app.allow_browser_refresh(0) is None  # type: ignore[func-returns-value]
+        try:
+            assert rhapsody_app.allow_browser_refresh(0) is None  # type: ignore[func-returns-value]
+        finally:
+            # There is no getter, so restore the documented default to avoid
+            # disabling browser updates for later integration tests.
+            rhapsody_app.allow_browser_refresh(1)
 
     def test_allow_ge_refresh(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
-        assert rhapsody_app.allow_ge_refresh(0) is None  # type: ignore[func-returns-value]
+        try:
+            assert rhapsody_app.allow_ge_refresh(0) is None  # type: ignore[func-returns-value]
+        finally:
+            # Graphical-element refresh must remain enabled for visual tests.
+            rhapsody_app.allow_ge_refresh(1)
 
     def test_allow_rmm_remote_oslc_links_load(self, rhapsody_app: IRPApplication, live_fixtures: dict[str, object]) -> None:
         assert rhapsody_app.allow_rmm_remote_oslc_links_load(0) is None  # type: ignore[func-returns-value]
