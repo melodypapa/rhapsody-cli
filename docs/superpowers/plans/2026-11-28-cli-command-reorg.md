@@ -1,6 +1,6 @@
 # CLI Command Reorganization Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task (Ray's standing preference is direct in-session execution, not subagent fan-out). Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task (Ray's standing preference is direct in-session execution, not subagent fan-out). Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Execute the approved CLI reorganization spec (`docs/superpowers/specs/2026-11-27-cli-command-reorg-design.md`): registry-driven root-parser dispatch, strict-global `--format`/`-v`, one action class per file, shared-helper consolidation, and `export`/`import` promoted to root commands.
 
@@ -61,7 +61,7 @@ tests/
 **Files:**
 - Create: `tests/unit/cli/test_dispatch_characterization.py`
 
-- [ ] **Step 1: Write the characterization tests**
+- [x] **Step 1: Write the characterization tests**
 
 ```python
 """Characterization tests for the CURRENT top-level CLI dispatch.
@@ -186,12 +186,12 @@ def test_generic_exception_exits_1() -> None:
     assert exc_info.value.code == 1
 ```
 
-- [ ] **Step 2: Run and verify they PASS (characterization, not red/green)**
+- [x] **Step 2: Run and verify they PASS (characterization, not red/green)**
 
 Run: `pytest tests/unit/cli/test_dispatch_characterization.py -v`
 Expected: all PASS. If `test_no_arguments_prints_usage_and_exits_2` fails on message wording, adjust the assertion to the actual `_usage()` output ("Usage" appears in the message).
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add tests/unit/cli/test_dispatch_characterization.py
@@ -203,7 +203,7 @@ git commit -m "test(cli): characterize current dispatch behavior before reorg"
 **Files:**
 - Modify: `tests/unit/cli/test_dispatch_characterization.py` (append)
 
-- [ ] **Step 1: Append the action-level characterization tests**
+- [x] **Step 1: Append the action-level characterization tests**
 
 ```python
 # ---------------------------------------------------------------------------
@@ -245,12 +245,12 @@ def test_package_list_format_output_table() -> None:
     assert "Alpha" in output and "Beta" in output
 ```
 
-- [ ] **Step 2: Run and verify PASS**
+- [x] **Step 2: Run and verify PASS**
 
 Run: `pytest tests/unit/cli/test_dispatch_characterization.py -v`
 Expected: all PASS (these exercise existing `_format_output` and `SessionAwareAction.execute` with mocks).
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add tests/unit/cli/test_dispatch_characterization.py
@@ -267,7 +267,7 @@ git commit -m "test(cli): characterize session gate and list output formats"
 - Modify: `src/rhapsody_cli/actions/abstract_action.py`
 - Modify: `tests/unit/actions/test_abstract_action.py`
 
-- [ ] **Step 1: Write failing tests for the csv branch and RootCommandAction**
+- [x] **Step 1: Write failing tests for the csv branch and RootCommandAction**
 
 Append to `tests/unit/actions/test_abstract_action.py`:
 
@@ -316,12 +316,12 @@ class TestRootCommandAction:
 
 (Adjust the import line at the top of the file: add `RhapsodyContextAction` from `rhapsody_cli.actions.abstract_action` and `VersionAction` from `rhapsody_cli.actions.session_action`; the file already imports MagicMock/patch/pytest.)
 
-- [ ] **Step 2: Run to verify FAIL**
+- [x] **Step 2: Run to verify FAIL**
 
 Run: `pytest tests/unit/actions/test_abstract_action.py -k "Csv or RootCommand" -v`
 Expected: FAIL — `RhapsodyContextAction` has no attribute `register`/`run`; csv falls through to table.
 
-- [ ] **Step 3: Implement in `abstract_action.py`**
+- [x] **Step 3: Implement in `abstract_action.py`**
 
 (a) Extend `_print_formatted_output` (replace the body's format selection):
 
@@ -361,12 +361,12 @@ class RootCommandAction(AbstractAction):
         self.execute(namespace)
 ```
 
-- [ ] **Step 4: Run to verify PASS**
+- [x] **Step 4: Run to verify PASS**
 
 Run: `pytest tests/unit/actions/test_abstract_action.py -v`
 Expected: all PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/rhapsody_cli/actions/abstract_action.py tests/unit/actions/test_abstract_action.py
@@ -380,7 +380,7 @@ git commit -m "feat(cli): csv in shared output helper; RootCommandAction entry p
 - Modify: `src/rhapsody_cli/commands/{attribute,class,operation,package,port,project}_command.py` (remove `__init__` overrides)
 - Modify: `tests/unit/cli/test_cli.py` (keep old contract green until Task 8 rewrites it — old tests patch `PackageCommand` and call `main()`, which still constructs groups, so keep a temporary compatible constructor)
 
-- [ ] **Step 1: Write the failing group-protocol test**
+- [x] **Step 1: Write the failing group-protocol test**
 
 Append to `tests/unit/cli/test_dispatch_characterization.py`:
 
@@ -404,12 +404,12 @@ def test_group_satisfies_entry_protocol() -> None:
     action.execute.assert_called_once_with(namespace)
 ```
 
-- [ ] **Step 2: Run to verify FAIL**
+- [x] **Step 2: Run to verify FAIL**
 
 Run: `pytest tests/unit/cli/test_dispatch_characterization.py::test_group_satisfies_entry_protocol -v`
 Expected: FAIL — `PackageCommand()` takes args; no `register`.
 
-- [ ] **Step 3: Reshape `AbstractCommand`**
+- [x] **Step 3: Reshape `AbstractCommand`**
 
 Replace the whole class body with:
 
@@ -467,7 +467,7 @@ class AbstractCommand:
         return self.__class__.__name__.replace("Command", "").lower()
 ```
 
-- [ ] **Step 4: Update the 6 group classes**
+- [x] **Step 4: Update the 6 group classes**
 
 In each of `attribute_command.py`, `class_command.py`, `operation_command.py`, `package_command.py`, `port_command.py`, `project_command.py`: delete the `__init__` override entirely (constructor now inherited, command name derived from class name). Keep `get_actions()` unchanged. For `package_command.py` the result is:
 
@@ -488,7 +488,7 @@ class PackageCommand(AbstractCommand):
 
 (The export/import entries are removed in Task 6; leave them in `get_actions()` for now so the group still works — they are removed in this same edit ONLY if Task 6 has already landed. To keep tasks independent: leave the current export/import imports in place during Task 4.)
 
-- [ ] **Step 5: Make the old main() path work temporarily**
+- [x] **Step 5: Make the old main() path work temporarily**
 
 `cli.py::main()` constructs `ClassCommand(command_args)` etc. Keep a legacy constructor path: add to `AbstractCommand`:
 
@@ -535,7 +535,7 @@ class PackageCommand(AbstractCommand):
 
 Run: `pytest tests/unit/cli/ tests/unit/actions/ -q` — everything from Tasks 1-3 plus legacy behavior PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/rhapsody_cli/commands/ src/rhapsody_cli/actions/abstract_action.py tests/unit/cli/test_dispatch_characterization.py
@@ -549,7 +549,7 @@ git commit -m "feat(cli): command groups satisfy register/run entry protocol"
 - Modify: `tests/unit/cli/test_cli.py` (rewrite for the new contract)
 - Modify: `tests/unit/cli/test_dispatch_characterization.py` (flip the two INTENDED-CHANGE cases)
 
-- [ ] **Step 1: Rewrite the failing-contract tests first**
+- [x] **Step 1: Rewrite the failing-contract tests first**
 
 Replace `tests/unit/cli/test_cli.py` content with:
 
@@ -639,7 +639,7 @@ def test_main_cli_execution_error_uses_exit_code() -> None:
     assert exc_info.value.code == 3
 ```
 
-- [ ] **Step 2: Rewrite `cli.py`**
+- [x] **Step 2: Rewrite `cli.py`**
 
 Replace the entire file content with:
 
@@ -741,7 +741,7 @@ if __name__ == "__main__":
 
 (Note: single-level actions `ConnectAction` etc. must inherit `RootCommandAction` for the protocol — that change is Task 6 step 3; until then `build_registry` type-checks structurally only if they have register/run. Do Task 6's session-action edits in the same commit if needed to keep the gate green — mypy checks `src/`, and Protocol is structural so plain `AbstractAction` subclasses that lack register/run fail mypy only at the Dict annotation. Simplest sequencing: apply Task 6 step 3 (make session actions inherit `RootCommandAction`) BEFORE running the gate for this task.)
 
-- [ ] **Step 3: Make session actions RootCommandActions**
+- [x] **Step 3: Make session actions RootCommandActions**
 
 In `src/rhapsody_cli/actions/session_action.py`, change each of the four class declarations to inherit `RootCommandAction` (import it from `abstract_action`):
 
@@ -754,7 +754,7 @@ class StatusAction(RootCommandAction):
 class VersionAction(RootCommandAction):
 ```
 
-- [ ] **Step 4: Flip the INTENDED-CHANGE characterization tests**
+- [x] **Step 4: Flip the INTENDED-CHANGE characterization tests**
 
 In `tests/unit/cli/test_dispatch_characterization.py`:
 - Replace `test_format_flag_after_group_also_works_today` with:
@@ -793,12 +793,12 @@ def test_unknown_command_prints_error_and_exits_2(capsys: pytest.CaptureFixture)
 
 - Delete the now-obsolete `_legacy_parse`/`execute` from `AbstractCommand` (Task 4 step 5's temporary code) and the group-constructs-with-args path.
 
-- [ ] **Step 5: Run the full unit gate**
+- [x] **Step 5: Run the full unit gate**
 
 Run: `pytest tests/unit -q`
 Expected: PASS except tests referencing `_usage`/legacy execute — fix imports of removed names in `tests/unit/cli/test_cli.py`-adjacent files only; the old `test_cli.py` was replaced in step 1. If `tests/unit/actions/test_session_action.py` asserts `add_verbose_argument` registration, update those assertions in Task 6 (next) — run `pytest tests/unit/actions/test_session_action.py -q` to see.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/rhapsody_cli/cli/cli.py src/rhapsody_cli/commands/abstract_command.py src/rhapsody_cli/actions/session_action.py tests/unit/cli/
@@ -812,12 +812,12 @@ git commit -m "feat(cli): registry-driven root parser; global --format/-v; argpa
 - Modify: `src/rhapsody_cli/actions/abstract_action.py` (delete `add_verbose_argument`)
 - Modify: affected tests under `tests/unit/actions/`
 
-- [ ] **Step 1: Find every per-subcommand `--format` and `-v` registration**
+- [x] **Step 1: Find every per-subcommand `--format` and `-v` registration**
 
 Run: `grep -n '"--format"\|add_verbose_argument' src/rhapsody_cli/actions/*.py`
 Expected: ~10 `--format` registrations (list/view in 5 domain files) and ~38 `add_verbose_argument` calls.
 
-- [ ] **Step 2: Delete them all**
+- [x] **Step 2: Delete them all**
 
 For each `list`/`view` action's `init_arguments`, remove the line:
 
@@ -833,7 +833,7 @@ For every other action, remove the line:
 
 Then delete the `add_verbose_argument` static method from `AbstractAction` (lines ~57-69 of `abstract_action.py`).
 
-- [ ] **Step 3: Point every printing action at `args.format`**
+- [x] **Step 3: Point every printing action at `args.format`**
 
 In every `list`/`view` action's `execute`, the existing call `self._format_output(data, args.format)` already reads `args.format` — with the per-subcommand argument gone, `args.format` now comes from the root parser (argparse propagates root defaults). No code change needed for those. For actions that print via `self.output_format` attribute (set by the legacy injection that no longer exists), add at the top of `execute` (after `super().execute(args)` where present):
 
@@ -843,16 +843,16 @@ In every `list`/`view` action's `execute`, the existing call `self._format_outpu
 
 Find candidates: `grep -n "self.output_format" src/rhapsody_cli/actions/*.py | grep -v abstract`.
 
-- [ ] **Step 4: Update tests that register/exercise the removed flags**
+- [x] **Step 4: Update tests that register/exercise the removed flags**
 
 Run: `pytest tests/unit -q` and fix only assertions that reference `--format` as a subcommand argument or `add_verbose_argument`. Example fix pattern (in any action test that built args namespaces): replace `args.format = "json"` with the same assignment (unchanged — namespace attr name is identical) and delete tests asserting a subparser has a `--format` option.
 
-- [ ] **Step 5: Verify grep is clean and gate is green**
+- [x] **Step 5: Verify grep is clean and gate is green**
 
 Run: `grep -n '"--format"\|add_verbose_argument' src/rhapsody_cli/actions/*.py; pytest tests/unit -q`
 Expected: grep finds nothing in actions/ (root parser in cli.py still has it); unit suite PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/rhapsody_cli/actions/ src/rhapsody_cli/actions/abstract_action.py tests/unit/actions/
@@ -867,7 +867,7 @@ git commit -m "feat(cli): consolidate --format/-v as strictly global flags"
 - Modify: `src/rhapsody_cli/actions/package_action.py` (remove the two classes), `src/rhapsody_cli/commands/package_command.py` (remove from `get_actions()`), `src/rhapsody_cli/cli/cli.py` (register at root)
 - Modify: `tests/unit/actions/test_package_action.py` (remove `TestPackageExportAction`/`TestPackageImportAction`)
 
-- [ ] **Step 1: Write the transfer tests (moved + retargeted)**
+- [x] **Step 1: Write the transfer tests (moved + retargeted)**
 
 Create `tests/unit/actions/test_transfer.py` (adapt the bodies of the removed `TestPackageExportAction`/`TestPackageImportAction` from `tests/unit/actions/test_package_action.py:687-788`; the assertions stay identical, only imports and class names change):
 
@@ -930,12 +930,12 @@ class TestImportAction:
                     action.execute(args)
 ```
 
-- [ ] **Step 2: Run to verify FAIL**
+- [x] **Step 2: Run to verify FAIL**
 
 Run: `pytest tests/unit/actions/test_transfer.py -v`
 Expected: FAIL — `rhapsody_cli.actions.transfer` does not exist.
 
-- [ ] **Step 3: Create the transfer package**
+- [x] **Step 3: Create the transfer package**
 
 `src/rhapsody_cli/actions/transfer/__init__.py`:
 
@@ -1033,7 +1033,7 @@ class ImportAction(AbstractPackageAction):
             self._handle_execution_error(e, "import package")
 ```
 
-- [ ] **Step 4: Remove the old classes and register at root**
+- [x] **Step 4: Remove the old classes and register at root**
 
 (a) Delete `PackageExportAction` and `PackageImportAction` (lines ~608-672) from `src/rhapsody_cli/actions/package_action.py`; remove their now-unused imports (`RhapsodyExporter`, `RhapsodyImporter`, `RhapsodyYaml`) from that file's header if no other class uses them.
 
@@ -1046,14 +1046,14 @@ class ImportAction(AbstractPackageAction):
         "import": ImportAction(),
 ```
 
-- [ ] **Step 5: Remove the moved test classes and run the gate**
+- [x] **Step 5: Remove the moved test classes and run the gate**
 
 Delete `TestPackageExportAction` and `TestPackageImportAction` from `tests/unit/actions/test_package_action.py`.
 
 Run: `pytest tests/unit -q && ruff check src/ tests/ && black --check src/ tests/`
 Expected: PASS; also `pytest tests/unit/cli/test_cli.py::test_registry_covers_all_commands -q` already covers the registry keys (Task 5).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/rhapsody_cli/actions/transfer/ src/rhapsody_cli/actions/package_action.py src/rhapsody_cli/commands/package_command.py src/rhapsody_cli/cli/cli.py tests/unit/actions/
@@ -1071,7 +1071,7 @@ git commit -m "feat(cli): promote export/import to root commands (SWR_XCH_001)"
 - Create: `tests/unit/actions/test_support.py`
 - Modify: the five domain action files (call-site swap)
 
-- [ ] **Step 1: Write failing tests for the helpers**
+- [x] **Step 1: Write failing tests for the helpers**
 
 Create `tests/unit/actions/test_support.py`:
 
@@ -1122,12 +1122,12 @@ class TestWriteTextFile:
 
 NOTE: before finalizing these tests, read the current `_load_json_data`/`_write_to_file` bodies in `src/rhapsody_cli/actions/package_action.py` (lines ~232-260 and ~390-398) and port their exact error semantics into `support.py` — the helpers must preserve today's error messages/exit codes (characterization rule). If a copy's semantics differ from another's (e.g. one raises on unwritable path, another logs), keep the strictest common behavior and note the difference in the helper's docstring.
 
-- [ ] **Step 2: Run to verify FAIL**
+- [x] **Step 2: Run to verify FAIL**
 
 Run: `pytest tests/unit/actions/test_support.py -v`
 Expected: FAIL — module does not exist.
 
-- [ ] **Step 3: Implement `support.py`**
+- [x] **Step 3: Implement `support.py`**
 
 ```python
 """Pure helpers shared by CLI actions (no COM, no session, no I/O beyond files)."""
@@ -1192,7 +1192,7 @@ def write_text_file(file_path: str, content: str) -> None:
         raise CliExecutionError(f"Cannot write to '{file_path}': {e}") from e
 ```
 
-- [ ] **Step 4: Run helpers tests to PASS, then swap the five call sites**
+- [x] **Step 4: Run helpers tests to PASS, then swap the five call sites**
 
 Run: `pytest tests/unit/actions/test_support.py -v` — PASS.
 
@@ -1206,12 +1206,12 @@ In each of `attribute_action.py`, `class_action.py`, `operation_action.py`, `por
 
 Add the import `from rhapsody_cli.actions.support import load_json_mapping, write_text_file` to each file.
 
-- [ ] **Step 5: Full unit gate**
+- [x] **Step 5: Full unit gate**
 
 Run: `pytest tests/unit -q`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/rhapsody_cli/actions/support.py tests/unit/actions/test_support.py src/rhapsody_cli/actions/
@@ -1223,7 +1223,7 @@ git commit -m "refactor(cli): consolidate JSON-load and file-write helpers into 
 **Files:**
 - Modify: `src/rhapsody_cli/actions/{attribute,class,operation,package,port}_action.py` (delete `_format_output`, call base helper)
 
-- [ ] **Step 1: Swap each read action to the base helper**
+- [x] **Step 1: Swap each read action to the base helper**
 
 In every `List`/`View` action's `execute` replace the pair
 
@@ -1242,12 +1242,12 @@ with:
 
 where `json_payload` is the JSON-appropriate data (the names list for `list`, the collected dict for `view`), `headers`/`rows` are the table form (e.g. `["Name"]` / `[[name] for name in package_names]`). Then delete each file's `_format_output` method. Preserve each action's current table headers — read them from the existing `_format_output` bodies before deleting (e.g. package list uses `["Name"]`; view actions use their `_VIEW_HEADERS` constant — keep those constants).
 
-- [ ] **Step 2: Verify characterization output tests still pass**
+- [x] **Step 2: Verify characterization output tests still pass**
 
 Run: `pytest tests/unit/cli/test_dispatch_characterization.py -q`
 Expected: PASS — output strings unchanged (table via `OutputFormatter.table`, json via `json_format`, csv via the Task 3 csv branch).
 
-- [ ] **Step 3: Full gate + commit**
+- [x] **Step 3: Full gate + commit**
 
 ```bash
 pytest tests/unit -q && ruff check src/ tests/ && black --check src/ tests/
@@ -1262,7 +1262,7 @@ git commit -m "refactor(cli): unify list/view output on the shared formatted-out
 - Modify: `src/rhapsody_cli/actions/{package,class}_action.py` (stereotypes/tags), all five (common core)
 - Modify: `tests/unit/actions/test_support.py` (applier tests)
 
-- [ ] **Step 1: Add applier tests to `test_support.py`**
+- [x] **Step 1: Add applier tests to `test_support.py`**
 
 ```python
 class TestApplyCommonAttributes:
@@ -1296,7 +1296,7 @@ class TestApplyStereotypesAndTags:
 
 Add `from unittest.mock import MagicMock` to the file's imports.
 
-- [ ] **Step 2: Read the exact current bodies, then implement**
+- [x] **Step 2: Read the exact current bodies, then implement**
 
 Read `PackageCreateAction._set_stereotypes` and `_set_tags` (`package_action.py:274-292`) — port their exact element-API calls into `support.py`:
 
@@ -1326,11 +1326,11 @@ def apply_stereotypes_and_tags(element: object, attrs: Dict[str, object]) -> Non
 
 (If the verbatim bodies differ — e.g. tags go through `add_new_aggr("Tag", ...)` first — port THAT shape; the test above then asserts the actual calls. This is a characterization-preserving move, not a redesign.)
 
-- [ ] **Step 3: Point package and class `_set_attributes` at the appliers**
+- [x] **Step 3: Point package and class `_set_attributes` at the appliers**
 
 In `package_action.py` `_set_basic_attributes` replace the name/description/display_name block with `apply_common_attributes(package, attrs)`; in `_set_attributes` route the `stereotypes`/`tags` keys to `apply_stereotypes_and_tags`. In `class_action.py` `_set_attributes`, do the same for its name/description/stereotypes/tags handling. Leave `attribute`/`operation`/`port` domain-specific fields as-is.
 
-- [ ] **Step 4: Full gate + commit**
+- [x] **Step 4: Full gate + commit**
 
 ```bash
 pytest tests/unit -q && ruff check src/ tests/ && black --check src/ tests/
@@ -1351,7 +1351,7 @@ Each task: create the domain package, move classes verbatim (imports at the top 
 - Delete: `src/rhapsody_cli/actions/session_action.py`
 - Modify: `src/rhapsody_cli/cli/cli.py` import line; `tests/unit/actions/test_session_action.py`
 
-- [ ] **Step 1: Create the package with verbatim moves**
+- [x] **Step 1: Create the package with verbatim moves**
 
 One class per file; `connect.py` gets `ConnectAction` plus its module docstring:
 
@@ -1377,12 +1377,12 @@ from rhapsody_cli.actions.session.version import VersionAction
 __all__ = ["ConnectAction", "DisconnectAction", "StatusAction", "VersionAction"]
 ```
 
-- [ ] **Step 2: Update importers**
+- [x] **Step 2: Update importers**
 
 `cli.py`: replace `from rhapsody_cli.actions.session_action import ...` with `from rhapsody_cli.actions.session import ConnectAction, DisconnectAction, StatusAction, VersionAction`.
 `tests/unit/actions/test_session_action.py`: same import swap.
 
-- [ ] **Step 3: Delete the old module, gate, commit**
+- [x] **Step 3: Delete the old module, gate, commit**
 
 ```bash
 git rm src/rhapsody_cli/actions/session_action.py
@@ -1398,7 +1398,7 @@ git commit -m "refactor(cli): split session actions into actions/session/"
 - Delete: `src/rhapsody_cli/actions/package_action.py`
 - Modify: `src/rhapsody_cli/commands/package_command.py`, `src/rhapsody_cli/actions/transfer/{export,importer}.py` (base import), `tests/unit/actions/test_package_action.py`
 
-- [ ] **Step 1: Move classes verbatim**
+- [x] **Step 1: Move classes verbatim**
 
 `base.py` gets `AbstractPackageAction` (docstring: `"""Package action base: shared path validation (SWR_PKG_0005, SWR_PKG_0010)."""`). `create.py` gets `PackageCreateAction` + the module docstring header lines SWR_PKG_0001/0002/0006/0007; `delete.py` → SWR_PKG_0002; `view.py` → SWR_PKG_0003/0009; `list.py` → SWR_PKG_0004/0008; `update.py` → SWR_PKG_0016. Each file imports `from rhapsody_cli.actions.package.base import AbstractPackageAction` plus only the stdlib/third-party names its class uses (prune `json`, `Path`, `OutputFormatter` etc. per file — ruff F401 will flag leftovers).
 
@@ -1424,11 +1424,11 @@ __all__ = [
 ]
 ```
 
-- [ ] **Step 2: Update importers**
+- [x] **Step 2: Update importers**
 
 `package_command.py`: import from `rhapsody_cli.actions.package`. `transfer/export.py` and `transfer/importer.py`: `from rhapsody_cli.actions.package_action import AbstractPackageAction` → `from rhapsody_cli.actions.package.base import AbstractPackageAction`. `tests/unit/actions/test_package_action.py`: import from `rhapsody_cli.actions.package`.
 
-- [ ] **Step 3: Delete, gate, commit**
+- [x] **Step 3: Delete, gate, commit**
 
 ```bash
 git rm src/rhapsody_cli/actions/package_action.py
@@ -1444,7 +1444,7 @@ git commit -m "refactor(cli): split package actions into actions/package/"
 - Delete: `src/rhapsody_cli/actions/class_action.py`
 - Modify: `src/rhapsody_cli/commands/class_command.py`, `tests/unit/actions/test_class_action.py`
 
-- [ ] **Step 1: Move classes verbatim**
+- [x] **Step 1: Move classes verbatim**
 
 `base.py` ← `AbstractClassAction`; `create.py` ← `ClassCreateAction`; `delete.py` ← `ClassDeleteAction`; `list.py` ← `ClassListAction`; `view.py` ← `ClassViewAction`; `link.py` ← `ClassLinkAction`; `update.py` ← `ClassUpdateAction`. Each subclass file imports `from rhapsody_cli.actions.class.base import AbstractClassAction` (note: `class` is a keyword — package dir named `class/` is legal as a directory since it's not an import statement, BUT `from rhapsody_cli.actions.class.base import ...` is a SyntaxError. Use `importlib`-free naming: rename the package to `cls` is ugly; the established stdlib workaround is `getattr(__import__...)` — unacceptable. **Rename the subpackage to `classifier/`** and keep the registry key `"class"`.)
 
@@ -1474,11 +1474,11 @@ __all__ = [
 ]
 ```
 
-- [ ] **Step 2: Update importers**
+- [x] **Step 2: Update importers**
 
 `class_command.py` and `tests/unit/actions/test_class_action.py` import from `rhapsody_cli.actions.classifier`.
 
-- [ ] **Step 3: Delete, gate, commit**
+- [x] **Step 3: Delete, gate, commit**
 
 ```bash
 git rm src/rhapsody_cli/actions/class_action.py
@@ -1496,7 +1496,7 @@ git commit -m "refactor(cli): split class actions into actions/classifier/"
 - Delete: the three source modules
 - Modify: the three command groups; the three test files
 
-- [ ] **Step 1: Move classes verbatim (same pattern as Tasks 12-13)**
+- [x] **Step 1: Move classes verbatim (same pattern as Tasks 12-13)**
 
 Per domain: `base.py` ← the `Abstract<Domain>Action` base; then one file per concrete class. Each `__init__.py` follows the package template (attribute example; operation/port mirror it):
 
@@ -1522,7 +1522,7 @@ __all__ = [
 
 (operation: `AbstractOperationAction` + Create/Delete/List/View/Update; port: `AbstractPortAction` + Create/Delete/List/View/Update — adjust names in the template.)
 
-- [ ] **Step 2: Update the three command groups and test files, delete sources, gate, commit**
+- [x] **Step 2: Update the three command groups and test files, delete sources, gate, commit**
 
 ```bash
 git rm src/rhapsody_cli/actions/attribute_action.py src/rhapsody_cli/actions/operation_action.py src/rhapsody_cli/actions/port_action.py
@@ -1538,7 +1538,7 @@ git commit -m "refactor(cli): split attribute/operation/port actions into per-ac
 - Delete: `src/rhapsody_cli/actions/project_action.py`
 - Modify: `src/rhapsody_cli/commands/project_command.py`, `tests/unit/actions/test_project_action.py`
 
-- [ ] **Step 1: Move classes verbatim**
+- [x] **Step 1: Move classes verbatim**
 
 `open.py` ← `ProjectOpenAction`; `list.py` ← `ProjectListAction`; `close.py` ← `ProjectCloseAction`; `new.py` ← `ProjectNewAction`; `export.py` ← `ProjectExportAction`; `importer.py` ← `ProjectImportAction` (keyword-avoiding name, same as transfer). These extend `RhapsodyContextAction` directly — import from `abstract_action` in each file.
 
@@ -1564,7 +1564,7 @@ __all__ = [
 ]
 ```
 
-- [ ] **Step 2: Update importers, delete, gate, commit**
+- [x] **Step 2: Update importers, delete, gate, commit**
 
 ```bash
 git rm src/rhapsody_cli/actions/project_action.py
@@ -1583,7 +1583,7 @@ git commit -m "refactor(cli): split project actions into actions/project/"
 - Modify: `AGENTS.md`
 - Modify: `docs/superpowers/specs/2026-11-27-cli-command-reorg-design.md` (no — spec is frozen; instead add plan-completion note to the plan file itself)
 
-- [ ] **Step 1: Fix the CLI section of AGENTS.md**
+- [x] **Step 1: Fix the CLI section of AGENTS.md**
 
 Replace the "CLI Subcommands" boilerplate and the Architecture table's CLI row with the real surface:
 
@@ -1601,12 +1601,12 @@ And replace the "CLI Subcommands" how-to with:
 3. Register it in the domain's `__init__.py` and the group's `get_actions()` in `src/rhapsody_cli/commands/`; for a brand-new ROOT command, make the class a `RootCommandAction` and add it to `build_registry()` in `cli/cli.py`
 ```
 
-- [ ] **Step 2: Cross-check remaining docs for stale CLI references**
+- [x] **Step 2: Cross-check remaining docs for stale CLI references**
 
 Run: `grep -rn "package export\|package import\|element\b.*command\|\bio\b.*command" docs/ AGENTS.md --include="*.md" | grep -v superpowers`
 Update each hit to the new surface (`rhapsody-cli export --file ... --path pkg`, etc.).
 
-- [ ] **Step 3: Full gate + commit**
+- [x] **Step 3: Full gate + commit**
 
 ```bash
 pytest tests/unit -q && ruff check src/ tests/ && black --check src/ tests/
