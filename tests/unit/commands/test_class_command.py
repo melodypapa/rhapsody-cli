@@ -1,37 +1,36 @@
-"""Tests for ClassCommand dispatcher.
+"""Tests for ClassCommand dispatcher (register/run contract)."""
 
-UTS_CLS_00029: ClassCommand registers all subcommands
-"""
+import argparse
 
 import pytest
 
 from rhapsody_cli.commands.class_command import ClassCommand
-from rhapsody_cli.exceptions import CliExecutionError
 
 
 class TestClassCommand:
     """Test ClassCommand dispatcher."""
 
-    def test_command_id_is_class(self) -> None:
+    def test_command_name_is_class(self) -> None:
         """Test that command name is 'class'."""
-        cmd = ClassCommand(["create", "--path", "Sensors", '{"name":"Test"}'])
-        assert cmd._subcommand == "create"
+        cmd = ClassCommand()
+        assert cmd._command_name() == "class"
 
-    def test_missing_subcommand_raises_error(self) -> None:
-        """Test that missing subcommand raises error."""
-        with pytest.raises(CliExecutionError):
-            ClassCommand([])
+    def test_missing_subcommand_is_rejected(self) -> None:
+        """Group-level subparsers are required: bare group parse exits 2."""
+        root = argparse.ArgumentParser()
+        subparsers = root.add_subparsers(required=True)
+        cmd = ClassCommand()
+        cmd.register(subparsers)
+        with pytest.raises(SystemExit) as exc_info:
+            root.parse_args(["class"])
+        assert exc_info.value.code == 2
 
-    def test_registers_all_six_subcommands(self) -> None:
-        """UTS_CLS_00029: Test that all 6 subcommands are registered."""
-        cmd = ClassCommand(["create", "--path", "Sensors", '{"name":"Test"}'])
+    def test_registers_all_6_subcommands(self) -> None:
+        """All 6 subcommands are registered."""
+        cmd = ClassCommand()
         actions = cmd.get_actions()
         command_ids = [a.command_id for a in actions]
 
-        assert "create" in command_ids
-        assert "delete" in command_ids
-        assert "view" in command_ids
-        assert "list" in command_ids
-        assert "link" in command_ids
-        assert "update" in command_ids
+        for expected in ["create", "delete", "list", "view", "link", "update"]:
+            assert expected in command_ids
         assert len(actions) == 6

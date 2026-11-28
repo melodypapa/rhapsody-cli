@@ -54,20 +54,6 @@ class AbstractAction:
         """
         raise NotImplementedError("Subclasses must implement the execute method.")
 
-    @staticmethod
-    def add_verbose_argument(parser: argparse.ArgumentParser) -> None:
-        """Add the shared --verbose/-v flag to a subcommand parser.
-
-        Args:
-            parser: The argument parser to add the verbose flag to.
-        """
-        parser.add_argument(
-            "--verbose",
-            "-v",
-            action="store_true",
-            help="Enable DEBUG-level logging",
-        )
-
 
 class RhapsodyContextAction(AbstractAction):
     """Base class for actions that require a live Rhapsody connection.
@@ -124,12 +110,28 @@ class RhapsodyContextAction(AbstractAction):
                 output_format is JSON. Use this to preserve an existing
                 table-only contract while sharing the helper.
         """
-        if self.output_format == "json" and not force_table:
-            output = OutputFormatter.json_format(data)
-        else:
-            output = OutputFormatter.table(headers, table_rows)
         # NOTE: Result data to stdout (not logger) so it stays safe for piping/redirection.
-        print(output)
+        print(self._render_output(data, headers, table_rows, force_table=force_table))
+
+    def _render_output(self, data: object, headers: List[str], table_rows: List[List[str]], *, force_table: bool = False) -> str:
+        """Format `data` per this action's output_format and return the string.
+
+        Args:
+            data: Payload to emit when the output format is JSON.
+            headers: Column headers for the table/csv forms.
+            table_rows: Rows (each a list of cells) for the table/csv forms.
+            force_table: When True, always render the table form even if
+                output_format is JSON. Use this to preserve an existing
+                table-only contract while sharing the helper.
+
+        Returns:
+            The formatted output string (not printed).
+        """
+        if self.output_format == "json" and not force_table:
+            return OutputFormatter.json_format(data)
+        if self.output_format == "csv":
+            return OutputFormatter.csv_format(headers, table_rows)
+        return OutputFormatter.table(headers, table_rows)
 
     def _handle_connection_error(self, error: RhapsodyConnectionError, context_msg: str = "") -> NoReturn:
         """Log a connection error and raise CliExecutionError for the user.
@@ -196,6 +198,30 @@ class SessionAwareAction(RhapsodyContextAction):
             raise CliExecutionError("Not connected. Run 'rhapsody-cli connect' first.")
 
         session_manager.update_activity(session)
+
+
+class RootCommandAction(AbstractAction):
+    """Base for top-level single commands registered directly in the root registry.
+
+    Implements the CliEntry protocol (register/run) by delegating to the
+    action's own init_arguments/execute.
+    """
+
+    def register(self, subparsers: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
+        """Register this command's subparser in the root parser.
+
+        Args:
+            subparsers: The root parser's subparsers action.
+        """
+        self.init_arguments(subparsers)
+
+    def run(self, namespace: argparse.Namespace) -> None:
+        """Execute this command from the parsed root namespace.
+
+        Args:
+            namespace: The argparse namespace parsed by the root parser.
+        """
+        self.execute(namespace)
 
 
 class ElementManagementAction(RhapsodyContextAction):

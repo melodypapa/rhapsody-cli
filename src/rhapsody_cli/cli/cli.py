@@ -1,12 +1,12 @@
-"""Main CLI entry point using argparse - PanGu style architecture."""
+"""Main CLI entry point: registry-driven root parser (PanGu style)."""
 
 import argparse
 import logging
 import sys
-from typing import Optional
+from typing import Dict, Protocol
 
-from rhapsody_cli.actions.abstract_action import AbstractAction
-from rhapsody_cli.actions.session_action import ConnectAction, DisconnectAction, StatusAction, VersionAction
+from rhapsody_cli.actions.session import ConnectAction, DisconnectAction, StatusAction, VersionAction
+from rhapsody_cli.actions.transfer import ExportAction, ImportAction
 from rhapsody_cli.cli.logging_config import CliLoggingConfigurator
 from rhapsody_cli.commands.attribute_command import AttributeCommand
 from rhapsody_cli.commands.class_command import ClassCommand
@@ -19,90 +19,65 @@ from rhapsody_cli.exceptions import CliExecutionError
 logger = logging.getLogger(__name__)
 
 
+class CliEntry(Protocol):
+    """A top-level CLI command: registers a subparser and runs from the namespace."""
+
+    def register(self, subparsers: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
+        """Create this entry's subparser under the root subparsers action."""
+        ...
+
+    def run(self, namespace: argparse.Namespace) -> None:
+        """Execute this entry using values from the parsed namespace."""
+        ...
+
+
+def build_registry() -> Dict[str, CliEntry]:
+    """Build the top-level command registry (name -> entry instance)."""
+    return {
+        "connect": ConnectAction(),
+        "disconnect": DisconnectAction(),
+        "status": StatusAction(),
+        "version": VersionAction(),
+        "export": ExportAction(),
+        "import": ImportAction(),
+        "class": ClassCommand(),
+        "attribute": AttributeCommand(),
+        "operation": OperationCommand(),
+        "package": PackageCommand(),
+        "port": PortCommand(),
+        "project": ProjectCommand(),
+    }
+
+
+def build_root_parser(commands: Dict[str, CliEntry]) -> argparse.ArgumentParser:
+    """Build the root parser with global flags and every registered command.
+
+    Args:
+        commands: The command registry from build_registry().
+
+    Returns:
+        The fully wired root ArgumentParser. Every subparser carries a
+        ``set_defaults(entry=...)`` pointing at its registry entry, so the
+        parsed namespace selects the dispatcher.
+    """
+    parser = argparse.ArgumentParser(prog="rhapsody-cli", description="Rhapsody CLI")
+    parser.add_argument("--format", choices=["table", "json", "csv"], default="table", help="Output format (global; use before the command)")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Enable debug logging")
+    subparsers = parser.add_subparsers(dest="command", required=True, metavar="<command>")
+    for entry in commands.values():
+        entry.register(subparsers)
+    for name, sub_parser in subparsers.choices.items():
+        sub_parser.set_defaults(entry=commands[name])
+    return parser
+
+
 def main() -> None:
     """Main CLI entry point."""
-    if len(sys.argv) < 2:
-        _usage("")
-
-    command_name = sys.argv[1]
-    command_args = sys.argv[2:]
-
-    # Check for help
-    if command_name in ("-h", "--help"):
-        _usage("")
-
-    # Check for verbose flag in args and configure logging
-    verbose = "-v" in command_args or "--verbose" in command_args
-    CliLoggingConfigurator(verbose=verbose).configure()
-
-    # Check for output format flag
-    output_format = "table"
-    if "--format" in command_args:
-        idx = command_args.index("--format")
-        if idx + 1 < len(command_args):
-            output_format = command_args[idx + 1]
-
+    root_parser = build_root_parser(build_registry())
+    namespace = root_parser.parse_args()
+    CliLoggingConfigurator(verbose=namespace.verbose).configure()
     try:
-        # Single-level commands (no AbstractCommand wrapper)
-        action: AbstractAction
-        if command_name == "connect":
-            action = ConnectAction()
-            # Parse args for connect
-            parser = argparse.ArgumentParser(prog="rhapsody-cli connect")
-            parser.add_argument("--timeout", type=int, help="Session timeout in minutes")
-            parser.add_argument("--attach-only", action="store_true", help="Only attach to existing instance")
-            parser.add_argument("--no-gui", action="store_true", help="Keep GUI hidden")
-            parser.add_argument("-v", "--verbose", action="store_true", help="Enable debug logging")
-            parsed_args = parser.parse_args(command_args)
-            action.execute(parsed_args)
-            return
-
-        elif command_name == "disconnect":
-            action = DisconnectAction()
-            parser = argparse.ArgumentParser(prog="rhapsody-cli disconnect")
-            parser.add_argument("-v", "--verbose", action="store_true", help="Enable debug logging")
-            parsed_args = parser.parse_args(command_args)
-            action.execute(parsed_args)
-            return
-
-        elif command_name == "status":
-            action = StatusAction()
-            parser = argparse.ArgumentParser(prog="rhapsody-cli status")
-            parser.add_argument("-v", "--verbose", action="store_true", help="Enable debug logging")
-            parsed_args = parser.parse_args(command_args)
-            action.execute(parsed_args)
-            return
-
-        elif command_name == "version":
-            action = VersionAction()
-            parser = argparse.ArgumentParser(prog="rhapsody-cli version")
-            parser.add_argument("-v", "--verbose", action="store_true", help="Enable debug logging")
-            parsed_args = parser.parse_args(command_args)
-            action.execute(parsed_args)
-            return
-
-        # Two-level commands (existing)
-        cmd: Optional[object] = None
-
-        if command_name == "class":
-            cmd = ClassCommand(command_args)
-        elif command_name == "attribute":
-            cmd = AttributeCommand(command_args)
-        elif command_name == "package":
-            cmd = PackageCommand(command_args)
-        elif command_name == "operation":
-            cmd = OperationCommand(command_args)
-        elif command_name == "port":
-            cmd = PortCommand(command_args)
-        elif command_name == "project":
-            cmd = ProjectCommand(command_args)
-        else:
-            _usage(f"Unknown command: {command_name}")
-
-        # Execute the command
-        if cmd and hasattr(cmd, "execute"):
-            cmd.execute(output_format=output_format)
-
+        namespace.entry.run(namespace)
     except KeyboardInterrupt:
         # NOTE: Terminal feedback for interactive Ctrl+C; print() to stdout
         # with a leading newline to clear the ^C echo. Logger would add
@@ -120,38 +95,6 @@ def main() -> None:
     except Exception as e:
         logger.error("Command failed: %s", e)
         sys.exit(1)
-
-
-def _usage(error: str) -> None:
-    """Print usage message and exit."""
-    commands_text = "Single-Level Commands:\n"
-    commands_text += "  connect     Connect to Rhapsody\n"
-    commands_text += "  disconnect  Disconnect from Rhapsody\n"
-    commands_text += "  status      Show connection status\n"
-    commands_text += "  version     Show CLI version\n\n"
-    commands_text += "Two-Level Commands:\n"
-    commands_text += "  attribute   Manage attributes\n"
-    commands_text += "  class       Manage classes\n"
-    commands_text += "  operation   Manage operations\n"
-    commands_text += "  package     Manage packages\n"
-    commands_text += "  port        Manage ports\n"
-    commands_text += "  project     Manage projects\n"
-    options_text = "Global Options:\n"
-    options_text += "  --format <format>   Output format (table, json, csv). Default: table\n"
-    options_text += "  -v|--verbose        Enable debug logging\n"
-    options_text += "  -h|--help          Show this help message\n"
-
-    message = "Usage:\n  rhapsody-cli <command> [options]\n\n"
-    message += commands_text + "\n" + options_text
-
-    if error != "":
-        # NOTE: Usage/error output to stderr (mirrors argparse's help-on-error behavior).
-        print(f"Error: {error}\n", file=sys.stderr)
-        print(message, file=sys.stderr)
-    else:
-        # NOTE: Help/usage output to stdout (mirrors argparse's --help behavior).
-        print(message)
-    sys.exit(2 if error else 0)
 
 
 if __name__ == "__main__":

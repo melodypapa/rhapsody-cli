@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from rhapsody_cli.actions.abstract_action import ElementManagementAction
-from rhapsody_cli.actions.attribute_action import AbstractAttributeAction
+from rhapsody_cli.actions.attribute import AbstractAttributeAction
 from rhapsody_cli.exceptions import CliExecutionError
 
 
@@ -109,7 +109,7 @@ class TestAttributeCreateAction:
 
     def _make_action_with_classifier(self) -> Tuple[Any, Any]:
         """Helper: build action and mock parent classifier."""
-        from rhapsody_cli.actions.attribute_action import AttributeCreateAction
+        from rhapsody_cli.actions.attribute import AttributeCreateAction
 
         action = AttributeCreateAction()
         mock_classifier = MagicMock()
@@ -231,7 +231,7 @@ class TestAttributeDeleteAction:
 
     def test_delete_attribute_by_path_and_name(self) -> None:
         """UTS_ATTR_00007: Test successful attribute deletion by path + name."""
-        from rhapsody_cli.actions.attribute_action import AttributeDeleteAction
+        from rhapsody_cli.actions.attribute import AttributeDeleteAction
 
         action = AttributeDeleteAction()
         mock_classifier = MagicMock()
@@ -250,7 +250,7 @@ class TestAttributeDeleteAction:
 
     def test_delete_attribute_by_guid(self) -> None:
         """UTS_ATTR_00008: Test successful attribute deletion by GUID."""
-        from rhapsody_cli.actions.attribute_action import AttributeDeleteAction
+        from rhapsody_cli.actions.attribute import AttributeDeleteAction
 
         action = AttributeDeleteAction()
         mock_attr = MagicMock()
@@ -270,7 +270,7 @@ class TestAttributeDeleteAction:
 
     def test_delete_attribute_guid_wrong_type(self) -> None:
         """UTS_ATTR_00009: Test that wrong type via --guid raises error."""
-        from rhapsody_cli.actions.attribute_action import AttributeDeleteAction
+        from rhapsody_cli.actions.attribute import AttributeDeleteAction
 
         action = AttributeDeleteAction()
         mock_class = MagicMock()
@@ -293,7 +293,7 @@ class TestAttributeDeleteAction:
 
     def test_delete_requires_path_name_or_guid(self) -> None:
         """UTS_ATTR_00010: Test that either --path + --name or --guid is required."""
-        from rhapsody_cli.actions.attribute_action import AttributeDeleteAction
+        from rhapsody_cli.actions.attribute import AttributeDeleteAction
 
         action = AttributeDeleteAction()
         args = MagicMock()
@@ -337,7 +337,7 @@ class TestAttributeViewAction:
 
     def test_view_table_output(self, capsys: Any) -> None:
         """UTS_ATTR_00011: Test table format output."""
-        from rhapsody_cli.actions.attribute_action import AttributeViewAction
+        from rhapsody_cli.actions.attribute import AttributeViewAction
 
         action = AttributeViewAction()
         mock_attr = self._make_mock_attribute()
@@ -362,7 +362,7 @@ class TestAttributeViewAction:
         """UTS_ATTR_00012: Test JSON output to file."""
         import json as json_module
 
-        from rhapsody_cli.actions.attribute_action import AttributeViewAction
+        from rhapsody_cli.actions.attribute import AttributeViewAction
 
         action = AttributeViewAction()
         mock_attr = self._make_mock_attribute()
@@ -394,7 +394,7 @@ class TestAttributeViewAction:
 
     def test_view_csv_output(self, capsys: Any) -> None:
         """UTS_ATTR_00013: Test CSV format output."""
-        from rhapsody_cli.actions.attribute_action import AttributeViewAction
+        from rhapsody_cli.actions.attribute import AttributeViewAction
 
         action = AttributeViewAction()
         mock_attr = self._make_mock_attribute()
@@ -418,7 +418,7 @@ class TestAttributeViewAction:
 
     def test_view_by_guid(self, capsys: Any) -> None:
         """UTS_ATTR_00014: Test viewing attribute by GUID."""
-        from rhapsody_cli.actions.attribute_action import AttributeViewAction
+        from rhapsody_cli.actions.attribute import AttributeViewAction
 
         action = AttributeViewAction()
         mock_attr = self._make_mock_attribute()
@@ -446,7 +446,7 @@ class TestAttributeListAction:
 
     def test_list_attributes(self, capsys: Any) -> None:
         """UTS_ATTR_00015: Test listing attributes on a classifier."""
-        from rhapsody_cli.actions.attribute_action import AttributeListAction
+        from rhapsody_cli.actions.attribute import AttributeListAction
 
         action = AttributeListAction()
         mock_classifier = MagicMock()
@@ -470,7 +470,7 @@ class TestAttributeListAction:
 
     def test_list_empty(self, capsys: Any) -> None:
         """UTS_ATTR_00016: Test listing classifier with no attributes."""
-        from rhapsody_cli.actions.attribute_action import AttributeListAction
+        from rhapsody_cli.actions.attribute import AttributeListAction
 
         action = AttributeListAction()
         mock_classifier = MagicMock()
@@ -490,7 +490,7 @@ class TestAttributeListAction:
         """UTS_ATTR_00017: Test JSON output format."""
         import json as json_module
 
-        from rhapsody_cli.actions.attribute_action import AttributeListAction
+        from rhapsody_cli.actions.attribute import AttributeListAction
 
         action = AttributeListAction()
         mock_classifier = MagicMock()
@@ -522,7 +522,7 @@ class TestAttributeUpdateAction:
 
     def test_update_attribute_by_path_and_name(self) -> None:
         """UTS_ATTR_00018: Test updating attribute via --path + --name."""
-        from rhapsody_cli.actions.attribute_action import AttributeUpdateAction
+        from rhapsody_cli.actions.attribute import AttributeUpdateAction
 
         action = AttributeUpdateAction()
         mock_classifier = MagicMock()
@@ -543,7 +543,7 @@ class TestAttributeUpdateAction:
 
     def test_update_attribute_by_guid(self) -> None:
         """UTS_ATTR_00019: Test updating attribute via --guid with type validation."""
-        from rhapsody_cli.actions.attribute_action import AttributeUpdateAction
+        from rhapsody_cli.actions.attribute import AttributeUpdateAction
 
         action = AttributeUpdateAction()
         mock_attr = MagicMock()
@@ -563,7 +563,7 @@ class TestAttributeUpdateAction:
 
     def test_update_partial_update(self) -> None:
         """UTS_ATTR_00020: Test that partial update only modifies specified fields."""
-        from rhapsody_cli.actions.attribute_action import AttributeUpdateAction
+        from rhapsody_cli.actions.attribute import AttributeUpdateAction
 
         action = AttributeUpdateAction()
         mock_classifier = MagicMock()
@@ -586,7 +586,7 @@ class TestAttributeUpdateAction:
 
     def test_update_skips_unknown_fields(self) -> None:
         """UTS_ATTR_00021: Test that unknown fields are skipped with warning."""
-        from rhapsody_cli.actions.attribute_action import AttributeUpdateAction
+        from rhapsody_cli.actions.attribute import AttributeUpdateAction
 
         action = AttributeUpdateAction()
         mock_classifier = MagicMock()

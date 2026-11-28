@@ -67,3 +67,10 @@ def test_constructor_casts_generic_pywin_dispatch_to_context_specification_inter
 
     cast_to.assert_called_once_with(raw, "IRPContextSpecification")
     assert context._com is typed
+
+
+def test_constructor_keeps_com_object_when_pywin32_is_unavailable() -> None:
+    raw = make_fake_element("ContextSpecification", properties={"name": "CS2"})
+    with patch.dict(sys.modules, {"win32com.client": None}):
+        context = IRPContextSpecification(raw)
+    assert context._com is raw

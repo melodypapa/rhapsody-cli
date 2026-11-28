@@ -8,7 +8,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from rhapsody_cli.actions.session_action import ConnectAction, DisconnectAction, StatusAction, VersionAction
+from rhapsody_cli.actions.session import ConnectAction, DisconnectAction, StatusAction, VersionAction
 from rhapsody_cli.exceptions import CliExecutionError, RhapsodyConnectionError
 from rhapsody_cli.session import SessionManager
 
@@ -25,7 +25,7 @@ class TestConnectAction:
         mock_app = MagicMock()
         mock_app.version.return_value = "9.0.0"
 
-        with patch("rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app):
+        with patch("rhapsody_cli.actions.session.connect.RhapsodyApplication.connect", return_value=mock_app):
             action = ConnectAction()
             args = argparse.Namespace(timeout=None, attach_only=False, no_gui=False)
 
@@ -70,7 +70,7 @@ class TestConnectAction:
         mock_app = MagicMock()
         mock_app.version.return_value = "9.0.0"
 
-        with patch("rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app):
+        with patch("rhapsody_cli.actions.session.connect.RhapsodyApplication.connect", return_value=mock_app):
             action = ConnectAction()
             args = argparse.Namespace(timeout=10, attach_only=False, no_gui=False)
 
@@ -88,7 +88,7 @@ class TestConnectAction:
         mock_app = MagicMock()
         mock_app.version.return_value = "9.0.0"
 
-        with patch("rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app) as mock_connect:
+        with patch("rhapsody_cli.actions.session.connect.RhapsodyApplication.connect", return_value=mock_app) as mock_connect:
             action = ConnectAction()
             args = argparse.Namespace(timeout=None, attach_only=True, no_gui=False)
 
@@ -103,7 +103,7 @@ class TestConnectAction:
         monkeypatch.setattr(SessionManager, "SESSION_DIR", session_dir)
 
         with patch(
-            "rhapsody_cli.actions.session_action.RhapsodyApplication.connect",
+            "rhapsody_cli.actions.session.connect.RhapsodyApplication.connect",
             side_effect=RhapsodyConnectionError("No running instance"),
         ):
             action = ConnectAction()
@@ -120,7 +120,7 @@ class TestConnectAction:
         mock_app = MagicMock()
         mock_app.version.return_value = "9.0.0"
 
-        with patch("rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app) as mock_connect:
+        with patch("rhapsody_cli.actions.session.connect.RhapsodyApplication.connect", return_value=mock_app) as mock_connect:
             action = ConnectAction()
             args = argparse.Namespace(timeout=None, attach_only=False, no_gui=True)
 
@@ -141,7 +141,7 @@ class TestConnectAction:
         mock_app = MagicMock()
         mock_app.version.return_value = "9.0.0"
 
-        with patch("rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app):
+        with patch("rhapsody_cli.actions.session.connect.RhapsodyApplication.connect", return_value=mock_app):
             action = ConnectAction()
             args = argparse.Namespace(timeout=None, attach_only=False, no_gui=False)
 
@@ -160,7 +160,7 @@ class TestConnectAction:
         mock_app = MagicMock()
         mock_app.version.return_value = "9.0.0"
 
-        with patch("rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app):
+        with patch("rhapsody_cli.actions.session.connect.RhapsodyApplication.connect", return_value=mock_app):
             action = ConnectAction()
             args = argparse.Namespace(timeout=None, attach_only=False, no_gui=False)
 
@@ -178,7 +178,7 @@ class TestConnectAction:
         mock_app = MagicMock()
         mock_app.version.return_value = "9.0.0"
 
-        with patch("rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app):
+        with patch("rhapsody_cli.actions.session.connect.RhapsodyApplication.connect", return_value=mock_app):
             action = ConnectAction()
             args = argparse.Namespace(timeout=-5, attach_only=False, no_gui=False)
 
@@ -196,7 +196,7 @@ class TestConnectAction:
         mock_app = MagicMock()
         mock_app.version.return_value = "9.0.0"
 
-        with patch("rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app):
+        with patch("rhapsody_cli.actions.session.connect.RhapsodyApplication.connect", return_value=mock_app):
             action = ConnectAction()
             args = argparse.Namespace(timeout=0, attach_only=False, no_gui=False)
 
@@ -230,7 +230,7 @@ class TestDisconnectAction:
 
         mock_app = MagicMock()
 
-        with patch("rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app):
+        with patch("rhapsody_cli.actions.session.disconnect.RhapsodyApplication.connect", return_value=mock_app):
             action = DisconnectAction()
             args = argparse.Namespace()
 
@@ -261,7 +261,7 @@ class TestDisconnectAction:
 
         mock_app = MagicMock()
 
-        with patch("rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app):
+        with patch("rhapsody_cli.actions.session.disconnect.RhapsodyApplication.connect", return_value=mock_app):
             action = DisconnectAction()
             args = argparse.Namespace()
 
@@ -302,7 +302,7 @@ class TestDisconnectAction:
         monkeypatch.setattr(SessionManager, "SESSION_DIR", session_dir)
 
         with patch(
-            "rhapsody_cli.actions.session_action.RhapsodyApplication.connect",
+            "rhapsody_cli.actions.session.disconnect.RhapsodyApplication.connect",
             side_effect=RhapsodyConnectionError("No instance"),
         ):
             action = DisconnectAction()
@@ -339,7 +339,7 @@ class TestStatusAction:
         mock_app = MagicMock()
         mock_app.version.return_value = "9.0.0"
 
-        with patch("rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app):
+        with patch("rhapsody_cli.actions.session.status.RhapsodyApplication.connect", return_value=mock_app):
             action = StatusAction()
             args = argparse.Namespace()
 
@@ -409,7 +409,7 @@ class TestStatusAction:
         mock_app = MagicMock()
         mock_app.version.return_value = "9.0.0"
 
-        with patch("rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app):
+        with patch("rhapsody_cli.actions.session.status.RhapsodyApplication.connect", return_value=mock_app):
             action = StatusAction()
             args = argparse.Namespace()
 
@@ -436,7 +436,7 @@ class TestStatusAction:
         monkeypatch.setattr(SessionManager, "SESSION_DIR", session_dir)
 
         with patch(
-            "rhapsody_cli.actions.session_action.RhapsodyApplication.connect",
+            "rhapsody_cli.actions.session.status.RhapsodyApplication.connect",
             side_effect=RhapsodyConnectionError("No instance"),
         ):
             action = StatusAction()
@@ -488,7 +488,7 @@ class TestVersionAction:
         mock_app = MagicMock()
         mock_app.version.return_value = "9.0.0"
 
-        with patch("rhapsody_cli.actions.session_action.RhapsodyApplication.connect", return_value=mock_app):
+        with patch("rhapsody_cli.actions.session.version.RhapsodyApplication.connect", return_value=mock_app):
             action = VersionAction()
             args = argparse.Namespace()
 
@@ -530,7 +530,7 @@ class TestVersionAction:
         monkeypatch.setattr(SessionManager, "SESSION_DIR", session_dir)
 
         with patch(
-            "rhapsody_cli.actions.session_action.RhapsodyApplication.connect",
+            "rhapsody_cli.actions.session.version.RhapsodyApplication.connect",
             side_effect=RhapsodyConnectionError("No instance"),
         ):
             action = VersionAction()

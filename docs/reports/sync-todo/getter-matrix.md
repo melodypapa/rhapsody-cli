@@ -356,7 +356,7 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |
-| `represented` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow_item.py::test_represented` | identity/value | OK |
+| `represented` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow_item.py::test_add_represented` | identity/value | OK |
 
 ## IRPObjectNode
 
@@ -378,7 +378,7 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |
 | `multiplicities` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_context_specification.py::test_multiplicities` | identity/value | OK |
-| `value` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_context_specification.py::test_value` | identity/value | OK |
+| `value` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_context_specification.py::test_value_returns_populated_context_path` | identity/value | OK |
 
 ## IRPAcceptTimeEvent
 
@@ -501,3 +501,4 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |
+

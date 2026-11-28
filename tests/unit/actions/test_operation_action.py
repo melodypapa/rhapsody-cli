@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from rhapsody_cli.actions.abstract_action import ElementManagementAction
-from rhapsody_cli.actions.operation_action import AbstractOperationAction
+from rhapsody_cli.actions.operation import AbstractOperationAction
 from rhapsody_cli.exceptions import CliExecutionError
 
 
@@ -109,7 +109,7 @@ class TestOperationCreateAction:
 
     def _make_action_with_classifier(self) -> Tuple[Any, Any]:
         """Helper: build action and mock parent classifier."""
-        from rhapsody_cli.actions.operation_action import OperationCreateAction
+        from rhapsody_cli.actions.operation import OperationCreateAction
 
         action = OperationCreateAction()
         mock_classifier = MagicMock()
@@ -152,7 +152,7 @@ class TestOperationCreateAction:
             assert mock_classifier.add_operation.call_count == 2
 
     def test_load_json_data_rejects_non_object_shapes(self, tmp_path: Any) -> None:
-        from rhapsody_cli.actions.operation_action import OperationCreateAction
+        from rhapsody_cli.actions.operation import OperationCreateAction
 
         action = OperationCreateAction()
         json_file = tmp_path / "invalid.json"
@@ -245,7 +245,7 @@ class TestOperationDeleteAction:
 
     def test_delete_operation_by_path_and_name(self) -> None:
         """UTS_OP_00007: Test successful operation deletion by path + name."""
-        from rhapsody_cli.actions.operation_action import OperationDeleteAction
+        from rhapsody_cli.actions.operation import OperationDeleteAction
 
         action = OperationDeleteAction()
         mock_classifier = MagicMock()
@@ -264,7 +264,7 @@ class TestOperationDeleteAction:
 
     def test_delete_operation_by_guid(self) -> None:
         """UTS_OP_00008: Test successful operation deletion by GUID."""
-        from rhapsody_cli.actions.operation_action import OperationDeleteAction
+        from rhapsody_cli.actions.operation import OperationDeleteAction
 
         action = OperationDeleteAction()
         mock_op = MagicMock()
@@ -284,7 +284,7 @@ class TestOperationDeleteAction:
 
     def test_delete_operation_guid_wrong_type(self) -> None:
         """UTS_OP_00009: Test that wrong type via --guid raises error."""
-        from rhapsody_cli.actions.operation_action import OperationDeleteAction
+        from rhapsody_cli.actions.operation import OperationDeleteAction
 
         action = OperationDeleteAction()
         mock_class = MagicMock()
@@ -307,7 +307,7 @@ class TestOperationDeleteAction:
 
     def test_delete_requires_path_name_or_guid(self) -> None:
         """UTS_OP_00010: Test that either --path + --name or --guid is required."""
-        from rhapsody_cli.actions.operation_action import OperationDeleteAction
+        from rhapsody_cli.actions.operation import OperationDeleteAction
 
         action = OperationDeleteAction()
         args = MagicMock()
@@ -357,7 +357,7 @@ class TestOperationViewAction:
 
     def test_view_table_output(self, capsys: Any) -> None:
         """UTS_OP_00011: Test table format output."""
-        from rhapsody_cli.actions.operation_action import OperationViewAction
+        from rhapsody_cli.actions.operation import OperationViewAction
 
         action = OperationViewAction()
         mock_op = self._make_mock_operation()
@@ -382,7 +382,7 @@ class TestOperationViewAction:
         """UTS_OP_00012: Test JSON output to file."""
         import json as json_module
 
-        from rhapsody_cli.actions.operation_action import OperationViewAction
+        from rhapsody_cli.actions.operation import OperationViewAction
 
         action = OperationViewAction()
         mock_op = self._make_mock_operation()
@@ -413,7 +413,7 @@ class TestOperationViewAction:
 
     def test_view_csv_output(self, capsys: Any) -> None:
         """UTS_OP_00013: Test CSV format output."""
-        from rhapsody_cli.actions.operation_action import OperationViewAction
+        from rhapsody_cli.actions.operation import OperationViewAction
 
         action = OperationViewAction()
         mock_op = self._make_mock_operation()
@@ -437,7 +437,7 @@ class TestOperationViewAction:
 
     def test_view_by_guid(self, capsys: Any) -> None:
         """UTS_OP_00014: Test viewing operation by GUID."""
-        from rhapsody_cli.actions.operation_action import OperationViewAction
+        from rhapsody_cli.actions.operation import OperationViewAction
 
         action = OperationViewAction()
         mock_op = self._make_mock_operation()
@@ -465,7 +465,7 @@ class TestOperationListAction:
 
     def test_list_operations(self, capsys: Any) -> None:
         """UTS_OP_00015: Test listing operations on a classifier."""
-        from rhapsody_cli.actions.operation_action import OperationListAction
+        from rhapsody_cli.actions.operation import OperationListAction
 
         action = OperationListAction()
         mock_classifier = MagicMock()
@@ -489,7 +489,7 @@ class TestOperationListAction:
 
     def test_list_empty(self, capsys: Any) -> None:
         """UTS_OP_00016: Test listing classifier with no operations."""
-        from rhapsody_cli.actions.operation_action import OperationListAction
+        from rhapsody_cli.actions.operation import OperationListAction
 
         action = OperationListAction()
         mock_classifier = MagicMock()
@@ -509,7 +509,7 @@ class TestOperationListAction:
         """UTS_OP_00017: Test JSON output format."""
         import json as json_module
 
-        from rhapsody_cli.actions.operation_action import OperationListAction
+        from rhapsody_cli.actions.operation import OperationListAction
 
         action = OperationListAction()
         mock_classifier = MagicMock()
@@ -541,7 +541,7 @@ class TestOperationUpdateAction:
 
     def test_update_operation_by_path_and_name(self) -> None:
         """UTS_OP_00018: Test updating operation via --path + --name."""
-        from rhapsody_cli.actions.operation_action import OperationUpdateAction
+        from rhapsody_cli.actions.operation import OperationUpdateAction
 
         action = OperationUpdateAction()
         mock_classifier = MagicMock()
@@ -562,7 +562,7 @@ class TestOperationUpdateAction:
 
     def test_update_operation_by_guid(self) -> None:
         """UTS_OP_00019: Test updating operation via --guid with type validation."""
-        from rhapsody_cli.actions.operation_action import OperationUpdateAction
+        from rhapsody_cli.actions.operation import OperationUpdateAction
 
         action = OperationUpdateAction()
         mock_op = MagicMock()
@@ -582,7 +582,7 @@ class TestOperationUpdateAction:
 
     def test_update_partial_update(self) -> None:
         """UTS_OP_00020: Test that partial update only modifies specified fields."""
-        from rhapsody_cli.actions.operation_action import OperationUpdateAction
+        from rhapsody_cli.actions.operation import OperationUpdateAction
 
         action = OperationUpdateAction()
         mock_classifier = MagicMock()
@@ -605,7 +605,7 @@ class TestOperationUpdateAction:
 
     def test_update_skips_unknown_fields(self) -> None:
         """UTS_OP_00021: Test that unknown fields are skipped with warning."""
-        from rhapsody_cli.actions.operation_action import OperationUpdateAction
+        from rhapsody_cli.actions.operation import OperationUpdateAction
 
         action = OperationUpdateAction()
         mock_classifier = MagicMock()
