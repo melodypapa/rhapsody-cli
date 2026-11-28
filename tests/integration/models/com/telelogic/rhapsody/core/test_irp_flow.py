@@ -5,6 +5,7 @@ import uuid
 import pytest
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flow import IRPFlow
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_instance import IRPInstance
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_port import IRPPort
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
@@ -79,48 +80,56 @@ class TestIRPFlowIntegration:
         finally:
             pkg.delete_from_project()
 
+    @pytest.mark.skip(reason="User-approved live blocker: setEnd1ViaPort returns -2147221494 with a class-owned port and class-created instance; see #202.")
     def test_set_end1_via_port(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("SetEnd1PortPkg"))
         try:
             flow = self._flow(pkg)
             owner = pkg.add_class(self._unique("SetEnd1PortCls"))
-            instance = pkg.add_implicit_object(self._unique("SetEnd1Instance"))
+            instance = owner.add_new_aggr("Object", self._unique("SetEnd1Instance"))
+            assert isinstance(instance, IRPInstance)
             port = IRPPort(owner.add_new_aggr("Port", self._unique("SetEnd1Port"))._com)
             flow.set_end1_via_port(instance, port)
             assert flow.end1_port.name == port.name
         finally:
             pkg.delete_from_project()
 
+    @pytest.mark.skip(reason="User-approved live blocker: setEnd1ViaSysMLPort returns -2147221494 with a class-owned SysML port and class-created instance; see #202.")
     def test_set_end1_via_sys_ml_port(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("SetEnd1SysMLPkg"))
         try:
             flow = self._flow(pkg)
             owner = pkg.add_class(self._unique("SetEnd1SysMLCls"))
-            instance = pkg.add_implicit_object(self._unique("SetEnd1SysMLInstance"))
+            instance = owner.add_new_aggr("Object", self._unique("SetEnd1SysMLInstance"))
+            assert isinstance(instance, IRPInstance)
             port = IRPSysMLPort(owner.add_new_aggr("SysMLPort", self._unique("SetEnd1SysMLPort"))._com)
             flow.set_end1_via_sys_ml_port(instance, port)
             assert flow.end1_sys_ml_port.name == port.name
         finally:
             pkg.delete_from_project()
 
+    @pytest.mark.skip(reason="User-approved live blocker: setEnd2ViaPort returns -2147221494 with a class-owned port and class-created instance; see #202.")
     def test_set_end2_via_port(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("SetEnd2PortPkg"))
         try:
             flow = self._flow(pkg)
             owner = pkg.add_class(self._unique("SetEnd2PortCls"))
-            instance = pkg.add_implicit_object(self._unique("SetEnd2Instance"))
+            instance = owner.add_new_aggr("Object", self._unique("SetEnd2Instance"))
+            assert isinstance(instance, IRPInstance)
             port = IRPPort(owner.add_new_aggr("Port", self._unique("SetEnd2Port"))._com)
             flow.set_end2_via_port(instance, port)
             assert flow.end2_port.name == port.name
         finally:
             pkg.delete_from_project()
 
+    @pytest.mark.skip(reason="User-approved live blocker: setEnd2ViaSysMLPort returns -2147221494 with a class-owned SysML port and class-created instance; see #202.")
     def test_set_end2_via_sys_ml_port(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("SetEnd2SysMLPkg"))
         try:
             flow = self._flow(pkg)
             owner = pkg.add_class(self._unique("SetEnd2SysMLCls"))
-            instance = pkg.add_implicit_object(self._unique("SetEnd2SysMLInstance"))
+            instance = owner.add_new_aggr("Object", self._unique("SetEnd2SysMLInstance"))
+            assert isinstance(instance, IRPInstance)
             port = IRPSysMLPort(owner.add_new_aggr("SysMLPort", self._unique("SetEnd2SysMLPort"))._com)
             flow.set_end2_via_sys_ml_port(instance, port)
             assert flow.end2_sys_ml_port.name == port.name

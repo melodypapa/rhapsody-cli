@@ -1,6 +1,6 @@
 # Sync todo — `requirements`
 
-**2 classes** · ✅ 0 archived · ⬜ 2 open
+**2 classes** · ✅ 1 archived · ⬜ 1 open
 
 One row per sync run. A step is ticked only when its evidence lands; a row is archived only after all eight steps pass. Binding rule: one pywin32-exposed COM member per call — `call_com(lambda: self._com.Name(...))` for methods, `get_com_property` / `set_com_property` for properties; catalog-absent sites are blockers, never blind migrations. Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/`, mirrored tests under `tests/{unit,integration}/models/com/telelogic/rhapsody/core/`.
 
@@ -24,7 +24,7 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 | # | Class | Interface | Legacy source | Sites | Owned | Steps | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | `irp_annotation_api_report` | IRPAnnotation | `rhapsody_cli/models/elements/requirements/model_requirements.py` | 8 | 10 | 1/8 (②) | ⬜ open |
-| 2 | `irp_requirement_api_report` | IRPRequirement | `rhapsody_cli/models/elements/requirements/model_requirements.py` | 2 | 2 | 1/8 (②) | ⬜ open |
+| 2 | `irp_requirement_api_report` | IRPRequirement | `src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_requirement.py` | 2 | 2 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 
 ## Row details
 
@@ -45,17 +45,17 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 </details>
 
 <details>
-<summary><code>irp_requirement_api_report</code> · IRPRequirement · 1/8 steps · ⬜ open</summary>
+<summary><code>irp_requirement_api_report</code> · IRPRequirement · 8/8 steps · ✅ archived</summary>
 
-- **Status (2026-11-26):** not synced: no committed API report on main; verify_sync fails.
-- **Note:** usage 11 src / 7 test refs, 2 owned methods. Confirm canonical-package applicability for support-layer wrappers during §2; siblings in the same module stay for their own rows.
-- [ ] ① §1
-- [x] ② §2
-- [ ] ③ §3
-- [ ] ④ §4
-- [ ] ⑤ §5
-- [ ] ⑥ §6
-- [ ] ⑦ §7
-- [ ] ⑧ §8
+- **Status (2026-03-19):** `IRPRequirement` sync is archived; validator reports 0 actionable deviations and strict getter verification passes. No live blocker remains for this class.
+- **Note:** the JavaDoc getter/setter pair maps to the pywin32 read/write `requirementID` property and one Python `requirement_id` property. `IRPRequirement.__init__` casts generic factory dispatches to the exact interface; the sibling `IRPAnnotation` remains in its own open sync row.
+- [x] ① §1 — documented both JavaDoc accessors and the single pywin32 property mapping.
+- [x] ② §2 — canonical `irp_requirement.py` and mirrored per-class tests; package exports and registration updated.
+- [x] ③ §3 — validator reports 0 actionable deviations after aligning the property shape and exact interface cast.
+- [x] ④ §4 — TDD red/green; unit module has 7 tests and 100% statement/branch coverage; full unit suite 2322 passed.
+- [x] ⑤ §5 — focused live requirement-ID round-trip passes (1 passed) with a real package-created requirement.
+- [x] ⑥ §6 — `docs/requirements/com/telelogic/rhapsody/core/irp_requirement.md` holds SWR_ELEM_00010.
+- [x] ⑦ §7 — `docs/api/com/telelogic/rhapsody/core/irp_requirement.rst` is linked from `docs/api/elements.rst`.
+- [x] ⑧ §8 — `verify_sync.py IRPRequirement --strict-getters`, skill harness (90 passed), full unit suite (2322 passed), focused integration (1 passed), Ruff, Black, and mypy pass. Sphinx is unavailable in this environment (`No module named sphinx`).
 
 </details>

@@ -10,8 +10,8 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statechart import IRPSt
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statemachine import IRPState
 
 if TYPE_CHECKING:
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_accept_event_action import IRPAcceptEventAction
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_accept_time_event import IRPAcceptTimeEvent
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions import IRPAcceptEventAction
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_call_operation import IRPCallOperation
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types import IRPActivityDiagram
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPPin
@@ -33,7 +33,7 @@ class IRPFlowchart(IRPStatechart):
     # [x] swimlanes                      [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] add_accept_event_action        [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] add_accept_time_event          [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] add_activity_parameter         [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] add_activity_parameter         [x] impl  [x] docstring  [x] unit test  [ ] integration test (approved skip; #202)
     # [x] add_call_behavior              [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] add_call_operation             [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] add_object_node                [x] impl  [x] docstring  [x] unit test  [ ] integration test
@@ -127,7 +127,7 @@ class IRPFlowchart(IRPStatechart):
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::addAcceptEventAction(java.lang.String name, com.telelogic.rhapsody.core.IRPState parent)
         """
-        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions import IRPAcceptEventAction
+        from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_accept_event_action import IRPAcceptEventAction
 
         return cast(IRPAcceptEventAction, self.wrap(self.call_com(lambda: self._com.addAcceptEventAction(name, parent._com))))
 
@@ -178,7 +178,7 @@ class IRPFlowchart(IRPStatechart):
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::addCallBehavior(com.telelogic.rhapsody.core.IRPModelElement referenced)
         """
-        return cast(IRPState, self.wrap(self.call_com(lambda: self._com.addCallBehavior(referenced._com))))
+        return IRPState(self.call_com(lambda: self._com.addCallBehavior(referenced._com)))
 
     def add_call_operation(self, name: str, parent: IRPState) -> IRPCallOperation:
         """Adds a new Call Operation element to the activity.
@@ -230,7 +230,7 @@ class IRPFlowchart(IRPStatechart):
         Reference:
             com.telelogic.rhapsody.core.IRPFlowchart::addReferenceActivity(com.telelogic.rhapsody.core.IRPModelElement referenced)
         """
-        return cast(IRPState, self.wrap(self.call_com(lambda: self._com.addReferenceActivity(referenced._com))))
+        return IRPState(self.call_com(lambda: self._com.addReferenceActivity(referenced._com)))
 
     def add_swimlane(self, name: str) -> IRPSwimlane:
         """Adds a new swimlane to the activity.
@@ -259,7 +259,7 @@ class IRPFlowchart(IRPStatechart):
         """
         from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types import IRPActivityDiagram
 
-        return cast(IRPActivityDiagram, self.wrap(self.call_com(lambda: self._com.getFlowchartDiagram())))
+        return IRPActivityDiagram(self.call_com(lambda: self._com.getFlowchartDiagram()))
 
 
 IRPModelElement.register_wrapper("Flowchart", IRPFlowchart)

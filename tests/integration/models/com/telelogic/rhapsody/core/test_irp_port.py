@@ -30,9 +30,8 @@ class TestIRPPortIntegration:
         pkg = self._create_package(test_project, self._unique("PortPkg"))
         test_class = pkg.add_class(self._unique("PortCls"))
         try:
-            # The wrapper resolves member names via dynamic dispatch, so the
-            # IRPModelElement-typed dispatch from add_new_aggr is wrapped
-            # directly (no CastTo needed; see test_irp_flow.py for the same pattern).
+            # Factories may return IRPModelElement dispatches; IRPInstance's
+            # constructor casts to this wrapper's exact IRPPort interface.
             port = IRPPort(test_class.add_new_aggr("Port", self._unique("port"))._com)
             assert isinstance(port, IRPPort)
             assert port.is_behavioral in (0, 1)
@@ -61,9 +60,8 @@ class TestIRPPortIntegration:
         try:
             port = IRPPort(test_class.add_new_aggr("Port", self._unique("ifPort"))._com)
             assert isinstance(port, IRPPort)
-            # The collection getters return real IRPCollection objects. The
-            # add/remove interface mutators are rejected by this Rhapsody build
-            # for any element type and are recorded as blockers in irp_port.md.
+            # The getters return live collections; the mutators remain blocked
+            # for Class/Interface arguments on this build (SWR_ELEM_00027).
             assert isinstance(port.provided_interfaces, IRPCollection)
             assert isinstance(port.required_interfaces, IRPCollection)
         finally:

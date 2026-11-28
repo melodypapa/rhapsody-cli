@@ -170,7 +170,7 @@ Merged from `Group-containment-1.md`, `Group-containment-2.md`; the per-row cont
 <details>
 <summary><code>irp_project_remediation</code> · IRPProject · 6/8 steps · ⬜ open</summary>
 
-- **Status (2026-11-26):** validator reports zero actionable deviations; five JavaDoc-only pywin32-absent methods are documented stubs. Keep open for live preconditions listed below.
+- **Status (2026-03-19):** validator reports zero actionable deviations; five JavaDoc-only pywin32-absent methods are documented stubs. The write-only unique-stereotype cache setter test now matches the COM shape; Step 5 remains open for the other live preconditions listed below.
 - **Baseline:** 2201 unit tests and 493 live integration tests passed before this sync; the validator had 12 actionable deviations.
 - [x] ① §1 — direct JavaDoc inventory and owned getter matrix are recorded in the API report and getter matrix; inherited package members are not child-owned.
 - [x] ② §2 — canonical wrapper/test/doc paths and `IRPPackage` inheritance verified.
@@ -203,7 +203,7 @@ Merged from `Group-containment-1.md`, `Group-containment-2.md`; the per-row cont
 <summary><code>irp_project_api_report</code> · IRPProject · 8/8 steps · ✅ archived</summary>
 
 - **Status (2026-11-26):** verify_sync passes; all steps archived. Duplicate remediation row for IRPProject preserved in this file.
-- **Note:** 12 method-shaped (`setWaitDialogWatchdogValue`, `isActivelyManaged`, `getRoundtripShadowModel`, ...); `setGlobalConfiguration`/`setUseUniqueStereotypeAndRefCache` absent from every catalog: blocker unless Windows typelib regen resolves it.
+- **Note:** 12 method-shaped (`setWaitDialogWatchdogValue`, `isActivelyManaged`, `getRoundtripShadowModel`, ...); `setGlobalConfiguration` is absent from every catalog. `setUseUniqueStereotypeAndRefCache` is exposed as a write-only `UseUniqueStereotypeAndRefCache` property; its test now uses the setter without a readback.
 - [x] ① §1
 - [x] ② §2
 - [x] ③ §3 — baseline `validate_interface.py IRPProject --source authority`; reconcile every owned member; one pywin32 member per call; catalog-absent sites = blockers

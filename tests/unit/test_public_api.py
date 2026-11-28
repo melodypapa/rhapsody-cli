@@ -25,7 +25,7 @@ def test_importing_package_registers_all_core_element_wrappers() -> None:
         ("UseCase", "IRPUseCase", "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_use_case"),
         ("Instance", "IRPInstance", "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_instance"),
         ("Statechart", "IRPStatechart", "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statechart"),
-        ("Requirement", "IRPRequirement", "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_requirements"),
+        ("Requirement", "IRPRequirement", "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_requirement"),
         ("ActivityDiagram", "IRPDiagram", "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagrams"),
     ]:
         fake = make_fake_element(meta_class, properties={"name": "X"})

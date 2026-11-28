@@ -8,12 +8,28 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCo
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
 
+
+def _cast_instance_dispatch(com_obj: object, interface_name: str) -> object:
+    """Cast generic pywin model-element dispatches to the concrete instance interface."""
+    try:
+        from win32com.client import CastTo, DispatchBaseClass
+    except ImportError:
+        return com_obj
+    if isinstance(com_obj, DispatchBaseClass):
+        return CastTo(com_obj, interface_name)
+    return com_obj
+
+
 if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_operation import IRPOperation
 
 
 class IRPInstance(IRPRelation):
     """Wraps ``IRPInstance``: represents an instance in the model."""
+
+    def __init__(self, com_obj: object) -> None:
+        # Factories may return IRPModelElement dispatches; cast to this concrete wrapper's interface.
+        super().__init__(_cast_instance_dispatch(com_obj, type(self).__name__))
 
     # IRPInstance method parity checklist (typelib authority 2026-11-26):
     # [x] add_relation_to_the_whole        method            [x] impl  [x] docstring  [x] unit test  [ ] integration test

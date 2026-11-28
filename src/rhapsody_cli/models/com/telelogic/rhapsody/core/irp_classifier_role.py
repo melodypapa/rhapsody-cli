@@ -24,7 +24,7 @@ class IRPClassifierRole(IRPModelElement):
     # IRPClassifierRole method parity checklist:
     # [x] formal_classifier               [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] formal_instance                 [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] referenced_sequence_diagram     [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] referenced_sequence_diagram     [x] impl  [x] docstring  [x] unit test  [ ] integration test (empty-state only; populated readback blocked in #202)
     # [x] role_type                       [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [x] get_referencing_classifier_roles_recursively [x] impl  [x] docstring  [x] unit test  [ ] integration test
     # [inherited] irp_model_element methods (covered by irp_model_element checklist)

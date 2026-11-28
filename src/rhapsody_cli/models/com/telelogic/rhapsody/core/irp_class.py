@@ -40,8 +40,8 @@ class IRPClass(IRPClassifier):
     # [x] is_active                  [x] impl (property)  [x] docstring  [x] unit test  [x] integration test
     # [x] is_behavior_overriden      [x] impl (property)  [x] docstring  [x] unit test  [x] integration test
     # [x] is_composite               [x] impl (property)  [x] docstring  [x] unit test  [x] integration test
-    # [x] get_is_final               [x] impl (method)    [x] docstring  [x] unit test  [ ] integration test (removed: setIsFinal does not persist in Rhapsody COM)
-    # [x] set_is_final               [x] impl (method)    [x] docstring  [x] unit test  [ ] integration test (removed: setIsFinal does not persist in Rhapsody COM)
+    # [x] get_is_final               [x] impl (method)    [x] docstring  [x] unit test  [x] integration test (integer getter verified live)
+    # [x] set_is_final               [x] impl (method)    [x] docstring  [x] unit test  [ ] integration test (live write does not persist; tracked blocker)
     # [x] is_reactive                [x] impl (property)  [x] docstring  [x] unit test  [x] integration test
     # update_contained_diagrams_on_server: not exposed in the Rhapsody2.Application.1 type library; retained as a documented-unavailable NotImplementedError stub.
     # No deprecated methods in IRPClass.

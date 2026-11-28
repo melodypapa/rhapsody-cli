@@ -2,8 +2,9 @@
 
 import pytest
 
-from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPComponent, IRPConfiguration, IRPUnit
+from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPConfiguration, IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_component import IRPComponent
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -79,16 +80,15 @@ def test_panel_diagrams_returns_collection() -> None:
     assert len(IRPComponent(fake).panel_diagrams) == 1
 
 
-def test_scope_by_selected_elements_returns_collection() -> None:
-    fake = make_fake_element("Component", properties={"scopeBySelectedElements": make_fake_collection([make_fake_element("Unit")])})
-    assert len(IRPComponent(fake).scope_by_selected_elements) == 1
+def test_scope_by_selected_elements_returns_flag() -> None:
+    fake = make_fake_element("Component", properties={"scopeBySelectedElements": 1})
+    assert IRPComponent(fake).scope_by_selected_elements == 1
 
 
 def test_scope_by_selected_elements_setter() -> None:
     fake = make_fake_element("Component")
-    collection = make_fake_collection([make_fake_element("Unit")])
-    IRPComponent(fake).scope_by_selected_elements = IRPCollection(collection)
-    assert fake.scopeBySelectedElements is collection
+    IRPComponent(fake).scope_by_selected_elements = 1
+    assert fake.scopeBySelectedElements == 1
 
 
 def test_scope_elements_returns_collection() -> None:

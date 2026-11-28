@@ -6,6 +6,17 @@ from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCo
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 
 
+def _cast_constraint_dispatch(com_obj: object) -> object:
+    """Cast generic pywin model-element dispatches to the constraint interface."""
+    try:
+        from win32com.client import CastTo, DispatchBaseClass
+    except ImportError:
+        return com_obj
+    if isinstance(com_obj, DispatchBaseClass):
+        return CastTo(com_obj, "IRPConstraint")
+    return com_obj
+
+
 class IRPConstraint(IRPModelElement):
     """Wraps ``IRPConstraint``: a constraint element.
 
@@ -14,7 +25,7 @@ class IRPConstraint(IRPModelElement):
     """
 
     # IRPConstraint method parity checklist:
-    # [x] constraints_by_me              [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] constraints_by_me              [x] impl  [x] docstring  [x] unit test  [x] integration test (empty-state; populated collection remains blocked)
     # [inherited] irp_model_element methods (covered by irp_model_element checklist)
 
     @property
@@ -27,7 +38,8 @@ class IRPConstraint(IRPModelElement):
         Reference:
             com.telelogic.rhapsody.core.IRPConstraint::getConstraintsByMe()
         """
-        return IRPCollection(self.get_com_property(self._com, "constraintsByMe"))
+        constraint_com = _cast_constraint_dispatch(self._com)
+        return IRPCollection(self.get_com_property(constraint_com, "constraintsByMe"))
 
 
 IRPModelElement.register_wrapper("Constraint", IRPConstraint)

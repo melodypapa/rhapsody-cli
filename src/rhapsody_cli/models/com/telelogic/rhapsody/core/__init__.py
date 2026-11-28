@@ -8,10 +8,8 @@ from importlib import import_module
 from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions import (
-        IRPAcceptEventAction,
-        IRPActionBlock,
-    )
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_accept_event_action import IRPAcceptEventAction
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_action_block import IRPActionBlock
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actor import IRPActor
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_application import IRPApplication
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_argument import IRPArgument
@@ -117,7 +115,8 @@ if TYPE_CHECKING:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_profile import IRPProfile
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation import IRPRelation
-    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_requirements import IRPAnnotation, IRPRequirement
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_requirement import IRPRequirement
+    from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_requirements import IRPAnnotation
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statechart import IRPStatechart
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_statemachine import IRPState, IRPStateVertex
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_stereotype import IRPStereotype
@@ -134,10 +133,10 @@ _EXPORT_MODULES = {
     "IRPASCIIFile": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_files",
     "AddToModelMode": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_unit",
     "IRPAXViewCtrl": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_ide",
-    "IRPAcceptEventAction": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions",
+    "IRPAcceptEventAction": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_accept_event_action",
     "IRPAcceptTimeEvent": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_accept_time_event",
     "IRPAction": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_action",
-    "IRPActionBlock": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actions",
+    "IRPActionBlock": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_action_block",
     "IRPActivityDiagram": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types",
     "IRPActor": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_actor",
     "IRPAnnotation": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_requirements",
@@ -226,7 +225,7 @@ _EXPORT_MODULES = {
     "IRPProgressBar": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_ide",
     "IRPProject": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project",
     "IRPRelation": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_relation",
-    "IRPRequirement": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_requirements",
+    "IRPRequirement": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_requirement",
     "IRPRhapsodyServer": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_codegen",
     "IRPRoundTrip": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_codegen",
     "IRPSearchManager": "rhapsody_cli.models.com.telelogic.rhapsody.core.irp_codegen",

@@ -2,7 +2,7 @@
 
 **ID:** SWR_ELEM_00040
 **Title:** IRPFlowchart exposes activity creation, analysis mode, owner, and swimlanes through the pywin32 contract
-**Status:** Implemented
+**Status:** Implemented with approved live return deviation
 **Priority:** Medium
 **Description:**
 The `IRPFlowchart` JavaDoc interface represents activities in Rhapsody models.
@@ -24,7 +24,14 @@ Unit tests in the mirrored unit path use only fake COM objects and give 100%
 statement/branch coverage of the wrapper. Integration tests in the mirrored
 integration path create real activities, root states, operations, and
 swimlanes, assert populated getter values, and delete the owning package
-during cleanup. Those live assertions are CI-only on Windows and are
-unverified in offline runs.
+during cleanup.
+
+**Live deviation (open):** The JavaDoc documents `addActivityParameter(name)`
+returning `IRPPin`, but live Rhapsody returns `None` despite a real operation
+argument, flowchart-owner assignment, and open activity diagram. The integration
+node is skipped with user approval and recorded in
+`docs/reports/sync-todo/index.md` and issue #202. Keep this requirement open
+until a supported fixture or successful live return is available.
+
 **Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_flowchart.py:IRPFlowchart
-**Last Changed:** 2026-11-26
+**Last Changed:** 2026-03-19

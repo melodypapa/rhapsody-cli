@@ -15,9 +15,9 @@ class IRPFlowItem(IRPClassifier):
     """
 
     # IRPFlowItem method parity checklist:
-    # [x] represented                   [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] add_represented               [x] impl  [x] docstring  [x] unit test  [ ] integration test
-    # [x] remove_represented            [x] impl  [x] docstring  [x] unit test  [ ] integration test
+    # [x] represented                   [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] add_represented               [x] impl  [x] docstring  [x] unit test  [x] integration test
+    # [x] remove_represented            [x] impl  [x] docstring  [x] unit test  [x] integration test
     # [inherited] irp_classifier methods (covered by irp_classifier checklist)
     # [inherited] irp_model_element methods (covered by irp_model_element checklist)
     # [inherited] irp_unit methods (covered by irp_unit checklist)
@@ -57,4 +57,4 @@ class IRPFlowItem(IRPClassifier):
         self.call_com(lambda: self._com.removeRepresented(p_element._com))
 
 
-IRPModelElement.register_wrapper("FlowItem", IRPFlowItem)
+IRPModelElement.register_wrapper("ItemFlow", IRPFlowItem)

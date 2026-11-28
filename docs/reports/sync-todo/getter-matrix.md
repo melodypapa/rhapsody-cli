@@ -190,11 +190,11 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |
-| `is_behavioral` | — | none | MISSING |
-| `is_reversed` | — | none | MISSING |
-| `port_contract` | — | none | MISSING |
-| `provided_interfaces` | — | none | MISSING |
-| `required_interfaces` | — | none | MISSING |
+| `is_behavioral` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_port.py::test_port_state_and_contract` | identity/value | OK |
+| `is_reversed` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_port.py::test_port_state_and_contract` | identity/value | OK |
+| `port_contract` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_port.py::test_port_state_and_contract` | identity/value | OK |
+| `provided_interfaces` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_port.py::test_provided_and_required_interfaces` | none | MISSING |
+| `required_interfaces` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_port.py::test_provided_and_required_interfaces` | none | MISSING |
 
 ## IRPProject
 
@@ -212,15 +212,15 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |
-| `declaration` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_type.py::test_get_declaration` | identity/value | OK |
+| `declaration` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_type.py::test_declaration_roundtrip` | identity/value | OK |
 | `enumeration_literals` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_type.py::test_get_enumeration_literals` | identity/value | OK |
-| `is_predefined` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_type.py::test_get_is_predefined` | identity/value | OK |
-| `is_typedef` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_type.py::test_get_is_typedef` | identity/value | OK |
-| `is_typedef_constant` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_type.py::test_get_is_typedef_constant` | identity/value | OK |
-| `is_typedef_ordered` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_type.py::test_get_is_typedef_ordered` | identity/value | OK |
-| `is_typedef_reference` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_type.py::test_get_is_typedef_reference` | identity/value | OK |
-| `kind` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_type.py::test_get_kind` | identity/value | OK |
-| `typedef_base_type` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_type.py::test_get_typedef_base_type` | identity/value | OK |
+| `is_predefined` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_type.py::test_is_predicates_and_flags_read_as_ints_on_plain_type` | identity/value | OK |
+| `is_typedef` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_type.py::test_is_predicates_and_flags_read_as_ints_on_plain_type` | identity/value | OK |
+| `is_typedef_constant` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_type.py::test_is_predicates_and_flags_read_as_ints_on_plain_type` | identity/value | OK |
+| `is_typedef_ordered` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_type.py::test_is_predicates_and_flags_read_as_ints_on_plain_type` | identity/value | OK |
+| `is_typedef_reference` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_type.py::test_is_predicates_and_flags_read_as_ints_on_plain_type` | identity/value | OK |
+| `kind` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_type.py::test_kind_roundtrip` | identity/value | OK |
+| `typedef_base_type` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_type.py::test_get_typedef_base_type` | none | MISSING |
 | `typedef_multiplicity` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_type.py::test_get_typedef_multiplicity` | identity/value | OK |
 
 ## IRPUnit
@@ -271,7 +271,13 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |
-| `instantiated_by` | — | none | MISSING |
+| `instantiated_by` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_instance.py::test_instantiated_by_roundtrip` | none | MISSING |
+
+## IRPRequirement
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `requirement_id` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_requirement.py::test_requirement_id_roundtrip` | identity/value | OK |
 
 ## IRPModule
 
@@ -306,14 +312,14 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |
-| `conveyed` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_conveyed` | identity/value | OK |
+| `conveyed` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_add_conveyed` | identity/value | OK |
 | `direction` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_direction` | identity/value | OK |
 | `end1` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_end1` | identity/value | OK |
-| `end1_port` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_end1_port` | identity/value | OK |
-| `end1_sys_ml_port` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_end1_sys_ml_port` | identity/value | OK |
+| `end1_port` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_set_end1_via_port` | none | MISSING |
+| `end1_sys_ml_port` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_set_end1_via_sys_ml_port` | none | MISSING |
 | `end2` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_end2` | identity/value | OK |
-| `end2_port` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_end2_port` | identity/value | OK |
-| `end2_sys_ml_port` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_end2_sys_ml_port` | identity/value | OK |
+| `end2_port` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_set_end2_via_port` | none | MISSING |
+| `end2_sys_ml_port` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_flow.py::test_set_end2_via_sys_ml_port` | none | MISSING |
 
 ## IRPFlowchart
 
@@ -327,7 +333,7 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |
-| `contents` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_swimlane.py::test_contents` | identity/value | OK |
+| `contents` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_swimlane.py::test_contents` | none | MISSING |
 | `represents` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_swimlane.py::test_represents` | identity/value | OK |
 | `swimlanes` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_swimlane.py::test_swimlanes` | identity/value | OK |
 
@@ -341,9 +347,9 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |
-| `arg_vals` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_send_action.py::test_arg_vals` | identity/value | OK |
+| `arg_vals` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_send_action.py::test_add_argument_value` | identity/value | OK |
 | `event` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_send_action.py::test_event` | identity/value | OK |
-| `invoked_operation` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_send_action.py::test_invoked_operation` | identity/value | OK |
+| `invoked_operation` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_send_action.py::test_invoked_operation` | none | MISSING |
 | `target` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_send_action.py::test_target` | identity/value | OK |
 
 ## IRPFlowItem
@@ -357,7 +363,7 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |
 | `in_state` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_object_node.py::test_in_state` | identity/value | OK |
-| `in_state_list` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_object_node.py::test_in_state_list` | identity/value | OK |
+| `in_state_list` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_object_node.py::test_add_in_state` | identity/value | OK |
 | `represents` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_object_node.py::test_represents` | identity/value | OK |
 
 ## IRPCallOperation
@@ -481,6 +487,17 @@ then replace a `MISSING` or `WEAK` row with the test that really asserts the get
 | `constraints_by_me` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_constraint.py::test_constraints_by_me_empty_state` | weak | WEAK |
 
 ## IRPComment
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+
+## IRPAcceptEventAction
+
+| Java getter / Python member | Integration test | Assertion | Status |
+| --- | --- | --- | --- |
+| `event` | `tests/integration/models/com/telelogic/rhapsody/core/test_irp_accept_event_action.py::test_event` | identity/value | OK |
+
+## IRPActionBlock
 
 | Java getter / Python member | Integration test | Assertion | Status |
 | --- | --- | --- | --- |

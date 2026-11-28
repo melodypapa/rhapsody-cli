@@ -8,11 +8,12 @@ The diagram fixtures wrap the concrete object-model diagram dispatch in
 ``IRPDiagram`` explicitly so the base-class members are exercised directly,
 mirroring the IRPRelation/IRPInstance fixture pattern.
 
-Remaining live rows (checklist, not blockers): ``open_diagram_view`` (needs a
-diagram view, but ``create_diagram_view`` is a documented stub so no view can
-be created), ``get_picture``/``get_picture_as``/``get_picture_ex`` (need a
-rendered-picture surface; only the file-producing picture members are
-asserted here).
+Remaining live blockers: ``add_new_edge_by_type`` dispatches with the JavaDoc
+signature, but Rhapsody returns COM error ``-2147221498`` for the tested
+anchor fixture; ``open_diagram_view`` needs a diagram view, but
+``create_diagram_view`` is a documented stub; ``get_picture``/
+``get_picture_as``/``get_picture_ex`` need a rendered-picture surface and are
+not asserted here.
 """
 
 import struct
@@ -24,7 +25,7 @@ import pytest
 from rhapsody_cli import RhapsodyApplication
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPDiagram
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphElement
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphEdge, IRPGraphElement, IRPGraphNode
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_project import IRPProject
 
@@ -42,6 +43,14 @@ class TestIRPDiagramIntegration:
         diagram = pkg.add_object_model_diagram(f"Diagram_{uuid.uuid4().hex[:8]}")
         assert diagram is not None
         return IRPDiagram(diagram._com)
+
+    @staticmethod
+    def _integer_collection(rhapsody_app: RhapsodyApplication, values: tuple[int, ...]) -> IRPCollection:
+        collection = rhapsody_app.create_new_collection()
+        collection.set_size(len(values))
+        for index, value in enumerate(values, start=1):
+            collection.set_integer(index, value)
+        return collection
 
     @staticmethod
     def _bmp(tmp_path: Path, name: str) -> str:
@@ -69,9 +78,10 @@ class TestIRPDiagramIntegration:
         pkg = test_project.add_package(self._unique("TextBoxPkg"))
         try:
             diagram = self._diagram(pkg)
+            initial_count = diagram.graphical_elements.count
             text_box = diagram.add_text_box("Integration note", 20, 20, 180, 60)
             assert isinstance(text_box, IRPGraphElement)
-            assert text_box in list(diagram.graphical_elements)
+            assert diagram.graphical_elements.count == initial_count + 1
         finally:
             pkg.delete_from_project()
 
@@ -79,19 +89,23 @@ class TestIRPDiagramIntegration:
         pkg = test_project.add_package(self._unique("ImagePkg"))
         try:
             diagram = self._diagram(pkg)
+            initial_count = diagram.graphical_elements.count
             image = diagram.add_image(self._bmp(tmp_path, "diagram-image.bmp"), 20, 20, 40, 40)
             assert isinstance(image, IRPGraphElement)
-            assert image in list(diagram.graphical_elements)
+            assert diagram.graphical_elements.count == initial_count + 1
         finally:
             pkg.delete_from_project()
 
-    def test_add_free_shape_by_type(self, test_project: IRPProject) -> None:
+    def test_add_free_shape_by_type(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
         pkg = test_project.add_package(self._unique("FreeShapePkg"))
         try:
             diagram = self._diagram(pkg)
-            shape = diagram.add_free_shape_by_type("Polygon", 20, 20, 80, 80)
+            x_points = self._integer_collection(rhapsody_app, (20, 100, 100, 20))
+            y_points = self._integer_collection(rhapsody_app, (20, 20, 100, 100))
+            initial_count = diagram.graphical_elements.count
+            shape = diagram.add_free_shape_by_type("Polygon", x_points, y_points)
             assert isinstance(shape, IRPGraphElement)
-            assert shape in list(diagram.graphical_elements)
+            assert diagram.graphical_elements.count == initial_count + 1
         finally:
             pkg.delete_from_project()
 
@@ -99,9 +113,10 @@ class TestIRPDiagramIntegration:
         pkg = test_project.add_package(self._unique("NodeByTypePkg"))
         try:
             diagram = self._diagram(pkg)
+            initial_count = diagram.graphical_elements.count
             node = diagram.add_new_node_by_type("Note", 20, 20, 80, 50)
-            assert isinstance(node, IRPGraphElement)
-            assert node in list(diagram.graphical_elements)
+            assert isinstance(node, IRPGraphNode)
+            assert diagram.graphical_elements.count == initial_count + 1
         finally:
             pkg.delete_from_project()
 
@@ -110,9 +125,10 @@ class TestIRPDiagramIntegration:
         try:
             diagram = self._diagram(pkg)
             created_class = pkg.add_class(self._unique("GraphClass"))
+            initial_count = diagram.graphical_elements.count
             node = diagram.add_new_node_for_element(created_class, 20, 20, 80, 50)
-            assert isinstance(node, IRPGraphElement)
-            assert node in list(diagram.graphical_elements)
+            assert isinstance(node, IRPGraphNode)
+            assert diagram.graphical_elements.count == initial_count + 1
             assert created_class in list(diagram.get_elements_in_diagram())
         finally:
             pkg.delete_from_project()
@@ -124,11 +140,12 @@ class TestIRPDiagramIntegration:
             source = pkg.add_class(self._unique("EdgeSource"))
             target = pkg.add_class(self._unique("EdgeTarget"))
             relation = source.add_relation_to(target, "targets", "Association", "1", "sources", "Association", "1", "")
-            diagram.add_new_node_for_element(source, 20, 20, 80, 50)
-            diagram.add_new_node_for_element(target, 200, 20, 80, 50)
-            edge = diagram.add_new_edge_for_element(relation)
-            assert isinstance(edge, IRPGraphElement)
-            assert edge in list(diagram.graphical_elements)
+            source_node = diagram.add_new_node_for_element(source, 20, 20, 80, 50)
+            target_node = diagram.add_new_node_for_element(target, 200, 20, 80, 50)
+            initial_count = diagram.graphical_elements.count
+            edge = diagram.add_new_edge_for_element(relation, source_node, 60, 45, target_node, 200, 45)
+            assert isinstance(edge, IRPGraphEdge)
+            assert diagram.graphical_elements.count == initial_count + 1
         finally:
             pkg.delete_from_project()
 
@@ -161,9 +178,10 @@ class TestIRPDiagramIntegration:
         try:
             diagram = self._diagram(pkg)
             node = diagram.add_new_node_by_type("Note", 20, 20, 80, 50)
-            assert node in list(diagram.graphical_elements)
+            assert isinstance(node, IRPGraphNode)
+            assert diagram.graphical_elements.count == 1
             diagram.remove_graph_elements(diagram.graphical_elements)
-            assert node not in list(diagram.graphical_elements)
+            assert diagram.graphical_elements.count == 0
             assert len(list(diagram.get_elements_in_diagram())) == 0  # model elements are untouched by graph removal
         finally:
             pkg.delete_from_project()
@@ -192,20 +210,39 @@ class TestIRPDiagramIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_complete_relations(self, test_project: IRPProject) -> None:
+    def test_complete_relations(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
         pkg = test_project.add_package(self._unique("CompleteRelPkg"))
         try:
             diagram = self._diagram(pkg)
-            assert diagram.complete_relations() is None  # type: ignore[func-returns-value]
+            source = pkg.add_class(self._unique("RelationSource"))
+            target = pkg.add_class(self._unique("RelationTarget"))
+            source.add_relation_to(target, "targets", "Association", "1", "sources", "Association", "1", "")
+            source_node = diagram.add_new_node_for_element(source, 20, 20, 80, 50)
+            target_node = diagram.add_new_node_for_element(target, 200, 20, 80, 50)
+            graph_elements = rhapsody_app.create_new_collection()
+            graph_elements.add_graphical_item(source_node)
+            graph_elements.add_graphical_item(target_node)
+
+            diagram.complete_relations(graph_elements, 0)
+
+            assert diagram.graphical_elements.count >= 3
         finally:
             pkg.delete_from_project()
 
-    def test_populate_diagram(self, test_project: IRPProject) -> None:
+    def test_populate_diagram(self, test_project: IRPProject, rhapsody_app: RhapsodyApplication) -> None:
         pkg = test_project.add_package(self._unique("PopulatePkg"))
         try:
             diagram = self._diagram(pkg)
-            pkg.add_class(self._unique("PopulateCls"))
-            assert diagram.populate_diagram() is None  # type: ignore[func-returns-value]
+            created_class = pkg.add_class(self._unique("PopulateCls"))
+            elements_to_populate = rhapsody_app.create_new_collection()
+            elements_to_populate.add_item(created_class)
+            relations_types = rhapsody_app.create_new_collection()
+            relations_types.set_size(1)
+            relations_types.set_string(1, "AllRelations")
+
+            diagram.populate_diagram(elements_to_populate, relations_types, "among")
+
+            assert created_class in list(diagram.get_elements_in_diagram())
         finally:
             pkg.delete_from_project()
 

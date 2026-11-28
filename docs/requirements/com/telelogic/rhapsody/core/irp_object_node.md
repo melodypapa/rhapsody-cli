@@ -24,9 +24,10 @@ class was split out of the shared `irp_activity.py` module in its own sync run.
 With this split the empty `irp_activity.py` shim and its mirrored unit test
 were removed. Unit tests in the mirrored unit path use only fake COM objects
 and give 100% statement/branch coverage of the wrapper. Integration tests in
-the mirrored integration path create real activity nodes and states, assert
-populated getter values by identity/membership, and delete the owning package
-during cleanup. Live assertions are CI-only on Windows and are unverified in
-offline runs.
+the mirrored path create real activity nodes; `add_in_state` and
+`remove_in_state` bind the object node to a represented class and use a state
+from that class's statechart. They assert membership changes and delete the
+owning package during cleanup. The focused Windows live run passes all four
+integration tests; offline runs provide collection only.
 **Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_object_node.py:IRPObjectNode
-**Last Changed:** 2026-11-26
+**Last Changed:** 2026-03-19

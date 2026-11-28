@@ -30,7 +30,8 @@ class TestIRPInstanceIntegration:
     def _create_instance(test_project: IRPProject, pkg_name: str, cls_name: str, inst_name: str) -> tuple[IRPPackage, IRPClass, IRPInstance]:
         pkg = test_project.add_package(pkg_name)
         cls = pkg.add_class(cls_name)
-        instance = IRPInstance(cls.add_new_aggr("Instance", inst_name)._com)
+        object_element = pkg.add_global_object(inst_name, cls.name, pkg.name)
+        instance = IRPInstance(object_element._com)
         return pkg, cls, instance
 
     def test_get_all_nested_elements_is_documented_unavailable(self, test_project: IRPProject) -> None:
@@ -50,10 +51,13 @@ class TestIRPInstanceIntegration:
             pkg.delete_from_project()
 
     def test_attribute_value_roundtrip(self, test_project: IRPProject) -> None:
-        pkg, cls, instance = self._create_instance(test_project, self._unique("AttrValPkg"), self._unique("AttrValCls"), self._unique("AttrValInst"))
+        pkg = test_project.add_package(self._unique("AttrValPkg"))
+        cls = pkg.add_class(self._unique("AttrValCls"))
         try:
             attribute_name = self._unique("count")
             cls.add_attribute(attribute_name)
+            object_element = pkg.add_global_object(self._unique("AttrValInst"), cls.name, pkg.name)
+            instance = IRPInstance(object_element._com)
 
             instance.set_attribute_value(attribute_name, "42")
 
@@ -66,9 +70,11 @@ class TestIRPInstanceIntegration:
         try:
             from_class = pkg.add_class(self._unique("LinkFrom"))
             to_class = pkg.add_class(self._unique("LinkTo"))
-            association = from_class.add_relation_to(to_class, "from", "Association", "1", "to", "Association", "1", "")
-            from_part = IRPInstance(from_class.add_new_aggr("Instance", self._unique("FromPart"))._com)
-            to_part = IRPInstance(to_class.add_new_aggr("Instance", self._unique("ToPart"))._com)
+            association = from_class.add_relation_to(to_class, self._unique("FromRole"), "Association", "1", self._unique("ToRole"), "Association", "1", self._unique("LinkAssociation"))
+            from_object = pkg.add_global_object(self._unique("FromObject"), from_class.name, pkg.name)
+            to_object = pkg.add_global_object(self._unique("ToObject"), to_class.name, pkg.name)
+            from_part = IRPInstance(from_object._com)
+            to_part = IRPInstance(to_object._com)
             link = pkg.add_link(from_part, to_part, association, None, None)
 
             out_links = from_part.get_out_links()
@@ -80,19 +86,27 @@ class TestIRPInstanceIntegration:
         finally:
             pkg.delete_from_project()
 
+    @pytest.mark.skip(reason="Approved live blocker (#202): addRelationToTheWhole returns None for a global object created from its classifier.")
     def test_add_relation_to_the_whole(self, test_project: IRPProject) -> None:
-        pkg, _cls, instance = self._create_instance(test_project, self._unique("WholePkg"), self._unique("WholeCls"), self._unique("WholeInst"))
+        pkg = test_project.add_package(self._unique("WholePkg"))
+        cls = pkg.add_class(self._unique("WholeCls"))
         try:
+            object_element = pkg.add_global_object(self._unique("WholeObject"), cls.name, pkg.name)
+            instance = IRPInstance(object_element._com)
             relation = instance.add_relation_to_the_whole(self._unique("WholeRel"))
             assert isinstance(relation, IRPRelation)
         finally:
             pkg.delete_from_project()
 
+    @pytest.mark.skip(reason="Approved live blocker (#202): setInstantiatedBy does not persist; getter remains None on a global object.")
     def test_instantiated_by_roundtrip(self, test_project: IRPProject) -> None:
-        pkg, cls, instance = self._create_instance(test_project, self._unique("InstByPkg"), self._unique("InstByCls"), self._unique("InstByInst"))
+        pkg = test_project.add_package(self._unique("InstByPkg"))
+        cls = pkg.add_class(self._unique("InstByCls"))
         try:
-            operation = cls.add_operation(self._unique("factoryOp"))
+            operation = cls.add_constructor("")
             assert isinstance(operation, IRPOperation)
+            object_element = pkg.add_global_object(self._unique("InstByInst"), cls.name, pkg.name)
+            instance = IRPInstance(object_element._com)
 
             instance.instantiated_by = operation
 

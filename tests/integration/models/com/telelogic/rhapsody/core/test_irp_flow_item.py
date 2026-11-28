@@ -20,7 +20,7 @@ class TestIRPFlowItemIntegration:
     @staticmethod
     def _flow_item(pkg: IRPPackage) -> IRPFlowItem:
         item = pkg.add_flow_items(f"FlowItem_{uuid.uuid4().hex[:8]}")
-        assert isinstance(item, IRPFlowItem)
+        assert isinstance(item, IRPFlowItem), item.meta_class
         return item
 
     def test_add_represented(self, test_project: IRPProject) -> None:

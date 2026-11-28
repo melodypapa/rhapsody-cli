@@ -7,13 +7,14 @@ Execution ledger for the 19 committed interface reports under `docs/reports/<jav
 | Metric | Value |
 | --- | --- |
 | Interfaces with a committed API report | 19 |
-| Group files | 24 |
+| Group files | 23 |
 | Rows tracked | 146 |
-| Rows archived | 21 (19 unique + 2 preserved duplicate remediation rows) |
-| Rows open | 125 |
-| Step checks ticked | 337 / 1168 |
+| Rows archived | 20 (18 unique + 2 preserved duplicate remediation rows) |
+| Rows complete with deviation | 6 |
+| Rows open | 120 |
+| Step checks ticked | 345 / 1168 |
 | NotImplementedError evidence rows | 30 |
-| P0 blocker rows | 22 (10 interfaces) |
+| P0 blocker rows | 56 (19 interfaces) |
 | `verify_sync.py` sweep | 19 / 19 interfaces pass |
 ## Contents
 
@@ -34,12 +35,11 @@ were mapped to their legacy category by class name. All 146 tracked rows are pre
 
 | Group file | Category | Classes | Status |
 | --- | --- | --- | --- |
-| [Group-activity-1.md](Group-activity-1.md) | `activity` | 10 | ⬜ 10 open |
-| [Group-activity-2.md](Group-activity-2.md) | `activity` | 2 | ⬜ 2 open |
+| [Group-activity.md](Group-activity.md) | `activity` | 12 | ⚠️ 4 complete with deviation · ✅ 8 archived |
 | [Group-application-1.md](Group-application-1.md) | `application` | 1 | ✅ all archived |
 | [Group-classifiers-1.md](Group-classifiers-1.md) | `classifiers` | 10 | ⬜ 9 open · ✅ 1 archived |
 | [Group-classifiers-2.md](Group-classifiers-2.md) | `classifiers` | 6 | ✅ all archived |
-| [Group-common-1.md](Group-common-1.md) | `common` | 7 | ⬜ 6 open · ✅ 1 archived |
+| [Group-common.md](Group-common.md) | `common` | 7 | ⬜ 2 open · ⚠️ 1 complete with deviation · ✅ 4 archived |
 | [Group-containment-1.md](Group-containment-1.md) | `containment` | 10 | ⬜ 9 open · ✅ 1 archived |
 | [Group-containment-2.md](Group-containment-2.md) | `containment` | 1 | ✅ all archived |
 | [Group-core-1.md](Group-core-1.md) | `core` | 7 | ✅ all archived |
@@ -49,8 +49,8 @@ were mapped to their legacy category by class name. All 146 tracked rows are pre
 | [Group-graphics-2.md](Group-graphics-2.md) | `graphics` | 4 | ⬜ 4 open |
 | [Group-interactions-1.md](Group-interactions-1.md) | `interactions` | 10 | ⬜ 10 open |
 | [Group-interactions-2.md](Group-interactions-2.md) | `interactions` | 1 | ⬜ 1 open |
-| [Group-relations-1.md](Group-relations-1.md) | `relations` | 8 | ⬜ 7 open · ✅ 1 archived |
-| [Group-requirements-1.md](Group-requirements-1.md) | `requirements` | 2 | ⬜ 2 open |
+| [Group-relations.md](Group-relations.md) | `relations` | 8 | ⬜ 6 open · ⚠️ 1 complete with deviation · ✅ 1 archived |
+| [Group-requirements.md](Group-requirements.md) | `requirements` | 2 | ⬜ 1 open · ✅ 1 archived |
 | [Group-statemachine-1.md](Group-statemachine-1.md) | `statemachine` | 2 | ⬜ 2 open |
 | [Group-support-1.md](Group-support-1.md) | `support` | 10 | ⬜ 10 open |
 | [Group-support-2.md](Group-support-2.md) | `support` | 10 | ⬜ 10 open |
@@ -61,7 +61,7 @@ were mapped to their legacy category by class name. All 146 tracked rows are pre
 
 ### Progress
 
-- Progress: **19 unique rows archived / 146** (21 including the two preserved duplicate remediation rows).
+- Progress: **18 unique rows archived / 146** (20 including the two preserved duplicate remediation rows).
 - As of 2026-11-25 the `application` row in [Group-application-1.md](Group-application-1.md) and all seven `core` rows in [Group-core-1.md](Group-core-1.md) are archived.
 - The queued unsynced classes sit in the remaining files, ordered by importance within each category.
 - Commits `6cbebc3` (sync), `1778607` (test-rule compliance), `5175b93` (COM hardening), `2a6334c`…`3479937` (Windows closeout: real-COM outcome enforcement, report regeneration) and the review-fix commit carry the batch.
@@ -278,9 +278,12 @@ probe proved the pywin32 `addGraphicalElementItem` alias works with a real `IRPG
 for a member that no longer raises `NotImplementedError` fails Step 8 as stale.
 ## P0 integration-test blockers (2026-11-24)
 
-The following integration tests were removed rather than converted into exception assertions or skips
-(SKILL §5: a genuine blocker keeps the row open). Each item needs a Windows + Rhapsody run or a
-wrapper-signature fix before its getter/member row can close.
+These rows track unresolved live behavior, not a claim that the wrapper binding is incorrect. Under
+SKILL §5, a class may be marked **complete with deviation** only when every non-skipped target
+integration test passes and each remaining skip has exact user approval, live evidence, a reason,
+and a row here. That status does not verify skipped behavior or close its tracking issue. Unapproved
+skips, unskipped failures, or failed quality gates keep the class open; the P0 row and issue remain
+open until the live behavior is resolved.
 
 | Interface | Member(s) | Blocker |
 | --- | --- | --- |
@@ -290,10 +293,15 @@ wrapper-signature fix before its getter/member row can close.
 | IRPProject | `import_package_from_rose`, `import_project_from_rose` | External Rose fixture required; JavaDoc marks both unsupported since Rhapsody 8.1.4. |
 | IRPPackage | `get_remote_requirements_populate_mode` | A local live probe set the documented mode to `"None"` but the getter returned `""`; a valid populated value requires a Design Manager/remote requirements server. |
 | IRPClass | `add_link`, `add_link_to_part_via_port` | Needs a real `IRPInstance` part and structure-diagram endpoints; class-as-part fixtures only produced exceptions. |
+| IRPFlow | `end1_port`, `end1_sys_ml_port`, `end2_port`, `end2_sys_ml_port`; `set_end1_via_port`, `set_end1_via_sys_ml_port`, `set_end2_via_port`, `set_end2_via_sys_ml_port` | User-approved integration skips (2026-03-19): all four documented endpoint calls return COM error `-2147221494` with a class-owned port and class-created object. Port-under-instance is rejected (`-2147221495`); setting `ofClass` is rejected (`-2147221503`). A supported typed instance/port factory remains unavailable; tracked in issue #202. |
+| IRPFlowchart | `add_activity_parameter` | User-approved live skip (2026-03-19): `addActivityParameter(name)` returns `None` instead of JavaDoc's `IRPPin` despite an operation argument, flowchart owner assignment, and open diagram. Tracked in issue #202. |
+| IRPInstance | `add_relation_to_the_whole`, `instantiated_by` | User-approved live skips (2026-03-19) with real package global objects from `addGlobalObject`: `addRelationToTheWhole(name)` returns `None` instead of `IRPRelation`; setting `instantiatedBy` to a class constructor does not throw but getter readback remains `None`. Both remain unresolved and tracked in issue #202. |
+| IRPSendAction | `invoked_operation` | User-approved live skip (2026-03-19): after setting the state to `EventState` and assigning a real event, object target, and class-owned operation, setting `invokedOperation` completes but getter readback remains `None`. The exact property binding is retained; tracked in issue #202. |
+| IRPSwimlane | `contents` | User-approved live skip (2026-03-19): a root-state `IRPConnector` accepts `setItsSwimlane` and reads the assigned lane back, but that connector is absent from `lane.contents`. The populated getter remains unresolved and tracked in issue #202. |
 | IRPModelElement | `user_defined_meta_class` (`getUserDefinedMetaClass`) | JavaDoc defines the result as the New Term name, but the COM surface exposes no API to define a New Term, so only the default value's type is observable; evidence: `tests/integration/models/com/telelogic/rhapsody/core/test_irp_model_element.py::test_get_user_defined_meta_class`. |
 | IRPModelElement | `constraints_by_him`, `hyper_links` | User-approved runtime stubs (2026-11-24, `runtime-stub` rows in the NotImplementedError evidence ledger); retrieval fixtures could not be built live. |
 | IRPUnit | `copy_to_another_project`, `move_to_another_project_leave_a_reference`, `reference_to_another_project`, `set_unit_path` | Requires a second saved project/unit file and mutates the shared project. |
-| IRPType | `typedef_multiplicity` setter | Live 2026-11-25: the catalog exposes `typedefMultiplicity` as a property and reads return `"1"` on a new type, but every write (`"0..1"`, `"1"`, `"0..*"`, `"*"`, `"[0..1]"`, `"1..1"`) faults with COM HRESULT `-2147221498`; no live setter success, so the getter asserts the observed default and the setter stays a blocker. |
+| IRPType | `typedef_base_type`, `is_typedef_constant`, `is_typedef_ordered`, `is_typedef_reference`, `typedef_multiplicity` setters | User-approved live skips (2026-03-19) cover `test_get_typedef_base_type`, `test_is_typedef_constant_roundtrip`, `test_is_typedef_ordered_roundtrip`, `test_is_typedef_reference_roundtrip`, and `test_set_typedef_multiplicity`. These setters return COM HRESULT `-2147221498` for real package-created types; `addEnumerationLiteral` and `deleteEnumerationLiteral` pass live. Exact bindings remain; setter blockers are recorded in SWR_ELEM_00021/00032 and issue #202. |
 | IRPUseCase | `entry_points` | No documented add API in the COM surface; only an empty-state result is observable. |
 | IRPStereotype | `icon` | No documented API attaches or edits a stereotype icon; the getter returns the image path declared by the stereotype definition file, so no populated live fixture exists. |
 | IRPProject | `get_code_generated_files` | Requires a real code-generation run; no safe fixture in the shared project. |
@@ -304,7 +312,7 @@ wrapper-signature fix before its getter/member row can close.
 | IRPProject | `is_modified_recursive` | Needs a controlled modify/save transition on the session-shared project. |
 | IRPProject | `move_to_design_manager`, `move_to_design_manager_after_login` | Both JavaDoc methods are deprecated because Design Manager support was removed in Rhapsody 8.4; no supported Design Manager server is available for authentic live execution. Keep the exact catalog bindings and leave live verification open. |
 | IRPClass | `is_abstract`, `is_active`, `is_behavior_overriden` | Documented pywin32 aliases; getters are readable but no populated live fixture exists (setters are read-only or JavaDoc-unimplemented). |
-| IRPPort | `is_behavioral`, `is_reversed`, `port_contract`, `provided_interfaces`, `required_interfaces` | Port relation/end properties have no live factory; recovered via catalog-only triage but no populated fixture. |
+| IRPPort | `provided_interfaces`, `required_interfaces`, `add_provided_interface`, `remove_provided_interface`, `add_required_interface`, `remove_required_interface` | The `IRPPort` dispatch is now correctly cast; `is_behavioral`, `is_reversed`, and `port_contract` round-trip live. This Rhapsody build rejects the four interface mutators with `E_FAIL` for Class and Interface arguments, so the collection getters remain only empty-state verified. No supported live fixture populates the collections; tracked in requirement SWR_ELEM_00027 and issue #202. |
 | IRPComponent | `panel_diagrams` | No documented API attaches a panel diagram to a component; only the empty collection is observable. |
 | IRPComponent | `variation_points` | No documented API creates a variation point on a component; only the empty collection is observable. |
 | IRPCollaboration | `activation_condition` | No documented API populates this read-only property on a fresh collaboration; only the documented empty/default state is observable. |

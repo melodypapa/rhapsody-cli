@@ -168,7 +168,7 @@ class IRPClassifier(IRPUnit):
         """
         from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flowchart import IRPFlowchart
 
-        return cast(IRPFlowchart, self.wrap(self.call_com(lambda: self._com.addActivityDiagram())))
+        return IRPFlowchart(self.call_com(lambda: self._com.addActivityDiagram()))
 
     def add_flow_items(self, name: str) -> IRPFlowItem:
         """Adds a new item flow to the classifier.

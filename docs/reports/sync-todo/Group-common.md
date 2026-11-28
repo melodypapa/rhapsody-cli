@@ -1,6 +1,6 @@
 # Sync todo — `common`
 
-**7 classes** · ✅ 4 archived · ⬜ 3 open
+**7 classes** · ✅ 4 archived · ⚠️ 1 complete with deviation · ⬜ 2 open
 
 One row per sync run. A step is ticked only when its evidence lands; a row is archived only after all eight steps pass. Binding rule: one pywin32-exposed COM member per call — `call_com(lambda: self._com.Name(...))` for methods, `get_com_property` / `set_com_property` for properties; catalog-absent sites are blockers, never blind migrations. Canonical package: `src/rhapsody_cli/models/com/telelogic/rhapsody/core/`, mirrored tests under `tests/{unit,integration}/models/com/telelogic/rhapsody/core/`.
 
@@ -28,7 +28,7 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 | 3 | `irp_enumeration_literal_api_report` | IRPEnumerationLiteral | `rhapsody_cli/models/elements/common/model_misc.py` | 1 | 2 | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 | 4 | `irp_constraint_api_report` | IRPConstraint | `rhapsody_cli/models/elements/common/model_misc.py` | 1 | 1 | 1/8 (②) | ⬜ open |
 | 5 | `irp_comment_api_report` | IRPComment | `rhapsody_cli/models/elements/common/model_misc.py` | 0 | 0 | 1/8 (②) | ⬜ open |
-| 6 | `irp_type_remediation` | IRPType | — | — | — | 7/8 (①②③④⑥⑦⑧) | ⬜ open |
+| 6 | `irp_type_remediation` | IRPType | — | — | — | 8/8 (①②③④⑤⑥⑦⑧) | ⚠️ complete with deviation |
 | 7 | `irp_type_api_report` | IRPType | `models/elements/common/model_other_model.py` | — | — | 8/8 (①②③④⑤⑥⑦⑧) | ✅ archived |
 
 ## Row details
@@ -36,16 +36,16 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 <details>
 <summary><code>irp_sys_ml_port_api_report</code> · IRPSysMLPort · 8/8 steps · ✅ archived</summary>
 
-- **Status (2026-11-27):** verify_sync passes; all steps archived.
-- **Note:** usage 42 src / 21 test refs, 7 owned members. Split `IRPSysMLPort` into `irp_sysml_port.py`; `IRPClassifierRole` stays in `irp_other_model.py` for its own row. Three JavaDoc accessor pairs map to read/write pywin32 properties; `add_link` uses `call_com`.
+- **Status (2026-03-19):** verify_sync passes; all steps archived. The live dispatch failures are resolved by `IRPInstance.__init__` casting to the concrete port interface.
+- **Note:** usage 42 src / 21 test refs, 7 owned members. Split `IRPSysMLPort` into `irp_sysml_port.py`; `IRPClassifierRole` stays in `irp_other_model.py` for its own row. Three JavaDoc accessor pairs map to read/write pywin32 properties; `add_link` uses `call_com` and passes `None` for the JavaDoc-irrelevant association argument.
 - [x] ① §1
 - [x] ② §2 — canonical module `irp_sysml_port.py`; exports and direct imports updated
 - [x] ③ §3 — 0 actionable deviations after binding migration
 - [x] ④ §4 — 8 fake-COM unit tests, 100% statements/branches
-- [x] ⑤ §5 — 4 integration tests with real flowports/instances/links; macOS = collection-only
+- [x] ⑤ §5 — 4 focused Windows live integration tests pass. Direction tests assign a real classifier type first; link setup uses package global objects, typed flowports, and `assoc=None` as JavaDoc requires.
 - [x] ⑥ §6 — `docs/requirements/com/telelogic/rhapsody/core/irp_sysml_port.md`
 - [x] ⑦ §7 — `docs/api/com/telelogic/rhapsody/core/irp_sysml_port.rst` + toctree entry
-- [x] ⑧ §8 — validator 0 deviations; verify_sync + --strict-getters green; unit suite 2198 passed; skill harness 90 passed; mypy/ruff/black clean
+- [x] ⑧ §8 — validator 0 deviations; `verify_sync.py IRPSysMLPort --strict-getters --strict-inherited` green; skill harness 90 passed; full unit suite 2323 passed; unit coverage 100%; Ruff, Black, and mypy clean.
 
 </details>
 
@@ -114,18 +114,18 @@ One row per sync run. A step is ticked only when its evidence lands; a row is ar
 </details>
 
 <details>
-<summary><code>irp_type_remediation</code> · IRPType · 7/8 steps · ⬜ open</summary>
+<summary><code>irp_type_remediation</code> · IRPType · 8/8 steps · ⚠️ complete with deviation</summary>
 
-- **Status (2026-11-27):** verify_sync passes; 7/8 steps complete. Duplicate of the archived `irp_type_api_report` row below. §5 stays open on the seven baseline live failures.
-- **Baseline:** 10 property-shape conversions; the headless full-integration baseline has 7 type-test failures requiring evidence-based triage.
+- **Status (2026-03-19):** sync work is complete with approved live setter deviations; P0 rows and issue #202 remain open. This is not a live-green claim.
+- **Baseline:** 10 property-shape conversions. `is_enum` follows JavaDoc's Language-kind declaration parsing; `is_kind_enumeration` checks the Enumeration kind.
 - [x] ① §1 — member checklist and getter matrix published.
 - [x] ② §2
 - [x] ③ §3 — all 10 property members reconciled against JavaDoc/catalog; validator reports 0 actionable deviations.
-- [x] ④ §4 — fake-COM unit coverage: 37 passed, 95 statements / 0 branches, 100.00%; full unit suite 2195 passed.
-- [ ] ⑤ §5 — real enumeration/type fixtures and populated getter assertions are in the mirrored integration file; the seven baseline live failures remain unresolved and are unverified on this macOS host.
+- [x] ④ §4 — fake-COM unit coverage: 37 passed, 95 statements / 0 branches, 100.00%; full unit suite 2323 passed.
+- [x] ⑤ §5 — Complete with deviation: 12 integration tests, 7 passed and 5 explicitly user-approved skips for typedef-base/typedef-flag/multiplicity setters. Enumeration literal add/delete and the kind predicates pass; the exact setter skips are in the P0 index and issue #202. Not live-green.
 - [x] ⑥ §6 — `docs/requirements/com/telelogic/rhapsody/core/irp_type.md` checked/updated.
 - [x] ⑦ §7 — `docs/api/com/telelogic/rhapsody/core/irp_type.rst` checked for every public member.
-- [x] ⑧ §8 — report regenerated with `python scripts/validate_model_api.py IRPType --source authority --path docs/reports`; `verify_sync.py IRPType --strict-getters` green; skill harness 90 passed; mpy/ruff/black clean.
+- [x] ⑧ §8 — validator 0 deviations; `verify_sync.py IRPType --strict-getters` green; skill harness 90 passed; full unit suite 2323 passed; integration 7 passed / 5 approved skips; Ruff, Black, and mypy clean. The skipped live behavior remains a P0 and issue #202.
 
 </details>
 

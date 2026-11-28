@@ -5,6 +5,7 @@ import pytest
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagrams import IRPDiagram
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPGraphEdge, IRPGraphElement, IRPGraphNode
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -47,7 +48,8 @@ def test_diagram_add_text_box_delegates_to_authoritative_add_text_box_member() -
     result = diagram.add_text_box("hello", 0, 0, 50, 20)
 
     fake.AddTextBox.assert_called_once_with("hello", 0, 0, 50, 20)
-    assert result.name == "Note1"
+    assert isinstance(result, IRPGraphElement)
+    assert result._com is text_box
 
 
 def test_diagram_add_image_delegates_to_com_and_wraps_result() -> None:
@@ -59,7 +61,83 @@ def test_diagram_add_image_delegates_to_com_and_wraps_result() -> None:
     result = diagram.add_image("logo.bmp", 10, 10, 40, 40)
 
     fake.AddImage.assert_called_once_with("logo.bmp", 10, 10, 40, 40)
-    assert result.name == "Logo"
+    assert isinstance(result, IRPGraphElement)
+    assert result._com is image
+
+
+def test_diagram_add_free_shape_by_type_passes_coordinate_collections() -> None:
+    fake = make_fake_element("ActivityDiagram")
+    shape = make_fake_element("GraphElement")
+    fake.AddFreeShapeByType.return_value = shape
+    diagram = IRPDiagram(fake)
+    x_points = IRPCollection(make_fake_collection([]))
+    y_points = IRPCollection(make_fake_collection([]))
+
+    result = diagram.add_free_shape_by_type("Polygon", x_points, y_points)
+
+    fake.AddFreeShapeByType.assert_called_once_with("Polygon", x_points._com, y_points._com)
+    assert isinstance(result, IRPGraphElement)
+    assert result._com is shape
+
+
+def test_diagram_add_new_node_by_type_wraps_graph_node_directly() -> None:
+    fake = make_fake_element("ActivityDiagram")
+    graph_node = make_fake_element("GraphNode")
+    fake.AddNewNodeByType.return_value = graph_node
+    diagram = IRPDiagram(fake)
+
+    result = diagram.add_new_node_by_type("Note", 10, 20, 40, 30)
+
+    fake.AddNewNodeByType.assert_called_once_with("Note", 10, 20, 40, 30)
+    assert isinstance(result, IRPGraphNode)
+    assert result._com is graph_node
+
+
+def test_diagram_add_new_node_for_element_wraps_graph_node_directly() -> None:
+    fake = make_fake_element("ActivityDiagram")
+    graph_node = make_fake_element("GraphNode")
+    fake.AddNewNodeForElement.return_value = graph_node
+    diagram = IRPDiagram(fake)
+    model_element = make_fake_element("Class")
+
+    result = diagram.add_new_node_for_element(IRPModelElement(model_element), 10, 20, 40, 30)
+
+    fake.AddNewNodeForElement.assert_called_once_with(model_element, 10, 20, 40, 30)
+    assert isinstance(result, IRPGraphNode)
+    assert result._com is graph_node
+
+
+def test_diagram_add_new_edge_by_type_passes_both_nodes_and_positions() -> None:
+    fake = make_fake_element("ActivityDiagram")
+    graph_edge = make_fake_element("GraphEdge")
+    fake.AddNewEdgeByType.return_value = graph_edge
+    diagram = IRPDiagram(fake)
+    source_com = make_fake_element("GraphElement")
+    target_com = make_fake_element("GraphElement")
+    source = IRPGraphElement(source_com)
+    target = IRPGraphElement(target_com)
+
+    result = diagram.add_new_edge_by_type("anchor", source, 10, 20, target, 30, 40)
+
+    fake.AddNewEdgeByType.assert_called_once_with("anchor", source_com, 10, 20, target_com, 30, 40)
+    assert isinstance(result, IRPGraphEdge)
+    assert result._com is graph_edge
+
+
+def test_diagram_add_new_edge_for_element_passes_both_nodes_and_positions() -> None:
+    fake = make_fake_element("ActivityDiagram")
+    graph_edge = make_fake_element("GraphEdge")
+    fake.AddNewEdgeForElement.return_value = graph_edge
+    diagram = IRPDiagram(fake)
+    element_com = make_fake_element("Dependency")
+    source_com = make_fake_element("GraphNode")
+    target_com = make_fake_element("GraphNode")
+
+    result = diagram.add_new_edge_for_element(IRPModelElement(element_com), IRPGraphNode(source_com), 10, 20, IRPGraphNode(target_com), 30, 40)
+
+    fake.AddNewEdgeForElement.assert_called_once_with(element_com, source_com, 10, 20, target_com, 30, 40)
+    assert isinstance(result, IRPGraphEdge)
+    assert result._com is graph_edge
 
 
 def test_diagram_get_custom_views_is_documented_unavailable() -> None:
@@ -180,14 +258,37 @@ def test_diagram_is_registered_for_meta_class_activity_diagram() -> None:
     assert isinstance(wrapped, IRPDiagram)
 
 
-def test_diagram_get_pictures_with_image_map_delegates_to_com_with_two_args() -> None:
+def test_diagram_complete_relations_passes_graph_collection_and_scope() -> None:
+    fake = make_fake_element("ActivityDiagram")
+    diagram = IRPDiagram(fake)
+    graph_elements = IRPCollection(make_fake_collection([]))
+
+    diagram.complete_relations(graph_elements, 1)
+
+    fake.completeRelations.assert_called_once_with(graph_elements._com, 1)
+
+
+def test_diagram_populate_diagram_passes_elements_relation_types_and_content_mode() -> None:
+    fake = make_fake_element("ActivityDiagram")
+    diagram = IRPDiagram(fake)
+    elements = IRPCollection(make_fake_collection([]))
+    relation_types = IRPCollection(make_fake_collection([]))
+
+    diagram.populate_diagram(elements, relation_types, "among")
+
+    fake.populateDiagram.assert_called_once_with(elements._com, relation_types._com, "among")
+
+
+def test_diagram_get_pictures_with_image_map_wraps_pywin_return_and_passes_two_args() -> None:
     fake = make_fake_element("ObjectModelDiagram")
     file_names = make_fake_collection([])
-    fake.getPicturesWithImageMap.return_value = file_names
+    diagram_map_com = make_fake_collection([])
+    fake.getPicturesWithImageMap.return_value = (file_names, diagram_map_com)
     diagram = IRPDiagram(fake)
-    diagram_map = IRPCollection(make_fake_collection([]))
+    diagram_map = IRPCollection(diagram_map_com)
 
     result = diagram.get_pictures_with_image_map("output.emf", diagram_map)
 
     fake.getPicturesWithImageMap.assert_called_once_with("output.emf", diagram_map._com)
     assert isinstance(result, IRPCollection)
+    assert result._com is file_names

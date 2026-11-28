@@ -75,3 +75,19 @@ def test_add_link_delegates_and_wraps() -> None:
     assert isinstance(wrapped, IRPLink)
     assert wrapped.name == "L1"
     fake.addLink.assert_called_once_with(from_part, to_part, assoc, to_port, new_owner)
+
+
+def test_add_link_passes_null_association_for_flowports() -> None:
+    fake = make_fake_element("SysMLPort")
+    from_part = make_fake_element("Object", properties={"name": "From"})
+    to_part = make_fake_element("Object", properties={"name": "To"})
+    to_port = make_fake_element("SysMLPort", properties={"name": "ToPort"})
+    new_owner = make_fake_element("Package", properties={"name": "Pkg"})
+    link = make_fake_element("Link", properties={"name": "L2"})
+    fake.addLink.return_value = link
+
+    wrapped = IRPSysMLPort(fake).add_link(IRPInstance(from_part), IRPInstance(to_part), None, IRPSysMLPort(to_port), IRPPackage(new_owner))
+
+    assert isinstance(wrapped, IRPLink)
+    assert wrapped.name == "L2"
+    fake.addLink.assert_called_once_with(from_part, to_part, None, to_port, new_owner)

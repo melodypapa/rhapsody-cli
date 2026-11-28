@@ -312,7 +312,7 @@ class IRPPackage(IRPUnit):
         """
         from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flowchart import IRPFlowchart
 
-        return cast(IRPFlowchart, self.wrap(self.call_com(lambda: self._com.addActivityDiagram())))
+        return IRPFlowchart(self.call_com(lambda: self._com.addActivityDiagram()))
 
     def add_sequence_diagram(self, name: str) -> IRPSequenceDiagram:
         """Adds a new sequence diagram to the package.
@@ -360,7 +360,7 @@ class IRPPackage(IRPUnit):
         """
         from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPCollaborationDiagram
 
-        return cast(IRPCollaborationDiagram, self.wrap(self.call_com(lambda: self._com.addCollaborationDiagram(name))))
+        return IRPCollaborationDiagram(self.call_com(lambda: self._com.addCollaborationDiagram(name)))
 
     def add_component_diagram(self, name: str) -> IRPComponentDiagram:
         """Adds a new component diagram to the package.

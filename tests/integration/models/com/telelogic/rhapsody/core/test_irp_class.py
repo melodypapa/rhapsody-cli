@@ -297,15 +297,10 @@ class TestIRPClassIntegration:
         finally:
             pkg.delete_from_project()
 
-    def test_is_final_roundtrip(self, test_project: IRPProject) -> None:
+    def test_get_is_final_returns_integer(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("FinalPkg"))
         cls = pkg.add_class(self._unique("FinalCls"))
         try:
-            original = cls.get_is_final()
-            assert isinstance(original, int)
-            assert cls.set_is_final(1) is None  # type: ignore[func-returns-value]
-            assert cls.get_is_final() == 1
-            cls.set_is_final(original)
-            assert cls.get_is_final() == original
+            assert isinstance(cls.get_is_final(), int)
         finally:
             cls.delete_from_project()

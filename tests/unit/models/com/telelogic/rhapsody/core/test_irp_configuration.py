@@ -3,7 +3,6 @@
 import pytest
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPComponent, IRPConfiguration, IRPInstance, IRPUnit
-from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from tests.unit.models.fakes import make_fake_collection, make_fake_element
 
@@ -26,15 +25,14 @@ def test_additional_sources_setter() -> None:
 
 
 def test_all_elements_in_instrumentation_scope() -> None:
-    fake = make_fake_element("Configuration", properties={"allElementsInInstrumentationScope": make_fake_collection([make_fake_element("Unit")])})
-    assert len(IRPConfiguration(fake).all_elements_in_instrumentation_scope) == 1
+    fake = make_fake_element("Configuration", properties={"allElementsInInstrumentationScope": 1})
+    assert IRPConfiguration(fake).all_elements_in_instrumentation_scope == 1
 
 
 def test_all_elements_in_instrumentation_scope_setter() -> None:
     fake = make_fake_element("Configuration")
-    value = make_fake_collection([make_fake_element("Unit")])
-    IRPConfiguration(fake).all_elements_in_instrumentation_scope = IRPCollection(value)
-    assert fake.allElementsInInstrumentationScope is value
+    IRPConfiguration(fake).all_elements_in_instrumentation_scope = 1
+    assert fake.allElementsInInstrumentationScope == 1
 
 
 def test_build_set() -> None:
@@ -108,13 +106,13 @@ def test_instrumentation_scope() -> None:
 
 
 def test_instrumentation_type() -> None:
-    fake = make_fake_element("Configuration", properties={"instrumentationType": 1})
-    assert IRPConfiguration(fake).instrumentation_type == 1
+    fake = make_fake_element("Configuration", properties={"instrumentationType": "none"})
+    assert IRPConfiguration(fake).instrumentation_type == "none"
 
 
 def test_instrumentation_type_setter() -> None:
     fake = make_fake_element("Configuration")
-    value = 1
+    value = "none"
     IRPConfiguration(fake).instrumentation_type = value
     assert fake.instrumentationType == value
 
@@ -144,13 +142,13 @@ def test_link_switches_setter() -> None:
 
 
 def test_scope_type() -> None:
-    fake = make_fake_element("Configuration", properties={"scopeType": 1})
-    assert IRPConfiguration(fake).scope_type == 1
+    fake = make_fake_element("Configuration", properties={"scopeType": "explicit"})
+    assert IRPConfiguration(fake).scope_type == "explicit"
 
 
 def test_scope_type_setter() -> None:
     fake = make_fake_element("Configuration")
-    value = 1
+    value = "explicit"
     IRPConfiguration(fake).scope_type = value
     assert fake.scopeType == value
 
@@ -168,25 +166,25 @@ def test_standard_headers_setter() -> None:
 
 
 def test_statechart_implementation() -> None:
-    fake = make_fake_element("Configuration", properties={"statechartImplementation": 1})
-    assert IRPConfiguration(fake).statechart_implementation == 1
+    fake = make_fake_element("Configuration", properties={"statechartImplementation": "flat"})
+    assert IRPConfiguration(fake).statechart_implementation == "flat"
 
 
 def test_statechart_implementation_setter() -> None:
     fake = make_fake_element("Configuration")
-    value = 1
+    value = "flat"
     IRPConfiguration(fake).statechart_implementation = value
     assert fake.statechartImplementation == value
 
 
 def test_time_model() -> None:
-    fake = make_fake_element("Configuration", properties={"timeModel": 1})
-    assert IRPConfiguration(fake).time_model == 1
+    fake = make_fake_element("Configuration", properties={"timeModel": "real"})
+    assert IRPConfiguration(fake).time_model == "real"
 
 
 def test_time_model_setter() -> None:
     fake = make_fake_element("Configuration")
-    value = 1
+    value = "real"
     IRPConfiguration(fake).time_model = value
     assert fake.timeModel == value
 

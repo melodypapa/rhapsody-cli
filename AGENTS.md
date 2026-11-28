@@ -94,7 +94,7 @@ See [docs/CODE_GUIDELINES.md](docs/CODE_GUIDELINES.md) for detailed coding stand
 
 ## Element Wrappers
 
-**Read `docs/java_api` (HTML dir) first** — javadoc-generated, documents Java model classes with exact method names/signatures. Authoritative for "does this method exist on this IRP* interface".
+**Read `docs/java_api` (HTML dir) first** — javadoc-generated, documents Java model classes with exact method names/signatures. Authoritative for "does this method exist on this IRP* interface". Also consult `docs/java_api/rational_rhapsody_api_getting_started.pdf` for API workflows and model-construction examples; it is supplementary and does not override JavaDoc or `docs/reports/pywin32_authority.json` for exact COM members and shapes.
 
 1. Create `src/rhapsody_cli/models/elements/<subpackage>/model_<class>.py`
 2. Subclass `IRPModelElement`, add methods using snake_case names mirroring Java API

@@ -6,7 +6,7 @@
 **Priority:** Medium
 **Description:**
 The `IRPPort` JavaDoc interface represents a port on a classifier. The Python
-`IRPPort` shall extend `RPInstance` and expose Java-mirrored members for behavioral
+`IRPPort` shall extend `IRPInstance` and expose Java-mirrored members for behavioral
 and reversed state (`is_behavioral`, `is_reversed`), the port contract
 (`port_contract`), and provided/required interfaces
 (`provided_interfaces`/`add_provided_interface`/`remove_provided_interface`,
@@ -24,8 +24,10 @@ the exposed `portContract` property directly.
 The module uses `from __future__ import annotations` with unquoted type references.
 **Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_port.py:IRPPort
 (class renamed from `RPPort`; §2 canonical package move completed; 8 legacy call
-sites migrated; 2 catalog-absent sites left unchanged)
-**Last Changed:** 2026-11-24
+sites migrated; 2 catalog-absent sites left unchanged). Incoming generic dispatches
+are now cast by `IRPInstance.__init__` to the exact `IRPPort` interface; this resolves
+the live `isBehavioral` and `providedInterfaces` dispatch failures.
+**Last Changed:** 2026-03-19
 
 ## SWR_ELEM_00027: IRPPort interface mutators live-fixture blocker
 
@@ -36,11 +38,11 @@ sites migrated; 2 catalog-absent sites left unchanged)
 **Description:**
 `addProvidedInterface`, `removeProvidedInterface`, `addRequiredInterface` and
 `removeRequiredInterface` are exposed by pywin32 but this Rhapsody build rejects
-every write with `E_FAIL`, for Class and Interface arguments alike. The former
-integration test asserted those failures indirectly; per SKILL §5 the assertions
-were removed and the rows recorded as blocked, while the collection getters keep
-their live smoke assertions and the bindings keep full fake-COM unit coverage.
-Live verification needs a build that accepts the mutators, after which the rows
-can be closed.
+every write with `E_FAIL`, for Class and Interface arguments alike. The generic
+dispatch issue is resolved by the class-local cast in `IRPInstance.__init__`; the
+port property tests now pass live. The collection getters still expose only empty
+collections because the mutators cannot populate them. The central P0 row and
+issue #202 retain this live deviation; a build that accepts the mutators is needed
+to verify populated membership and close the remaining rows.
 **Implementation:** src/rhapsody_cli/models/com/telelogic/rhapsody/core/irp_port.py:IRPPort
-**Last Changed:** 2026-11-25
+**Last Changed:** 2026-03-19

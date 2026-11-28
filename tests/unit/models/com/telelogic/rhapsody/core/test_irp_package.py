@@ -6,6 +6,8 @@ import pytest
 
 from rhapsody_cli.models.com.telelogic.rhapsody.core import IRPFlow, IRPFlowItem, IRPSysMLPort, IRPUnit
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_diagram_types import IRPCollaborationDiagram
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_flowchart import IRPFlowchart
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_instance import IRPInstance
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_package import IRPPackage
@@ -215,6 +217,8 @@ def test_package_add_activity_diagram_delegates_to_com() -> None:
     result = package.add_activity_diagram()
 
     fake.addActivityDiagram.assert_called_once_with()
+    assert isinstance(result, IRPFlowchart)
+    assert result._com is diagram
     assert result.name == "Activity1"
 
 
@@ -313,13 +317,14 @@ def test_package_get_nodes_returns_collection() -> None:
 
 def test_package_add_flow_items_delegates_to_com() -> None:
     fake = make_fake_element("Package")
-    flow_item = make_fake_element("FlowItem", properties={"name": "MyFlowItem"})
+    flow_item = make_fake_element("ItemFlow", properties={"name": "MyFlowItem"})
     fake.addFlowItems.return_value = flow_item
     package = IRPPackage(fake)
 
     result = package.add_flow_items("MyFlowItem")
 
     fake.addFlowItems.assert_called_once_with("MyFlowItem")
+    assert isinstance(result, IRPFlowItem)
     assert result.name == "MyFlowItem"
 
 
@@ -338,7 +343,7 @@ def test_package_add_flows_delegates_to_com() -> None:
 def test_package_delete_flow_items_delegates_to_com() -> None:
     fake = make_fake_element("Package")
     package = IRPPackage(fake)
-    flow_item_fake = make_fake_element("FlowItem", properties={"name": "ToDelete"})
+    flow_item_fake = make_fake_element("ItemFlow", properties={"name": "ToDelete"})
 
     package.delete_flow_items(cast(IRPFlowItem, IRPModelElement(flow_item_fake)))
 
@@ -358,12 +363,13 @@ def test_package_delete_flows_delegates_to_com() -> None:
 def test_package_get_flow_items_returns_collection() -> None:
     from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_collection import IRPCollection
 
-    flow_item = make_fake_element("FlowItem", properties={"name": "FlowItem1"})
+    flow_item = make_fake_element("ItemFlow", properties={"name": "FlowItem1"})
     fake = make_fake_element("Package", properties={"flowItems": make_fake_collection([flow_item])})
     package = IRPPackage(fake)
 
     result = package.flow_items
     assert isinstance(result, IRPCollection)
+    assert isinstance(result[0], IRPFlowItem)
 
 
 def test_package_get_flows_returns_collection() -> None:
@@ -647,9 +653,14 @@ def test_generated_add_use_case_diagram() -> None:
 
 def test_generated_add_collaboration_diagram() -> None:
     fake = make_fake_element("Package")
-    fake.addCollaborationDiagram.return_value = make_fake_element("Class", properties={"name": "x"})
+    diagram = make_fake_element("UnregisteredCollaborationDiagram", properties={"name": "x"})
+    fake.addCollaborationDiagram.return_value = diagram
+
     result = IRPPackage(fake).add_collaboration_diagram("x")
-    assert result is not None
+
+    fake.addCollaborationDiagram.assert_called_once_with("x")
+    assert isinstance(result, IRPCollaborationDiagram)
+    assert result._com is diagram
 
 
 def test_generated_add_component_diagram() -> None:

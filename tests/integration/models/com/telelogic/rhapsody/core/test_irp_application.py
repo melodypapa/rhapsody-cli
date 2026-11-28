@@ -95,8 +95,10 @@ class TestIRPApplicationIntegration:
 
         active = rhapsody_app.active_project()
         assert active == created
-        created.delete_from_project()
-        # The deletion itself dirties the model; save again before the switch.
+        # Close the temporary project to release its COM/file handle before switching back.
+        rhapsody_app.save_all()
+        created.close()
+        # Save the shared project immediately before reopening it.
         rhapsody_app.save_all()
         reopened = rhapsody_app.open_project(str(TEST_PROJECT_DIR / "TestProject.rpyx"))
         assert reopened == rhapsody_app.active_project()

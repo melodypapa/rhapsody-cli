@@ -105,13 +105,13 @@ class IRPSysMLPort(IRPInstance):
         """
         self.set_com_property(self._com, "type", type_._com)
 
-    def add_link(self, from_part: IRPInstance, to_part: IRPInstance, assoc: IRPRelation, to_port: IRPSysMLPort, new_owner: IRPPackage) -> IRPLink:
+    def add_link(self, from_part: IRPInstance, to_part: IRPInstance, assoc: IRPRelation | None, to_port: IRPSysMLPort, new_owner: IRPPackage) -> IRPLink:
         """Creates a link between flowports on two parts.
 
         Args:
             from_part: The "from" part for the link.
             to_part: The "to" part for the link.
-            assoc: The association relation; JavaDoc notes this is not relevant
+            assoc: Pass ``None``; JavaDoc says the association is irrelevant
                 for links between flowports.
             to_port: The "to" port for the link.
             new_owner: The package that should own the created link.
@@ -129,7 +129,8 @@ class IRPSysMLPort(IRPInstance):
         """
         from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_graphics import IRPLink
 
-        return cast(IRPLink, self.wrap(self.call_com(lambda: self._com.addLink(from_part._com, to_part._com, assoc._com, to_port._com, new_owner._com))))
+        assoc_com = assoc._com if assoc is not None else None
+        return cast(IRPLink, self.wrap(self.call_com(lambda: self._com.addLink(from_part._com, to_part._com, assoc_com, to_port._com, new_owner._com))))
 
 
 IRPModelElement.register_wrapper("SysMLPort", IRPSysMLPort)

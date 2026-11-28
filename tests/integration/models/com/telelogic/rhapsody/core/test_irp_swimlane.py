@@ -27,17 +27,18 @@ class TestIRPSwimlaneIntegration:
         assert isinstance(lane, IRPSwimlane)
         return pkg, activity, lane
 
+    @pytest.mark.skip(reason="Approved live blocker (#202): root.addConnector and setItsSwimlane succeed; getItsSwimlane reads back the lane, but lane.contents remains empty.")
     def test_contents(self, test_project: IRPProject) -> None:
         pkg = test_project.add_package(self._unique("ContentsPkg"))
         try:
             _, activity, lane = self._lane(pkg)
+            activity.create_graphics()
             root = activity.root_state
             assert root is not None
-            state = root.add_state(self._unique("ConnectorOwner"))
-            connector = state.add_connector("Condition")
-            assert isinstance(connector, IRPConnector)
-            # JavaDoc IRPConnector.setItsSwimlane places the connector in the lane.
+            connector_element = root.add_connector("Condition")
+            connector = IRPConnector(connector_element._com)
             connector.set_its_swimlane(lane)
+
             assert connector in list(lane.contents)
         finally:
             pkg.delete_from_project()
