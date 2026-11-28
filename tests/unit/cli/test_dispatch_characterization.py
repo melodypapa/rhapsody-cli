@@ -37,15 +37,13 @@ def _run_main(argv: List[str]) -> Dict[str, MagicMock]:
     on exactly one being used.
     """
     with patch("sys.argv", ["rhapsody-cli"] + argv):
-        with patch("rhapsody_cli.cli.cli.ConnectAction") as connect, patch(
-            "rhapsody_cli.cli.cli.DisconnectAction"
-        ) as disconnect, patch("rhapsody_cli.cli.cli.StatusAction") as status, patch(
+        with patch("rhapsody_cli.cli.cli.ConnectAction") as connect, patch("rhapsody_cli.cli.cli.DisconnectAction") as disconnect, patch("rhapsody_cli.cli.cli.StatusAction") as status, patch(
             "rhapsody_cli.cli.cli.VersionAction"
-        ) as version, patch("rhapsody_cli.cli.cli.ClassCommand") as klass, patch(
-            "rhapsody_cli.cli.cli.AttributeCommand"
-        ) as attribute, patch("rhapsody_cli.cli.cli.PackageCommand") as package, patch(
+        ) as version, patch("rhapsody_cli.cli.cli.ClassCommand") as klass, patch("rhapsody_cli.cli.cli.AttributeCommand") as attribute, patch("rhapsody_cli.cli.cli.PackageCommand") as package, patch(
             "rhapsody_cli.cli.cli.OperationCommand"
-        ) as operation, patch("rhapsody_cli.cli.cli.PortCommand") as port, patch(
+        ) as operation, patch(
+            "rhapsody_cli.cli.cli.PortCommand"
+        ) as port, patch(
             "rhapsody_cli.cli.cli.ProjectCommand"
         ) as project:
             main()
@@ -171,3 +169,22 @@ def test_package_list_format_output_table() -> None:
     action = PackageListAction()
     output = action._format_output(["Alpha", "Beta"], "table")
     assert "Alpha" in output and "Beta" in output
+
+
+def test_group_satisfies_entry_protocol() -> None:
+    """Groups expose register/run against a root subparsers action (stage 2 contract)."""
+    import argparse as _argparse
+
+    from rhapsody_cli.commands.package_command import PackageCommand
+
+    group = PackageCommand()
+    root = _argparse.ArgumentParser()
+    subparsers = root.add_subparsers()
+    group.register(subparsers)
+    assert "package" in subparsers.choices
+
+    namespace = _argparse.Namespace(subcommand="list")
+    action = MagicMock()
+    group._sub_commands = {"list": action}
+    group.run(namespace)
+    action.execute.assert_called_once_with(namespace)

@@ -17,15 +17,6 @@ from rhapsody_cli.commands.abstract_command import AbstractCommand
 class ProjectCommand(AbstractCommand):
     """Project command group - handles project subcommands (open, list, close, new, export, import)."""
 
-    def __init__(self, args: List[str]) -> None:
-        """Initialize ProjectCommand and parse project subcommands.
-
-        Args:
-            args: Arguments after 'project' command
-                (e.g., ['open', 'MyProject.rpy'])
-        """
-        super().__init__("project", args)
-
     def get_actions(self) -> List[AbstractAction]:
         """Return the project subcommand actions."""
         return [
