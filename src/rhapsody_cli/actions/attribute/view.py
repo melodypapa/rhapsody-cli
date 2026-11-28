@@ -1,0 +1,149 @@
+"""AttributeViewAction — split from attribute_action.py."""
+
+import argparse
+import logging
+from typing import Dict, List, cast
+
+from rhapsody_cli.actions.attribute.base import AbstractAttributeAction
+from rhapsody_cli.actions.support import write_text_file
+from rhapsody_cli.cli.formatters import OutputFormatter
+from rhapsody_cli.exceptions import CliExecutionError
+from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
+
+logger = logging.getLogger(__name__)
+
+
+class AttributeViewAction(AbstractAttributeAction):
+    """View attribute details.
+
+    SWR_ATTR_00003: Attribute View Command
+    SWR_ATTR_00008: Multi-Format Output
+    SWR_ATTR_00010: GUID Lookup Support
+    """
+
+    _VIEW_HEADERS = [
+        "Name",
+        "GUID",
+        "Description",
+        "Type",
+        "DefaultValue",
+        "Multiplicity",
+        "IsStatic",
+        "Visibility",
+        "Declaration",
+        "MetaClass",
+        "FullPath",
+    ]
+    _VIEW_KEYS = [
+        "name",
+        "guid",
+        "description",
+        "type",
+        "defaultValue",
+        "multiplicity",
+        "isStatic",
+        "visibility",
+        "declaration",
+        "metaClass",
+        "fullPath",
+    ]
+
+    def __init__(self) -> None:
+        """Initialize the 'view' action."""
+        super().__init__(command_id="view")
+
+    def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
+        """Register the 'view' subcommand and its arguments."""
+        parser = sub_parser.add_parser("view", help="View attribute details")
+        self.add_path_argument(parser, required=False, help_text="Parent classifier path")
+        parser.add_argument("--guid", default=None, help="Attribute GUID to view")
+        parser.add_argument("--name", default=None, help="Attribute name within classifier")
+        parser.add_argument("--output", default=None, help="Write output to file")
+
+    def execute(self, args: argparse.Namespace) -> None:
+        """Execute attribute view."""
+        super().execute(args)
+        has_path_name = args.path and args.name
+        has_guid = args.guid is not None
+
+        if has_path_name and has_guid:
+            raise CliExecutionError("Only one of --path + --name or --guid may be specified")
+        if not has_path_name and not has_guid:
+            raise CliExecutionError("Either --path + --name or --guid must be specified")
+
+        if has_guid:
+            attribute = self._resolve_attribute_by_guid(args.guid)
+        else:
+            classifier = self._resolve_classifier(args.path)
+            attribute = self._resolve_attribute(classifier, args.name)
+
+        try:
+            data = self._collect_attribute_data(attribute)
+            output = self._format_output(data, args.format)
+
+            if args.output:
+                self._write_to_file(args.output, output)
+                self.logger.info("Wrote attribute details to: %s", args.output)
+            else:
+                # NOTE: Result data to stdout (not logger) so it stays safe for piping/redirection.
+                print(output)
+        except CliExecutionError:
+            raise
+        except Exception as e:
+            self._handle_execution_error(e, f"Failed to view attribute '{args.name or args.guid}'")
+
+    def _collect_attribute_data(self, attribute: IRPModelElement) -> Dict[str, object]:
+        """Collect attribute details into a data dictionary.
+
+        Normalizes boolean flags to int for clean JSON round-trip.
+        """
+        attr_type = attribute.get_type()  # type: ignore[attr-defined]
+        type_name = cast(IRPModelElement, attr_type).name if attr_type is not None else ""
+        return {
+            "name": attribute.name,
+            "guid": attribute.guid,
+            "description": attribute.description,
+            "type": type_name,
+            "defaultValue": attribute.get_default_value(),  # type: ignore[attr-defined]
+            "multiplicity": attribute.multiplicity,  # type: ignore[attr-defined]
+            "isStatic": int(attribute.is_static),  # type: ignore[attr-defined]
+            "visibility": attribute.visibility,  # type: ignore[attr-defined]
+            "declaration": attribute.get_declaration(),  # type: ignore[attr-defined]
+            "metaClass": attribute.meta_class,
+            "fullPath": attribute.get_full_path_name(),
+        }
+
+    def _format_output(self, data: Dict[str, object], format_type: str) -> str:
+        """Format output based on format parameter."""
+        if format_type == "json":
+            return OutputFormatter.json_format(data)
+        elif format_type == "csv":
+            data_row = [str(data[key]) for key in self._VIEW_KEYS]
+            return OutputFormatter.csv_format(self._VIEW_HEADERS, [data_row])
+        else:
+            table_rows: List[List[str]] = [
+                ["Name", str(data["name"])],
+                ["GUID", str(data["guid"])],
+                ["Description", str(data["description"])],
+                ["Type", str(data["type"])],
+                ["DefaultValue", str(data["defaultValue"])],
+                ["Multiplicity", str(data["multiplicity"])],
+                ["IsStatic", str(data["isStatic"])],
+                ["Visibility", str(data["visibility"])],
+                ["Declaration", str(data["declaration"])],
+                ["MetaClass", str(data["metaClass"])],
+                ["FullPath", str(data["fullPath"])],
+            ]
+            return OutputFormatter.table(["Property", "Value"], table_rows)
+
+    def _write_to_file(self, file_path: str, content: str) -> None:
+        """Write content to file."""
+        try:
+            with open(file_path, "w", encoding="utf-8") as f:
+                f.write(content)
+        except OSError as e:
+            raise CliExecutionError(f"Failed to write file '{file_path}': {e}") from e
+
+    def _write_to_file(self, file_path: str, content: str) -> None:
+        """Write content via the shared helper (see actions.support)."""
+        write_text_file(file_path, content)

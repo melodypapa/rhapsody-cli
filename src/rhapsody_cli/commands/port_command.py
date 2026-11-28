@@ -3,7 +3,7 @@
 from typing import List
 
 from rhapsody_cli.actions.abstract_action import AbstractAction
-from rhapsody_cli.actions.port_action import (
+from rhapsody_cli.actions.port import (
     PortCreateAction,
     PortDeleteAction,
     PortListAction,

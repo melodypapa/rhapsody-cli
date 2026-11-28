@@ -3,7 +3,7 @@
 from typing import List
 
 from rhapsody_cli.actions.abstract_action import AbstractAction
-from rhapsody_cli.actions.attribute_action import (
+from rhapsody_cli.actions.attribute import (
     AttributeCreateAction,
     AttributeDeleteAction,
     AttributeListAction,

@@ -3,7 +3,7 @@
 from typing import List
 
 from rhapsody_cli.actions.abstract_action import AbstractAction
-from rhapsody_cli.actions.operation_action import (
+from rhapsody_cli.actions.operation import (
     OperationCreateAction,
     OperationDeleteAction,
     OperationListAction,
