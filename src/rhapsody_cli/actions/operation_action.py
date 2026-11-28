@@ -132,7 +132,6 @@ class OperationCreateAction(AbstractOperationAction):
         self.add_path_argument(parser, required=True, help_text="Parent classifier path")
         parser.add_argument("--input", default=None, help="JSON file with operation attributes")
         parser.add_argument("attributes", nargs="?", default=None, help="Inline JSON or JSON file path")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute operation creation."""
@@ -281,7 +280,6 @@ class OperationDeleteAction(AbstractOperationAction):
         self.add_path_argument(parser, required=False, help_text="Parent classifier path")
         parser.add_argument("--guid", default=None, help="Operation GUID to delete")
         parser.add_argument("--name", default=None, help="Operation name within classifier")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute operation deletion."""
@@ -325,9 +323,7 @@ class OperationListAction(AbstractOperationAction):
         """Register the 'list' subcommand and its arguments."""
         parser = sub_parser.add_parser("list", help="List operations on a classifier")
         self.add_path_argument(parser, required=True, help_text="Classifier path")
-        parser.add_argument("--format", choices=["table", "json", "csv"], default="table", help="Output format")
         parser.add_argument("--output", default=None, help="Write output to file")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute operation list."""
@@ -421,9 +417,7 @@ class OperationViewAction(AbstractOperationAction):
         self.add_path_argument(parser, required=False, help_text="Parent classifier path")
         parser.add_argument("--guid", default=None, help="Operation GUID to view")
         parser.add_argument("--name", default=None, help="Operation name within classifier")
-        parser.add_argument("--format", choices=["table", "json", "csv"], default="table", help="Output format")
         parser.add_argument("--output", default=None, help="Write output to file")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute operation view."""
@@ -556,7 +550,6 @@ class OperationUpdateAction(AbstractOperationAction):
         parser.add_argument("--name", default=None, help="Operation name within classifier")
         parser.add_argument("--input", default=None, help="JSON file with operation attributes")
         parser.add_argument("attributes", nargs="?", default=None, help="Inline JSON or JSON file path")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute operation update."""

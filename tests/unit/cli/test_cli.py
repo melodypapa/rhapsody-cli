@@ -110,3 +110,25 @@ def test_main_generic_exception_exits_1() -> None:
                 with pytest.raises(SystemExit) as exc_info:
                     main()
     assert exc_info.value.code == 1
+
+
+def test_global_format_before_group_is_accepted() -> None:
+    """--format as a root flag works in the leading position (consolidated)."""
+    parser = build_root_parser(build_registry())
+    namespace = parser.parse_args(["--format", "json", "package", "list", "--path", "X"])
+    assert namespace.format == "json"
+
+
+def test_format_after_group_is_rejected() -> None:
+    """--format inside/after the group is rejected once consolidation completes."""
+    parser = build_root_parser(build_registry())
+    with pytest.raises(SystemExit) as exc_info:
+        parser.parse_args(["package", "list", "--path", "X", "--format", "json"])
+    assert exc_info.value.code == 2
+
+
+def test_global_verbose_flag_propagates() -> None:
+    """-v before the group lands on the namespace (strictly global)."""
+    parser = build_root_parser(build_registry())
+    namespace = parser.parse_args(["-v", "project", "list"])
+    assert namespace.verbose is True

@@ -30,7 +30,6 @@ class ConnectAction(RootCommandAction):
         parser.add_argument("--timeout", type=int, help="Session timeout in minutes (default: 5, 0=no timeout)")
         parser.add_argument("--attach-only", action="store_true", help="Only attach to existing instance")
         parser.add_argument("--no-gui", action="store_true", help="Keep GUI hidden when launching new instance")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Connect to Rhapsody and create session."""
@@ -134,7 +133,6 @@ class DisconnectAction(RootCommandAction):
     def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
         """Register the 'disconnect' subcommand and its arguments."""
         parser = sub_parser.add_parser(self.command_id, help="Disconnect from Rhapsody")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Disconnect from Rhapsody and clear session."""
@@ -168,7 +166,6 @@ class StatusAction(RootCommandAction):
     def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
         """Register the 'status' subcommand and its arguments."""
         parser = sub_parser.add_parser(self.command_id, help="Show connection status")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Show connection status."""
@@ -223,7 +220,6 @@ class VersionAction(RootCommandAction):
     def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
         """Register the 'version' subcommand and its arguments."""
         parser = sub_parser.add_parser(self.command_id, help="Show CLI version")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Show CLI version and optionally Rhapsody version."""

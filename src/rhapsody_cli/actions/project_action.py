@@ -20,7 +20,6 @@ class ProjectOpenAction(RhapsodyContextAction):
         """Register the 'open' subcommand and its arguments."""
         open_parser = sub_parser.add_parser("open", help="Open a project file")
         open_parser.add_argument("project_path", help="Path to the project file")
-        self.add_verbose_argument(open_parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Open a project file."""
@@ -45,7 +44,6 @@ class ProjectListAction(RhapsodyContextAction):
     def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
         """Register the 'list' subcommand and its arguments."""
         list_parser = sub_parser.add_parser("list", help="List open projects")
-        self.add_verbose_argument(list_parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """List open projects."""
@@ -79,7 +77,6 @@ class ProjectCloseAction(RhapsodyContextAction):
     def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
         """Register the 'close' subcommand and its arguments."""
         close_parser = sub_parser.add_parser("close", help="Close active project")
-        self.add_verbose_argument(close_parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Close active project."""
@@ -106,7 +103,6 @@ class ProjectNewAction(RhapsodyContextAction):
         new_parser = sub_parser.add_parser("new", help="Create a new project")
         new_parser.add_argument("project_location", help="Location for the project")
         new_parser.add_argument("project_name", help="Name of the project")
-        self.add_verbose_argument(new_parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Create a new project."""
@@ -134,7 +130,6 @@ class ProjectExportAction(RhapsodyContextAction):
     def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
         parser = sub_parser.add_parser(self.command_id, help="Export the active project to a YAML file")
         parser.add_argument("--file", required=True, help="Output YAML file path")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         try:
@@ -165,7 +160,6 @@ class ProjectImportAction(RhapsodyContextAction):
     def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
         parser = sub_parser.add_parser(self.command_id, help="Import a YAML file into the active project")
         parser.add_argument("--file", required=True, help="Input YAML file path")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         try:

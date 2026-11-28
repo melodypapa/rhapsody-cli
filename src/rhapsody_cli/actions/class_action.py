@@ -165,7 +165,6 @@ class ClassCreateAction(AbstractClassAction):
         self.add_path_argument(parser, required=True, help_text="Parent package path")
         parser.add_argument("--input", default=None, help="JSON file with class attributes")
         parser.add_argument("attributes", nargs="?", default=None, help="Inline JSON or JSON file path")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute class creation."""
@@ -320,7 +319,6 @@ class ClassDeleteAction(AbstractClassAction):
         parser = sub_parser.add_parser("delete", help="Delete a class")
         self.add_path_argument(parser, required=False, help_text="Class path to delete")
         parser.add_argument("--guid", default=None, help="Class GUID to delete")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute class deletion."""
@@ -359,9 +357,7 @@ class ClassListAction(AbstractClassAction):
         """Register the 'list' subcommand and its arguments."""
         parser = sub_parser.add_parser("list", help="List classes in a package")
         self.add_path_argument(parser, required=True, help_text="Package path")
-        parser.add_argument("--format", choices=["table", "json", "csv"], default="table", help="Output format")
         parser.add_argument("--output", default=None, help="Write output to file")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute class list."""
@@ -454,9 +450,7 @@ class ClassViewAction(AbstractClassAction):
         parser = sub_parser.add_parser("view", help="View class details")
         self.add_path_argument(parser, required=False, help_text="Class path to view")
         parser.add_argument("--guid", default=None, help="Class GUID to view")
-        parser.add_argument("--format", choices=["table", "json", "csv"], default="table", help="Output format")
         parser.add_argument("--output", default=None, help="Write output to file")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute class view."""
@@ -566,7 +560,6 @@ class ClassLinkAction(AbstractClassAction):
             default="generalization",
             help="Relationship type (v1 supports only generalization)",
         )
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute class link operation."""
@@ -647,7 +640,6 @@ class ClassUpdateAction(AbstractClassAction):
         parser.add_argument("--guid", default=None, help="GUID of the class to update")
         parser.add_argument("--input", default=None, help="JSON file with class attributes")
         parser.add_argument("attributes", nargs="?", default=None, help="Inline JSON or JSON file path")
-        self.add_verbose_argument(parser)
 
     def _load_json_data(self, args: argparse.Namespace) -> Dict[str, object]:
         """Load JSON data from inline string or file.

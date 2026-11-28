@@ -131,7 +131,6 @@ class AttributeCreateAction(AbstractAttributeAction):
         self.add_path_argument(parser, required=True, help_text="Parent classifier path")
         parser.add_argument("--input", default=None, help="JSON file with attribute attributes")
         parser.add_argument("attributes", nargs="?", default=None, help="Inline JSON or JSON file path")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute attribute creation."""
@@ -262,7 +261,6 @@ class AttributeDeleteAction(AbstractAttributeAction):
         self.add_path_argument(parser, required=False, help_text="Parent classifier path")
         parser.add_argument("--guid", default=None, help="Attribute GUID to delete")
         parser.add_argument("--name", default=None, help="Attribute name within classifier")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute attribute deletion."""
@@ -306,9 +304,7 @@ class AttributeListAction(AbstractAttributeAction):
         """Register the 'list' subcommand and its arguments."""
         parser = sub_parser.add_parser("list", help="List attributes on a classifier")
         self.add_path_argument(parser, required=True, help_text="Classifier path")
-        parser.add_argument("--format", choices=["table", "json", "csv"], default="table", help="Output format")
         parser.add_argument("--output", default=None, help="Write output to file")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute attribute list."""
@@ -400,9 +396,7 @@ class AttributeViewAction(AbstractAttributeAction):
         self.add_path_argument(parser, required=False, help_text="Parent classifier path")
         parser.add_argument("--guid", default=None, help="Attribute GUID to view")
         parser.add_argument("--name", default=None, help="Attribute name within classifier")
-        parser.add_argument("--format", choices=["table", "json", "csv"], default="table", help="Output format")
         parser.add_argument("--output", default=None, help="Write output to file")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute attribute view."""
@@ -522,7 +516,6 @@ class AttributeUpdateAction(AbstractAttributeAction):
         parser.add_argument("--name", default=None, help="Attribute name within classifier")
         parser.add_argument("--input", default=None, help="JSON file with attribute attributes")
         parser.add_argument("attributes", nargs="?", default=None, help="Inline JSON or JSON file path")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute attribute update."""

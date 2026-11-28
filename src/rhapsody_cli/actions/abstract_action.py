@@ -54,20 +54,6 @@ class AbstractAction:
         """
         raise NotImplementedError("Subclasses must implement the execute method.")
 
-    @staticmethod
-    def add_verbose_argument(parser: argparse.ArgumentParser) -> None:
-        """Add the shared --verbose/-v flag to a subcommand parser.
-
-        Args:
-            parser: The argument parser to add the verbose flag to.
-        """
-        parser.add_argument(
-            "--verbose",
-            "-v",
-            action="store_true",
-            help="Enable DEBUG-level logging",
-        )
-
 
 class RhapsodyContextAction(AbstractAction):
     """Base class for actions that require a live Rhapsody connection.

@@ -10,7 +10,6 @@ from unittest.mock import MagicMock, Mock, patch
 import pytest
 
 from rhapsody_cli.actions.abstract_action import (
-    AbstractAction,
     ElementManagementAction,
     RhapsodyContextAction,
     RootCommandAction,
@@ -19,30 +18,6 @@ from rhapsody_cli.actions.abstract_action import (
 from rhapsody_cli.cli.path_resolver import PathResolver, PathResolverError
 from rhapsody_cli.exceptions import CliExecutionError, RhapsodyConnectionError
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
-
-
-class TestAbstractActionAddVerboseArgument:
-    """Test the shared --verbose/-v flag registration."""
-
-    def test_add_verbose_argument_registers_verbose_flag(self) -> None:
-        """--verbose and -v should both parse as verbose=True."""
-        parser = argparse.ArgumentParser()
-        AbstractAction.add_verbose_argument(parser)
-
-        args_long = parser.parse_args(["--verbose"])
-        args_short = parser.parse_args(["-v"])
-
-        assert args_long.verbose is True
-        assert args_short.verbose is True
-
-    def test_add_verbose_argument_defaults_to_false(self) -> None:
-        """verbose should default to False when the flag is omitted."""
-        parser = argparse.ArgumentParser()
-        AbstractAction.add_verbose_argument(parser)
-
-        args = parser.parse_args([])
-
-        assert args.verbose is False
 
 
 class TestElementManagementActionAddPathArgument:

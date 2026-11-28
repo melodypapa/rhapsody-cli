@@ -129,7 +129,6 @@ class PortCreateAction(AbstractPortAction):
         self.add_path_argument(parser, required=True, help_text="Parent classifier path")
         parser.add_argument("--input", default=None, help="JSON file with port attributes")
         parser.add_argument("attributes", nargs="?", default=None, help="Inline JSON or JSON file path")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute port creation."""
@@ -254,7 +253,6 @@ class PortDeleteAction(AbstractPortAction):
         self.add_path_argument(parser, required=False, help_text="Parent classifier path")
         parser.add_argument("--guid", default=None, help="Port GUID to delete")
         parser.add_argument("--name", default=None, help="Port name within classifier")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute port deletion."""
@@ -297,9 +295,7 @@ class PortListAction(AbstractPortAction):
         """Register the 'list' subcommand and its arguments."""
         parser = sub_parser.add_parser("list", help="List ports on a classifier")
         self.add_path_argument(parser, required=True, help_text="Classifier path")
-        parser.add_argument("--format", choices=["table", "json", "csv"], default="table", help="Output format")
         parser.add_argument("--output", default=None, help="Write output to file")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute port list."""
@@ -385,9 +381,7 @@ class PortViewAction(AbstractPortAction):
         self.add_path_argument(parser, required=False, help_text="Parent classifier path")
         parser.add_argument("--guid", default=None, help="Port GUID to view")
         parser.add_argument("--name", default=None, help="Port name within classifier")
-        parser.add_argument("--format", choices=["table", "json", "csv"], default="table", help="Output format")
         parser.add_argument("--output", default=None, help="Write output to file")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute port view."""
@@ -498,7 +492,6 @@ class PortUpdateAction(AbstractPortAction):
         parser.add_argument("--name", default=None, help="Port name within classifier")
         parser.add_argument("--input", default=None, help="JSON file with port attributes")
         parser.add_argument("attributes", nargs="?", default=None, help="Inline JSON or JSON file path")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute port update."""

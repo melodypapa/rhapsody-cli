@@ -90,7 +90,6 @@ class PackageCreateAction(AbstractPackageAction):
         self.add_path_argument(parser, required=False, help_text="Parent package path (optional; defaults to project root)")
         parser.add_argument("--input", default=None, help="JSON file with package attributes")
         parser.add_argument("attributes", nargs="?", default=None, help="Inline JSON or JSON file path")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute package creation."""
@@ -304,7 +303,6 @@ class PackageDeleteAction(AbstractPackageAction):
         """Register the 'delete' subcommand and its arguments."""
         parser = sub_parser.add_parser("delete", help="Delete a package")
         self.add_path_argument(parser, required=True, help_text="Package path to delete")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute package deletion."""
@@ -339,9 +337,7 @@ class PackageViewAction(AbstractPackageAction):
         """Register the 'view' subcommand and its arguments."""
         parser = sub_parser.add_parser("view", help="View package details")
         self.add_path_argument(parser, required=True, help_text="Package path to view")
-        parser.add_argument("--format", choices=["table", "json", "csv"], default="table", help="Output format")
         parser.add_argument("--output", default=None, help="Write output to file")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute package view."""
@@ -411,9 +407,7 @@ class PackageListAction(AbstractPackageAction):
         """Register the 'list' subcommand and its arguments."""
         parser = sub_parser.add_parser("list", help="List nested packages")
         self.add_path_argument(parser, required=True, help_text="Package path")
-        parser.add_argument("--format", choices=["table", "json", "csv"], default="table", help="Output format")
         parser.add_argument("--output", default=None, help="Write output to file")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         """Execute package list."""
@@ -495,7 +489,6 @@ class PackageUpdateAction(AbstractPackageAction):
         parser.add_argument("--guid", default=None, help="GUID of the package to update")
         parser.add_argument("--input", default=None, help="JSON file with package attributes")
         parser.add_argument("attributes", nargs="?", default=None, help="Inline JSON or JSON file path")
-        self.add_verbose_argument(parser)
 
     def _resolve_element_by_guid(self, guid: str) -> IRPModelElement:
         """Resolve element by GUID and validate it's a Package.
@@ -618,7 +611,6 @@ class PackageExportAction(AbstractPackageAction):
         parser = sub_parser.add_parser(self.command_id, help="Export a package to a YAML file")
         self.add_path_argument(parser, required=False, help_text="Path to package (defaults to root)")
         parser.add_argument("--file", required=True, help="Output YAML file path")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         super().execute(args)
@@ -651,7 +643,6 @@ class PackageImportAction(AbstractPackageAction):
         parser = sub_parser.add_parser(self.command_id, help="Import a YAML file into a package")
         self.add_path_argument(parser, required=False, help_text="Path to target package (defaults to root)")
         parser.add_argument("--file", required=True, help="Input YAML file path")
-        self.add_verbose_argument(parser)
 
     def execute(self, args: argparse.Namespace) -> None:
         super().execute(args)
