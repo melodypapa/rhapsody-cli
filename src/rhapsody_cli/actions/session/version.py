@@ -20,7 +20,7 @@ class VersionAction(RootCommandAction):
 
     def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
         """Register the 'version' subcommand and its arguments."""
-        parser = sub_parser.add_parser(self.command_id, help="Show CLI version")
+        sub_parser.add_parser(self.command_id, help="Show CLI version")
 
     def execute(self, args: argparse.Namespace) -> None:
         """Show CLI version and optionally Rhapsody version."""

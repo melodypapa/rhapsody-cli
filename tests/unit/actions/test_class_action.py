@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from rhapsody_cli.actions.abstract_action import ElementManagementAction
-from rhapsody_cli.actions.class_action import AbstractClassAction
+from rhapsody_cli.actions.classifier import AbstractClassAction
 from rhapsody_cli.exceptions import CliExecutionError
 
 
@@ -142,7 +142,7 @@ class TestClassCreateAction:
 
     def _make_action_with_parent(self) -> Tuple[Any, Any]:
         """Helper: build action and mock parent package."""
-        from rhapsody_cli.actions.class_action import ClassCreateAction
+        from rhapsody_cli.actions.classifier import ClassCreateAction
 
         action = ClassCreateAction()
         mock_parent = MagicMock()
@@ -339,7 +339,7 @@ class TestClassDeleteAction:
 
     def test_delete_class_by_path_success(self) -> None:
         """UTS_CLS_00011: Test successful class deletion by path."""
-        from rhapsody_cli.actions.class_action import ClassDeleteAction
+        from rhapsody_cli.actions.classifier import ClassDeleteAction
 
         action = ClassDeleteAction()
         mock_class = MagicMock()
@@ -356,7 +356,7 @@ class TestClassDeleteAction:
 
     def test_delete_class_by_guid_success(self) -> None:
         """UTS_CLS_00012: Test successful class deletion by GUID."""
-        from rhapsody_cli.actions.class_action import ClassDeleteAction
+        from rhapsody_cli.actions.classifier import ClassDeleteAction
 
         action = ClassDeleteAction()
         mock_class = MagicMock()
@@ -373,7 +373,7 @@ class TestClassDeleteAction:
 
     def test_delete_class_handles_com_error(self) -> None:
         """UTS_CLS_00013: Test error handling during deletion."""
-        from rhapsody_cli.actions.class_action import ClassDeleteAction
+        from rhapsody_cli.actions.classifier import ClassDeleteAction
 
         action = ClassDeleteAction()
         mock_class = MagicMock()
@@ -392,7 +392,7 @@ class TestClassDeleteAction:
 
     def test_delete_requires_path_or_guid(self) -> None:
         """UTS_CLS_00014: Test that exactly one of path/guid is required."""
-        from rhapsody_cli.actions.class_action import ClassDeleteAction
+        from rhapsody_cli.actions.classifier import ClassDeleteAction
 
         action = ClassDeleteAction()
         args = MagicMock()
@@ -406,7 +406,7 @@ class TestClassDeleteAction:
 
     def test_delete_rejects_both_path_and_guid(self) -> None:
         """Test that specifying both path and guid is rejected."""
-        from rhapsody_cli.actions.class_action import ClassDeleteAction
+        from rhapsody_cli.actions.classifier import ClassDeleteAction
 
         action = ClassDeleteAction()
         args = MagicMock()
@@ -460,7 +460,7 @@ class TestClassViewAction:
 
     def test_view_table_output(self, capsys: Any) -> None:
         """UTS_CLS_00015: Test table format output."""
-        from rhapsody_cli.actions.class_action import ClassViewAction
+        from rhapsody_cli.actions.classifier import ClassViewAction
 
         action = ClassViewAction()
         mock_class = self._make_mock_class()
@@ -483,7 +483,7 @@ class TestClassViewAction:
         """UTS_CLS_00016: Test JSON output to file with int-normalized IsAbstract."""
         import json as json_module
 
-        from rhapsody_cli.actions.class_action import ClassViewAction
+        from rhapsody_cli.actions.classifier import ClassViewAction
 
         action = ClassViewAction()
         mock_class = self._make_mock_class()
@@ -509,7 +509,7 @@ class TestClassViewAction:
 
     def test_view_csv_output(self, capsys: Any) -> None:
         """UTS_CLS_00017: Test CSV format output."""
-        from rhapsody_cli.actions.class_action import ClassViewAction
+        from rhapsody_cli.actions.classifier import ClassViewAction
 
         action = ClassViewAction()
         mock_class = self._make_mock_class()
@@ -531,7 +531,7 @@ class TestClassViewAction:
 
     def test_view_by_guid(self, capsys: Any) -> None:
         """UTS_CLS_00018: Test viewing class by GUID."""
-        from rhapsody_cli.actions.class_action import ClassViewAction
+        from rhapsody_cli.actions.classifier import ClassViewAction
 
         action = ClassViewAction()
         mock_class = self._make_mock_class()
@@ -550,7 +550,7 @@ class TestClassViewAction:
 
     def test_view_requires_path_or_guid(self) -> None:
         """UTS_CLS_00019: Test that exactly one of path/guid is required."""
-        from rhapsody_cli.actions.class_action import ClassViewAction
+        from rhapsody_cli.actions.classifier import ClassViewAction
 
         action = ClassViewAction()
         args = MagicMock()
@@ -573,7 +573,7 @@ class TestClassListAction:
 
     def test_list_classes(self, capsys: Any) -> None:
         """UTS_CLS_00021: Test listing classes in a package."""
-        from rhapsody_cli.actions.class_action import ClassListAction
+        from rhapsody_cli.actions.classifier import ClassListAction
 
         action = ClassListAction()
         mock_package = MagicMock()
@@ -598,7 +598,7 @@ class TestClassListAction:
 
     def test_list_empty_package(self, capsys: Any) -> None:
         """UTS_CLS_00022: Test listing empty package."""
-        from rhapsody_cli.actions.class_action import ClassListAction
+        from rhapsody_cli.actions.classifier import ClassListAction
 
         action = ClassListAction()
         mock_package = MagicMock()
@@ -619,7 +619,7 @@ class TestClassListAction:
         """UTS_CLS_00023: Test JSON output format."""
         import json as json_module
 
-        from rhapsody_cli.actions.class_action import ClassListAction
+        from rhapsody_cli.actions.classifier import ClassListAction
 
         action = ClassListAction()
         mock_package = MagicMock()
@@ -655,7 +655,7 @@ class TestClassLinkAction:
 
     def test_add_generalization_by_path(self) -> None:
         """UTS_CLS_00024: Test adding generalization by name."""
-        from rhapsody_cli.actions.class_action import ClassLinkAction
+        from rhapsody_cli.actions.classifier import ClassLinkAction
 
         action = ClassLinkAction()
         mock_source = MagicMock()
@@ -681,7 +681,7 @@ class TestClassLinkAction:
 
     def test_remove_generalization_by_path(self) -> None:
         """UTS_CLS_00025: Test removing generalization by name."""
-        from rhapsody_cli.actions.class_action import ClassLinkAction
+        from rhapsody_cli.actions.classifier import ClassLinkAction
 
         action = ClassLinkAction()
         mock_source = MagicMock()
@@ -707,7 +707,7 @@ class TestClassLinkAction:
 
     def test_link_requires_add_or_remove(self) -> None:
         """UTS_CLS_00026: Test that exactly one of add/remove is required."""
-        from rhapsody_cli.actions.class_action import ClassLinkAction
+        from rhapsody_cli.actions.classifier import ClassLinkAction
 
         action = ClassLinkAction()
         args = MagicMock()
@@ -724,7 +724,7 @@ class TestClassLinkAction:
 
     def test_link_target_not_found_raises_error(self) -> None:
         """UTS_CLS_00027: Test that missing target raises error."""
-        from rhapsody_cli.actions.class_action import ClassLinkAction
+        from rhapsody_cli.actions.classifier import ClassLinkAction
 
         action = ClassLinkAction()
         mock_source = MagicMock()
@@ -748,7 +748,7 @@ class TestClassLinkAction:
 
     def test_link_by_guid(self) -> None:
         """UTS_CLS_00028: Test linking class by GUID."""
-        from rhapsody_cli.actions.class_action import ClassLinkAction
+        from rhapsody_cli.actions.classifier import ClassLinkAction
 
         action = ClassLinkAction()
         mock_source = MagicMock()
@@ -787,7 +787,7 @@ class TestClassUpdateAction:
 
     def test_update_class_with_path(self) -> None:
         """UTS_CLS_00030: Test updating class via --path."""
-        from rhapsody_cli.actions.class_action import ClassUpdateAction
+        from rhapsody_cli.actions.classifier import ClassUpdateAction
 
         action = ClassUpdateAction()
         mock_class = MagicMock()
@@ -805,7 +805,7 @@ class TestClassUpdateAction:
 
     def test_update_class_with_guid(self) -> None:
         """UTS_CLS_00031: Test updating class via --guid with type validation."""
-        from rhapsody_cli.actions.class_action import ClassUpdateAction
+        from rhapsody_cli.actions.classifier import ClassUpdateAction
 
         action = ClassUpdateAction()
         mock_class = MagicMock()
@@ -824,7 +824,7 @@ class TestClassUpdateAction:
 
     def test_update_class_guid_wrong_type(self) -> None:
         """UTS_CLS_00032: Test --guid resolving to non-Class raises error."""
-        from rhapsody_cli.actions.class_action import ClassUpdateAction
+        from rhapsody_cli.actions.classifier import ClassUpdateAction
 
         action = ClassUpdateAction()
         mock_project = MagicMock()
@@ -847,7 +847,7 @@ class TestClassUpdateAction:
 
     def test_update_class_partial_update(self) -> None:
         """UTS_CLS_00033: Test partial update - only isAbstract field applied."""
-        from rhapsody_cli.actions.class_action import ClassUpdateAction
+        from rhapsody_cli.actions.classifier import ClassUpdateAction
 
         action = ClassUpdateAction()
         mock_class = MagicMock()
@@ -867,7 +867,7 @@ class TestClassUpdateAction:
 
     def test_update_class_boolean_flags(self) -> None:
         """UTS_CLS_00034: Test isAbstract/isFinal/isActive assigned via IRPClass methods."""
-        from rhapsody_cli.actions.class_action import ClassUpdateAction
+        from rhapsody_cli.actions.classifier import ClassUpdateAction
 
         action = ClassUpdateAction()
         mock_class = MagicMock()
@@ -887,7 +887,7 @@ class TestClassUpdateAction:
 
     def test_update_class_skips_unknown_fields(self) -> None:
         """UTS_CLS_00035: Test unknown field triggers warning, known field still applied."""
-        from rhapsody_cli.actions.class_action import ClassUpdateAction
+        from rhapsody_cli.actions.classifier import ClassUpdateAction
 
         action = ClassUpdateAction()
         mock_class = MagicMock()
@@ -908,7 +908,7 @@ class TestClassUpdateAction:
 
     def test_update_class_from_file(self, tmp_path: Any) -> None:
         """UTS_CLS_00036: Test loading JSON from --input file."""
-        from rhapsody_cli.actions.class_action import ClassUpdateAction
+        from rhapsody_cli.actions.classifier import ClassUpdateAction
 
         json_file = tmp_path / "update.json"
         json_file.write_text('{"description":"From file"}')
@@ -929,7 +929,7 @@ class TestClassUpdateAction:
 
     def test_update_class_requires_path_or_guid(self) -> None:
         """UTS_CLS_00037: Test that neither --path nor --guid raises error."""
-        from rhapsody_cli.actions.class_action import ClassUpdateAction
+        from rhapsody_cli.actions.classifier import ClassUpdateAction
 
         action = ClassUpdateAction()
 

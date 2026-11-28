@@ -19,7 +19,7 @@ class DisconnectAction(RootCommandAction):
 
     def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
         """Register the 'disconnect' subcommand and its arguments."""
-        parser = sub_parser.add_parser(self.command_id, help="Disconnect from Rhapsody")
+        sub_parser.add_parser(self.command_id, help="Disconnect from Rhapsody")
 
     def execute(self, args: argparse.Namespace) -> None:
         """Disconnect from Rhapsody and clear session."""

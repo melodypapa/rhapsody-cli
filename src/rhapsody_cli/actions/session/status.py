@@ -20,7 +20,7 @@ class StatusAction(RootCommandAction):
 
     def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
         """Register the 'status' subcommand and its arguments."""
-        parser = sub_parser.add_parser(self.command_id, help="Show connection status")
+        sub_parser.add_parser(self.command_id, help="Show connection status")
 
     def execute(self, args: argparse.Namespace) -> None:
         """Show connection status."""
