@@ -390,15 +390,9 @@ class ClassListAction(AbstractClassAction):
         return [cast(IRPModelElement, cls).name for cls in classes]
 
     def _format_output(self, class_names: List[str], format_type: str) -> str:
-        """Format output based on format parameter."""
-        if format_type == "json":
-            return OutputFormatter.json_format(class_names)
-        elif format_type == "csv":
-            table_rows = [[name] for name in class_names]
-            return OutputFormatter.csv_format(["Name"], table_rows)
-        else:
-            table_rows = [[name] for name in class_names]
-            return OutputFormatter.table(["Name"], table_rows)
+        """Format output via the shared renderer (see _render_output)."""
+        self.output_format = format_type
+        return self._render_output(class_names, ["Name"], [[name] for name in class_names])
 
     def _write_to_file(self, file_path: str, content: str) -> None:
         """Write content to file."""

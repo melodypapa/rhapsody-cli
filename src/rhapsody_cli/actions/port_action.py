@@ -328,15 +328,9 @@ class PortListAction(AbstractPortAction):
         return [cast(IRPModelElement, port).name for port in ports]
 
     def _format_output(self, port_names: List[str], format_type: str) -> str:
-        """Format output based on format parameter."""
-        if format_type == "json":
-            return OutputFormatter.json_format(port_names)
-        elif format_type == "csv":
-            table_rows = [[name] for name in port_names]
-            return OutputFormatter.csv_format(["Name"], table_rows)
-        else:
-            table_rows = [[name] for name in port_names]
-            return OutputFormatter.table(["Name"], table_rows)
+        """Format output via the shared renderer (see _render_output)."""
+        self.output_format = format_type
+        return self._render_output(port_names, ["Name"], [[name] for name in port_names])
 
     def _write_to_file(self, file_path: str, content: str) -> None:
         """Write content to file."""

@@ -110,14 +110,28 @@ class RhapsodyContextAction(AbstractAction):
                 output_format is JSON. Use this to preserve an existing
                 table-only contract while sharing the helper.
         """
-        if self.output_format == "json" and not force_table:
-            output = OutputFormatter.json_format(data)
-        elif self.output_format == "csv":
-            output = OutputFormatter.csv_format(headers, table_rows)
-        else:
-            output = OutputFormatter.table(headers, table_rows)
         # NOTE: Result data to stdout (not logger) so it stays safe for piping/redirection.
-        print(output)
+        print(self._render_output(data, headers, table_rows, force_table=force_table))
+
+    def _render_output(self, data: object, headers: List[str], table_rows: List[List[str]], *, force_table: bool = False) -> str:
+        """Format `data` per this action's output_format and return the string.
+
+        Args:
+            data: Payload to emit when the output format is JSON.
+            headers: Column headers for the table/csv forms.
+            table_rows: Rows (each a list of cells) for the table/csv forms.
+            force_table: When True, always render the table form even if
+                output_format is JSON. Use this to preserve an existing
+                table-only contract while sharing the helper.
+
+        Returns:
+            The formatted output string (not printed).
+        """
+        if self.output_format == "json" and not force_table:
+            return OutputFormatter.json_format(data)
+        if self.output_format == "csv":
+            return OutputFormatter.csv_format(headers, table_rows)
+        return OutputFormatter.table(headers, table_rows)
 
     def _handle_connection_error(self, error: RhapsodyConnectionError, context_msg: str = "") -> NoReturn:
         """Log a connection error and raise CliExecutionError for the user.

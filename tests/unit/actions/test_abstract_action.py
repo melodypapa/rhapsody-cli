@@ -493,3 +493,26 @@ class TestRootCommandAction:
         with patch.object(action, "execute") as mock_execute:
             action.run(args)
         mock_execute.assert_called_once_with(args)
+
+
+class TestRenderOutput:
+    """_render_output returns the formatted string; _print_formatted_output prints it."""
+
+    def _action(self, output_format: str) -> RhapsodyContextAction:
+        action = RhapsodyContextAction(command_id="probe")
+        action.output_format = output_format
+        return action
+
+    def test_render_json_returns_payload_string(self) -> None:
+        assert self._action("json")._render_output({"a": 1}, ["Name"], [["Alpha"]]) == '{\n  "a": 1\n}'
+
+    def test_render_csv_returns_exact_csv(self) -> None:
+        assert self._action("csv")._render_output(["A"], ["Name"], [["Alpha"]]) == "Name\r\nAlpha\r\n"
+
+    def test_render_table_returns_grid(self) -> None:
+        out = self._action("table")._render_output(["A"], ["Name"], [["Alpha"]])
+        assert "Name" in out and "Alpha" in out
+
+    def test_print_formatted_output_uses_render_output(self, capsys: "pytest.CaptureFixture[str]") -> None:
+        self._action("csv")._print_formatted_output(["A"], ["Name"], [["Alpha"]])
+        assert capsys.readouterr().out == "Name\r\nAlpha\r\n\n"
