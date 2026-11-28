@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from rhapsody_cli.actions.project_action import (
+from rhapsody_cli.actions.project import (
     ProjectCloseAction,
     ProjectListAction,
     ProjectNewAction,
