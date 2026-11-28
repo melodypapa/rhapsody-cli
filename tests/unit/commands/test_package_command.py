@@ -31,6 +31,6 @@ class TestPackageCommand:
         actions = cmd.get_actions()
         command_ids = [a.command_id for a in actions]
 
-        for expected in ["create", "delete", "view", "list", "update", "export", "import"]:
+        for expected in ["create", "delete", "view", "list", "update"]:
             assert expected in command_ids
-        assert len(actions) == 7
+        assert len(actions) == 5

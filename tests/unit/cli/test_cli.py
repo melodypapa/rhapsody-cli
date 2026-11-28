@@ -16,6 +16,8 @@ def test_registry_covers_all_commands() -> None:
         "disconnect",
         "status",
         "version",
+        "export",
+        "import",
         "class",
         "attribute",
         "operation",
