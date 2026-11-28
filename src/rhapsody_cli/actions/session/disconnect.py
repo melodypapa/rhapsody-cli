@@ -1,7 +1,5 @@
 """DisconnectAction — split from session_action.py."""
 
-"""Session actions - connect, disconnect, status, version."""
-
 import argparse
 import logging
 

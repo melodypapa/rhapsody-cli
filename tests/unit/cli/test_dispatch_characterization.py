@@ -82,7 +82,7 @@ def test_generic_exception_exits_1() -> None:
 # Action-level characterization (session gate + multi-format output)
 # ---------------------------------------------------------------------------
 
-from rhapsody_cli.actions.package_action import PackageListAction  # noqa: E402
+from rhapsody_cli.actions.package import PackageListAction  # noqa: E402
 
 
 def test_session_gate_blocks_when_not_connected() -> None:

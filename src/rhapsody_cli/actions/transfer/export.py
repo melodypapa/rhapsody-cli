@@ -6,7 +6,7 @@ SWR_XCH_001: Import/Export CLI Actions
 import argparse
 
 from rhapsody_cli.actions.abstract_action import RootCommandAction
-from rhapsody_cli.actions.package_action import AbstractPackageAction
+from rhapsody_cli.actions.package.base import AbstractPackageAction
 from rhapsody_cli.exceptions import CliExecutionError, RhapsodyConnectionError
 from rhapsody_cli.exchange.exporter import RhapsodyExporter
 from rhapsody_cli.exchange.yaml_utils import RhapsodyYaml

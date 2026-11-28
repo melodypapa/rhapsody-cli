@@ -11,7 +11,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from rhapsody_cli.actions.abstract_action import ElementManagementAction
-from rhapsody_cli.actions.package_action import (
+from rhapsody_cli.actions.package import (
     AbstractPackageAction,
     PackageCreateAction,
 )
@@ -337,7 +337,7 @@ class TestPackageDeleteAction:
 
     def test_delete_package_success(self) -> None:
         """UTS_PKG_00011: Test successful package deletion."""
-        from rhapsody_cli.actions.package_action import PackageDeleteAction
+        from rhapsody_cli.actions.package import PackageDeleteAction
 
         action = PackageDeleteAction()
         mock_package = MagicMock()
@@ -352,7 +352,7 @@ class TestPackageDeleteAction:
 
     def test_delete_package_handles_error(self) -> None:
         """UTS_PKG_00012: Test error handling during deletion."""
-        from rhapsody_cli.actions.package_action import PackageDeleteAction
+        from rhapsody_cli.actions.package import PackageDeleteAction
 
         action = PackageDeleteAction()
         mock_package = MagicMock()
@@ -378,7 +378,7 @@ class TestPackageViewAction:
 
     def test_view_table_output(self, capsys: Any) -> None:
         """UTS_PKG_00013: Test table format output."""
-        from rhapsody_cli.actions.package_action import PackageViewAction
+        from rhapsody_cli.actions.package import PackageViewAction
 
         action = PackageViewAction()
         mock_package = MagicMock()
@@ -402,7 +402,7 @@ class TestPackageViewAction:
 
     def test_view_json_output_to_file(self, tmp_path: Any) -> None:
         """UTS_PKG_00014: Test JSON output to file."""
-        from rhapsody_cli.actions.package_action import PackageViewAction
+        from rhapsody_cli.actions.package import PackageViewAction
 
         action = PackageViewAction()
         mock_package = MagicMock()
@@ -427,7 +427,7 @@ class TestPackageViewAction:
 
     def test_view_csv_output(self, capsys: Any) -> None:
         """UTS_PKG_00015: Test CSV format output."""
-        from rhapsody_cli.actions.package_action import PackageViewAction
+        from rhapsody_cli.actions.package import PackageViewAction
 
         action = PackageViewAction()
         mock_package = MagicMock()
@@ -463,7 +463,7 @@ class TestPackageListAction:
 
     def test_list_nested_packages(self, capsys: Any) -> None:
         """UTS_PKG_00016: Test listing nested packages."""
-        from rhapsody_cli.actions.package_action import PackageListAction
+        from rhapsody_cli.actions.package import PackageListAction
 
         action = PackageListAction()
         mock_parent = MagicMock()
@@ -487,7 +487,7 @@ class TestPackageListAction:
 
     def test_list_empty_package(self, capsys: Any) -> None:
         """UTS_PKG_00017: Test listing empty package."""
-        from rhapsody_cli.actions.package_action import PackageListAction
+        from rhapsody_cli.actions.package import PackageListAction
 
         action = PackageListAction()
         mock_parent = MagicMock()
@@ -506,7 +506,7 @@ class TestPackageListAction:
 
     def test_list_json_output(self, capsys: Any) -> None:
         """UTS_PKG_00018: Test JSON output format."""
-        from rhapsody_cli.actions.package_action import PackageListAction
+        from rhapsody_cli.actions.package import PackageListAction
 
         action = PackageListAction()
         mock_parent = MagicMock()
@@ -543,7 +543,7 @@ class TestPackageUpdateAction:
 
     def test_update_package_with_path(self) -> None:
         """UTS_PKG_00035: Test updating package via --path."""
-        from rhapsody_cli.actions.package_action import PackageUpdateAction
+        from rhapsody_cli.actions.package import PackageUpdateAction
 
         action = PackageUpdateAction()
         mock_package = MagicMock()
@@ -561,7 +561,7 @@ class TestPackageUpdateAction:
 
     def test_update_package_with_guid(self) -> None:
         """UTS_PKG_00036: Test updating package via --guid with type validation."""
-        from rhapsody_cli.actions.package_action import PackageUpdateAction
+        from rhapsody_cli.actions.package import PackageUpdateAction
 
         action = PackageUpdateAction()
         mock_root = MagicMock()
@@ -583,7 +583,7 @@ class TestPackageUpdateAction:
 
     def test_update_package_guid_wrong_type(self) -> None:
         """UTS_PKG_00037: Test --guid resolving to non-Package raises error."""
-        from rhapsody_cli.actions.package_action import PackageUpdateAction
+        from rhapsody_cli.actions.package import PackageUpdateAction
 
         action = PackageUpdateAction()
         mock_root = MagicMock()
@@ -606,7 +606,7 @@ class TestPackageUpdateAction:
 
     def test_update_package_partial_update(self) -> None:
         """UTS_PKG_00038: Test partial update - only tags field applied."""
-        from rhapsody_cli.actions.package_action import PackageUpdateAction
+        from rhapsody_cli.actions.package import PackageUpdateAction
 
         action = PackageUpdateAction()
         mock_package = MagicMock()
@@ -626,7 +626,7 @@ class TestPackageUpdateAction:
 
     def test_update_package_skips_unknown_fields(self) -> None:
         """UTS_PKG_00039: Test unknown field triggers warning, known field still applied."""
-        from rhapsody_cli.actions.package_action import PackageUpdateAction
+        from rhapsody_cli.actions.package import PackageUpdateAction
 
         action = PackageUpdateAction()
         mock_package = MagicMock()
@@ -647,7 +647,7 @@ class TestPackageUpdateAction:
 
     def test_update_package_from_file(self, tmp_path: Any) -> None:
         """UTS_PKG_00040: Test loading JSON from --input file."""
-        from rhapsody_cli.actions.package_action import PackageUpdateAction
+        from rhapsody_cli.actions.package import PackageUpdateAction
 
         json_file = tmp_path / "update.json"
         json_file.write_text('{"description":"From file"}')
@@ -668,7 +668,7 @@ class TestPackageUpdateAction:
 
     def test_update_package_requires_path_or_guid(self) -> None:
         """UTS_PKG_00041: Test that neither --path nor --guid raises error."""
-        from rhapsody_cli.actions.package_action import PackageUpdateAction
+        from rhapsody_cli.actions.package import PackageUpdateAction
 
         action = PackageUpdateAction()
 

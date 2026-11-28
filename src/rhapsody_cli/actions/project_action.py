@@ -43,7 +43,7 @@ class ProjectListAction(RhapsodyContextAction):
 
     def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
         """Register the 'list' subcommand and its arguments."""
-        list_parser = sub_parser.add_parser("list", help="List open projects")
+        sub_parser.add_parser("list", help="List open projects")
 
     def execute(self, args: argparse.Namespace) -> None:
         """List open projects."""
@@ -76,7 +76,7 @@ class ProjectCloseAction(RhapsodyContextAction):
 
     def init_arguments(self, sub_parser: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
         """Register the 'close' subcommand and its arguments."""
-        close_parser = sub_parser.add_parser("close", help="Close active project")
+        sub_parser.add_parser("close", help="Close active project")
 
     def execute(self, args: argparse.Namespace) -> None:
         """Close active project."""
