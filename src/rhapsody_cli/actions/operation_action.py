@@ -22,6 +22,7 @@ from pathlib import Path
 from typing import Callable, Dict, List, Union, cast
 
 from rhapsody_cli.actions.abstract_action import ElementManagementAction, SessionAwareAction
+from rhapsody_cli.actions.support import load_json_data, write_text_file
 from rhapsody_cli.cli.formatters import OutputFormatter
 from rhapsody_cli.exceptions import CliExecutionError
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
@@ -208,6 +209,10 @@ class OperationCreateAction(AbstractOperationAction):
         except OSError as e:
             raise CliExecutionError(f"Failed to read file: {e}") from e
 
+    def _load_json_data(self, attributes_input: str) -> Union[Dict[str, object], List[Dict[str, object]]]:
+        """Load JSON data via the shared helper, then apply operation-shape normalization."""
+        return self._normalize_operation_data(load_json_data(attributes_input))
+
     @staticmethod
     def _normalize_operation_data(data: object) -> Union[Dict[str, object], List[Dict[str, object]]]:
         """Validate the JSON root and each item in a bulk operation payload."""
@@ -369,6 +374,10 @@ class OperationListAction(AbstractOperationAction):
         except OSError as e:
             raise CliExecutionError(f"Failed to write file '{file_path}': {e}") from e
 
+    def _write_to_file(self, file_path: str, content: str) -> None:
+        """Write content via the shared helper (see actions.support)."""
+        write_text_file(file_path, content)
+
 
 class OperationViewAction(AbstractOperationAction):
     """View operation details.
@@ -515,6 +524,10 @@ class OperationViewAction(AbstractOperationAction):
         except OSError as e:
             raise CliExecutionError(f"Failed to write file '{file_path}': {e}") from e
 
+    def _write_to_file(self, file_path: str, content: str) -> None:
+        """Write content via the shared helper (see actions.support)."""
+        write_text_file(file_path, content)
+
 
 class OperationUpdateAction(AbstractOperationAction):
     """Update attributes of an existing operation.
@@ -604,6 +617,10 @@ class OperationUpdateAction(AbstractOperationAction):
             raise CliExecutionError(f"Invalid JSON in file: {e}") from e
         except OSError as e:
             raise CliExecutionError(f"Failed to read file: {e}") from e
+
+    def _load_json_data(self, attributes_input: str) -> Dict[str, object]:
+        """Load JSON data via the shared helper (see actions.support)."""
+        return cast(Dict[str, object], load_json_data(attributes_input))
 
     def _set_attributes(self, classifier: IRPModelElement, operation: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Set validated attributes on operation (partial update)."""

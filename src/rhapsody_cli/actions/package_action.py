@@ -20,6 +20,7 @@ from pathlib import Path
 from typing import Dict, List, cast
 
 from rhapsody_cli.actions.abstract_action import ElementManagementAction, SessionAwareAction
+from rhapsody_cli.actions.support import load_json_data, write_text_file
 from rhapsody_cli.cli.formatters import OutputFormatter
 from rhapsody_cli.exceptions import CliExecutionError
 from rhapsody_cli.models.com.telelogic.rhapsody.core.irp_model_element import IRPModelElement
@@ -247,6 +248,10 @@ class PackageCreateAction(AbstractPackageAction):
         except OSError as e:
             raise CliExecutionError(f"Failed to read file: {e}") from e
 
+    def _load_json_data(self, attributes_input: str) -> Dict[str, object]:
+        """Load JSON data via the shared helper (see actions.support)."""
+        return cast(Dict[str, object], load_json_data(attributes_input))
+
     def _set_attributes(self, package: IRPModelElement, attrs: Dict[str, object]) -> None:
         """Set validated attributes on package."""
         self._set_basic_attributes(package, attrs)
@@ -388,6 +393,10 @@ class PackageViewAction(AbstractPackageAction):
         except OSError as e:
             raise CliExecutionError(f"Failed to write file '{file_path}': {e}") from e
 
+    def _write_to_file(self, file_path: str, content: str) -> None:
+        """Write content via the shared helper (see actions.support)."""
+        write_text_file(file_path, content)
+
 
 class PackageListAction(AbstractPackageAction):
     """List nested packages.
@@ -456,6 +465,10 @@ class PackageListAction(AbstractPackageAction):
                 f.write(content)
         except OSError as e:
             raise CliExecutionError(f"Failed to write file '{file_path}': {e}") from e
+
+    def _write_to_file(self, file_path: str, content: str) -> None:
+        """Write content via the shared helper (see actions.support)."""
+        write_text_file(file_path, content)
 
 
 class PackageUpdateAction(AbstractPackageAction):
